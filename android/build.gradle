@@ -1,0 +1,50 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        options.compilerArgs << "-Xlint:-options"
+    }
+}
+
+rootProject.buildDir = '../build'
+
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex') ) {
+                details.useVersion "27.1.1"
+            }
+        }
+    }
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+        project.plugins.hasPlugin("com.android.library")) {
+        project.android {
+            compileSdkVersion 35
+            buildToolsVersion "35.0.0"
+        }
+        }
+        if (project.hasProperty("android")) {
+        project.android {
+            if (namespace == null) {
+            namespace project.group
+            }
+        }
+        }
+    }
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

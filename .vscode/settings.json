@@ -1,0 +1,8 @@
+{
+  "launch": {
+    "configurations": [],
+    "compounds": []
+  },
+  "dart.flutterSdkPath": "/Users/MAC/.puro/envs/yakihonne/flutter",
+  "dart.sdkPath": "/Users/MAC/.puro/envs/yakihonne/flutter/bin/cache/dart-sdk"
+}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <button onclick="sendMessage()">Send Message</button>
+    <button onclick="checkInjected()">Check injected</button>
+    <script>
+      function sendMessage() {
+        if (window.originSystem.name == "android")
+          window.parent.postMessage("Hello from WebView");
+        else window.parent.postMessage("Hello from WebView", "*");
+      }
+
+      function checkInjected() {
+        console.log(window.originSystem.name);
+      }
+    </script>
+  </body>
+</html>
