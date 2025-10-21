@@ -834,7 +834,7 @@ String getRawText(MentionTagTextEditingController controller) {
   final text = controller.text;
   final mentions = controller.mentions;
 
-  return text.replaceAllMapped('‡', (match) {
+  return text.replaceAllMapped(mentionToken, (match) {
     final removedMention = mentions.removeAt(0);
 
     if (removedMention is Metadata) {

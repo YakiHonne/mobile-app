@@ -346,11 +346,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
 
     await getCachedMetadata(isFollowing);
-    getFreshMetadata(isFollowing);
+    await getFreshMetadata(isFollowing);
   }
 
   Future<void> getCachedMetadata(bool isFollowing) async {
-    final m = await metadataCubit.getAvailableMetadata(pubkey);
+    final m = metadataCubit.getMemoryMetadata(pubkey) ??
+        await metadataCubit.getAvailableMetadata(pubkey);
+
     setCurrentMetadata(m, isFollowing);
   }
 
@@ -366,7 +368,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> setCurrentMetadata(Metadata m, bool isFollowing) async {
-    bool isNip05 = false;
+    bool isNip05 = state.isNip05;
 
     if (!state.isNip05 && m.nip05.isNotEmpty) {
       isNip05 = await metadataCubit.isNip05Valid(m);
@@ -509,38 +511,6 @@ class ProfileCubit extends Cubit<ProfileState> {
                 (contactList.contacts.contains(currentSigner!.getPublicKey())),
           ),
         );
-      }
-    }
-  }
-
-  Future<void> searchNewUserMetadata() async {}
-
-  Future<void> setMetadata(Metadata? metadata) async {
-    if (metadata != null) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            user: metadata,
-            profileStatus: ProfileStatus.available,
-            canBeZapped:
-                (metadata.lud16.isNotEmpty || metadata.lud06.isNotEmpty) &&
-                    canSign() &&
-                    metadata.pubkey != currentSigner!.getPublicKey(),
-            refresh: true,
-          ),
-        );
-      }
-
-      if (!state.isNip05 && metadata.nip05.isNotEmpty) {
-        final authorNip05 = await metadataCubit.isNip05Valid(metadata);
-
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              isNip05: authorNip05,
-            ),
-          );
-        }
       }
     }
   }

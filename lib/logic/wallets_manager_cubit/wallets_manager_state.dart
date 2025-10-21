@@ -18,7 +18,8 @@ class WalletsManagerState extends Equatable {
   final int maxAmount;
   final String defaultExternalWallet;
   final List<WalletTransactionModel> transactions;
-  final SearchResultsType searchResultsType;
+  final bool isLoadingTransactions;
+  final UpdatingState transactionsState;
   final bool shouldPopView;
   final double balanceInUSD;
   final bool isWalletHidden;
@@ -40,7 +41,8 @@ class WalletsManagerState extends Equatable {
     required this.maxAmount,
     required this.defaultExternalWallet,
     required this.transactions,
-    required this.searchResultsType,
+    required this.isLoadingTransactions,
+    required this.transactionsState,
     required this.shouldPopView,
     required this.balanceInUSD,
     required this.isWalletHidden,
@@ -65,7 +67,8 @@ class WalletsManagerState extends Equatable {
       maxAmount: -1,
       defaultExternalWallet: 'satoshi',
       transactions: [],
-      searchResultsType: SearchResultsType.noSearch,
+      isLoadingTransactions: false,
+      transactionsState: UpdatingState.idle,
       shouldPopView: true,
       balanceInUSD: -1,
       isWalletHidden: false,
@@ -99,7 +102,8 @@ class WalletsManagerState extends Equatable {
     int? maxAmount,
     String? defaultExternalWallet,
     List<WalletTransactionModel>? transactions,
-    SearchResultsType? searchResultsType,
+    bool? isLoadingTransactions,
+    UpdatingState? transactionsState,
     bool? shouldPopView,
     double? balanceInUSD,
     bool? isWalletHidden,
@@ -122,7 +126,9 @@ class WalletsManagerState extends Equatable {
       defaultExternalWallet:
           defaultExternalWallet ?? this.defaultExternalWallet,
       transactions: transactions ?? this.transactions,
-      searchResultsType: searchResultsType ?? this.searchResultsType,
+      isLoadingTransactions:
+          isLoadingTransactions ?? this.isLoadingTransactions,
+      transactionsState: transactionsState ?? this.transactionsState,
       shouldPopView: shouldPopView ?? this.shouldPopView,
       balanceInUSD: balanceInUSD ?? this.balanceInUSD,
       isWalletHidden: isWalletHidden ?? this.isWalletHidden,
@@ -147,7 +153,7 @@ class WalletsManagerState extends Equatable {
         maxAmount,
         defaultExternalWallet,
         transactions,
-        searchResultsType,
+        transactionsState,
         shouldPopView,
         balanceInUSD,
         isWalletHidden,

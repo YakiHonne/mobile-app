@@ -242,6 +242,51 @@ class VerticalViewModeWidget extends StatelessWidget {
   }
 }
 
+class LoadDmsWidget extends StatelessWidget {
+  const LoadDmsWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            context.t.messagesNotLoaded.capitalizeFirst(),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w900,
+                ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Text(
+            context.t.messagesNotLoadedDesc.capitalizeFirst(),
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).hintColor,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: kDefaultPadding,
+          ),
+          TextButton(
+            onPressed: () {
+              dmsCubit.loadLocalRemoteSignerDms();
+            },
+            child: Text(
+              context.t.loadMessages.capitalizeFirst(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class NoMessagesWidget extends StatelessWidget {
   const NoMessagesWidget({
     super.key,

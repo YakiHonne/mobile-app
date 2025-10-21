@@ -5,6 +5,7 @@ class SearchState extends Equatable {
   final List<dynamic> content;
   final List<Metadata> authors;
   final String search;
+  final bool isSearching;
   final SearchResultsType contentSearchResult;
   final SearchResultsType profileSearchResult;
   final Set<String> bookmarks;
@@ -22,6 +23,7 @@ class SearchState extends Equatable {
     required this.profileSearchResult,
     required this.bookmarks,
     required this.mutes,
+    required this.isSearching,
     required this.refresh,
     required this.relayConnectivity,
   });
@@ -35,6 +37,7 @@ class SearchState extends Equatable {
         contentSearchResult,
         profileSearchResult,
         bookmarks,
+        isSearching,
         mutes,
         refresh,
         relayConnectivity,
@@ -44,6 +47,7 @@ class SearchState extends Equatable {
     List<dynamic>? content,
     List<Metadata>? authors,
     String? search,
+    bool? isSearching,
     SearchResultsType? contentSearchResult,
     SearchResultsType? profileSearchResult,
     Set<String>? bookmarks,
@@ -56,6 +60,7 @@ class SearchState extends Equatable {
       content: content ?? this.content,
       authors: authors ?? this.authors,
       search: search ?? this.search,
+      isSearching: isSearching ?? this.isSearching,
       contentSearchResult: contentSearchResult ?? this.contentSearchResult,
       profileSearchResult: profileSearchResult ?? this.profileSearchResult,
       bookmarks: bookmarks ?? this.bookmarks,

@@ -42,6 +42,7 @@ class DmsCubit extends Cubit<DmsState>
             mutes: nostrRepository.mutes.toList(),
             selectedTime: 0,
             isLoadingHistory: false,
+            dmDataState: DmDataState.enabled,
           ),
         ) {
     nostrRepository.isUsingNip44 = localDatabaseRepository.isUsingNip44();
@@ -131,11 +132,9 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   Future<void> setUsedMessagingNip(bool isUsingNip44) async {
-    if (!isClosed) {
-      emit(
-        state.copyWith(isUsingNip44: isUsingNip44),
-      );
-    }
+    _emit(
+      state.copyWith(isUsingNip44: isUsingNip44),
+    );
 
     nostrRepository.isUsingNip44 = isUsingNip44;
     localDatabaseRepository.setUsedNip(isUsingNip44);
@@ -157,14 +156,12 @@ class DmsCubit extends Cubit<DmsState>
 
     await nc.db.saveDmSessionsInfos(infoMap.values.toList());
 
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          dmSessionDetails: dmSessions,
-          rebuild: true,
-        ),
-      );
-    }
+    _emit(
+      state.copyWith(
+        dmSessionDetails: dmSessions,
+        rebuild: true,
+      ),
+    );
 
     if (canShowNotification) {
       final globalCounter =
@@ -181,7 +178,7 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   void setIndex(int index) {
-    emit(
+    _emit(
       state.copyWith(
         index: index,
         rebuild: !state.rebuild,
@@ -212,7 +209,7 @@ class DmsCubit extends Cubit<DmsState>
         infoMap[detail.info.id] = newInfo;
         map[detail.dmSession.pubkey] = detail.copyWith(info: newInfo);
 
-        emit(
+        _emit(
           state.copyWith(
             dmSessionDetails: map,
           ),
@@ -239,13 +236,11 @@ class DmsCubit extends Cubit<DmsState>
     Function() onSuccessful,
   ) async {
     try {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            isSendingMessage: true,
-          ),
-        );
-      }
+      _emit(
+        state.copyWith(
+          isSendingMessage: true,
+        ),
+      );
 
       late Event event;
       bool isSuccessful = true;
@@ -275,13 +270,11 @@ class DmsCubit extends Cubit<DmsState>
         );
 
         if (senderEvent == null || receiverEvent == null) {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                isSendingMessage: false,
-              ),
-            );
-          }
+          _emit(
+            state.copyWith(
+              isSendingMessage: false,
+            ),
+          );
 
           BotToastUtils.showError(
             t.zapSplitsMessage.capitalizeFirst(),
@@ -318,13 +311,11 @@ class DmsCubit extends Cubit<DmsState>
         );
 
         if (receivedEvent == null) {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                isSendingMessage: false,
-              ),
-            );
-          }
+          _emit(
+            state.copyWith(
+              isSendingMessage: false,
+            ),
+          );
 
           BotToastUtils.showError(
             t.errorSigningEvent.capitalizeFirst(),
@@ -355,24 +346,22 @@ class DmsCubit extends Cubit<DmsState>
           t.errorSendingEvent.capitalizeFirst(),
         );
       }
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            isSendingMessage: false,
-          ),
-        );
-      }
+
+      _emit(
+        state.copyWith(
+          isSendingMessage: false,
+        ),
+      );
     } catch (_) {
       BotToastUtils.showError(
         t.errorSendingMessage.capitalizeFirst(),
       );
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            isSendingMessage: false,
-          ),
-        );
-      }
+
+      _emit(
+        state.copyWith(
+          isSendingMessage: false,
+        ),
+      );
     }
   }
 
@@ -412,40 +401,76 @@ class DmsCubit extends Cubit<DmsState>
       }
     }
 
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          dmSessionDetails: dms,
-        ),
-      );
-    }
+    _emit(
+      state.copyWith(
+        dmSessionDetails: dms,
+      ),
+    );
+  }
+
+  Future<void> loadLocalRemoteSignerDms() async {
+    await localDatabaseRepository.setLoadLocaleRemoteSignerDmStatus(
+      currentSigner!.getPublicKey(),
+      true,
+    );
+
+    initDmSessions();
   }
 
   Future<void> initDmSessions() async {
     if (currentSigner is RemoteEventSigner) {
+      _emit(
+        state.copyWith(
+          dmDataState: DmDataState.disabled,
+        ),
+      );
+
       return;
+    }
+
+    if (currentSigner is AmberEventSigner) {
+      final shouldLoad =
+          localDatabaseRepository.getLoadLocalRemoteSignerDmStatus(
+                  currentSigner!.getPublicKey()) ??
+              false;
+
+      if (shouldLoad) {
+        _emit(
+          state.copyWith(
+            dmDataState: DmDataState.enabled,
+          ),
+        );
+      } else {
+        _emit(
+          state.copyWith(
+            dmDataState: DmDataState.canBeLoaded,
+          ),
+        );
+
+        return;
+      }
     }
 
     _initSince = 0;
     checkNotificationAllowed();
+
     giftWrapNewestDateTime = localDatabaseRepository.getNewestGiftWrap(
       currentSigner!.getPublicKey(),
     );
 
-    if (!isClosed) {
-      emit(
-        DmsState(
-          dmSessionDetails: const {},
-          isUsingNip44: nostrRepository.isUsingNip44,
-          index: 0,
-          rebuild: true,
-          mutes: nostrRepository.mutes.toList(),
-          isSendingMessage: false,
-          selectedTime: 0,
-          isLoadingHistory: false,
-        ),
-      );
-    }
+    _emit(
+      DmsState(
+        dmSessionDetails: const {},
+        isUsingNip44: nostrRepository.isUsingNip44,
+        index: 0,
+        rebuild: true,
+        mutes: nostrRepository.mutes.toList(),
+        isSendingMessage: false,
+        selectedTime: 0,
+        isLoadingHistory: false,
+        dmDataState: DmDataState.enabled,
+      ),
+    );
 
     final currentPubkey = currentSigner!.getPublicKey();
 
@@ -466,13 +491,11 @@ class DmsCubit extends Cubit<DmsState>
       final since =
           _currentBatchUntil - _batchIntervals[_currentBatchIndex].inSeconds;
 
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            isLoadingHistory: true,
-          ),
-        );
-      }
+      _emit(
+        state.copyWith(
+          isLoadingHistory: true,
+        ),
+      );
 
       if (oldestUntil == null) {
         localDatabaseRepository.setDmsHistoryOlderUntil(
@@ -503,13 +526,11 @@ class DmsCubit extends Cubit<DmsState>
     final giftWraps = events['giftWraps']!;
 
     if (_currentBatchIndex == _batchIntervals.length - 1) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            isLoadingHistory: false,
-          ),
-        );
-      }
+      _emit(
+        state.copyWith(
+          isLoadingHistory: false,
+        ),
+      );
 
       localDatabaseRepository.deleteDmsHistoryOlderUntil(
         currentSigner!.getPublicKey(),
@@ -518,12 +539,6 @@ class DmsCubit extends Cubit<DmsState>
       query();
       return;
     }
-
-    // lg.i(
-    //   'DirectMessage: ${directMessages.length} giftWraps: ${giftWraps.length}',
-    // );
-
-    // lg.i('START PROCESSING');
 
     if (directMessages.isNotEmpty || giftWraps.isNotEmpty) {
       final processedGiftWraps = <Event>[];
@@ -738,7 +753,9 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   // Load cached events using original logic (fast, no queue)
-  Future<void> _loadCachedEventsNormally(String currentPubkey) async {
+  Future<void> _loadCachedEventsNormally(
+    String currentPubkey,
+  ) async {
     // Load all cached events
     final events = await nc.db.loadEvents(
       f: Filter(
@@ -861,9 +878,7 @@ class DmsCubit extends Cubit<DmsState>
     }
 
     // Emit the cached data all at once
-    if (!isClosed) {
-      emit(state.copyWith(dmSessionDetails: dmSessions0));
-    }
+    _emit(state.copyWith(dmSessionDetails: dmSessions0));
   }
 
   Future<void> setMuteStatus({
@@ -953,7 +968,7 @@ class DmsCubit extends Cubit<DmsState>
               Map<String, DMSessionDetail>.from(state.dmSessionDetails);
           updatedSessions.addAll(_pendingSessionUpdates);
 
-          emit(
+          _emit(
             state.copyWith(
               dmSessionDetails: updatedSessions,
               rebuild: !state.rebuild,
@@ -1066,7 +1081,7 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   void setSelectedTime(int selectedTime) {
-    emit(
+    _emit(
       state.copyWith(
         selectedTime: selectedTime,
         rebuild: !state.rebuild,
@@ -1202,9 +1217,7 @@ class DmsCubit extends Cubit<DmsState>
 
   // Update mutes without clearing cache (core handles caching)
   void _onMutesUpdate(Set<String> mutes) {
-    if (!isClosed) {
-      emit(state.copyWith(mutes: mutes.toList()));
-    }
+    _emit(state.copyWith(mutes: mutes.toList()));
   }
 
   void clear() {
@@ -1225,20 +1238,19 @@ class DmsCubit extends Cubit<DmsState>
     _currentBatchUntil = Helpers.now;
 
     sendNotificationTimer?.cancel();
-    if (!isClosed) {
-      emit(
-        DmsState(
-          dmSessionDetails: const {},
-          isUsingNip44: nostrRepository.isUsingNip44,
-          index: 0,
-          rebuild: true,
-          isSendingMessage: false,
-          mutes: nostrRepository.mutes.toList(),
-          selectedTime: 0,
-          isLoadingHistory: false,
-        ),
-      );
-    }
+    _emit(
+      DmsState(
+        dmSessionDetails: const {},
+        isUsingNip44: nostrRepository.isUsingNip44,
+        index: 0,
+        rebuild: true,
+        isSendingMessage: false,
+        mutes: nostrRepository.mutes.toList(),
+        selectedTime: 0,
+        isLoadingHistory: false,
+        dmDataState: DmDataState.enabled,
+      ),
+    );
   }
 
   Future<List<String>> getMessage(Event event) async {
@@ -1299,6 +1311,12 @@ class DmsCubit extends Cubit<DmsState>
     }
 
     return null;
+  }
+
+  void _emit(DmsState state) {
+    if (!isClosed) {
+      emit(state);
+    }
   }
 
   @override

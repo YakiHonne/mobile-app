@@ -790,15 +790,18 @@ class HttpFunctionsRepository {
     }
   }
 
-  static Future<List<WalletTransactionModel>> getAlbyTransactions({
-    required String token,
-  }) async {
+  static Future<List<WalletTransactionModel>> getAlbyTransactions(
+      {required String token, int? page}) async {
     try {
       final dio = await getDio();
       final basicAuth = 'Bearer $token';
 
       final response = await dio.get(
         'https://api.getalby.com/invoices',
+        data: {
+          'items': 10,
+          if (page != null) 'page': page + 1,
+        },
         options: Options(
           headers: {
             'Authorization': basicAuth,

@@ -14,6 +14,7 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../../utils/video_utils.dart';
 import '../widgets/common_thumbnail.dart';
+import '../widgets/content_renderer/hidden_media_container.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/link_previewer.dart';
 
@@ -44,6 +45,10 @@ class GalleryImageView extends StatelessWidget {
 
   final Color seperatorColor;
 
+  final bool isHidden;
+
+  final bool invertColor;
+
   final Function(String) onDownload;
 
   const GalleryImageView({
@@ -58,6 +63,8 @@ class GalleryImageView extends StatelessWidget {
     required this.onDownload,
     required this.seperatorColor,
     this.textColor = Colors.white,
+    required this.isHidden,
+    required this.invertColor,
   });
 
   @override
@@ -122,6 +129,8 @@ class GalleryImageView extends StatelessWidget {
                 textColor: textColor,
                 fontSize: fontSize,
                 index: 2,
+                isHidden: isHidden,
+                invertColor: invertColor,
               ),
             ),
           if (media.length > 3) ...[
@@ -139,6 +148,8 @@ class GalleryImageView extends StatelessWidget {
                 textColor: textColor,
                 fontSize: fontSize,
                 index: 3,
+                isHidden: isHidden,
+                invertColor: invertColor,
               ),
             ),
           ],
@@ -160,6 +171,8 @@ class GalleryImageView extends StatelessWidget {
               textColor: textColor,
               fontSize: fontSize,
               index: 0,
+              isHidden: isHidden,
+              invertColor: invertColor,
             ),
           ),
           if (media.length > 1) ...[
@@ -177,6 +190,8 @@ class GalleryImageView extends StatelessWidget {
                 textColor: textColor,
                 fontSize: fontSize,
                 index: 1,
+                isHidden: isHidden,
+                invertColor: invertColor,
               ),
             ),
           ],
@@ -186,7 +201,7 @@ class GalleryImageView extends StatelessWidget {
   }
 }
 
-class GalleryComponent extends StatelessWidget {
+class GalleryComponent extends HookWidget {
   const GalleryComponent({
     super.key,
     required this.media,
@@ -196,6 +211,8 @@ class GalleryComponent extends StatelessWidget {
     required this.textColor,
     required this.fontSize,
     required this.index,
+    required this.isHidden,
+    required this.invertColor,
   });
 
   final Map<String, UrlType> media;
@@ -205,38 +222,52 @@ class GalleryComponent extends StatelessWidget {
   final Color textColor;
   final double fontSize;
   final int index;
+  final bool isHidden;
+  final bool invertColor;
 
   @override
   Widget build(BuildContext context) {
     final entry = media.entries.toList()[index];
+    final hideImageStatus = useState(isHidden);
 
-    return InkWell(
+    return GestureDetector(
       onTap: () => openGallery(
         source: entry,
         context: context,
         index: index,
         sources: media,
       ),
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: imageDecoration,
-        child: Stack(
-          children: [
-            _thumbnail(entry, context),
-            if (index >= 3)
-              Align(
-                child: Text(
-                  imgMore >= 1 ? '+$imgMore' : '',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: fontSize,
-                    shadows: textShadow,
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: imageDecoration,
+            child: Stack(
+              children: [
+                _thumbnail(entry, context),
+                if (index >= 3)
+                  Align(
+                    child: Text(
+                      imgMore >= 1 ? '+$imgMore' : '',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: fontSize,
+                        shadows: textShadow,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-          ],
-        ),
+              ],
+            ),
+          ),
+          if (hideImageStatus.value)
+            HiddenMediaContainer(
+              hideImageStatus: hideImageStatus,
+              invertColor: invertColor,
+              useBorder: false,
+              url: entry.key,
+            ),
+        ],
       ),
     );
   }

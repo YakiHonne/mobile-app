@@ -129,6 +129,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           offset: _controller.selection.end - result.replaceCursorIndex);
       focusNode.requestFocus();
     }
+
+    widget.onTextChanged(_controller.text);
   }
 
   @override

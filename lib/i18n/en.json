@@ -1318,7 +1318,6 @@
   "openUrlPromptDesc": "A safety prompt that displays the full URL before opening it in your browser.",
   "waitingForNetwork": "Waiting for network...",
   "whatsNew": "What's new",
-
   "appCustom": "App custom",
   "poll": "Poll",
   "pendingEvents": "Pending events",
@@ -1370,5 +1369,24 @@
   "unreachableRelay": "Unreachable relay",
   "engageWithUsers": "Engage to expand",
   "engageWithUsersDesc": "Engaging with more users helps you discover new relays and grow your relay list for a richer, more connected experience.",
-  "loadingChatHistory": "Loading chat history..."
+  "loadingChatHistory": "Loading chat history...",
+
+  "contentActionsOrder": "Content actions order",
+  "contentActionsOrderDesc": "Easily rearrange your post interactions to match your preferred order.",
+  "quotes": "Quotes",
+  "eventLoading": "Event loading...",
+  "loadMessages": "Load messages",
+  "messagesNotLoaded": "Messages Not Loaded",
+  "messagesNotLoadedDesc": "Messages are not loaded due to using a local remote signer, if you wish to load them, please click the button below.",
+  "noteLoading": "Note loading...",
+  "hideNonFollowedMedia": "Hide non-followed media",
+  "hideNonFollowedMediaDesc": "Automatically hide images & videos from non-followed users until you tap to reveal.",
+  "clickToView": "Click to view",
+  "relayFeedListEmpty": "Relays feed list is empty",
+  "relayFeedListEmptyDesc": "Add more relays to your list to enjoy a tailored feed.",
+  "addRelay": "Add relays",
+  "hiddenContent": "Hidden content",
+  "hiddenContentDesc": "We've hidden this content because you don't follow this account.",
+  "enabledActions": "Enabled actions",
+  "enabledActionsDesc": "No enabled actions available."
 }

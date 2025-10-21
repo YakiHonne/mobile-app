@@ -8,8 +8,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/localization_cubit/localization_cubit.dart';
 import '../../logic/properties_cubit/properties_cubit.dart';
-import '../../repositories/localdatabase_repository.dart';
-import '../../repositories/nostr_data_repository.dart';
 import '../../routes/navigator.dart';
 import '../../routes/pages_router.dart';
 import '../../utils/utils.dart';
@@ -40,10 +38,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PropertiesCubit(
-        nostrRepository: context.read<NostrDataRepository>(),
-        localDatabaseRepository: context.read<LocalDatabaseRepository>(),
-      ),
+      create: (context) => PropertiesCubit(),
       child: BlocBuilder<LocalizationCubit, LocalizationState>(
         builder: (context, state) {
           return BlocBuilder<PropertiesCubit, PropertiesState>(

@@ -1355,6 +1355,66 @@ class TranslationsAr extends Translations {
 	@override String get openUrlPrompt => 'تأكيد فتح الرابط';
 	@override String get openUrlPromptDesc => 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.';
 	@override String get whatsNew => 'ما الجديد';
+	@override String get appCustom => 'تخصيص التطبيق';
+	@override String get poll => 'استطلاع';
+	@override String get pendingEvents => 'الأحداث المعلقة';
+	@override String get pendingEventsDesc => 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.';
+	@override String get singleColumnFeed => 'عرض بعمود واحد';
+	@override String get singleColumnFeedDesc => 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.';
+	@override String get waitingPayment => 'في انتظار الدفع';
+	@override String get copyId => 'نسخ المعرف';
+	@override String get idCopied => 'تم نسخ المعرف! 👏';
+	@override String get republish => 'إعادة النشر';
+	@override String get useRelayRepublish => 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.';
+	@override String get republishSucces => 'تمت إعادة نشر الحدث بنجاح!';
+	@override String get errorRepublishEvent => 'حدث خطأ أثناء إعادة نشر الحدث';
+	@override String get remoteSigner => 'موقّع عن بُعد';
+	@override String get amber => 'Amber';
+	@override String get useUrlBunker => 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك';
+	@override String get or => 'أو';
+	@override String get messagesDisabled => 'الرسائل معطلة';
+	@override String get messagesDisabledDesc => 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.';
+	@override String sharedOn({required Object date}) => 'تمت المشاركة في ${date}';
+	@override String get shareAsImage => 'مشاركة كصورة';
+	@override String get viewOptions => 'خيارات العرض';
+	@override String get feedCustomization => 'تخصيص الخلاصة';
+	@override String get defaultReaction => 'التفاعل الافتراضي';
+	@override String get defaultReactionDesc => 'حدد تفاعلًا افتراضيًا للرد على المنشورات.';
+	@override String get oneTapReaction => 'تفعيل التفاعل بنقرة واحدة';
+	@override String get oneTapReactionDesc => 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.';
+	@override String get sendingTo => 'يتم الإرسال إلى';
+	@override String get shareEmptyUsers => 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع';
+	@override String get publishOnly => 'النشر فقط إلى';
+	@override String get protectedEvent => 'حدث محمي';
+	@override String get protectedEventDesc => 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.';
+	@override String get browseRelay => 'تصفح المرسل';
+	@override String get addFavorite => 'إضافة إلى المفضلة';
+	@override String get removeFavorite => 'إزالة من المفضلة';
+	@override String get collections => 'المجموعات';
+	@override String get online => 'متصل';
+	@override String get offline => 'غير متصل';
+	@override String get network => 'الشبكة';
+	@override String followedBy({required Object number}) => 'يتابعك ${number}';
+	@override String favoredBy({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}';
+	@override String get requiredAuthentication => 'يتطلب المصادقة';
+	@override String get relayOrbits => 'دوائر المرسل';
+	@override String get relayOrbitsDesc => 'تصفح واستكشف خلاصات المرسلين';
+	@override String get people => 'الأشخاص';
+	@override String get youNotConnected => 'أنت غير متصل';
+	@override String get youNotConnectedDesc => 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك';
+	@override String get checkingRelayConnectivity => 'جاري التحقق من اتصال المرسل';
+	@override String get unreachableRelay => 'مرسل غير قابل للوصول';
+	@override String get engageWithUsers => 'تفاعل للتوسّع';
+	@override String get engageWithUsersDesc => 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.';
+	@override String get loadingChatHistory => 'جاري تحميل سجل المحادثة...';
+	@override String get contentActionsOrder => 'ترتيب إجراءات المحتوى';
+	@override String get contentActionsOrderDesc => 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.';
+	@override String get quotes => 'اقتباسات';
+	@override String get eventLoading => 'جارٍ تحميل الحدث...';
+	@override String get loadMessages => 'تحميل الرسائل';
+	@override String get messagesNotLoaded => 'لم يتم تحميل الرسائل';
+	@override String get messagesNotLoadedDesc => 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
+	@override String get noteLoading => 'جارٍ تحميل الملاحظة...';
 }
 
 /// Flat map(s) containing all translations.
@@ -2679,6 +2739,66 @@ extension on TranslationsAr {
 			case 'openUrlPrompt': return 'تأكيد فتح الرابط';
 			case 'openUrlPromptDesc': return 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.';
 			case 'whatsNew': return 'ما الجديد';
+			case 'appCustom': return 'تخصيص التطبيق';
+			case 'poll': return 'استطلاع';
+			case 'pendingEvents': return 'الأحداث المعلقة';
+			case 'pendingEventsDesc': return 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.';
+			case 'singleColumnFeed': return 'عرض بعمود واحد';
+			case 'singleColumnFeedDesc': return 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.';
+			case 'waitingPayment': return 'في انتظار الدفع';
+			case 'copyId': return 'نسخ المعرف';
+			case 'idCopied': return 'تم نسخ المعرف! 👏';
+			case 'republish': return 'إعادة النشر';
+			case 'useRelayRepublish': return 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.';
+			case 'republishSucces': return 'تمت إعادة نشر الحدث بنجاح!';
+			case 'errorRepublishEvent': return 'حدث خطأ أثناء إعادة نشر الحدث';
+			case 'remoteSigner': return 'موقّع عن بُعد';
+			case 'amber': return 'Amber';
+			case 'useUrlBunker': return 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك';
+			case 'or': return 'أو';
+			case 'messagesDisabled': return 'الرسائل معطلة';
+			case 'messagesDisabledDesc': return 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.';
+			case 'sharedOn': return ({required Object date}) => 'تمت المشاركة في ${date}';
+			case 'shareAsImage': return 'مشاركة كصورة';
+			case 'viewOptions': return 'خيارات العرض';
+			case 'feedCustomization': return 'تخصيص الخلاصة';
+			case 'defaultReaction': return 'التفاعل الافتراضي';
+			case 'defaultReactionDesc': return 'حدد تفاعلًا افتراضيًا للرد على المنشورات.';
+			case 'oneTapReaction': return 'تفعيل التفاعل بنقرة واحدة';
+			case 'oneTapReactionDesc': return 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.';
+			case 'sendingTo': return 'يتم الإرسال إلى';
+			case 'shareEmptyUsers': return 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع';
+			case 'publishOnly': return 'النشر فقط إلى';
+			case 'protectedEvent': return 'حدث محمي';
+			case 'protectedEventDesc': return 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.';
+			case 'browseRelay': return 'تصفح المرسل';
+			case 'addFavorite': return 'إضافة إلى المفضلة';
+			case 'removeFavorite': return 'إزالة من المفضلة';
+			case 'collections': return 'المجموعات';
+			case 'online': return 'متصل';
+			case 'offline': return 'غير متصل';
+			case 'network': return 'الشبكة';
+			case 'followedBy': return ({required Object number}) => 'يتابعك ${number}';
+			case 'favoredBy': return ({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}';
+			case 'requiredAuthentication': return 'يتطلب المصادقة';
+			case 'relayOrbits': return 'دوائر المرسل';
+			case 'relayOrbitsDesc': return 'تصفح واستكشف خلاصات المرسلين';
+			case 'people': return 'الأشخاص';
+			case 'youNotConnected': return 'أنت غير متصل';
+			case 'youNotConnectedDesc': return 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك';
+			case 'checkingRelayConnectivity': return 'جاري التحقق من اتصال المرسل';
+			case 'unreachableRelay': return 'مرسل غير قابل للوصول';
+			case 'engageWithUsers': return 'تفاعل للتوسّع';
+			case 'engageWithUsersDesc': return 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.';
+			case 'loadingChatHistory': return 'جاري تحميل سجل المحادثة...';
+			case 'contentActionsOrder': return 'ترتيب إجراءات المحتوى';
+			case 'contentActionsOrderDesc': return 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.';
+			case 'quotes': return 'اقتباسات';
+			case 'eventLoading': return 'جارٍ تحميل الحدث...';
+			case 'loadMessages': return 'تحميل الرسائل';
+			case 'messagesNotLoaded': return 'لم يتم تحميل الرسائل';
+			case 'messagesNotLoadedDesc': return 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
+			case 'noteLoading': return 'جارٍ تحميل الملاحظة...';
 			default: return null;
 		}
 	}

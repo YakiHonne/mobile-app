@@ -155,8 +155,6 @@ class SelectedGifType extends StatelessWidget {
   Widget build(BuildContext context) {
     if (gifType == GiphyType.gifs) {
       return BlocBuilder<GiphyCubit, GiphyState>(
-        buildWhen: (previous, current) =>
-            previous.gifsUpdatingState != current.gifsUpdatingState,
         builder: (context, state) {
           if (state.gifsUpdatingState == UpdatingState.progress) {
             return const SearchLoading();
@@ -175,8 +173,6 @@ class SelectedGifType extends StatelessWidget {
       );
     } else if (gifType == GiphyType.stickers) {
       return BlocBuilder<GiphyCubit, GiphyState>(
-        buildWhen: (previous, current) =>
-            previous.stickersUpdatingState != current.stickersUpdatingState,
         builder: (context, state) {
           if (state.stickersUpdatingState == UpdatingState.progress) {
             return const SearchLoading();
@@ -217,21 +213,74 @@ class GiphyContentGrid extends StatefulWidget {
 
 class _GiphyContentGridState extends State<GiphyContentGrid> {
   @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (widget.scrollController.position.pixels >=
+        widget.scrollController.position.maxScrollExtent - 200) {
+      // Load more when near bottom
+      final cubit = context.read<GiphyCubit>();
+      final type = widget.content == cubit.state.gifs
+          ? GiphyType.gifs
+          : GiphyType.stickers;
+      cubit.loadMore(type);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MasonryGridView.count(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: kDefaultPadding,
-      ),
-      controller: widget.scrollController,
-      itemCount: widget.content.length,
-      crossAxisCount: 2,
-      crossAxisSpacing: kDefaultPadding / 2,
-      mainAxisSpacing: kDefaultPadding / 2,
-      itemBuilder: (ctx, idx) {
-        final GiphyGif? gif = widget.content[idx];
-        return _item(gif);
-      },
+    final cubit = context.watch<GiphyCubit>();
+    final isLoadingMore = widget.content == cubit.state.gifs
+        ? cubit.state.isLoadingMoreGifs
+        : cubit.state.isLoadingMoreStickers;
+
+    return Column(
+      children: [
+        Expanded(
+          child: MasonryGridView.count(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: kDefaultPadding,
+            ),
+            controller: widget.scrollController,
+            itemCount: widget.content.length,
+            crossAxisCount: 2,
+            crossAxisSpacing: kDefaultPadding / 2,
+            mainAxisSpacing: kDefaultPadding / 2,
+            itemBuilder: (ctx, idx) {
+              final GiphyGif? gif = widget.content[idx];
+              return _item(gif);
+            },
+          ),
+        ),
+        if (isLoadingMore)
+          Padding(
+            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            child: SpinKitThreeBounce(
+              color: Theme.of(context).primaryColor,
+              size: 15,
+            ),
+          )
+        else if ((widget.content == cubit.state.gifs &&
+                cubit.state.gifsNoMoreData) ||
+            (widget.content == cubit.state.stickers &&
+                cubit.state.stickersNoMoreData))
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              context.t.noMoreData,
+            ),
+          ),
+      ],
     );
   }
 

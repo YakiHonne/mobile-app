@@ -11,6 +11,7 @@ import 'package:logger/logger.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:share_handler/share_handler.dart';
 
 // Local imports
 import '../../initializers.dart';
@@ -34,6 +35,7 @@ import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../views/uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../../views/version_news/app_news_popup.dart';
+import '../../views/widgets/received_share_intent.dart';
 import '../../views/widgets/video_components/horizontal_video_view.dart';
 import '../../views/widgets/video_components/vertical_video_view.dart';
 
@@ -58,6 +60,7 @@ class MainCubit extends Cubit<MainState> {
         ) {
     initView();
     initUniLinks();
+    initShareIntent();
     checkCurrentVersionNews();
     _setupSubscriptions();
     walletManagerCubit.init();
@@ -69,7 +72,8 @@ class MainCubit extends Cubit<MainState> {
   late StreamSubscription currentSignerStream;
   late StreamSubscription homeViewSubcription;
   late StreamSubscription connectivityStream;
-  StreamSubscription? _sub;
+  StreamSubscription? _deepLinksSub;
+  StreamSubscription? _shareIntentSub;
 
   // Initialization methods
   void _setupSubscriptions() {
@@ -96,6 +100,7 @@ class MainCubit extends Cubit<MainState> {
     currentSignerStream = nostrRepository.currentSignerStream.listen(
       (EventSigner? signer) {
         final metadata = nostrRepository.currentMetadata;
+
         if (!isClosed) {
           if (signer == null) {
             emit(state.copyWith(
@@ -147,12 +152,42 @@ class MainCubit extends Cubit<MainState> {
     }
   }
 
+  // Share intent
+  Future<void> initShareIntent() async {
+    final handler = ShareHandlerPlatform.instance;
+    final media = await handler.getInitialSharedMedia();
+
+    if (_shareIntentSub == null && media != null) {
+      lg.i('message2');
+      openReceivedShareIntent(media);
+    }
+
+    _shareIntentSub = handler.sharedMediaStream.listen((SharedMedia media) {
+      lg.i('message3');
+      openReceivedShareIntent(media);
+    });
+  }
+
+  void openReceivedShareIntent(SharedMedia media) {
+    showModalBottomSheet(
+      context: context,
+      elevation: 0,
+      builder: (_) {
+        return ReceivedShareIntent(media: media);
+      },
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    );
+  }
+
   // Deep linking
   Future<void> initUniLinks() async {
     final appLinks = AppLinks();
     final initial = await appLinks.getLatestLinkString();
 
-    if (_sub == null && initial != null) {
+    if (_deepLinksSub == null && initial != null) {
       if (!initial.startsWith('nostr+walletconnect') &&
           !initial.contains('yakihonne.com/wallet/alby')) {
         forwardView(
@@ -163,7 +198,7 @@ class MainCubit extends Cubit<MainState> {
       }
     }
 
-    _sub = appLinks.uriLinkStream.listen(
+    _deepLinksSub = appLinks.uriLinkStream.listen(
       (Uri uri) => _handleUriLink(uri),
       onError: (err) => Logger().i(err),
     );
@@ -223,14 +258,9 @@ class MainCubit extends Cubit<MainState> {
       } else {
         await handleNaddrFromNip05(url: uriString);
       }
-    } else if (uriString.contains('yakihonne.com/video')) {
-      if (nostrUri.startsWith('naddr')) {
-        await _handleVideoLink(nostrUri);
-      } else {
-        await handleNaddrFromNip05(url: uriString);
-      }
     } else if (uriString.contains('yakihonne.com/r/discover/') ||
-        uriString.contains('yakihonne.com/r/note/')) {
+        uriString.contains('yakihonne.com/r/notes/') ||
+        uriString.contains('yakihonne.com/r/content/')) {
       final uri = Uri.parse(uriString);
       final relay = uri.queryParameters['r'];
 
@@ -252,10 +282,10 @@ class MainCubit extends Cubit<MainState> {
   }) async {
     final splits = url.split('/');
 
-    if (splits.length >= 4) {
+    if (splits.length >= 6) {
       final identifier = splits.last;
       final nip05 = splits[splits.length - 2];
-      final type = splits[splits.length - 3];
+      final type = splits[splits.length - 4];
 
       final pubkey = await metadataCubit.getNip05Pubkey(nip05);
 
@@ -783,7 +813,8 @@ class MainCubit extends Cubit<MainState> {
     currentSignerStream.cancel();
     homeViewSubcription.cancel();
     connectivityStream.cancel();
-    _sub?.cancel();
+    _deepLinksSub?.cancel();
+    _shareIntentSub?.cancel();
     return super.close();
   }
 }

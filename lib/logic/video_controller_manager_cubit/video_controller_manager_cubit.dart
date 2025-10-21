@@ -30,6 +30,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     String url,
     String id, {
     bool autoPlay = false,
+    bool isNetwork = true,
     bool? removeControls,
   }) async {
     if (state.videoControllers[url] != null) {
@@ -44,8 +45,16 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     }
 
     try {
-      final videoController = VideoPlayerController.networkUrl(Uri.parse(url));
-      await videoController.initialize();
+      VideoPlayerController videoController;
+
+      if (isNetwork) {
+        videoController = VideoPlayerController.networkUrl(Uri.parse(url));
+        await videoController.initialize();
+      } else {
+        final file = File(url);
+        videoController = VideoPlayerController.file(file);
+        await videoController.initialize();
+      }
 
       final videoControllers =
           Map<String, VideoPlayerController>.from(state.videoControllers);

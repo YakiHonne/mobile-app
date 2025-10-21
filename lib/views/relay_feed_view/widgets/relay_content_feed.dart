@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -91,21 +90,31 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
               footer: const RefresherClassicFooter(),
               onLoading: () => buildRelayFeed.call(context, true),
               onRefresh: () => buildRelayFeed.call(context, false),
-              child: ScrollShadow(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
+              child: NestedScrollView(
+                controller: scrollController,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
                     if (relayInfoCubit.state.relayInfos[relay] != null)
                       _relayBox(context),
                     _appbar(context),
-                    if (state.onLoading)
-                      const SliverToBoxAdapter(child: ContentPlaceholder())
-                    else
-                      const ContentList(),
-                  ],
-                ),
+                  ];
+                },
+                body: state.onLoading
+                    ? const ContentPlaceholder()
+                    : const ContentList(),
               ),
+              // ScrollShadow(
+              //   color: Theme.of(context).scaffoldBackgroundColor,
+              //   child: CustomScrollView(
+              //     controller: scrollController,
+              //     slivers: [
+              //       if (state.onLoading)
+              //         const SliverToBoxAdapter(child: ContentPlaceholder())
+              //       else
+              //         const ContentList(),
+              //     ],
+              //   ),
+              // ),
             );
           },
         );
@@ -202,12 +211,10 @@ class ContentList extends StatelessWidget {
         final content = state.content;
 
         if (content.isEmpty) {
-          return SliverToBoxAdapter(
-            child: EmptyList(
-              description: context.t.noResultsNoFilterMessage,
-              icon: LogosIcons.logoMarkWhite,
-              title: context.t.noResults,
-            ),
+          return EmptyList(
+            description: context.t.noResultsNoFilterMessage,
+            icon: LogosIcons.logoMarkWhite,
+            title: context.t.noResults,
           );
         }
 
@@ -220,10 +227,10 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  SliverPadding _itemsList(List<BaseEventModel> content) {
-    return SliverPadding(
+  Widget _itemsList(List<BaseEventModel> content) {
+    return Padding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
-      sliver: SliverList.separated(
+      child: ListView.separated(
         itemCount: content.length,
         separatorBuilder: (context, index) => const Divider(
           height: kDefaultPadding,
@@ -232,106 +239,102 @@ class ContentList extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = content[index];
 
-          return getItem(item);
+          return getItem(item, context);
         },
       ),
     );
   }
 
-  SliverPadding _itemsGrid(List<BaseEventModel> content) {
-    return SliverPadding(
+  Widget _itemsGrid(List<BaseEventModel> content) {
+    return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: kDefaultPadding / 2,
       ),
-      sliver: SliverMasonryGrid.count(
+      child: MasonryGridView.count(
         crossAxisCount: 2,
-        childCount: content.length,
+        itemCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
         mainAxisSpacing: kDefaultPadding / 2,
         itemBuilder: (context, index) {
           final item = content[index];
 
-          return getItem(item);
+          return getItem(item, context);
         },
       ),
     );
   }
 
-  Widget getItem(BaseEventModel item) {
-    return BlocBuilder<RelayFeedCubit, RelayFeedState>(
-      builder: (context, state) {
-        if (item is Article) {
-          return MutedUserProvider(
-            pubkey: item.pubkey,
-            child: (isMuted) => ArticleContainer(
-              article: item,
-              highlightedTag: '',
-              isMuted: isMuted,
-              isBookmarked: false,
-              onClicked: () {
-                Navigator.pushNamed(
-                  context,
-                  ArticleView.routeName,
-                  arguments: item,
-                );
-              },
-              isFollowing: contactListCubit.contacts.contains(item.pubkey),
-            ),
-          );
-        } else if (item is VideoModel) {
-          final video = item;
+  Widget getItem(BaseEventModel item, BuildContext context) {
+    if (item is Article) {
+      return MutedUserProvider(
+        pubkey: item.pubkey,
+        child: (isMuted) => ArticleContainer(
+          article: item,
+          highlightedTag: '',
+          isMuted: isMuted,
+          isBookmarked: false,
+          onClicked: () {
+            Navigator.pushNamed(
+              context,
+              ArticleView.routeName,
+              arguments: item,
+            );
+          },
+          isFollowing: contactListCubit.contacts.contains(item.pubkey),
+        ),
+      );
+    } else if (item is VideoModel) {
+      final video = item;
 
-          return MutedUserProvider(
-            pubkey: item.pubkey,
-            child: (isMuted) => VideoCommonContainer(
-              isBookmarked: false,
-              isMuted: isMuted,
-              isFollowing: contactListCubit.contacts.contains(video.pubkey),
-              video: video,
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  video.isHorizontal
-                      ? HorizontalVideoView.routeName
-                      : VerticalVideoView.routeName,
-                  arguments: [video],
-                );
-              },
-            ),
-          );
-        } else if (item is Curation) {
-          final curation = item;
+      return MutedUserProvider(
+        pubkey: item.pubkey,
+        child: (isMuted) => VideoCommonContainer(
+          isBookmarked: false,
+          isMuted: isMuted,
+          isFollowing: contactListCubit.contacts.contains(video.pubkey),
+          video: video,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              video.isHorizontal
+                  ? HorizontalVideoView.routeName
+                  : VerticalVideoView.routeName,
+              arguments: [video],
+            );
+          },
+        ),
+      );
+    } else if (item is Curation) {
+      final curation = item;
 
-          return MutedUserProvider(
-            pubkey: item.pubkey,
-            child: (isMuted) => CurationContainer(
-              padding: 0,
-              isProfileAccessible: true,
-              isBookmarked: false,
-              isMuted: isMuted,
-              isFollowing: contactListCubit.contacts.contains(curation.pubkey),
-              curation: curation,
-              onClicked: () {
-                YNavigator.pushPage(
-                  context,
-                  (context) => CurationView(curation: curation),
-                );
-              },
-            ),
-          );
-        } else if (item is DetailedNoteModel) {
-          return DetailedNoteContainer(
-            key: ValueKey(item.id),
-            note: item,
-            isMain: false,
-            addLine: false,
-            enableReply: true,
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
-    );
+      return MutedUserProvider(
+        pubkey: item.pubkey,
+        child: (isMuted) => CurationContainer(
+          padding: 0,
+          isProfileAccessible: true,
+          isBookmarked: false,
+          isMuted: isMuted,
+          isFollowing: contactListCubit.contacts.contains(curation.pubkey),
+          curation: curation,
+          onClicked: () {
+            YNavigator.pushPage(
+              context,
+              (context) => CurationView(curation: curation),
+            );
+          },
+        ),
+      );
+    } else if (item is DetailedNoteModel) {
+      return DetailedNoteContainer(
+        key: ValueKey(item.id),
+        note: item,
+        isMain: false,
+        addLine: false,
+        enableReply: true,
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   List<dynamic> getFilteredContent(

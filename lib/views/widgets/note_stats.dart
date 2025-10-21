@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -153,17 +154,20 @@ class NoteStats extends HookWidget {
                       Expanded(
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: [
-                            _reactButton(selfReaction, reactions),
-                            const SizedBox(width: kDefaultPadding / 2),
-                            _replyButton(context, selfReply, replies),
-                            const SizedBox(width: kDefaultPadding / 2),
-                            _repostButton(context, reposts, selfRepost),
-                            const SizedBox(width: kDefaultPadding / 2),
-                            _quoteButton(selfQuote, context, quotes),
-                            const SizedBox(width: kDefaultPadding / 2),
-                            _zapButton(selfZaps, zappers, zapsData),
-                          ],
+                          children: buildActionButtons(
+                            context: context,
+                            reactions: reactions,
+                            selfReaction: selfReaction,
+                            replies: replies,
+                            selfReply: selfReply,
+                            reposts: reposts,
+                            selfRepost: selfRepost,
+                            quotes: quotes,
+                            selfQuote: selfQuote,
+                            zappers: zappers,
+                            zapsData: zapsData,
+                            selfZaps: selfZaps,
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -207,6 +211,49 @@ class NoteStats extends HookWidget {
         },
       ),
     );
+  }
+
+  List<Widget> buildActionButtons({
+    required BuildContext context,
+    required dynamic reactions,
+    required dynamic selfReaction,
+    required dynamic replies,
+    required dynamic selfReply,
+    required dynamic reposts,
+    required dynamic selfRepost,
+    required dynamic quotes,
+    required dynamic selfQuote,
+    required dynamic zappers,
+    required dynamic zapsData,
+    required dynamic selfZaps,
+  }) {
+    final actions =
+        nostrRepository.currentAppCustomization?.actionsArrangement ??
+            defaultActionsArrangement;
+
+    return actions.entries
+        .where(
+          (action) => action.value,
+        )
+        .map((action) {
+          switch (action.key) {
+            case 'reactions':
+              return _reactButton(selfReaction, reactions);
+            case 'replies':
+              return _replyButton(context, selfReply, replies);
+            case 'reposts':
+              return _repostButton(context, reposts, selfRepost);
+            case 'quotes':
+              return _quoteButton(selfQuote, context, quotes);
+            case 'zaps':
+              return _zapButton(selfZaps, zappers, zapsData);
+            default:
+              return const SizedBox.shrink();
+          }
+        })
+        .expand(
+            (widget) => [widget, const SizedBox(width: kDefaultPadding / 3)])
+        .toList();
   }
 
   ZapButton _zapButton(selfZaps, zappers, zapsData) {
@@ -525,13 +572,20 @@ class ZappersRow extends StatelessWidget {
             _zapAmount(amount, context),
             if (message.isNotEmpty)
               Flexible(
-                child: Text(
-                  message,
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        height: 1,
-                      ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                child: ScrollShadow(
+                  color: Theme.of(context).cardColor,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            height: 1,
+                          ),
+                      overflow: TextOverflow.visible,
+                      softWrap: true,
+                      maxLines: 1,
+                    ),
+                  ),
                 ),
               ),
             _pulldownButton(context, metadata),
@@ -1488,6 +1542,7 @@ class DetailedNoteContainer extends HookWidget {
             onClicked: click,
             pubkey: note.pubkey,
             text: noteContent.value.trim(),
+            enableHidingMedia: true,
             style: noRender
                 ? Theme.of(context).textTheme.labelLarge
                 : Theme.of(context).textTheme.bodyMedium,
@@ -1577,6 +1632,7 @@ class DetailedNoteContainer extends HookWidget {
               key: ValueKey(note.id),
               onClicked: click,
               text: noteContent.value.trim(),
+              enableHidingMedia: true,
               pubkey: note.pubkey,
               style: Theme.of(context).textTheme.bodyMedium,
               isMainNote: isMain,

@@ -67,6 +67,7 @@ class LocalDatabaseRepository {
   static const String _relays = 'relays';
   static const String _messagingNip = 'messaging_nip';
   static const String _dmsDrafts = 'dms_drafts';
+  static const String _loadLocalRemoteSignerDm = 'load_local_remote_signer_dm';
   static const String _giftWrapNewestDateTime = 'gift_wrap_newest_date_time';
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
   static const String _unsentEvents = 'unsent_events';
@@ -577,6 +578,20 @@ class LocalDatabaseRepository {
 
   Future<void> deleteDmsHistoryOlderUntil(String pubkey) async {
     await prefs.remove('$pubkey-$_dmHistoryOldestUntil');
+  }
+
+  /// Load local remote signer DMs
+  bool? getLoadLocalRemoteSignerDmStatus(String pubkey) {
+    return _getPrefsData<bool>('$pubkey-$_loadLocalRemoteSignerDm');
+  }
+
+  Future<void> setLoadLocaleRemoteSignerDmStatus(
+      String pubkey, bool status) async {
+    await _setPrefsData('$pubkey-$_loadLocalRemoteSignerDm', status);
+  }
+
+  Future<void> deleteLoadLocaleRemoteSignerDmStatus(String pubkey) async {
+    await prefs.remove('$pubkey-$_loadLocalRemoteSignerDm');
   }
 
   /// Gift Wrap Management

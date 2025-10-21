@@ -93,7 +93,8 @@ class DmsView extends HookWidget {
           tabController: tabController,
           scrollController: scrollController,
         ),
-        if (canSign()) _FloatingNewDmButton(),
+        if (canSign() && currentSigner is! RemoteEventSigner)
+          _FloatingNewDmButton(),
       ],
     );
   }
@@ -135,59 +136,69 @@ class _DmsTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (currentSigner is RemoteEventSigner) {
-      return const NoMessagesWidget();
-    }
+    return BlocBuilder<DmsCubit, DmsState>(
+      buildWhen: (previous, current) =>
+          previous.dmDataState != current.dmDataState,
+      builder: (context, state) {
+        if (state.dmDataState == DmDataState.disabled) {
+          return const NoMessagesWidget();
+        } else if (state.dmDataState == DmDataState.canBeLoaded) {
+          return const LoadDmsWidget();
+        }
 
-    return DefaultTabController(
-      length: 3,
-      child: NestedScrollView(
-        controller: scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          _DmsAppBar(
-            textController: textController,
-            tabController: tabController,
-          ),
-          BlocBuilder<DmsCubit, DmsState>(
-            builder: (context, state) {
-              if (state.isLoadingHistory) {
-                return SliverToBoxAdapter(
-                  child: Align(
-                    child: Column(
-                      key: const ValueKey('loading_history'),
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: kDefaultPadding / 4,
-                      children: [
-                        Text(
-                          context.t.loadingChatHistory,
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
+        return DefaultTabController(
+          length: 3,
+          child: NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              _DmsAppBar(
+                textController: textController,
+                tabController: tabController,
+              ),
+              BlocBuilder<DmsCubit, DmsState>(
+                builder: (context, state) {
+                  if (state.isLoadingHistory) {
+                    return SliverToBoxAdapter(
+                      child: Align(
+                        child: Column(
+                          key: const ValueKey('loading_history'),
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: kDefaultPadding / 4,
+                          children: [
+                            Text(
+                              context.t.loadingChatHistory,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
                                     fontWeight: FontWeight.w500,
                                     color: Theme.of(context).highlightColor,
                                     height: 1,
                                   ),
+                            ),
+                            RepaintBoundary(
+                              child: SizedBox(
+                                width: 50.w,
+                                child: const AnimatedPulseLine(),
+                              ),
+                            ),
+                          ],
                         ),
-                        RepaintBoundary(
-                          child: SizedBox(
-                            width: 50.w,
-                            child: const AnimatedPulseLine(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              } else {
-                return const SliverToBoxAdapter();
-              }
-            },
-          )
-        ],
-        body: _DmsTabBarView(
-          textController: textController,
-          tabController: tabController,
-        ),
-      ),
+                      ),
+                    );
+                  } else {
+                    return const SliverToBoxAdapter();
+                  }
+                },
+              )
+            ],
+            body: _DmsTabBarView(
+              textController: textController,
+              tabController: tabController,
+            ),
+          ),
+        );
+      },
     );
   }
 }

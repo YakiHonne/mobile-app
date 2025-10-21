@@ -20,6 +20,7 @@ import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
 import '../../settings_view/settings_view.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/data_providers.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
@@ -514,47 +515,50 @@ class MainViewDrawer extends HookWidget {
           return GestureDetector(
             onTap: f,
             behavior: HitTestBehavior.translucent,
-            child: Row(
-              children: [
-                ProfilePicture2(
-                  size: 45,
-                  image: state.image,
-                  pubkey: state.pubKey,
-                  padding: 0,
-                  strokeWidth: 0,
-                  strokeColor: kTransparent,
-                  onClicked: f,
-                ),
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              nostrRepository.currentMetadata.getName(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                            ),
-                            Nip05Component(
-                              metadata: nostrRepository.currentMetadata,
-                              removeSpace: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+            child: MetadataProvider(
+              pubkey: state.pubKey,
+              child: (metadata, isNip05) => Row(
+                children: [
+                  ProfilePicture2(
+                    size: 45,
+                    image: metadata.picture,
+                    pubkey: metadata.pubkey,
+                    padding: 0,
+                    strokeWidth: 0,
+                    strokeColor: kTransparent,
+                    onClicked: f,
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: kDefaultPadding / 2,
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                metadata.getName(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                              ),
+                              Nip05Component(
+                                metadata: metadata,
+                                removeSpace: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

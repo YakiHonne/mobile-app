@@ -381,6 +381,8 @@ class ImageDisplayer extends StatelessWidget {
           aspectRatio: 16 / 9,
           child: GalleryImageView(
             media: {link: UrlType.image},
+            invertColor: false,
+            isHidden: false,
             seperatorColor: Theme.of(context).primaryColorLight,
             width: MediaQuery.of(context).size.width,
             imageDecoration: const BoxDecoration(
@@ -504,11 +506,13 @@ class RegularVideoPlayer extends StatefulWidget {
   const RegularVideoPlayer({
     super.key,
     required this.link,
+    this.isNetwork = true,
     this.removeControls,
     this.autoPlay,
   });
 
   final String link;
+  final bool isNetwork;
   final bool? removeControls;
   final bool? autoPlay;
 
@@ -531,6 +535,7 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
       _ownerId,
       autoPlay: widget.autoPlay ?? false,
       removeControls: widget.removeControls,
+      isNetwork: widget.isNetwork,
     );
   }
 

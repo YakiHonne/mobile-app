@@ -386,6 +386,8 @@ class CurationContentView extends StatelessWidget {
                       aspectRatio: 16 / 9,
                       child: MediaImage(
                         url: curation.image,
+                        isHidden: false,
+                        invertColor: false,
                       ),
                     );
                   },

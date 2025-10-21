@@ -13,6 +13,7 @@ class AppCustomization {
   bool showShareBox;
   bool useSingleColumnFeed;
   bool enableProfilePreview;
+  bool hideNonFollowingMedia;
   bool collapsedNote;
   bool openPromptedUrl;
   bool enablePushNotification;
@@ -23,6 +24,7 @@ class AppCustomization {
   bool notifFollowings;
   bool notifPrivateMessage;
   String writingContentType;
+  Map<String, bool> actionsArrangement;
   Map<String, bool> leadingFeedCustomization;
 
   AppCustomization({
@@ -43,8 +45,10 @@ class AppCustomization {
     this.notifReposts = true,
     this.notifZaps = true,
     this.openPromptedUrl = true,
+    this.hideNonFollowingMedia = true,
     this.notifFollowings = true,
     this.writingContentType = 'note',
+    this.actionsArrangement = defaultActionsArrangement,
     this.leadingFeedCustomization = defaultLeadingFeedCustomization,
   });
 
@@ -63,12 +67,14 @@ class AppCustomization {
       'writingContentType': writingContentType,
       'collapsedNote': collapsedNote,
       'openPromptedUrl': openPromptedUrl,
+      'hideNonFollowingMedia': hideNonFollowingMedia,
       'enablePushNotification': enablePushNotification,
       'notifPrivateMessage': notifPrivateMessage,
       'notifMentionsReplies': notifMentionsReplies,
       'notifReactions': notifReactions,
       'notifReposts': notifReposts,
       'notifZaps': notifZaps,
+      'actionsArrangement': actionsArrangement,
       'notifFollowings': notifFollowings,
     };
   }
@@ -86,6 +92,7 @@ class AppCustomization {
       collapsedNote: map['collapsedNote'] as bool? ?? true,
       showShareBox: map['showShareBox'] as bool? ?? true,
       openPromptedUrl: map['openPromptedUrl'] as bool? ?? true,
+      hideNonFollowingMedia: map['hideNonFollowingMedia'] as bool? ?? true,
       notifMentionsReplies: map['notifMentionsReplies'] as bool? ?? true,
       notifReactions: map['notifReactions'] as bool? ?? true,
       notifReposts: map['notifReposts'] as bool? ?? true,
@@ -98,6 +105,11 @@ class AppCustomization {
       leadingFeedCustomization: Map<String, bool>.from(
         map['leadingFeedCustomization'] as Map<String, dynamic>,
       ),
+      actionsArrangement: map['actionsArrangement'] is List
+          ? defaultActionsArrangement
+          : Map<String, bool>.from(
+              map['actionsArrangement'] as Map<String, dynamic>,
+            ),
     );
   }
 

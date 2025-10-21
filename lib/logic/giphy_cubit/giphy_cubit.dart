@@ -22,6 +22,7 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
     laterTimeMS = 600;
   }
 
+  final int limit = 20;
   final client = GiphyClient(apiKey: dotenv.env['GIPHY_KEY']!);
 
   Future<void> initView() async {
@@ -69,6 +70,77 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
     }
   }
 
+  Future<void> loadMore(GiphyType giphyType) async {
+    const int limit = 20;
+
+    try {
+      if (giphyType == GiphyType.gifs) {
+        if (state.isLoadingMoreGifs || state.gifsNoMoreData) {
+          return;
+        }
+
+        emit(state.copyWith(isLoadingMoreGifs: true));
+
+        final res = await client.trending(
+          limit: limit,
+          offset: state.gifsOffset + limit,
+          type: GiphyType.gifs.name,
+        );
+
+        final data = res.data ?? [];
+
+        if (data.isEmpty) {
+          emit(state.copyWith(
+            isLoadingMoreGifs: false,
+            gifsNoMoreData: true,
+          ));
+          return;
+        }
+
+        emit(state.copyWith(
+          gifs: [...state.gifs, ...data],
+          gifsOffset: state.gifsOffset + limit,
+          isLoadingMoreGifs: false,
+        ));
+      } else {
+        if (state.isLoadingMoreStickers || state.stickersNoMoreData) {
+          return;
+        }
+
+        emit(state.copyWith(isLoadingMoreStickers: true));
+
+        final res = await client.trending(
+          limit: limit,
+          offset: state.stickersOffset + limit,
+          type: GiphyType.stickers.name,
+        );
+
+        final data = res.data ?? [];
+
+        if (data.isEmpty) {
+          emit(state.copyWith(
+            isLoadingMoreStickers: false,
+            stickersNoMoreData: true,
+          ));
+          return;
+        }
+
+        emit(state.copyWith(
+          stickers: [...state.stickers, ...data],
+          stickersOffset: state.stickersOffset + limit,
+          isLoadingMoreStickers: false,
+        ));
+      }
+    } catch (_) {
+      if (!isClosed) {
+        emit(state.copyWith(
+          isLoadingMoreGifs: false,
+          isLoadingMoreStickers: false,
+        ));
+      }
+    }
+  }
+
   Future<void> startSearch({
     required GiphyType giphyType,
     required String text,
@@ -78,6 +150,7 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
         search(giphyType: giphyType, text: text);
       },
       () {},
+      timer: 1000,
     );
   }
 

@@ -236,7 +236,7 @@ class _QrCodeViewState extends State<QrCodeView> with RouteAware {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       final res = scanData.code;
-      lg.i(res);
+
       if (res != null && res.isNotEmpty) {
         if (context.mounted) {
           if (res.toLowerCase().startsWith('lnbc')) {

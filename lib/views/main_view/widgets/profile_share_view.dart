@@ -164,9 +164,6 @@ class ProfileShareView extends HookWidget {
             eyeShape: QrEyeShape.circle,
             color: Theme.of(context).primaryColorDark,
           ),
-          embeddedImage: const AssetImage(
-            Images.logo,
-          ),
         ),
       ),
     );
@@ -735,9 +732,6 @@ class CurrentUserQrCode extends StatelessWidget {
           eyeStyle: QrEyeStyle(
             eyeShape: QrEyeShape.circle,
             color: Theme.of(context).primaryColorDark,
-          ),
-          embeddedImage: const AssetImage(
-            Images.logo,
           ),
         ),
       ),

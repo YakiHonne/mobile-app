@@ -52,6 +52,7 @@ class NostrDataRepository {
   Map<String, AppCustomization> appCustomizations = {};
   Map<String, RemoteEventSigner> remoteSigners = {};
   Map<String, dynamic> previewCache = {};
+  Map<String, String> blurHash = {};
   Map<String, int> defaultZapAmounts = {};
   Map<String, String> defaultReactions = {};
   Map<String, BookmarkListModel> bookmarksLists = {};
@@ -137,6 +138,18 @@ class NostrDataRepository {
   Stream<Set<String>> get mutesStream => mutesController.stream;
 
   // =============================================================================
+  // Mute list
+  // =============================================================================
+
+  void setMuteList(Set<String> mutes, {bool updateNotifications = true}) {
+    this.mutes = mutes;
+    mutesController.add(this.mutes);
+
+    if (updateNotifications) {
+      notificationsCubit.cleanAndSubscribe();
+    }
+  }
+  // =============================================================================
   // FILTER STATUS
   // =============================================================================
 
@@ -149,19 +162,6 @@ class NostrDataRepository {
     localDatabaseRepository.setFilterStatus(fs: filterStatus);
   }
 
-  // =============================================================================
-  // WOT (WEB OF TRUST) FUNCTIONALITY
-  // =============================================================================
-
-  void handleMuted(String pubkey) {
-    if (mutes.contains(pubkey)) {
-      mutes.remove(pubkey);
-      mutesController.add(mutes);
-    } else {
-      mutes.add(pubkey);
-      mutesController.add(mutes);
-    }
-  }
   // =============================================================================
   // WOT (WEB OF TRUST) FUNCTIONALITY
   // =============================================================================
@@ -885,10 +885,9 @@ class NostrDataRepository {
                 mutes.add(tag);
                 muteListAdditionalData.add([tag]);
               }
-
-              mutesController.add(nostrRepository.mutes);
             }
 
+            mutesController.add(mutes);
             nc.db.saveEvent(event);
           }
         } else if (event.kind == EventKind.INTEREST_SET) {
@@ -933,17 +932,16 @@ class NostrDataRepository {
     pointsManagementCubit.logout();
     isUsingExternalSigner = false;
     pendingFlashNews.clear();
-    mutesController.add(mutes);
     userTopics.clear();
     gptMessages.clear();
     userTopicsController.add([]);
     contactListCubit.clear();
-    notificationsCubit.clear();
     dmsCubit.clear();
     interests = [];
     currentMetadata = Metadata.empty();
     appSettingsManagerCubit.reset();
     relayInfoCubit.clear();
+    await notificationsCubit.clear();
 
     currentUserRelayList = UserRelayList(
       pubkey: currentSigner?.getPublicKey() ?? '',

@@ -394,10 +394,7 @@ class NoteRepliesList extends HookWidget {
           type: NoteRelatedEventsType.replies,
         );
 
-        replies.value = evs
-            .where((e) => !nostrRepository.mutes.contains(e.pubkey))
-            .map(DetailedNoteModel.fromEvent)
-            .toList();
+        replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
       },
       [selectedNote],
     );

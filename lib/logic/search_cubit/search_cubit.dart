@@ -48,34 +48,27 @@ class SearchCubit extends Cubit<SearchState> {
             refresh: false,
             interests: nostrRepository.interests,
             relayConnectivity: RelayConnectivity.idle,
+            isSearching: false,
           ),
         ) {
     bookmarksSubscription = nostrRepository.bookmarksStream.listen(
       (Map<String, BookmarkListModel> bookmarks) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              bookmarks: getBookmarkIds(bookmarks).toSet(),
-            ),
-          );
-        }
+        _emit(
+          bookmarks: getBookmarkIds(bookmarks).toSet(),
+        );
       },
     );
 
     muteListSubscription = nostrRepository.mutesStream.listen(
       (Set<String> mutes) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              content: state.content
-                  .where((t) => t is Article && !mutes.contains(t.pubkey))
-                  .toList(),
-              authors: state.authors
-                  .where((Metadata author) => !mutes.contains(author.pubkey))
-                  .toList(),
-            ),
-          );
-        }
+        _emit(
+          content: state.content
+              .where((t) => t is Article && !mutes.contains(t.pubkey))
+              .toList(),
+          authors: state.authors
+              .where((Metadata author) => !mutes.contains(author.pubkey))
+              .toList(),
+        );
       },
     );
   }
@@ -112,7 +105,7 @@ class SearchCubit extends Cubit<SearchState> {
               search.startsWith('nprofile') ||
               search.length == 64) {
             try {
-              final String newSearch = search.startsWith('nostr:')
+              final newSearch = search.startsWith('nostr:')
                   ? search.split('nostr:').last
                   : search;
 
@@ -146,62 +139,52 @@ class SearchCubit extends Cubit<SearchState> {
                 : search;
             forwardNeventView(newSearch);
           } else {
-            if (!isClosed) {
-              emit(
-                state.copyWith(
-                  profileSearchResult: SearchResultsType.loading,
-                  contentSearchResult: SearchResultsType.loading,
-                  content: <dynamic>[],
-                  authors: <Metadata>[],
-                ),
-              );
-            }
+            _emit(
+              profileSearchResult: SearchResultsType.loading,
+              contentSearchResult: SearchResultsType.loading,
+              content: <dynamic>[],
+              authors: <Metadata>[],
+            );
 
             getUsers(search);
             getContent(search);
           }
         } else {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                content: <dynamic>[],
-                authors: <Metadata>[],
-                contentSearchResult: SearchResultsType.noSearch,
-                profileSearchResult: SearchResultsType.noSearch,
-                search: '',
-                relayConnectivity: RelayConnectivity.idle,
-              ),
-            );
-          }
+          _emit(
+            content: <dynamic>[],
+            authors: <Metadata>[],
+            contentSearchResult: SearchResultsType.noSearch,
+            profileSearchResult: SearchResultsType.noSearch,
+            search: '',
+            relayConnectivity: RelayConnectivity.idle,
+          );
         }
       },
     );
   }
 
   Future<void> checkForRelay(String search) async {
-    emit(
-      state.copyWith(
-        relayConnectivity: RelayConnectivity.idle,
-      ),
+    _emit(
+      relayConnectivity: RelayConnectivity.idle,
     );
 
     if (search.contains('.')) {
-      emit(state.copyWith(relayConnectivity: RelayConnectivity.searching));
+      _emit(relayConnectivity: RelayConnectivity.searching);
       final relay = relayRegExp.hasMatch(search) ? search : 'wss://$search';
 
       final res = await nc.checkRelayConnectivity(relay);
 
-      emit(
-        state.copyWith(
-          relayConnectivity:
-              res ? RelayConnectivity.found : RelayConnectivity.notFound,
-          search: res ? relay : '',
-        ),
+      _emit(
+        relayConnectivity:
+            res ? RelayConnectivity.found : RelayConnectivity.notFound,
+        search: res ? relay : '',
       );
     }
   }
 
   void getContent(String search) {
+    _emit(isSearching: true);
+
     final List<dynamic> currentContent = List<dynamic>.from(state.content);
 
     final searchTag =
@@ -222,28 +205,24 @@ class SearchCubit extends Cubit<SearchState> {
         final List<dynamic> updatedContent = List<dynamic>.from(currentContent);
         updatedContent.addAll(content);
 
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              content: updatedContent,
-              contentSearchResult: SearchResultsType.content,
-            ),
-          );
-        }
+        _emit(
+          content: updatedContent,
+          contentSearchResult: SearchResultsType.content,
+          isSearching: false,
+        );
       },
       onDone: () {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              contentSearchResult: SearchResultsType.content,
-            ),
-          );
-        }
+        _emit(
+          contentSearchResult: SearchResultsType.content,
+          isSearching: false,
+        );
       },
     );
   }
 
   Future<void> forwardNeventView(String nostrUri) async {
+    _emit(isSearching: true);
+
     try {
       final Map<String, dynamic> nostrDecode =
           Nip19.decodeShareableEntity(nostrUri);
@@ -301,9 +280,13 @@ class SearchCubit extends Cubit<SearchState> {
         context.t.errorDecodingData.capitalizeFirst(),
       );
     }
+
+    _emit(isSearching: false);
   }
 
   Future<void> forwardNoteView(String note) async {
+    _emit(isSearching: true);
+
     try {
       final String decodedNote = Nip19.decodeNote(note);
 
@@ -331,9 +314,13 @@ class SearchCubit extends Cubit<SearchState> {
         context.t.errorDecodingData.capitalizeFirst(),
       );
     }
+
+    _emit(isSearching: false);
   }
 
   Future<void> forwardNaddrView(String naddr) async {
+    _emit(isSearching: true);
+
     try {
       final Map<String, dynamic> decodedNaddr =
           Nip19.decodeShareableEntity(naddr);
@@ -435,20 +422,18 @@ class SearchCubit extends Cubit<SearchState> {
         context.t.errorDecodingData.capitalizeFirst(),
       );
     }
+
+    _emit(isSearching: false);
   }
 
   Future<void> updateInterest(String interest) async {
     final isAdded = await nostrRepository.setInterest(interest.toLowerCase());
 
     if (isAdded) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            refresh: !state.refresh,
-            interests: nostrRepository.interests,
-          ),
-        );
-      }
+      _emit(
+        refresh: !state.refresh,
+        interests: nostrRepository.interests,
+      );
     }
   }
 
@@ -505,6 +490,8 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   Future<void> getUsers(String search) async {
+    _emit(isSearching: true);
+
     try {
       List<Metadata> searchedUsers =
           (await metadataCubit.searchCacheMetadatasFromContactList(
@@ -531,22 +518,16 @@ class SearchCubit extends Cubit<SearchState> {
         ...orderMetadataByScore(metadatas: filteredLocal, match: search)
       ];
 
-      if (!isClosed) {
-        final cached = orderMetadataByScore(
-          metadatas: searchedUsers
-              .where((Metadata author) => !isUserMuted(author.pubkey))
-              .toList(),
-          match: search,
-        );
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              authors: cached,
-              profileSearchResult: SearchResultsType.content,
-            ),
-          );
-        }
-      }
+      final cached = orderMetadataByScore(
+        metadatas: searchedUsers
+            .where((Metadata author) => !isUserMuted(author.pubkey))
+            .toList(),
+        match: search,
+      );
+      _emit(
+        authors: cached,
+        profileSearchResult: SearchResultsType.content,
+      );
 
       final users = await HttpFunctionsRepository.getUsers(search);
 
@@ -565,16 +546,44 @@ class SearchCubit extends Cubit<SearchState> {
 
       final total = orderMetadataByScore(match: search, metadatas: newList);
 
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            authors: total,
-            profileSearchResult: SearchResultsType.content,
-          ),
-        );
-      }
+      _emit(
+        authors: total,
+        profileSearchResult: SearchResultsType.content,
+      );
     } catch (e) {
       Logger().i(e);
+    }
+
+    _emit(isSearching: false);
+  }
+
+  void _emit({
+    List<dynamic>? content,
+    List<Metadata>? authors,
+    String? search,
+    bool? isSearching,
+    SearchResultsType? contentSearchResult,
+    SearchResultsType? profileSearchResult,
+    Set<String>? bookmarks,
+    List<String>? interests,
+    List<String>? mutes,
+    RelayConnectivity? relayConnectivity,
+    bool? refresh,
+  }) {
+    if (!isClosed) {
+      emit(state.copyWith(
+        content: content,
+        authors: authors,
+        search: search,
+        isSearching: isSearching,
+        contentSearchResult: contentSearchResult,
+        profileSearchResult: profileSearchResult,
+        bookmarks: bookmarks,
+        interests: interests,
+        mutes: mutes,
+        relayConnectivity: relayConnectivity,
+        refresh: refresh,
+      ));
     }
   }
 

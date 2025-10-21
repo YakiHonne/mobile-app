@@ -736,7 +736,6 @@ class ShareQrCode extends HookWidget {
         eyeShape: QrEyeShape.circle,
         color: color,
       ),
-      embeddedImage: const AssetImage(Images.logo),
     );
   }
 }

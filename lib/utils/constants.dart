@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.1+158';
+const String appVersion = 'v1.9.2+163';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -25,6 +25,7 @@ const pointsSystemUrl = 'https://www.yakihonne.com/points-system';
 const walletsUrl = 'https://wallet.yakihonne.com/api/wallets';
 const swtUrl = 'https://swt.yakihonne.com';
 const playgroundUrl = 'https://yakihonne.com/sw-playground';
+const imgProxy = 'https://imgproxy.yakihonne.com';
 const reposUrl =
     'https://github.com/search?q=topic%3Asmart-widget+org%3AYakiHonne&type=Repositories';
 const docsUrl = 'https://yakihonne.com/docs/sw/intro';
@@ -62,6 +63,7 @@ const kYellowSide = Color(0xfffcd452);
 const kGreen = Color(0xff00C04D);
 const kGreenSide = Color(0xffF2FDF6);
 const kBlue = Color(0xff504DFF);
+const kNavyBlue = Color(0xff1d9bf0);
 const kBlueSide = Color(0xffF6F6FF);
 
 const kMainColorSide = Color(0xffFFFAF3);
@@ -103,6 +105,8 @@ const defaultZapamount = 21;
 
 //**  paddings
 const cacheMaxSize = 2048;
+
+const mentionToken = '‡';
 
 //** containers
 final containerBorder = OutlineInputBorder(
@@ -162,6 +166,10 @@ const availableLocales = {
   'th': {
     'name': 'ไทย',
     'icon': FeatureIcons.flagTh,
+  },
+  'hi': {
+    'name': 'हिन्दी',
+    'icon': FeatureIcons.flagInd,
   },
 };
 
@@ -261,6 +269,14 @@ const randomPfps = [
   RandomPfps.randomPfp9,
   RandomPfps.randomPfp10,
 ];
+
+const defaultActionsArrangement = {
+  'reactions': true,
+  'replies': true,
+  'reposts': true,
+  'quotes': true,
+  'zaps': true,
+};
 
 const profileImages = [
   'https://yakihonne.s3.ap-east-1.amazonaws.com/profilePicPlaceholder/grid_0.png',

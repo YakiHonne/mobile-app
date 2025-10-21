@@ -18,6 +18,8 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
             showRelatedContent: true,
             useSingleColumnFeed: false,
             collapseNote: true,
+            hideNonFollowedMedia: true,
+            actionsArrangement: defaultActionsArrangement,
           ),
         ) {
     init();
@@ -36,6 +38,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
     }
 
     final c = nostrRepository.currentAppCustomization!;
+
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -46,6 +49,8 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
           showRelatedContent: c.showRelatedContent,
           useSingleColumnFeed: c.useSingleColumnFeed,
           collapseNote: c.collapsedNote,
+          actionsArrangement: c.actionsArrangement,
+          hideNonFollowedMedia: c.hideNonFollowingMedia,
         ),
       );
     }
@@ -90,6 +95,17 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       emit(
         state.copyWith(
           useSingleColumnFeed: !state.useSingleColumnFeed,
+        ),
+      );
+    }
+  }
+
+  void setHideNonFollowedMedia() {
+    isUpdated = true;
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          hideNonFollowedMedia: !state.hideNonFollowedMedia,
         ),
       );
     }
@@ -148,19 +164,35 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
     }
   }
 
-  void setFeedTypesNewOrder(int oldIndex, int newIndex) {
+  void setActionsNewOrder(int oldIndex, int newIndex) {
     isUpdated = true;
-    final entries =
-        List<MapEntry<CommonFeedTypes, bool>>.from(state.feedTypes.entries);
+    final actions =
+        List<MapEntry<String, bool>>.from(state.actionsArrangement.entries);
 
-    final video = entries.removeAt(oldIndex);
-    entries.insert(newIndex, video);
-    final newFeed = {for (final entry in entries) entry.key: entry.value};
+    final action = actions.removeAt(oldIndex);
+    actions.insert(newIndex, action);
 
     if (!isClosed) {
       emit(
         state.copyWith(
-          feedTypes: newFeed,
+          actionsArrangement: Map.fromEntries(actions),
+          refresh: !state.refresh,
+        ),
+      );
+    }
+  }
+
+  void setActionStatus(String action) {
+    lg.i(action);
+
+    final actions = Map<String, bool>.from(state.actionsArrangement);
+
+    actions[action] = !actions[action]!;
+
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          actionsArrangement: actions,
           refresh: !state.refresh,
         ),
       );
@@ -177,6 +209,8 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       c.showSuggestedInterests = state.showInterests;
       c.useSingleColumnFeed = state.useSingleColumnFeed;
       c.collapsedNote = state.collapseNote;
+      c.actionsArrangement = state.actionsArrangement;
+      c.hideNonFollowingMedia = state.hideNonFollowedMedia;
 
       c.leadingFeedCustomization = {
         for (final c in state.feedTypes.entries) c.key.name: c.value

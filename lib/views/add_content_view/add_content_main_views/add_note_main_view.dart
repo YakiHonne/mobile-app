@@ -22,11 +22,13 @@ class AddNoteMainView extends HookWidget {
     this.isMention,
     this.content,
     this.onSuccess,
+    this.selectedExternalRelay,
   });
 
   final BaseEventModel? attachedEvent;
   final String? content;
   final bool? isMention;
+  final String? selectedExternalRelay;
   final Function(Event)? onSuccess;
 
   @override
@@ -47,8 +49,11 @@ class AddNoteMainView extends HookWidget {
       () {
         if (controller.text.isEmpty) {
           try {
-            controller.setText =
-                content ?? nostrRepository.userDrafts?.noteDraft ?? '';
+            final text =
+                (content ?? nostrRepository.userDrafts?.noteDraft ?? '')
+                    .replaceAll('‡', '');
+
+            controller.setText = text;
           } catch (e) {
             lg.i(e);
           }
@@ -75,6 +80,7 @@ class AddNoteMainView extends HookWidget {
                       signer: signer.value,
                       isPaid: isPaid.value,
                       useSourceRelay: useSourceRelay.value,
+                      selectedExternalRelay: selectedExternalRelay,
                       onPaymentProcess: () {
                         showModalBottomSheet(
                           context: context,
@@ -187,7 +193,7 @@ class AddNoteMainView extends HookWidget {
     final text = controller.text;
     final mentions = controller.mentions;
 
-    return text.replaceAllMapped('‡', (match) {
+    final rawContent = text.replaceAllMapped(mentionToken, (match) {
       final removedMention = mentions.removeAt(0);
 
       if (removedMention is Metadata) {
@@ -196,5 +202,7 @@ class AddNoteMainView extends HookWidget {
         return '#$removedMention';
       }
     });
+
+    return rawContent;
   }
 }

@@ -10,6 +10,7 @@ import 'package:dio/dio.dart' as dioinstance;
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
@@ -40,6 +41,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
         );
 
   final dio = Dio();
+  final blurredImages = <String, String>{};
 
   static const Map<MediaServer, ServerConfig> _serverConfigs = {
     MediaServer.nostrBuild: ServerConfig(
@@ -719,9 +721,11 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       );
 
       return _parseUploadResponse(response, true);
+    } on DioException catch (e) {
+      lg.e(e.stackTrace);
+      return {};
     } catch (e, stack) {
       lg.i(stack);
-      lg.e('Error uploading to Blossom server $serverUrl: $e');
       return {};
     }
   }
@@ -812,14 +816,27 @@ class MediaServersCubit extends Cubit<MediaServersState> {
 
   Map<String, String> _parseUploadResponse(Response response, bool isBlossom) {
     if (isBlossom) {
-      if (response.data['url'] == null) {
+      String? url;
+      String? type;
+
+      if (response.data.runtimeType == String) {
+        final decode = jsonDecode(response.data);
+
+        url = decode['url'];
+        type = decode['type'];
+      } else {
+        url = response.data['url'];
+        type = response.data['type'];
+      }
+
+      if (url == null) {
         _showError('File could not be uploaded');
         return {};
       }
 
       return {
-        'url': response.data['url'],
-        if (response.data['type'] != null) 'm': response.data['type'],
+        'url': url,
+        if (type != null) 'm': type,
       };
     } else {
       if (response.data['status'] != 'success') {
@@ -865,4 +882,102 @@ class MediaServersCubit extends Cubit<MediaServersState> {
 
   String getUploadServerPath(String uploadServer) =>
       _getServerConfig(uploadServer).uploadPath;
+
+  /// Compute imgproxy signature over `salt + path` using hex KEY/SALT.
+  String generateImgProxySignature({
+    required String key,
+    required String salt,
+    required String path,
+  }) {
+    // Decode hex key and salt to bytes
+    final keyBytes = _hexToBytes(key);
+    final saltBytes = _hexToBytes(salt);
+
+    // Create HMAC-SHA256 instance with the key
+    final hmac = Hmac(sha256, keyBytes);
+
+    // Combine salt and path
+    final message = saltBytes + utf8.encode(path);
+
+    // Generate the digest
+    final digest = hmac.convert(message);
+
+    // Convert to base64url (URL-safe base64 without padding)
+    return base64Url.encode(digest.bytes).replaceAll('=', '');
+  }
+
+  /// Helper function to convert hex string to bytes
+  Uint8List _hexToBytes(String hex) {
+    // Remove any spaces or special characters
+    hex = hex.replaceAll(RegExp(r'[^0-9a-fA-F]'), '');
+
+    final length = hex.length;
+    final bytes = Uint8List(length ~/ 2);
+
+    for (var i = 0; i < length; i += 2) {
+      bytes[i ~/ 2] = int.parse(hex.substring(i, i + 2), radix: 16);
+    }
+
+    return bytes;
+  }
+
+  /// Helper to encode base64url without padding
+  String _b64UrlNoPad(List<int> bytes) {
+    return base64Url.encode(bytes).replaceAll('=', '');
+  }
+
+  /// Build a path that uses the *plain* source URL (no encoding).
+  String buildPlainPath(String options, String sourceUrl, {String? outExt}) {
+    var path = '/$options/plain/$sourceUrl';
+    if (outExt != null && outExt.isNotEmpty) {
+      path += '.$outExt';
+    }
+    return path;
+  }
+
+  /// Build a path that uses the *base64url-encoded* source URL.
+  /// (Avoids escaping issues. Add .<ext> to force output format if desired.)
+  String buildEncodedPath(String options, String sourceUrl, {String? outExt}) {
+    final encSrc = _b64UrlNoPad(utf8.encode(sourceUrl));
+    var path = '/$options/$encSrc';
+    if (outExt != null && outExt.isNotEmpty) {
+      path += '.$outExt';
+    }
+    return path;
+  }
+
+  /// Produce a full signed URL.
+  String makeSignedUrl({
+    required String sourceUrl, // The original image URL
+    String options = 'bl:30/q:50', // Processing options
+    String? outExt, // Optional output extension
+    bool useEncoded = false, // Whether to use encoded or plain URL
+  }) {
+    final current = blurredImages[sourceUrl];
+
+    if (current != null) {
+      return current;
+    }
+
+    final keyHex = dotenv.env['IMGPROXY_KEY']!;
+    final saltHex = dotenv.env['IMGPROXY_SALT']!;
+
+    // Build the path first
+    final path = useEncoded
+        ? buildEncodedPath(options, sourceUrl, outExt: outExt)
+        : buildPlainPath(options, sourceUrl, outExt: outExt);
+
+    // Generate signature for the path
+    final sig = generateImgProxySignature(
+      key: keyHex,
+      salt: saltHex,
+      path: path,
+    );
+
+    // Build final URL: baseUrl/signature/path
+    final url = '$imgProxy/$sig$path';
+    blurredImages[sourceUrl] = url;
+
+    return url;
+  }
 }

@@ -134,7 +134,6 @@ lib/
 - **UI Components**: `flutter_svg`, `lottie`, `cached_network_image`
 - **Media**: `video_player`, `chewie`, `just_audio`, `image_picker`
 - **Storage**: `flutter_secure_storage`, `shared_preferences`
-- **Firebase**: `firebase_core`, `cloud_firestore`, `cloud_functions`
 - **Localization**: `flutter_localizations`, `slang`
 - **Crypto**: `bip340`, `crypto`, `aescryptojs`
 - **Error Tracking**: `sentry_flutter`
@@ -157,14 +156,6 @@ This project uses Shorebird for over-the-air updates. Configuration is in `shore
 ### Sentry (Error Tracking)
 
 Error tracking is configured in `sentry.properties`. Make sure to set up your Sentry DSN.
-
-### Firebase
-
-Firebase services are configured in `firebase.json` for:
-
-- Cloud Firestore
-- Cloud Functions
-- Hosting
 
 ## 🌍 Localization
 

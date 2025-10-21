@@ -77,7 +77,7 @@ class Article extends Equatable implements BaseEventModel {
         summary = tag[1];
       } else if (tag.first == 'title' && tag.length > 1) {
         title = tag[1];
-      } else if (tag.first == 'zap' && tag.length > 1) {
+      } else if (tag.first == 'zap' && tag.length > 3) {
         zaps.add(
           ZapSplit(pubkey: tag[1], percentage: int.tryParse(tag[3]) ?? 0),
         );

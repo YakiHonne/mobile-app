@@ -196,7 +196,7 @@ class PdmCommonActions {
         id: item.identifier,
       );
     } else {
-      throw ArgumentError('Unsupported item type: ${item.runtimeType}');
+      return;
     }
 
     RenderBox? box;

@@ -463,6 +463,17 @@ bool isReplaceable(int? kind) {
       kind == EventKind.SMART_WIDGET_ENH;
 }
 
+bool isSupportedEvent(int? kind) {
+  return kind == EventKind.LONG_FORM ||
+      kind == EventKind.CURATION_ARTICLES ||
+      kind == EventKind.CURATION_VIDEOS ||
+      kind == EventKind.SMART_WIDGET_ENH ||
+      kind == EventKind.TEXT_NOTE ||
+      kind == EventKind.VIDEO_HORIZONTAL ||
+      kind == EventKind.VIDEO_VERTICAL ||
+      kind == EventKind.POLL;
+}
+
 Future<String> externalShearableLink({
   required int kind,
   required String pubkey,
@@ -562,8 +573,14 @@ Future<String> createShareableLink(
 
   if (isReplaceable) {
     if (emailRegExp.hasMatch(m.nip05) && useDefault) {
-      shareableLink =
-          '${m.nip05}/${urlRegExp.hasMatch(id) ? Uri.encodeComponent(id) : id}';
+      if (kind == EventKind.CURATION_ARTICLES ||
+          kind == EventKind.CURATION_VIDEOS) {
+        shareableLink =
+            '${kind == EventKind.CURATION_ARTICLES ? 'a' : 'v'}/${m.nip05}/${urlRegExp.hasMatch(id) ? Uri.encodeComponent(id) : id}';
+      } else {
+        shareableLink =
+            's/${m.nip05}/${urlRegExp.hasMatch(id) ? Uri.encodeComponent(id) : id}';
+      }
     } else {
       shareableLink = Nip19.encodeShareableEntity(
         'naddr',
@@ -600,6 +617,7 @@ class ParsedText extends HookWidget {
     this.inverseNoteColor,
     this.isMainNote,
     this.enableTruncation = true,
+    this.enableHidingMedia = false,
     this.isDm = false,
     this.isNotification,
     this.scrollPhysics,
@@ -616,6 +634,7 @@ class ParsedText extends HookWidget {
   final bool? isScreenshot;
   final bool? disableNoteParsing;
   final bool? disableUrlParsing;
+  final bool? enableHidingMedia;
   final bool? inverseNoteColor;
   final bool? isMainNote;
   final bool? isNotification;
@@ -648,6 +667,10 @@ class ParsedText extends HookWidget {
         ),
       );
     }
+
+    final hideMedia = (enableHidingMedia ?? false) &&
+        pubkey != null &&
+        hideImageFromNonFollowing(pubkey!);
 
     final canTruncate = isNotification == null &&
         enableTruncation &&
@@ -698,6 +721,7 @@ class ParsedText extends HookWidget {
             disableUrlParsing: disableUrlParsing,
             isScreenshot: isScreenshot,
             scrollPhysics: scrollPhysics,
+            hideMedia: hideMedia,
             textDirection: intl.Bidi.detectRtlDirectionality(content.value)
                 ? TextDirection.rtl
                 : TextDirection.ltr,
@@ -838,6 +862,14 @@ void moveDown(List list, int index) {
     list[index] = list[index + 1];
     list[index + 1] = temp;
   }
+}
+
+bool hideImageFromNonFollowing(String pubkey) {
+  return canSign() &&
+      currentSigner!.getPublicKey() != pubkey &&
+      (nostrRepository.currentAppCustomization?.hideNonFollowingMedia ??
+          false) &&
+      !contactListCubit.contacts.contains(pubkey);
 }
 
 Color? getColorFromHex(String hexColor) {
@@ -1280,4 +1312,15 @@ bool hasMention({required String content, required String pubkey}) {
   } catch (e) {
     return false;
   }
+}
+
+String cleanUrl(String url) {
+  final uri = Uri.parse(url);
+  return Uri(
+    scheme: uri.scheme,
+    userInfo: uri.userInfo,
+    host: uri.host,
+    port: uri.hasPort ? uri.port : null,
+    path: uri.path,
+  ).toString();
 }

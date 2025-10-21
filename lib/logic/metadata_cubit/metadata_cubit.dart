@@ -1001,6 +1001,7 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
 
   Future<void> saveMetadata(Metadata metadata) async {
     await nc.db.saveMetadata(metadata);
+
     _updateMetadatasInState([metadata]);
   }
 
@@ -1239,6 +1240,10 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
     return metadata ?? Metadata.empty().copyWith(pubkey: pubkey);
   }
 
+  Metadata? getMemoryMetadata(String pubkey) {
+    return state.metadataCache[pubkey];
+  }
+
   Future<Metadata> getInstantMetadata(String pubkey) async {
     return (await getCachedMetadata(pubkey)) ??
         (await getMetadata(pubkey)) ??
@@ -1395,6 +1400,7 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
 
     for (final metadata in metadatas) {
       updatedCache[metadata.pubkey] = metadata;
+
       updatedPubkeys.add(metadata.pubkey);
       _accessTimes[metadata.pubkey] = Helpers.now;
 

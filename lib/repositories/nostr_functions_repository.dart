@@ -4375,8 +4375,7 @@ class NostrFunctionsRepository {
         newMuteList.add(pubkey);
       }
 
-      nostrRepository.mutes = newMuteList;
-      nostrRepository.mutesController.add(newMuteList);
+      nostrRepository.setMuteList(newMuteList);
       localDatabaseRepository.setLocalMutes(newMuteList.toList());
 
       return true;
@@ -4409,8 +4408,7 @@ class NostrFunctionsRepository {
       final isSuccessful = await sendEvent(event: event, setProgress: false);
 
       if (isSuccessful) {
-        nostrRepository.mutes = newMuteList;
-        nostrRepository.mutesController.add(newMuteList);
+        nostrRepository.setMuteList(newMuteList);
       }
 
       return isSuccessful;
