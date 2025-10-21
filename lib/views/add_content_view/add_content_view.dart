@@ -26,6 +26,7 @@ class AddContentView extends StatelessWidget {
     this.attachedEvent,
     this.isMention,
     this.onSuccess,
+    this.selectedExternalRelay,
     this.isCloning,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Add content view');
@@ -40,6 +41,7 @@ class AddContentView extends StatelessWidget {
   final AppContentType? contentType;
   final BaseEventModel? attachedEvent;
   final bool? isMention;
+  final String? selectedExternalRelay;
   final Function(Event)? onSuccess;
   final bool? isCloning;
 
@@ -72,6 +74,7 @@ class AddContentView extends StatelessWidget {
                   selectFirstSmartWidgetDraft: selectFirstSmartWidgetDraft,
                   curation: curation,
                   video: video,
+                  selectedExternalRelay: selectedExternalRelay,
                 ),
               ),
             ),

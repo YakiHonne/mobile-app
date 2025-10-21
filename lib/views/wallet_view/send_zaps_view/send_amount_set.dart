@@ -721,7 +721,6 @@ class SendAmountSet extends HookWidget {
         eyeShape: QrEyeShape.circle,
         color: Theme.of(context).primaryColorDark,
       ),
-      embeddedImage: const AssetImage(Images.logo),
     );
   }
 

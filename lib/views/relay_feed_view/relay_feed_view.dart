@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/utils/relay.dart';
 
 import '../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import '../../logic/relay_feed_cubit/relay_feed_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import '../add_content_view/add_content_view.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/dotted_container.dart';
 import 'widgets/relay_content_feed.dart';
@@ -35,6 +38,42 @@ class RelayFeedView extends StatelessWidget {
             ),
           ),
         ),
+        floatingActionButton: canSign()
+            ? Builder(
+                builder: (context) {
+                  return FloatingActionButton(
+                    backgroundColor: kMainColor,
+                    shape: const CircleBorder(),
+                    heroTag: 'content_creation',
+                    child: SvgPicture.asset(
+                      FeatureIcons.addRaw,
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        kWhite,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    onPressed: () {
+                      doIfCanSign(
+                        func: () {
+                          HapticFeedback.mediumImpact();
+                          YNavigator.pushPage(
+                            context,
+                            (_) => AddContentView(
+                              contentType: AppContentType.note,
+                              selectedExternalRelay:
+                                  context.read<RelayFeedCubit>().relay,
+                            ),
+                          );
+                        },
+                        context: context,
+                      );
+                    },
+                  );
+                },
+              )
+            : null,
         body: const RelayContentFeed(),
       ),
     );

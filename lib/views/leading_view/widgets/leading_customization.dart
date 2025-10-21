@@ -2,11 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/leading_cubit/customize_leading_cubit/customize_leading_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../settings_view/widgets/property_customization.dart';
+import '../../widgets/buttons_containers_widgets.dart';
+import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 
 class LeadingCustomization extends HookWidget {
@@ -16,6 +19,7 @@ class LeadingCustomization extends HookWidget {
   Widget build(BuildContext context) {
     final useBoxViewReply = useState(settingsCubit.useCompactReplies);
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isActionsExpanded = useState(false);
 
     return BlocProvider(
       create: (context) => CustomizeLeadingCubit(),
@@ -63,7 +67,8 @@ class LeadingCustomization extends HookWidget {
                       height: kDefaultPadding * 1.5,
                       thickness: 0.5,
                     ),
-                    _viewOptions(context, useBoxViewReply, isTablet, state),
+                    _viewOptions(context, useBoxViewReply, isTablet, state,
+                        isActionsExpanded),
                     const SizedBox(
                       height: kDefaultPadding,
                     ),
@@ -252,8 +257,12 @@ class LeadingCustomization extends HookWidget {
     );
   }
 
-  Column _viewOptions(BuildContext context, ValueNotifier<bool> useBoxViewReply,
-      bool isTablet, CustomizeLeadingState state) {
+  Column _viewOptions(
+      BuildContext context,
+      ValueNotifier<bool> useBoxViewReply,
+      bool isTablet,
+      CustomizeLeadingState state,
+      ValueNotifier<bool> isActionsExpanded) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: kDefaultPadding / 1.5,
@@ -360,8 +369,266 @@ class LeadingCustomization extends HookWidget {
             ),
           ],
         ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.t.hideNonFollowedMedia.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  Text(
+                    context.t.hideNonFollowedMediaDesc,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: state.hideNonFollowedMedia,
+                activeTrackColor: kMainColor,
+                onChanged: (isToggled) {
+                  context
+                      .read<CustomizeLeadingCubit>()
+                      .setHideNonFollowedMedia();
+                },
+              ),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.t.contentActionsOrder.capitalizeFirst(),
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      Text(
+                        context.t.contentActionsOrderDesc,
+                        style:
+                            Theme.of(context).textTheme.labelMedium!.copyWith(
+                                  color: Theme.of(context).highlightColor,
+                                ),
+                      ),
+                      const SizedBox(
+                        height: kDefaultPadding / 4,
+                      ),
+                      _actionsRow(state),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: kDefaultPadding / 4,
+                ),
+                CustomIconButton(
+                  onClicked: () {
+                    isActionsExpanded.value = !isActionsExpanded.value;
+                  },
+                  icon: isActionsExpanded.value
+                      ? FeatureIcons.arrowUp
+                      : FeatureIcons.arrowDown,
+                  size: 17,
+                  backgroundColor: kTransparent,
+                  vd: -2,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+            AnimatedCrossFade(
+              firstChild: _reorderableList(state, context),
+              secondChild: const SizedBox(
+                width: double.infinity,
+              ),
+              crossFadeState: isActionsExpanded.value
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: 300),
+            ),
+          ],
+        ),
       ],
     );
+  }
+
+  Builder _actionsRow(CustomizeLeadingState state) {
+    return Builder(
+      builder: (context) {
+        final list = state.actionsArrangement.entries
+            .where(
+              (e) => e.value,
+            )
+            .toList();
+
+        return SizedBox(
+          height: 22,
+          child: ScrollShadow(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: list.length,
+              separatorBuilder: (context, index) => const Center(
+                child: DotContainer(
+                  color: kMainColor,
+                  size: 4,
+                ),
+              ),
+              itemBuilder: (context, index) {
+                final action = list[index];
+                final name = getPostActionName(action.key, context);
+
+                return Text(
+                  name,
+                  style: Theme.of(context).textTheme.labelLarge,
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ReorderableListView _reorderableList(
+      CustomizeLeadingState state, BuildContext context) {
+    return ReorderableListView.builder(
+      primary: false,
+      shrinkWrap: true,
+      buildDefaultDragHandles: false,
+      itemBuilder: (context, index) {
+        final action = state.actionsArrangement.entries.toList()[index];
+        final name = getPostActionName(action.key, context);
+
+        return _actionContainer(action, context, index, name);
+      },
+      itemCount: defaultActionsArrangement.length,
+      onReorder: (oldIndex, newIndex) {
+        final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+
+        context
+            .read<CustomizeLeadingCubit>()
+            .setActionsNewOrder(oldIndex, index);
+      },
+    );
+  }
+
+  Container _actionContainer(MapEntry<String, bool> action,
+      BuildContext context, int index, String name) {
+    return Container(
+      key: ValueKey(action.key),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          kDefaultPadding / 2,
+        ),
+        color: Theme.of(context).cardColor,
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 0.5,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding / 2,
+        vertical: kDefaultPadding / 4,
+      ),
+      margin: const EdgeInsets.only(bottom: kDefaultPadding / 4),
+      child: ReorderableDragStartListener(
+        index: index,
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              getPostActionIcon(action.key, context),
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColorDark,
+                BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(
+              width: kDefaultPadding / 3,
+            ),
+            Expanded(
+              child: Text(
+                name,
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ),
+            Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: action.value,
+                activeTrackColor: kMainColor,
+                onChanged: (isToggled) {
+                  context
+                      .read<CustomizeLeadingCubit>()
+                      .setActionStatus(action.key);
+                },
+              ),
+            ),
+            const Icon(
+              Icons.drag_indicator_rounded,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String getPostActionName(String type, BuildContext context) {
+    String name = '';
+
+    switch (type) {
+      case 'reactions':
+        name = context.t.reactions.capitalizeFirst();
+      case 'replies':
+        name = context.t.replies.capitalizeFirst();
+      case 'reposts':
+        name = context.t.reposts.capitalizeFirst();
+      case 'zaps':
+        name = context.t.zaps.capitalizeFirst();
+      case 'quotes':
+        name = context.t.quotes.capitalizeFirst();
+    }
+
+    return name;
+  }
+
+  String getPostActionIcon(String type, BuildContext context) {
+    String icon = '';
+
+    switch (type) {
+      case 'reactions':
+        icon = FeatureIcons.heart;
+      case 'replies':
+        icon = FeatureIcons.comments;
+      case 'reposts':
+        icon = FeatureIcons.repost;
+      case 'zaps':
+        icon = FeatureIcons.zap;
+      case 'quotes':
+        icon = FeatureIcons.quote;
+    }
+
+    return icon;
   }
 }
 

@@ -42,6 +42,9 @@ class Images {
   static const String ai = 'assets/images/ai.png';
   static const String boxView = 'assets/images/box-view.png';
   static const String threadView = 'assets/images/thread-view.png';
+  static const String blurredImageWhite = 'assets/images/blur-white.png';
+  static const String blurredImageBlack = 'assets/images/blur-black.png';
+  static const String blur = 'assets/images/blur.png';
 }
 
 class FeatureIcons {
@@ -277,6 +280,7 @@ class FeatureIcons {
   static const String flagTh = 'assets/icons/features/flag-th.svg';
   static const String flagIt = 'assets/icons/features/flag-it.svg';
   static const String flagFr = 'assets/icons/features/flag-fr.svg';
+  static const String flagInd = 'assets/icons/features/flag-ind.svg';
   static const String download = 'assets/icons/features/download.svg';
   static const String export = 'assets/icons/features/export.svg';
   static const String github = 'assets/icons/features/github-logo.svg';

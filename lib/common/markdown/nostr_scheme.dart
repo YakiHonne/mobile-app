@@ -21,6 +21,7 @@ import '../../views/widgets/article_container.dart';
 import '../../views/widgets/common_thumbnail.dart';
 import '../../views/widgets/content_renderer/content_renderer.dart';
 import '../../views/widgets/data_providers.dart';
+import '../../views/widgets/note_container.dart';
 import '../../views/widgets/profile_picture.dart';
 import '../common_regex.dart';
 
@@ -630,31 +631,7 @@ class ArticleNote extends StatelessWidget {
           return Text(Nip19.encodeNote(noteId));
         }
 
-        return MetadataProvider(
-          pubkey: note.pubkey,
-          child: (metadata, nip05) {
-            return Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding / 2,
-                  vertical: kDefaultPadding / 2,
-                ),
-                margin:
-                    const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kDefaultPadding),
-                  color: Theme.of(context).cardColor,
-                ),
-                child: getView(
-                  note: note,
-                  metadata: metadata,
-                  context: context,
-                ),
-              ),
-            );
-          },
-        );
+        return NoteContainer(note: note);
       },
     );
   }

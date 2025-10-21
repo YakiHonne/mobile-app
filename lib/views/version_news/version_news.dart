@@ -254,21 +254,26 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Redesigned app bar and new themes: Black & Ivory.',
-  'Database-first architecture with offline mode.',
-  'Relay orbits for relays discoverability and management.',
-  'Nsec bunker integration.',
-  'New content box and updated video types.',
-  'Republishing & broadcasting of events integration.',
-  'Improved feed for large screens (single column).',
-  'Clickable relay URLs in notes.',
-  'Support for nostr scheme from other URLs.',
-  'Optimized performance, notifications, and mentions.',
-  'Default custom reactions added.',
-  'Optimized content sharing experience & newely added image sharing option.',
-  'Optimized fetching and searching.',
-  'Overall performance optimization.',
-  'General bug fixes and improvements,'
+  // New Features
+  'Receive share intent in-app',
+  'Rearrange action buttons',
+  'Add Hindi language',
+  'Blur images for non-followers',
+
+  // Improvements
+  'Updated URLs (/r/notes, /r/content)',
+  'Better GIF sizing',
+  'Loading indicator in search bar',
+  'Paginated transactions list',
+  'Added DM loader & empty feed placeholder',
+
+  // Fixes
+  'Resolved note display, zap split, and nostr URL issues',
+  'Fixed QR scanning, redeem controller, and shareable links',
+  'Fixed unfollow button, mentions, and nip05 handling',
+  'Improved notifications sync and stats loading with WoT',
+  'Fixed nsec bunker setup, article markdown, and Blossom upload',
+  'Reset search scroll position and made suggestions scrollable',
 ];
 
 const content = [

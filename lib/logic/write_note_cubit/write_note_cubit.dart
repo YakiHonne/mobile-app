@@ -72,6 +72,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     required EventSigner signer,
     required Function() onPaymentProcess,
     Map<String, dynamic>? replyContent,
+    String? selectedExternalRelay,
   }) async {
     toBeSubmittedEvent = null;
 
@@ -82,8 +83,10 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       return;
     }
 
-    final relay =
-        useSourceRelay ? appSettingsManagerCubit.getNoteSourceRelay() : null;
+    final relay = selectedExternalRelay ??
+        (useSourceRelay ? appSettingsManagerCubit.getNoteSourceRelay() : null);
+    lg.i(relay);
+
     String updatedContent = content;
     final pTags = getPtags(content);
 
@@ -154,7 +157,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     }
 
     final tags = [
-      if (relay != null) ['-'],
+      if (relay != null && useSourceRelay) ['-'],
       if (qTag != null) ['q', qTag],
       if (hasSmartWidget) ['l', 'smart-widget'],
       if (pTags.isNotEmpty) ...pTags.map((p) => ['p', p, '', 'mention']),

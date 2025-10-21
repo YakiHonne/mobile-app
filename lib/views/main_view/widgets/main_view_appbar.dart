@@ -15,6 +15,7 @@ import '../../wallet_view/widgets/transactions_list.dart';
 import '../../widgets/animated_components/animated_line.dart';
 import '../../widgets/animated_flip_counter.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/data_providers.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/unsent_events_view.dart';
 import 'app_bar_widgets.dart';
@@ -152,17 +153,20 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
           Scaffold.of(context).openDrawer();
         },
         child: currentSigner != null
-            ? ProfilePicture2(
-                size: 35,
-                image: state.image,
+            ? MetadataProvider(
+                child: (metadata, isNip05) => ProfilePicture2(
+                  size: 35,
+                  image: metadata.picture,
+                  pubkey: metadata.pubkey,
+                  padding: 0,
+                  strokeWidth: 0,
+                  strokeColor: kTransparent,
+                  onClicked: () {
+                    Scaffold.of(context).openDrawer();
+                    walletManagerCubit.getWalletBalanceInUSD();
+                  },
+                ),
                 pubkey: state.pubKey,
-                padding: 0,
-                strokeWidth: 0,
-                strokeColor: kTransparent,
-                onClicked: () {
-                  Scaffold.of(context).openDrawer();
-                  walletManagerCubit.getWalletBalanceInUSD();
-                },
               )
             : SvgPicture.asset(
                 FeatureIcons.menu,

@@ -734,11 +734,15 @@ class DmTextfieldBox extends StatelessWidget {
     replyId.value = null;
     replyPubkey.value = null;
     replyText.value = null;
-    scrollController.animateTo(
-      0.0,
-      duration: _scrollDuration,
-      curve: Curves.easeOut,
-    );
+
+    if ((dmsCubit.state.dmSessionDetails[pubkey]?.dmSession.length() ?? 0) >
+        0) {
+      scrollController.animateTo(
+        0.0,
+        duration: _scrollDuration,
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   // MARK: - Context Menu & Clipboard

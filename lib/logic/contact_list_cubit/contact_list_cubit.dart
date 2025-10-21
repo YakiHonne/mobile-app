@@ -69,13 +69,13 @@ class ContactListCubit extends Cubit<ContactListState> {
   }
 
   Future<void> removeContact(String contact) async {
-    await nc.publishRemoveContacts(
+    final contactList = await nc.publishRemoveContacts(
       [contact],
       currentUserRelayList.writes,
       currentSigner!,
     );
 
-    syncContacts();
+    contacts = contactList?.contacts ?? contacts;
 
     if (!isClosed) {
       emit(state.copyWith(refresh: !state.refresh));

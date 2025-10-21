@@ -848,43 +848,57 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   // TRANSACTIONS
   // =============================================================================
 
-  Future<void> getTransactions() async {
+  Future<void> getTransactions({bool isAdding = false}) async {
     if (state.selectedWalletId.isEmpty) {
       return;
     }
 
-    _setTransactionLoadingState();
+    _setTransactionLoadingState(isAdding);
 
     final selectedWallet = state.wallets[state.selectedWalletId];
 
     if (selectedWallet is NostrWalletConnectModel) {
-      await _getNwcTransactions(selectedWallet);
+      await _getNwcTransactions(selectedWallet, isAdding);
     } else if (selectedWallet is AlbyConnectModel) {
-      await _getAlbyTransactions(selectedWallet);
+      await _getAlbyTransactions(selectedWallet, isAdding);
     } else {
       _handleTransactionError();
     }
   }
 
-  void _setTransactionLoadingState() {
+  void _setTransactionLoadingState(bool isAdding) {
     if (!isClosed) {
-      emit(state.copyWith(
-        searchResultsType: SearchResultsType.loading,
-        transactions: <WalletTransactionModel>[],
-      ));
+      emit(
+        state.copyWith(
+          transactionsState:
+              isAdding ? UpdatingState.progress : UpdatingState.success,
+          isLoadingTransactions: !isAdding,
+          transactions: isAdding ? null : <WalletTransactionModel>[],
+        ),
+      );
     }
   }
 
-  Future<void> _getNwcTransactions(NostrWalletConnectModel wallet) async {
+  Future<void> _getNwcTransactions(
+      NostrWalletConnectModel wallet, bool isAdding) async {
+    int? last;
+
+    if (isAdding) {
+      last = state.transactions.isNotEmpty
+          ? state.transactions.last.createdAt.toSecondsSinceEpoch() - 1
+          : null;
+    }
+
     final data = await performNwcAction(
       jsonEncode({
         'method': NWC_TRANSACTIONS_LIST,
-        'params': {'limit': 10}
+        'params': {
+          'limit': 10,
+          if (last != null) 'until': last,
+        }
       }),
       wallet,
     );
-
-    lg.i(data);
 
     if (data['result'] != null &&
         ((data['result']['transactions'] as List?)?.isNotEmpty ?? false) &&
@@ -893,29 +907,58 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         data['result']['transactions'],
       );
 
-      _updateTransactionsState(transactions);
+      _updateTransactionsState(transactions, isAdding);
     } else {
-      _updateTransactionsState([]);
+      _updateTransactionsState([], isAdding);
     }
   }
 
-  Future<void> _getAlbyTransactions(AlbyConnectModel wallet) async {
+  Future<void> _getAlbyTransactions(
+      AlbyConnectModel wallet, bool isAdding) async {
     final token = await checkAlbyWalletBeforeRequest(albyConnectModel: wallet);
 
     if (token != null) {
-      final transactions =
-          await HttpFunctionsRepository.getAlbyTransactions(token: token);
-      _updateTransactionsState(transactions);
+      int? page;
+
+      if (isAdding) {
+        page = state.transactions.isNotEmpty
+            ? (state.transactions.length / 10).ceil()
+            : null;
+      }
+
+      final transactions = await HttpFunctionsRepository.getAlbyTransactions(
+        token: token,
+        page: page,
+      );
+
+      _updateTransactionsState(transactions, isAdding);
     } else {
-      _updateTransactionsState([]);
+      _updateTransactionsState([], isAdding);
     }
   }
 
-  void _updateTransactionsState(List<WalletTransactionModel> transactions) {
+  void _updateTransactionsState(
+    List<WalletTransactionModel> transactions,
+    bool isAdding,
+  ) {
+    List<WalletTransactionModel> tList = [];
+
+    if (isAdding) {
+      final previousTransactions = List<WalletTransactionModel>.from(
+        state.transactions,
+      );
+
+      tList = [...previousTransactions, ...transactions];
+    } else {
+      tList = transactions;
+    }
+
     if (!isClosed) {
       emit(state.copyWith(
-        transactions: transactions,
-        searchResultsType: SearchResultsType.content,
+        transactions: tList,
+        isLoadingTransactions: false,
+        transactionsState:
+            transactions.isEmpty ? UpdatingState.idle : UpdatingState.success,
       ));
     }
   }
@@ -923,7 +966,13 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   void _handleTransactionError() {
     BotToastUtils.showError(mainContext.t.errorUsingWallet.capitalizeFirst());
     if (!isClosed) {
-      emit(state.copyWith(searchResultsType: SearchResultsType.content));
+      emit(
+        state.copyWith(
+          transactionsState: UpdatingState.idle,
+          isLoadingTransactions: false,
+          transactions: [],
+        ),
+      );
     }
   }
 
@@ -2232,7 +2281,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         balance: -1,
         balanceInUSD: -1,
         transactions: <WalletTransactionModel>[],
-        searchResultsType: SearchResultsType.noSearch,
+        transactionsState: UpdatingState.success,
       ));
     }
   }

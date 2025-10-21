@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:override_text_scale_factor/override_text_scale_factor.dart';
@@ -28,6 +29,7 @@ import '../no_content_widgets.dart';
 import '../note_container.dart';
 import '../parsed_media_container.dart';
 import '../profile_picture.dart';
+import 'hidden_media_container.dart';
 import 'url_type_checker.dart';
 
 /// Callback for clicked link
@@ -61,6 +63,7 @@ class ContentRenderer extends HookWidget {
     this.disableUrlParsing,
     this.inverseNoteColor,
     this.useMouseRegion = true,
+    this.hideMedia,
     this.height,
   });
 
@@ -89,6 +92,7 @@ class ContentRenderer extends HookWidget {
   final bool? inverseNoteColor;
   final bool useMouseRegion;
   final double? height;
+  final bool? hideMedia;
 
   @override
   Widget build(BuildContext context) {
@@ -282,9 +286,12 @@ class ContentRenderer extends HookWidget {
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
         child: MediaContainer(
           media: mediaEntries,
+          hideMedia: hideMedia ?? false,
+          invertColor: inverseNoteColor ?? false,
         ),
       ),
     ));
+
     _addTrailingNewlineIfNeeded(spans, elements, index);
   }
 
@@ -345,7 +352,6 @@ class ContentRenderer extends HookWidget {
     return WidgetSpan(
       child: _OptimizedRelayContainer(
         relay: element.url,
-        element: element,
         onOpen: () => onOpen?.call(element),
         linkStyle: linkStyle,
       ),
@@ -423,6 +429,7 @@ class ContentRenderer extends HookWidget {
                 isReplaceable: false,
                 child: (event) => _buildNote(
                   event: event,
+                  context: context,
                   text: Nip19.encodeNote(noteId),
                   scrollPhysics: scrollPhysics,
                 ),
@@ -434,14 +441,12 @@ class ContentRenderer extends HookWidget {
   Widget _buildNote({
     Event? event,
     required String text,
+    required BuildContext context,
     DetailedNoteModel? model,
     ScrollPhysics? scrollPhysics,
   }) {
     if (event == null && model == null) {
-      return Text(
-        text,
-        style: linkStyle,
-      );
+      return _unsupportedEventContainer(context, text, true, isNote: true);
     }
 
     final note = model ?? DetailedNoteModel.fromEvent(event!);
@@ -461,6 +466,7 @@ class ContentRenderer extends HookWidget {
           vMargin: kDefaultPadding / 4,
           disableVisualParsing: true,
           scrollPhysics: scrollPhysics,
+          enableHidingMedia: hideMedia ?? true,
         );
       },
     );
@@ -518,16 +524,14 @@ class ContentRenderer extends HookWidget {
     required BuildContext context,
     Event? event,
     bool isMuted = false,
+    bool isEventSupported = true,
     Widget? noModelWidget,
   }) {
     final model = getBaseEventModel(event);
 
     if (model == null) {
       return noModelWidget ??
-          Text(
-            text,
-            style: linkStyle,
-          );
+          _unsupportedEventContainer(context, text, isEventSupported);
     }
 
     return MutedUserProvider(
@@ -549,7 +553,7 @@ class ContentRenderer extends HookWidget {
                     (_) => NoteView(note: model),
                   ),
                 )
-              : _buildNote(text: text, model: model);
+              : _buildNote(text: text, context: context, model: model);
         }
 
         if (model is PollModel) {
@@ -561,6 +565,97 @@ class ContentRenderer extends HookWidget {
 
         return ParsedMediaContainer(baseEventModel: model);
       },
+    );
+  }
+
+  Container _unsupportedEventContainer(
+    BuildContext context,
+    String text,
+    bool isEventSupported, {
+    bool isNote = false,
+  }) {
+    final textWidget = Text(
+      isEventSupported
+          ? isNote
+              ? context.t.noteLoading
+              : context.t.eventLoading
+          : context.t.unsupportedKind,
+      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            color: Theme.of(context).highlightColor,
+          ),
+    );
+
+    final widgets = <Widget>[];
+
+    if (isEventSupported) {
+      widgets.add(
+        Expanded(
+          child: Row(
+            children: [
+              Flexible(child: textWidget),
+              const SizedBox(
+                width: kDefaultPadding / 2,
+              ),
+              SpinKitCircle(
+                color: Theme.of(context).highlightColor,
+                size: 15,
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      widgets.add(
+        Expanded(
+          child: textWidget,
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          kDefaultPadding / 2,
+        ),
+        color: Theme.of(context).cardColor,
+        border: Border.all(
+          width: 0.5,
+          color: Theme.of(context).dividerColor,
+        ),
+      ),
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
+      child: Row(
+        spacing: kDefaultPadding / 4,
+        children: [
+          ...widgets,
+          CustomIconButton(
+            onClicked: () {
+              Clipboard.setData(
+                ClipboardData(
+                  text: text,
+                ),
+              );
+
+              BotToastUtils.showSuccess(context.t.idCopied);
+            },
+            icon: FeatureIcons.copy,
+            size: 15,
+            backgroundColor: kTransparent,
+            vd: -4,
+          ),
+          if (!isEventSupported)
+            CustomIconButton(
+              onClicked: () {
+                openWebPage(url: 'https://njump.me/$text');
+              },
+              icon: FeatureIcons.shareGlobal,
+              size: 15,
+              backgroundColor: kTransparent,
+              vd: -4,
+            ),
+        ],
+      ),
     );
   }
 
@@ -576,14 +671,12 @@ class ContentRenderer extends HookWidget {
     );
   }
 
-  TextSpan _buildOptimizedTagSpan(TagElement element, BuildContext context) {
-    return TextSpan(
-      text: element.text,
-      recognizer: _createTapGestureRecognizer(() => onOpen?.call(element)),
-      style: (style ?? Theme.of(context).textTheme.bodyMedium)?.copyWith(
-        fontWeight: FontWeight.w800,
-        height: 1,
-        fontStyle: FontStyle.italic,
+  InlineSpan _buildOptimizedTagSpan(TagElement element, BuildContext context) {
+    return WidgetSpan(
+      child: _OptimizedTagContainer(
+        tag: element.text,
+        onOpen: () => onOpen?.call(element),
+        linkStyle: linkStyle,
       ),
     );
   }
@@ -604,7 +697,9 @@ class ContentRenderer extends HookWidget {
       );
     }
 
-    if (audioUrlRegex.hasMatch(url)) {
+    final cu = cleanUrl(url);
+
+    if (audioUrlRegex.hasMatch(cu)) {
       return WidgetSpan(
         child: AudioDisplayer(
           key: ValueKey('audio_$url'),
@@ -614,7 +709,7 @@ class ContentRenderer extends HookWidget {
       );
     }
 
-    final last = url.split('/').last;
+    final last = cu.split('/').last;
 
     if (nostrSchemeRegex.hasMatch(last) &&
         (last.startsWith('nevent') ||
@@ -624,51 +719,57 @@ class ContentRenderer extends HookWidget {
       String id = '';
       bool isReplaceable = false;
       bool isProfile = false;
+      bool supportedEvent = true;
 
       if (last.startsWith('note')) {
         id = Nip19.decodeNote(last);
       } else {
         final decode = Nip19.decodeShareableEntity(last);
 
-        if (last.startsWith('naddr')) {
-          final hexCode = hex.decode(decode['special']);
-          id = String.fromCharCodes(hexCode);
-          isReplaceable = true;
-        } else if (last.startsWith('nprofile')) {
-          isProfile = true;
-          id = decode['special'] ?? '';
-        } else {
-          id = decode['special'] ?? '';
-          isReplaceable = false;
+        if (decode.isNotEmpty) {
+          if (last.startsWith('naddr')) {
+            final hexCode = hex.decode(decode['special']);
+            id = String.fromCharCodes(hexCode);
+            isReplaceable = true;
+            supportedEvent = isSupportedEvent(decode['kind']);
+          } else if (last.startsWith('nprofile')) {
+            isProfile = true;
+            id = decode['special'] ?? '';
+          } else {
+            id = decode['special'] ?? '';
+            isReplaceable = false;
+            supportedEvent = isSupportedEvent(decode['kind']);
+          }
+
+          return WidgetSpan(
+            child: isProfile
+                ? MetadataProvider(
+                    child: (metadata, n05) => OptimizedMetadataContainer(
+                      metadata: metadata,
+                      onOpen: () => onOpen?.call(element),
+                    ),
+                    pubkey: id,
+                  )
+                : SingleEventProvider(
+                    id: id,
+                    isReplaceable: isReplaceable,
+                    child: (event) {
+                      return getBaseEventWidget(
+                        text: '',
+                        context: context,
+                        event: event,
+                        isEventSupported: supportedEvent,
+                        noModelWidget: UrlPreviewContainer(
+                          key: ValueKey('url_$url'),
+                          url: url,
+                          inverseContainerColor: inverseNoteColor,
+                        ),
+                      );
+                    },
+                  ),
+          );
         }
       }
-
-      return WidgetSpan(
-        child: isProfile
-            ? MetadataProvider(
-                child: (metadata, n05) => OptimizedMetadataContainer(
-                  metadata: metadata,
-                  onOpen: () => onOpen?.call(element),
-                ),
-                pubkey: id,
-              )
-            : SingleEventProvider(
-                id: id,
-                isReplaceable: isReplaceable,
-                child: (event) {
-                  return getBaseEventWidget(
-                    text: '',
-                    context: context,
-                    event: event,
-                    noModelWidget: UrlPreviewContainer(
-                      key: ValueKey('url_$url'),
-                      url: url,
-                      inverseContainerColor: inverseNoteColor,
-                    ),
-                  );
-                },
-              ),
-      );
     }
 
     return WidgetSpan(
@@ -883,16 +984,76 @@ class _OptimizedNeventWidget extends StatelessWidget {
   }
 }
 
+class _OptimizedTagContainer extends StatelessWidget {
+  const _OptimizedTagContainer({
+    required this.tag,
+    required this.onOpen,
+    this.linkStyle,
+  });
+
+  final String tag;
+  final Function() onOpen;
+  final TextStyle? linkStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return OverrideTextScaleFactor(
+      child: RepaintBoundary(
+        child: GestureDetector(
+          onTap: onOpen,
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: kNavyBlue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(kDefaultPadding / 3),
+              border: Border.all(
+                width: 0.5,
+                color: kNavyBlue.withValues(
+                  alpha: 0.2,
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: kDefaultPadding / 4,
+              children: [
+                Flexible(
+                  child: Text(
+                    tag,
+                    style: linkStyle?.copyWith(
+                      color: kNavyBlue,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SvgPicture.asset(
+                  FeatureIcons.shareExternal,
+                  width: 12,
+                  height: 12,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _OptimizedRelayContainer extends StatelessWidget {
   const _OptimizedRelayContainer({
     required this.relay,
-    required this.element,
     required this.onOpen,
     this.linkStyle,
   });
 
   final String relay;
-  final RelayElement element;
   final Function() onOpen;
   final TextStyle? linkStyle;
 
@@ -1470,9 +1631,13 @@ class MediaContainer extends HookWidget {
   const MediaContainer({
     super.key,
     required this.media,
+    required this.hideMedia,
+    required this.invertColor,
   });
 
   final List<MapEntry<String, UrlType>> media;
+  final bool hideMedia;
+  final bool invertColor;
 
   @override
   Widget build(BuildContext context) {
@@ -1488,6 +1653,8 @@ class MediaContainer extends HookWidget {
               width: MediaQuery.of(context).size.width,
               onDownload: MediaUtils.shareImage,
               height: 180,
+              isHidden: hideMedia,
+              invertColor: invertColor,
             )
           : _buildSingleMedia(context),
     );
@@ -1506,7 +1673,11 @@ class MediaContainer extends HookWidget {
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
             ),
             constraints: BoxConstraints(maxHeight: 35.h),
-            child: MediaImage(url: mediaItem.key),
+            child: MediaImage(
+              url: mediaItem.key,
+              isHidden: hideMedia,
+              invertColor: invertColor,
+            ),
           )
         : CustomVideoPlayer(
             link: mediaItem.key,
@@ -1515,22 +1686,42 @@ class MediaContainer extends HookWidget {
   }
 }
 
-class MediaImage extends StatelessWidget {
-  const MediaImage({super.key, required this.url});
+class MediaImage extends HookWidget {
+  const MediaImage({
+    super.key,
+    required this.url,
+    required this.isHidden,
+    required this.invertColor,
+  });
 
   final String url;
+  final bool isHidden;
+  final bool invertColor;
 
   @override
   Widget build(BuildContext context) {
+    final hideImageStatus = useState(isHidden);
+
     return GestureDetector(
       onTap: () => _openGallery(context),
-      child: CommonThumbnail(
-        image: url,
-        placeholder: getRandomPlaceholder(input: url, isPfp: false),
-        height: 0,
-        radius: kDefaultPadding / 2,
-        isRound: true,
-        useDefaultNoMedia: false,
+      child: Stack(
+        children: [
+          CommonThumbnail(
+            image: url,
+            placeholder: getRandomPlaceholder(input: url, isPfp: false),
+            height: 0,
+            radius: kDefaultPadding / 2,
+            isRound: true,
+            useDefaultNoMedia: false,
+          ),
+          if (hideImageStatus.value)
+            HiddenMediaContainer(
+              hideImageStatus: hideImageStatus,
+              invertColor: invertColor,
+              includeMessage: true,
+              url: url,
+            ),
+        ],
       ),
     );
   }

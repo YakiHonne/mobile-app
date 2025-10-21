@@ -73,6 +73,7 @@ class ShareLightningAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    lg.i(lightningAddress);
     return PullDownButton(
       animationBuilder: (context, state, child) {
         return child;
@@ -113,9 +114,6 @@ class ShareLightningAddress extends StatelessWidget {
             eyeStyle: QrEyeStyle(
               eyeShape: QrEyeShape.circle,
               color: Theme.of(context).primaryColorDark,
-            ),
-            embeddedImage: const AssetImage(
-              Images.logo,
             ),
           ),
         ),

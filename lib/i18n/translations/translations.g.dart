@@ -3,10 +3,10 @@
 /// Source: lib/i18n
 /// To regenerate, run: `dart run slang`
 ///
-/// Locales: 9
-/// Strings: 11905 (1322 per locale)
+/// Locales: 10
+/// Strings: 13782 (1378 per locale)
 ///
-/// Built on 2025-10-02 at 03:53 UTC
+/// Built on 2025-10-20 at 06:31 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
@@ -20,6 +20,7 @@ export 'package:slang_flutter/slang_flutter.dart';
 import 'translations_ar.g.dart' deferred as l_ar;
 import 'translations_es.g.dart' deferred as l_es;
 import 'translations_fr.g.dart' deferred as l_fr;
+import 'translations_hi.g.dart' deferred as l_hi;
 import 'translations_it.g.dart' deferred as l_it;
 import 'translations_ja.g.dart' deferred as l_ja;
 import 'translations_pt.g.dart' deferred as l_pt;
@@ -38,6 +39,7 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 	ar(languageCode: 'ar'),
 	es(languageCode: 'es'),
 	fr(languageCode: 'fr'),
+	hi(languageCode: 'hi'),
 	it(languageCode: 'it'),
 	ja(languageCode: 'ja'),
 	pt(languageCode: 'pt'),
@@ -84,6 +86,13 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 			case AppLocale.fr:
 				await l_fr.loadLibrary();
 				return l_fr.TranslationsFr(
+					overrides: overrides,
+					cardinalResolver: cardinalResolver,
+					ordinalResolver: ordinalResolver,
+				);
+			case AppLocale.hi:
+				await l_hi.loadLibrary();
+				return l_hi.TranslationsHi(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
@@ -153,6 +162,12 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 				);
 			case AppLocale.fr:
 				return l_fr.TranslationsFr(
+					overrides: overrides,
+					cardinalResolver: cardinalResolver,
+					ordinalResolver: ordinalResolver,
+				);
+			case AppLocale.hi:
+				return l_hi.TranslationsHi(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,

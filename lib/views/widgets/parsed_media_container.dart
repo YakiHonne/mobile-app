@@ -312,16 +312,12 @@ class UrlPreviewContainer extends HookWidget {
         }
       }
 
-      if (nostrRepository.previewCache.containsKey(url)) {
-        updateState(nostrRepository.previewCache[url]);
-      } else {
-        PreviewQueueManager.instance.addRequest(
-          PreviewRequest(
-            url,
-            updateState,
-          ),
-        );
-      }
+      PreviewQueueManager.instance.addRequest(
+        QueueRequest(
+          url,
+          updateState,
+        ),
+      );
 
       return null; // No cleanup needed
     }, [url]);

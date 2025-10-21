@@ -56,20 +56,33 @@ class AppSourcesList extends HookWidget {
 
           if (sourceWidget != null) {
             widgets.add(sourceWidget);
-
-            // Insert RelayDiscoverList right after first Discover/Notes feed
-            if (!relayInserted &&
+            final canBeAdded = !relayInserted &&
                 (source is DiscoverCommunityFeed ||
-                    source is NotesCommunityFeed) &&
-                hasFavorite) {
+                    source is NotesCommunityFeed);
+            // Insert RelayDiscoverList right after first Discover/Notes feed
+            if (canBeAdded && hasFavorite) {
               widgets.add(
                 const Divider(
                   height: kDefaultPadding * 2,
                   thickness: 0.5,
                 ),
               );
+
               widgets.add(
                 RelaysDiscoverList(isDiscover: isDiscover),
+              );
+
+              relayInserted = true;
+            } else if (canBeAdded) {
+              widgets.add(
+                const Divider(
+                  height: kDefaultPadding * 2,
+                  thickness: 0.5,
+                ),
+              );
+
+              widgets.add(
+                const NoRelaysAvailable(),
               );
               relayInserted = true;
             }
@@ -85,7 +98,19 @@ class AppSourcesList extends HookWidget {
               thickness: 0.5,
             ),
           ]);
+        } else if (!relayInserted) {
+          widgets.add(
+            const Divider(
+              height: kDefaultPadding * 2,
+              thickness: 0.5,
+            ),
+          );
+
+          widgets.add(
+            const NoRelaysAvailable(),
+          );
         }
+
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -164,6 +189,88 @@ class AppSourcesList extends HookWidget {
         );
       },
       secondIcon: FeatureIcons.settings,
+    );
+  }
+}
+
+class NoRelaysAvailable extends StatelessWidget {
+  const NoRelaysAvailable({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: kDefaultPadding / 3,
+      children: [
+        Text(
+          context.t.relaysFeed,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: kMainColor,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
+            color: Theme.of(context).cardColor,
+            border: Border.all(
+              color: Theme.of(context).dividerColor,
+              width: 0.5,
+            ),
+          ),
+          width: double.infinity,
+          child: Column(
+            spacing: kDefaultPadding / 4,
+            children: [
+              Text(
+                context.t.relayFeedListEmpty,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              Text(
+                context.t.relayFeedListEmptyDesc,
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      color: Theme.of(context).highlightColor,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                onPressed: () {
+                  doIfCanSign(
+                    func: () {
+                      showModalBottomSheet(
+                        context: context,
+                        elevation: 0,
+                        builder: (_) {
+                          return const DiscoverSourcesSettings(
+                            isDiscover: false,
+                          );
+                        },
+                        isScrollControlled: true,
+                        useRootNavigator: true,
+                        useSafeArea: true,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                      );
+                    },
+                    context: context,
+                  );
+                },
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.comfortable,
+                ),
+                child: Text(
+                  context.t.addRelay,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -197,7 +197,6 @@ class SuggestedNotes extends StatelessWidget {
     return SizedBox(
       height: 145,
       child: ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         primary: false,
         scrollDirection: Axis.horizontal,

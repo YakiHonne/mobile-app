@@ -25,8 +25,7 @@ final indexMap = {
   MainViews.wallet: 2,
   MainViews.dms: 3,
   MainViews.notifications: 4,
-  MainViews.uncensoredNotes: 5,
-  MainViews.smartWidgets: 6,
+  MainViews.smartWidgets: 5,
 };
 
 class MainView extends HookWidget {

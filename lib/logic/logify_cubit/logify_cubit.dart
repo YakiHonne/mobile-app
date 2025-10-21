@@ -713,6 +713,7 @@ class LogifyCubit extends Cubit<LogifyState> {
       onAuth: (url, p1) => launchRemoteSignerAuth(
         url: url,
       ),
+      nc: nc,
     );
 
     if (signer != null) {
@@ -741,6 +742,7 @@ class LogifyCubit extends Cubit<LogifyState> {
       onAuth: (url, p1) => launchRemoteSignerAuth(
         url: url,
       ),
+      nc: nc,
     );
 
     if (signer != null) {
@@ -754,6 +756,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required Function() onSuccess,
   }) async {
     final pubkey = remoteSigner.publicKey;
+    remoteSigner.close();
 
     if (pubkey.isNotEmpty) {
       this.remoteSigner = remoteSigner;
@@ -783,10 +786,6 @@ class LogifyCubit extends Cubit<LogifyState> {
   }
 
   void offloadRemoteSigner() {
-    if (remoteSignerSubscriptionId != null) {
-      nc.closeSubscriptions(remoteSignerSubscriptionId!);
-    }
-
     remoteSigner = null;
     tempNC = null;
     tempB = null;

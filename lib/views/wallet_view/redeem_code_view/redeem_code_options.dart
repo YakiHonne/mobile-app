@@ -27,6 +27,12 @@ class RedeemCodeOptions extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final controller = useState<QRViewController?>(null);
 
+    useEffect(() {
+      return () {
+        controller.value?.dispose();
+      };
+    }, const []);
+
     return Column(
       children: [
         Text(

@@ -112,8 +112,7 @@ class PropertyCustomization extends HookWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
               children: [
                 const SizedBox(
                   height: kDefaultPadding / 2,

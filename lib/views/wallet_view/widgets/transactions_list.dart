@@ -1,26 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/article_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/classic_footer.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
 import '../wallet_view.dart';
 
-class TransactionsList extends HookWidget {
+class TransactionsList extends StatefulWidget {
   const TransactionsList({super.key});
+
+  @override
+  State<TransactionsList> createState() => _TransactionsListState();
+}
+
+class _TransactionsListState extends State<TransactionsList> {
+  final refreshController = RefreshController();
+
+  void onRefresh({required Function() onInit}) {
+    refreshController.resetNoData();
+    onInit.call();
+    refreshController.refreshCompleted();
+  }
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    walletManagerCubit.getTransactions();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
-
-    useMemoized(() {
-      walletManagerCubit.getTransactions();
-    });
 
     return Container(
       decoration: BoxDecoration(
@@ -35,20 +57,43 @@ class TransactionsList extends HookWidget {
         ),
       ),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.8,
+        initialChildSize: 0.9,
         minChildSize: 0.40,
-        maxChildSize: 0.8,
+        maxChildSize: 0.9,
         expand: false,
         builder: (context, scrollController) => Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 2,
           ),
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              _header(context),
-              _content(isTablet),
-            ],
+          child: BlocConsumer<WalletsManagerCubit, WalletsManagerState>(
+            listener: (context, state) {
+              if (state.transactionsState == UpdatingState.success) {
+                refreshController.loadComplete();
+              } else if (state.transactionsState == UpdatingState.idle) {
+                refreshController.loadNoData();
+              }
+            },
+            builder: (context, state) {
+              return SmartRefresher(
+                controller: refreshController,
+                scrollController: scrollController,
+                enablePullDown: false,
+                enablePullUp: true,
+                header: const MaterialClassicHeader(
+                  color: kMainColor,
+                ),
+                footer: const RefresherClassicFooter(),
+                onLoading: () =>
+                    walletManagerCubit.getTransactions(isAdding: true),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    _header(context),
+                    _content(isTablet),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -59,7 +104,7 @@ class TransactionsList extends HookWidget {
       bool isTablet) {
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, state) {
-        if (state.searchResultsType == SearchResultsType.loading) {
+        if (state.isLoadingTransactions) {
           return SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
@@ -73,7 +118,7 @@ class TransactionsList extends HookWidget {
               ),
             ),
           );
-        } else if (state.searchResultsType == SearchResultsType.content) {
+        } else {
           final ids = state.transactions;
 
           if (ids.isEmpty) {
@@ -91,13 +136,6 @@ class TransactionsList extends HookWidget {
               return _itemsList(state, ids);
             }
           }
-        } else {
-          return SliverToBoxAdapter(
-            child: Text(
-              context.t.selectWalletTransactions.capitalizeFirst(),
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
-          );
         }
       },
     );

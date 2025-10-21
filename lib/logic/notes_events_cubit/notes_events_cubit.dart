@@ -267,7 +267,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       return [];
     }
 
-    final Map<String, String> eventsData = await _getEventDataByType(
+    final eventsData = await _getEventDataByType(
       eventStats,
       type,
     );

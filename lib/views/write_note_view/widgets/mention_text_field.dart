@@ -133,17 +133,25 @@ class _ClipboardPasteMentionTextFieldState
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
       if (clipboardData?.text != null) {
-        final text = clipboardData!.text!;
+        var text = clipboardData!.text!;
+
+        // ✅ Only clean pasted content, not existing text
+        text = text.replaceAll('‡', ''); // block user pasting that char
+
         final selection = widget.controller.selection;
         final currentText = widget.controller.text;
 
+        // ✅ Only replace selected range (usually caret)
         final newText = currentText.replaceRange(
           selection.start,
           selection.end,
           text,
         );
 
+        // ✅ Do NOT clean `newText`, we already cleaned `text` above
         widget.controller.text = newText;
+
+        // ✅ Move caret correctly after paste
         widget.controller.selection = TextSelection.collapsed(
           offset: selection.start + text.length,
         );
@@ -188,6 +196,9 @@ class _ClipboardPasteMentionTextFieldState
           textDirection: textDirection,
           decoration: widget.decoration,
           contextMenuBuilder: _contextMenuBuilder,
+          inputFormatters: <TextInputFormatter>[
+            BlockUserTypedMarkerFormatter(),
+          ],
         );
       },
     );
@@ -212,4 +223,34 @@ String? getFileExtension(SimpleFileFormat format) {
   }
 
   return null;
+}
+
+class BlockUserTypedMarkerFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Case 1: Text programmatically set or same as before → allow it
+    if (newValue.text == oldValue.text) {
+      return newValue;
+    }
+
+    // Case 2: Check if user manually inserted the marker symbol
+    // Only block if new marker appeared that wasn't in the old value
+    if (newValue.text.contains(mentionToken)) {
+      final oldCount = _countOccurrences(oldValue.text, mentionToken);
+      final newCount = _countOccurrences(newValue.text, mentionToken);
+
+      if (newCount > oldCount) {
+        // User tried to type one
+        return oldValue;
+      }
+    }
+
+    return newValue;
+  }
+
+  int _countOccurrences(String source, String pattern) =>
+      RegExp(RegExp.escape(pattern)).allMatches(source).length;
 }

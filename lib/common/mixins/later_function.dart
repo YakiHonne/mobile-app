@@ -6,10 +6,11 @@ mixin LaterFunction {
   int laterTimeMS = 500;
   final Map<Function, Timer> _timersByCallback = {};
 
-  void later(void Function() runFunc, Function? completeFunc) {
+  void later(void Function() runFunc, Function? completeFunc, {int? timer}) {
     // Use the callback function itself as the key
     _timersByCallback[runFunc]?.cancel();
-    _timersByCallback[runFunc] = Timer(Duration(milliseconds: laterTimeMS), () {
+    _timersByCallback[runFunc] =
+        Timer(Duration(milliseconds: timer ?? laterTimeMS), () {
       runFunc.call();
       completeFunc?.call();
       _timersByCallback.remove(runFunc);

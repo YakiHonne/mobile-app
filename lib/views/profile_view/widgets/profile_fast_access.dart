@@ -526,7 +526,9 @@ class CommonUsersRow extends StatelessWidget {
                   padding: 0,
                   strokeWidth: 2,
                   strokeColor: Theme.of(context).cardColor,
-                  onClicked: () {},
+                  onClicked: () {
+                    // openProfileFastAccess(context: context, pubkey: pubkey);
+                  },
                 );
               },
             ),

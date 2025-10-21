@@ -21,6 +21,7 @@ class NoteContainer extends StatelessWidget {
     this.vMargin,
     this.hMargin,
     this.scrollPhysics,
+    this.enableHidingMedia = true,
   });
 
   final DetailedNoteModel note;
@@ -29,6 +30,7 @@ class NoteContainer extends StatelessWidget {
   final double? vMargin;
   final double? hMargin;
   final ScrollPhysics? scrollPhysics;
+  final bool enableHidingMedia;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +75,10 @@ class NoteContainer extends StatelessWidget {
             OverrideTextScaleFactor(
               child: ParsedText(
                 text: note.content,
+                pubkey: note.pubkey,
                 disableNoteParsing: disableVisualParsing,
                 scrollPhysics: scrollPhysics,
+                enableHidingMedia: enableHidingMedia,
                 onClicked: () {
                   Navigator.pushNamed(
                     context,

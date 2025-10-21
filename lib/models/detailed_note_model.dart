@@ -24,7 +24,6 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
   final bool isPaid;
   final String? originId;
   final bool? isOriginEtag;
-  final String? reposter;
 
   const DetailedNoteModel({
     required this.id,
@@ -38,7 +37,6 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     required this.pTags,
     required this.isPaid,
     this.originId,
-    this.reposter,
     this.isOriginEtag,
   });
 
@@ -66,7 +64,6 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       'isQuote': isQuote,
       'replyTo': replyTo,
       'originId': originId,
-      'reposter': reposter,
       'stringifiedEvent': stringifiedEvent,
       'pTags': pTags,
       'isPaid': isPaid,
@@ -87,12 +84,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       pTags: List<String>.from(map['pTags']),
       originId: map['originId'],
       isOriginEtag: map['isOriginEtag'],
-      reposter: map['reposter'],
       isPaid: map['isPaid'],
     );
   }
 
-  factory DetailedNoteModel.fromEvent(Event event, {String? reposter}) {
+  factory DetailedNoteModel.fromEvent(Event event) {
     bool root = true;
     bool isQuote = false;
     String replyTo = '';
@@ -139,7 +135,6 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       isRoot: root,
       replyTo: replyTo,
       isQuote: isQuote,
-      reposter: reposter,
       stringifiedEvent: event.toJsonString(),
       pTags: event.pTags
           .where(

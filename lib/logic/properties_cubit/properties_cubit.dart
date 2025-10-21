@@ -8,8 +8,6 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
 import '../../models/app_models/diverse_functions.dart';
-import '../../repositories/localdatabase_repository.dart';
-import '../../repositories/nostr_data_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -17,10 +15,8 @@ import '../../utils/utils.dart';
 part 'properties_state.dart';
 
 class PropertiesCubit extends Cubit<PropertiesState> {
-  PropertiesCubit({
-    required this.nostrRepository,
-    required this.localDatabaseRepository,
-  }) : super(
+  PropertiesCubit()
+      : super(
           PropertiesState(
             refresh: false,
             propertiesViews: PropertiesViews.main,
@@ -79,9 +75,6 @@ class PropertiesCubit extends Cubit<PropertiesState> {
       },
     );
   }
-
-  final NostrDataRepository nostrRepository;
-  final LocalDatabaseRepository localDatabaseRepository;
 
   late StreamSubscription userSubcription;
   List<String> currentRelays = [];

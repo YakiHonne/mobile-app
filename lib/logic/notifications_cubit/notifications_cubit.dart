@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
-import '../../common/mixins/later_function.dart';
 import '../../common/notifications/notification_helper.dart';
 import '../../common/notifications/push_core.dart';
 import '../../models/app_models/diverse_functions.dart';
@@ -17,8 +16,7 @@ import '../../utils/utils.dart';
 
 part 'notifications_state.dart';
 
-class NotificationsCubit extends Cubit<NotificationsState>
-    with PendingEventsLaterFunction {
+class NotificationsCubit extends Cubit<NotificationsState> {
   NotificationsCubit()
       : super(
           const NotificationsState(
@@ -28,37 +26,7 @@ class NotificationsCubit extends Cubit<NotificationsState>
             refresh: false,
             isLoading: true,
           ),
-        ) {
-    userStreamSubscription = nostrRepository.currentSignerStream.listen(
-      (_) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              refresh: !state.refresh,
-            ),
-          );
-        }
-      },
-    );
-
-    customizationSubscription = nostrRepository.appCustomizationStream.listen(
-      (_) {
-        clear();
-        queryAndSubscribe();
-      },
-    );
-
-    mutesSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
-        if (initialized) {
-          clear();
-          queryAndSubscribe();
-        }
-
-        initialized = true;
-      },
-    );
-  }
+        );
 
   int? since;
   String? notificationsSubscriptionId;
@@ -66,12 +34,10 @@ class NotificationsCubit extends Cubit<NotificationsState>
   bool isNotificationView = false;
   bool canShowNotification = true;
   bool initialized = false;
+
   late Map<String, List<String>> registredNotifications =
       <String, List<String>>{};
   late Map<String, List<String>> newNotifications = <String, List<String>>{};
-  late StreamSubscription userStreamSubscription;
-  late StreamSubscription mutesSubscription;
-  late StreamSubscription customizationSubscription;
 
   void loadNotifications() {
     registredNotifications = localDatabaseRepository.getNotifications(true);
@@ -82,9 +48,9 @@ class NotificationsCubit extends Cubit<NotificationsState>
     isNotificationView = isNotification;
   }
 
-  void clear() {
+  Future<void> clear() async {
     if (notificationsSubscriptionId != null) {
-      nc.closeRequests(<String>[notificationsSubscriptionId!]);
+      await nc.closeRequests(<String>[notificationsSubscriptionId!]);
       notificationsSubscriptionId = null;
     }
 
@@ -119,6 +85,11 @@ class NotificationsCubit extends Cubit<NotificationsState>
     await queryAndSubscribe();
   }
 
+  void cleanAndSubscribe() {
+    clear();
+    queryAndSubscribe();
+  }
+
   Future<void> checkNotificationAllowed() async {
     canShowNotification = await AwesomeNotifications().isNotificationAllowed();
   }
@@ -145,7 +116,7 @@ class NotificationsCubit extends Cubit<NotificationsState>
         limit: 40,
       );
 
-      eventLaterHandle(events);
+      await eventLaterHandle(events);
 
       notificationsSubscriptionId =
           await NostrFunctionsRepository.subscribeToNotifications(
@@ -157,7 +128,7 @@ class NotificationsCubit extends Cubit<NotificationsState>
   }
 
   void onEvent(Event event) {
-    later(event, eventLaterHandle, null);
+    eventLaterHandle([event]);
   }
 
   Future<void> eventLaterHandle(List<Event> events) async {
@@ -343,130 +314,6 @@ class NotificationsCubit extends Cubit<NotificationsState>
     );
   }
 
-  // Future<void> sendNotification(Event ev, int count) async {
-  //   final an = AwesomeNotifications();
-
-  //   String title = '';
-  //   String? body;
-  //   final ExtendedEvent event = ExtendedEvent.fromEv(ev);
-
-  //   Metadata? user = metadataCubit.getCachedMetadata(event.pubkey);
-
-  //   String name = user?.getName() ??
-  //       Metadata.empty()
-  //           .copyWith(
-  //             pubkey: event.pubkey,
-  //           )
-  //           .getName();
-
-  //   if (event.kind == EventKind.REACTION) {
-  //     title = t
-  //         .reactedWith(
-  //           name: name,
-  //           reaction: event.content.replaceAll('+', '👍').replaceAll('-', '👎'),
-  //         )
-  //         .capitalizeFirst();
-  //   } else if (event.kind == EventKind.ZAP) {
-  //     final double zapNum = getZapValue(event);
-  //     final List<String> list = getZapPubkey(event.tags);
-
-  //     if (list.first.isNotEmpty) {
-  //       user = metadataCubit.getCachedMetadata(list.first);
-  //       name = user?.getName() ??
-  //           Metadata.empty()
-  //               .copyWith(
-  //                 pubkey: event.pubkey,
-  //               )
-  //               .getName();
-  //     }
-
-  //     if (list[1].isNotEmpty) {
-  //       body = list[1];
-  //     }
-
-  //     title = t
-  //         .userZappedYou(name: name, number: zapNum.toInt().toString())
-  //         .capitalizeFirst();
-  //   } else if (event.kind == EventKind.APP_CUSTOM) {
-  //     title = t.yakihonneNotification.capitalizeFirst();
-
-  //     final bool isAuthor = event.tags
-  //         .where((List<String> element) =>
-  //             element.first == 'author' &&
-  //             element[1] == currentSigner!.getPublicKey())
-  //         .toList()
-  //         .isNotEmpty;
-
-  //     body = isAuthor
-  //         ? t.verifiedNoteSealed.capitalizeFirst()
-  //         : t.verifiedNoteRateSealed.capitalizeFirst();
-  //   } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
-  //       event.kind == EventKind.VIDEO_HORIZONTAL) {
-  //     final VideoModel video = VideoModel.fromEvent(event);
-  //     title = t.userNewVideo(name: name).capitalizeFirst();
-
-  //     body = video.title.isNotEmpty
-  //         ? t.userNewVideo(name: video.title).capitalizeFirst()
-  //         : t.checkoutVideo.capitalizeFirst();
-  //   } else {
-  //     if (event.isUserTagged()) {
-  //       if (event.isUncensoredNote()) {
-  //         title = t.unknownVerifiedNote.capitalizeFirst();
-  //       } else {
-  //         title = t.userReply(name: name).capitalizeFirst();
-  //       }
-
-  //       body = event.content;
-  //     } else {
-  //       final FlashNews flash = FlashNews.fromEvent(event);
-  //       if (event.kind == EventKind.TEXT_NOTE && event.isFlashNews()) {
-  //         title = t.userPaidNote(name: name).capitalizeFirst();
-  //         body = flash.content.isNotEmpty
-  //             ? t.contentData(description: flash.content).capitalizeFirst()
-  //             : t.checkoutPaidNote.capitalizeFirst();
-  //       } else if (event.kind == EventKind.CURATION_ARTICLES) {
-  //         final curation = Curation.fromEvent(event, '');
-  //         title = t.userNewCuration(name: name).capitalizeFirst();
-  //         body = curation.title.isNotEmpty
-  //             ? t.titleData(description: curation.title).capitalizeFirst()
-  //             : t.checkoutCuration.capitalizeFirst();
-  //       } else if (event.kind == EventKind.LONG_FORM) {
-  //         final article = Article.fromEvent(event);
-  //         title = t.userNewArticle(name: name).capitalizeFirst();
-  //         body = article.title.isNotEmpty
-  //             ? t.titleData(description: article.title).capitalizeFirst()
-  //             : t.checkoutArticle.capitalizeFirst();
-  //       } else if (event.kind == EventKind.SMART_WIDGET_ENH) {
-  //         final sw = SmartWidget.fromEvent(event);
-  //         title = t.userNewSmartWidget(name: name).capitalizeFirst();
-  //         body = sw.title.isNotEmpty
-  //             ? t.titleData(description: sw.title).capitalizeFirst()
-  //             : t.checkoutSmartWidget.capitalizeFirst();
-  //       }
-  //     }
-  //   }
-
-  //   final count = await an.getGlobalBadgeCounter();
-
-  //   try {
-  //     if (await an.isNotificationAllowed()) {
-  //       an.createNotification(
-  //         content: NotificationContent(
-  //           id: event.id.hashCode,
-  //           channelKey: 'yaki_channel',
-  //           largeIcon: user?.picture,
-  //           title: title,
-  //           body: body,
-  //           payload: <String, String?>{'name': 'new notification'},
-  //           badge: count + 1,
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     lg.i(e);
-  //   }
-  // }
-
   void markRead() {
     if (!isClosed) {
       emit(
@@ -529,18 +376,5 @@ class NotificationsCubit extends Cubit<NotificationsState>
     );
 
     NotificationHelper.sharedInstance.init();
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> onActionReceivedMethod(
-    ReceivedAction receivedAction,
-  ) async {}
-
-  @override
-  Future<void> close() {
-    userStreamSubscription.cancel();
-    mutesSubscription.cancel();
-    customizationSubscription.cancel();
-    return super.close();
   }
 }

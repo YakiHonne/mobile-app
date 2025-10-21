@@ -4152,6 +4152,60 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Loading chat history...'
 	String get loadingChatHistory => 'Loading chat history...';
+
+	/// en: 'Content actions order'
+	String get contentActionsOrder => 'Content actions order';
+
+	/// en: 'Easily rearrange your post interactions to match your preferred order.'
+	String get contentActionsOrderDesc => 'Easily rearrange your post interactions to match your preferred order.';
+
+	/// en: 'Quotes'
+	String get quotes => 'Quotes';
+
+	/// en: 'Event loading...'
+	String get eventLoading => 'Event loading...';
+
+	/// en: 'Load messages'
+	String get loadMessages => 'Load messages';
+
+	/// en: 'Messages Not Loaded'
+	String get messagesNotLoaded => 'Messages Not Loaded';
+
+	/// en: 'Messages are not loaded due to using a local remote signer, if you wish to load them, please click the button below.'
+	String get messagesNotLoadedDesc => 'Messages are not loaded due to using a local remote signer, if you wish to load them, please click the button below.';
+
+	/// en: 'Note loading...'
+	String get noteLoading => 'Note loading...';
+
+	/// en: 'Hide non-followed media'
+	String get hideNonFollowedMedia => 'Hide non-followed media';
+
+	/// en: 'Automatically hide images & videos from non-followed users until you tap to reveal.'
+	String get hideNonFollowedMediaDesc => 'Automatically hide images & videos from non-followed users until you tap to reveal.';
+
+	/// en: 'Click to view'
+	String get clickToView => 'Click to view';
+
+	/// en: 'Relays feed list is empty'
+	String get relayFeedListEmpty => 'Relays feed list is empty';
+
+	/// en: 'Add more relays to your list to enjoy a tailored feed.'
+	String get relayFeedListEmptyDesc => 'Add more relays to your list to enjoy a tailored feed.';
+
+	/// en: 'Add relays'
+	String get addRelay => 'Add relays';
+
+	/// en: 'Hidden content'
+	String get hiddenContent => 'Hidden content';
+
+	/// en: 'We've hidden this content because you don't follow this account.'
+	String get hiddenContentDesc => 'We\'ve hidden this content because you don\'t follow this account.';
+
+	/// en: 'Enabled actions'
+	String get enabledActions => 'Enabled actions';
+
+	/// en: 'No enabled actions available.'
+	String get enabledActionsDesc => 'No enabled actions available.';
 }
 
 /// Flat map(s) containing all translations.
@@ -5530,6 +5584,24 @@ extension on Translations {
 			case 'engageWithUsers': return 'Engage to expand';
 			case 'engageWithUsersDesc': return 'Engaging with more users helps you discover new relays and grow your relay list for a richer, more connected experience.';
 			case 'loadingChatHistory': return 'Loading chat history...';
+			case 'contentActionsOrder': return 'Content actions order';
+			case 'contentActionsOrderDesc': return 'Easily rearrange your post interactions to match your preferred order.';
+			case 'quotes': return 'Quotes';
+			case 'eventLoading': return 'Event loading...';
+			case 'loadMessages': return 'Load messages';
+			case 'messagesNotLoaded': return 'Messages Not Loaded';
+			case 'messagesNotLoadedDesc': return 'Messages are not loaded due to using a local remote signer, if you wish to load them, please click the button below.';
+			case 'noteLoading': return 'Note loading...';
+			case 'hideNonFollowedMedia': return 'Hide non-followed media';
+			case 'hideNonFollowedMediaDesc': return 'Automatically hide images & videos from non-followed users until you tap to reveal.';
+			case 'clickToView': return 'Click to view';
+			case 'relayFeedListEmpty': return 'Relays feed list is empty';
+			case 'relayFeedListEmptyDesc': return 'Add more relays to your list to enjoy a tailored feed.';
+			case 'addRelay': return 'Add relays';
+			case 'hiddenContent': return 'Hidden content';
+			case 'hiddenContentDesc': return 'We\'ve hidden this content because you don\'t follow this account.';
+			case 'enabledActions': return 'Enabled actions';
+			case 'enabledActionsDesc': return 'No enabled actions available.';
 			default: return null;
 		}
 	}

@@ -424,6 +424,8 @@ class SearchView extends HookWidget {
       ValueNotifier<String?> searchText) {
     return Builder(
       builder: (context) {
+        final cubit = context.watch<SearchCubit>();
+
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
@@ -445,16 +447,29 @@ class SearchView extends HookWidget {
             ),
             suffix: Padding(
               padding: const EdgeInsets.only(right: 10.0),
-              child: GestureDetector(
-                onTap: () {
-                  searchTextEdittingController.clear();
-                  searchText.value = null;
-                  context.read<SearchCubit>().getItemsBySearch('');
-                },
-                child: const Icon(
-                  Icons.close,
-                  size: 20,
-                ),
+              child: Row(
+                children: [
+                  if (cubit.state.isSearching) ...[
+                    SpinKitCircle(
+                      size: 18,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                    const SizedBox(
+                      width: kDefaultPadding / 4,
+                    ),
+                  ],
+                  GestureDetector(
+                    onTap: () {
+                      searchTextEdittingController.clear();
+                      searchText.value = null;
+                      context.read<SearchCubit>().getItemsBySearch('');
+                    },
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
             style: Theme.of(context).textTheme.bodyMedium,

@@ -197,6 +197,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
 
       nostrRepository.broadcastCurrentAppCustomization();
       nostrRepository.saveAppCustomization();
+      notificationsCubit.cleanAndSubscribe();
     }
 
     return super.close();

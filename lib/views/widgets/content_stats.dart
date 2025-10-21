@@ -108,14 +108,21 @@ class ContentStats extends HookWidget {
           final selfQuote = stats['selfQuote'];
           final selfReply = stats['selfReply'];
 
-          final widgets = [
-            _reactButton(reactions, selfReaction, aTag, isVideo, iconSize),
-            _replyButton(
-                context, aTag, isVideo, selfReply, replies, iconSize, fontSize),
-            _quoteButton(context, aTag, quotes, selfQuote, iconSize, fontSize),
-            _zapButton(
-                aTag, zappers, zapsData, selfZaps, iconSize, fontSize, isVideo),
-          ];
+          final widgets = buildActionButtons(
+              context: context,
+              reactions: reactions,
+              selfReaction: selfReaction,
+              replies: replies,
+              selfReply: selfReply,
+              quotes: quotes,
+              selfQuote: selfQuote,
+              zappers: zappers,
+              zapsData: zapsData,
+              selfZaps: selfZaps,
+              iconSize: iconSize,
+              fontSize: fontSize,
+              isVideo: isVideo,
+              aTag: aTag);
 
           final pullDownButton = PullDownGlobalButton(
             model: attachedEvent,
@@ -206,8 +213,61 @@ class ContentStats extends HookWidget {
     );
   }
 
-  ContentZapButton _zapButton(String aTag, zappers, zapsData, selfZaps,
-      double iconSize, double? fontSize, bool isVideo) {
+  List<Widget> buildActionButtons({
+    required BuildContext context,
+    required dynamic reactions,
+    required dynamic selfReaction,
+    required dynamic replies,
+    required dynamic selfReply,
+    required dynamic quotes,
+    required dynamic selfQuote,
+    required dynamic zappers,
+    required dynamic zapsData,
+    required dynamic selfZaps,
+    required double iconSize,
+    required double? fontSize,
+    required bool isVideo,
+    required String aTag,
+  }) {
+    final actions = Map<String, bool>.from(
+        nostrRepository.currentAppCustomization?.actionsArrangement ??
+            defaultActionsArrangement)
+      ..remove('reposts');
+
+    return actions.entries
+        .where(
+      (action) => action.value,
+    )
+        .map((action) {
+      switch (action.key) {
+        case 'reactions':
+          return action.value
+              ? _reactButton(reactions, selfReaction, aTag, isVideo, iconSize)
+              : const SizedBox.shrink();
+        case 'replies':
+          return _replyButton(
+              context, aTag, isVideo, selfReply, replies, iconSize, fontSize);
+        case 'quotes':
+          return _quoteButton(
+              context, aTag, quotes, selfQuote, iconSize, fontSize);
+        case 'zaps':
+          return _zapButton(
+              aTag, zappers, zapsData, selfZaps, iconSize, fontSize, isVideo);
+        default:
+          return const SizedBox.shrink();
+      }
+    }).toList();
+  }
+
+  ContentZapButton _zapButton(
+    String aTag,
+    zappers,
+    zapsData,
+    selfZaps,
+    double iconSize,
+    double? fontSize,
+    bool isVideo,
+  ) {
     return ContentZapButton(
       aTag: aTag,
       pubkey: pubkey,
@@ -221,8 +281,14 @@ class ContentStats extends HookWidget {
     );
   }
 
-  CustomIconButton _quoteButton(BuildContext context, String aTag, quotes,
-      selfQuote, double iconSize, double? fontSize) {
+  CustomIconButton _quoteButton(
+    BuildContext context,
+    String aTag,
+    quotes,
+    selfQuote,
+    double iconSize,
+    double? fontSize,
+  ) {
     return CustomIconButton(
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
@@ -272,7 +338,12 @@ class ContentStats extends HookWidget {
   }
 
   CustomReactionButton _reactButton(
-      reactions, selfReaction, String aTag, bool isVideo, double iconSize) {
+    reactions,
+    selfReaction,
+    String aTag,
+    bool isVideo,
+    double iconSize,
+  ) {
     return CustomReactionButton(
       reactions: reactions,
       selfReaction: selfReaction,
@@ -283,8 +354,15 @@ class ContentStats extends HookWidget {
     );
   }
 
-  CustomIconButton _replyButton(BuildContext context, String aTag, bool isVideo,
-      selfReply, replies, double iconSize, double? fontSize) {
+  CustomIconButton _replyButton(
+    BuildContext context,
+    String aTag,
+    bool isVideo,
+    selfReply,
+    replies,
+    double iconSize,
+    double? fontSize,
+  ) {
     return CustomIconButton(
       backgroundColor: kTransparent,
       icon: FeatureIcons.comments,

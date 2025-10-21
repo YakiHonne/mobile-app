@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +48,6 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
         ),
       );
     }
-
-    final cancel = BotToast.showLoading();
 
     final res = await HttpFunctionsRepository.loginPointsSystem();
 
@@ -101,8 +98,6 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
         t.errorLoggingYakiChest.capitalizeFirst(),
       );
     }
-
-    cancel.call();
   }
 
   void setZapsToPointsSubscription() {

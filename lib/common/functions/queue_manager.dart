@@ -10,10 +10,10 @@ class PreviewQueueManager {
 
   static final PreviewQueueManager instance = PreviewQueueManager._internal();
 
-  final Queue<PreviewRequest> _queue = Queue();
+  final Queue<QueueRequest> _queue = Queue();
   bool _isProcessing = false;
 
-  void addRequest(PreviewRequest request) {
+  void addRequest(QueueRequest request) {
     if (!nostrRepository.previewCache.containsKey(request.url)) {
       _queue.add(request);
       _processQueue();
@@ -39,8 +39,8 @@ class PreviewQueueManager {
   }
 }
 
-class PreviewRequest {
-  PreviewRequest(this.url, this.callback);
+class QueueRequest {
+  QueueRequest(this.url, this.callback);
   final String url;
   final void Function(dynamic) callback;
 }
