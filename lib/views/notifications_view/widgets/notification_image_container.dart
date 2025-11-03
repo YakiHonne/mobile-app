@@ -66,7 +66,7 @@ class NotificationImageContainer extends StatelessWidget {
   }
 
   String getIcon() {
-    String icon = '';
+    String icon = FeatureIcons.nMentions;
 
     switch (event.kind) {
       case EventKind.REPOST:

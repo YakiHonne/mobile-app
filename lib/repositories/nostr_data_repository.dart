@@ -64,7 +64,6 @@ class NostrDataRepository {
   List<String> dmRelays = [];
   List<Topic> topics = [];
   List<String> userTopics = [];
-  List<String> bannedPubkeys = [];
   List<ChatMessage> gptMessages = [];
   List<PendingFlashNews> pendingFlashNews = [];
   List<List<String>> muteListAdditionalData = [];
@@ -264,7 +263,6 @@ class NostrDataRepository {
 
     final localData = await Future.wait(
       [
-        HttpFunctionsRepository.getBannedPubkeys(),
         localDatabaseRepository.getDefaultZapAmount(),
         localDatabaseRepository.getOneTapZap(),
         localDatabaseRepository.getDefaultReactions(),
@@ -272,19 +270,17 @@ class NostrDataRepository {
       ],
     );
 
-    bannedPubkeys = localData[0] as List<String>? ?? <String>[];
-
     defaultZapAmounts = Map<String, int>.from(
-      localData[1] as Map<String, int>? ?? <String, int>{},
+      localData[0] as Map<String, int>? ?? <String, int>{},
     );
 
-    enableOneTapZap = localData[2] as bool? ?? false;
+    enableOneTapZap = localData[1] as bool? ?? false;
 
     defaultReactions = Map<String, String>.from(
-      localData[3] as Map<String, String>? ?? <String, String>{},
+      localData[2] as Map<String, String>? ?? <String, String>{},
     );
 
-    enableOneTapReaction = localData[4] as bool? ?? false;
+    enableOneTapReaction = localData[3] as bool? ?? false;
 
     if (!canSign()) {
       mutes = localDatabaseRepository.getLocalMutes().toSet();

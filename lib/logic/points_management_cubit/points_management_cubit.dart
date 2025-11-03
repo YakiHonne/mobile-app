@@ -78,6 +78,7 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
         final currentLevelXp = getRemainingXp(currentLevel);
         final additionalXp = currentXp - currentLevelXp;
         final nextLevelXp = getRemainingXp(currentLevel + 1);
+
         if (!isClosed) {
           emit(
             state.copyWith(

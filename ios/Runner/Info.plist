@@ -93,7 +93,6 @@
 				<key>LSItemContentTypes</key>
 				<array>
 					<string>public.image</string>
-					<string>public.text</string>
 					<string>public.movie</string>
 					<string>public.url</string>
 				</array>

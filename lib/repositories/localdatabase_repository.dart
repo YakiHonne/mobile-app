@@ -42,6 +42,7 @@ class LocalDatabaseRepository {
   static const String _defaultWallet = 'default_wallet';
   static const String _useDefaultWallet = 'use_default_wallet';
   static const String _allowAutomaticSigning = 'allow_automatic_signing';
+  static const String _activeCurrency = 'active_currency';
 
   // App Settings & Configuration
   static const String _settings = 'settings';
@@ -261,6 +262,14 @@ class LocalDatabaseRepository {
       return defaultExternalWallet;
     }
     return wallet;
+  }
+
+  Future<void> setActiveCurrency(String currency) async {
+    await _setPrefsData(_activeCurrency, currency);
+  }
+
+  String getActiveCurrency() {
+    return _getPrefsData<String>(_activeCurrency, defaultValue: 'usd') ?? 'usd';
   }
 
   /// Signing Configuration

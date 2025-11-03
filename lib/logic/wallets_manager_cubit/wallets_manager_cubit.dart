@@ -65,7 +65,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   Set<String> requests = <String>{};
 
   NostrCore wnc = NostrCore(db: nc.db, loadRemoteCache: false);
-  num btcInUsd = 0;
+  Map<String, int> btcInFiat = {};
   int index = -1;
 
   final AppLifecycleNotifier _appLifecycleNotifier = AppLifecycleNotifier();
@@ -98,7 +98,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       );
 
       _requestBalanceForSelectedWallet(wallets[selectedWalletId]);
-      getBtcInUsd();
+      getBtcInFiat();
     } catch (e) {
       _logError('Failed to initialize wallet cubit', e);
     }
@@ -517,7 +517,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         wallets: <String, WalletModel>{},
         selectedWalletId: '',
         balance: 0,
-        balanceInUSD: 0,
+        balanceInFiat: 0,
       ));
     }
     saveWalletsToSecureStorage();
@@ -667,7 +667,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
       if (_isValidBalanceResponse(data)) {
         _updateBalanceFromNwcResponse(data);
-        getWalletBalanceInUSD();
+        getWalletBalanceInFiat();
       }
     } catch (e) {
       _logError('Failed to request NWC balance', e);
@@ -700,7 +700,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         final balance =
             await HttpFunctionsRepository.getAlbyBalance(token: token);
         _updateBalanceFromAlbyResponse(balance);
-        getWalletBalanceInUSD();
+        getWalletBalanceInFiat();
       } else {
         _resetBalance();
       }
@@ -769,78 +769,75 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     }
   }
 
-  void getWalletBalanceInUSD() {
-    if (state.balance == -1) {
-      _updateUSDBalance(-1);
-    } else if (state.balance == 0) {
-      _updateUSDBalance(0);
-    } else {
-      getSatsToUsd();
-    }
-  }
-
-  void _updateUSDBalance(double usdBalance) {
+  void setActiveFiat(String fiat) {
     if (!isClosed) {
-      emit(state.copyWith(balanceInUSD: usdBalance));
+      emit(state.copyWith(activeCurrency: fiat));
+    }
+
+    localDatabaseRepository.setActiveCurrency(fiat);
+    getSatsToFiat();
+  }
+
+  void getWalletBalanceInFiat() {
+    if (state.balance == -1) {
+      _updateFiatBalance(-1);
+    } else if (state.balance == 0) {
+      _updateFiatBalance(0);
+    } else {
+      getSatsToFiat();
     }
   }
 
-  Future<void> getBtcInUsd() async {
+  void _updateFiatBalance(double fiatBalance) {
+    if (!isClosed) {
+      emit(state.copyWith(balanceInFiat: fiatBalance));
+    }
+  }
+
+  Future<void> getBtcInFiat() async {
     try {
       final res = await HttpFunctionsRepository.get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currencies.keys.join(',')}',
       );
 
       if (res != null) {
-        btcInUsd = (res['bitcoin']?['usd'] as num?) ?? -1;
+        final data = res['bitcoin'];
+        for (final f in currencies.keys) {
+          btcInFiat[f] = (data[f] as int?) ?? -1;
+        }
       }
     } catch (e) {
       _logError('Failed to get BTC price', e);
     }
   }
 
-  double getBtcInUsdFromAmount(int amount) {
-    if (btcInUsd == 0) {
+  double getBtcInFiatFromAmount(int amount) {
+    final current = btcInFiat[state.activeCurrency];
+    if (current == null || current == 0) {
       return -1;
     } else {
       final availableBTC = amount / 100000000;
-      return availableBTC * btcInUsd;
+      return availableBTC * current;
     }
   }
 
-  double getUsdInBtcFromAmount(int amount) {
-    if (btcInUsd == 0) {
+  double getFiatInBtcFromAmount(int amount) {
+    final current = btcInFiat[state.activeCurrency];
+    if (current == null || current == 0) {
       return -1;
     } else {
       final availableBTC = amount * 100000000;
-      return availableBTC / btcInUsd;
+      return availableBTC / current;
     }
   }
 
-  Future<void> getSatsToUsd() async {
-    if (btcInUsd == -1) {
-      _updateUSDBalance(-1);
+  Future<void> getSatsToFiat() async {
+    final current = btcInFiat[state.activeCurrency];
+    if (current == null || current == 0) {
+      _updateFiatBalance(-1);
     } else {
       final availableBTC = state.balance / 100000000;
-      _updateUSDBalance(availableBTC * btcInUsd);
-    }
-  }
-
-  Future<num> getBalanceInUsd(double amount) async {
-    final res = await HttpFunctionsRepository.get(
-      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
-    );
-
-    if (res != null) {
-      final btcInUSD = (res['bitcoin']?['usd'] as num?) ?? -1;
-
-      if (btcInUSD == -1) {
-        return -1;
-      } else {
-        return (amount / 100000000) * btcInUSD;
-      }
-    } else {
-      return -1;
+      _updateFiatBalance(availableBTC * current);
     }
   }
 
@@ -2279,7 +2276,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         wallets: <String, WalletModel>{},
         selectedWalletId: '',
         balance: -1,
-        balanceInUSD: -1,
+        balanceInFiat: -1,
         transactions: <WalletTransactionModel>[],
         transactionsState: UpdatingState.success,
       ));

@@ -288,10 +288,7 @@ class MentionBox extends HookWidget {
                     .searchCacheMetadatasFromContactList(
                   sub,
                 ))
-                  ..where((element) =>
-                      !nostrRepository.mutes.contains(element.pubkey) &&
-                      !nostrRepository.bannedPubkeys
-                          .contains(element.pubkey)).toList();
+                  ..where((element) => !isUserMuted(element.pubkey)).toList();
 
                 if (metadatas.value.length >= 10) {
                   return;

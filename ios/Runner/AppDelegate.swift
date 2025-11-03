@@ -1,18 +1,16 @@
 import UIKit
 import Flutter
-import FirebaseCore
 import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
     private var channel: FlutterMethodChannel?
+    private var pendingNotification: [AnyHashable: Any]? = nil
 
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        // Initialize Firebase
-        FirebaseApp.configure()
 
         // Register Flutter plugins (includes shared_preferences)
         GeneratedPluginRegistrant.register(with: self)
@@ -34,9 +32,15 @@ import UserNotifications
                 result(FlutterMethodNotImplemented)
             }
         }
-        // Register for push notifications
-        // registerForPushNotifications()
 
+        registerForPushNotifications()
+
+        if let remoteNotification = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.channel?.invokeMethod("onNotificationTapped", arguments: remoteNotification)
+            }
+        }
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 

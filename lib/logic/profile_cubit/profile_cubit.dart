@@ -73,7 +73,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     bookmarksSubscription = nostrRepository.bookmarksStream.listen(
       (bookmarks) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
             ),
@@ -85,7 +85,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     mutesListSubscription = nostrRepository.mutesStream.listen(
       (mutes) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               mutes: mutes.toList(),
               refresh: !state.refresh,
@@ -103,7 +103,7 @@ class ProfileCubit extends Cubit<ProfileState> {
                 : null;
 
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               isFollowingUser: followings.contains(pubkey),
               followings: followingsList?.length,
@@ -130,7 +130,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         (contactList?.contacts.contains(currentSigner!.getPublicKey()) ??
             false);
 
-    emit(
+    _emit(
       state.copyWith(
         isFollowedByUser: isFollowedByUser,
         refresh: !state.refresh,
@@ -140,7 +140,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void emitEmptyState() {
     if (!isClosed) {
-      emit(
+      _emit(
         ProfileState(
           profileStatus: ProfileStatus.loading,
           isFollowedByUser: false,
@@ -197,7 +197,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final response = await HttpFunctionsRepository.getImpacts(pubkey);
       if (!isClosed) {
-        emit(
+        _emit(
           state.copyWith(
             writingImpact: response['writing'],
             ratingImpact: response['rating'],
@@ -235,7 +235,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           }
         });
 
-      emit(
+      _emit(
         state.copyWith(
           notes: isNotes ? newContent : state.notes,
           replies: !isNotes ? newContent : state.replies,
@@ -275,7 +275,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       List<Event> newNotes = [];
       if (!isClosed) {
-        emit(
+        _emit(
           state.copyWith(
             notesLoading: isReplies ? null : UpdatingState.progress,
             repliesLoading: isReplies ? UpdatingState.progress : null,
@@ -294,7 +294,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         limit: 30,
         onDone: () {
           if (!isClosed) {
-            emit(
+            _emit(
               state.copyWith(
                 notes: isReplies ? null : [...oldNotes, ...newNotes],
                 notesLoading: isReplies
@@ -374,7 +374,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       isNip05 = await metadataCubit.isNip05Valid(m);
     }
 
-    emit(
+    _emit(
       state.copyWith(
         isNip05: isNip05,
         user: m,
@@ -395,7 +395,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       authorPubkey: pubkey,
       curationsFunc: (curations) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               curations: curations,
             ),
@@ -404,7 +404,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       smartWidgetFunc: (widgets) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               smartWidgets: widgets,
               isSmartWidgetsLoading: false,
@@ -414,7 +414,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       videosFunc: (videos) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               videos: videos,
               isVideoLoading: false,
@@ -424,7 +424,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       notesFunc: (notes) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               notes: notes,
               isNotesLoading: false,
@@ -434,7 +434,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       repliesFunc: (replies) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               replies: replies,
               isRepliesLoading: false,
@@ -444,7 +444,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       articleFunc: (articles) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               articles: articles,
               isArticlesLoading: false,
@@ -454,7 +454,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       relaysFunc: (relays) {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               userRelays: relays.toList(),
               isRelaysLoading: false,
@@ -464,7 +464,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       onDone: () {
         if (!isClosed) {
-          emit(
+          _emit(
             state.copyWith(
               isArticlesLoading: false,
               isRelaysLoading: false,
@@ -491,7 +491,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
 
     if (!isClosed) {
-      emit(
+      _emit(
         state.copyWith(
           followers: followers,
         ),
@@ -504,7 +504,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     if (contactList != null) {
       if (!isClosed) {
-        emit(
+        _emit(
           state.copyWith(
             followings: contactList.contacts.length,
             isFollowedByUser: !isDisconnected() &&
@@ -564,6 +564,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
 
     cancel.call();
+  }
+
+  void _emit(ProfileState state) {
+    if (!isClosed) {
+      emit(state);
+    }
   }
 
   @override

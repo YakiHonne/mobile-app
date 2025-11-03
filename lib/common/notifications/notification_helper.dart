@@ -19,6 +19,10 @@ class NotificationHelper {
 
   String serverPubkey =
       'e3593b53fe645f71d23fa666659cdff22aeb9ebff301cea686f23dfed6924738';
+
+  // String serverPubkey =
+  //     'a4f46cb124eaa5eef7a9cbed0707b8a80868ac7d1e2163869a46048b3438f656';
+
   Timer? timer;
   List<String> toRelays = DEFAULT_BOOTSTRAP_RELAYS;
 
@@ -169,7 +173,7 @@ class NotificationHelper {
     unSendNotification = event;
 
     if (event != null) {
-      return NostrFunctionsRepository.sendEvent(
+      NostrFunctionsRepository.sendEvent(
         event: event,
         setProgress: false,
         relyOnUnsentEvents: false,

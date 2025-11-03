@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../globals.dart';
+import '../../utils/utils.dart';
 
 part 'relays_progress_state.dart';
 
@@ -14,7 +14,9 @@ class RelaysProgressCubit extends Cubit<RelaysProgressState> {
             totalRelays: nc.relays(),
             successfulRelays: const [],
           ),
-        );
+        ) {
+    lg.i(state.totalRelays);
+  }
 
   Map<String, DateTime> requests = {};
 

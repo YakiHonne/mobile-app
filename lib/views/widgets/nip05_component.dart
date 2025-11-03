@@ -27,14 +27,17 @@ class Nip05Component extends StatelessWidget {
     return MetadataProvider(
       pubkey: metadata.pubkey,
       child: (metadata, isValid) {
+        final n05 = metadata.nip05;
+        final name = metadata.getName();
+
         return Text(
           removeSpace != null
               ? useNip05 != null
-                  ? metadata.nip05
-                  : '@${metadata.getName()}'
+                  ? n05
+                  : '@$name'
               : useNip05 != null
-                  ? ' ${metadata.getName()}'
-                  : ' @${metadata.nip05}',
+                  ? ' $name'
+                  : ' @$n05',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: textColor ??
                     (isValid ? kRed : Theme.of(context).highlightColor),

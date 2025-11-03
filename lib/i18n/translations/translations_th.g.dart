@@ -1414,6 +1414,16 @@ class TranslationsTh extends Translations {
 	@override String get messagesNotLoaded => 'ยังไม่ได้โหลดข้อความ';
 	@override String get messagesNotLoadedDesc => 'ยังไม่ได้โหลดข้อความเนื่องจากใช้ตัวลงนามระยะไกลภายในเครื่อง หากต้องการโหลด กรุณาคลิกปุ่มด้านล่าง';
 	@override String get noteLoading => 'กำลังโหลดบันทึก...';
+	@override String get hideNonFollowedMedia => 'ซ่อนสื่อจากผู้ที่ไม่ได้ติดตาม';
+	@override String get hideNonFollowedMediaDesc => 'ซ่อนรูปภาพและวิดีโอจากผู้ใช้ที่คุณไม่ได้ติดตามโดยอัตโนมัติจนกว่าคุณจะกดเพื่อดู';
+	@override String get clickToView => 'คลิกเพื่อดู';
+	@override String get relayFeedListEmpty => 'รายการฟีดรีเลย์ว่างเปล่า';
+	@override String get relayFeedListEmptyDesc => 'เพิ่มรีเลย์เพิ่มเติมในรายการของคุณเพื่อเพลิดเพลินกับฟีดที่ปรับแต่งได้';
+	@override String get addRelay => 'เพิ่มรีเลย์';
+	@override String get hiddenContent => 'เนื้อหาที่ซ่อนอยู่';
+	@override String get hiddenContentDesc => 'เราได้ซ่อนเนื้อหานี้ไว้เพราะคุณไม่ได้ติดตามบัญชีนี้';
+	@override String get enabledActions => 'การกระทำที่เปิดใช้งาน';
+	@override String get enabledActionsDesc => 'ไม่มีการกระทำที่เปิดใช้งาน';
 }
 
 /// Flat map(s) containing all translations.
@@ -2797,6 +2807,16 @@ extension on TranslationsTh {
 			case 'messagesNotLoaded': return 'ยังไม่ได้โหลดข้อความ';
 			case 'messagesNotLoadedDesc': return 'ยังไม่ได้โหลดข้อความเนื่องจากใช้ตัวลงนามระยะไกลภายในเครื่อง หากต้องการโหลด กรุณาคลิกปุ่มด้านล่าง';
 			case 'noteLoading': return 'กำลังโหลดบันทึก...';
+			case 'hideNonFollowedMedia': return 'ซ่อนสื่อจากผู้ที่ไม่ได้ติดตาม';
+			case 'hideNonFollowedMediaDesc': return 'ซ่อนรูปภาพและวิดีโอจากผู้ใช้ที่คุณไม่ได้ติดตามโดยอัตโนมัติจนกว่าคุณจะกดเพื่อดู';
+			case 'clickToView': return 'คลิกเพื่อดู';
+			case 'relayFeedListEmpty': return 'รายการฟีดรีเลย์ว่างเปล่า';
+			case 'relayFeedListEmptyDesc': return 'เพิ่มรีเลย์เพิ่มเติมในรายการของคุณเพื่อเพลิดเพลินกับฟีดที่ปรับแต่งได้';
+			case 'addRelay': return 'เพิ่มรีเลย์';
+			case 'hiddenContent': return 'เนื้อหาที่ซ่อนอยู่';
+			case 'hiddenContentDesc': return 'เราได้ซ่อนเนื้อหานี้ไว้เพราะคุณไม่ได้ติดตามบัญชีนี้';
+			case 'enabledActions': return 'การกระทำที่เปิดใช้งาน';
+			case 'enabledActionsDesc': return 'ไม่มีการกระทำที่เปิดใช้งาน';
 			default: return null;
 		}
 	}

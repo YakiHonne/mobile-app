@@ -79,7 +79,7 @@ class SendSuccessView extends StatelessWidget {
             Builder(
               builder: (context) {
                 final amountInUsd =
-                    walletManagerCubit.getBtcInUsdFromAmount(amount);
+                    walletManagerCubit.getBtcInFiatFromAmount(amount);
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,

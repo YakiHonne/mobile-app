@@ -28,6 +28,7 @@ class YakihonneCycle with WidgetsBindingObserver {
           if (_hasGoneOffline) {
             reset();
             _hasGoneOffline = false;
+
             break;
           }
         }
@@ -55,7 +56,7 @@ Future<void> reset() async {
 
   if (canSign()) {
     notificationsCubit.initNotifications();
-    // dmsCubit.query();
+    connectivityService.checkInternet();
     walletManagerCubit.processUnprocessedInvoices();
   }
 }

@@ -1,14 +1,15 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:giphy_api_client/giphy_api_client.dart';
 
-import '../../common/mixins/later_function.dart';
 import '../../utils/utils.dart';
 
 part 'giphy_state.dart';
 
-class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
+class GiphyCubit extends Cubit<GiphyState> {
   GiphyCubit()
       : super(
           const GiphyState(
@@ -19,11 +20,11 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
           ),
         ) {
     initView();
-    laterTimeMS = 600;
   }
 
   final int limit = 20;
   final client = GiphyClient(apiKey: dotenv.env['GIPHY_KEY']!);
+  Timer? timer;
 
   Future<void> initView() async {
     try {
@@ -145,12 +146,15 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
     required GiphyType giphyType,
     required String text,
   }) async {
-    later(
+    if (timer != null) {
+      timer!.cancel();
+    }
+
+    timer = Timer(
+      const Duration(seconds: 1),
       () {
         search(giphyType: giphyType, text: text);
       },
-      () {},
-      timer: 1000,
     );
   }
 
@@ -158,6 +162,7 @@ class GiphyCubit extends Cubit<GiphyState> with LaterFunction {
     required GiphyType giphyType,
     required String text,
   }) async {
+    lg.i('message');
     try {
       if (!isClosed) {
         emit(

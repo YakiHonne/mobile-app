@@ -68,6 +68,7 @@ class DashboardView extends HookWidget {
                   isDraft.value = true;
                   isDraftChosen = true;
                   ssc.value.value = 1;
+                  selectedDashboardType.value = DashboardType.content;
                 },
                 isDraft.value,
               );

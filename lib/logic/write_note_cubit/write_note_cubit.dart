@@ -85,7 +85,6 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
 
     final relay = selectedExternalRelay ??
         (useSourceRelay ? appSettingsManagerCubit.getNoteSourceRelay() : null);
-    lg.i(relay);
 
     String updatedContent = content;
     final pTags = getPtags(content);

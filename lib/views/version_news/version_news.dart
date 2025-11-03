@@ -255,25 +255,24 @@ class _VersionNewsState extends State<VersionNews> {
 
 final List<String> releaseNotes = [
   // New Features
-  'Receive share intent in-app',
-  'Rearrange action buttons',
-  'Add Hindi language',
-  'Blur images for non-followers',
+  'Support for onion relays connectivity',
+  'Other currencies in the wallet',
 
   // Improvements
-  'Updated URLs (/r/notes, /r/content)',
-  'Better GIF sizing',
-  'Loading indicator in search bar',
-  'Paginated transactions list',
-  'Added DM loader & empty feed placeholder',
+  'Forward notifications to their respective views',
+  'Favorite relays, settings relays, interests in dashboard (Add data to the top of list)',
+  'Add relay in event encoding when sharing content',
+  'Accept only njump.me and nostr.com Nostr scheme rendering',
+  'Make article drafts clickable, and change the behavior on already fetched articles to take drafts to edit not article view',
+  'Added "," to the URL regex',
 
   // Fixes
-  'Resolved note display, zap split, and nostr URL issues',
-  'Fixed QR scanning, redeem controller, and shareable links',
-  'Fixed unfollow button, mentions, and nip05 handling',
-  'Improved notifications sync and stats loading with WoT',
-  'Fixed nsec bunker setup, article markdown, and Blossom upload',
-  'Reset search scroll position and made suggestions scrollable',
+  'Fixed points system not functioning well',
+  'Fixed content actions disable not updating',
+  'Fixed GIF display',
+  'Fixed sharing intent opening files in YakiHonne',
+  'Fixed display names',
+  'Fixed database blocking issue',
 ];
 
 const content = [

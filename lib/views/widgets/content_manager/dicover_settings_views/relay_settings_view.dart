@@ -36,7 +36,8 @@ class RelaySettingsView extends HookWidget {
 
     final addRelay = useCallback(() {
       final r = getProperRelayUrl(addRelayState.value);
-      favoriteRelays.value = List<String>.from(favoriteRelays.value)..add(r);
+      favoriteRelays.value = List<String>.from(favoriteRelays.value)
+        ..insert(0, r);
       connect.value = RelayConnectivity.idle;
       addRelayController.clear();
     });
@@ -163,7 +164,8 @@ class RelaySettingsView extends HookWidget {
                       excludeContantRelays: false,
                       setRelay: (relay) {
                         favoriteRelays.value =
-                            List<String>.from(favoriteRelays.value)..add(relay);
+                            List<String>.from(favoriteRelays.value)
+                              ..insert(0, relay);
                       },
                       remoteRelay: (relay) {
                         favoriteRelays.value =
@@ -334,12 +336,22 @@ class RelayImage extends StatelessWidget {
               radius: kDefaultPadding / 2,
             )
           : Text(
-              url.split('wss://').last.characters.first.capitalizeFirst(),
+              getChar(),
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
             ),
     );
+  }
+
+  String getChar() {
+    final cleanUrl = url.startsWith('wss://') ? url.split('wss://').last : url;
+
+    if (cleanUrl == '') {
+      return 'W';
+    } else {
+      return cleanUrl.characters.first;
+    }
   }
 }
 

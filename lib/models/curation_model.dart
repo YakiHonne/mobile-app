@@ -67,6 +67,21 @@ class Curation extends Equatable implements BaseEventModel {
     );
   }
 
+  Future<String> getNaddrWithRelays() async {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+    final relays =
+        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      relays,
+      pubkey,
+      kind,
+    );
+  }
+
   factory Curation.fromEvent(Event event, String relay) {
     String identifier = '';
     String title = '';

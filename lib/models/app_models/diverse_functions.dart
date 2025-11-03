@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
@@ -10,6 +11,7 @@ import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../common/common_regex.dart';
 import '../../repositories/nostr_functions_repository.dart';
@@ -703,8 +705,7 @@ int levenshteinDistance(String s1, String s2) {
 }
 
 bool isUserMuted(String pubkey) {
-  return nostrRepository.mutes.contains(pubkey) ||
-      nostrRepository.bannedPubkeys.contains(pubkey);
+  return nostrRepository.mutes.contains(pubkey);
 }
 
 String getBaseUrl(String url) {
@@ -745,12 +746,33 @@ Future<void> saveNetworkImage(String url) async {
     options: Options(responseType: ResponseType.bytes),
   );
 
-  final res = await ImageGallerySaverPlus.saveImage(
-    Uint8List.fromList(response.data),
-    quality: 60,
-  );
-
   final ctx = nostrRepository.mainCubit.context;
+  dynamic res;
+
+  // Detect GIF based on extension or content type
+  final isGif = url.toLowerCase().endsWith('.gif') ||
+      (response.headers.value('content-type')?.contains('gif') ?? false);
+  lg.i(isGif);
+
+  if (isGif) {
+    // 🔹 Save GIF as a file (keeps animation)
+    final tempDir = await getTemporaryDirectory();
+    final filePath =
+        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.gif';
+    final file = File(filePath);
+    await file.writeAsBytes(response.data);
+
+    // 🔹 This saves the file *into the Gallery*
+    res = await ImageGallerySaverPlus.saveFile(file.path,
+        isReturnPathOfIOS: true);
+  } else {
+    // 🔹 Normal static image (JPG/PNG)
+    res = await ImageGallerySaverPlus.saveImage(
+      Uint8List.fromList(response.data),
+      quality: 60,
+      isReturnImagePathOfIOS: true,
+    );
+  }
 
   if (ctx.mounted) {
     if (res != null && res is Map && res['isSuccess']) {

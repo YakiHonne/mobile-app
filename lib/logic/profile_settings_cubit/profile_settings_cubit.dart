@@ -105,26 +105,8 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
       if (isSuccessful) {
         onSuccess.call(t.updatedSuccesfuly.capitalizeFirst());
-        final namePoints = data['name'] != null &&
-            data['name'] != nostrRepository.currentMetadata.name;
-        final displayPoints = data['displayName'] != null &&
-            data['displayName'] != nostrRepository.currentMetadata.displayName;
-        final aboutPoints = data['about'] != null &&
-            data['about'] != nostrRepository.currentMetadata.about;
 
-        if (data['nip05'] != null) {
-          HttpFunctionsRepository.sendAction(PointsActions.NIP05);
-        } else if (data['lud16'] != null) {
-          HttpFunctionsRepository.sendAction(PointsActions.LUDS);
-        } else if (namePoints || displayPoints) {
-          await HttpFunctionsRepository.sendAction(PointsActions.USERNAME);
-
-          if (aboutPoints) {
-            HttpFunctionsRepository.sendAction(PointsActions.BIO);
-          }
-        } else if (aboutPoints) {
-          HttpFunctionsRepository.sendAction(PointsActions.BIO);
-        }
+        sendPointsActions(data);
 
         nostrRepository.currentMetadata = Metadata.fromEvent(kind0Event)!;
         nostrRepository.setCurrentSignerState(currentSigner);
@@ -140,6 +122,43 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
       lg.i(stack);
       cancel.call();
       onFailure.call(t.errorUpdatingData.capitalizeFirst());
+    }
+  }
+
+  Future<void> sendPointsActions(Map<String, String> data) async {
+    final lud16Points = data['nip05'] != nostrRepository.currentMetadata.lud16;
+    final nip05Points = data['nip05'] != nostrRepository.currentMetadata.nip05;
+    final namePoints = data['name'] != nostrRepository.currentMetadata.name;
+    final displayPoints =
+        data['displayName'] != nostrRepository.currentMetadata.displayName;
+    final aboutPoints = data['about'] != nostrRepository.currentMetadata.about;
+    final picturePoints =
+        data['picture'] != nostrRepository.currentMetadata.picture;
+    final bannerPoints =
+        data['banner'] != nostrRepository.currentMetadata.banner;
+
+    if (nip05Points) {
+      await HttpFunctionsRepository.sendAction(PointsActions.NIP05);
+    }
+
+    if (lud16Points) {
+      await HttpFunctionsRepository.sendAction(PointsActions.LUDS);
+    }
+
+    if (namePoints || displayPoints) {
+      await HttpFunctionsRepository.sendAction(PointsActions.USERNAME);
+    }
+
+    if (aboutPoints) {
+      await HttpFunctionsRepository.sendAction(PointsActions.BIO);
+    }
+
+    if (picturePoints) {
+      await HttpFunctionsRepository.sendAction(PointsActions.PROFILE_PICTURE);
+    }
+
+    if (bannerPoints) {
+      await HttpFunctionsRepository.sendAction(PointsActions.COVER);
     }
   }
 

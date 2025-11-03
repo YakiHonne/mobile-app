@@ -1414,6 +1414,16 @@ class TranslationsZh extends Translations {
 	@override String get messagesNotLoaded => '消息未加载';
 	@override String get messagesNotLoadedDesc => '由于使用本地远程签名器，消息未被加载。如需加载，请点击下方按钮。';
 	@override String get noteLoading => '正在加载笔记...';
+	@override String get hideNonFollowedMedia => '隐藏未关注用户的媒体';
+	@override String get hideNonFollowedMediaDesc => '自动隐藏来自未关注用户的图片和视频，直到您点击显示。';
+	@override String get clickToView => '点击查看';
+	@override String get relayFeedListEmpty => '中继源列表为空';
+	@override String get relayFeedListEmptyDesc => '添加更多中继以享受个性化的内容流。';
+	@override String get addRelay => '添加中继';
+	@override String get hiddenContent => '隐藏的内容';
+	@override String get hiddenContentDesc => '我们隐藏了此内容，因为您未关注该账户。';
+	@override String get enabledActions => '已启用的操作';
+	@override String get enabledActionsDesc => '没有可用的已启用操作。';
 }
 
 /// Flat map(s) containing all translations.
@@ -2797,6 +2807,16 @@ extension on TranslationsZh {
 			case 'messagesNotLoaded': return '消息未加载';
 			case 'messagesNotLoadedDesc': return '由于使用本地远程签名器，消息未被加载。如需加载，请点击下方按钮。';
 			case 'noteLoading': return '正在加载笔记...';
+			case 'hideNonFollowedMedia': return '隐藏未关注用户的媒体';
+			case 'hideNonFollowedMediaDesc': return '自动隐藏来自未关注用户的图片和视频，直到您点击显示。';
+			case 'clickToView': return '点击查看';
+			case 'relayFeedListEmpty': return '中继源列表为空';
+			case 'relayFeedListEmptyDesc': return '添加更多中继以享受个性化的内容流。';
+			case 'addRelay': return '添加中继';
+			case 'hiddenContent': return '隐藏的内容';
+			case 'hiddenContentDesc': return '我们隐藏了此内容，因为您未关注该账户。';
+			case 'enabledActions': return '已启用的操作';
+			case 'enabledActionsDesc': return '没有可用的已启用操作。';
 			default: return null;
 		}
 	}

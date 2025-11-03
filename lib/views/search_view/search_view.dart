@@ -418,14 +418,12 @@ class SearchView extends HookWidget {
     );
   }
 
-  Builder _cupertinoTextfield(
+  Widget _cupertinoTextfield(
       FocusNode focusNode,
       TextEditingController searchTextEdittingController,
       ValueNotifier<String?> searchText) {
-    return Builder(
-      builder: (context) {
-        final cubit = context.watch<SearchCubit>();
-
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
@@ -449,7 +447,7 @@ class SearchView extends HookWidget {
               padding: const EdgeInsets.only(right: 10.0),
               child: Row(
                 children: [
-                  if (cubit.state.isSearching) ...[
+                  if (state.isSearching) ...[
                     SpinKitCircle(
                       size: 18,
                       color: Theme.of(context).primaryColorDark,

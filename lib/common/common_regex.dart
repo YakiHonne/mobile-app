@@ -36,7 +36,7 @@ final RegExp audioUrlRegex = RegExp(
 final wordsRegExp = RegExp(r'\S+');
 
 final urlRegExp = RegExp(
-  r'((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{2,20}(:\d{1,5})?(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?',
+  r'((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~,~#=]{1,256}\.[a-zA-Z0-9]{2,20}(:\d{1,5})?(\/[-a-zA-Z0-9@:%_,\+.~#?&\/=]*[-a-zA-Z0-9@:%_\+.~#?&\/=])?',
 );
 
 final urlRegex2 = RegExp(r'https?://[\w./?=&-]+');

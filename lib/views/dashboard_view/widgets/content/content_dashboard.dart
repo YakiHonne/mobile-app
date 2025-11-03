@@ -592,7 +592,15 @@ class DashboardContentList extends StatelessWidget {
       kind = item.isDraft ? EventKind.LONG_FORM_DRAFT : EventKind.LONG_FORM;
       id = '$kind:${item.pubkey}:${item.identifier}';
       onClick = () {
-        YNavigator.pushPage(context, (context) => ArticleView(article: item));
+        YNavigator.pushPage(
+          context,
+          (context) => item.isDraft
+              ? AddContentView(
+                  article: item,
+                  contentType: AppContentType.article,
+                )
+              : ArticleView(article: item),
+        );
       };
     } else if (item is Curation) {
       content = item.title;

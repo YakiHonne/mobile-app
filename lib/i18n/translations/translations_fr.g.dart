@@ -1415,6 +1415,16 @@ class TranslationsFr extends Translations {
 	@override String get messagesNotLoaded => 'Messages non chargés';
 	@override String get messagesNotLoadedDesc => 'Les messages ne sont pas chargés en raison de l’utilisation d’un signataire distant local. Si vous souhaitez les charger, cliquez sur le bouton ci-dessous.';
 	@override String get noteLoading => 'Chargement de la note...';
+	@override String get hideNonFollowedMedia => 'Masquer les médias non suivis';
+	@override String get hideNonFollowedMediaDesc => 'Masquez automatiquement les images et vidéos des utilisateurs non suivis jusqu’à ce que vous appuyiez pour les afficher.';
+	@override String get clickToView => 'Cliquer pour voir';
+	@override String get relayFeedListEmpty => 'La liste des relais est vide';
+	@override String get relayFeedListEmptyDesc => 'Ajoutez plus de relais à votre liste pour profiter d’un fil personnalisé.';
+	@override String get addRelay => 'Ajouter des relais';
+	@override String get hiddenContent => 'Contenu masqué';
+	@override String get hiddenContentDesc => 'Nous avons masqué ce contenu car vous ne suivez pas ce compte.';
+	@override String get enabledActions => 'Actions activées';
+	@override String get enabledActionsDesc => 'Aucune action activée disponible.';
 }
 
 /// Flat map(s) containing all translations.
@@ -2799,6 +2809,16 @@ extension on TranslationsFr {
 			case 'messagesNotLoaded': return 'Messages non chargés';
 			case 'messagesNotLoadedDesc': return 'Les messages ne sont pas chargés en raison de l’utilisation d’un signataire distant local. Si vous souhaitez les charger, cliquez sur le bouton ci-dessous.';
 			case 'noteLoading': return 'Chargement de la note...';
+			case 'hideNonFollowedMedia': return 'Masquer les médias non suivis';
+			case 'hideNonFollowedMediaDesc': return 'Masquez automatiquement les images et vidéos des utilisateurs non suivis jusqu’à ce que vous appuyiez pour les afficher.';
+			case 'clickToView': return 'Cliquer pour voir';
+			case 'relayFeedListEmpty': return 'La liste des relais est vide';
+			case 'relayFeedListEmptyDesc': return 'Ajoutez plus de relais à votre liste pour profiter d’un fil personnalisé.';
+			case 'addRelay': return 'Ajouter des relais';
+			case 'hiddenContent': return 'Contenu masqué';
+			case 'hiddenContentDesc': return 'Nous avons masqué ce contenu car vous ne suivez pas ce compte.';
+			case 'enabledActions': return 'Actions activées';
+			case 'enabledActionsDesc': return 'Aucune action activée disponible.';
 			default: return null;
 		}
 	}

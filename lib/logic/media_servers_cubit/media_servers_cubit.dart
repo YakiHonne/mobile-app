@@ -13,8 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:pasteboard/pasteboard.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 
 import '../../common/common_regex.dart';
 import '../../models/app_models/diverse_functions.dart';
@@ -22,7 +22,6 @@ import '../../models/media_manager_data.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
-import '../../views/write_note_view/widgets/mention_text_field.dart';
 
 part 'media_servers_state.dart';
 
@@ -207,34 +206,104 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     );
   }
 
+  // Future<String?> pasteImage(
+  //   Function() onRegularPaste,
+  //   Function(bool)? onLoading,
+  // ) async {
+  //   try {
+  //     final Uint8List? imageBytes = await Pasteboard.image;
+  //     final clipboard = SystemClipboard.instance;
+  //     if (clipboard == null) {
+  //       await onRegularPaste();
+  //       return null;
+  //     }
+
+  //     final reader = await clipboard.read();
+  //     final supportedFormats = [
+  //       Formats.png,
+  //       Formats.jpeg,
+  //       Formats.gif,
+  //       Formats.bmp,
+  //       Formats.tiff
+  //     ];
+
+  //     for (final format in supportedFormats) {
+  //       if (reader.canProvide(format)) {
+  //         return await _handleImagePaste(reader, format, onLoading);
+  //       }
+  //     }
+
+  //     await onRegularPaste();
+  //     return null;
+  //   } catch (e) {
+  //     await onRegularPaste();
+  //     return null;
+  //   }
+  // }
+
+  // Future<String?> _handleImagePaste(
+  //   DataReader reader,
+  //   SimpleFileFormat format,
+  //   Function(bool)? onLoading,
+  // ) async {
+  //   final completer = Completer<String?>();
+
+  //   try {
+  //     reader.getFile(format, (file) async {
+  //       try {
+  //         String? imageUrl;
+
+  //         final stream = file.getStream();
+  //         final bytes = <int>[];
+  //         await stream.forEach((chunk) => bytes.addAll(chunk));
+
+  //         final imageData = Uint8List.fromList(bytes);
+  //         final fileExtension = getFileExtension(format);
+
+  //         if (fileExtension == null) {
+  //           BotToastUtils.showError(t.errorUploadingImage);
+  //           completer.complete(null);
+  //         }
+
+  //         onLoading?.call(true);
+  //         imageUrl = await mediaServersCubit.uploadMediaFromUint8List(
+  //           imageData: imageData,
+  //           extension: format.providerFormat,
+  //         );
+
+  //         if (imageUrl == null) {
+  //           BotToastUtils.showError(t.errorUploadingImage);
+  //         }
+
+  //         onLoading?.call(false);
+  //         completer.complete(imageUrl);
+  //       } catch (e) {
+  //         BotToastUtils.showError(t.errorUploadingImage);
+  //         onLoading?.call(false);
+  //         completer.complete(null);
+  //       }
+  //     });
+  //   } catch (e) {
+  //     BotToastUtils.showError(t.errorUploadingImage);
+  //     completer.complete(null);
+  //   }
+
+  //   return completer.future;
+  // }
   Future<String?> pasteImage(
     Function() onRegularPaste,
     Function(bool)? onLoading,
   ) async {
     try {
-      final clipboard = SystemClipboard.instance;
-      if (clipboard == null) {
+      // Check if there's an image in clipboard
+      final imageBytes = await Pasteboard.image;
+
+      if (imageBytes == null || imageBytes.isEmpty) {
         await onRegularPaste();
         return null;
       }
 
-      final reader = await clipboard.read();
-      final supportedFormats = [
-        Formats.png,
-        Formats.jpeg,
-        Formats.gif,
-        Formats.bmp,
-        Formats.tiff
-      ];
-
-      for (final format in supportedFormats) {
-        if (reader.canProvide(format)) {
-          return await _handleImagePaste(reader, format, onLoading);
-        }
-      }
-
-      await onRegularPaste();
-      return null;
+      return await _handleImagePaste(imageBytes, onLoading);
     } catch (e) {
       await onRegularPaste();
       return null;
@@ -242,53 +311,85 @@ class MediaServersCubit extends Cubit<MediaServersState> {
   }
 
   Future<String?> _handleImagePaste(
-    DataReader reader,
-    SimpleFileFormat format,
+    Uint8List imageBytes,
     Function(bool)? onLoading,
   ) async {
-    final completer = Completer<String?>();
-
     try {
-      reader.getFile(format, (file) async {
-        try {
-          String? imageUrl;
+      onLoading?.call(true);
 
-          final stream = file.getStream();
-          final bytes = <int>[];
-          await stream.forEach((chunk) => bytes.addAll(chunk));
+      // Detect format from image bytes (PNG starts with specific bytes)
+      final extension = _detectImageFormat(imageBytes);
 
-          final imageData = Uint8List.fromList(bytes);
-          final fileExtension = getFileExtension(format);
+      // Upload the image
+      final imageUrl = await mediaServersCubit.uploadMediaFromUint8List(
+        imageData: imageBytes,
+        extension: extension,
+      );
 
-          if (fileExtension == null) {
-            BotToastUtils.showError(t.errorUploadingImage);
-            completer.complete(null);
-          }
+      if (imageUrl == null) {
+        BotToastUtils.showError(t.errorUploadingImage);
+        onLoading?.call(false);
+        return null;
+      }
 
-          onLoading?.call(true);
-          imageUrl = await mediaServersCubit.uploadMediaFromUint8List(
-            imageData: imageData,
-            extension: format.providerFormat,
-          );
-
-          if (imageUrl == null) {
-            BotToastUtils.showError(t.errorUploadingImage);
-          }
-
-          onLoading?.call(false);
-          completer.complete(imageUrl);
-        } catch (e) {
-          BotToastUtils.showError(t.errorUploadingImage);
-          onLoading?.call(false);
-          completer.complete(null);
-        }
-      });
+      onLoading?.call(false);
+      return imageUrl;
     } catch (e) {
       BotToastUtils.showError(t.errorUploadingImage);
-      completer.complete(null);
+      onLoading?.call(false);
+      return null;
+    }
+  }
+
+  String _detectImageFormat(Uint8List bytes) {
+    // PNG signature
+    if (bytes.length >= 8 &&
+        bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47) {
+      return 'png';
     }
 
-    return completer.future;
+    // JPEG signature
+    if (bytes.length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xD8) {
+      return 'jpeg';
+    }
+
+    // GIF signature
+    if (bytes.length >= 6 &&
+        bytes[0] == 0x47 &&
+        bytes[1] == 0x49 &&
+        bytes[2] == 0x46) {
+      return 'gif';
+    }
+
+    // BMP signature
+    if (bytes.length >= 2 && bytes[0] == 0x42 && bytes[1] == 0x4D) {
+      return 'bmp';
+    }
+
+    // TIFF signature (little-endian)
+    if (bytes.length >= 4 &&
+        bytes[0] == 0x49 &&
+        bytes[1] == 0x49 &&
+        bytes[2] == 0x2A &&
+        bytes[3] == 0x00) {
+      return 'tiff';
+    }
+
+    // TIFF signature (big-endian)
+    if (bytes.length >= 4 &&
+        bytes[0] == 0x4D &&
+        bytes[1] == 0x4D &&
+        bytes[2] == 0x00 &&
+        bytes[3] == 0x2A) {
+      return 'tiff';
+    }
+
+    lg.i('not found');
+    // Default to PNG if unknown
+    return 'png';
   }
 
   Future<String?> uploadMediaFromUint8List({

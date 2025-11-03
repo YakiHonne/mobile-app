@@ -4206,6 +4206,18 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'No enabled actions available.'
 	String get enabledActionsDesc => 'No enabled actions available.';
+
+	/// en: 'Fetching notification event'
+	String get fetchingNotificationEvent => 'Fetching notification event';
+
+	/// en: 'Notification event not found'
+	String get notificationEventNotFound => 'Notification event not found';
+
+	/// en: 'Fiat currency'
+	String get fiatCurrency => 'Fiat currency';
+
+	/// en: 'Convert sats into your selected fiat currency to better understand their value'
+	String get fiatCurrencyDesc => 'Convert sats into your selected fiat currency to better understand their value';
 }
 
 /// Flat map(s) containing all translations.
@@ -5602,6 +5614,10 @@ extension on Translations {
 			case 'hiddenContentDesc': return 'We\'ve hidden this content because you don\'t follow this account.';
 			case 'enabledActions': return 'Enabled actions';
 			case 'enabledActionsDesc': return 'No enabled actions available.';
+			case 'fetchingNotificationEvent': return 'Fetching notification event';
+			case 'notificationEventNotFound': return 'Notification event not found';
+			case 'fiatCurrency': return 'Fiat currency';
+			case 'fiatCurrencyDesc': return 'Convert sats into your selected fiat currency to better understand their value';
 			default: return null;
 		}
 	}

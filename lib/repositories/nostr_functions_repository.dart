@@ -161,8 +161,7 @@ class NostrFunctionsRepository {
       ),
       eventCallBack: (e) {
         if (e is Event &&
-            !nostrRepository.mutes.contains(e.pubkey) &&
-            !nostrRepository.bannedPubkeys.contains(e.pubkey) &&
+            !isUserMuted(e.pubkey) &&
             e.kind == EventKind.TEXT_NOTE) {
           notes.add(DetailedNoteModel.fromEvent(e));
         }
@@ -216,8 +215,7 @@ class NostrFunctionsRepository {
       eventCallBack: (e) {
         if (e is Event &&
             e.kind == EventKind.METADATA &&
-            !nostrRepository.bannedPubkeys.contains(e.pubkey) &&
-            !nostrRepository.mutes.contains(e.pubkey)) {
+            !isUserMuted(e.pubkey)) {
           final m = Metadata.fromEvent(e);
           if (m != null) {
             metadatas.add(m);
@@ -240,8 +238,7 @@ class NostrFunctionsRepository {
       eventCallBack: (e) {
         if (e is Event &&
             e.kind == EventKind.TEXT_NOTE &&
-            !nostrRepository.bannedPubkeys.contains(e.pubkey) &&
-            !nostrRepository.mutes.contains(e.pubkey)) {
+            !isUserMuted(e.pubkey)) {
           notes.add(DetailedNoteModel.fromEvent(e));
         }
       },
@@ -262,8 +259,7 @@ class NostrFunctionsRepository {
       eventCallBack: (e) {
         if (e is Event &&
             e.kind == EventKind.TEXT_NOTE &&
-            !nostrRepository.bannedPubkeys.contains(e.pubkey) &&
-            !nostrRepository.mutes.contains(e.pubkey)) {
+            !isUserMuted(e.pubkey)) {
           notes.add(DetailedNoteModel.fromEvent(e));
         }
       },
@@ -1183,9 +1179,8 @@ class NostrFunctionsRepository {
       ],
       [],
       eventCallBack: (event, relay) {
-        if ((event.kind == EventKind.CURATION_ARTICLES ||
-                event.kind == EventKind.CURATION_VIDEOS) &&
-            !nostrRepository.bannedPubkeys.contains(event.pubkey)) {
+        if (event.kind == EventKind.CURATION_ARTICLES ||
+            event.kind == EventKind.CURATION_VIDEOS) {
           try {
             final curation = Curation.fromEvent(event, relay);
             if (curation.eventsIds.isNotEmpty) {
@@ -3015,8 +3010,7 @@ class NostrFunctionsRepository {
                 ? f
                 : DEFAULT_BOOTSTRAP_RELAYS,
         eventCallBack: (ev, relay) {
-          if (!nostrRepository.mutes.contains(ev.pubkey) &&
-              !nostrRepository.bannedPubkeys.contains(ev.pubkey)) {
+          if (!isUserMuted(ev.pubkey)) {
             if (ev.kind == EventKind.LONG_FORM) {
               final article = Article.fromEvent(
                 ev,
@@ -3174,8 +3168,7 @@ class NostrFunctionsRepository {
     }
 
     void setEvent(Event event, String? relay) {
-      if (!nostrRepository.mutes.contains(event.pubkey) &&
-          !nostrRepository.bannedPubkeys.contains(event.pubkey)) {
+      if (!isUserMuted(event.pubkey)) {
         if (event.kind == EventKind.LONG_FORM) {
           final article = Article.fromEvent(
             event,
@@ -3533,6 +3526,7 @@ class NostrFunctionsRepository {
       limit: limit,
       relay: url,
       core: nc,
+      source: EventsSource.all,
     );
   }
 
@@ -3587,8 +3581,7 @@ class NostrFunctionsRepository {
         eventCallBack: (ev, relay) {
           final event = ExtendedEvent.fromEv(ev);
 
-          if (!nostrRepository.mutes.contains(event.pubkey) &&
-              !nostrRepository.bannedPubkeys.contains(event.pubkey)) {
+          if (!isUserMuted(ev.pubkey)) {
             if (event.kind == EventKind.LONG_FORM) {
               final article = Article.fromEvent(
                 event,
@@ -3729,8 +3722,7 @@ class NostrFunctionsRepository {
       relay != null ? [relay] : [],
       eventCallBack: (event, relay) {
         if (event.kind == EventKind.SMART_WIDGET_ENH &&
-            !nostrRepository.mutes.contains(event.pubkey) &&
-            !nostrRepository.bannedPubkeys.contains(event.pubkey)) {
+            !isUserMuted(event.pubkey)) {
           final smartWidget = SmartWidget.fromEvent(
             event,
           );
@@ -3811,8 +3803,7 @@ class NostrFunctionsRepository {
       eventCallBack: (event, relay) {
         if ((event.kind == EventKind.LONG_FORM ||
                 event.kind == EventKind.LONG_FORM_DRAFT) &&
-            !nostrRepository.mutes.contains(event.pubkey) &&
-            !nostrRepository.bannedPubkeys.contains(event.pubkey)) {
+            !isUserMuted(event.pubkey)) {
           final article = Article.fromEvent(
             event,
             relay: relay,
@@ -4127,10 +4118,11 @@ class NostrFunctionsRepository {
   }
 
   static Future<Event?> getEventById({
-    String? eventId,
     required bool isIdentifier,
+    String? eventId,
     String? author,
     List<int>? kinds,
+    List<String>? relays,
   }) async {
     Event? event;
 
@@ -4143,7 +4135,7 @@ class NostrFunctionsRepository {
 
     await nc.doQuery(
       [f1],
-      [],
+      relays ?? [],
       eventCallBack: (newEvent, relay) {
         if (event == null || event!.createdAt < newEvent.createdAt) {
           event = newEvent;
@@ -4487,9 +4479,15 @@ class NostrFunctionsRepository {
 
     nostrRepository.contactListController.sink.add(contactListCubit.contacts);
 
-    HttpFunctionsRepository.sendActionThroughEvent(
-      Event.partial(kind: EventKind.CONTACT_LIST),
-    );
+    if (canSign()) {
+      final list = await contactListCubit.loadContactList(
+        currentSigner!.getPublicKey(),
+      );
+
+      if (list != null) {
+        HttpFunctionsRepository.sendActionThroughEvent(list.toEvent());
+      }
+    }
 
     return true;
   }

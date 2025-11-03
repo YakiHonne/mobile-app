@@ -364,9 +364,21 @@ class LightMetadata implements BaseEventModel {
   String getNProfile() {
     return Nip19.encodeShareableEntity(
       'nprofile',
-      '',
-      [],
       pubkey,
+      [],
+      '',
+      EventKind.METADATA,
+    );
+  }
+
+  Future<String> getNProfileWithRelays() async {
+    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
+
+    return Nip19.encodeShareableEntity(
+      'nprofile',
+      pubkey,
+      relays,
+      '',
       EventKind.METADATA,
     );
   }

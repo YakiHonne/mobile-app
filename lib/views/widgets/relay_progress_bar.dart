@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../logic/relays_progress_cubit/relays_progress_cubit.dart';
 import '../../utils/utils.dart';
@@ -250,21 +251,25 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
             )
           : ScrollShadow(
               color: Theme.of(context).cardColor,
-              child: ListView(
-                padding: const EdgeInsets.all(
-                  kDefaultPadding,
+              child: ScrollShadow(
+                color: Theme.of(context).cardColor,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  itemCount: state.totalRelays.length,
+                  itemBuilder: (context, index) {
+                    final e = state.totalRelays[index];
+                    return relayStatus(
+                      relay: e,
+                      isSuccessful: state.successfulRelays.contains(e),
+                    );
+                  },
                 ),
-                children: state.totalRelays
-                    .map(
-                      (e) => relayStatus(
-                        relay: e,
-                        isSuccessful: state.successfulRelays.contains(e),
-                      ),
-                    )
-                    .toList(),
-              ),
-            );
+              ));
     } catch (e) {
+      lg.i(e);
+      lg.i(state.totalRelays);
       return EmptyList(
         description: context.t.noRelaysCanBeFound.capitalizeFirst(),
         icon: FeatureIcons.relays,
@@ -280,15 +285,17 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
         children: [
           Image.asset(
             isSuccessful ? Images.ok : Images.forbidden,
-            width: 30,
-            height: 30,
+            width: 25,
+            height: 25,
           ),
           const SizedBox(
             width: kDefaultPadding / 2,
           ),
           Flexible(
             child: Text(
-              relay.split('wss://')[1],
+              Relay.clean(relay) ?? relay,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

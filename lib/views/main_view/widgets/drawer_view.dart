@@ -192,7 +192,7 @@ class MainViewDrawer extends HookWidget {
           Row(
             children: [
               Text(
-                '~ \$${lightningState.isWalletHidden ? '*****' : lightningState.balanceInUSD == -1 ? 'N/A' : lightningState.balanceInUSD.toStringAsFixed(2)}',
+                '~ \$${lightningState.isWalletHidden ? '*****' : lightningState.balanceInFiat == -1 ? 'N/A' : lightningState.balanceInFiat.toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               Text(

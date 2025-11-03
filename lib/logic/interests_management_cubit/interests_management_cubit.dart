@@ -35,7 +35,7 @@ class InterestsManagementCubit extends Cubit<InterestsManagementState> {
       if (!isClosed) {
         emit(
           state.copyWith(
-            interests: newSet,
+            interests: {interest, ...newSet},
           ),
         );
       }

@@ -260,7 +260,7 @@ class GalleryComponent extends HookWidget {
               ],
             ),
           ),
-          if (hideImageStatus.value)
+          if (hideImageStatus.value && entry.value == UrlType.image)
             HiddenMediaContainer(
               hideImageStatus: hideImageStatus,
               invertColor: invertColor,

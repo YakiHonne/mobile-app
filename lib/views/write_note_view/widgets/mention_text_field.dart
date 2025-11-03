@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mention_tag_text_field/mention_tag_text_field.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
@@ -203,26 +202,6 @@ class _ClipboardPasteMentionTextFieldState
       },
     );
   }
-}
-
-String? getFileExtension(SimpleFileFormat format) {
-  if (format == Formats.png) {
-    return 'png';
-  }
-  if (format == Formats.jpeg) {
-    return 'jpg';
-  }
-  if (format == Formats.gif) {
-    return 'gif';
-  }
-  if (format == Formats.bmp) {
-    return 'bmp';
-  }
-  if (format == Formats.tiff) {
-    return 'tiff';
-  }
-
-  return null;
 }
 
 class BlockUserTypedMarkerFormatter extends TextInputFormatter {
