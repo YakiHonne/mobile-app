@@ -256,50 +256,64 @@ class DashboardDraftContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: article != null ? Theme.of(context).dividerColor : kMainColor,
-          width: 0.5,
+    return GestureDetector(
+      onTap: () {
+        YNavigator.pushPage(
+          context,
+          (context) {
+            return AddContentView(
+              article: article,
+              contentType: AppContentType.article,
+            );
+          },
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(
+            color:
+                article != null ? Theme.of(context).dividerColor : kMainColor,
+            width: 0.5,
+          ),
         ),
-      ),
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      child: Row(
-        children: [
-          ContentTypeIconBox(
-            icon: type == 'Article'
-                ? FeatureIcons.selfArticles
-                : type == 'Note'
-                    ? FeatureIcons.uncensoredNote
-                    : FeatureIcons.smartWidget,
-          ),
-          const SizedBox(
-            width: kDefaultPadding / 2,
-          ),
-          _draftInfo(context),
-          if (article != null)
-            PullDownGlobalButton(
-              model: article!,
-              enableEdit: true,
-              enableDelete: true,
-              onDelete: () {
-                showCupertinoDeletionDialogue(
-                  context: context,
-                  title: context.t.deleteDraft.capitalizeFirst(),
-                  description: context.t.confirmDeleteDraft.capitalizeFirst(),
-                  buttonText: context.t.delete.capitalizeFirst(),
-                  onDelete: () {
-                    YNavigator.pop(context);
-                    context
-                        .read<DashboardHomeCubit>()
-                        .onDeleteContent(article!.id);
-                  },
-                );
-              },
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        child: Row(
+          children: [
+            ContentTypeIconBox(
+              icon: type == 'Article'
+                  ? FeatureIcons.selfArticles
+                  : type == 'Note'
+                      ? FeatureIcons.uncensoredNote
+                      : FeatureIcons.smartWidget,
             ),
-        ],
+            const SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            _draftInfo(context),
+            if (article != null)
+              PullDownGlobalButton(
+                model: article!,
+                enableEdit: true,
+                enableDelete: true,
+                onDelete: () {
+                  showCupertinoDeletionDialogue(
+                    context: context,
+                    title: context.t.deleteDraft.capitalizeFirst(),
+                    description: context.t.confirmDeleteDraft.capitalizeFirst(),
+                    buttonText: context.t.delete.capitalizeFirst(),
+                    onDelete: () {
+                      YNavigator.pop(context);
+                      context
+                          .read<DashboardHomeCubit>()
+                          .onDeleteContent(article!.id);
+                    },
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -1,13 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:pasteboard/pasteboard.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../utils/bot_toast_util.dart';
@@ -168,37 +168,33 @@ class MediaUtils {
     final ctx = nostrRepository.mainCubit.context;
 
     try {
-      final clipboard = SystemClipboard.instance;
-      if (clipboard == null) {
-        BotToastUtils.showError(ctx.t.errorCopyImage);
-        return;
-      }
-
       final response = await Dio().get(
         link,
         options: Options(responseType: ResponseType.bytes),
       );
 
-      final mimeType = _getMimeType(link, response)?.split('/').last;
+      final mimeType = _getMimeType(link, response);
+
       if (mimeType == null) {
-        return;
-      }
-
-      final item = DataWriterItem();
-      final success = _addImageToClipboard(item, mimeType, response.data);
-
-      if (success) {
-        await clipboard.write([item]);
-        if (ctx.mounted) {
-          BotToastUtils.showSuccess(ctx.t.copyImageGallery);
-        }
-      } else {
         if (ctx.mounted) {
           BotToastUtils.showError(ctx.t.errorCopyImage);
         }
+        return;
+      }
+
+      // Convert response data to Uint8List
+      final imageBytes = response.data is Uint8List
+          ? response.data
+          : Uint8List.fromList(response.data);
+
+      // Copy to clipboard
+      await Pasteboard.writeImage(imageBytes);
+
+      if (ctx.mounted) {
+        BotToastUtils.showSuccess(ctx.t.copyImageGallery);
       }
     } catch (e) {
-      debugPrint('Error copying image: $e');
+      lg.i('Error copying image: $e');
       if (ctx.mounted) {
         BotToastUtils.showError(ctx.t.errorCopyImage);
       }
@@ -213,35 +209,5 @@ class MediaUtils {
     }
 
     return response.headers['content-type']?.first;
-  }
-
-  static bool _addImageToClipboard(
-    DataWriterItem item,
-    String mimeType,
-    dynamic data,
-  ) {
-    switch (mimeType.toLowerCase()) {
-      case 'png':
-        item.add(Formats.png.lazy(() => data));
-        return true;
-      case 'jpg':
-      case 'jpeg':
-        item.add(Formats.jpeg.lazy(() => data));
-        return true;
-      case 'gif':
-        item.add(Formats.gif.lazy(() => data));
-        return true;
-      case 'webp':
-        item.add(Formats.webp.lazy(() => data));
-        return true;
-      case 'tiff':
-        item.add(Formats.tiff.lazy(() => data));
-        return true;
-      case 'bmp':
-        item.add(Formats.bmp.lazy(() => data));
-        return true;
-      default:
-        return false;
-    }
   }
 }

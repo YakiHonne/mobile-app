@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:amberflutter/amberflutter.dart';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/notifications/local_notification_manager.dart';
 import 'common/tracker/umami_tracker.dart';
-import 'firebase_options.dart';
 import 'logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import 'logic/contact_list_cubit/contact_list_cubit.dart';
 import 'logic/crashlytics_cubit/crashlytics_cubit.dart';
@@ -78,7 +76,6 @@ class AppInitializer {
     final results = await Future.wait<dynamic>([
       SharedPreferences.getInstance(),
       dotenv.load(),
-      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     ]);
 
     prefs = results[0];
@@ -145,7 +142,6 @@ class AppInitializer {
   /// Initialize repositories
   static Future<void> _initializeRepositories() async {
     connectivityService = ConnectivityService();
-
     connectivityService.startPeriodicChecks();
 
     nostrRepository = NostrDataRepository();
@@ -260,6 +256,7 @@ class AppInitializer {
   /// Initialize notifications (critical timing: right after cubits)
   static void _initializeNotifications() {
     LocalNotificationManager.instance.initNotifications();
+
     notificationsCubit.loadNotifications();
   }
 
@@ -377,8 +374,6 @@ class AppInitializer {
 
             await nc.saveRelaySet(feedRelaySet!);
           }
-
-          lg.i(feedRelaySet);
 
           await nc
               .connectNonConnectedRelays(feedRelaySet!.relaysMap.keys.toSet());

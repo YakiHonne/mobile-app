@@ -336,7 +336,7 @@ class SendZapsUsingInvoice extends HookWidget {
   }
 
   double _getAmountInUsd(int amount) {
-    return walletManagerCubit.getBtcInUsdFromAmount(amount);
+    return walletManagerCubit.getBtcInFiatFromAmount(amount);
   }
 }
 

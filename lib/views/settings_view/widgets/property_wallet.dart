@@ -72,6 +72,10 @@ class PropertyWallets extends HookWidget {
                     const SizedBox(
                       height: kDefaultPadding,
                     ),
+                    _currenciesRow(),
+                    const SizedBox(
+                      height: kDefaultPadding,
+                    ),
                     TitleDescriptionComponent(
                       title: context.t.defaultZapAmount.capitalizeFirst(),
                       description: context.t.defaultZapDesc,
@@ -108,6 +112,81 @@ class PropertyWallets extends HookWidget {
               );
             },
           ),
+        );
+      },
+    );
+  }
+
+  BlocBuilder<WalletsManagerCubit, WalletsManagerState> _currenciesRow() {
+    return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
+      builder: (context, state) {
+        return Row(
+          spacing: kDefaultPadding / 2,
+          children: [
+            Expanded(
+              child: TitleDescriptionComponent(
+                title: context.t.fiatCurrency.capitalizeFirst(),
+                description: context.t.fiatCurrencyDesc,
+              ),
+            ),
+            PullDownButton(
+              routeTheme: PullDownMenuRouteTheme(
+                backgroundColor: Theme.of(context).cardColor,
+              ),
+              itemBuilder: (context) {
+                final textStyle = Theme.of(context).textTheme.labelLarge;
+
+                return [
+                  ...currencies.entries.map(
+                    (e) {
+                      return PullDownMenuItem.selectable(
+                        onTap: () {
+                          walletManagerCubit.setActiveFiat(e.key);
+                        },
+                        title: e.key.toUpperCase(),
+                        selected: state.activeCurrency == e.key,
+                        iconWidget: Text(e.value),
+                        itemTheme: PullDownMenuItemTheme(
+                          textStyle: textStyle,
+                        ),
+                      );
+                    },
+                  )
+                ];
+              },
+              buttonBuilder: (context, showMenu) => GestureDetector(
+                onTap: showMenu,
+                behavior: HitTestBehavior.translucent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currencies[state.activeCurrency]!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      state.activeCurrency.toUpperCase(),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(
+                      width: kDefaultPadding / 4,
+                    ),
+                    SvgPicture.asset(
+                      FeatureIcons.arrowDown,
+                      width: 15,
+                      height: 15,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).primaryColorDark,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

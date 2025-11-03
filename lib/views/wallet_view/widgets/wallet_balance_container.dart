@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
@@ -215,20 +216,60 @@ class WallatBalanceContainer extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '~ \$${state.isWalletHidden ? '*****' : state.balanceInUSD == -1 ? 'N/A' : state.balanceInUSD.toStringAsFixed(2)}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                ' USD',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(context).highlightColor,
+          PullDownButton(
+            routeTheme: PullDownMenuRouteTheme(
+              backgroundColor: Theme.of(context).cardColor,
+            ),
+            itemBuilder: (context) {
+              final textStyle = Theme.of(context).textTheme.labelLarge;
+
+              return [
+                ...currencies.entries.map(
+                  (e) {
+                    return PullDownMenuItem.selectable(
+                      onTap: () {
+                        walletManagerCubit.setActiveFiat(e.key);
+                      },
+                      title: e.key.toUpperCase(),
+                      selected: state.activeCurrency == e.key,
+                      iconWidget: Text(e.value),
+                      itemTheme: PullDownMenuItemTheme(
+                        textStyle: textStyle,
+                      ),
+                    );
+                  },
+                )
+              ];
+            },
+            buttonBuilder: (context, showMenu) => GestureDetector(
+              onTap: showMenu,
+              behavior: HitTestBehavior.translucent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: kDefaultPadding / 4,
+                children: [
+                  Text(
+                    '\$${state.isWalletHidden ? '*****' : state.balanceInFiat == -1 ? 'N/A' : state.balanceInFiat.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    state.activeCurrency.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                  SvgPicture.asset(
+                    FeatureIcons.arrowDown,
+                    width: 15,
+                    height: 15,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColorDark,
+                      BlendMode.srcIn,
                     ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           Builder(
             builder: (context) {

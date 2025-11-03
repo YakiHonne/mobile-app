@@ -1012,25 +1012,41 @@ class TranslationButton extends HookWidget {
 
     return HeartbeatFade(
       enabled: isTranslating.value,
-      child: CustomIconButton(
-        key: const ValueKey('translate_text'),
-        onClicked: () async {
-          if (!isTranslating.value) {
-            if (showOriginalContent.value) {
-              translateContent();
-            } else {
-              onTextTranslated?.call(note.content);
-              showOriginalContent.value = true;
+      child: Tooltip(
+        message: context.t.seeTranslation,
+        textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+              color: Theme.of(context).primaryColorDark,
+            ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding / 4),
+          border: Border.all(color: Theme.of(context).dividerColor),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 2,
+            )
+          ],
+        ),
+        child: CustomIconButton(
+          key: const ValueKey('translate_text'),
+          onClicked: () async {
+            if (!isTranslating.value) {
+              if (showOriginalContent.value) {
+                translateContent();
+              } else {
+                onTextTranslated?.call(note.content);
+                showOriginalContent.value = true;
+              }
             }
-          }
-        },
-        icon: FeatureIcons.translation,
-        size: 16,
-        backgroundColor: kTransparent,
-        iconColor: showOriginalContent.value
-            ? Theme.of(context).highlightColor
-            : kMainColor,
-        vd: -4,
+          },
+          icon: FeatureIcons.translation,
+          size: 16,
+          backgroundColor: kTransparent,
+          iconColor: showOriginalContent.value
+              ? Theme.of(context).highlightColor
+              : kMainColor,
+          vd: -4,
+        ),
       ),
     );
   }

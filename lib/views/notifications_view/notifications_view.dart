@@ -54,6 +54,11 @@ class NotificationsView extends HookWidget {
       listenWhen: (previous, current) => previous.index != current.index,
       listener: (context, state) {
         tabController.animateTo(state.index);
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       },
       buildWhen: (previous, current) =>
           previous.index != current.index || previous.events != current.events,
@@ -77,26 +82,31 @@ class NotificationsView extends HookWidget {
               Expanded(
                 child: TabBarView(
                   controller: tabController,
-                  children: const [
+                  children: [
                     SelectedNotifications(
                       index: 0,
-                      key: ValueKey('0'),
+                      key: const ValueKey('0'),
+                      scrollController: scrollController,
                     ),
                     SelectedNotifications(
                       index: 1,
-                      key: ValueKey('1'),
+                      key: const ValueKey('1'),
+                      scrollController: scrollController,
                     ),
                     SelectedNotifications(
                       index: 2,
-                      key: ValueKey('2'),
+                      key: const ValueKey('2'),
+                      scrollController: scrollController,
                     ),
                     SelectedNotifications(
                       index: 3,
-                      key: ValueKey('3'),
+                      key: const ValueKey('3'),
+                      scrollController: scrollController,
                     ),
                     SelectedNotifications(
                       index: 4,
-                      key: ValueKey('4'),
+                      key: const ValueKey('4'),
+                      scrollController: scrollController,
                     ),
                   ],
                 ),
@@ -113,9 +123,11 @@ class SelectedNotifications extends HookWidget {
   const SelectedNotifications({
     super.key,
     required this.index,
+    required this.scrollController,
   });
 
   final int index;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +175,7 @@ class SelectedNotifications extends HookWidget {
 
         return SmartRefresher(
           controller: controller,
+          scrollController: scrollController,
           enablePullUp: true,
           header: const RefresherClassicHeader(),
           onRefresh: () =>

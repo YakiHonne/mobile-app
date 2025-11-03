@@ -1415,6 +1415,16 @@ class TranslationsPt extends Translations {
 	@override String get messagesNotLoaded => 'Mensagens não carregadas';
 	@override String get messagesNotLoadedDesc => 'As mensagens não foram carregadas devido ao uso de um assinante remoto local. Se desejar carregá-las, clique no botão abaixo.';
 	@override String get noteLoading => 'Carregando nota...';
+	@override String get hideNonFollowedMedia => 'Ocultar mídia de não seguidos';
+	@override String get hideNonFollowedMediaDesc => 'Oculta automaticamente imagens e vídeos de usuários que você não segue até que toque para exibir.';
+	@override String get clickToView => 'Clique para visualizar';
+	@override String get relayFeedListEmpty => 'Lista de relés vazia';
+	@override String get relayFeedListEmptyDesc => 'Adicione mais relés à sua lista para aproveitar um feed personalizado.';
+	@override String get addRelay => 'Adicionar relés';
+	@override String get hiddenContent => 'Conteúdo oculto';
+	@override String get hiddenContentDesc => 'Ocultamos este conteúdo porque você não segue esta conta.';
+	@override String get enabledActions => 'Ações habilitadas';
+	@override String get enabledActionsDesc => 'Nenhuma ação habilitada disponível.';
 }
 
 /// Flat map(s) containing all translations.
@@ -2799,6 +2809,16 @@ extension on TranslationsPt {
 			case 'messagesNotLoaded': return 'Mensagens não carregadas';
 			case 'messagesNotLoadedDesc': return 'As mensagens não foram carregadas devido ao uso de um assinante remoto local. Se desejar carregá-las, clique no botão abaixo.';
 			case 'noteLoading': return 'Carregando nota...';
+			case 'hideNonFollowedMedia': return 'Ocultar mídia de não seguidos';
+			case 'hideNonFollowedMediaDesc': return 'Oculta automaticamente imagens e vídeos de usuários que você não segue até que toque para exibir.';
+			case 'clickToView': return 'Clique para visualizar';
+			case 'relayFeedListEmpty': return 'Lista de relés vazia';
+			case 'relayFeedListEmptyDesc': return 'Adicione mais relés à sua lista para aproveitar um feed personalizado.';
+			case 'addRelay': return 'Adicionar relés';
+			case 'hiddenContent': return 'Conteúdo oculto';
+			case 'hiddenContentDesc': return 'Ocultamos este conteúdo porque você não segue esta conta.';
+			case 'enabledActions': return 'Ações habilitadas';
+			case 'enabledActionsDesc': return 'Nenhuma ação habilitada disponível.';
 			default: return null;
 		}
 	}

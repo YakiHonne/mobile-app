@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.2+163';
+const String appVersion = 'v1.9.3+165';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -127,6 +127,10 @@ final imagesCacheManager = CacheManager(
     //one week cache period
   ),
 );
+
+//** nostr indexer urls
+
+const nostrIndexersUrls = ['njump.me', 'nostr.com'];
 
 //** available locales
 
@@ -729,4 +733,49 @@ const Map<String, String> countryFlags = {
   'YE': '🇾🇪',
   'ZM': '🇿🇲',
   'ZW': '🇿🇼',
+};
+
+const Map<String, String> currencies = {
+  'usd': '🇺🇸',
+  'eur': '🇪🇺',
+  'aed': '🇦🇪',
+  'cad': '🇨🇦',
+  'gbp': '🇬🇧',
+  'cny': '🇨🇳',
+  'aud': '🇦🇺',
+  'myr': '🇲🇾',
+  'jpy': '🇯🇵',
+  'ars': '🇦🇷',
+  'bhd': '🇧🇭',
+  'bmd': '🇧🇲',
+  'brl': '🇧🇷',
+  'chf': '🇨🇭',
+  'clp': '🇨🇱',
+  'czk': '🇨🇿',
+  'dkk': '🇩🇰',
+  'gel': '🇬🇪',
+  'hkd': '🇭🇰',
+  'huf': '🇭🇺',
+  'idr': '🇮🇩',
+  'inr': '🇮🇳',
+  'krw': '🇰🇷',
+  'kwd': '🇰🇼',
+  'lkr': '🇱🇰',
+  'mmk': '🇲🇲',
+  'mxn': '🇲🇽',
+  'ngn': '🇳🇬',
+  'nok': '🇳🇴',
+  'nzd': '🇳🇿',
+  'php': '🇵🇭',
+  'pkr': '🇵🇰',
+  'pln': '🇵🇱',
+  'rub': '🇷🇺',
+  'sar': '🇸🇦',
+  'sek': '🇸🇪',
+  'sgd': '🇸🇬',
+  'thb': '🇹🇭',
+  'try': '🇹🇷',
+  'twd': '🇹🇼',
+  'uah': '🇺🇦',
+  'bdt': '🇧🇩',
 };

@@ -1415,6 +1415,16 @@ class TranslationsIt extends Translations {
 	@override String get messagesNotLoaded => 'Messaggi non caricati';
 	@override String get messagesNotLoadedDesc => 'I messaggi non sono stati caricati a causa dell’utilizzo di un firmatario remoto locale. Se desideri caricarli, fai clic sul pulsante qui sotto.';
 	@override String get noteLoading => 'Caricamento nota...';
+	@override String get hideNonFollowedMedia => 'Nascondi media non seguiti';
+	@override String get hideNonFollowedMediaDesc => 'Nascondi automaticamente immagini e video dagli utenti che non segui finché non tocchi per visualizzarli.';
+	@override String get clickToView => 'Clicca per visualizzare';
+	@override String get relayFeedListEmpty => 'L\'elenco dei relay è vuoto';
+	@override String get relayFeedListEmptyDesc => 'Aggiungi più relay al tuo elenco per goderti un feed personalizzato.';
+	@override String get addRelay => 'Aggiungi relay';
+	@override String get hiddenContent => 'Contenuto nascosto';
+	@override String get hiddenContentDesc => 'Abbiamo nascosto questo contenuto perché non segui questo account.';
+	@override String get enabledActions => 'Azioni abilitate';
+	@override String get enabledActionsDesc => 'Nessuna azione abilitata disponibile.';
 }
 
 /// Flat map(s) containing all translations.
@@ -2799,6 +2809,16 @@ extension on TranslationsIt {
 			case 'messagesNotLoaded': return 'Messaggi non caricati';
 			case 'messagesNotLoadedDesc': return 'I messaggi non sono stati caricati a causa dell’utilizzo di un firmatario remoto locale. Se desideri caricarli, fai clic sul pulsante qui sotto.';
 			case 'noteLoading': return 'Caricamento nota...';
+			case 'hideNonFollowedMedia': return 'Nascondi media non seguiti';
+			case 'hideNonFollowedMediaDesc': return 'Nascondi automaticamente immagini e video dagli utenti che non segui finché non tocchi per visualizzarli.';
+			case 'clickToView': return 'Clicca per visualizzare';
+			case 'relayFeedListEmpty': return 'L\'elenco dei relay è vuoto';
+			case 'relayFeedListEmptyDesc': return 'Aggiungi più relay al tuo elenco per goderti un feed personalizzato.';
+			case 'addRelay': return 'Aggiungi relay';
+			case 'hiddenContent': return 'Contenuto nascosto';
+			case 'hiddenContentDesc': return 'Abbiamo nascosto questo contenuto perché non segui questo account.';
+			case 'enabledActions': return 'Azioni abilitate';
+			case 'enabledActionsDesc': return 'Nessuna azione abilitata disponibile.';
 			default: return null;
 		}
 	}

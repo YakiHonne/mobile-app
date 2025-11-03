@@ -137,6 +137,21 @@ class Article extends Equatable implements BaseEventModel {
     );
   }
 
+  Future<String> getNaddrWithRelays() async {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+    final relays =
+        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      relays,
+      pubkey,
+      EventKind.LONG_FORM,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'articleId': id,

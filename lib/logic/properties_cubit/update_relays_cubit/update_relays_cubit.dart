@@ -151,7 +151,7 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
     final relays = List<String>.from(state.dmRelays);
 
     if (isAdding) {
-      relays.add(relay);
+      relays.insert(0, relay);
     } else {
       relays.remove(relay);
     }
@@ -359,11 +359,15 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
 
   /// Add relay to state
   void _addRelayToState(String relay, Function()? onSuccess) {
-    final updatedRelays = Map<String, ReadWriteMarker>.from(state.relays)
-      ..[relay] = ReadWriteMarker.readWrite;
-    final updatedPending =
-        Map<String, ReadWriteMarker>.from(state.pendingRelays)
-          ..[relay] = ReadWriteMarker.readWrite;
+    final updatedRelays = {
+      relay: ReadWriteMarker.readWrite,
+      ...Map<String, ReadWriteMarker>.from(state.relays)
+    };
+
+    final updatedPending = {
+      relay: ReadWriteMarker.readWrite,
+      ...Map<String, ReadWriteMarker>.from(state.pendingRelays),
+    };
 
     final isSame = _checkIfRelaysAreSame(updatedRelays, updatedPending);
 

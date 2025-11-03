@@ -107,7 +107,7 @@ class SendZapsResult extends StatelessWidget {
   /// Build amount display with BTC and USD values
   Widget _buildAmountDisplay(BuildContext context) {
     final amount = data['amount'];
-    final amountInUsd = walletManagerCubit.getBtcInUsdFromAmount(amount);
+    final amountInUsd = walletManagerCubit.getBtcInFiatFromAmount(amount);
 
     return Column(
       mainAxisSize: MainAxisSize.min,

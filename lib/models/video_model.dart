@@ -67,6 +67,18 @@ class VideoModel extends Equatable implements BaseEventModel {
     );
   }
 
+  Future<String> getNeventWithRelays() async {
+    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
+
+    return Nip19.encodeShareableEntity(
+      'nevent',
+      id,
+      relays,
+      pubkey,
+      kind,
+    );
+  }
+
   bool isHorizontalVideo() => kind == EventKind.VIDEO_HORIZONTAL;
 
   factory VideoModel.fromEvent(Event e, {String? relay}) {

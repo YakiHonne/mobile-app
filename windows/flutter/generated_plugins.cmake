@@ -5,20 +5,17 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   awesome_notifications
-  cloud_firestore
   connectivity_plus
   emoji_picker_flutter
   fc_native_video_thumbnail
   file_selector_windows
-  firebase_core
   flutter_inappwebview_windows
   flutter_secure_storage_windows
-  irondash_engine_context
+  pasteboard
   permission_handler_windows
   sentry_flutter
   share_plus
   sqlite3_flutter_libs
-  super_native_extensions
   url_launcher_windows
 )
 

@@ -513,6 +513,7 @@ class ContentRenderer extends HookWidget {
             event: event,
             text: element.text,
             context: context,
+            isEventSupported: element.kind != 'unknown',
           ),
         ),
       ),
@@ -712,63 +713,74 @@ class ContentRenderer extends HookWidget {
     final last = cu.split('/').last;
 
     if (nostrSchemeRegex.hasMatch(last) &&
+        nostrIndexersUrls.any(
+          (url) => cu.contains(url),
+        ) &&
         (last.startsWith('nevent') ||
             last.startsWith('naddr') ||
+            last.startsWith('npub') ||
             last.startsWith('nprofile') ||
             last.startsWith('note'))) {
-      String id = '';
-      bool isReplaceable = false;
-      bool isProfile = false;
-      bool supportedEvent = true;
+      if (last.startsWith('npub') || last.startsWith('nprofile')) {
+        final isNpub = last.startsWith('npub');
+        String pubkey = '';
 
-      if (last.startsWith('note')) {
-        id = Nip19.decodeNote(last);
-      } else {
-        final decode = Nip19.decodeShareableEntity(last);
-
-        if (decode.isNotEmpty) {
-          if (last.startsWith('naddr')) {
-            final hexCode = hex.decode(decode['special']);
-            id = String.fromCharCodes(hexCode);
-            isReplaceable = true;
-            supportedEvent = isSupportedEvent(decode['kind']);
-          } else if (last.startsWith('nprofile')) {
-            isProfile = true;
-            id = decode['special'] ?? '';
-          } else {
-            id = decode['special'] ?? '';
-            isReplaceable = false;
-            supportedEvent = isSupportedEvent(decode['kind']);
-          }
-
-          return WidgetSpan(
-            child: isProfile
-                ? MetadataProvider(
-                    child: (metadata, n05) => OptimizedMetadataContainer(
-                      metadata: metadata,
-                      onOpen: () => onOpen?.call(element),
-                    ),
-                    pubkey: id,
-                  )
-                : SingleEventProvider(
-                    id: id,
-                    isReplaceable: isReplaceable,
-                    child: (event) {
-                      return getBaseEventWidget(
-                        text: '',
-                        context: context,
-                        event: event,
-                        isEventSupported: supportedEvent,
-                        noModelWidget: UrlPreviewContainer(
-                          key: ValueKey('url_$url'),
-                          url: url,
-                          inverseContainerColor: inverseNoteColor,
-                        ),
-                      );
-                    },
-                  ),
-          );
+        if (isNpub) {
+          pubkey = Nip19.decodePubkey(last);
+        } else {
+          final decode = Nip19.decodeShareableEntity(last);
+          pubkey = decode['special'] ?? '';
         }
+
+        return WidgetSpan(
+          child: MetadataProvider(
+            child: (metadata, n05) => OptimizedMetadataContainer(
+              metadata: metadata,
+              onOpen: () => onOpen?.call(element),
+            ),
+            pubkey: pubkey,
+          ),
+        );
+      } else {
+        String id = '';
+        bool isReplaceable = false;
+        bool supportedEvent = true;
+
+        if (last.startsWith('note')) {
+          id = Nip19.decodeNote(last);
+          isReplaceable = false;
+        } else if (last.startsWith('naddr')) {
+          final decode = Nip19.decodeShareableEntity(last);
+          final hexCode = hex.decode(decode['special']);
+          id = String.fromCharCodes(hexCode);
+          isReplaceable = true;
+          supportedEvent = isSupportedEvent(decode['kind']);
+        } else {
+          final decode = Nip19.decodeShareableEntity(last);
+          id = decode['special'] ?? '';
+          isReplaceable = false;
+          supportedEvent = isSupportedEvent(decode['kind']);
+        }
+
+        return WidgetSpan(
+          child: SingleEventProvider(
+            id: id,
+            isReplaceable: isReplaceable,
+            child: (event) {
+              return getBaseEventWidget(
+                text: '',
+                context: context,
+                event: event,
+                isEventSupported: supportedEvent,
+                noModelWidget: UrlPreviewContainer(
+                  key: ValueKey('url_$url'),
+                  url: url,
+                  inverseContainerColor: inverseNoteColor,
+                ),
+              );
+            },
+          ),
+        );
       }
     }
 

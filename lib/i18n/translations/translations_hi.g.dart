@@ -1417,6 +1417,16 @@ class TranslationsHi extends Translations {
 	@override String get messagesNotLoaded => 'संदेश लोड नहीं हुए';
 	@override String get messagesNotLoadedDesc => 'स्थानीय रिमोट साइनर के उपयोग के कारण संदेश लोड नहीं किए गए हैं। यदि आप उन्हें लोड करना चाहते हैं, तो नीचे दिए गए बटन पर क्लिक करें।';
 	@override String get noteLoading => 'नोट लोड हो रहा है...';
+	@override String get hideNonFollowedMedia => 'गैर-अनुसरण मीडिया छिपाएँ';
+	@override String get hideNonFollowedMediaDesc => 'गैर-अनुसरण उपयोगकर्ताओं की छवियाँ और वीडियो तब तक स्वचालित रूप से छिपाएँ जब तक आप उन्हें देखने के लिए टैप न करें।';
+	@override String get clickToView => 'देखने के लिए क्लिक करें';
+	@override String get relayFeedListEmpty => 'रिले फ़ीड सूची खाली है';
+	@override String get relayFeedListEmptyDesc => 'एक अनुकूलित फ़ीड का आनंद लेने के लिए अपनी सूची में और रिले जोड़ें।';
+	@override String get addRelay => 'रिले जोड़ें';
+	@override String get hiddenContent => 'छिपी हुई सामग्री';
+	@override String get hiddenContentDesc => 'हमने इस सामग्री को छिपाया है क्योंकि आप इस खाते का अनुसरण नहीं करते हैं।';
+	@override String get enabledActions => 'सक्रिय क्रियाएँ';
+	@override String get enabledActionsDesc => 'कोई सक्रिय क्रियाएँ उपलब्ध नहीं हैं।';
 }
 
 /// Flat map(s) containing all translations.
@@ -2803,6 +2813,16 @@ extension on TranslationsHi {
 			case 'messagesNotLoaded': return 'संदेश लोड नहीं हुए';
 			case 'messagesNotLoadedDesc': return 'स्थानीय रिमोट साइनर के उपयोग के कारण संदेश लोड नहीं किए गए हैं। यदि आप उन्हें लोड करना चाहते हैं, तो नीचे दिए गए बटन पर क्लिक करें।';
 			case 'noteLoading': return 'नोट लोड हो रहा है...';
+			case 'hideNonFollowedMedia': return 'गैर-अनुसरण मीडिया छिपाएँ';
+			case 'hideNonFollowedMediaDesc': return 'गैर-अनुसरण उपयोगकर्ताओं की छवियाँ और वीडियो तब तक स्वचालित रूप से छिपाएँ जब तक आप उन्हें देखने के लिए टैप न करें।';
+			case 'clickToView': return 'देखने के लिए क्लिक करें';
+			case 'relayFeedListEmpty': return 'रिले फ़ीड सूची खाली है';
+			case 'relayFeedListEmptyDesc': return 'एक अनुकूलित फ़ीड का आनंद लेने के लिए अपनी सूची में और रिले जोड़ें।';
+			case 'addRelay': return 'रिले जोड़ें';
+			case 'hiddenContent': return 'छिपी हुई सामग्री';
+			case 'hiddenContentDesc': return 'हमने इस सामग्री को छिपाया है क्योंकि आप इस खाते का अनुसरण नहीं करते हैं।';
+			case 'enabledActions': return 'सक्रिय क्रियाएँ';
+			case 'enabledActionsDesc': return 'कोई सक्रिय क्रियाएँ उपलब्ध नहीं हैं।';
 			default: return null;
 		}
 	}

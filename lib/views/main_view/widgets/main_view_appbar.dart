@@ -163,7 +163,7 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                   strokeColor: kTransparent,
                   onClicked: () {
                     Scaffold.of(context).openDrawer();
-                    walletManagerCubit.getWalletBalanceInUSD();
+                    walletManagerCubit.getWalletBalanceInFiat();
                   },
                 ),
                 pubkey: state.pubKey,

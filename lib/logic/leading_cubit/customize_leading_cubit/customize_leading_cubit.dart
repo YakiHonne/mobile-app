@@ -183,8 +183,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
   }
 
   void setActionStatus(String action) {
-    lg.i(action);
-
+    isUpdated = true;
     final actions = Map<String, bool>.from(state.actionsArrangement);
 
     actions[action] = !actions[action]!;
@@ -211,6 +210,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       c.collapsedNote = state.collapseNote;
       c.actionsArrangement = state.actionsArrangement;
       c.hideNonFollowingMedia = state.hideNonFollowedMedia;
+      lg.i(state.actionsArrangement);
 
       c.leadingFeedCustomization = {
         for (final c in state.feedTypes.entries) c.key.name: c.value

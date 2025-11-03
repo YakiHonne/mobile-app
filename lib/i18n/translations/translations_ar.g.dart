@@ -1415,6 +1415,16 @@ class TranslationsAr extends Translations {
 	@override String get messagesNotLoaded => 'لم يتم تحميل الرسائل';
 	@override String get messagesNotLoadedDesc => 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
 	@override String get noteLoading => 'جارٍ تحميل الملاحظة...';
+	@override String get hideNonFollowedMedia => 'إخفاء الوسائط من غير المتابعين';
+	@override String get hideNonFollowedMediaDesc => 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.';
+	@override String get clickToView => 'اضغط للعرض';
+	@override String get relayFeedListEmpty => 'قائمة موجز المبدلات فارغة';
+	@override String get relayFeedListEmptyDesc => 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.';
+	@override String get addRelay => 'أضف مبدلات';
+	@override String get hiddenContent => 'محتوى مخفي';
+	@override String get hiddenContentDesc => 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.';
+	@override String get enabledActions => 'الإجراءات المفعّلة';
+	@override String get enabledActionsDesc => 'لا توجد إجراءات مفعّلة متاحة.';
 }
 
 /// Flat map(s) containing all translations.
@@ -2799,6 +2809,16 @@ extension on TranslationsAr {
 			case 'messagesNotLoaded': return 'لم يتم تحميل الرسائل';
 			case 'messagesNotLoadedDesc': return 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
 			case 'noteLoading': return 'جارٍ تحميل الملاحظة...';
+			case 'hideNonFollowedMedia': return 'إخفاء الوسائط من غير المتابعين';
+			case 'hideNonFollowedMediaDesc': return 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.';
+			case 'clickToView': return 'اضغط للعرض';
+			case 'relayFeedListEmpty': return 'قائمة موجز المبدلات فارغة';
+			case 'relayFeedListEmptyDesc': return 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.';
+			case 'addRelay': return 'أضف مبدلات';
+			case 'hiddenContent': return 'محتوى مخفي';
+			case 'hiddenContentDesc': return 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.';
+			case 'enabledActions': return 'الإجراءات المفعّلة';
+			case 'enabledActionsDesc': return 'لا توجد إجراءات مفعّلة متاحة.';
 			default: return null;
 		}
 	}

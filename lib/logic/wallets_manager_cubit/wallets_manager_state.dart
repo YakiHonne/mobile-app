@@ -21,9 +21,10 @@ class WalletsManagerState extends Equatable {
   final bool isLoadingTransactions;
   final UpdatingState transactionsState;
   final bool shouldPopView;
-  final double balanceInUSD;
+  final double balanceInFiat;
   final bool isWalletHidden;
   final bool useDefaultWallet;
+  final String activeCurrency;
 
   const WalletsManagerState({
     required this.selectedIndex,
@@ -44,35 +45,39 @@ class WalletsManagerState extends Equatable {
     required this.isLoadingTransactions,
     required this.transactionsState,
     required this.shouldPopView,
-    required this.balanceInUSD,
+    required this.balanceInFiat,
     required this.isWalletHidden,
     required this.useDefaultWallet,
+    required this.activeCurrency,
   });
 
   // Factory constructor for initial state
   factory WalletsManagerState.initial() {
-    return const WalletsManagerState(
+    final currency = localDatabaseRepository.getActiveCurrency();
+
+    return WalletsManagerState(
       selectedIndex: -1,
       lnurl: '',
       areInvoicesAvailable: false,
       isLnurlAvailable: false,
       isLoading: false,
       confirmPayment: false,
-      invoices: {},
+      invoices: const {},
       toBeZappedValue: 0,
       refresh: false,
-      wallets: {},
+      wallets: const {},
       selectedWalletId: '',
       balance: -1,
       maxAmount: -1,
       defaultExternalWallet: 'satoshi',
-      transactions: [],
+      transactions: const [],
       isLoadingTransactions: false,
       transactionsState: UpdatingState.idle,
       shouldPopView: true,
-      balanceInUSD: -1,
+      balanceInFiat: -1,
       isWalletHidden: false,
       useDefaultWallet: false,
+      activeCurrency: currency,
     );
   }
 
@@ -105,9 +110,10 @@ class WalletsManagerState extends Equatable {
     bool? isLoadingTransactions,
     UpdatingState? transactionsState,
     bool? shouldPopView,
-    double? balanceInUSD,
+    double? balanceInFiat,
     bool? isWalletHidden,
     bool? useDefaultWallet,
+    String? activeCurrency,
   }) {
     return WalletsManagerState(
       selectedIndex: selectedIndex ?? this.selectedIndex,
@@ -130,9 +136,10 @@ class WalletsManagerState extends Equatable {
           isLoadingTransactions ?? this.isLoadingTransactions,
       transactionsState: transactionsState ?? this.transactionsState,
       shouldPopView: shouldPopView ?? this.shouldPopView,
-      balanceInUSD: balanceInUSD ?? this.balanceInUSD,
+      balanceInFiat: balanceInFiat ?? this.balanceInFiat,
       isWalletHidden: isWalletHidden ?? this.isWalletHidden,
       useDefaultWallet: useDefaultWallet ?? this.useDefaultWallet,
+      activeCurrency: activeCurrency ?? this.activeCurrency,
     );
   }
 
@@ -155,8 +162,9 @@ class WalletsManagerState extends Equatable {
         transactions,
         transactionsState,
         shouldPopView,
-        balanceInUSD,
+        balanceInFiat,
         isWalletHidden,
         useDefaultWallet,
+        activeCurrency,
       ];
 }

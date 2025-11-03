@@ -184,12 +184,7 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return;
     }
 
-    await nc.connect(r);
-    lg.i(nc.connectStatus);
-    final isConnected = nc.relays().contains(r) && nc.connectStatus[r] == 1;
-    if (!relayAvailable) {
-      nc.closeConnect([r]);
-    }
+    final isConnected = await nc.checkRelayConnectivity(r);
 
     completer.complete(isConnected);
   }

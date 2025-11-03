@@ -43,6 +43,7 @@ class NostrSchemeLinkifier extends Linkifier {
 
       // Process the matched element asynchronously
       final element = _createNostrElement(match);
+
       result.add(element);
 
       currentIndex = match.end;
@@ -121,12 +122,12 @@ class NostrSchemeLinkifier extends Linkifier {
 
   LinkifyElement _createAddressElement(String fullKey) {
     final entity = Nip19.decodeShareableEntity(fullKey);
-    final eventKind = entity['kind'];
 
-    if (!_isValidEventKind(eventKind)) {
+    if (entity.isEmpty) {
       return TextElement(fullKey);
     }
 
+    final eventKind = entity['kind'];
     final hexCode = hex.decode(entity['special']);
     final eventIdentifier = String.fromCharCodes(hexCode);
 
@@ -140,14 +141,14 @@ class NostrSchemeLinkifier extends Linkifier {
     return Neventlement(eventId ?? '', fullKey);
   }
 
-  bool _isValidEventKind(dynamic eventKind) {
-    return eventKind == EventKind.LONG_FORM ||
-        eventKind == EventKind.VIDEO_HORIZONTAL ||
-        eventKind == EventKind.VIDEO_VERTICAL ||
-        eventKind == EventKind.SMART_WIDGET_ENH ||
-        eventKind == EventKind.CURATION_ARTICLES ||
-        eventKind == EventKind.CURATION_VIDEOS;
-  }
+  // bool _isValidEventKind(dynamic eventKind) {
+  //   return eventKind == EventKind.LONG_FORM ||
+  //       eventKind == EventKind.VIDEO_HORIZONTAL ||
+  //       eventKind == EventKind.VIDEO_VERTICAL ||
+  //       eventKind == EventKind.SMART_WIDGET_ENH ||
+  //       eventKind == EventKind.CURATION_ARTICLES ||
+  //       eventKind == EventKind.CURATION_VIDEOS;
+  // }
 
   LinkifyElement _createElementFromEventKind(
     int eventKind,
@@ -185,7 +186,7 @@ class NostrSchemeLinkifier extends Linkifier {
       default:
         return ArtCurSchemeElement(
           identifier,
-          'curation',
+          'unknown',
           fullKey,
         );
     }

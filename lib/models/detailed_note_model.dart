@@ -50,6 +50,18 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     );
   }
 
+  Future<String> getNeventWithRelays() async {
+    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
+
+    return Nip19.encodeShareableEntity(
+      'nevent',
+      id,
+      relays,
+      pubkey,
+      EventKind.TEXT_NOTE,
+    );
+  }
+
   String getYakiHonneUrl() {
     return '${baseUrl}notes/${Nip19.encodeNote(id)}';
   }

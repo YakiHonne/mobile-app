@@ -51,7 +51,7 @@ class MainCubit extends Cubit<MainState> {
             image: nostrRepository.currentMetadata.picture,
             random: '',
             nip05: nostrRepository.currentMetadata.nip05,
-            name: nostrRepository.currentMetadata.getDisplayName(),
+            name: nostrRepository.currentMetadata.getName(),
             pubKey: nostrRepository.currentMetadata.pubkey,
             isMyContentShrinked: true,
             isHorizontal: true,
@@ -334,6 +334,7 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleArticleLink(String nostrUri) async {
     String special = '';
     String author = '';
+    List<String> relays = [];
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
@@ -341,6 +342,7 @@ class MainCubit extends Cubit<MainState> {
       final hexCode = hex.decode(nostrDecode['special']);
       author = nostrDecode['author'];
       special = String.fromCharCodes(hexCode);
+      relays = List<String>.from(nostrDecode['relays']);
     } else {
       special = nostrUri;
     }
@@ -349,6 +351,7 @@ class MainCubit extends Cubit<MainState> {
       kinds: <int>[EventKind.LONG_FORM],
       identifier: special,
       pubkey: author,
+      relays: relays,
     );
 
     if (event == null) {
@@ -367,12 +370,14 @@ class MainCubit extends Cubit<MainState> {
 
     String author = '';
     String special = '';
+    List<String> relays = [];
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
       final List<int> hexCode = hex.decode(nostrDecode['special']);
       special = String.fromCharCodes(hexCode);
       author = nostrDecode['author'];
+      relays = List<String>.from(nostrDecode['relays']);
     } else {
       special = nostrUri;
     }
@@ -381,6 +386,7 @@ class MainCubit extends Cubit<MainState> {
       kinds: <int>[EventKind.CURATION_ARTICLES],
       identifier: special,
       pubkey: author,
+      relays: relays,
     );
 
     if (event == null) {
@@ -394,14 +400,15 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleSmartWidgetLink(String nostrUri) async {
     String special = '';
     String author = '';
-    lg.i(nostrUri);
+    List<String> relays = [];
+
     if (nostrUri.startsWith('naddr')) {
       final String naddr = nostrUri.split('?').last.replaceAll('naddr=', '');
       final nostrDecode = Nip19.decodeShareableEntity(naddr);
       final List<int> hexCode = hex.decode(nostrDecode['special']);
       author = nostrDecode['author'];
       special = String.fromCharCodes(hexCode);
-      lg.i(special);
+      relays = List<String>.from(nostrDecode['relays']);
     } else {
       special = nostrUri;
     }
@@ -410,6 +417,7 @@ class MainCubit extends Cubit<MainState> {
       kinds: <int>[EventKind.SMART_WIDGET_ENH],
       identifier: special,
       pubkey: author,
+      relays: relays,
     );
 
     if (event == null) {
@@ -437,12 +445,14 @@ class MainCubit extends Cubit<MainState> {
 
     String special = '';
     String author = '';
+    List<String> relays = [];
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
       final List<int> hexCode = hex.decode(nostrDecode['special']);
       special = String.fromCharCodes(hexCode);
       author = nostrDecode['author'];
+      relays = List<String>.from(nostrDecode['relays']);
     } else {
       special = nostrUri;
     }
@@ -451,6 +461,7 @@ class MainCubit extends Cubit<MainState> {
       kinds: <int>[EventKind.VIDEO_HORIZONTAL, EventKind.VIDEO_VERTICAL],
       identifier: special,
       pubkey: author,
+      relays: relays,
     );
 
     if (event == null) {
@@ -482,9 +493,16 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<void> _handleProfile(String nostrUri) async {
-    final pubkey = nostrUri.startsWith('nprofile')
-        ? Nip19.decodeShareableEntity(nostrUri)['special']
-        : Nip19.decodePubkey(nostrUri);
+    String pubkey = '';
+    List<String> relays = [];
+
+    if (nostrUri.startsWith('nprofile')) {
+      final decode = Nip19.decodeShareableEntity(nostrUri);
+      pubkey = decode['special'];
+      relays = List<String>.from(decode['relays']);
+    } else {
+      pubkey = Nip19.decodePubkey(nostrUri);
+    }
 
     if (isUserMuted(pubkey)) {
       return;
@@ -502,6 +520,7 @@ class MainCubit extends Cubit<MainState> {
       final event = await getForwardedEvent(
         kinds: <int>[EventKind.METADATA],
         pubkey: pubkey,
+        relays: relays,
       );
 
       if (event == null) {
@@ -522,7 +541,7 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<void> _handleNote(String nostrUri) async {
-    final String id = Nip19.decodeNote(nostrUri);
+    final id = Nip19.decodeNote(nostrUri);
     final event = await getForwardedEvent(
         kinds: <int>[EventKind.TEXT_NOTE], identifier: id);
 
@@ -541,6 +560,7 @@ class MainCubit extends Cubit<MainState> {
       kinds: nostrDecode['kind'] != null ? <int>[nostrDecode['kind']] : null,
       identifier: nostrDecode['special'],
       pubkey: nostrDecode['author'],
+      relays: nostrDecode['relays'],
     );
 
     if (ev == null) {
@@ -608,11 +628,12 @@ class MainCubit extends Cubit<MainState> {
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
     final List<int> hexCode = hex.decode(nostrDecode['special']);
     final String special = String.fromCharCodes(hexCode);
-
+    final List<String> relays = List<String>.from(nostrDecode['relays']);
     final event = await getForwardedEvent(
       kinds: nostrDecode['kind'] != null ? <int>[nostrDecode['kind']] : null,
       identifier: special,
       pubkey: nostrDecode['author'],
+      relays: relays,
     );
 
     if (event == null) {
@@ -664,6 +685,7 @@ class MainCubit extends Cubit<MainState> {
         identifier,
         kinds != null && isReplaceable(kinds.first),
       );
+
       if (e != null) {
         return e;
       }
@@ -671,50 +693,40 @@ class MainCubit extends Cubit<MainState> {
 
     showInformatinMessage(kinds?.first);
 
-    final completer = Completer<Event?>();
-    Event? event;
+    final isIdentifier =
+        identifier != null && kinds != null && isReplaceable(kinds.first);
 
-    NostrFunctionsRepository.getForwardingEvents(
+    final ev = await NostrFunctionsRepository.getEventById(
+      isIdentifier: isIdentifier,
+      author: author,
+      eventId: identifier,
       kinds: kinds,
-      dTags: identifier != null && kinds != null && isReplaceable(kinds.first)
-          ? <String>[identifier]
-          : null,
-      ids: identifier != null &&
-              (kinds != null && !isReplaceable(kinds.first) || kinds == null)
-          ? <String>[identifier]
-          : null,
-      pubkeys: author != null && author.isNotEmpty ? <String>[author] : null,
-    ).listen((Event recentEvent) {
-      if (event == null ||
-          event!.createdAt.compareTo(recentEvent.createdAt) < 0) {
-        event = recentEvent;
-      }
-    }).onDone(() {
-      if (event != null) {
-        nc.db.saveEvent(event!);
-      }
-      completer.complete(event);
-    });
+      relays: relays,
+    );
 
-    return completer.future;
+    return ev;
   }
 
   Future<Event?> getForwardedEvent({
     List<int>? kinds,
     String? identifier,
     String? pubkey,
+    List<String>? relays,
   }) async {
     final event = await getForwardEvent(
       author: pubkey,
       identifier: identifier,
       kinds: kinds,
+      relays: relays,
     );
+
     if (event != null) {
       return event;
     }
 
     if (pubkey != null && pubkey.isNotEmpty) {
       final relayList = await nc.getSingleUserRelayList(pubkey);
+
       if (relayList != null) {
         final set = relayList.reads.length > 2
             ? relayList.reads.sublist(0, 1).toSet()
@@ -739,6 +751,7 @@ class MainCubit extends Cubit<MainState> {
         }
       }
     }
+
     return null;
   }
 

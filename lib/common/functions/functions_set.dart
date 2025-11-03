@@ -478,11 +478,22 @@ Future<String> externalShearableLink({
   required int kind,
   required String pubkey,
   required String id,
+  bool includeRelays = true,
 }) async {
+  Event? ev;
+
+  if (includeRelays) {
+    ev = await nc.db.loadEventById(
+      id,
+      isReplaceable(kind),
+    );
+  }
+
   final nScheme = await createShareableLink(
     kind,
     pubkey,
     id,
+    relays: ev?.seenOn.take(2).toList() ?? [],
   );
 
   final page = kind == EventKind.LONG_FORM
@@ -551,6 +562,7 @@ Future<String> createShareableLink(
   String pubkey,
   String id, {
   bool useDefault = true,
+  List<String> relays = const [],
 }) async {
   String shareableLink = '';
   String hexString = '';
@@ -585,7 +597,7 @@ Future<String> createShareableLink(
       shareableLink = Nip19.encodeShareableEntity(
         'naddr',
         hexString,
-        [],
+        relays,
         pubkey,
         kind,
       );
@@ -594,7 +606,7 @@ Future<String> createShareableLink(
     shareableLink = Nip19.encodeShareableEntity(
       kind == EventKind.METADATA ? 'nprofile' : 'nevent',
       hexString,
-      [],
+      relays,
       pubkey,
       kind,
     );
@@ -1323,4 +1335,12 @@ String cleanUrl(String url) {
     port: uri.hasPort ? uri.port : null,
     path: uri.path,
   ).toString();
+}
+
+Future<List<String>> getEventSeenOnRelays({
+  required String id,
+  required bool isReplaceable,
+}) async {
+  final ev = await nc.db.loadEventById(id, isReplaceable);
+  return ev?.seenOn.take(2).toList() ?? [];
 }

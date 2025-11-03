@@ -1,17 +1,33 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/mixins/later_function.dart';
+import '../../models/article_model.dart';
+import '../../models/curation_model.dart';
+import '../../models/detailed_note_model.dart';
 import '../../models/poll_model.dart';
+import '../../models/smart_widgets_components.dart';
 import '../../models/uncensored_notes_models.dart';
+import '../../models/video_model.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../routes/navigator.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../../views/article_view/article_view.dart';
+import '../../views/curation_view/curation_view.dart';
+import '../../views/note_view/note_view.dart';
+import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../views/widgets/video_components/horizontal_video_view.dart';
+import '../../views/widgets/video_components/vertical_video_view.dart';
 
 part 'single_event_state.dart';
 
@@ -67,7 +83,6 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     required bool isIdentifier,
     List<int>? kinds,
   }) async {
-    lg.i(id);
     _accessTimes[id] = Helpers.now;
 
     final ev = await nc.db.loadEventById(id, isIdentifier);
@@ -231,6 +246,127 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
 
     if (newEvents.length >= 150) {
       pruneCache();
+    }
+  }
+
+  Future<void> handlePushNotificationEventId(String id) async {
+    final context = nostrRepository.currentContext();
+    BotToastUtils.showInformation(context.t.fetchingNotificationEvent);
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (id.isEmpty) {
+      return;
+    }
+
+    final event = await NostrFunctionsRepository.getEventById(
+      isIdentifier: false,
+      eventId: id,
+    );
+
+    if (event == null) {
+      BotToastUtils.showInformation(context.t.notificationEventNotFound);
+      return;
+    }
+
+    if (event.kind == EventKind.TEXT_NOTE) {
+      _handleNotificationEventView(event: event, context: context);
+    } else {
+      _handleNonNoteActions(event, context);
+    }
+  }
+
+  Future<void> _handleNonNoteActions(Event event, BuildContext context) async {
+    String? parent;
+    bool isRepleaceable = false;
+
+    final kind = event.kind;
+
+    for (final tag in event.tags) {
+      if (kind == EventKind.REACTION ||
+          kind == EventKind.REPOST ||
+          kind == EventKind.ZAP) {
+        if ((tag.first == 'a' || tag.first == 'e') && tag.length > 1) {
+          if (tag.first == 'e') {
+            parent = tag[1];
+            isRepleaceable = false;
+          } else {
+            if (tag[1].contains(':')) {
+              parent = tag[1].split(':').last;
+            }
+
+            isRepleaceable = true;
+          }
+        }
+      }
+    }
+
+    if (parent != null && parent.isNotEmpty) {
+      final e = await NostrFunctionsRepository.getEventById(
+        isIdentifier: isRepleaceable,
+        eventId: parent,
+      );
+
+      if (e != null) {
+        _handleNotificationEventView(event: e, context: context);
+      } else {
+        BotToastUtils.showInformation(context.t.notificationEventNotFound);
+      }
+    }
+  }
+
+  void _handleNotificationEventView(
+      {required Event event, required BuildContext context}) {
+    switch (event.kind) {
+      case EventKind.TEXT_NOTE:
+        YNavigator.pushPage(
+          context,
+          (_) => NoteView(
+            note: DetailedNoteModel.fromEvent(event),
+          ),
+        );
+      case EventKind.LONG_FORM:
+        YNavigator.pushPage(
+          context,
+          (_) => ArticleView(
+            article: Article.fromEvent(event),
+          ),
+        );
+      case EventKind.CURATION_ARTICLES:
+        YNavigator.pushPage(
+          context,
+          (_) => CurationView(
+            curation: Curation.fromEvent(event, ''),
+          ),
+        );
+      case EventKind.CURATION_VIDEOS:
+        YNavigator.pushPage(
+          context,
+          (_) => CurationView(
+            curation: Curation.fromEvent(event, ''),
+          ),
+        );
+      case EventKind.VIDEO_VERTICAL:
+        YNavigator.pushPage(
+          context,
+          (_) => VerticalVideoView(
+            video: VideoModel.fromEvent(event),
+          ),
+        );
+      case EventKind.VIDEO_HORIZONTAL:
+        YNavigator.pushPage(
+          context,
+          (_) => HorizontalVideoView(
+            video: VideoModel.fromEvent(event),
+          ),
+        );
+      case EventKind.SMART_WIDGET_ENH:
+        YNavigator.pushPage(
+          context,
+          (_) => SmartWidgetChecker(
+            swm: SmartWidget.fromEvent(event),
+          ),
+        );
     }
   }
 

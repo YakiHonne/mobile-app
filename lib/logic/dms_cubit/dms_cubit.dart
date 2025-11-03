@@ -525,55 +525,53 @@ class DmsCubit extends Cubit<DmsState>
     final directMessages = events['directMessages']!;
     final giftWraps = events['giftWraps']!;
 
-    if (_currentBatchIndex == _batchIntervals.length - 1) {
-      _emit(
-        state.copyWith(
-          isLoadingHistory: false,
-        ),
-      );
-
-      localDatabaseRepository.deleteDmsHistoryOlderUntil(
-        currentSigner!.getPublicKey(),
-      );
-
-      query();
-      return;
-    }
-
+    // Process events if we have any
     if (directMessages.isNotEmpty || giftWraps.isNotEmpty) {
       final processedGiftWraps = <Event>[];
 
       if (giftWraps.isNotEmpty) {
         final decryptedChunk = await handleGiftWrapsAsync(giftWraps);
-
         processedGiftWraps.addAll(decryptedChunk);
       }
 
       final allEvents = [...directMessages, ...processedGiftWraps];
-
       eventLaterHandle(allEvents);
     }
 
-    // lg.i('FINISHED PROCESSING');
-
+    // Wait before next query
     await Future.delayed(const Duration(seconds: 1));
 
+    // Determine next batch index
     if (directMessages.isEmpty && giftWraps.isEmpty) {
       _currentBatchIndex++;
-    } else {
-      // _currentBatchIndex = 0;
     }
 
-    _currentBatchUntil = since - 1;
+    // Check if we've reached the end of all batches
+    if (_currentBatchIndex >= _batchIntervals.length) {
+      _emit(
+        state.copyWith(
+          isLoadingHistory: false,
+        ),
+      );
+      localDatabaseRepository.deleteDmsHistoryOlderUntil(
+        currentSigner!.getPublicKey(),
+      );
+      query();
+      return;
+    }
 
+    // Calculate next time range
+    _currentBatchUntil = since - 1;
     final newSince =
         _currentBatchUntil - _batchIntervals[_currentBatchIndex].inSeconds;
 
+    // Update database with current progress
     localDatabaseRepository.setDmsHistoryOlderUntil(
       currentSigner!.getPublicKey(),
       _currentBatchUntil,
     );
 
+    // Recursively query next batch
     queryAsync(
       since: newSince,
       until: _currentBatchUntil,

@@ -148,7 +148,7 @@ class PdmCommonActions {
 
     // Extract values based on item type
     if (item is Article) {
-      nostrScheme = item.getNaddr();
+      nostrScheme = await item.getNaddrWithRelays();
 
       url = await externalShearableLink(
         kind: EventKind.LONG_FORM,
@@ -156,7 +156,7 @@ class PdmCommonActions {
         id: item.identifier,
       );
     } else if (item is Curation) {
-      nostrScheme = item.getNaddr();
+      nostrScheme = await item.getNaddrWithRelays();
 
       url = await externalShearableLink(
         kind: item.kind,
@@ -164,7 +164,7 @@ class PdmCommonActions {
         id: item.identifier,
       );
     } else if (item is VideoModel) {
-      nostrScheme = item.getNevent();
+      nostrScheme = await item.getNeventWithRelays();
 
       url = await externalShearableLink(
         kind: item.kind,
@@ -172,7 +172,7 @@ class PdmCommonActions {
         id: item.id,
       );
     } else if (item is DetailedNoteModel) {
-      nostrScheme = item.getNevent();
+      nostrScheme = await item.getNeventWithRelays();
 
       url = await externalShearableLink(
         kind: EventKind.TEXT_NOTE,
@@ -180,7 +180,7 @@ class PdmCommonActions {
         id: item.id,
       );
     } else if (item is LightMetadata) {
-      nostrScheme = item.getNProfile();
+      nostrScheme = await item.getNProfileWithRelays();
 
       url = await externalShearableLink(
         kind: EventKind.METADATA,
@@ -188,7 +188,7 @@ class PdmCommonActions {
         id: item.pubkey,
       );
     } else if (item is SmartWidget) {
-      nostrScheme = item.getNaddr();
+      nostrScheme = await item.getNaddrWithRelays();
 
       url = await externalShearableLink(
         kind: EventKind.SMART_WIDGET_ENH,

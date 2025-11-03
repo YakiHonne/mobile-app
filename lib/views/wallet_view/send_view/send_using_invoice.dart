@@ -94,7 +94,7 @@ class SendUsingInvoice extends HookWidget {
       body: Builder(
         builder: (context) {
           final amount = getlnbcValue(invoice).toInt();
-          final amountInUsd = walletManagerCubit.getBtcInUsdFromAmount(amount);
+          final amountInUsd = walletManagerCubit.getBtcInFiatFromAmount(amount);
 
           return Padding(
             padding:

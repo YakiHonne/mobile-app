@@ -351,10 +351,10 @@ class SendAmountSet extends HookWidget {
 
     return isUsingSats
         ? walletManagerCubit
-            .getBtcInUsdFromAmount(textAmount)
+            .getBtcInFiatFromAmount(textAmount)
             .numeral(digits: 2)
         : walletManagerCubit
-            .getUsdInBtcFromAmount(textAmount)
+            .getFiatInBtcFromAmount(textAmount)
             .numeral(digits: 2);
   }
 

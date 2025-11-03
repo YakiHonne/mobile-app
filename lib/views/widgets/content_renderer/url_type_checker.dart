@@ -141,6 +141,7 @@ class UrlTypeChecker {
       final element = elements[i];
       if (element is LinkableElement) {
         final url = getElementUrl(element);
+
         urlTypes[i] = getInstantUrlType(
           url,
           disableUrlParsing: disableUrlParsing,

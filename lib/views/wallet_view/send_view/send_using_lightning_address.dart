@@ -62,7 +62,7 @@ class SendUsingLightningAddress extends HookWidget {
               t = isUsingSats.value
                   ? textAmount
                   : walletManagerCubit
-                      .getUsdInBtcFromAmount(textAmount)
+                      .getFiatInBtcFromAmount(textAmount)
                       .toInt();
             }
 
@@ -284,15 +284,15 @@ class SendUsingLightningAddress extends HookWidget {
         if (textAmount != null) {
           t = isUsingSats.value
               ? walletManagerCubit
-                  .getBtcInUsdFromAmount(textAmount)
+                  .getBtcInFiatFromAmount(textAmount)
                   .numeral(digits: 2)
               : walletManagerCubit
-                  .getUsdInBtcFromAmount(textAmount)
+                  .getFiatInBtcFromAmount(textAmount)
                   .numeral(digits: 2);
         }
 
         return Text(
-          '$t ${!isUsingSats.value ? 'SATS' : 'USD'}',
+          '$t ${!isUsingSats.value ? 'SATS' : walletManagerCubit.state.activeCurrency.toUpperCase()}',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).highlightColor,
@@ -312,7 +312,9 @@ class SendUsingLightningAddress extends HookWidget {
         spacing: kDefaultPadding / 2,
         children: [
           Text(
-            isUsingSats.value ? 'SATS' : 'USD',
+            isUsingSats.value
+                ? 'SATS'
+                : walletManagerCubit.state.activeCurrency.toUpperCase(),
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

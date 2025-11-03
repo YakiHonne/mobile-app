@@ -49,7 +49,7 @@ class InternalWalletsView extends HookWidget {
         isRefreshing.value = true;
         controller.forward();
         walletManagerCubit.requestBalance();
-        walletManagerCubit.getBtcInUsd();
+        walletManagerCubit.getBtcInFiat();
 
         await Future.delayed(
           const Duration(seconds: 1),

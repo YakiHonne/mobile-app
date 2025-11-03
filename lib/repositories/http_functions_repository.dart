@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:deepl_dart/deepl_dart.dart';
 import 'package:dio/dio.dart' as dioinstance;
@@ -30,8 +29,6 @@ import '../utils/utils.dart';
 // ==================================================
 
 class HttpFunctionsRepository {
-  static final _firestore = FirebaseFirestore.instance;
-
   // Private Dio instances
   static Dio? _dio;
   static Dio? _smDio;
@@ -1246,6 +1243,7 @@ class HttpFunctionsRepository {
     try {
       String action = '';
       final event = ExtendedEvent.fromEv(ev);
+
       if (event.kind == EventKind.CATEGORIZED_BOOKMARK) {
         action = PointsActions.BOOKMARK;
       } else if (event.kind == EventKind.TEXT_NOTE) {
@@ -1307,6 +1305,7 @@ class HttpFunctionsRepository {
 
       return true;
     } catch (e) {
+      lg.i(e);
       return false;
     }
   }
@@ -1365,27 +1364,6 @@ class HttpFunctionsRepository {
       return response != null;
     } catch (e) {
       rethrow;
-    }
-  }
-
-  // ==================================================
-  // FIREBASE
-  // ==================================================
-
-  static Future<List<String>> getBannedPubkeys() async {
-    try {
-      final pubkeys = _firestore.collection('banned_pubkeys');
-
-      return await pubkeys.get().then((value) {
-        if (value.docs.first.exists) {
-          return List<String>.from(value.docs.first.get('pubkeys'));
-        } else {
-          return <String>[];
-        }
-      });
-    } catch (e) {
-      lg.i(e);
-      return <String>[];
     }
   }
 

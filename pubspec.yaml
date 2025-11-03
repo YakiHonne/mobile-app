@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.9.2+163
+version: 1.9.3+165
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -24,8 +24,6 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   chat_gpt_sdk: ^3.1.4
   chewie: ^1.10.0
-  cloud_firestore: ^5.6.2
-  cloud_functions: ^5.3.1
   connectivity_plus: ^6.0.5
   convert: ^3.1.1
   cookie_jar: ^4.0.8
@@ -41,7 +39,6 @@ dependencies:
   expandable: ^5.0.1
   extended_image: ^8.3.1
   fc_native_video_thumbnail: ^0.12.0
-  firebase_core: ^3.10.1
   fl_chart: ^0.69.0
   flutter:
     sdk: flutter
@@ -96,6 +93,7 @@ dependencies:
   numeral: ^3.0.0
   open_filex: ^4.7.0
   override_text_scale_factor: ^1.0.2
+  pasteboard: ^0.4.0
   path: ^1.8.3
   path_drawing: ^1.0.1
   path_provider: ^2.1.5
@@ -121,7 +119,6 @@ dependencies:
   slang_flutter: ^4.4.0
   slider_button: ^2.1.0
   string_validator: ^1.0.2
-  super_clipboard: ^0.8.24
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
   url_launcher: ^6.1.14
@@ -145,6 +142,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+# dependency_overrides:
+#   irondash_engine_context:
+#     git:
+#       url: https://github.com/Sabbar-Engineering/irondash
+#       path: "engine_context/dart"
 flutter:
   uses-material-design: true
 

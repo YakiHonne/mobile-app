@@ -613,7 +613,7 @@ class LeadingCustomization extends HookWidget {
   }
 
   String getPostActionIcon(String type, BuildContext context) {
-    String icon = '';
+    String icon = FeatureIcons.heart;
 
     switch (type) {
       case 'reactions':

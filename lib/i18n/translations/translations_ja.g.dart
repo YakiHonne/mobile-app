@@ -1415,6 +1415,16 @@ class TranslationsJa extends Translations {
 	@override String get messagesNotLoaded => 'メッセージが読み込まれていません';
 	@override String get messagesNotLoadedDesc => 'ローカルリモート署名者を使用しているため、メッセージは読み込まれていません。読み込みたい場合は、下のボタンをクリックしてください。';
 	@override String get noteLoading => 'ノートを読み込み中...';
+	@override String get hideNonFollowedMedia => 'フォローしていないユーザーのメディアを非表示にする';
+	@override String get hideNonFollowedMediaDesc => 'フォローしていないユーザーの画像や動画を、タップして表示するまで自動的に非表示にします。';
+	@override String get clickToView => 'クリックして表示';
+	@override String get relayFeedListEmpty => 'リレーのフィードリストが空です';
+	@override String get relayFeedListEmptyDesc => 'よりパーソナライズされたフィードを楽しむために、リレーを追加してください。';
+	@override String get addRelay => 'リレーを追加';
+	@override String get hiddenContent => '非表示のコンテンツ';
+	@override String get hiddenContentDesc => 'このアカウントをフォローしていないため、このコンテンツを非表示にしました。';
+	@override String get enabledActions => '有効なアクション';
+	@override String get enabledActionsDesc => '利用可能な有効なアクションはありません。';
 }
 
 /// Flat map(s) containing all translations.
@@ -2799,6 +2809,16 @@ extension on TranslationsJa {
 			case 'messagesNotLoaded': return 'メッセージが読み込まれていません';
 			case 'messagesNotLoadedDesc': return 'ローカルリモート署名者を使用しているため、メッセージは読み込まれていません。読み込みたい場合は、下のボタンをクリックしてください。';
 			case 'noteLoading': return 'ノートを読み込み中...';
+			case 'hideNonFollowedMedia': return 'フォローしていないユーザーのメディアを非表示にする';
+			case 'hideNonFollowedMediaDesc': return 'フォローしていないユーザーの画像や動画を、タップして表示するまで自動的に非表示にします。';
+			case 'clickToView': return 'クリックして表示';
+			case 'relayFeedListEmpty': return 'リレーのフィードリストが空です';
+			case 'relayFeedListEmptyDesc': return 'よりパーソナライズされたフィードを楽しむために、リレーを追加してください。';
+			case 'addRelay': return 'リレーを追加';
+			case 'hiddenContent': return '非表示のコンテンツ';
+			case 'hiddenContentDesc': return 'このアカウントをフォローしていないため、このコンテンツを非表示にしました。';
+			case 'enabledActions': return '有効なアクション';
+			case 'enabledActionsDesc': return '利用可能な有効なアクションはありません。';
 			default: return null;
 		}
 	}
