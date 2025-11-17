@@ -154,8 +154,8 @@ class LinkifierNode extends SpanNode {
       child: LinkPreviewer(
         url: url,
         onOpen: () => openWebPage(url: url),
-        textStyle: const TextStyle(
-          color: kMainColor,
+        textStyle: TextStyle(
+          color: Theme.of(nostrRepository.currentContext()).primaryColor,
         ),
         urlType: UrlType.text,
         checkType: true,

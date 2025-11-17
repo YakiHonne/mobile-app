@@ -16,18 +16,18 @@ class PollsCubit extends Cubit<PollsState> {
           PollsState(
             isLoading: true,
             loadingState: UpdatingState.success,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             polls: const [],
           ),
         ) {
     getPolls(isAdd: false, isSelf: false);
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
             ),
           );
         }

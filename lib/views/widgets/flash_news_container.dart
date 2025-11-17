@@ -257,7 +257,7 @@ class FlashNewsContainer extends HookWidget {
             mainFlashNews.flashNews.createdAt,
           ),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
       ],
@@ -317,7 +317,7 @@ class FlashNewsContainer extends HookWidget {
               kind: EventKind.TEXT_NOTE,
               identifier: mainFlashNews.flashNews.id,
               eventPubkey: mainFlashNews.flashNews.pubkey,
-              image: '',
+              model: mainFlashNews.flashNews,
             );
           },
           isScrollControlled: true,
@@ -366,7 +366,7 @@ class FlashNewsContainer extends HookWidget {
               ),
             ),
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
         ],

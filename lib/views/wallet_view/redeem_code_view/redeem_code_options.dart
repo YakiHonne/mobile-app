@@ -217,7 +217,8 @@ class RedeemCodeOptions extends HookWidget {
                   },
                   title: context.t.scanCode,
                   icon: FeatureIcons.qr,
-                  borderColor: isQrCode.value ? kMainColor : null,
+                  borderColor:
+                      isQrCode.value ? Theme.of(context).primaryColor : null,
                 ),
               ),
               Expanded(
@@ -227,7 +228,8 @@ class RedeemCodeOptions extends HookWidget {
                   },
                   title: context.t.enterCode,
                   icon: FeatureIcons.codeText,
-                  borderColor: !isQrCode.value ? kMainColor : null,
+                  borderColor:
+                      !isQrCode.value ? Theme.of(context).primaryColor : null,
                 ),
               ),
             ],

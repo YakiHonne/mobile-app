@@ -14,6 +14,7 @@ class AppCustomization {
   bool useSingleColumnFeed;
   bool enableProfilePreview;
   bool hideNonFollowingMedia;
+  bool enableLinkPreview;
   bool collapsedNote;
   bool openPromptedUrl;
   bool enablePushNotification;
@@ -46,6 +47,7 @@ class AppCustomization {
     this.notifZaps = true,
     this.openPromptedUrl = true,
     this.hideNonFollowingMedia = true,
+    this.enableLinkPreview = true,
     this.notifFollowings = true,
     this.writingContentType = 'note',
     this.actionsArrangement = defaultActionsArrangement,
@@ -68,6 +70,7 @@ class AppCustomization {
       'collapsedNote': collapsedNote,
       'openPromptedUrl': openPromptedUrl,
       'hideNonFollowingMedia': hideNonFollowingMedia,
+      'enableLinkPreview': enableLinkPreview,
       'enablePushNotification': enablePushNotification,
       'notifPrivateMessage': notifPrivateMessage,
       'notifMentionsReplies': notifMentionsReplies,
@@ -93,6 +96,7 @@ class AppCustomization {
       showShareBox: map['showShareBox'] as bool? ?? true,
       openPromptedUrl: map['openPromptedUrl'] as bool? ?? true,
       hideNonFollowingMedia: map['hideNonFollowingMedia'] as bool? ?? true,
+      enableLinkPreview: map['enableLinkPreview'] as bool? ?? true,
       notifMentionsReplies: map['notifMentionsReplies'] as bool? ?? true,
       notifReactions: map['notifReactions'] as bool? ?? true,
       notifReposts: map['notifReposts'] as bool? ?? true,

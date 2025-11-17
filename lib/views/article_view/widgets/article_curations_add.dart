@@ -561,7 +561,7 @@ class ArticleSuggestedCurationList extends StatelessWidget {
                   ? context.t.articlesAvailableCuration
                   : context.t.videosAvailableCuration,
               style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
         ],

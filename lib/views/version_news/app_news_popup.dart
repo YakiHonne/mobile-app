@@ -116,8 +116,8 @@ class AppNewsPopup extends StatelessWidget {
                 color: Theme.of(context).highlightColor,
               ),
         ),
-        const DotContainer(
-          color: kMainColor,
+        DotContainer(
+          color: Theme.of(context).primaryColor,
           size: 5,
         ),
         GestureDetector(

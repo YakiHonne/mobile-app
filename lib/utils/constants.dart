@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.3+165';
+const String appVersion = 'v1.9.4+168';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -19,6 +19,7 @@ const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const pointsUrl = 'https://api.yakihonne.com/api/v1/';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
+const searchRelaysUrl = 'https://api.nostr.watch/v2/relays/by/nip';
 const searchUrl = 'https://api.nostr.band/nostr?method=search&count=10&q=';
 const topicsUrl = 'https://yakihonne.com/api/v1/yakihonne-topics';
 const pointsSystemUrl = 'https://www.yakihonne.com/points-system';
@@ -32,7 +33,11 @@ const docsUrl = 'https://yakihonne.com/docs/sw/intro';
 const relaysCollection =
     'https://raw.githubusercontent.com/CodyTseng/awesome-nostr-relays/master/dist/collections.json';
 
-final lg = Logger(printer: PrettyPrinter());
+final lg = Logger(
+  printer: PrettyPrinter(
+    colors: false,
+  ),
+);
 
 //** Colors
 const kBlack = Colors.black;
@@ -42,7 +47,23 @@ const kTransparent = Colors.transparent;
 const kCardDark = Color(0xff222525);
 const kOutlineDark = Color(0xff393b3b);
 const kOutlineLight = Color(0xffe5e5e5);
+
+// main colors
 const kMainColor = Color(0xffEE7700);
+const kMainColor1 = Color(0xff6B218D);
+const kMainColor2 = Color(0xffDD2222);
+const kMainColor3 = Color(0xff00994D);
+const kMainColor4 = Color(0xffFFC107);
+const kMainColor5 = Color(0xff1565C0);
+
+const mainColorsList = [
+  kMainColor,
+  kMainColor3,
+  kMainColor1,
+  kMainColor2,
+  kMainColor4,
+  kMainColor5,
+];
 
 const kPurple = Color(0xFF86318C);
 const kLightPurple = Colors.purpleAccent;
@@ -130,7 +151,25 @@ final imagesCacheManager = CacheManager(
 
 //** nostr indexer urls
 
-const nostrIndexersUrls = ['njump.me', 'nostr.com'];
+const nostrIndexersUrls = [
+  'nstart.me',
+  'njump.me',
+  'yakihonne.com',
+  'nostr.com',
+  'nostr.band',
+  'iris.to',
+  'primal.net',
+  'jumble.social',
+  'coracle.social',
+  'nostrudel.ninja',
+  'phoenix.social',
+  'habla.news',
+  'nosotros.app',
+  'nostter.app',
+  'lumilumi.app',
+  'fevela.me',
+  'jumblekat.com',
+];
 
 //** available locales
 
@@ -328,6 +367,8 @@ const bookmarksTypes = [
   'Curations',
   'Notes',
   'Videos',
+  'Links',
+  'Hashtags'
 ];
 
 const mandatoryRelays = [
@@ -385,6 +426,11 @@ const wallets = {
     'name': 'Phoenix',
     'icon': WalletsLogos.phoenix,
     'deeplink': 'phoenix:lightning:',
+  },
+  'blitz': {
+    'name': 'Blitz',
+    'icon': WalletsLogos.blitz,
+    'deeplink': 'blitz:lightning:',
   },
 };
 
@@ -778,4 +824,49 @@ const Map<String, String> currencies = {
   'twd': '🇹🇼',
   'uah': '🇺🇦',
   'bdt': '🇧🇩',
+};
+
+const Map<String, String> currenciesSymbols = {
+  'usd': r'$',
+  'eur': '€',
+  'aed': 'د.إ',
+  'cad': r'C$',
+  'gbp': '£',
+  'cny': '¥',
+  'aud': r'A$',
+  'myr': 'RM',
+  'jpy': '¥',
+  'ars': r'$',
+  'bhd': 'ب.د',
+  'bmd': r'$',
+  'brl': r'R$',
+  'chf': 'Fr',
+  'clp': r'$',
+  'czk': 'Kč',
+  'dkk': 'kr',
+  'gel': '₾',
+  'hkd': r'HK$',
+  'huf': 'Ft',
+  'idr': 'Rp',
+  'inr': '₹',
+  'krw': '₩',
+  'kwd': 'د.ك',
+  'lkr': 'Rs',
+  'mmk': 'K',
+  'mxn': r'$',
+  'ngn': '₦',
+  'nok': 'kr',
+  'nzd': r'NZ$',
+  'php': '₱',
+  'pkr': 'Rs',
+  'pln': 'zł',
+  'rub': '₽',
+  'sar': 'ر.س',
+  'sek': 'kr',
+  'sgd': r'S$',
+  'thb': '฿',
+  'try': '₺',
+  'twd': r'NT$',
+  'uah': '₴',
+  'bdt': '৳',
 };

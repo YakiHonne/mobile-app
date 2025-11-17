@@ -464,7 +464,7 @@ class AddingCurationArticleContainer extends HookWidget {
                     Text(
                       context.t.byPerson(name: metadata.getName()),
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            color: kMainColor,
+                            color: Theme.of(context).primaryColor,
                           ),
                     ),
                     const SizedBox(

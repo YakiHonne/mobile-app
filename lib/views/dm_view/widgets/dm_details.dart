@@ -293,7 +293,8 @@ class DmDetails extends HookWidget {
           ),
           child: Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: kMainColor),
+              Icon(Icons.warning_amber_rounded,
+                  color: Theme.of(context).primaryColor),
               const SizedBox(width: kDefaultPadding / 2),
               Expanded(
                 child: Column(
@@ -392,7 +393,7 @@ class DmDetails extends HookWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            color: kMainColor,
+                            color: Theme.of(context).primaryColor,
                           ),
                     );
                   },
@@ -843,10 +844,10 @@ class LoadingImageContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           ),
         ),
-        const Positioned(
+        Positioned(
           top: 0,
           right: 0,
-          child: SpinKitCircle(color: kMainColor, size: 20),
+          child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 20),
         ),
       ],
     );
@@ -1023,7 +1024,8 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
           FeatureIcons.verified,
           width: 15,
           height: 15,
-          colorFilter: const ColorFilter.mode(kMainColor, BlendMode.srcIn),
+          colorFilter:
+              ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
         ),
         const SizedBox(width: kDefaultPadding / 4),
       ],

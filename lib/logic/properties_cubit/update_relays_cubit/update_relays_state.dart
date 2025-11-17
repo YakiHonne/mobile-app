@@ -4,6 +4,8 @@ part of 'update_relays_cubit.dart';
 class UpdateRelaysState extends Equatable {
   final Map<String, ReadWriteMarker> relays;
   final List<String> dmRelays;
+  final List<String> searchRelays;
+  final List<String> activeSearchRelays;
   final List<String> activeRelays;
   final Set<String> toBeDeleted;
   final Map<String, ReadWriteMarker> pendingRelays;
@@ -18,6 +20,8 @@ class UpdateRelaysState extends Equatable {
     required this.onlineRelays,
     required this.isSameRelays,
     required this.dmRelays,
+    required this.searchRelays,
+    required this.activeSearchRelays,
   });
 
   @override
@@ -30,6 +34,8 @@ class UpdateRelaysState extends Equatable {
         pendingRelays,
         toBeDeleted,
         dmRelays,
+        searchRelays,
+        activeSearchRelays,
       ];
 
   UpdateRelaysState copyWith({
@@ -40,6 +46,8 @@ class UpdateRelaysState extends Equatable {
     Map<String, ReadWriteMarker>? pendingRelays,
     List<String>? onlineRelays,
     bool? isSameRelays,
+    List<String>? searchRelays,
+    List<String>? activeSearchRelays,
   }) {
     return UpdateRelaysState(
       relays: relays ?? this.relays,
@@ -48,6 +56,8 @@ class UpdateRelaysState extends Equatable {
       toBeDeleted: toBeDeleted ?? this.toBeDeleted,
       pendingRelays: pendingRelays ?? this.pendingRelays,
       onlineRelays: onlineRelays ?? this.onlineRelays,
+      searchRelays: searchRelays ?? this.searchRelays,
+      activeSearchRelays: activeSearchRelays ?? this.activeSearchRelays,
       isSameRelays: isSameRelays ?? this.isSameRelays,
     );
   }

@@ -86,6 +86,7 @@ class DashboardBookmarksCubit extends Cubit<DashboardBookmarksState> {
   Future<void> addBookmarkList({
     required BuildContext context,
     required Function() onSuccess,
+    required String image,
     BookmarkListModel? bookmarkListModel,
   }) async {
     if (title.trim().isEmpty) {
@@ -99,13 +100,15 @@ class DashboardBookmarksCubit extends Cubit<DashboardBookmarksState> {
     final createdBookmark = BookmarkListModel(
       title: title,
       description: description,
-      image: bookmarkListModel?.image ?? '',
+      image: image,
       placeholder: bookmarkListModel?.placeholder ?? '',
       identifier:
           bookmarkListModel?.identifier ?? StringUtil.getRandomString(16),
       bookmarkedReplaceableEvents:
           bookmarkListModel?.bookmarkedReplaceableEvents ?? [],
       bookmarkedEvents: bookmarkListModel?.bookmarkedEvents ?? [],
+      bookmarkedTags: bookmarkListModel?.bookmarkedTags ?? [],
+      bookmarkedUrls: bookmarkListModel?.bookmarkedUrls ?? [],
       id: '',
       stringifiedEvent: '',
       pubkey: currentSigner!.getPublicKey(),

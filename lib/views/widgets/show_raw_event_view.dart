@@ -294,8 +294,8 @@ class ShowRawEventView extends StatelessWidget {
   ) {
     return ScrollbarTheme(
       data: ScrollbarThemeData(
-        thumbColor: WidgetStateProperty.all(kMainColor),
-        trackColor: WidgetStateProperty.all(kMainColor),
+        thumbColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+        trackColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
       ),
       child: Scrollbar(
         controller: verticalController,

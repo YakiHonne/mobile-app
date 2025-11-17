@@ -8,6 +8,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/bookmark_list_model.dart';
+import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_data_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -20,8 +21,8 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
     required int kind,
     required String identifier,
     required String eventPubkey,
-    required String image,
     required this.nostrRepository,
+    required this.model,
   }) : super(
           AddBookmarkState(
             bookmarks: nostrRepository.bookmarksLists.values.toList(),
@@ -30,7 +31,6 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
             isBookmarksLists: true,
             eventId: identifier,
             eventPubkey: eventPubkey,
-            image: image,
           ),
         ) {
     initView();
@@ -63,6 +63,7 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
   final NostrDataRepository nostrRepository;
   String title = '';
   String description = '';
+  BaseEventModel model;
 
   void initView() {
     if (!isClosed) {
@@ -77,16 +78,20 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
   void setBookmark({
     required String bookmarkListIdentifier,
   }) {
-    NostrFunctionsRepository.setBookmarks(
-      isReplaceableEvent: state.kind != EventKind.TEXT_NOTE &&
-          state.kind != EventKind.VIDEO_HORIZONTAL &&
-          state.kind != EventKind.VIDEO_VERTICAL,
-      identifier: state.eventId,
-      pubkey: state.eventPubkey,
-      bookmarkIdentifier: bookmarkListIdentifier,
-      image: state.image,
-      kind: state.kind,
-    );
+    try {
+      NostrFunctionsRepository.setBookmarks(
+        isReplaceableEvent: state.kind != EventKind.TEXT_NOTE &&
+            state.kind != EventKind.VIDEO_HORIZONTAL &&
+            state.kind != EventKind.VIDEO_VERTICAL,
+        identifier: state.eventId,
+        pubkey: state.eventPubkey,
+        bookmarkIdentifier: bookmarkListIdentifier,
+        kind: state.kind,
+        model: model,
+      );
+    } catch (e, stack) {
+      lg.i(stack);
+    }
   }
 
   Future<void> addBookmarkList() async {
@@ -101,10 +106,12 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
     final createdBookmark = BookmarkListModel(
       title: title,
       description: description,
-      image: state.image,
+      image: '',
       placeholder: '',
       id: '',
       stringifiedEvent: '',
+      bookmarkedTags: [],
+      bookmarkedUrls: [],
       identifier: StringUtil.getRandomString(16),
       bookmarkedReplaceableEvents: <EventCoordinates>[
         if (state.kind != EventKind.TEXT_NOTE)

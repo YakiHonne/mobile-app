@@ -30,6 +30,7 @@ class VideoModel extends Equatable implements BaseEventModel {
   final List<String> participants;
   final bool isHorizontal;
   final List<ZapSplit> zapsSplits;
+  final List<String> fallbackUrls;
   final bool contentWarning;
   final Set<String> relays;
   final String stringifiedEvent;
@@ -52,6 +53,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     required this.participants,
     required this.isHorizontal,
     required this.zapsSplits,
+    required this.fallbackUrls,
     required this.contentWarning,
     required this.relays,
     required this.stringifiedEvent,
@@ -100,6 +102,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     bool contentWarning = false;
     final List<String> participants = [];
     final List<ZapSplit> zaps = [];
+    final List<String> fallbackUrls = [];
 
     for (final tag in e.tags) {
       if (tag.first == 'url' && tag.length > 1) {
@@ -140,6 +143,10 @@ class VideoModel extends Equatable implements BaseEventModel {
           if (t.startsWith('image')) {
             thumbnail = t.split(' ').last;
           }
+
+          if (t.startsWith('fallback')) {
+            fallbackUrls.add(t.split(' ').last);
+          }
         }
       }
     }
@@ -164,6 +171,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       participants: participants,
       isHorizontal: isHorizontal,
       zapsSplits: zaps,
+      fallbackUrls: fallbackUrls,
       contentWarning: contentWarning,
       relays: relay != null ? {relay} : {},
       stringifiedEvent: e.toJsonString(),
@@ -191,6 +199,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     List<ZapSplit>? zapsSplits,
     bool? contentWarning,
     Set<String>? relays,
+    List<String>? fallbackUrls,
     String? stringifiedEvent,
   }) {
     return VideoModel(
@@ -213,6 +222,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       zapsSplits: zapsSplits ?? this.zapsSplits,
       contentWarning: contentWarning ?? this.contentWarning,
       relays: relays ?? this.relays,
+      fallbackUrls: fallbackUrls ?? this.fallbackUrls,
       stringifiedEvent: stringifiedEvent ?? this.stringifiedEvent,
     );
   }
@@ -238,6 +248,7 @@ class VideoModel extends Equatable implements BaseEventModel {
         zapsSplits,
         contentWarning,
         relays,
+        fallbackUrls,
       ];
 
   Map<String, dynamic> toMap() {
@@ -262,6 +273,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       'contentWarning': contentWarning,
       'relays': relays.toList(),
       'stringifiedEvent': stringifiedEvent,
+      'fallbackUrls': fallbackUrls,
     };
   }
 
@@ -296,6 +308,7 @@ class VideoModel extends Equatable implements BaseEventModel {
         map['relays'],
       ),
       stringifiedEvent: map['stringifiedEvent'] as String? ?? '',
+      fallbackUrls: List<String>.from(map['fallbackUrls'] ?? []),
     );
   }
 

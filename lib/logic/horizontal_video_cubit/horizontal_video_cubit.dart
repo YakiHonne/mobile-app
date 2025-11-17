@@ -25,7 +25,7 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
       : super(
           HorizontalVideoState(
             author: Metadata.empty().copyWith(pubkey: video.pubkey),
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             currentUserPubkey: nostrRepository.currentMetadata.pubkey,
             canBeZapped: false,
             refresh: false,
@@ -92,11 +92,11 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
     );
 
     mutesSubscription = nostrRepository.mutesStream.listen(
-      (Set<String> mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
             ),
           );
         }

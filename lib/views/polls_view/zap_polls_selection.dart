@@ -151,6 +151,7 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
     return ListView.separated(
       itemCount: state.polls.length,
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       separatorBuilder: (context, index) => const SizedBox(
         height: kDefaultPadding / 2,
@@ -178,6 +179,7 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
     return MasonryGridView.count(
       crossAxisCount: 2,
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: state.polls.length,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,

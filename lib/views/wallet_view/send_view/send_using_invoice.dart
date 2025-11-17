@@ -166,7 +166,7 @@ class SendUsingInvoice extends HookWidget {
           style: Theme.of(context).textTheme.displayMedium!.copyWith(
                 fontWeight: FontWeight.w700,
                 height: 1,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
         Text(

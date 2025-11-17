@@ -4,6 +4,7 @@ part of 'customize_leading_cubit.dart';
 class CustomizeLeadingState extends Equatable {
   final Map<CommonFeedTypes, bool> feedTypes;
   final bool hideNonFollowedMedia;
+  final bool linkPreview;
   final bool showSuggestions;
   final bool showPeopleToFollow;
   final bool showRelatedContent;
@@ -15,6 +16,7 @@ class CustomizeLeadingState extends Equatable {
 
   const CustomizeLeadingState({
     required this.hideNonFollowedMedia,
+    required this.linkPreview,
     required this.feedTypes,
     required this.showSuggestions,
     required this.showPeopleToFollow,
@@ -29,6 +31,7 @@ class CustomizeLeadingState extends Equatable {
   @override
   List<Object> get props => [
         hideNonFollowedMedia,
+        linkPreview,
         feedTypes,
         showSuggestions,
         showPeopleToFollow,
@@ -42,6 +45,7 @@ class CustomizeLeadingState extends Equatable {
 
   CustomizeLeadingState copyWith({
     bool? hideNonFollowedMedia,
+    bool? linkPreview,
     Map<CommonFeedTypes, bool>? feedTypes,
     bool? showSuggestions,
     bool? showPeopleToFollow,
@@ -54,6 +58,7 @@ class CustomizeLeadingState extends Equatable {
   }) {
     return CustomizeLeadingState(
       hideNonFollowedMedia: hideNonFollowedMedia ?? this.hideNonFollowedMedia,
+      linkPreview: linkPreview ?? this.linkPreview,
       feedTypes: feedTypes ?? this.feedTypes,
       showSuggestions: showSuggestions ?? this.showSuggestions,
       showPeopleToFollow: showPeopleToFollow ?? this.showPeopleToFollow,

@@ -107,8 +107,9 @@ class SuggestedInterestContainer extends StatelessWidget {
               );
             },
             icon: FeatureIcons.addRaw,
+            iconColor: kWhite,
             size: 15,
-            backgroundColor: kMainColor,
+            backgroundColor: Theme.of(context).primaryColor,
             vd: -2,
           ),
         ],

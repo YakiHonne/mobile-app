@@ -886,7 +886,7 @@ class PollOptionContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           border: selfVote
               ? Border.all(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 )
               : null,
         ),
@@ -902,7 +902,7 @@ class PollOptionContainer extends StatelessWidget {
         children: [
           Positioned.fill(
             child: LinearProgressIndicator(
-              color: kMainColor,
+              color: Theme.of(context).primaryColor,
               backgroundColor: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
               value: displayResults

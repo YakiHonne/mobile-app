@@ -122,9 +122,8 @@ class UncensoredNoteComponent extends HookWidget {
                           )
                         : ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            separatorBuilder: (context, index) =>
-                                const DotContainer(
-                              color: kMainColor,
+                            separatorBuilder: (context, index) => DotContainer(
+                              color: Theme.of(context).primaryColor,
                               size: 4,
                             ),
                             itemBuilder: (context, index) {
@@ -166,9 +165,9 @@ class UncensoredNoteComponent extends HookWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           CupertinoIcons.timer,
-                          color: kMainColor,
+                          color: Theme.of(context).primaryColor,
                           size: 18,
                         ),
                         const SizedBox(
@@ -192,9 +191,9 @@ class UncensoredNoteComponent extends HookWidget {
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               CupertinoIcons.timer,
-                              color: kMainColor,
+                              color: Theme.of(context).primaryColor,
                               size: 18,
                             ),
                             const SizedBox(
@@ -459,9 +458,9 @@ class RatingTimerWidget extends HookWidget {
             Expanded(
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     CupertinoIcons.check_mark_circled,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     size: 18,
                   ),
                   const SizedBox(

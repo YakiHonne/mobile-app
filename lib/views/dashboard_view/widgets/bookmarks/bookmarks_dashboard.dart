@@ -287,7 +287,7 @@ class BookmarksHeader extends StatelessWidget {
             ),
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
         ],
@@ -400,7 +400,7 @@ class BookmarkContainer extends StatelessWidget {
                     .padLeft(2, '0'),
               ),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
           ],

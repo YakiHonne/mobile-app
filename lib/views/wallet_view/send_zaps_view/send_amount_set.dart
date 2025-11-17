@@ -262,7 +262,7 @@ class SendAmountSet extends HookWidget {
   TextStyle _getAmountInputStyle(BuildContext context) {
     return Theme.of(context).textTheme.displayLarge!.copyWith(
           fontWeight: FontWeight.w600,
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
         );
   }
 
@@ -551,7 +551,7 @@ class SendAmountSet extends HookWidget {
   /// Get zap split amount text style
   TextStyle _getZapSplitAmountStyle(BuildContext context) {
     return Theme.of(context).textTheme.labelMedium!.copyWith(
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
           fontWeight: FontWeight.w700,
         );
   }

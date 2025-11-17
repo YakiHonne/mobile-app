@@ -346,7 +346,7 @@ class SendUsingLightningAddress extends HookWidget {
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontWeight: FontWeight.w600,
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
           ),
       decoration: InputDecoration(
         hintText: '0',

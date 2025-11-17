@@ -135,7 +135,7 @@ class LeadingCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.showInterests,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<CustomizeLeadingCubit>().setInterestsStatus();
             },
@@ -173,7 +173,7 @@ class LeadingCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.showRelatedContent,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<CustomizeLeadingCubit>().setRelatedContentStatus();
             },
@@ -210,7 +210,7 @@ class LeadingCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.showPeopleToFollow,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<CustomizeLeadingCubit>().setPeopleStatus();
             },
@@ -247,7 +247,7 @@ class LeadingCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.showSuggestions,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<CustomizeLeadingCubit>().setSuggestionStatus();
             },
@@ -327,7 +327,7 @@ class LeadingCustomization extends HookWidget {
                 scale: 0.8,
                 child: CupertinoSwitch(
                   value: state.useSingleColumnFeed,
-                  activeTrackColor: kMainColor,
+                  activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (isToggled) {
                     context.read<CustomizeLeadingCubit>().setColumnFeedStatus();
                   },
@@ -361,7 +361,7 @@ class LeadingCustomization extends HookWidget {
               scale: 0.8,
               child: CupertinoSwitch(
                 value: state.collapseNote,
-                activeTrackColor: kMainColor,
+                activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
                   context.read<CustomizeLeadingCubit>().setCollapseNoteStatus();
                 },
@@ -395,11 +395,45 @@ class LeadingCustomization extends HookWidget {
               scale: 0.8,
               child: CupertinoSwitch(
                 value: state.hideNonFollowedMedia,
-                activeTrackColor: kMainColor,
+                activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
                   context
                       .read<CustomizeLeadingCubit>()
                       .setHideNonFollowedMedia();
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.t.linkPreview.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  Text(
+                    context.t.linkPreviewDesc,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: state.linkPreview,
+                activeTrackColor: Theme.of(context).primaryColor,
+                onChanged: (isToggled) {
+                  context.read<CustomizeLeadingCubit>().setLinkrPreviewStatus();
                 },
               ),
             ),
@@ -483,9 +517,9 @@ class LeadingCustomization extends HookWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: list.length,
-              separatorBuilder: (context, index) => const Center(
+              separatorBuilder: (context, index) => Center(
                 child: DotContainer(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   size: 4,
                 ),
               ),
@@ -575,7 +609,7 @@ class LeadingCustomization extends HookWidget {
               scale: 0.8,
               child: CupertinoSwitch(
                 value: action.value,
-                activeTrackColor: kMainColor,
+                activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
                   context
                       .read<CustomizeLeadingCubit>()

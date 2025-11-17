@@ -65,8 +65,8 @@ class SeekBarState extends State<SeekBar> {
       data: _sliderThemeData.copyWith(
         inactiveTrackColor: kTransparent,
         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6.0),
-        thumbColor: kMainColor,
-        activeTrackColor: kMainColor,
+        thumbColor: Theme.of(context).primaryColor,
+        activeTrackColor: Theme.of(context).primaryColor,
       ),
       child: SizedBox(
         height: 10,
@@ -101,7 +101,7 @@ class SeekBarState extends State<SeekBar> {
       child: SliderTheme(
         data: _sliderThemeData.copyWith(
           thumbShape: HiddenThumbComponentShape(),
-          activeTrackColor: kMainColor,
+          activeTrackColor: Theme.of(context).primaryColor,
           inactiveTrackColor: kDimGrey,
         ),
         child: SizedBox(

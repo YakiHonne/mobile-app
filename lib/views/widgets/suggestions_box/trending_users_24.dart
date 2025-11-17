@@ -127,7 +127,7 @@ class TrendingUserContainer extends StatelessWidget {
         child: Text(
           context.t.follow.capitalizeFirst(),
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
       ),
@@ -160,6 +160,10 @@ class TrendingUserContainer extends StatelessWidget {
                 FeatureIcons.verified,
                 width: 15,
                 height: 15,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColor,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ],

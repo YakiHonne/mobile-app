@@ -208,7 +208,7 @@ class PropertyWallets extends HookWidget {
               scale: 0.8,
               child: CupertinoSwitch(
                 value: state.useDefaultWallet,
-                activeTrackColor: kMainColor,
+                activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
                   walletManagerCubit.setUseDefaultWallet(isToggled);
                 },
@@ -236,7 +236,7 @@ class PropertyWallets extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.enableOneTapZap,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setOneTapZap(isToggled);
             },

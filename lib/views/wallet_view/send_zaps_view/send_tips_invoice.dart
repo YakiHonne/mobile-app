@@ -151,7 +151,7 @@ class SendZapsUsingInvoice extends HookWidget {
           style: Theme.of(context).textTheme.displaySmall!.copyWith(
                 fontWeight: FontWeight.w700,
                 height: 1,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
         Text(

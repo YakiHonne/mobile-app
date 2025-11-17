@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,6 +50,7 @@ class LocalDatabaseRepository {
   static const String _appCustomization = 'keys_is_external_map';
   static const String _appLanguage = 'app_language';
   static const String _appTheme = 'app_theme';
+  static const String _appMainColor = 'app_main_color';
   static const String _textScaleFactor = 'text_scale_factor';
   static const String _crashlyticsData = 'collect_data';
 
@@ -339,6 +341,17 @@ class LocalDatabaseRepository {
 
   void setAppThemeMode(AppThemeMode mode) {
     _setPrefsData(_appTheme, mode.name);
+  }
+
+  /// Text Scale Factor
+  Color? getAppMainColor() {
+    final theme = _getPrefsData<String>(_appMainColor);
+
+    return theme != null ? Color(int.parse(theme, radix: 16)) : null;
+  }
+
+  void setAppMainColor(Color color) {
+    _setPrefsData(_appMainColor, color.toARGB32().toRadixString(16));
   }
 
   /// Text Scale Factor

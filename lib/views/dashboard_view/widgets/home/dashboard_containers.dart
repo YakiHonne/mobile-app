@@ -53,7 +53,6 @@ class DashboardNoteContainer extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const ContentTypeIconBox(
               icon: FeatureIcons.uncensoredNote,
@@ -99,7 +98,7 @@ class DashboardNoteContainer extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(
-            height: kDefaultPadding / 2,
+            height: kDefaultPadding / 4,
           ),
           Row(
             children: [
@@ -129,18 +128,21 @@ class ContentTypeIconBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
+      width: 50,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
         border: Border.all(
           color: Theme.of(context).dividerColor,
           width: 0.5,
         ),
       ),
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      alignment: Alignment.center,
       child: SvgPicture.asset(
         icon,
-        width: 20,
-        height: 20,
+        width: 25,
+        height: 25,
         colorFilter: ColorFilter.mode(
           Theme.of(context).primaryColorDark,
           BlendMode.srcIn,
@@ -273,8 +275,9 @@ class DashboardDraftContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           color: Theme.of(context).scaffoldBackgroundColor,
           border: Border.all(
-            color:
-                article != null ? Theme.of(context).dividerColor : kMainColor,
+            color: article != null
+                ? Theme.of(context).dividerColor
+                : Theme.of(context).primaryColor,
             width: 0.5,
           ),
         ),
@@ -434,14 +437,13 @@ class DashboardContentContainer extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (image != null)
               CommonThumbnail(
                 image: image!,
                 placeholder: getRandomPlaceholder(input: id, isPfp: false),
-                width: 40,
-                height: 40,
+                width: 50,
+                height: 50,
                 radius: kDefaultPadding / 2,
                 isRound: true,
               )
@@ -524,73 +526,88 @@ class DashboardContentContainer extends StatelessWidget {
               disableNoteParsing: true,
             )
           else
-            Text(
-              content,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium,
+            Row(
+              spacing: kDefaultPadding / 2,
+              children: [
+                Flexible(
+                  child: Text(
+                    content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                if ((isHiddenType == null || !isHiddenType!) &&
+                    kind == EventKind.CATEGORIZED_BOOKMARK) ...[
+                  TypeContainer(
+                    type: getType(context),
+                  ),
+                ],
+              ],
             ),
-          const SizedBox(
-            height: kDefaultPadding / 2,
-          ),
-          Row(
-            children: [
-              DashboardContentStats(id: id),
-              if (isHiddenType == null || !isHiddenType!) ...[
-                const SizedBox(
-                  width: kDefaultPadding / 4,
-                ),
-                TypeContainer(
-                  type: getType(context),
-                ),
-              ],
-              if (isPaid ?? false) ...[
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                const PaidContainer(),
-              ],
-              if (isRepost ?? false) ...[
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kDefaultPadding / 4),
-                    color: Theme.of(context).cardColor,
-                    border: Border.all(
-                      color: Theme.of(context).dividerColor,
-                      width: 0.3,
+          if (kind != EventKind.CATEGORIZED_BOOKMARK) ...[
+            const SizedBox(
+              height: kDefaultPadding / 4,
+            ),
+            Row(
+              children: [
+                DashboardContentStats(id: id),
+                if (isHiddenType == null || !isHiddenType!) ...[
+                  const SizedBox(
+                    width: kDefaultPadding / 4,
+                  ),
+                  TypeContainer(
+                    type: getType(context),
+                  ),
+                ],
+                if (isPaid ?? false) ...[
+                  const SizedBox(
+                    width: kDefaultPadding / 2,
+                  ),
+                  const PaidContainer(),
+                ],
+                if (isRepost ?? false) ...[
+                  const SizedBox(
+                    width: kDefaultPadding / 2,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(kDefaultPadding / 4),
+                      color: Theme.of(context).cardColor,
+                      border: Border.all(
+                        color: Theme.of(context).dividerColor,
+                        width: 0.3,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPadding / 8,
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          context.t.reposted.capitalizeFirst(),
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                        const SizedBox(
+                          width: kDefaultPadding / 4,
+                        ),
+                        SvgPicture.asset(
+                          FeatureIcons.repost,
+                          width: 15,
+                          height: 15,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).primaryColorDark,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPadding / 8,
-                    horizontal: kDefaultPadding / 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        context.t.reposted.capitalizeFirst(),
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                      const SizedBox(
-                        width: kDefaultPadding / 4,
-                      ),
-                      SvgPicture.asset(
-                        FeatureIcons.repost,
-                        width: 15,
-                        height: 15,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ],
-            ],
-          ),
+            ),
+          ]
         ],
       ),
     );
@@ -657,7 +674,7 @@ class DashboardContentContainer extends StatelessWidget {
         final bookmark = item as BookmarkListModel;
         type = context.t.itemsNumber(
           number:
-              '${bookmark.bookmarkedEvents.length + bookmark.bookmarkedReplaceableEvents.length}',
+              '${bookmark.bookmarkedEvents.length + bookmark.bookmarkedReplaceableEvents.length + bookmark.bookmarkedTags.length + bookmark.bookmarkedUrls.length}',
         );
     }
 

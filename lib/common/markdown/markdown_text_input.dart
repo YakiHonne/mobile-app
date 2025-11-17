@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:pull_down_button/pull_down_button.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../utils/utils.dart';
 import '../../views/add_content_view/related_adding_views/article_widgets/article_image_selector.dart';
@@ -56,7 +58,7 @@ class MarkdownTextInput extends StatefulWidget {
 
   final Widget previewWidget;
 
-  final ValueNotifier<bool> toggleArticleContent;
+  final ValueNotifier<ArticleWritingState> toggleArticleContent;
 
   /// Constructor for [MarkdownTextInput]
   const MarkdownTextInput(
@@ -157,6 +159,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+
     return GestureDetector(
       onTap: () => focusNode.requestFocus(),
       child: Scrollbar(
@@ -164,139 +168,27 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
         child: Column(
           children: [
             Expanded(
-              child: !widget.toggleArticleContent.value
+              child: widget.toggleArticleContent.value ==
+                      ArticleWritingState.preview
                   ? widget.previewWidget
-                  : CustomScrollView(
-                      controller: _scrollController,
-                      slivers: <Widget>[
-                        SliverToBoxAdapter(
-                          child: TextFormField(
-                            minLines: 1,
-                            maxLines: 2,
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardType: TextInputType.text,
-                            onFieldSubmitted: (event) =>
-                                focusNode.requestFocus(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                            controller: widget.titleController,
-                            decoration: InputDecoration(
-                              hintText: 'Give me a catchy title',
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    color: Theme.of(context).highlightColor,
-                                  ),
-                              fillColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              focusColor: Theme.of(context).primaryColorLight,
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: kDefaultPadding / 2,
-                                horizontal: kDefaultPadding / 1.5,
-                              ),
+                  : widget.toggleArticleContent.value ==
+                          ArticleWritingState.edit
+                      ? _editingScrollView(context)
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: _editingScrollView(context),
                             ),
-                            onChanged: widget.onTitleChanged,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: TextFormField(
-                            focusNode: focusNode,
-                            textInputAction: TextInputAction.newline,
-                            controller: _controller,
-                            onChanged: (value) {
-                              widget.onTextChanged(_controller.text);
-                            },
-                            contextMenuBuilder: (
-                              BuildContext context,
-                              EditableTextState editableTextState,
-                            ) {
-                              return AdaptiveTextSelectionToolbar.editable(
-                                anchors: editableTextState.contextMenuAnchors,
-                                onLookUp: () {},
-                                onSearchWeb: () {},
-                                onShare: () {},
-                                clipboardStatus: ClipboardStatus.pasteable,
-                                onCopy: () => editableTextState.copySelection(
-                                    SelectionChangedCause.toolbar),
-                                onCut: () => editableTextState.cutSelection(
-                                    SelectionChangedCause.toolbar),
-                                onPaste: () async {
-                                  final String pastableText =
-                                      await getPastableString();
-
-                                  final cursorPos =
-                                      _controller.selection.base.offset;
-
-                                  final String suffixText =
-                                      _controller.text.substring(cursorPos);
-
-                                  final String specialChars = pastableText;
-                                  final int length = specialChars.length;
-
-                                  final String prefixText =
-                                      _controller.text.substring(0, cursorPos);
-
-                                  _controller.text =
-                                      prefixText + specialChars + suffixText;
-                                  _controller.selection = TextSelection(
-                                    baseOffset: cursorPos + length,
-                                    extentOffset: cursorPos + length,
-                                  );
-
-                                  editableTextState.updateEditingValue(
-                                    editableTextState.currentTextEditingValue
-                                        .copyWith(
-                                      text: prefixText +
-                                          specialChars +
-                                          suffixText,
-                                    ),
-                                  );
-
-                                  editableTextState.hideToolbar();
-                                },
-                                onSelectAll: () => editableTextState.selectAll(
-                                  SelectionChangedCause.toolbar,
-                                ),
-                                onLiveTextInput: () {},
-                              );
-                            },
-                            maxLines: null,
-                            keyboardType: TextInputType.multiline,
-                            textCapitalization: TextCapitalization.sentences,
-                            validator: widget.validators != null
-                                ? (value) => widget.validators!(value)
-                                : null,
-                            style: widget.textStyle ??
-                                Theme.of(context).textTheme.bodyMedium,
-                            cursorColor: Theme.of(context).primaryColorDark,
-                            textDirection: widget.textDirection,
-                            decoration: InputDecoration(
-                              hintText: widget.label,
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                      color: Theme.of(context).highlightColor),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
-                              fillColor: kTransparent,
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
+                            const VerticalDivider(
+                              indent: kDefaultPadding,
+                              endIndent: kDefaultPadding,
+                              thickness: 0.5,
                             ),
-                          ),
+                            Expanded(
+                              child: widget.previewWidget,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
             ),
             const SizedBox(
               height: kDefaultPadding / 4,
@@ -305,14 +197,132 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
               thickness: 0.3,
               height: 0,
             ),
-            markdownMenu(),
+            markdownMenu(isTablet),
           ],
         ),
       ),
     );
   }
 
-  Widget markdownMenu() {
+  CustomScrollView _editingScrollView(BuildContext context) {
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: TextFormField(
+            minLines: 1,
+            maxLines: 2,
+            textCapitalization: TextCapitalization.sentences,
+            keyboardType: TextInputType.text,
+            onFieldSubmitted: (event) => focusNode.requestFocus(),
+            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+            controller: widget.titleController,
+            decoration: InputDecoration(
+              hintText: 'Give me a catchy title',
+              hintStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).highlightColor,
+                  ),
+              fillColor: Theme.of(context).scaffoldBackgroundColor,
+              focusColor: Theme.of(context).primaryColorLight,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: kDefaultPadding / 2,
+                horizontal: kDefaultPadding / 1.5,
+              ),
+            ),
+            onChanged: widget.onTitleChanged,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: TextFormField(
+            focusNode: focusNode,
+            textInputAction: TextInputAction.newline,
+            controller: _controller,
+            onChanged: (value) {
+              widget.onTextChanged(_controller.text);
+            },
+            contextMenuBuilder: (
+              BuildContext context,
+              EditableTextState editableTextState,
+            ) {
+              return AdaptiveTextSelectionToolbar.editable(
+                anchors: editableTextState.contextMenuAnchors,
+                onLookUp: () {},
+                onSearchWeb: () {},
+                onShare: () {},
+                clipboardStatus: ClipboardStatus.pasteable,
+                onCopy: () => editableTextState
+                    .copySelection(SelectionChangedCause.toolbar),
+                onCut: () => editableTextState
+                    .cutSelection(SelectionChangedCause.toolbar),
+                onPaste: () async {
+                  final String pastableText = await getPastableString();
+
+                  final cursorPos = _controller.selection.base.offset;
+
+                  final String suffixText =
+                      _controller.text.substring(cursorPos);
+
+                  final String specialChars = pastableText;
+                  final int length = specialChars.length;
+
+                  final String prefixText =
+                      _controller.text.substring(0, cursorPos);
+
+                  _controller.text = prefixText + specialChars + suffixText;
+                  _controller.selection = TextSelection(
+                    baseOffset: cursorPos + length,
+                    extentOffset: cursorPos + length,
+                  );
+
+                  editableTextState.updateEditingValue(
+                    editableTextState.currentTextEditingValue.copyWith(
+                      text: prefixText + specialChars + suffixText,
+                    ),
+                  );
+
+                  editableTextState.hideToolbar();
+                },
+                onSelectAll: () => editableTextState.selectAll(
+                  SelectionChangedCause.toolbar,
+                ),
+                onLiveTextInput: () {},
+              );
+            },
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
+            validator: widget.validators != null
+                ? (value) => widget.validators!(value)
+                : null,
+            style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+            cursorColor: Theme.of(context).primaryColorDark,
+            textDirection: widget.textDirection,
+            decoration: InputDecoration(
+              hintText: widget.label,
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: Theme.of(context).highlightColor),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              fillColor: kTransparent,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget markdownMenu(bool isTablet) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -334,57 +344,16 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                 child: ScrollShadow(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: AbsorbPointer(
-                    absorbing: !widget.toggleArticleContent.value,
+                    absorbing: widget.toggleArticleContent.value ==
+                        ArticleWritingState.preview,
                     child: Opacity(
-                      opacity: widget.toggleArticleContent.value ? 1 : 0.5,
+                      opacity: widget.toggleArticleContent.value ==
+                              ArticleWritingState.preview
+                          ? 1
+                          : 0.5,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          // PullDownButton(
-                          //   animationBuilder: (context, state, child) {
-                          //     return child;
-                          //   },
-                          //   routeTheme: PullDownMenuRouteTheme(
-                          //     backgroundColor: Theme.of(context).cardColor,
-                          //   ),
-                          //   itemBuilder: (context) {
-                          //     final textStyle =
-                          //         Theme.of(context).textTheme.labelMedium;
-
-                          //     return [
-                          //       PullDownMenuItem(
-                          //         title: 'Use chat gpt',
-                          //         onTap: () =>
-                          //             addGptPrompt(MarkdownType.gpt, context),
-                          //         itemTheme: PullDownMenuItemTheme(
-                          //           textStyle: textStyle,
-                          //         ),
-                          //         iconWidget: SvgPicture.asset(
-                          //           FeatureIcons.gpt,
-                          //           height: 20,
-                          //           width: 20,
-                          //           colorFilter: ColorFilter.mode(
-                          //             Colors.green.shade400,
-                          //             BlendMode.srcIn,
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ];
-                          //   },
-                          //   buttonBuilder: (context, showMenu) =>
-                          //       CustomIconButton(
-                          //     onClicked: () {
-                          //       showMenu.call();
-                          //       focusNode.requestFocus();
-                          //     },
-                          //     icon: FeatureIcons.addRaw,
-                          //     size: 17,
-                          //     backgroundColor:
-                          //         Theme.of(context).scaffoldBackgroundColor,
-                          //     vd: -2,
-                          //   ),
-                          // ),
-
                           ...widget.actions.map(
                             (type) {
                               switch (type) {
@@ -487,18 +456,25 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                 endIndent: 10,
                 indent: 10,
               ),
-              CustomIconButton(
-                onClicked: () {
-                  widget.toggleArticleContent.value =
-                      !widget.toggleArticleContent.value;
-                },
-                icon: widget.toggleArticleContent.value
-                    ? FeatureIcons.visible
-                    : FeatureIcons.notVisible,
-                size: 25,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                vd: -2,
-              ),
+              if (isTablet)
+                _writingState(context)
+              else
+                CustomIconButton(
+                  onClicked: () {
+                    widget.toggleArticleContent.value =
+                        widget.toggleArticleContent.value ==
+                                ArticleWritingState.edit
+                            ? ArticleWritingState.preview
+                            : ArticleWritingState.edit;
+                  },
+                  icon: widget.toggleArticleContent.value ==
+                          ArticleWritingState.edit
+                      ? FeatureIcons.visible
+                      : FeatureIcons.notVisible,
+                  size: 25,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  vd: -2,
+                ),
               IconButton(
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -518,6 +494,62 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
         ),
       ),
     );
+  }
+
+  PullDownButton _writingState(BuildContext context) {
+    return PullDownButton(
+      itemBuilder: (context) {
+        return ArticleWritingState.values
+            .map(
+              (e) => PullDownMenuItem.selectable(
+                onTap: () {
+                  widget.toggleArticleContent.value = e;
+                },
+                title: getStateTitle(e, context),
+                selected: e == widget.toggleArticleContent.value,
+                iconWidget: SvgPicture.asset(
+                  getStateIcon(
+                    e,
+                    context,
+                  ),
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            )
+            .toList();
+      },
+      buttonBuilder: (context, showMenu) => CustomIconButton(
+        onClicked: showMenu,
+        icon: getStateIcon(widget.toggleArticleContent.value, context),
+        size: 20,
+        backgroundColor: kTransparent,
+      ),
+    );
+  }
+
+  String getStateTitle(ArticleWritingState state, BuildContext context) {
+    switch (state) {
+      case ArticleWritingState.edit:
+        return context.t.editCode;
+      case ArticleWritingState.preview:
+        return context.t.previewCode;
+      case ArticleWritingState.editPreview:
+        return context.t.liveCode;
+    }
+  }
+
+  String getStateIcon(ArticleWritingState state, BuildContext context) {
+    switch (state) {
+      case ArticleWritingState.edit:
+        return FeatureIcons.editCode;
+      case ArticleWritingState.preview:
+        return FeatureIcons.previewCode;
+      case ArticleWritingState.editPreview:
+        return FeatureIcons.liveCode;
+    }
   }
 
   Future<String> getPastableString() async {

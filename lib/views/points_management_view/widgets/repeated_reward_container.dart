@@ -55,7 +55,7 @@ class RepeatedReward extends StatelessWidget {
             collectedPoints.toString(),
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
           Text(
@@ -154,7 +154,7 @@ class RepeatedReward extends StatelessWidget {
                   TextSpan(
                     text: '${standard.points.first} xp',
                     style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: kMainColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                   ),
                   TextSpan(

@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.9.3+165
+version: 1.9.4+168
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -74,10 +74,10 @@ dependencies:
       ref: master
   glassmorphism: ^3.0.0
   html: ^0.15.4
-  image_gallery_saver_plus: ^3.0.5
+  image_gallery_saver_plus: ^4.0.1
   image_picker: ^1.1.2
   interactiveviewer_gallery_plus: ^0.1.0
-  intl: 0.19.0
+  intl: ^0.20.2
   just_audio: ^0.9.39
   logger: ^2.4.0
   lottie: ^3.1.2
@@ -86,6 +86,8 @@ dependencies:
   mention_tag_text_field: ^0.0.8
   modal_bottom_sheet: ^3.0.0
   nested_scroll_view_plus: ^2.0.0
+  # nostr_core_enhanced:
+  #   path: ../nostr_core_enhanced/
   nostr_core_enhanced:
     git:
       url: https://github.com/YakiHonne/nostr_core_enhanced.git
@@ -114,10 +116,9 @@ dependencies:
   share_plus: ^10.0.2
   shared_preferences: ^2.5.3
   sizer: ^2.0.14
-  skeletonizer: ^1.4.2
+  skeletonizer: ^2.1.0+1
   slang: ^4.8.1
   slang_flutter: ^4.4.0
-  slider_button: ^2.1.0
   string_validator: ^1.0.2
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
@@ -127,6 +128,7 @@ dependencies:
   video_url_validator: ^1.0.3
   visibility_detector: ^0.4.0+2
   webview_flutter: ^4.10.0
+  youtube_player_flutter: ^9.1.3
 
 flutter_launcher_icons:
   android: true
@@ -142,11 +144,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# dependency_overrides:
-#   irondash_engine_context:
-#     git:
-#       url: https://github.com/Sabbar-Engineering/irondash
-#       path: "engine_context/dart"
 flutter:
   uses-material-design: true
 

@@ -57,14 +57,47 @@ class PdmCommonActions {
           ? context.t.unmuteUser.capitalizeFirst()
           : context.t.muteUser.capitalizeFirst(),
       description: description,
+      setDescriptionMaxLine: true,
       buttonText: isMuted
           ? context.t.unmute.capitalizeFirst()
           : context.t.mute.capitalizeFirst(),
       buttonTextColor: isMuted ? kGreen : kRed,
       onClicked: () => setMuteStatus(
-        pubkey: metadata.pubkey,
+        muteKey: metadata.pubkey,
         onSuccess: () {
           onMuteActionSuccess?.call(pubkey, !isMuted);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  static Future<void> muteThread(
+    String id,
+    bool isMuted,
+    BuildContext context, {
+    Function(String, bool)? onMuteActionSuccess,
+  }) async {
+    final description = isMuted
+        ? context.t.unmuteThreadDesc.capitalizeFirst()
+        : context.t.muteThreadDesc.capitalizeFirst();
+
+    showCupertinoCustomDialogue(
+      context: context,
+      title: isMuted
+          ? context.t.unmuteThread.capitalizeFirst()
+          : context.t.muteThread.capitalizeFirst(),
+      description: description,
+      buttonText: isMuted
+          ? context.t.unmute.capitalizeFirst()
+          : context.t.mute.capitalizeFirst(),
+      buttonTextColor: isMuted ? kGreen : kRed,
+      setDescriptionMaxLine: true,
+      onClicked: () => setMuteStatus(
+        muteKey: id,
+        isPubkey: false,
+        onSuccess: () {
+          onMuteActionSuccess?.call(id, !isMuted);
           Navigator.pop(context);
         },
       ),
@@ -78,28 +111,27 @@ class PdmCommonActions {
     late int kind;
     late String identifier;
     late String eventPubkey;
-    String image = '';
 
     if (item is DetailedNoteModel) {
       kind = EventKind.TEXT_NOTE;
       identifier = item.id;
       eventPubkey = item.pubkey;
-      image = '';
     } else if (item is Article) {
       kind = EventKind.LONG_FORM;
       identifier = item.identifier;
       eventPubkey = item.pubkey;
-      image = item.image;
     } else if (item is Curation) {
       kind = item.kind;
       identifier = item.identifier;
       eventPubkey = item.pubkey;
-      image = item.image;
     } else if (item is VideoModel) {
       kind = item.kind;
       identifier = item.id;
       eventPubkey = item.pubkey;
-      image = item.thumbnail.isNotEmpty ? item.thumbnail : '';
+    } else if (item is BookmarkOtherType) {
+      kind = -1;
+      identifier = item.id;
+      eventPubkey = item.pubkey;
     } else {
       throw ArgumentError('Unsupported item type: ${item.runtimeType}');
     }
@@ -112,7 +144,7 @@ class PdmCommonActions {
           kind: kind,
           identifier: identifier,
           eventPubkey: eventPubkey,
-          image: image,
+          model: item,
         );
       },
       isScrollControlled: true,

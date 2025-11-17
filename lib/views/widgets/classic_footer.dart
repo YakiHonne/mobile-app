@@ -12,9 +12,9 @@ class RefresherClassicFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClassicFooter(
       loadStyle: LoadStyle.ShowWhenLoading,
-      noMoreIcon: const Icon(
+      noMoreIcon: Icon(
         Icons.data_object_rounded,
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
         size: 15,
       ),
       completeDuration: const Duration(milliseconds: 500),
@@ -22,16 +22,16 @@ class RefresherClassicFooter extends StatelessWidget {
       canLoadingText: context.t.releaseToLoad.capitalizeFirst(),
       idleText: context.t.finished.capitalizeFirst(),
       noDataText: context.t.noMoreData.capitalizeFirst(),
-      idleIcon: const Icon(
+      idleIcon: Icon(
         Icons.done,
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
         size: 15,
       ),
-      loadingIcon: const SizedBox(
+      loadingIcon: SizedBox(
         height: 15.0,
         width: 15.0,
         child: CircularProgressIndicator(
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
           strokeWidth: 1,
         ),
       ),
@@ -51,16 +51,16 @@ class RefresherClassicHeader extends StatelessWidget {
       textStyle: Theme.of(context).textTheme.labelMedium!,
       completeDuration: const Duration(milliseconds: 500),
       completeText: context.t.refreshed.capitalizeFirst(),
-      completeIcon: const Icon(
+      completeIcon: Icon(
         Icons.done,
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
         size: 15,
       ),
       refreshingText: context.t.refreshing.capitalizeFirst(),
       idleText: context.t.pullToRefresh.capitalizeFirst(),
-      idleIcon: const Icon(
+      idleIcon: Icon(
         Icons.arrow_downward_rounded,
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
         size: 15,
       ),
     );

@@ -78,6 +78,7 @@ class HiddenMediaContainer extends HookWidget {
               },
               icon: FeatureIcons.settings,
               size: 18,
+              iconColor: kWhite,
               backgroundColor: Colors.transparent,
               vd: -1,
             ),
@@ -173,8 +174,8 @@ class _OverlayContent extends StatelessWidget {
             FeatureIcons.visible,
             width: 30,
             height: 30,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
+            colorFilter: const ColorFilter.mode(
+              kWhite,
               BlendMode.srcIn,
             ),
           ),
@@ -261,6 +262,9 @@ class HiddenMediaSettings extends StatelessWidget {
                 },
                 child: Text(
                   context.t.settings.capitalize(),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: kWhite,
+                      ),
                 ),
               ),
             ),

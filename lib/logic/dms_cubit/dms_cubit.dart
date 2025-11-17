@@ -14,6 +14,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../common/mixins/later_function.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/dm_models.dart';
+import '../../models/mute_model.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -39,7 +40,7 @@ class DmsCubit extends Cubit<DmsState>
             isUsingNip44: localDatabaseRepository.isUsingNip44(),
             rebuild: true,
             isSendingMessage: false,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             selectedTime: 0,
             isLoadingHistory: false,
             dmDataState: DmDataState.enabled,
@@ -53,8 +54,8 @@ class DmsCubit extends Cubit<DmsState>
     );
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
-        _onMutesUpdate(mutes);
+      (mm) {
+        _onMutesUpdate(mm);
       },
     );
   }
@@ -464,7 +465,7 @@ class DmsCubit extends Cubit<DmsState>
         isUsingNip44: nostrRepository.isUsingNip44,
         index: 0,
         rebuild: true,
-        mutes: nostrRepository.mutes.toList(),
+        mutes: nostrRepository.muteModel.usersMutes.toList(),
         isSendingMessage: false,
         selectedTime: 0,
         isLoadingHistory: false,
@@ -885,11 +886,11 @@ class DmsCubit extends Cubit<DmsState>
   }) async {
     final cancel = BotToast.showLoading();
 
-    final result = await NostrFunctionsRepository.setMuteList(pubkey);
+    final result = await NostrFunctionsRepository.setMuteList(muteKey: pubkey);
     cancel();
 
     if (result) {
-      final hasBeenMuted = nostrRepository.mutes.contains(pubkey);
+      final hasBeenMuted = isUserMuted(pubkey);
 
       BotToastUtils.showSuccess(
         hasBeenMuted
@@ -1214,8 +1215,8 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   // Update mutes without clearing cache (core handles caching)
-  void _onMutesUpdate(Set<String> mutes) {
-    _emit(state.copyWith(mutes: mutes.toList()));
+  void _onMutesUpdate(MuteModel mm) {
+    _emit(state.copyWith(mutes: mm.usersMutes.toList()));
   }
 
   void clear() {
@@ -1243,7 +1244,7 @@ class DmsCubit extends Cubit<DmsState>
         index: 0,
         rebuild: true,
         isSendingMessage: false,
-        mutes: nostrRepository.mutes.toList(),
+        mutes: nostrRepository.muteModel.usersMutes.toList(),
         selectedTime: 0,
         isLoadingHistory: false,
         dmDataState: DmDataState.enabled,

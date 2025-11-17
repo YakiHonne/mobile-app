@@ -166,6 +166,10 @@ class SuggestedArticleContainer extends HookWidget {
             FeatureIcons.verified,
             width: 15,
             height: 15,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).primaryColor,
+              BlendMode.srcIn,
+            ),
           ),
         ],
         DotContainer(
@@ -179,7 +183,7 @@ class SuggestedArticleContainer extends HookWidget {
               )
               .capitalizeFirst(),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
       ],
@@ -325,6 +329,10 @@ class SuggestedNoteContainer extends HookWidget {
               FeatureIcons.verified,
               width: 15,
               height: 15,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
+                BlendMode.srcIn,
+              ),
             ),
           ],
         ],

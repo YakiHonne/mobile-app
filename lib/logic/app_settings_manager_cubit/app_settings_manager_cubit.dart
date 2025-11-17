@@ -91,6 +91,15 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       currentSigner!.getPublicKey(),
     );
 
+    final relaysEvent = await nc.db.loadEvent(
+      pubkey: currentSigner!.getPublicKey(),
+      kind: EventKind.FAVORITE_RELAYS,
+    );
+
+    if (relaysEvent != null) {
+      setFavoriteRelayFromEvent(relaysEvent);
+    }
+
     if (settings == null) {
       appSharedSettings = AppSharedSettings.defaultEmptySettings(
         pubkey: currentSigner!.getPublicKey(),

@@ -368,10 +368,10 @@ class GetInspiredState extends State<GetInspired> {
             vertical: kDefaultPadding / 2,
           ),
           decoration: BoxDecoration(
-            color: kMainColor.withValues(alpha: 0.2),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(kDefaultPadding / 2),
             border: Border.all(
-              color: kMainColor,
+              color: Theme.of(context).primaryColor,
               width: 0.5,
             ),
           ),
@@ -682,17 +682,17 @@ class CodeElementBuilder extends MarkdownElementBuilder {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
-          color: kMainColor.withValues(alpha: 0.1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(5),
           border: Border.all(
-            color: kMainColor.withValues(alpha: 0.5),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
             width: 0.5,
           ),
         ),
         child: Text(
           element.textContent,
           style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.w500,
               ),
         ),

@@ -43,7 +43,7 @@ class PropertyYakiChest extends StatelessWidget {
               if (state.userGlobalStats != null)
                 Container(
                   decoration: BoxDecoration(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(kDefaultPadding / 2),
                   ),
                   padding: const EdgeInsets.symmetric(

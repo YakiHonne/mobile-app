@@ -37,7 +37,7 @@ class ProfileCubit extends Cubit<ProfileState> {
             isRepliesLoading: true,
             isSmartWidgetsLoading: true,
             isArticlesLoading: true,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             userRelays: const [],
             videos: const [],
             notes: const [],
@@ -83,11 +83,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
 
     mutesListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         if (!isClosed) {
           _emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
               refresh: !state.refresh,
             ),
           );
@@ -158,7 +158,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           articles: const [],
           curations: const [],
           smartWidgets: const [],
-          mutes: nostrRepository.mutes.toList(),
+          mutes: nostrRepository.muteModel.usersMutes.toList(),
           isArticlesLoading: true,
           canBeZapped: false,
           isFollowingUser: false,
@@ -251,11 +251,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }) async {
     final cancel = BotToast.showLoading();
 
-    final result = await NostrFunctionsRepository.setMuteList(pubkey);
+    final result = await NostrFunctionsRepository.setMuteList(muteKey: pubkey);
     cancel();
 
     if (result) {
-      final hasBeenMuted = nostrRepository.mutes.contains(state.user.pubkey);
+      final hasBeenMuted = isUserMuted(state.user.pubkey);
 
       BotToastUtils.showSuccess(
         hasBeenMuted

@@ -96,7 +96,7 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                   value: state.events.length,
                   textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                   enableAbbreviation: true,
                 ),
@@ -106,8 +106,8 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                     FeatureIcons.arrowUp,
                     width: 15,
                     height: 15,
-                    colorFilter: const ColorFilter.mode(
-                      kMainColor,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor,
                       BlendMode.srcIn,
                     ),
                   ),

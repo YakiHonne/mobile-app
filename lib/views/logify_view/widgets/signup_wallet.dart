@@ -276,8 +276,8 @@ class SignupWallet extends HookWidget {
               isCreatingWallet.value = false;
             },
             child: isCreatingWallet.value
-                ? const SpinKitCircle(
-                    color: kMainColor,
+                ? SpinKitCircle(
+                    color: Theme.of(context).primaryColor,
                     size: 21,
                   )
                 : Text(

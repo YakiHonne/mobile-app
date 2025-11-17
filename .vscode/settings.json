@@ -3,6 +3,6 @@
     "configurations": [],
     "compounds": []
   },
-  "dart.flutterSdkPath": "/Users/MAC/.puro/envs/yakihonne/flutter",
-  "dart.sdkPath": "/Users/MAC/.puro/envs/yakihonne/flutter/bin/cache/dart-sdk"
+  "dart.flutterSdkPath": "/Users/MAC/.puro/envs/yakihonne-2/flutter",
+  "dart.sdkPath": "/Users/MAC/.puro/envs/yakihonne-2/flutter/bin/cache/dart-sdk"
 }

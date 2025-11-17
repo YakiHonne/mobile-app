@@ -248,7 +248,7 @@ class ProfileFastAccess extends HookWidget {
                           ? Theme.of(context).highlightColor
                           : state.isFollowing
                               ? Theme.of(context).scaffoldBackgroundColor
-                              : kMainColor,
+                              : Theme.of(context).primaryColor,
                     ),
                     child: Text(
                       state.isFollowing
@@ -325,27 +325,29 @@ class ProfileFastAccess extends HookWidget {
                 ? ButtonStatus.inactive
                 : ButtonStatus.disabled,
           ),
-          const SizedBox(
-            width: kDefaultPadding / 4,
-          ),
-          MutedUserProvider(
-            pubkey: pubkey,
-            child: (isMuted) => NewBorderedIconButton(
-              onClicked: () {
-                doIfCanSign(
-                  func: () {
-                    setMuteStatus(
-                      pubkey: pubkey,
-                      onSuccess: () {},
-                    );
-                  },
-                  context: context,
-                );
-              },
-              icon: FeatureIcons.mute,
-              buttonStatus: ButtonStatus.inactive,
+          if (currentSigner!.getPublicKey() != metadata.pubkey) ...[
+            const SizedBox(
+              width: kDefaultPadding / 4,
             ),
-          ),
+            MutedUserProvider(
+              pubkey: pubkey,
+              child: (isMuted) => NewBorderedIconButton(
+                onClicked: () {
+                  doIfCanSign(
+                    func: () {
+                      setMuteStatus(
+                        muteKey: pubkey,
+                        onSuccess: () {},
+                      );
+                    },
+                    context: context,
+                  );
+                },
+                icon: FeatureIcons.mute,
+                buttonStatus: ButtonStatus.inactive,
+              ),
+            ),
+          ],
           const SizedBox(
             width: kDefaultPadding / 4,
           ),

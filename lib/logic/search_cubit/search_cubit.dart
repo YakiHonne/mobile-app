@@ -19,7 +19,6 @@ import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/video_model.dart';
-import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -44,7 +43,7 @@ class SearchCubit extends Cubit<SearchState> {
             profileSearchResult: SearchResultsType.noSearch,
             search: '',
             bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             refresh: false,
             interests: nostrRepository.interests,
             relayConnectivity: RelayConnectivity.idle,
@@ -60,13 +59,14 @@ class SearchCubit extends Cubit<SearchState> {
     );
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (Set<String> mutes) {
+      (mm) {
         _emit(
           content: state.content
-              .where((t) => t is Article && !mutes.contains(t.pubkey))
+              .where((t) => t is Article && !mm.usersMutes.contains(t.pubkey))
               .toList(),
           authors: state.authors
-              .where((Metadata author) => !mutes.contains(author.pubkey))
+              .where(
+                  (Metadata author) => !mm.usersMutes.contains(author.pubkey))
               .toList(),
         );
       },
@@ -182,7 +182,7 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  void getContent(String search) {
+  Future<void> getContent(String search) async {
     _emit(isSearching: true);
 
     final List<dynamic> currentContent = List<dynamic>.from(state.content);
@@ -190,8 +190,7 @@ class SearchCubit extends Cubit<SearchState> {
     final searchTag =
         search.startsWith('#') ? search.removeFirstCharacter() : search;
 
-    NostrFunctionsRepository.getHomePageData(
-      addNotes: true,
+    final content = await NostrFunctionsRepository.getHomePageData(
       tags: <String>[
         searchTag,
         '#$searchTag',
@@ -200,23 +199,16 @@ class SearchCubit extends Cubit<SearchState> {
         searchTag.capitalizeFirst(),
         '#${searchTag.capitalizeFirst()}',
       ],
-    ).listen(
-      (List<dynamic> content) {
-        final List<dynamic> updatedContent = List<dynamic>.from(currentContent);
-        updatedContent.addAll(content);
+      search: search,
+    );
 
-        _emit(
-          content: updatedContent,
-          contentSearchResult: SearchResultsType.content,
-          isSearching: false,
-        );
-      },
-      onDone: () {
-        _emit(
-          contentSearchResult: SearchResultsType.content,
-          isSearching: false,
-        );
-      },
+    final List<dynamic> updatedContent = List<dynamic>.from(currentContent);
+    updatedContent.addAll(content);
+
+    _emit(
+      content: updatedContent,
+      contentSearchResult: SearchResultsType.content,
+      isSearching: false,
     );
   }
 
@@ -524,12 +516,18 @@ class SearchCubit extends Cubit<SearchState> {
             .toList(),
         match: search,
       );
-      _emit(
-        authors: cached,
-        profileSearchResult: SearchResultsType.content,
-      );
 
-      final users = await HttpFunctionsRepository.getUsers(search);
+      if (cached.isNotEmpty) {
+        _emit(
+          authors: cached,
+          profileSearchResult: SearchResultsType.content,
+        );
+      }
+
+      final users = await NostrFunctionsRepository.getUserSearch(
+        search: search,
+        limit: 20,
+      );
 
       final newList = <Metadata>[...state.authors];
 

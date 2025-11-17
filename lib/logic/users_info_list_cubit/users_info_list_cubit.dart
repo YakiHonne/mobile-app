@@ -16,7 +16,7 @@ class UsersInfoListCubit extends Cubit<UsersInfoListState> {
       : super(
           UsersInfoListState(
             isLoading: false,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             isValidUser: canSign(),
             currentUserPubKey: nostrRepository.currentMetadata.pubkey,
             followings: contactListCubit.contacts,
@@ -36,11 +36,11 @@ class UsersInfoListCubit extends Cubit<UsersInfoListState> {
     );
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
             ),
           );
         }

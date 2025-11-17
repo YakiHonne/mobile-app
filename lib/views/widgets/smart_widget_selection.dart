@@ -142,6 +142,7 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
       itemCount: state.widgets.length,
       controller: scrollController,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
+      physics: const AlwaysScrollableScrollPhysics(),
       separatorBuilder: (context, index) => const SizedBox(
         height: kDefaultPadding / 2,
       ),
@@ -167,6 +168,7 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
+      physics: const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final w = state.widgets[index];
 

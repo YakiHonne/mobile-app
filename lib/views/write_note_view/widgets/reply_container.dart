@@ -80,7 +80,7 @@ class ReplyContainer extends StatelessWidget {
                   )
                   .capitalizeFirst(),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

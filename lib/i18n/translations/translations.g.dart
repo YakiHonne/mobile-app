@@ -4,12 +4,13 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 10
-/// Strings: 13876 (1387 per locale)
+/// Strings: 13897 (1389 per locale)
 ///
-/// Built on 2025-10-30 at 08:42 UTC
+/// Built on 2025-11-16 at 07:51 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';

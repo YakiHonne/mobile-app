@@ -18,11 +18,14 @@ import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
+import '../../routes/pages_router.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
 import '../relay_feed_view/relay_feed_view.dart';
+import '../settings_view/widgets/relays_update.dart';
 import '../widgets/article_container.dart';
 import '../widgets/content_placeholder.dart';
+import '../widgets/custom_icon_buttons.dart';
 import '../widgets/nip05_component.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/profile_picture.dart';
@@ -45,7 +48,6 @@ class SearchView extends HookWidget {
   Widget build(BuildContext context) {
     final contentOptions = [
       context.t.people.capitalizeFirst(),
-      context.t.allMedia.capitalizeFirst(),
       context.t.notes.capitalizeFirst(),
       context.t.articles.capitalizeFirst(),
       context.t.videos.capitalizeFirst(),
@@ -89,65 +91,63 @@ class SearchView extends HookWidget {
     return BlocProvider(
       create: (context) => searchCubit,
       child: Scaffold(
-        body: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                _appbar(focusNode, searchTextEdittingController, searchText),
-                _tagsList(contentOptions, selectedIndex)
-              ];
-            },
-            body: CustomScrollView(
-              slivers: [
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kDefaultPadding / 2,
-                  ),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              _appbar(
+                  focusNode, searchTextEdittingController, searchText, context),
+              _tagsList(contentOptions, selectedIndex)
+            ];
+          },
+          body: CustomScrollView(
+            slivers: [
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: kDefaultPadding / 2,
                 ),
-                if (canSign()) ...[
-                  _interestsList(searchText, searchTextEdittingController)
-                ],
-                if (selectedIndex.value != 0 &&
-                    searchText.value != null &&
-                    searchText.value!.isNotEmpty) ...[
-                  _interestRow(searchText),
-                ],
-                BlocBuilder<SearchCubit, SearchState>(
-                  buildWhen: (previous, current) =>
-                      previous.profileSearchResult !=
-                          current.profileSearchResult ||
-                      previous.authors != current.authors ||
-                      previous.contentSearchResult !=
-                          current.contentSearchResult ||
-                      previous.content != current.content,
-                  builder: (context, state) {
-                    if (selectedIndex.value == 0) {
-                      return getProfiles(
-                        isTablet: ResponsiveBreakpoints.of(context)
-                            .largerThan(MOBILE),
-                        searchResultsType: state.profileSearchResult,
-                        context: context,
-                      );
-                    } else {
-                      return getContent(
-                        isTablet: ResponsiveBreakpoints.of(context)
-                            .largerThan(MOBILE),
-                        contentType: selectedIndex.value,
-                        searchResultsType: state.contentSearchResult,
-                        context: context,
-                      );
-                    }
-                  },
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kBottomNavigationBarHeight +
-                        MediaQuery.of(context).padding.bottom,
-                  ),
-                ),
+              ),
+              if (canSign()) ...[
+                _interestsList(searchText, searchTextEdittingController)
               ],
-            ),
+              if (selectedIndex.value != 0 &&
+                  searchText.value != null &&
+                  searchText.value!.isNotEmpty) ...[
+                _interestRow(searchText),
+              ],
+              BlocBuilder<SearchCubit, SearchState>(
+                buildWhen: (previous, current) =>
+                    previous.profileSearchResult !=
+                        current.profileSearchResult ||
+                    previous.authors != current.authors ||
+                    previous.contentSearchResult !=
+                        current.contentSearchResult ||
+                    previous.content != current.content,
+                builder: (context, state) {
+                  if (selectedIndex.value == 0) {
+                    return getProfiles(
+                      isTablet:
+                          ResponsiveBreakpoints.of(context).largerThan(MOBILE),
+                      searchResultsType: state.profileSearchResult,
+                      context: context,
+                    );
+                  } else {
+                    return getContent(
+                      isTablet:
+                          ResponsiveBreakpoints.of(context).largerThan(MOBILE),
+                      contentType: selectedIndex.value,
+                      searchResultsType: state.contentSearchResult,
+                      context: context,
+                    );
+                  }
+                },
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: kBottomNavigationBarHeight +
+                      MediaQuery.of(context).padding.bottom,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -178,7 +178,9 @@ class SearchView extends HookWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '#${searchText.value}',
+                          searchText.value?.startsWith('#') ?? false
+                              ? searchText.value!
+                              : '#${searchText.value!}',
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
@@ -227,18 +229,17 @@ class SearchView extends HookWidget {
             );
           },
           label: Icon(
-            isActive ? Icons.check : Icons.add,
+            isActive ? Icons.close : Icons.add,
             size: 15,
             color: Theme.of(context).primaryColorDark,
           ),
           icon: Text(
-            isActive ? context.t.notInterested : context.t.interested,
+            isActive ? context.t.remove : context.t.interested,
             style: Theme.of(context).textTheme.labelLarge,
           ),
           style: TextButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
-            backgroundColor:
-                isActive ? kMainColor : Theme.of(context).cardColor,
+            backgroundColor: isActive ? kRed : Theme.of(context).cardColor,
           ),
         );
       },
@@ -399,7 +400,8 @@ class SearchView extends HookWidget {
   SliverAppBar _appbar(
       FocusNode focusNode,
       TextEditingController searchTextEdittingController,
-      ValueNotifier<String?> searchText) {
+      ValueNotifier<String?> searchText,
+      BuildContext context) {
     return SliverAppBar(
       toolbarHeight: kToolbarHeight - 10,
       leadingWidth: 40,
@@ -410,8 +412,21 @@ class SearchView extends HookWidget {
             focusNode, searchTextEdittingController, searchText),
       ),
       titleSpacing: 0,
-      actions: const [
-        SizedBox(
+      actions: [
+        CustomIconButton(
+            onClicked: () {
+              YNavigator.push(
+                context,
+                SlideupPageRoute(
+                  builder: (context) => RelayUpdateView(initialIndex: 2),
+                  settings: const RouteSettings(),
+                ),
+              );
+            },
+            icon: FeatureIcons.settings,
+            size: kDefaultPadding,
+            backgroundColor: kTransparent),
+        const SizedBox(
           width: kDefaultPadding / 2,
         )
       ],
@@ -828,14 +843,12 @@ class ContentList extends StatelessWidget {
     List<dynamic> totalContent,
     int contentType,
   ) {
-    if (contentType == 3) {
+    if (contentType == 2) {
       return totalContent.whereType<Article>().toList();
-    } else if (contentType == 4) {
+    } else if (contentType == 3) {
       return totalContent.whereType<VideoModel>().toList();
-    } else if (contentType == 2) {
-      return totalContent.whereType<DetailedNoteModel>().toList();
     } else if (contentType == 1) {
-      return totalContent;
+      return totalContent.whereType<DetailedNoteModel>().toList();
     } else {
       return [];
     }

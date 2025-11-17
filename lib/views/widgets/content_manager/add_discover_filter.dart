@@ -1389,10 +1389,10 @@ class FilterSliderBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final sliderThemeData = SliderTheme.of(context).copyWith(
       trackHeight: 2.0,
-      activeTrackColor: kMainColor,
+      activeTrackColor: Theme.of(context).primaryColor,
       inactiveTrackColor: Theme.of(context).dividerColor,
       overlayColor: kTransparent,
-      thumbColor: kMainColor,
+      thumbColor: Theme.of(context).primaryColor,
       overlayShape: SliderComponentShape.noOverlay,
     );
 
@@ -1531,7 +1531,7 @@ class ToggleBox extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: isToggled,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onToggle,
           ),
         ),

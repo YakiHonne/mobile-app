@@ -16,7 +16,8 @@ class ThemeCubit extends Cubit<ThemeState> {
           ThemeState(
             textScaleFactor: localDatabaseRepository.getTextScaleFactor(),
             mode: AppThemeMode.graphite,
-            theme: AppPreferredThemes.dark,
+            theme: AppPreferredThemes.dark(),
+            primaryColor: kMainColor,
           ),
         ) {
     init();
@@ -24,7 +25,13 @@ class ThemeCubit extends Cubit<ThemeState> {
 
   void init() {
     final mode = localDatabaseRepository.getAppThemeMode();
-    setTheme(mode: mode, saveLocally: false);
+    final primaryColor = localDatabaseRepository.getAppMainColor();
+
+    setTheme(
+      mode: mode,
+      primaryColor: primaryColor ?? kMainColor,
+      saveLocally: false,
+    );
   }
 
   void setTextScaleFactor(double tsf) {
@@ -36,31 +43,34 @@ class ThemeCubit extends Cubit<ThemeState> {
 
   void setTheme({
     required AppThemeMode mode,
+    required Color primaryColor,
     bool saveLocally = true,
   }) {
     ThemeData theme;
 
     switch (mode) {
       case AppThemeMode.graphite:
-        theme = AppPreferredThemes.dark;
+        theme = AppPreferredThemes.dark(primaryColor: primaryColor);
         enableDarkEasyLoading();
       case AppThemeMode.noir:
-        theme = AppPreferredThemes.black;
+        theme = AppPreferredThemes.black(primaryColor: primaryColor);
         enableDarkEasyLoading();
       case AppThemeMode.neige:
-        theme = AppPreferredThemes.light;
+        theme = AppPreferredThemes.light(primaryColor: primaryColor);
         enableLightEasyLoading();
       case AppThemeMode.ivory:
-        theme = AppPreferredThemes.cream;
+        theme = AppPreferredThemes.cream(primaryColor: primaryColor);
         enableLightEasyLoading();
     }
 
     if (saveLocally) {
       localDatabaseRepository.setAppThemeMode(mode);
+      localDatabaseRepository.setAppMainColor(primaryColor);
     }
 
     if (!isClosed) {
-      emit(state.copyWith(mode: mode, theme: theme));
+      emit(
+          state.copyWith(mode: mode, theme: theme, primaryColor: primaryColor));
     }
   }
 
@@ -72,7 +82,7 @@ class ThemeCubit extends Cubit<ThemeState> {
       ..indicatorSize = 45.0
       ..animationStyle = EasyLoadingAnimationStyle.scale
       ..radius = kDefaultPadding - 5
-      ..progressColor = kPurple
+      ..progressColor = kMainColor
       ..dismissOnTap = false;
   }
 
@@ -84,7 +94,7 @@ class ThemeCubit extends Cubit<ThemeState> {
       ..indicatorSize = 45.0
       ..animationStyle = EasyLoadingAnimationStyle.scale
       ..radius = kDefaultPadding - 5
-      ..progressColor = kPurple
+      ..progressColor = kMainColor
       ..dismissOnTap = false;
   }
 

@@ -153,7 +153,7 @@ class PickDateTimeWidget extends HookWidget {
     required BuildContext context,
   }) {
     final config = CalendarDatePicker2Config(
-      selectedDayHighlightColor: kMainColor,
+      selectedDayHighlightColor: Theme.of(context).primaryColor,
       weekdayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       weekdayLabelTextStyle: Theme.of(context).textTheme.labelMedium,
       firstDayOfWeek: 1,

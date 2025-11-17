@@ -114,7 +114,7 @@ class PublishingMediaContainer extends HookWidget {
                   onChanged: (isToggled) {
                     isPaid!.value = !isPaid!.value;
                   },
-                  activeTrackColor: kMainColor,
+                  activeTrackColor: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -263,7 +263,7 @@ class MentionBox extends HookWidget {
               .isNotEmpty;
 
           if (!userExists &&
-              !nostrRepository.mutes.contains(user.pubkey) &&
+              !isUserMuted(user.pubkey) &&
               user.nip05.isNotEmpty) {
             newList.add(user);
             metadataCubit.saveMetadata(user);

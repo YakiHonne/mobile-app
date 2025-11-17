@@ -73,14 +73,12 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // Use hooks for better performance and state management
-    useEffect(
-      () {
-        gc = context;
-        walletManagerCubit.mainContext = context;
-        return null;
-      },
-      [],
-    );
+    useEffect(() {
+      gc = context;
+      walletManagerCubit.mainContext = context;
+
+      return null;
+    }, []);
 
     // Memoize expensive objects to prevent recreation
     final repositoryProviders = useMemoized(

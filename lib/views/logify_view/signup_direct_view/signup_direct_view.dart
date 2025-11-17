@@ -144,7 +144,7 @@ class LoginDirectView extends HookWidget {
                   context.t.createAccount.capitalizeFirst(),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                 ),
               ),
@@ -376,7 +376,7 @@ class SignupViewDirect extends HookWidget {
           Text(
             context.t.loginAction,
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w600,
                 ),
           ),

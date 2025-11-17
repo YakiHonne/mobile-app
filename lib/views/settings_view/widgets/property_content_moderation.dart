@@ -95,7 +95,7 @@ class PropertyContentModeration extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.isUsingNip44,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setUsedMessagingNip(isToggled);
             },
@@ -119,7 +119,7 @@ class PropertyContentModeration extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.enableUsingExternalBrowser,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setExternalBrowser(isToggled);
             },
@@ -143,7 +143,7 @@ class PropertyContentModeration extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.enableGossip,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setGossip(isToggled);
             },
@@ -167,7 +167,7 @@ class PropertyContentModeration extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.enableAutomaticSigning,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setAutomaticSigning(isToggled);
             },

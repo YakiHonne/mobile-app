@@ -182,8 +182,8 @@ class InterestFollowingContainer extends HookWidget {
                 if (isInterestAvailable(
                     pubkeys: state.pubkeys,
                     interestsPubkeys: interestSet.pubkeys.toSet())) {
-                  return const DotContainer(
-                    color: kMainColor,
+                  return DotContainer(
+                    color: Theme.of(context).primaryColor,
                     size: 6,
                   );
                 }
@@ -199,7 +199,7 @@ class InterestFollowingContainer extends HookWidget {
               child: IconButton(
                 onPressed: onExpand,
                 style: IconButton.styleFrom(
-                  backgroundColor: kMainColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                   visualDensity: VisualDensity.compact,
                 ),
                 icon: SvgPicture.asset(
@@ -312,10 +312,12 @@ class InterestFollowingContainer extends HookWidget {
                   context.read<LogifyCubit>().setPubkey(metadata.pubkey);
                 },
                 style: IconButton.styleFrom(
-                  backgroundColor: isAvailable ? kMainColor : kTransparent,
+                  backgroundColor: isAvailable
+                      ? Theme.of(context).primaryColor
+                      : kTransparent,
                   visualDensity: VisualDensity.compact,
-                  side: const BorderSide(
-                    color: kMainColor,
+                  side: BorderSide(
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 icon: SvgPicture.asset(

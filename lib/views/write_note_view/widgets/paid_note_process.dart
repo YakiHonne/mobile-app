@@ -92,7 +92,7 @@ class PaidNoteProcess extends HookWidget {
             'SATS',
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
           const SizedBox(
@@ -127,8 +127,11 @@ class PaidNoteProcess extends HookWidget {
                       },
                     );
                   },
-                  child: const Text(
-                    'Confirm payment',
+                  child: Text(
+                    context.t.confirmPayment,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: kWhite,
+                        ),
                   ),
                 );
               } else {
@@ -400,6 +403,10 @@ class PaidNoteProcess extends HookWidget {
                 )
               : Text(
                   context.t.getInvoice.capitalizeFirst(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: kWhite),
                 ),
         ),
       ),

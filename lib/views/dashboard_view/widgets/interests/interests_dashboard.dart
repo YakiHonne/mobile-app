@@ -234,7 +234,7 @@ class DashboardInterestContainer extends StatelessWidget {
                   ? Theme.of(context).primaryColorDark
                   : kWhite,
               backgroundColor: interestStatus == InterestStatus.add
-                  ? kMainColor
+                  ? Theme.of(context).primaryColor
                   : interestStatus == InterestStatus.delete
                       ? Theme.of(context).cardColor
                       : kGreen,

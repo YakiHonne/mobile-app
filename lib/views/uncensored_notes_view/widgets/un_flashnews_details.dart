@@ -531,7 +531,7 @@ class UnFlashNewsDetails extends HookWidget {
                             )
                             .capitalizeFirst(),
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                              color: kMainColor,
+                              color: Theme.of(context).primaryColor,
                             ),
                       ),
                     ],
@@ -571,7 +571,7 @@ class UnFlashNewsDetails extends HookWidget {
                       kind: EventKind.TEXT_NOTE,
                       identifier: unFlashNews.flashNews.id,
                       eventPubkey: unFlashNews.flashNews.pubkey,
-                      image: '',
+                      model: unFlashNews.flashNews,
                     );
                   },
                   isScrollControlled: true,

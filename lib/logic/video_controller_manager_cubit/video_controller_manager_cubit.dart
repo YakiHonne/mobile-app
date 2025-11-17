@@ -6,8 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
+import '../../views/widgets/app_video_player/fullscreen_video_player.dart';
 import '../../views/widgets/link_previewer.dart';
+import '../../views/widgets/video_components/custom_video_controls.dart';
 
 part 'video_controller_manager_state.dart';
 
@@ -32,6 +35,9 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     bool autoPlay = false,
     bool isNetwork = true,
     bool? removeControls,
+    List<String>? fallbackUrls,
+    Function(String)? onFallbackUrlCalled,
+    Function(String)? onDownloadVideo,
   }) async {
     if (state.videoControllers[url] != null) {
       return;
@@ -45,15 +51,36 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     }
 
     try {
-      VideoPlayerController videoController;
-
+      VideoPlayerController? videoController;
+      String usedUrl = url;
       if (isNetwork) {
-        videoController = VideoPlayerController.networkUrl(Uri.parse(url));
-        await videoController.initialize();
+        videoController = await _initNetworkVideo(url);
+
+        if (videoController == null) {
+          if (fallbackUrls != null && fallbackUrls.isNotEmpty) {
+            for (final fallbackUrl in fallbackUrls) {
+              videoController = await _initNetworkVideo(fallbackUrl);
+
+              if (videoController != null) {
+                usedUrl = fallbackUrl;
+                onFallbackUrlCalled?.call(fallbackUrl);
+                break;
+              }
+            }
+          }
+        }
       } else {
         final file = File(url);
         videoController = VideoPlayerController.file(file);
         await videoController.initialize();
+      }
+
+      if (videoController == null) {
+        return;
+      }
+
+      if (autoPlay) {
+        videoController.setVolume(0);
       }
 
       final videoControllers =
@@ -61,12 +88,16 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       final chewieControllers =
           Map<String, ChewieController>.from(state.chewieControllers);
 
-      videoControllers[url] = videoController;
+      videoControllers[usedUrl] = videoController;
 
       final chewieController = ChewieController(
         videoPlayerController: videoController,
         autoPlay: autoPlay,
+        allowPlaybackSpeedChanging: false,
         showControlsOnInitialize: false,
+        routePageBuilder:
+            (context, animation, secondaryAnimation, controllerProvider) =>
+                FullScreenVideoPlayer(url: url, provider: controllerProvider),
         deviceOrientationsOnEnterFullScreen: Platform.isAndroid
             ? <DeviceOrientation>[
                 DeviceOrientation.portraitUp,
@@ -74,16 +105,17 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
             : null,
         customControls: removeControls != null
             ? TapPlayPauseControls(controller: videoController)
-            : const CupertinoControls(
+            : CustomCupertinoControls(
                 backgroundColor: kBlack,
                 iconColor: kWhite,
+                onDownload: () => onDownloadVideo?.call(usedUrl),
               ),
       );
 
-      chewieControllers[url] = chewieController;
+      chewieControllers[usedUrl] = chewieController;
 
       final videoIds = Map<String, String>.from(state.videoIds);
-      videoIds[id] = url;
+      videoIds[id] = usedUrl;
 
       _emit(
         videoControllers: videoControllers,
@@ -92,6 +124,38 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       );
     } catch (e) {
       lg.i(e);
+    }
+  }
+
+  Future<void> downloadVideo(String url, Function(double) onProgress) async {
+    await MediaHandler.saveNetworkVideo(
+      url,
+      onProgress: onProgress,
+      showSuccessMessage: false,
+    );
+  }
+
+  Future<VideoPlayerController?> _initNetworkVideo(String url) async {
+    try {
+      bool hasBeenDisposed = false;
+      final videoController = VideoPlayerController.networkUrl(Uri.parse(url));
+      await videoController.initialize().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          videoController.dispose();
+          hasBeenDisposed = true;
+          return;
+        },
+      );
+
+      if (hasBeenDisposed) {
+        return null;
+      }
+
+      return videoController;
+    } catch (e) {
+      lg.i(e);
+      return null;
     }
   }
 

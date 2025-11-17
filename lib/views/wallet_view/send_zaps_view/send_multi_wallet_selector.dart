@@ -63,7 +63,9 @@ class MultiWalletSelector extends StatelessWidget {
     WalletsManagerState state,
   ) {
     return BoxDecoration(
-      color: !state.hasWallets ? kMainColor : Theme.of(context).cardColor,
+      color: !state.hasWallets
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).cardColor,
       borderRadius: BorderRadius.circular(kDefaultPadding / 2),
       border: Border.all(color: Theme.of(context).dividerColor),
     );

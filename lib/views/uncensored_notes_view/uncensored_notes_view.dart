@@ -112,7 +112,7 @@ class UncensoredNotesView extends StatelessWidget {
                 Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: Theme.of(context).highlightColor,
                     ),
-            indicatorColor: kMainColor,
+            indicatorColor: Theme.of(context).primaryColor,
             dividerColor: Theme.of(context).dividerColor,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
@@ -218,7 +218,7 @@ class CommunityWalletContainer extends StatelessWidget {
               TextSpan(
                 text: state.balance.numeral(),
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.w900,
                     ),
               ),
@@ -323,6 +323,7 @@ class _UnListState extends State<UnList> {
         horizontal: kDefaultPadding / 2,
         vertical: kDefaultPadding,
       ),
+      physics: const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final unFlashNews = state.unNewFlashNews[index];
 
@@ -351,6 +352,7 @@ class _UnListState extends State<UnList> {
         horizontal: kDefaultPadding / 2,
         vertical: kDefaultPadding,
       ),
+      physics: const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final unFlashNews = state.unNewFlashNews[index];
 

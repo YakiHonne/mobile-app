@@ -253,7 +253,7 @@ class ArticleCheckBoxListTile extends StatelessWidget {
                 width: 1.5,
               ),
               visualDensity: VisualDensity.compact,
-              activeColor: kMainColor,
+              activeColor: Theme.of(context).primaryColor,
               checkColor: kWhite,
             ),
             const SizedBox(

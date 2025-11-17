@@ -510,8 +510,8 @@ class ClaimButton extends HookWidget {
               FeatureIcons.reward,
               width: 17,
               height: 17,
-              colorFilter: const ColorFilter.mode(
-                kMainColor,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
                 BlendMode.srcIn,
               ),
             ),
@@ -522,7 +522,7 @@ class ClaimButton extends HookWidget {
               '${kind == EventKind.TEXT_NOTE ? state.initNotePrice : kind == EventKind.REACTION ? state.initRatingPrice : isAuthor ? state.sealedNotePrice : state.sealedRatingPrice} SATS',
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
             const Spacer(),
@@ -554,7 +554,7 @@ class ClaimButton extends HookWidget {
             backgroundColor: timerShown.value
                 ? Theme.of(context).highlightColor
                 : status == RewardStatus.not_claimed
-                    ? kMainColor
+                    ? Theme.of(context).primaryColor
                     : status == RewardStatus.in_progress
                         ? Theme.of(context).highlightColor
                         : kGreen,

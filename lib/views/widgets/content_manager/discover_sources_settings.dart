@@ -174,7 +174,7 @@ class DiscoverSourcesSettings extends HookWidget {
         unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: Theme.of(context).highlightColor,
             ),
-        indicatorColor: kMainColor,
+        indicatorColor: Theme.of(context).primaryColor,
         dividerColor: Theme.of(context).dividerColor,
         tabAlignment: TabAlignment.fill,
         tabs: [

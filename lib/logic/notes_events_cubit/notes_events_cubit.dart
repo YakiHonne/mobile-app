@@ -13,6 +13,7 @@ import '../../common/mixins/later_function.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/mute_model.dart';
 import '../../models/wot_configuration.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -27,7 +28,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
             eventsStats: const {},
             previousNotes: const <String, List<DetailedNoteModel>>{},
             bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
+            mutesEvents: nostrRepository.muteModel.eventsMutes.toList(),
           ),
         ) {
     _init();
@@ -36,47 +38,70 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   late final StreamSubscription muteListSubscription;
   late final StreamSubscription bookmarksSubscription;
 
-  final maxCacheSize = 100;
+  final statesMaxCacheSize = 50;
+  final previousMaxCacheSize = 20;
   final alreadySearchedContentIds = <String>{};
   final _notesIds = <String>[];
   final _aTags = <String>[];
   final _pendingNotesEvents = <String, Event>{};
-  final _accessTimes = <String, int>{};
+  final _statsAccessTimes = <String, int>{};
+  final _previousNotesAccessTime = <String, int>{};
 
   Timer? _pendingEventsTimer;
   Map<String, Event>? _pendingEventsBuffer;
 
-  void pruneCache({int maxEntries = 100}) {
-    if (state.eventsStats.length <= maxEntries) {
+  void pruneCache({bool isStats = true}) {
+    if (isStats) {
+      _pruneCacheInternal(
+        cache: state.eventsStats,
+        accessTimes: _statsAccessTimes,
+        maxSize: statesMaxCacheSize,
+        name: 'eventsStats',
+        updateState: (pruned) => state.copyWith(eventsStats: pruned),
+      );
+    } else {
+      _pruneCacheInternal(
+        cache: state.previousNotes,
+        accessTimes: _previousNotesAccessTime,
+        maxSize: previousMaxCacheSize,
+        name: 'previousNotes',
+        updateState: (pruned) => state.copyWith(previousNotes: pruned),
+      );
+    }
+  }
+
+  void _pruneCacheInternal<K, V>({
+    required Map<K, V> cache,
+    required Map<K, int> accessTimes,
+    required int maxSize,
+    required String name,
+    required Function(Map<K, V>) updateState,
+  }) {
+    if (cache.length <= maxSize) {
       return;
     }
 
-    // Sort by last access time (most recent first)
-    final sortedIds = state.eventsStats.keys.toList()
-      ..sort((a, b) {
-        final timeA = _accessTimes[a] ?? 0;
-        final timeB = _accessTimes[b] ?? 0;
-        return timeB.compareTo(timeA); // Most recent first
-      });
+    // Sort keys by access time (most recent first)
+    final sortedIds = cache.keys.toList()
+      ..sort((a, b) => (accessTimes[b] ?? 0).compareTo(accessTimes[a] ?? 0));
 
-    // Keep only the most recently accessed entries
-    final keysToKeep = sortedIds.take(maxEntries).toSet();
-    final keysToRemove = sortedIds.skip(maxEntries).toSet();
+    // Split into keep/remove sets
+    final keysToKeep = sortedIds.take(maxSize).toSet();
+    final keysToRemove = sortedIds.skip(maxSize);
 
+    // Bulk remove from alreadySearchedContentIds
     alreadySearchedContentIds.removeAll(keysToRemove);
 
-    final prunedCache = {
-      for (final key in keysToKeep) key: state.eventsStats[key]!
-    };
+    // Rebuild cache with kept entries only
+    final prunedCache = Map<K, V>.fromEntries(
+        keysToKeep.map((key) => MapEntry(key, cache[key] as V)));
 
-    // Clean up access times for removed entries
-    _accessTimes.removeWhere((key, _) => !keysToKeep.contains(key));
+    // Clean up access times
+    accessTimes.removeWhere((key, _) => !keysToKeep.contains(key));
 
-    lg.i(
-      '🧹 Pruned cache from ${state.eventsStats.length} to $maxEntries entries',
-    );
+    lg.w('🧹 Pruned $name cache from ${cache.length} to $maxSize entries');
 
-    emit(state.copyWith(eventsStats: prunedCache));
+    emit(updateState(prunedCache));
   }
 
   void _init() {
@@ -85,11 +110,17 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         nostrRepository.bookmarksStream.listen(_onBookmarksUpdate);
   }
 
-  void _onMutesUpdate(Set<String> mutes) {
+  void _onMutesUpdate(MuteModel mm) {
     if (isClosed) {
       return;
     }
-    emit(state.copyWith(mutes: mutes.toList()));
+
+    emit(
+      state.copyWith(
+        mutes: mm.usersMutes.toList(),
+        mutesEvents: mm.eventsMutes.toList(),
+      ),
+    );
   }
 
   void _onBookmarksUpdate(Map<String, BookmarkListModel> bookmarks) {
@@ -104,7 +135,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     eventStats ??= await nc.db.loadEventStats(id);
 
     if (eventStats != null && !isClosed) {
-      _accessTimes[id] = Helpers.now;
+      _statsAccessTimes[id] = Helpers.now;
 
       final stats = Map<String, EventStats>.from(state.eventsStats)
         ..addAll(
@@ -183,7 +214,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     required EventStats noteStats,
   }) async {
     final mutes = state.mutes;
-    final rawReplies = noteStats.filteredReplies(mutes);
+    final rawReplies = noteStats.filteredReplies(mutes, state.mutesEvents);
     final rawReposts = noteStats.filteredReposts(mutes);
     final rawQuotes = noteStats.filteredQuotes(mutes);
     final rawReactions = noteStats.filteredReactions(mutes);
@@ -247,6 +278,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
 
     final filtered = <String, String>{};
+
     for (final entry in data.entries) {
       final score = wotScores[entry.value] ?? 0;
       if (score >= defaultWotScore ||
@@ -254,6 +286,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         filtered[entry.key] = entry.value;
       }
     }
+
     return filtered;
   }
 
@@ -263,6 +296,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     bool fetchAllMetadata = true,
   }) async {
     final eventStats = state.eventsStats[id];
+
     if (eventStats == null) {
       return [];
     }
@@ -295,7 +329,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   ) async {
     switch (type) {
       case NoteRelatedEventsType.replies:
-        final replies = stats.filteredReplies(state.mutes);
+        final replies = stats.filteredReplies(state.mutes, state.mutesEvents);
         return getSpecificFilteredWot(replies);
       case NoteRelatedEventsType.reposts:
         final reposts = stats.filteredReposts(state.mutes);
@@ -335,7 +369,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   }
 
   void getContentStats(String id, {bool r = false}) {
-    _accessTimes[id] = Helpers.now;
+    _statsAccessTimes[id] = Helpers.now;
 
     if (alreadySearchedContentIds.contains(id)) {
       return;
@@ -360,8 +394,20 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     emit(state.copyWith(eventsStats: stats));
 
-    if (stats.length >= 150) {
-      pruneCache(maxEntries: maxCacheSize);
+    if (stats.length >= statesMaxCacheSize * 2) {
+      pruneCache();
+    }
+  }
+
+  void updatePreviousNotes(Map<String, List<DetailedNoteModel>> previousNotes) {
+    if (isClosed) {
+      return;
+    }
+
+    emit(state.copyWith(previousNotes: previousNotes));
+
+    if (previousNotes.length >= previousMaxCacheSize * 2) {
+      pruneCache(isStats: false);
     }
   }
 
@@ -379,7 +425,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     );
 
     currentEventStatsList[eventStat.eventId] = eventStat;
-    _accessTimes[eventStat.eventId] = Helpers.now;
+    _statsAccessTimes[eventStat.eventId] = Helpers.now;
 
     updateEventStats(currentEventStatsList);
   }
@@ -427,7 +473,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     eventsByParent.forEach((id, events) {
       processEvents(id, events, currentEventStats);
-      _accessTimes[id] = Helpers.now;
+      _statsAccessTimes[id] = Helpers.now;
     });
 
     updateEventStats(currentEventStats);
@@ -485,6 +531,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
       if (cachedNotes != null) {
         setLoading(false);
+        _previousNotesAccessTime[note.id] = Helpers.now;
         return cachedNotes;
       }
 
@@ -501,11 +548,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
             Map<String, List<DetailedNoteModel>>.from(state.previousNotes);
         map[note.id] = availablePreviousNotes;
 
-        emit(
-          state.copyWith(
-            previousNotes: map,
-          ),
-        );
+        _previousNotesAccessTime[note.id] = Helpers.now;
+        updatePreviousNotes(map);
       }
 
       setLoading(false);
@@ -631,7 +675,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       await _deleteRepost(repostId, eventStats, stats);
     }
 
-    _accessTimes[note.id] = Helpers.now;
+    _statsAccessTimes[note.id] = Helpers.now;
     updateEventStats(stats);
   }
 
@@ -729,7 +773,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       }
     }
 
-    _accessTimes[id] = Helpers.now;
+    _statsAccessTimes[id] = Helpers.now;
     updateEventStats(stats);
   }
 

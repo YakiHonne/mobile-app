@@ -121,9 +121,9 @@ class MainViewDrawer extends HookWidget {
                     const SizedBox(
                       width: kDefaultPadding / 2,
                     ),
-                    const VerticalDivider(
+                    VerticalDivider(
                       thickness: 2,
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                       width: 0,
                     ),
                     const SizedBox(
@@ -641,7 +641,7 @@ class PointsPercentage extends HookWidget {
             '${currentXp.numeral(digits: 1)} xp',
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
                   height: 1,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
           ),
           const SizedBox(

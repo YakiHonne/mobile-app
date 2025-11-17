@@ -328,8 +328,8 @@ class VerticalVideoView extends StatelessWidget {
                     FeatureIcons.verified,
                     width: 15,
                     height: 15,
-                    colorFilter: const ColorFilter.mode(
-                      kMainColor,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -363,7 +363,7 @@ class VerticalVideoView extends StatelessWidget {
                           ? Theme.of(context).highlightColor
                           : state.isFollowingAuthor
                               ? Theme.of(context).cardColor
-                              : kMainColor,
+                              : Theme.of(context).primaryColor,
                     ),
                     child: Text(
                       state.isFollowingAuthor
@@ -476,6 +476,7 @@ class VerticalVideoView extends StatelessWidget {
         removeBorders: true,
         removeControls: true,
         autoPlay: true,
+        fallbackUrls: video.fallbackUrls,
       ),
     );
   }

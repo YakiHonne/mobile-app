@@ -40,7 +40,7 @@ class ExportWalletOnCreation extends StatelessWidget {
           Text(
             context.t.walletConnectionStringDesc,
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w600,
                 ),
             textAlign: TextAlign.center,

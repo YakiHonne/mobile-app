@@ -103,6 +103,7 @@ class HttpFunctionsRepository {
     String link, [
     Map<String, dynamic>? queryParameters,
     Map<String, String>? header,
+    Map<String, dynamic>? data,
   ]) async {
     final dio = await getDio();
 
@@ -112,7 +113,7 @@ class HttpFunctionsRepository {
 
     try {
       final Response resp =
-          await dio.get(link, queryParameters: queryParameters);
+          await dio.get(link, queryParameters: queryParameters, data: data);
 
       if (resp.statusCode == 200) {
         if (resp.data is String) {
@@ -124,6 +125,7 @@ class HttpFunctionsRepository {
         return null;
       }
     } on DioException catch (ex) {
+      lg.i(ex.response);
       if (kDebugMode) {
         print(ex.error);
       }
@@ -190,7 +192,7 @@ class HttpFunctionsRepository {
 
   static Future<Map<String, dynamic>?> post(
     String link,
-    Map<String, dynamic> parameters, [
+    Map<String, dynamic> data, [
     Map<String, String>? header,
     bool? addRedirectOption,
   ]) async {
@@ -202,12 +204,15 @@ class HttpFunctionsRepository {
 
       final resp = await dio.post(
         link,
-        data: parameters,
+        data: data,
       );
+
       return resp.data;
-    } on DioException catch (_) {
+    } on DioException catch (ex) {
+      lg.i(ex.response);
       rethrow;
-    } catch (e) {
+    } catch (e, stack) {
+      lg.i(stack);
       return null;
     }
   }
@@ -286,7 +291,7 @@ class HttpFunctionsRepository {
 
           if (evMap != null) {
             final ev = Event.fromJson(evMap);
-            if (!nostrRepository.mutes.contains(ev.pubkey)) {
+            if (!isUserMuted(ev.pubkey)) {
               events.add(ev);
             }
           }
@@ -1073,7 +1078,10 @@ class HttpFunctionsRepository {
 
   static Future<List<Metadata>> getUsers(String search) async {
     try {
-      final response = await getSpecified('${cacheUrl}users/search/$search');
+      final url = '${cacheUrl}users/search/$search';
+
+      final response = await getSpecified(url);
+
       if (response != null) {
         final List<Metadata> users = [];
 
@@ -1081,10 +1089,7 @@ class HttpFunctionsRepository {
           try {
             final user = Metadata(
               pubkey: item['pubkey'],
-              name: item['display_name'] == null ||
-                      (item['display_name'] as String).isEmpty
-                  ? item['name'] ?? ''
-                  : item['display_name'],
+              name: item['name'] ?? '',
               displayName: item['display_name'] ?? '',
               about: item['about'] ?? '',
               picture: item['picture'] ?? '',

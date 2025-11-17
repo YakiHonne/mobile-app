@@ -119,6 +119,7 @@ class _ContentDashboardState extends State<ContentDashboard> {
             onLoading: () => buildContent.call(context, true, state.chosenRE),
             onRefresh: () => buildContent.call(context, false, state.chosenRE),
             child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 _appbar(context),
                 _pulldownButton(style),
@@ -264,7 +265,7 @@ class _ContentDashboardState extends State<ContentDashboard> {
         child: Text(
           context.t.ongoing.capitalizeFirst(),
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
       ),
@@ -414,7 +415,7 @@ class _ContentDashboardState extends State<ContentDashboard> {
         onPressed: showMenu,
         padding: EdgeInsets.zero,
         style: IconButton.styleFrom(
-          backgroundColor: kMainColor,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         icon: SvgPicture.asset(
           FeatureIcons.addRaw,
@@ -680,7 +681,7 @@ class DashboardContentList extends StatelessWidget {
       onRefresh: () {},
       borderColor:
           kind == EventKind.LONG_FORM_DRAFT && (item is Article && item.isDraft)
-              ? kMainColor
+              ? Theme.of(context).primaryColor
               : null,
     );
   }

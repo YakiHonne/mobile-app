@@ -70,6 +70,37 @@ class NostrFunctionsRepository {
 
   /// Build leading feed from remote cache based on feed type.
   /// Supports highlights and explore feeds with filtering and scoring.
+
+  static Future<List<Metadata>> getUserSearch({
+    required String search,
+    int? limit,
+  }) async {
+    final Map<String, Event> users = {};
+
+    try {
+      await nc.remoteCacheService.doQuery(
+        filter: RemoteCacheFilter(
+          type: RemoteCacheEventsType.userSearch,
+          limit: limit,
+          query: search,
+        ),
+        eventCallBack: (event) {
+          if (event is Event && event.kind == EventKind.METADATA) {
+            users[event.id] = event;
+          }
+        },
+      );
+    } catch (e) {
+      lg.i('Error building RC leading feed: $e');
+    }
+
+    return users.values
+        .map(
+          (e) => Metadata.fromEvent(e)!,
+        )
+        .toList();
+  }
+
   static Future<List<Event>> buildRcLeadingFeed({
     required CommonFeedTypes type,
     int? limit,
@@ -919,7 +950,7 @@ class NostrFunctionsRepository {
       currentUserRelayList.relays.keys.toList(),
       source: EventsSource.all,
       eventCallBack: (event, relay) {
-        if (canBeAdded(event, eventsToBeEmitted, pubkey, c)) {
+        if (canNotificationBeAdded(event, eventsToBeEmitted, pubkey, c)) {
           onEvents.call(event);
           eventsToBeEmitted[event.id] = event;
         }
@@ -959,7 +990,7 @@ class NostrFunctionsRepository {
         startingTimeout: 3,
         source: EventsSource.all,
         eventCallBack: (event, relay) {
-          if (canBeAdded(event, eventsToBeEmitted, pubkey, c)) {
+          if (canNotificationBeAdded(event, eventsToBeEmitted, pubkey, c)) {
             eventsToBeEmitted[event.id] = event;
           }
         },
@@ -972,16 +1003,17 @@ class NostrFunctionsRepository {
     }
   }
 
-  static bool canBeAdded(
+  static bool canNotificationBeAdded(
     Event event,
     Map<String, Event> eventsToBeEmitted,
     String pubkey,
     AppCustomization? c,
   ) {
     final allowed = (event.kind == EventKind.ZAP &&
-            !nostrRepository.mutes.contains(getZapPubkey(event.tags).first)) ||
+            !isUserMuted(getZapPubkey(event.tags).first)) ||
         (event.kind != EventKind.ZAP &&
-            !nostrRepository.mutes.contains(event.pubkey) &&
+            !isUserMuted(event.pubkey) &&
+            !isThreadMutedByEvent(event) &&
             !eventsToBeEmitted.keys.contains(event.id) &&
             event.pubkey != pubkey);
 
@@ -1435,12 +1467,7 @@ class NostrFunctionsRepository {
           authors: [pubkey],
         ),
         Filter(
-          kinds: [EventKind.APP_CUSTOM],
-          authors: [pubkey],
-          d: [yakihonneTopicTag],
-        ),
-        Filter(
-          kinds: [EventKind.DM_RELAYS],
+          kinds: [EventKind.DM_RELAYS, EventKind.SEARCH_RELAYS],
           authors: [pubkey],
         ),
         Filter(
@@ -1651,7 +1678,7 @@ class NostrFunctionsRepository {
     required String bookmarkIdentifier,
     required String identifier,
     required String pubkey,
-    required String image,
+    required BaseEventModel model,
     required int kind,
   }) async {
     final bookmarkList = nostrRepository.bookmarksLists[bookmarkIdentifier];
@@ -1661,22 +1688,37 @@ class NostrFunctionsRepository {
       return;
     }
 
-    late EventCoordinates bookmarkEvent;
+    bool isBookmarkAvailable = false;
 
-    final isBookmarkAvailable = isReplaceableEvent
-        ? bookmarkList.isReplaceableEventAvailable(
-            identifier: identifier,
-            isReplaceableEvent: isReplaceableEvent,
-          )
-        : bookmarkList.bookmarkedEvents.contains(identifier);
-
-    if (!isBookmarkAvailable && isReplaceableEvent) {
-      bookmarkEvent = EventCoordinates(
-        kind,
-        pubkey,
-        identifier,
-        null,
+    if (model is BookmarkOtherType) {
+      isBookmarkAvailable = model.isTag
+          ? bookmarkList.bookmarkedTags
+              .any((b) => b.val == model.val && b.isTag == model.isTag)
+          : bookmarkList.bookmarkedUrls
+              .any((b) => b.val == model.val && b.isTag == model.isTag);
+    } else if (isReplaceableEvent) {
+      isBookmarkAvailable = bookmarkList.isReplaceableEventAvailable(
+        identifier: identifier,
+        isReplaceableEvent: isReplaceableEvent,
       );
+    } else {
+      isBookmarkAvailable = bookmarkList.bookmarkedEvents.contains(identifier);
+    }
+
+    late EventCoordinates bookmarkEvent;
+    late BookmarkOtherType bookmarkOtherType;
+
+    if (!isBookmarkAvailable) {
+      if (model is BookmarkOtherType) {
+        bookmarkOtherType = model;
+      } else if (isReplaceableEvent) {
+        bookmarkEvent = EventCoordinates(
+          kind,
+          pubkey,
+          identifier,
+          null,
+        );
+      }
     }
 
     final bookmarksLoadingIdentifiers =
@@ -1693,41 +1735,49 @@ class NostrFunctionsRepository {
 
     late BookmarkListModel newBookmarkListModel;
 
-    if (isReplaceableEvent) {
-      List<EventCoordinates> updatedReplaceableEvents = [];
+    if (model is BookmarkOtherType) {
+      // Handle tags and URLs
+      final updatedList = model.isTag
+          ? List<BookmarkOtherType>.from(bookmarkList.bookmarkedTags)
+          : List<BookmarkOtherType>.from(bookmarkList.bookmarkedUrls);
 
       if (isBookmarkAvailable) {
-        updatedReplaceableEvents = bookmarkList.bookmarkedReplaceableEvents
-          ..removeWhere((event) => event.identifier == identifier);
+        updatedList
+            .removeWhere((b) => b.val == model.val && b.isTag == model.isTag);
       } else {
-        updatedReplaceableEvents = bookmarkList.bookmarkedReplaceableEvents
-          ..add(bookmarkEvent);
+        updatedList.add(bookmarkOtherType);
+      }
+
+      newBookmarkListModel = bookmarkList.copyWith(
+        bookmarkedTags: model.isTag ? updatedList : bookmarkList.bookmarkedTags,
+        bookmarkedUrls:
+            !model.isTag ? updatedList : bookmarkList.bookmarkedUrls,
+      );
+    } else if (isReplaceableEvent) {
+      final updatedReplaceableEvents =
+          List<EventCoordinates>.from(bookmarkList.bookmarkedReplaceableEvents);
+
+      if (isBookmarkAvailable) {
+        updatedReplaceableEvents
+            .removeWhere((event) => event.identifier == identifier);
+      } else {
+        updatedReplaceableEvents.add(bookmarkEvent);
       }
 
       newBookmarkListModel = bookmarkList.copyWith(
         bookmarkedReplaceableEvents: updatedReplaceableEvents,
-        image: image.isNotEmpty && !isBookmarkAvailable
-            ? image
-            : bookmarkList.image,
       );
     } else {
-      List<String> updatedEvents = [];
+      final updatedEvents = List<String>.from(bookmarkList.bookmarkedEvents);
 
       if (isBookmarkAvailable) {
-        updatedEvents = bookmarkList.bookmarkedEvents
-          ..removeWhere((event) => event == identifier);
+        updatedEvents.remove(identifier);
       } else {
-        updatedEvents = bookmarkList.bookmarkedEvents
-          ..add(
-            identifier,
-          );
+        updatedEvents.add(identifier);
       }
 
       newBookmarkListModel = bookmarkList.copyWith(
         bookmarkedEvents: updatedEvents,
-        image: image.isNotEmpty && !isBookmarkAvailable
-            ? image
-            : bookmarkList.image,
       );
     }
 
@@ -1739,6 +1789,7 @@ class NostrFunctionsRepository {
       return;
     }
 
+    lg.i(bookmarksEvent.toJson());
     final isSuccessful = await sendEvent(
       event: bookmarksEvent,
       relays: currentUserRelayList.urls.toList(),
@@ -1776,17 +1827,8 @@ class NostrFunctionsRepository {
         )
         .toList();
 
-    final filteredVideos = bookmarksModel.bookmarkedReplaceableEvents
-        .where(
-          (event) =>
-              event.kind == EventKind.VIDEO_HORIZONTAL ||
-              event.kind == EventKind.VIDEO_VERTICAL,
-        )
-        .toList();
-
     if (filteredArticles.isEmpty &&
         filteredCurations.isEmpty &&
-        filteredVideos.isEmpty &&
         bookmarksModel.bookmarkedEvents.isEmpty) {
       return '';
     }
@@ -1794,7 +1836,11 @@ class NostrFunctionsRepository {
     final searchFilters = <Filter>[
       if (bookmarksModel.bookmarkedEvents.isNotEmpty)
         Filter(
-          kinds: [EventKind.TEXT_NOTE],
+          kinds: [
+            EventKind.TEXT_NOTE,
+            EventKind.VIDEO_HORIZONTAL,
+            EventKind.VIDEO_VERTICAL
+          ],
           ids: bookmarksModel.bookmarkedEvents,
         ),
       Filter(
@@ -1804,10 +1850,6 @@ class NostrFunctionsRepository {
       Filter(
         kinds: [EventKind.LONG_FORM],
         d: filteredArticles.map((e) => e.identifier).toList(),
-      ),
-      Filter(
-        kinds: [EventKind.VIDEO_HORIZONTAL, EventKind.VIDEO_VERTICAL],
-        d: filteredVideos.map((e) => e.identifier).toList(),
       ),
     ];
 
@@ -1931,6 +1973,8 @@ class NostrFunctionsRepository {
       pubkey: pubkey,
       stringifiedEvent: '',
       createdAt: DateTime.now(),
+      bookmarkedUrls: [],
+      bookmarkedTags: [],
     );
 
     late EventCoordinates bookmarkEvent;
@@ -3531,161 +3575,133 @@ class NostrFunctionsRepository {
   }
 
   // * get home page data /
-  static Stream<List<dynamic>> getHomePageData({
-    List<String>? pubkeys,
-    List<String>? tags,
-    int? limit,
-    int? until,
-    String? relay,
-    bool? addNotes,
-  }) {
-    final controller = StreamController<List<dynamic>>();
-    List<String> currentUncompletedRelays = nc.activeRelays();
+  static Future<List<dynamic>> getHomePageData({
+    required List<String> tags,
+    required String search,
+  }) async {
     final Map<String, Article> articlesToBeEmitted = {};
     final Map<String, VideoModel> videosToBeEmitted = {};
     final Map<String, DetailedNoteModel> notesToBeEmitted = {};
+    final list = <BaseEventModel>[];
 
-    String id = '';
+    void processEvent(Event ev, String relay) {
+      final event = ExtendedEvent.fromEv(ev);
+
+      if (!isUserMuted(ev.pubkey)) {
+        if (event.kind == EventKind.LONG_FORM) {
+          final article = Article.fromEvent(
+            event,
+            relay: relay,
+          );
+
+          final oldArticle = articlesToBeEmitted[article.identifier];
+
+          articlesToBeEmitted[article.identifier] = filterArticle(
+            oldArticle: oldArticle,
+            newArticle: article,
+          );
+        } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
+            event.kind == EventKind.VIDEO_VERTICAL) {
+          final video = VideoModel.fromEvent(
+            event,
+            relay: relay,
+          );
+
+          final oldVideo = videosToBeEmitted[video.id];
+          if (oldVideo == null ||
+              oldVideo.createdAt.isBefore(video.createdAt)) {
+            videosToBeEmitted[video.id] = video;
+          }
+        } else if (event.kind == EventKind.TEXT_NOTE) {
+          notesToBeEmitted[event.id] = DetailedNoteModel.fromEvent(event);
+        }
+      }
+    }
+
     try {
-      id = nc.addSubscription(
+      await Future.wait(
         [
-          Filter(
-            kinds: [
-              EventKind.LONG_FORM,
-              EventKind.VIDEO_HORIZONTAL,
-              EventKind.VIDEO_VERTICAL,
+          nc.doQuery(
+            [
+              Filter(
+                kinds: [
+                  EventKind.TEXT_NOTE,
+                  EventKind.LONG_FORM,
+                  EventKind.VIDEO_HORIZONTAL,
+                  EventKind.VIDEO_VERTICAL,
+                ],
+                t: tags,
+              ),
             ],
-            authors: pubkeys,
-            t: tags,
-            until: until,
-            limit: limit,
+            [
+              ...nc
+                  .activeRelays()
+                  .toSet()
+                  .difference(nostrRepository.getSearchRelays().toSet())
+            ],
+            source: EventsSource.all,
+            eventCallBack: (ev, relay) {
+              processEvent(ev, relay);
+            },
+            timeOut: 2,
+            eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
+              nc.closeSubscription(curationRequestId, relay);
+            },
           ),
-          Filter(
-            kinds: [EventKind.TEXT_NOTE],
-            authors: pubkeys,
-            t: tags,
-            l: [FN_SEARCH_VALUE],
-            until: until,
-            limit: limit,
+          nc.doQuery(
+            [
+              Filter(
+                kinds: [
+                  EventKind.TEXT_NOTE,
+                  EventKind.LONG_FORM,
+                  EventKind.VIDEO_HORIZONTAL,
+                  EventKind.VIDEO_VERTICAL,
+                ],
+                search: search,
+              ),
+            ],
+            nostrRepository.getSearchRelays(),
+            source: EventsSource.all,
+            eventCallBack: (ev, relay) {
+              processEvent(ev, relay);
+            },
+            timeOut: 2,
+            eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
+              nc.closeSubscription(curationRequestId, relay);
+            },
           ),
-          if (addNotes != null)
-            Filter(
-              kinds: [EventKind.TEXT_NOTE],
-              authors: pubkeys,
-              t: tags,
-              until: until,
-              limit: limit,
-            ),
         ],
-        relay != null ? [relay] : [],
-        eventCallBack: (ev, relay) {
-          final event = ExtendedEvent.fromEv(ev);
-
-          if (!isUserMuted(ev.pubkey)) {
-            if (event.kind == EventKind.LONG_FORM) {
-              final article = Article.fromEvent(
-                event,
-                relay: relay,
-              );
-
-              final oldArticle = articlesToBeEmitted[article.identifier];
-
-              articlesToBeEmitted[article.identifier] = filterArticle(
-                oldArticle: oldArticle,
-                newArticle: article,
-              );
-            } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
-                event.kind == EventKind.VIDEO_VERTICAL) {
-              final video = VideoModel.fromEvent(
-                event,
-                relay: relay,
-              );
-
-              final oldVideo = videosToBeEmitted[video.id];
-              if (oldVideo == null ||
-                  oldVideo.createdAt.isBefore(video.createdAt)) {
-                videosToBeEmitted[video.id] = video;
-              }
-            } else if (event.kind == EventKind.TEXT_NOTE) {
-              notesToBeEmitted[event.id] = DetailedNoteModel.fromEvent(event);
-            }
-          }
-        },
-        eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
-          currentUncompletedRelays = unCompletedRelays;
-
-          final articles = orderedList(articlesToBeEmitted.values.toList());
-          final videos = orderedList(videosToBeEmitted.values.toList());
-
-          final notes = orderedList(notesToBeEmitted.values.toList());
-
-          final length = [
-            articles.length,
-            videos.length,
-            notes.length,
-          ].reduce(max);
-
-          if (ok.status && length != 0) {
-            final List<BaseEventModel> list = [];
-
-            for (int i = 0; i < length; i++) {
-              if (videos.isNotEmpty) {
-                list.add(videos.removeAt(0));
-              }
-
-              if (articles.isNotEmpty) {
-                list.add(articles.removeAt(0));
-              }
-
-              if (notes.isNotEmpty) {
-                list.add(notes.removeAt(0));
-              }
-            }
-
-            if (!controller.isClosed) {
-              controller.add(list);
-            }
-          }
-
-          // final dataToBeEmitted = {
-          //   ...articlesToBeEmitted,
-          //   ...videosToBeEmitted,
-          //   ...flashNewsToBeEmitted,
-          //   ...aiFeedModelToBeEmitted,
-          // };
-
-          // if (ok.status && dataToBeEmitted.isNotEmpty) {
-          //   final values = dataToBeEmitted.values.toList()
-          //     ..sort((a, b) => (b is BuzzFeedModel
-          //             ? b.publishedAt
-          //             : b.createdAt)
-          //         .compareTo(a is BuzzFeedModel ? a.publishedAt : a.createdAt));
-
-          //   if (!controller.isClosed) controller.add(values);
-
-          //   authorsCubit
-          //       .getAuthors(values.map((e) => e.pubkey).toSet().toList());
-          // }
-
-          nc.closeSubscription(curationRequestId, relay);
-        },
       );
     } catch (e) {
       lg.i(e);
     }
 
-    Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) {
-        if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
-          controller.close();
-          timer.cancel();
-          nc.closeRequests([id]);
-        }
-      },
-    );
+    final articles = orderedList(articlesToBeEmitted.values.toList());
+    final videos = orderedList(videosToBeEmitted.values.toList());
 
-    return controller.stream;
+    final notes = orderedList(notesToBeEmitted.values.toList());
+
+    final length = [
+      articles.length,
+      videos.length,
+      notes.length,
+    ].reduce(max);
+
+    for (int i = 0; i < length; i++) {
+      if (videos.isNotEmpty) {
+        list.add(videos.removeAt(0));
+      }
+
+      if (articles.isNotEmpty) {
+        list.add(articles.removeAt(0));
+      }
+
+      if (notes.isNotEmpty) {
+        list.add(notes.removeAt(0));
+      }
+    }
+
+    return list;
   }
 
   static List<BaseEventModel> orderedList(List<BaseEventModel> list) {
@@ -4022,8 +4038,7 @@ class NostrFunctionsRepository {
         final flashNews = FlashNews.fromEvent(event);
         final oldFlashNews = flashNewsToBeEmitted[flashNews.id];
 
-        if (flashNews.isAuthentic &&
-            !nostrRepository.mutes.contains(flashNews.pubkey)) {
+        if (flashNews.isAuthentic && !isUserMuted(flashNews.pubkey)) {
           if (oldFlashNews == null ||
               flashNews.createdAt.isAfter(oldFlashNews.createdAt)) {
             flashNewsToBeEmitted[flashNews.id] = flashNews;
@@ -4357,38 +4372,52 @@ class NostrFunctionsRepository {
 
   // * mute user /
 
-  static Future<bool> setMuteList(String pubkey) async {
+  static Future<bool> setMuteList({
+    required String muteKey,
+    bool isPubkey = true,
+  }) async {
     if (!canSign()) {
-      final newMuteList = Set<String>.from(nostrRepository.mutes);
+      if (isPubkey) {
+        final mm = nostrRepository.muteModel.copyWith();
 
-      if (newMuteList.contains(pubkey)) {
-        newMuteList.remove(pubkey);
-      } else {
-        newMuteList.add(pubkey);
+        if (mm.usersMutes.contains(muteKey)) {
+          mm.usersMutes.remove(muteKey);
+        } else {
+          mm.usersMutes.add(muteKey);
+        }
+
+        nostrRepository.setMuteList(mm);
+        localDatabaseRepository.setLocalMutes(mm.usersMutes.toList());
+
+        return true;
       }
 
-      nostrRepository.setMuteList(newMuteList);
-      localDatabaseRepository.setLocalMutes(newMuteList.toList());
-
-      return true;
+      return false;
     } else {
-      final newMuteList = Set<String>.from(nostrRepository.mutes);
+      final mm = nostrRepository.muteModel.copyWith();
 
-      if (newMuteList.contains(pubkey)) {
-        newMuteList.remove(pubkey);
+      if (isPubkey) {
+        if (mm.usersMutes.contains(muteKey)) {
+          mm.usersMutes.remove(muteKey);
+        } else {
+          mm.usersMutes.add(muteKey);
+        }
       } else {
-        newMuteList.add(pubkey);
+        if (mm.eventsMutes.contains(muteKey)) {
+          mm.eventsMutes.remove(muteKey);
+        } else {
+          mm.eventsMutes.add(muteKey);
+        }
       }
+
+      final tags = [
+        ...mm.usersMutes.map((user) => ['p', user]),
+        ...mm.eventsMutes.map((e) => ['e', e]),
+      ];
 
       final event = await Event.genEvent(
         kind: EventKind.MUTE_LIST,
-        tags: [
-          ...newMuteList.map((user) => [
-                'p',
-                user,
-              ]),
-          ...nostrRepository.muteListAdditionalData,
-        ],
+        tags: tags,
         content: '',
         signer: currentSigner,
       );
@@ -4400,7 +4429,9 @@ class NostrFunctionsRepository {
       final isSuccessful = await sendEvent(event: event, setProgress: false);
 
       if (isSuccessful) {
-        nostrRepository.setMuteList(newMuteList);
+        nostrRepository.setMuteList(mm);
+
+        nc.db.saveEvent(event);
       }
 
       return isSuccessful;
@@ -4557,9 +4588,9 @@ class NostrFunctionsRepository {
             // Remove from unsent events if successful (like setProgress does)
             if (relyOnUnsentEvents) {
               unsentEventsCubit.removeUnsentEvent(event.id);
-              nc.db.saveEvent(event);
             }
 
+            nc.db.saveEvent(event);
             onComplete(true);
           } else if (relyOnUnsentEvents) {
             unsentEventsCubit.addUnsentEvent(event);
@@ -4643,6 +4674,7 @@ class NostrFunctionsRepository {
             incompleteRelays: unCompletedRelays,
             chosenTotalRelays: relays,
           );
+
           isSuccessful = true;
         }
       },
@@ -4663,6 +4695,7 @@ class NostrFunctionsRepository {
             event,
             pubkey: destinationPubkey,
           );
+
           nc.db.saveEvent(event);
           completer.complete(true);
           return;
@@ -4679,9 +4712,9 @@ class NostrFunctionsRepository {
           if (isSuccessful) {
             if (relyOnUnsentEvents) {
               unsentEventsCubit.removeUnsentEvent(event.id);
-              nc.db.saveEvent(event);
             }
 
+            nc.db.saveEvent(event);
             HttpFunctionsRepository.sendActionThroughEvent(event);
           }
 

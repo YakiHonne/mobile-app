@@ -29,7 +29,7 @@ class WriteCurationCubit extends Cubit<WriteCurationState> {
             isActiveLoading: false,
             searchText: '',
             relaysAddingData: UpdatingState.progress,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             imageLink: curation?.image ?? '',
             isArticlesCuration: curation?.isArticleCuration() ?? true,
             curationPublishSteps: CurationPublishSteps.content,

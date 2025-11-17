@@ -82,7 +82,7 @@ void showCupertinoDeletionDialogue({
             Text(
               context.t.deleteWalletConfirmation.capitalizeFirst(),
               style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
           ],

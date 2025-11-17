@@ -377,12 +377,14 @@ class MutedUserContent extends StatelessWidget {
 
   TextButton _unmute(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+      style: TextButton.styleFrom(
+        visualDensity: VisualDensity.comfortable,
+      ),
       onPressed: () {
         doIfCanSign(
           func: () {
             setMuteStatus(
-              pubkey: pubkey,
+              muteKey: pubkey,
               onSuccess: () {},
             );
           },
@@ -391,10 +393,11 @@ class MutedUserContent extends StatelessWidget {
       },
       child: Text(
         context.t.unmute.capitalizeFirst(),
-        style: Theme.of(context)
-            .textTheme
-            .bodySmall!
-            .copyWith(fontWeight: FontWeight.w600, height: 1),
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1,
+              color: kWhite,
+            ),
       ),
     );
   }
@@ -449,7 +452,7 @@ class MutedUserActionBox extends StatelessWidget {
         doIfCanSign(
           func: () {
             setMuteStatus(
-              pubkey: pubkey,
+              muteKey: pubkey,
               onSuccess: () {},
             );
           },

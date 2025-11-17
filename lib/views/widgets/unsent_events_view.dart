@@ -168,7 +168,7 @@ class UnsentEventContainer extends StatelessWidget {
                 ),
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w500,
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                     ),
               ),
             ],

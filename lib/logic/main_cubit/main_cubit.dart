@@ -822,12 +822,12 @@ class MainCubit extends Cubit<MainState> {
   }
 
   @override
-  Future<void> close() {
-    currentSignerStream.cancel();
-    homeViewSubcription.cancel();
-    connectivityStream.cancel();
-    _deepLinksSub?.cancel();
-    _shareIntentSub?.cancel();
+  Future<void> close() async {
+    await currentSignerStream.cancel();
+    await homeViewSubcription.cancel();
+    await connectivityStream.cancel();
+    await _deepLinksSub?.cancel();
+    await _shareIntentSub?.cancel();
     return super.close();
   }
 }

@@ -103,7 +103,9 @@ class SuggestedShare extends StatelessWidget {
               ),
               child: Text(
                 context.t.shareProfile.capitalizeFirst(),
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: kWhite,
+                    ),
               ),
             ),
           ),

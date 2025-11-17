@@ -195,7 +195,7 @@ class AddReply extends HookWidget {
           size: 20,
           vd: 0,
           iconColor: kWhite,
-          backgroundColor: kMainColor,
+          backgroundColor: Theme.of(context).primaryColor,
         );
       },
     );
@@ -371,7 +371,7 @@ class NoteSelectedRelay extends StatelessWidget {
                     onChanged: (isToggled) {
                       useSourceRelay!.value = !useSourceRelay!.value;
                     },
-                    activeTrackColor: kMainColor,
+                    activeTrackColor: Theme.of(context).primaryColor,
                   ),
                 ),
               ],
@@ -621,7 +621,7 @@ class _NoteInputSection extends StatelessWidget {
                 mentionTextStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: kMainColor),
+                    .copyWith(color: Theme.of(context).primaryColor),
               ),
               style: Theme.of(context).textTheme.bodyMedium!,
               decoration: InputDecoration(
@@ -899,6 +899,7 @@ class AttachedEventBox extends StatelessWidget {
             return ParsedMediaContainer(
               baseEventModel: attachedEvent,
               canBeAccesed: false,
+              renderSmartWidget: false,
             );
           }
         },

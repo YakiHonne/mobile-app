@@ -1,13 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/app_models/diverse_functions.dart';
-import '../../../repositories/nostr_functions_repository.dart';
-import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 
 part 'mute_list_state.dart';
@@ -16,16 +13,18 @@ class MuteListCubit extends Cubit<MuteListState> {
   MuteListCubit()
       : super(
           MuteListState(
-            mutes: nostrRepository.mutes.toList(),
+            usersMutes: nostrRepository.muteModel.usersMutes.toList(),
+            eventsMutes: nostrRepository.muteModel.eventsMutes.toList(),
             isUsingPrivKey: canSign(),
           ),
         ) {
     mutesListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              usersMutes: mm.usersMutes.toList(),
+              eventsMutes: mm.eventsMutes.toList(),
             ),
           );
         }
@@ -38,31 +37,19 @@ class MuteListCubit extends Cubit<MuteListState> {
   late StreamSubscription mutesListSubscription;
 
   void getAuthors() {
-    metadataCubit.fetchMetadata(state.mutes);
+    metadataCubit.fetchMetadata(state.usersMutes);
   }
 
-  Future<void> setMuteStatus({
-    required String pubkey,
+  Future<void> setMuteStatusFunc({
+    required String muteKey,
+    bool isPubkey = true,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
-
-    final result = await NostrFunctionsRepository.setMuteList(pubkey);
-
-    cancel();
-
-    if (result) {
-      final hasBeenMuted = nostrRepository.mutes.contains(pubkey);
-
-      BotToastUtils.showSuccess(
-        hasBeenMuted
-            ? t.userHasBeenMuted.capitalizeFirst()
-            : t.userHasBeenUnmuted.capitalizeFirst(),
-      );
-      onSuccess.call();
-    } else {
-      BotToastUtils.showUnreachableRelaysError();
-    }
+    await setMuteStatus(
+      muteKey: muteKey,
+      isPubkey: isPubkey,
+      onSuccess: onSuccess,
+    );
   }
 
   @override

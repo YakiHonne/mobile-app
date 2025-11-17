@@ -447,7 +447,12 @@ class SmartWidgetButtonCustomization extends HookWidget {
           height: kDefaultPadding / 4,
         ),
         CustomDropDown(
-          list: SWBType.values.map((e) => e.name).toList(),
+          list: SWBType.values
+              .where(
+                (element) => element != SWBType.App,
+              )
+              .map((e) => e.name)
+              .toList(),
           defaultValue: type.value.name,
           onChanged: (val) {
             type.value = SWBType.values.firstWhere(
@@ -1062,7 +1067,7 @@ class ButtonZapCustomization extends HookWidget {
                 scale: 0.8,
                 child: CupertinoSwitch(
                   value: toggleSatsMode.value,
-                  activeTrackColor: kMainColor,
+                  activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (val) {
                     toggleSatsMode.value = val;
                     userToZap.value = null;

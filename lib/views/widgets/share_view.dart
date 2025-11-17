@@ -490,6 +490,10 @@ class ShareContentUser extends StatelessWidget {
             FeatureIcons.verified,
             width: 15,
             height: 15,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).primaryColor,
+              BlendMode.srcIn,
+            ),
           ),
       ],
     );
@@ -765,8 +769,9 @@ class IconButtonWithText extends StatelessWidget {
             onClicked: onClicked,
             icon: icon,
             size: 20,
-            backgroundColor:
-                isSelected ? kMainColor : Theme.of(context).cardColor,
+            backgroundColor: isSelected
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).cardColor,
             iconColor: isSelected ? kWhite : Theme.of(context).primaryColorDark,
           ),
           const SizedBox(

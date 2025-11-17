@@ -15,6 +15,8 @@ class BookmarkListModel implements BaseEventModel {
   final String identifier;
   final List<EventCoordinates> bookmarkedReplaceableEvents;
   final List<String> bookmarkedEvents;
+  final List<BookmarkOtherType> bookmarkedUrls;
+  final List<BookmarkOtherType> bookmarkedTags;
   @override
   final String pubkey;
   @override
@@ -33,6 +35,8 @@ class BookmarkListModel implements BaseEventModel {
     required this.pubkey,
     required this.createdAt,
     required this.stringifiedEvent,
+    required this.bookmarkedUrls,
+    required this.bookmarkedTags,
   });
 
   bool isReplaceableEventAvailable({
@@ -56,6 +60,14 @@ class BookmarkListModel implements BaseEventModel {
     return false;
   }
 
+  bool isTagAvailable({required String tag}) {
+    return bookmarkedTags.where((element) => element.val == tag).isNotEmpty;
+  }
+
+  bool isUrlAvailable({required String url}) {
+    return bookmarkedUrls.where((element) => element.val == url).isNotEmpty;
+  }
+
   Future<Event?> bookmarkListModelToEvent() async {
     try {
       final replaceableEvents = bookmarkedReplaceableEvents
@@ -77,6 +89,10 @@ class BookmarkListModel implements BaseEventModel {
           if (image.isNotEmpty) ['image', image],
           ...replaceableEvents,
           ...events,
+          ...bookmarkedUrls.map((url) => ['r', url.val, url.description]),
+          ...bookmarkedTags.map((tag) => ['t', tag.val]),
+          // ['t', 'Yakihonne'],
+          // ['r', 'https://yakihonne.com', 'A nostr client']
         ],
         content: '',
         signer: currentSigner,
@@ -93,6 +109,8 @@ class BookmarkListModel implements BaseEventModel {
     String image = '';
     final List<EventCoordinates> bookmarkedReplaceableEvents = [];
     final List<String> bookmarkedEvents = [];
+    final List<BookmarkOtherType> bookmarkedUrls = [];
+    final List<BookmarkOtherType> bookmarkedTags = [];
 
     final createdAt =
         DateTime.fromMillisecondsSinceEpoch(event.createdAt * 1000);
@@ -113,6 +131,24 @@ class BookmarkListModel implements BaseEventModel {
         }
       } else if (tag.first == 'e') {
         bookmarkedEvents.add(tag[1]);
+      } else if (tag.first == 'r') {
+        bookmarkedUrls.add(BookmarkOtherType(
+          val: tag[1],
+          isTag: false,
+          description: tag.length > 2 ? tag[2] : '',
+          createdAt: createdAt,
+          pubkey: event.pubkey,
+          id: event.id,
+        ));
+      } else if (tag.first == 't') {
+        bookmarkedTags.add(BookmarkOtherType(
+          val: tag[1],
+          isTag: true,
+          description: '',
+          createdAt: createdAt,
+          pubkey: event.pubkey,
+          id: event.id,
+        ));
       }
     }
 
@@ -129,6 +165,8 @@ class BookmarkListModel implements BaseEventModel {
       image: image,
       bookmarkedReplaceableEvents: bookmarkedReplaceableEvents,
       bookmarkedEvents: bookmarkedEvents,
+      bookmarkedUrls: bookmarkedUrls,
+      bookmarkedTags: bookmarkedTags,
       pubkey: event.pubkey,
       createdAt: createdAt,
       placeholder: placeHolder,
@@ -145,6 +183,8 @@ class BookmarkListModel implements BaseEventModel {
     String? identifier,
     List<EventCoordinates>? bookmarkedReplaceableEvents,
     List<String>? bookmarkedEvents,
+    List<BookmarkOtherType>? bookmarkedUrls,
+    List<BookmarkOtherType>? bookmarkedTags,
     String? pubkey,
     DateTime? createdAt,
     String? stringifiedEvent,
@@ -159,6 +199,8 @@ class BookmarkListModel implements BaseEventModel {
       bookmarkedReplaceableEvents:
           bookmarkedReplaceableEvents ?? this.bookmarkedReplaceableEvents,
       bookmarkedEvents: bookmarkedEvents ?? this.bookmarkedEvents,
+      bookmarkedUrls: bookmarkedUrls ?? this.bookmarkedUrls,
+      bookmarkedTags: bookmarkedTags ?? this.bookmarkedTags,
       pubkey: pubkey ?? this.pubkey,
       createdAt: createdAt ?? this.createdAt,
       stringifiedEvent: stringifiedEvent ?? this.stringifiedEvent,
@@ -170,4 +212,19 @@ class BookmarkListModel implements BaseEventModel {
 
   @override
   bool? get stringify => throw UnimplementedError();
+}
+
+class BookmarkOtherType extends BaseEventModel {
+  const BookmarkOtherType({
+    required super.createdAt,
+    required super.pubkey,
+    required super.id,
+    required this.val,
+    required this.isTag,
+    required this.description,
+  });
+
+  final String val;
+  final bool isTag;
+  final String description;
 }

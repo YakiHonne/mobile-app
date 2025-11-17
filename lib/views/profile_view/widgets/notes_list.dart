@@ -90,8 +90,8 @@ class _ProfileNotesState extends State<ProfileNotes> {
       controller: refreshController,
       enablePullDown: false,
       enablePullUp: true,
-      header: const MaterialClassicHeader(
-        color: kMainColor,
+      header: MaterialClassicHeader(
+        color: Theme.of(context).primaryColor,
       ),
       footer: const RefresherClassicFooter(),
       onLoading: () => context.read<ProfileCubit>().getMoreNotes(false),

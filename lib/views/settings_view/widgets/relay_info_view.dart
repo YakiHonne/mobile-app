@@ -253,7 +253,7 @@ class RelayGeneralInfo extends StatelessWidget {
                   Text(
                     metadata.getName().capitalize(),
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: kMainColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                   ),
                   const SizedBox(
