@@ -194,9 +194,9 @@ class ProfileRelayContainer extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onAddRelay,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.add_circle_outline_rounded,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     size: 20,
                   ),
                   style: TextButton.styleFrom(

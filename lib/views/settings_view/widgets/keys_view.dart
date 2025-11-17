@@ -98,9 +98,9 @@ class KeysView extends HookWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
+              Icon(
                 Icons.warning_amber_rounded,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
               const SizedBox(
                 width: kDefaultPadding / 2,
@@ -147,12 +147,11 @@ class KeysView extends HookWidget {
           BotToastUtils.showError(context.t.noApp);
         }
       },
-      style: TextButton.styleFrom(
-        backgroundColor: kGreen,
-      ),
       child: Text(
         context.t.exportKeys,
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              color: kWhite,
+            ),
       ),
     );
   }

@@ -108,9 +108,9 @@ class _VersionNewsState extends State<VersionNews> {
           horizontal: kDefaultPadding / 1.5,
           vertical: kDefaultPadding / 4,
         ),
-        decoration: const BoxDecoration(
-            color: kMainColor,
-            borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(kDefaultPadding),
               bottomRight: Radius.circular(kDefaultPadding),
             )),
@@ -166,7 +166,9 @@ class _VersionNewsState extends State<VersionNews> {
                 kDefaultPadding,
               ),
               border: Border.all(
-                color: (e['new']! as bool) ? kMainColor : kTransparent,
+                color: (e['new']! as bool)
+                    ? Theme.of(context).primaryColor
+                    : kTransparent,
                 width: 1.5,
               ),
               image: DecorationImage(
@@ -199,8 +201,8 @@ class _VersionNewsState extends State<VersionNews> {
                       fontWeight: FontWeight.w700,
                     ),
               ),
-              const DotContainer(
-                color: kMainColor,
+              DotContainer(
+                color: Theme.of(context).primaryColor,
                 size: 4,
               ),
               Text(
@@ -254,25 +256,27 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  // New Features
-  'Support for onion relays connectivity',
-  'Other currencies in the wallet',
+  // Features
+  'Add mute thread option',
+  'Optimized search with dedicated search relays for faster and more accurate results',
+  'Ability to change app primary color',
 
   // Improvements
-  'Forward notifications to their respective views',
-  'Favorite relays, settings relays, interests in dashboard (Add data to the top of list)',
-  'Add relay in event encoding when sharing content',
-  'Accept only njump.me and nostr.com Nostr scheme rendering',
-  'Make article drafts clickable, and change the behavior on already fetched articles to take drafts to edit not article view',
-  'Added "," to the URL regex',
+  'Nostr scheme render for yakihonne and other nostr clients inside the app',
+  'Add option to enable/disable url previews',
+  'Add youtube preview',
+  'Add split screen tab in writing article on tablets',
+  'Make following in relay orbits as default',
+  'Add smart widget render in feed',
+  'Add cover, "t" and "r" for bookmarks',
+  'Add video fallback urls',
+  'Add video download',
+  'Add blitz wallet',
 
-  // Fixes
-  'Fixed points system not functioning well',
-  'Fixed content actions disable not updating',
-  'Fixed GIF display',
-  'Fixed sharing intent opening files in YakiHonne',
-  'Fixed display names',
-  'Fixed database blocking issue',
+  // Bug fixes
+  'Fix currencies symbols',
+  'Fixed various bugs across the app',
+  'Remove "App" from basic smart widget',
 ];
 
 const content = [

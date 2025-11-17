@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -1427,1400 +1428,1421 @@ class TranslationsAr extends Translations {
 	@override String get enabledActionsDesc => 'لا توجد إجراءات مفعّلة متاحة.';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <ar>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsAr {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'addNewBookmark': return 'لم يتم العثور على قائمة مفضلة، جرب إضافة واحدة!';
-			case 'setBookmarkTitleDescription': return 'تعيين عنوان ووصف لقائمة المفضلة الخاصة بك.';
-			case 'title': return 'العنوان';
-			case 'description': return 'الوصف';
-			case 'descriptionOptional': return 'الوصف (اختياري)';
-			case 'bookmarkLists': return 'قوائم المفضلة';
-			case 'submit': return 'إرسال';
-			case 'addBookmarkList': return 'إضافة قائمة مفضلة';
-			case 'submitBookmarkList': return 'إرسال قائمة المفضلة';
-			case 'next': return 'التالي';
-			case 'saveDraft': return 'حفظ المسودة';
-			case 'deleteDraft': return 'حذف المسودة';
-			case 'publish': return 'نشر';
-			case 'smHaveOneWidget': return 'يجب أن يحتوي الويدجت الذكي على مكون واحد على الأقل.';
-			case 'smHaveTitle': return 'يجب أن يحتوي الويدجت الذكي على عنوان على الأقل';
-			case 'whatsOnYourMind': return 'ما الذي تفكر فيه؟';
-			case 'sensitiveContent': return 'هذا محتوى حساس';
-			case 'addYourTopics': return 'أضف مواضيعك';
-			case 'article': return 'مقال';
-			case 'articles': return 'مقالات';
-			case 'video': return 'فيديو';
-			case 'videos': return 'فيديوهات';
-			case 'curation': return 'تنسيق';
-			case 'curations': return 'تنسيقات';
-			case 'thumbnailPreview': return 'معاينة الصورة المصغرة';
-			case 'selectAndUploadLocaleImage': return 'اختر وارفع صورة محلية';
-			case 'issueOccuredSelectingImage': return 'حدثت مشكلة أثناء اختيار الصورة.';
-			case 'imageUploadHistory': return 'تاريخ رفع الصور';
-			case 'noImageHistory': return 'لم يتم العثور على تاريخ صور';
-			case 'cancel': return 'إلغاء';
-			case 'uploadAndUse': return 'رفع واستخدام';
-			case 'publishRemoveDraft': return 'نشر وحذف المسودة';
-			case 'clearChat': return 'مسح المحادثة';
-			case 'noDataFromGpt': return 'لا توجد بيانات لعرضها من GPT.';
-			case 'askMeSomething': return 'اسألني شيئاً!';
-			case 'copy': return 'نسخ';
-			case 'textSuccesfulyCopied': return 'تم نسخ النص بنجاح!';
-			case 'insertText': return 'إدراج النص';
-			case 'searchContentByTitle': return ({required Object type}) => 'البحث عن ${type} بالعنوان';
-			case 'noContentCanBeFound': return ({required Object type}) => 'لم يتم العثور على ${type}';
-			case 'noContentBelongToCuration': return ({required Object type}) => 'لا يوجد ${type} ينتمي لهذا التنسيق';
-			case 'byPerson': return ({required Object name}) => 'بواسطة ${name}';
-			case 'allRelays': return 'جميع المرحلات';
-			case 'myArticles': return 'مقالاتي';
-			case 'myVideos': return 'فيديوهاتي';
-			case 'curationType': return 'نوع التنسيق';
-			case 'update': return 'تحديث';
-			case 'invalidInvoiceLnurl': return 'تأكد من تعيين فاتورة أو lnurl صحيحة';
-			case 'addValidUrl': return 'تأكد من إضافة رابط صحيح';
-			case 'layoutCustomization': return 'تخصيص التخطيط';
-			case 'duoLayout': return 'تخطيط مزدوج';
-			case 'monoLayout': return 'تخطيط مفرد';
-			case 'warning': return 'تحذير';
-			case 'switchToMonolayout': return 'أنت تنتقل إلى تخطيط مفرد بينما لديك عناصر على كلا الجانبين، هذا سيمحو محتوى الحاوية، هل تريد المتابعة؟';
-			case 'erase': return 'محو';
-			case 'textCustomization': return 'تخصيص النص';
-			case 'writeYourText': return 'اكتب نصك';
-			case 'size': return 'الحجم';
-			case 'weight': return 'الوزن';
-			case 'color': return 'اللون';
-			case 'videoCustomization': return 'تخصيص الفيديو';
-			case 'videoUrl': return 'رابط الفيديو';
-			case 'zapPollCustomization': return 'تخصيص استطلاع الزاب';
-			case 'contentTextColor': return 'لون نص المحتوى';
-			case 'optionTextColor': return 'لون نص الخيار';
-			case 'optionBackgroundColor': return 'لون خلفية الخيار';
-			case 'fillColor': return 'لون التعبئة';
-			case 'imageCustomization': return 'تخصيص الصورة';
-			case 'imageUrl': return 'رابط الصورة';
-			case 'imageAspectRatio': return 'نسبة أبعاد الصورة';
-			case 'buttonCustomization': return 'تخصيص الزر';
-			case 'buttonText': return 'نص الزر';
-			case 'type': return 'النوع';
-			case 'useInvoice': return 'استخدام الفاتورة';
-			case 'invoice': return 'فاتورة';
-			case 'lightningAddress': return 'عنوان Lightning';
-			case 'selectUserToZap': return 'اختر مستخدماً لزابه (اختياري)';
-			case 'zapPollNevent': return 'Nevent استطلاع الزاب';
-			case 'textColor': return 'لون النص';
-			case 'buttonColor': return 'لون الزر';
-			case 'url': return 'الرابط';
-			case 'invoiceOrLN': return 'فاتورة أو عنوان Lightning';
-			case 'youtubeUrl': return 'رابط يوتيوب';
-			case 'telegramUrl': return 'رابط تليجرام';
-			case 'xUrl': return 'رابط X';
-			case 'discordUrl': return 'رابط ديسكورد';
-			case 'nostrScheme': return 'مخطط نوستر';
-			case 'containerCustomization': return 'تخصيص الحاوية';
-			case 'backgroundColor': return 'لون الخلفية';
-			case 'borderColor': return 'لون الحدود';
-			case 'value': return 'القيمة';
-			case 'pickYourComponent': return 'اختر مكونك';
-			case 'selectComponent': return 'اختر المكون المناسب وعدله.';
-			case 'text': return 'نص';
-			case 'image': return 'صورة';
-			case 'button': return 'زر';
-			case 'summaryOptional': return 'ملخص (اختياري)';
-			case 'smartWidgetsDrafts': return 'مسودات الويدجت الذكية';
-			case 'noSmartWidget': return 'لم يتم العثور على مسودات ويدجت ذكية';
-			case 'noSmartWidgetCanBeFound': return 'لم يتم العثور على ويدجت ذكية';
-			case 'smartWidgetConvention': return 'هذا الويدجت الذكي لا يتبع الاتفاقية المتفق عليها.';
-			case 'monolayoutRequired': return 'التخطيط المفرد مطلوب';
-			case 'zapPoll': return 'استطلاع زاب';
-			case 'layout': return 'التخطيط';
-			case 'container': return 'حاوية';
-			case 'edit': return 'تعديل';
-			case 'moveUp': return 'نقل للأعلى';
-			case 'moveDown': return 'نقل للأسفل';
-			case 'delete': return 'حذف';
-			case 'editToAddZapPoll': return 'تعديل لإضافة استطلاع زاب';
-			case 'options': return 'خيارات';
-			case 'smartWidgetBuilder': return 'منشئ الويدجت الذكية';
-			case 'startBuildingSmartWidget': return 'ابدأ في البناء وتخصيص ويدجتك الذكية للاستخدام على شبكة نوستر';
-			case 'blankWidget': return 'ويدجت فارغة';
-			case 'myDrafts': return 'مسوداتي';
-			case 'templates': return 'قوالب';
-			case 'communityPolls': return 'استطلاعات المجتمع';
-			case 'myPolls': return 'استطلاعاتي';
-			case 'noPollsCanBeFound': return 'لم يتم العثور على استطلاعات';
-			case 'totalNumber': return ({required Object number}) => 'المجموع: ${number}';
-			case 'smartWidgetsTemplates': return 'قوالب الويدجت الذكية';
-			case 'noTemplatesCanBeFound': return 'لم يتم العثور على قوالب في هذه الفئة.';
-			case 'useTemplate': return 'استخدام القالب';
-			case 'pickYourVideo': return 'اختر فيديوك';
-			case 'canUploadPastLink': return 'يمكنك الرفع أو لصق رابط أو اختيار nevent نوع 1063 لفيديوك.';
-			case 'gallery': return 'المعرض';
-			case 'link': return 'رابط';
-			case 'fileSharing': return 'مشاركة الملفات';
-			case 'setUpYourLink': return 'إعداد رابطك';
-			case 'setUpYourNevent': return 'إعداد nevent الخاص بك';
-			case 'pasteYourLink': return 'الصق رابطك وأرسله';
-			case 'pasteKind1063': return 'الصق nevent نوع 1063 وأرسله';
-			case 'addUrlNevent': return 'أضف رابط/nevent مناسب';
-			case 'nevent': return 'nevent';
-			case 'addProperUrlNevent': return 'أضف رابط/nevent مناسب';
-			case 'horizontalVideo': return 'فيديو أفقي';
-			case 'preview': return 'معاينة';
-			case 'writeSummary': return 'اكتب ملخصاً';
-			case 'uploadImage': return 'رفع صورة';
-			case 'addToCuration': return 'إضافة للتنسيق';
-			case 'submitCuration': return 'إرسال التنسيق';
-			case 'selectValidUrlImage': return 'اختر رابط صورة صحيح.';
-			case 'noCurationsFound': return 'لم يتم العثور على تنسيقات. جرب إنشاء واحد لتتمكن من إضافة محتوى إليه.';
-			case 'availableArticles': return ({required Object number}) => '${number} مقال(ات) متاح(ة)';
-			case 'availableVideos': return ({required Object number}) => '${number} فيديو(هات) متاح(ة)';
-			case 'articlesNum': return ({required Object number}) => '${number} مقال(ات)';
-			case 'videosNum': return ({required Object number}) => '${number} فيديو(هات)';
-			case 'articlesAvailableCuration': return 'المقالات المتاحة في هذا التنسيق';
-			case 'videosAvailableCuration': return 'الفيديوهات المتاحة في هذا التنسيق';
-			case 'articleAddedCuration': return 'تم إضافة المقال إلى تنسيقك.';
-			case 'videoAddedCuration': return 'تم إضافة الفيديو إلى تنسيقك.';
-			case 'validTitleCuration': return 'تأكد من إضافة عنوان صحيح لهذا التنسيق';
-			case 'validDescriptionCuration': return 'تأكد من إضافة وصف صحيح لهذا التنسيق';
-			case 'validImageCuration': return 'تأكد من إضافة صورة صحيحة لهذا التنسيق';
-			case 'addCuration': return 'إضافة تنسيق';
-			case 'postedBy': return 'نُشر بواسطة';
-			case 'follow': return 'متابعة';
-			case 'unfollow': return 'إلغاء المتابعة';
-			case 'postedFrom': return 'نُشر من';
-			case 'noTitle': return 'لا يوجد عنوان';
-			case 'itemsNumber': return ({required Object number}) => '${number} عنصر(عناصر)';
-			case 'noArticlesInCuration': return 'لم يتم العثور على مقالات في هذا التنسيق';
-			case 'noVideosInCuration': return 'لم يتم العثور على فيديوهات في هذا التنسيق';
-			case 'add': return 'إضافة';
-			case 'noBookmarksListFound': return 'لم يتم العثور على قوائم مفضلة، جرب إضافة واحدة!';
-			case 'deleteBookmarkList': return 'حذف قائمة المفضلة';
-			case 'confirmDeleteBookmarkList': return 'أنت على وشك حذف قائمة المفضلة هذه، هل تريد المتابعة؟';
-			case 'bookmarks': return 'المفضلة';
-			case 'bookmarksListCount': return ({required Object number}) => '${number} قوائم مفضلة';
-			case 'noDescription': return 'لا يوجد وصف';
-			case 'editedOn': return ({required Object date}) => 'تم التعديل في: ${date}';
-			case 'publishedOn': return ({required Object date}) => 'تم النشر في: ${date}';
-			case 'publishedOnText': return 'تم النشر في';
-			case 'lastUpdatedOn': return ({required Object date}) => 'آخر تحديث في: ${date}';
-			case 'joinedOn': return ({required Object date}) => 'انضم في: ${date}';
-			case 'list': return 'قائمة';
-			case 'noElementsInBookmarks': return 'لم يتم العثور على عناصر في قائمة المفضلة';
-			case 'draft': return 'مسودة';
-			case 'note': return 'ملاحظة';
-			case 'notes': return 'ملاحظات';
-			case 'smartWidget': return 'ويدجت ذكية';
-			case 'widgets': return 'ويدجت';
-			case 'postNote': return 'نشر ملاحظة';
-			case 'postArticle': return 'نشر مقال';
-			case 'postCuration': return 'نشر تنسيق';
-			case 'postVideo': return 'نشر فيديو';
-			case 'postSmartWidget': return 'نشر ويدجت ذكية';
-			case 'ongoing': return 'جاري';
-			case 'componentsSMCount': return ({required Object number}) => '${number} مكونات في هذه الويدجت';
-			case 'share': return 'مشاركة';
-			case 'copyNoteId': return 'نسخ معرف الملاحظة';
-			case 'noteIdCopied': return 'تم نسخ معرف الملاحظة! 👏';
-			case 'confirmDeleteDraft': return 'أنت على وشك حذف هذه المسودة، هل تريد المتابعة؟';
-			case 'reposted': return 'أعيد نشره';
-			case 'postInNote': return 'نشر في ملاحظة';
-			case 'clone': return 'نسخ';
-			case 'checkValidity': return 'فحص الصحة';
-			case 'copyNaddr': return 'نسخ naddr';
-			case 'deleteContent': return ({required Object type}) => 'حذف ${type}';
-			case 'confirmDeleteContent': return ({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل تريد المتابعة؟';
-			case 'home': return 'الرئيسية';
-			case 'followings': return 'المتابَعون';
-			case 'followers': return 'المتابِعون';
-			case 'replies': return 'الردود';
-			case 'zapReceived': return 'الزابس المستلمة';
-			case 'totalAmount': return 'المبلغ الإجمالي';
-			case 'zapSent': return 'الزابس المرسلة';
-			case 'latest': return 'الأحدث';
-			case 'saved': return 'محفوظ';
-			case 'seeAll': return 'رؤية الكل';
-			case 'popularNotes': return 'الملاحظات الشائعة';
-			case 'getStartedNow': return 'ابدأ الآن';
-			case 'expandWorld': return 'وسع العالم بإضافة ما يذهلك. اختر اهتماماتك ودع الرحلة تبدأ';
-			case 'addInterests': return 'إضافة اهتمامات';
-			case 'manageInterests': return 'إدارة الاهتمامات';
-			case 'interests': return 'اهتمامات';
-			case 'yakihonneImprovements': return 'تحسينات YakiHonne';
-			case 'yakihonneNote': return 'ملاحظة YakiHonne';
-			case 'privacyNote': return 'تطبيقنا يضمن أقصى درجات الخصوصية عبر تخزين البيانات الحساسة محلياً وبشكل آمن على أجهزة المستخدمين، باستخدام تشفير صارم. كن مطمئناً، نحن نلتزم بسياسة عدم المشاركة الصارمة، مما يضمن بقاء المعلومات الحساسة سرية ولا تغادر جهاز المستخدم أبداً.';
-			case 'pickYourMedia': return 'اختر وسائطك';
-			case 'uploadSendMedia': return 'يمكنك رفع وإرسال الوسائط مباشرة بعد اختيارها أو التقاطها.';
-			case 'noMessagesToDisplay': return 'لا توجد رسائل للعرض.';
-			case 'enableSecureDmsMessage': return 'للمزيد من الأمان والخصوصية، فكر في تفعيل الرسائل المباشرة الآمنة.';
-			case 'replyingTo': return ({required Object name}) => 'الرد على: ${name}';
-			case 'writeYourMessage': return 'اكتب رسالة';
-			case 'zap': return 'زاب';
-			case 'disableSecureDms': return 'تعطيل الرسائل المباشرة الآمنة';
-			case 'enableSecureDms': return 'تفعيل الرسائل المباشرة الآمنة';
-			case 'notUsingSecureDms': return 'لم تعد تستخدم الرسائل المباشرة الآمنة';
-			case 'usingSecureDms': return 'أصبحت الآن تستخدم الرسائل المباشرة الآمنة';
-			case 'mute': return 'كتم';
-			case 'unmute': return 'إلغاء الكتم';
-			case 'muteUser': return 'كتم المستخدم';
-			case 'unmuteUser': return 'إلغاء كتم المستخدم';
-			case 'muteUserDesc': return ({required Object name}) => 'أنت على وشك كتم ${name}، هل تريد المتابعة؟';
-			case 'unmuteUserDesc': return ({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل تريد المتابعة؟';
-			case 'messageCopied': return 'تم نسخ الرسالة بنجاح!';
-			case 'messageNotDecrypted': return 'لم يتم فك تشفير الرسالة بعد!';
-			case 'reply': return 'رد';
-			case 'newMessage': return 'رسالة جديدة';
-			case 'searchNameNpub': return 'البحث بالاسم أو npub أو nprofile';
-			case 'searchByUserName': return 'البحث باسم المستخدم';
-			case 'known': return 'معروف';
-			case 'unknown': return 'غير معروف';
-			case 'noMessageCanBeFound': return 'لم يتم العثور على رسائل';
-			case 'you': return 'أنت: ';
-			case 'decrMessage': return 'فك تشفير الرسالة';
-			case 'gifs': return 'صور متحركة';
-			case 'stickers': return 'ملصقات';
-			case 'customizeYourFeed': return 'خصص تدفقك';
-			case 'feedOptions': return 'خيارات التدفق';
-			case 'recent': return 'حديث';
-			case 'recentWithReplies': return 'حديث مع الردود';
-			case 'explore': return 'استكشف';
-			case 'following': return 'المتابَعون';
-			case 'trending': return 'الرائج';
-			case 'highlights': return 'النقاط البارزة';
-			case 'paid': return 'مدفوع';
-			case 'others': return 'آخرون';
-			case 'suggestionsBox': return 'صندوق الاقتراحات';
-			case 'showSuggestions': return 'إظهار الاقتراحات';
-			case 'showSuggestedPeople': return 'إظهار الأشخاص المقترحين للمتابعة';
-			case 'showArticlesNotesSuggestions': return 'إظهار اقتراحات المقالات/الملاحظات';
-			case 'showSuggestedInterests': return 'إظهار الاهتمامات المقترحة';
-			case 'readTime': return ({required Object time}) => '${time} دقيقة قراءة';
-			case 'watchNow': return 'شاهد الآن';
-			case 'bookmark': return 'مفضلة';
-			case 'suggestions': return 'اقتراحات';
-			case 'hideSuggestions': return 'إخفاء الاقتراحات';
-			case 'enjoyExpOwnData': return 'استمتع بتجربة امتلاك\nبياناتك الخاصة!';
-			case 'signIn': return 'تسجيل الدخول';
-			case 'createAccount': return 'إنشاء حساب';
-			case 'byContinuing': return 'بالمتابعة أنت توافق على\n';
-			case 'eula': return 'اتفاقية ترخيص المستخدم النهائي (EULA)';
-			case 'continueAsGuest': return 'متابعة كضيف';
-			case 'heyWelcomeBack': return 'مرحباً،\nأهلاً\nبعودتك';
-			case 'npubNsecHex': return 'npub أو nsec أو hex';
-			case 'useAmber': return 'استخدام Amber';
-			case 'setValidKey': return 'تعيين مفتاح صحيح';
-			case 'pasteYourKey': return 'الصق مفتاحك';
-			case 'taylorExperienceInterests': return 'خصص تجربتك باختيار اهتماماتك الرئيسية';
-			case 'peopleCountPlus': return ({required Object number}) => '+${number} شخص';
-			case 'followAll': return 'متابعة الكل';
-			case 'unfollowAll': return 'إلغاء متابعة الكل';
-			case 'details': return 'التفاصيل';
-			case 'shareGlimps': return 'شارك لمحة عنك، بكلمات تبدو حقيقية.';
-			case 'addCover': return 'إضافة غلاف';
-			case 'editCover': return 'تعديل الغلاف';
-			case 'yourName': return 'اسمك';
-			case 'setProperName': return 'تعيين اسم مناسب';
-			case 'aboutYou': return 'عنك';
-			case 'secKeyDesc': return 'يمكنك العثور على المفتاح السري لحسابك في الإعدادات. هذا المفتاح ضروري لتأمين الوصول إلى حسابك. يرجى الاحتفاظ به آمناً وخاصاً.';
-			case 'secKeyWalletDesc': return 'يمكنك العثور على المفتاح السري لحسابك وسر الاتصال بالمحفظة في الإعدادات. هذه المفاتيح ضرورية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الاحتفاظ بها آمنة وخاصة.';
-			case 'initializingAccount': return 'تهيئة الحساب...';
-			case 'letsGetStarted': return 'لنبدأ!';
-			case 'dontHaveWallet': return 'ليس لديك محفظة؟';
-			case 'createWalletSendRecSats': return 'إنشاء محفظة لإرسال واستقبال الساتس';
-			case 'createWallet': return 'إنشاء محفظة';
-			case 'youreAllSet': return 'أنت جاهز';
-			case 'dashboard': return 'لوحة القيادة';
-			case 'verifyNotes': return 'التحقق من الملاحظات';
-			case 'settings': return 'الإعدادات';
-			case 'manageAccounts': return 'إدارة الحسابات';
-			case 'login': return 'تسجيل الدخول';
-			case 'switchAccounts': return 'تبديل الحسابات';
-			case 'addAccount': return 'إضافة حساب';
-			case 'logoutAllAccounts': return 'تسجيل الخروج من جميع الحسابات';
-			case 'search': return 'البحث';
-			case 'smartWidgets': return 'الويدجت الذكية';
-			case 'notifications': return 'الإشعارات';
-			case 'inbox': return 'صندوق الوارد';
-			case 'discover': return 'اكتشف';
-			case 'wallet': return 'محفظة';
-			case 'publicKey': return 'المفتاح العام';
-			case 'profileLink': return 'رابط الملف الشخصي';
-			case 'profileCopied': return 'تم نسخ رابط الملف الشخصي! 👏';
-			case 'publicKeyCopied': return 'تم نسخ المفتاح العام! 👏';
-			case 'lnCopied': return 'تم نسخ عنوان lightning! 👏';
-			case 'scanQrCode': return 'مسح رمز QR';
-			case 'viewQrCode': return 'عرض رمز QR';
-			case 'copyNpub': return 'نسخ npub';
-			case 'visitProfile': return 'زيارة الملف الشخصي';
-			case 'followMeOnNostr': return 'تابعني على نوستر';
-			case 'close': return 'إغلاق';
-			case 'loadingPreviousPosts': return 'تحميل المنشورات السابقة...';
-			case 'noRepliesDesc': return 'لم يتم العثور على ردود لهذه الملاحظة';
-			case 'thread': return 'خيط';
-			case 'all': return 'الكل';
-			case 'mentions': return 'الإشارات';
-			case 'zaps': return 'زابس';
-			case 'noNotificationCanBeFound': return 'لم يتم العثور على إشعارات';
-			case 'consumablePointsPerks1': return '1- تقديم محتواك للتصديق';
-			case 'consumablePointsPerks2': return '2- استبدال النقاط لنشر ملاحظات مدفوعة';
-			case 'consumablePointsPerks3': return '3- استبدال النقاط بـ SATs (يتم اختيار عتبات عشوائية وستُخطر كلما أصبح الاستبدال متاحاً)';
-			case 'yakihonneConsPoints': return 'نقاط YakiHonne القابلة للاستهلاك';
-			case 'soonUsers': return 'قريباً سيتمكن المستخدمون من استخدام النقاط القابلة للاستهلاك في مجموعة الأنشطة التالية:';
-			case 'startEarningPoints': return 'ابدأ في الكسب واستفد من نقاط Yaki الخاصة بك! 🎉';
-			case 'gotIt': return 'فهمت!';
-			case 'engagementChart': return 'مخطط المشاركة';
-			case 'lastGained': return ({required Object date}) => 'آخر كسب: ${date}';
-			case 'attemptsRemained': return 'المحاولات المتبقية ';
-			case 'congratulations': return 'تهانينا';
-			case 'congratsDesc': return ({required Object number}) => 'تم مكافأتك بـ ${number} xp للإجراءات التالية، كن نشطاً واكسب المكافآت!';
-			case 'yakihonneChest': return 'صندوق YakiHonne!';
-			case 'noImGood': return 'لا، أنا بخير';
-			case 'points': return 'النقاط';
-			case 'unlocked': return 'مفتوح';
-			case 'locked': return 'مقفل';
-			case 'whatsThis': return 'ما هذا؟';
-			case 'levelNumber': return ({required Object number}) => 'المستوى ${number}';
-			case 'pointsSystem': return 'نظام النقاط';
-			case 'oneTimeRewards': return 'مكافآت لمرة واحدة';
-			case 'repeatedRewards': return 'مكافآت متكررة';
-			case 'consumablePoints': return 'نقاط قابلة للاستهلاك';
-			case 'pointsRemaining': return ({required Object number}) => '${number} متبقي';
-			case 'gain': return 'كسب';
-			case 'forName': return ({required Object name}) => 'لـ ${name}';
-			case 'min': return 'دقيقة';
-			case 'levelsRequiredNum': return ({required Object number}) => '${number} مستويات مطلوبة';
-			case 'seeMore': return 'رؤية المزيد';
-			case 'deleteCoverPic': return 'حذف صورة الغلاف!';
-			case 'deleteCoverPicDesc': return 'أنت على وشك حذف صورة الغلاف، هل تريد المتابعة؟';
-			case 'editProfile': return 'تعديل الملف الشخصي';
-			case 'uploadingImage': return 'رفع الصورة...';
-			case 'updateProfile': return 'تحديث الملف الشخصي';
-			case 'userName': return 'اسم المستخدم';
-			case 'displayName': return 'الاسم المعروض';
-			case 'yourDisplayName': return 'اسمك المعروض';
-			case 'writeSomethingAboutYou': return 'اكتب شيئاً عنك!';
-			case 'website': return 'موقع ويب';
-			case 'yourWebsite': return 'موقعك الإلكتروني';
-			case 'verifyNip05': return 'عنوان نوستر المُتحقق منه (NIP 05)';
-			case 'enterNip05': return 'أدخل عنوان NIP-05 الخاص بك';
-			case 'enterLn': return 'أدخل عنوان LUD-06 أو LUD-16 الخاص بك';
-			case 'less': return 'أقل';
-			case 'more': return 'أكثر';
-			case 'pictureUrl': return 'رابط الصورة';
-			case 'coverUrl': return 'رابط الغلاف';
-			case 'enterPictureUrl': return 'أدخل رابط صورتك';
-			case 'enterCoverUrl': return 'أدخل رابط غلافك';
-			case 'userNoArticles': return ({required Object name}) => '${name} ليس لديه مقالات';
-			case 'userNoCurations': return ({required Object name}) => '${name} ليس لديه تنسيقات';
-			case 'userNoNotes': return ({required Object name}) => '${name} ليس لديه ملاحظات';
-			case 'userNoVideos': return ({required Object name}) => '${name} ليس لديه فيديوهات';
-			case 'loadingFollowings': return 'تحميل المتابَعين';
-			case 'loadingFollowers': return 'تحميل المتابِعين';
-			case 'followersNum': return ({required Object number}) => '${number} متابع';
-			case 'notFollowedByAnyoneYouFollow': return 'غير متابَع من قِبل أي شخص تتابعه.';
-			case 'mutuals': return 'مشترك(ون)';
-			case 'mutualsNum': return ({required Object number}) => '+ ${number} مشترك(ون)';
-			case 'followsYou': return 'يتابعك';
-			case 'userNameCopied': return 'تم نسخ اسم المستخدم بنجاح!';
-			case 'profileRelays': return ({required Object number}) => 'مرحلات الملف الشخصي الموصى بها - ${number}';
-			case 'noUserRelays': return 'لم يتم العثور على مرحلات لهذا المستخدم.';
-			case 'userNoSmartWidgets': return ({required Object name}) => '${name} ليس لديه ويدجت ذكية';
-			case 'un1': return 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد';
-			case 'un1Desc': return 'هذه التقييمات تُحسب مرتين لأنها غالباً ما تشير إلى الدعم للملاحظات التي اعتبرها آخرون مفيدة.';
-			case 'un2': return 'ملاحظات بتقييمات جارية';
-			case 'un2Desc': return 'تقييمات على ملاحظات لا تحمل حالياً حالة مفيد أو غير مفيد';
-			case 'unTextW1': return 'ملاحظات حصلت على حالة مفيد';
-			case 'unTextW1Desc': return 'هذه الملاحظات تُعرض الآن لكل من يرى المنشور، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.';
-			case 'unTextR1': return 'تقييمات ساعدت ملاحظة في الحصول على حالة مفيد';
-			case 'unTextR1Desc': return 'هذه التقييمات حددت ملاحظات مفيدة تُعرض للجميع، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.';
-			case 'unTextW2': return 'ملاحظات وصلت إلى حالة غير مفيد';
-			case 'unTextW2Desc': return 'هذه الملاحظات تم تقييمها كغير مفيدة من قِبل مساهمين كافيين، بما في ذلك أولئك الذين أحياناً لا يتفقون في تقييماتهم السابقة.';
-			case 'unTextR2': return 'تقييمات ساعدت ملاحظة في الحصول على حالة غير مفيد';
-			case 'unTextR2Desc': return 'هذه التقييمات تحسن الملاحظات المُتحقق منها بإعطاء تغذية راجعة لمؤلفي الملاحظات، وتسمح للمساهمين بالتركيز على الملاحظات الأكثر واعدية';
-			case 'unTextW3': return 'ملاحظات تحتاج لمزيد من التقييمات';
-			case 'unTextW3Desc': return 'ملاحظات لا تحمل بعد حالة مفيد أو غير مفيد.';
-			case 'unTextR3': return 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد';
-			case 'unTextR3Desc': return 'لا تقلق، الجميع لديه بعض منها! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيدة\' ليست مفيدة بما فيه الكفاية.';
-			case 'refresh': return 'تحديث';
-			case 'userImpact': return 'تأثير المستخدم';
-			case 'userRelays': return 'مرحلات المستخدم';
-			case 'rewards': return 'المكافآت';
-			case 'noRewards': return 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات مُتحقق منها للحصول عليها.';
-			case 'onDate': return ({required Object date}) => 'في ${date}';
-			case 'youHaveRated': return 'لقد قيّمت';
-			case 'theFollowingNote': return 'الملاحظة التالية:';
-			case 'youHaveLeftNote': return 'لقد تركت ملاحظة على هذه الملاحظة المدفوعة:';
-			case 'paidNoteLoading': return 'تحميل الملاحظة المدفوعة';
-			case 'yourNoteSealed': return 'ملاحظتك التالية تم ختمها للتو:';
-			case 'ratedNoteSealed': return 'لقد قيّمت الملاحظة التالية التي تم ختمها:';
-			case 'claimTime': return ({required Object time}) => 'المطالبة خلال ${time}';
-			case 'claim': return 'مطالبة';
-			case 'requestInProgress': return 'طلب قيد التقدم';
-			case 'granted': return 'ممنوح';
-			case 'interested': return 'مهتم';
-			case 'notInterested': return 'غير مهتم';
-			case 'noResKeyword': return 'لا توجد نتائج لهذه الكلمة المفتاحية';
-			case 'noResKeywordDesc': return 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، جرب استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.';
-			case 'startSearchPeople': return 'ابدأ في البحث عن الأشخاص';
-			case 'startSearchContent': return 'ابدأ في البحث عن المحتوى';
-			case 'keys': return 'المفاتيح';
-			case 'myPublicKey': return 'مفتاحي العام';
-			case 'mySecretKey': return 'مفتاحي السري';
-			case 'show': return 'إظهار';
-			case 'showSecret': return 'إظهار المفتاح السري!';
-			case 'showSecretDesc': return 'تأكد من الاحتفاظ به آمناً لأنه يعطي وصولاً كاملاً لحسابك.';
-			case 'usingExternalSign': return 'استخدام موقع خارجي';
-			case 'usingExternalSignDesc': return 'أنت تستخدم موقعاً خارجياً';
-			case 'privKeyCopied': return 'تم نسخ المفتاح الخاص! 👏';
-			case 'muteList': return 'قائمة الكتم';
-			case 'noMutedUserFound': return 'لم يتم العثور على مستخدمين مكتومين.';
-			case 'searchRelay': return 'البحث عن مرحل';
-			case 'deleteAccount': return 'حذف الحساب';
-			case 'clearAppCache': return 'مسح ذاكرة التطبيق المؤقتة';
-			case 'clearAppCacheDesc': return 'أنت على وشك مسح ذاكرة التطبيق المؤقتة، هل تريد المتابعة؟';
-			case 'clear': return 'مسح';
-			case 'fontSize': return 'حجم الخط';
-			case 'appTheme': return 'سمة التطبيق';
-			case 'contentModeration': return 'إشراف المحتوى';
-			case 'mediaUploader': return 'رافع الوسائط';
-			case 'secureDirectMessaging': return 'الرسائل المباشرة الآمنة';
-			case 'customization': return 'التخصيص';
-			case 'hfCustomization': return 'تخصيص تدفق الصفحة الرئيسية';
-			case 'newPostGesture': return 'إيماءة الضغط المطول للمنشور الجديد';
-			case 'profilePreview': return 'معاينة الملف الشخصي';
-			case 'relaySettings': return ({required Object number}) => 'إعدادات المرحل ${number}';
-			case 'yakihonne': return 'YakiHonne';
-			case 'wallets': return 'محافظ';
-			case 'addWallet': return 'إضافة محفظة';
-			case 'externalWallet': return 'محفظة خارجية';
-			case 'yakiChest': return 'صندوق Yaki';
-			case 'connected': return 'متصل';
-			case 'connect': return 'اتصال';
-			case 'owner': return 'المالك';
-			case 'contact': return 'جهة الاتصال';
-			case 'software': return 'البرنامج';
-			case 'version': return 'النسخة';
-			case 'supportedNips': return 'Nips المدعومة';
-			case 'instantConntect': return 'اتصال فوري بالمرحل';
-			case 'invalidRelayUrl': return 'رابط مرحل غير صحيح';
-			case 'relays': return 'المرحلات';
-			case 'readOnly': return 'قراءة فقط';
-			case 'writeOnly': return 'كتابة فقط';
-			case 'readWrite': return 'قراءة/كتابة';
-			case 'defaultKey': return 'افتراضي';
-			case 'viewProfile': return 'عرض الملف الشخصي';
-			case 'appearance': return 'المظهر';
-			case 'untitled': return 'بدون عنوان';
-			case 'smartWidgetChecker': return 'فاحص الويدجت الذكية';
-			case 'naddr': return 'naddr';
-			case 'noComponentsDisplayed': return 'لا يمكن عرض مكونات';
-			case 'metadata': return 'البيانات الوصفية';
-			case 'createdAt': return 'تم الإنشاء في';
-			case 'identifier': return 'المعرف';
-			case 'enterSMaddr': return 'أدخل naddr ويدجت ذكية للتحقق من صحتها.';
-			case 'notFindSMwithAddr': return 'لا يمكن العثور على ويدجت ذكية بهذا العنوان';
-			case 'unableToOpenUrl': return 'غير قادر على فتح الرابط';
-			case 'voteToSeeStats': return 'يجب أن تصوت لتتمكن من رؤية الإحصائيات';
-			case 'votesByZaps': return 'الأصوات بالزابس';
-			case 'votesByUsers': return 'الأصوات بالمستخدمين';
-			case 'alreadyVoted': return 'لقد صوتت بالفعل في هذا الاستطلاع';
-			case 'userCannotBeFound': return 'لا يمكن العثور على المستخدم';
-			case 'votesNumber': return ({required Object number}) => 'الأصوات: ${number}';
-			case 'voteRequired': return 'التصويت مطلوب لعرض الإحصائيات.';
-			case 'showStats': return 'إظهار الإحصائيات';
-			case 'pollClosesAt': return ({required Object date}) => 'يُغلق في: ${date}';
-			case 'pollClosedAt': return ({required Object date}) => 'أُغلق في: ${date}';
-			case 'checkSmartWidget': return 'فحص ويدجت ذكية';
-			case 'emptyVerifiedNote': return 'محتوى ملاحظة مُتحقق منها فارغ!';
-			case 'post': return 'نشر';
-			case 'seeAnything': return 'ترى أي شيء تريد تحسينه؟';
-			case 'writeNote': return 'كتابة ملاحظة';
-			case 'whatThinkThis': return 'ما رأيك في هذا؟';
-			case 'sourceRecommended': return 'المصدر (موصى به)';
-			case 'findPaidNoteCorrect': return 'تجد هذه الملاحظة المدفوعة صحيحة.';
-			case 'findPaidNoteMisleading': return 'تجد هذه الملاحظة المدفوعة مضللة.';
-			case 'selectOneReason': return 'اختر سبباً واحداً على الأقل';
-			case 'rateHelpful': return 'تقييم كمفيد';
-			case 'rateNotHelpful': return 'تقييم كغير مفيد';
-			case 'ratedHelpful': return 'مُقيم كمفيد';
-			case 'ratedNotHelpful': return 'مُقيم كغير مفيد';
-			case 'youRatedHelpful': return 'قيّمت هذا كمفيد';
-			case 'youRatedNotHelpful': return 'قيّمت هذا كغير مفيد';
-			case 'findThisHelpful': return 'هل تجد هذا مفيداً؟';
-			case 'findThisNotHelpful': return 'هل تجد هذا غير مفيد؟';
-			case 'setYourRating': return 'تعيين تقييمك';
-			case 'whatThinkOfThat': return 'ما رأيك في ذلك؟';
-			case 'changeRatingNote': return 'ملاحظة: تغيير تقييمك سيكون صالحاً لمدة 5 دقائق فقط، بعد ذلك لن تعود لديك خيار التراجع أو التغيير.';
-			case 'paidNote': return 'ملاحظة مدفوعة';
-			case 'undo': return 'تراجع';
-			case 'undoRating': return 'تراجع عن التقييم';
-			case 'undoRatingDesc': return 'أنت على وشك التراجع عن تقييمك، هل تريد المتابعة؟';
-			case 'seeAllAttempts': return 'رؤية جميع المحاولات';
-			case 'addNote': return 'إضافة ملاحظة';
-			case 'alreadyContributed': return 'لقد ساهمت بالفعل';
-			case 'notesFromCommunity': return 'ملاحظات من المجتمع';
-			case 'noCommunityNotes': return 'هادئ هنا! لا توجد ملاحظات مجتمعية بعد.';
-			case 'notHelpful': return 'غير مفيد';
-			case 'sealed': return 'مختوم';
-			case 'notSealed': return 'غير مختوم';
-			case 'notSealedYet': return 'لم يُختم بعد';
-			case 'needsMoreRating': return 'يحتاج لمزيد من التقييمات';
-			case 'source': return 'المصدر';
-			case 'thisNoteAwaitRating': return 'هذه الملاحظة تنتظر تقييم المجتمع.';
-			case 'yourNoteAwaitRating': return 'هذه الملاحظة تنتظر تقييم المجتمع.';
-			case 'topReasonsSelected': return 'الأسباب الرئيسية المختارة من قِبل المقيمين:';
-			case 'noReasonsSpecified': return 'لم يتم تحديد أسباب!';
-			case 'postedOn': return ({required Object date}) => 'نُشر في ${date}';
-			case 'explanation': return 'التفسير';
-			case 'readAboutVerifyingNotes': return 'اقرأ عن التحقق من الملاحظات';
-			case 'readAboutVerifyingNotesDesc': return 'لقد كتبنا مقالاً لمساعدتك في فهم هدفنا';
-			case 'readArticle': return 'قراءة المقال';
-			case 'whyVerifyingNotes': return 'لماذا التحقق من الملاحظات؟';
-			case 'contributeUnderstanding': return 'المساهمة في بناء الفهم';
-			case 'actGoodFaith': return 'التصرف بنية حسنة';
-			case 'beHelpful': return 'كن مفيداً، حتى لأولئك الذين يختلفون';
-			case 'readMore': return 'قراءة المزيد';
-			case 'newKey': return 'جديد';
-			case 'needsYourHelp': return 'يحتاج مساعدتك';
-			case 'communityWallet': return 'محفظة المجتمع';
-			case 'noPaidNotesCanBeFound': return 'لم يتم العثور على ملاحظات مدفوعة.';
-			case 'updatesNews': return 'أخبار التحديثات';
-			case 'updates': return 'التحديثات';
-			case 'toBeAbleSendSats': return 'لتتمكن من إرسال الزابس، يرجى التأكد من ربط محفظة bitcoin lightning الخاصة بك.';
-			case 'receiveSats': return 'استقبال الساتس';
-			case 'messageOptional': return 'رسالة (اختيارية)';
-			case 'amountInSats': return 'المبلغ بالساتس';
-			case 'invoiceCopied': return 'تم نسخ كود الفاتورة!';
-			case 'copyInvoice': return 'نسخ الفاتورة';
-			case 'ensureLnSet': return 'تأكد من تعيين عنوان lightning بشكل صحيح';
-			case 'errorGeneratingInvoice': return 'حدث خطأ أثناء توليد الفاتورة';
-			case 'generateInvoice': return 'توليد فاتورة';
-			case 'qrCode': return 'رمز QR';
-			case 'scanPay': return 'مسح ودفع';
-			case 'slideToPay': return 'اسحب للدفع';
-			case 'invalidInvoice': return 'فاتورة غير صحيحة';
-			case 'invalidInvoiceDesc': return 'يبدو أن الفاتورة الممسوحة غير صحيحة، أعد المسح وحاول مرة أخرى.';
-			case 'scanAgain': return 'مسح مرة أخرى';
-			case 'sendSats': return 'إرسال ساتس';
-			case 'send': return 'إرسال';
-			case 'recentTransactions': return 'المعاملات الحديثة';
-			case 'noTransactionCanBeFound': return 'لم يتم العثور على معاملات';
-			case 'selectWalletTransactions': return 'اختر محفظة للحصول على آخر المعاملات.';
-			case 'noUserCanBeFound': return 'لم يتم العثور على مستخدمين.';
-			case 'balance': return 'الرصيد';
-			case 'noLnInNwc': return 'لم نتمكن من الحصول على عنوانك من سر NWC الخاص بك، يرجى التحقق من مزود خدمة عنوان lightning لنسخ عنوانك أو لتحديث ملفك الشخصي وفقاً لذلك.';
-			case 'copyLn': return 'نسخ عنوان lightning';
-			case 'receive': return 'استقبال';
-			case 'clickBelowToConnect': return 'انقر أدناه للاتصال';
-			case 'connectWithNwc': return 'الاتصال بـ NWC';
-			case 'pasteNwcAddress': return 'لصق عنوان NWC';
-			case 'createYakiWallet': return 'إنشاء محفظة YakiHonne';
-			case 'yakiNwc': return 'NWC الخاص بـ YakiHonne';
-			case 'yakiNwcDesc': return 'إنشاء محفظة باستخدام قناة YakiHonne';
-			case 'orUseYourWallet': return 'أو استخدم محفظتك';
-			case 'nostrWalletConnect': return 'اتصال محفظة نوستر';
-			case 'nostrWalletConnectDesc': return 'اتصال محفظة نوستر الأصلية';
-			case 'alby': return 'Alby';
-			case 'albyConnect': return 'اتصال Alby';
-			case 'walletDataNote': return 'ملاحظة: جميع البيانات المتعلقة بمحفظتك ستُخزن بأمان وحماية محلياً ولن تُشارك خارج حدود التطبيق أبداً.';
-			case 'availableWallets': return 'المحافظ المتاحة';
-			case 'noWalletLinkedToYouProfile': return 'ليس لديك محفظة مربوطة بملفك الشخصي.';
-			case 'noWalletConnectedToYourProfile': return 'لا توجد محافظ متصلة مربوطة بملفك الشخصي.';
-			case 'click': return 'انقر';
-			case 'onSelectedWalletLinkIt': return 'على محفظتك المختارة واربطها.';
-			case 'noWalletCanBeFound': return 'لم يتم العثور على محفظة';
-			case 'currentlyLinkedMessage': return 'مربوطة حالياً بملفك الشخصي لاستقبال الزابس';
-			case 'linked': return 'مربوط';
-			case 'linkWallet': return 'ربط المحفظة';
-			case 'linkWalletDesc': return 'أنت على وشك استبدال محفظتك السابقة وربط محفظة جديدة بملفك الشخصي، هل تريد المتابعة؟';
-			case 'copyNwc': return 'نسخ NWC';
-			case 'nwcCopied': return 'تم نسخ NWC بنجاح!';
-			case 'deleteWallet': return 'حذف المحفظة';
-			case 'deleteWalletDesc': return 'أنت على وشك حذف هذه المحفظة، هل تريد المتابعة؟';
-			case 'userSentSat': return ({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتس';
-			case 'userReceivedSat': return ({required Object name, required Object number}) => '${name} استقبل منك ${number} ساتس';
-			case 'ownSentSat': return ({required Object number}) => 'أرسلت ${number} ساتس';
-			case 'ownReceivedSat': return ({required Object number}) => 'استقبلت ${number} ساتس';
-			case 'comment': return 'تعليق';
-			case 'supportYakihonne': return 'دعم YakiHonne';
-			case 'fuelYakihonne': return 'ادعم نمو YakiHonne! دعمك يدفع المزايا الجديدة وتجربة أفضل للجميع.';
-			case 'supportUs': return '❤︎ ادعمنا';
-			case 'peopleToFollow': return 'أشخاص للمتابعة';
-			case 'donations': return 'التبرعات';
-			case 'inTag': return ({required Object name}) => 'في ${name}';
-			case 'shareProfile': return 'مشاركة الملف الشخصي';
-			case 'shareProfileDesc': return 'شارك ملفك الشخصي للوصول لمزيد من الناس والتواصل مع آخرين وتنمية شبكتك';
-			case 'moreDots': return 'المزيد...';
-			case 'comments': return 'التعليقات';
-			case 'noCommentsCanBeFound': return 'لم يتم العثور على تعليقات';
-			case 'beFirstCommentThisVideo': return 'كن أول من يعلق على هذا الفيديو!';
-			case 'errorLoadingVideo': return 'خطأ أثناء تحميل الفيديو';
-			case 'seeAlso': return 'انظر أيضاً';
-			case 'viewsNumber': return ({required Object number}) => '${number} مشاهدة';
-			case 'upvotes': return 'أصوات إيجابية';
-			case 'downvotes': return 'أصوات سلبية';
-			case 'views': return 'المشاهدات';
-			case 'createdAtEditedAt': return ({required Object date1, required Object date2}) => 'تم الإنشاء في ${date1}، تم التعديل في ${date2}';
-			case 'loading': return 'تحميل';
-			case 'releaseToLoad': return 'اتركه لتحميل المزيد';
-			case 'finished': return 'انتهى!';
-			case 'noMoreData': return 'لا توجد بيانات أخرى';
-			case 'refreshed': return 'تم التحديث';
-			case 'refreshing': return 'جاري التحديث';
-			case 'pullToRefresh': return 'اسحب للتحديث';
-			case 'suggestedInterests': return 'اهتمامات مقترحة';
-			case 'reveal': return 'كشف';
-			case 'wantToShareRevenues': return 'أريد مشاركة هذه الإيرادات';
-			case 'splitRevenuesWithUsers': return 'تقسيم الإيرادات مع المستخدمين';
-			case 'addUser': return 'إضافة مستخدم';
-			case 'selectAdate': return 'اختيار تاريخ';
-			case 'clearDate': return 'مسح التاريخ';
-			case 'nothingToShowHere': return 'أوبس! لا شيء للعرض هنا!';
-			case 'confirmPayment': return 'تأكيد الدفع';
-			case 'payWithNwc': return 'الدفع بـ NWC';
-			case 'important': return 'مهم';
-			case 'adjustVolume': return 'ضبط الصوت';
-			case 'adjustSpeed': return 'ضبط السرعة';
-			case 'updateInterests': return 'تحديث الاهتمامات';
-			case 'usingViewMode': return 'أنت تستخدم وضع العرض';
-			case 'usingViewModeDesc': return 'سجل الدخول بمفتاحك الخاص وانضم للمجتمع.';
-			case 'noInternetAccess': return 'لا يوجد وصول للإنترنت';
-			case 'checkModelRouter': return 'تحقق من المودم أو الراوتر';
-			case 'reconnectWifi': return 'إعادة الاتصال بالواي فاي';
-			case 'somethingWentWrong': return 'حدث خطأ ما!';
-			case 'somethingWentWrongDesc': return 'يبدو أن شيئاً حدث أثناء تحميل البيانات، حاول مرة أخرى!';
-			case 'tryAgain': return 'حاول مرة أخرى';
-			case 'postNotFound': return 'لم يتم العثور على المنشور';
-			case 'user': return 'مستخدم';
-			case 'view': return 'عرض';
-			case 'itsLive': return 'إنه مباشر!';
-			case 'spreadWordSharingContent': return 'انشر الكلمة بمشاركة محتواك في كل مكان.';
-			case 'successfulRelays': return 'المرحلات الناجحة';
-			case 'noRelaysCanBeFound': return 'لم يتم العثور على مرحلات';
-			case 'dismiss': return 'تجاهل';
-			case 'deleteAccountMessage': return 'أنت تحاول تسجيل الدخول إلى حساب محذوف.';
-			case 'exit': return 'خروج';
-			case 'shareContent': return 'مشاركة المحتوى';
-			case 'profile': return 'الملف الشخصي';
-			case 'by': return 'بواسطة';
-			case 'shareLink': return 'مشاركة الرابط';
-			case 'shareImage': return 'مشاركة الصورة';
-			case 'shareNoteId': return 'مشاركة معرف الملاحظة';
-			case 'shareNprofile': return 'مشاركة nprofile';
-			case 'shareNaddr': return 'مشاركة naddr';
-			case 'bio': return ({required Object content}) => 'النبذة: ${content}';
-			case 'earnSats': return 'كسب SATs';
-			case 'earnSatsDesc': return 'ساعدنا في توفير رؤى لامركزية أكثر لمراجعة هذه الملاحظة المدفوعة.';
-			case 'verifyingNote': return 'التحقق من الملاحظة';
-			case 'pickYourImage': return 'اختر صورتك';
-			case 'uploadPasteUrl': return 'يمكنك الرفع أو لصق رابط لصورتك المفضلة';
-			case 'back': return 'رجوع';
-			case 'camera': return 'الكاميرا';
-			case 'communityWidgets': return 'ويدجت المجتمع';
-			case 'myWidgets': return 'ويدجتي';
-			case 'pendingUnfollowing': return 'إلغاء المتابعة...';
-			case 'pendingFollowing': return 'المتابعة...';
-			case 'zappers': return 'الزابرز';
-			case 'noZappersCanBeFound': return 'لم يتم العثور على زابرز.';
-			case 'payPublish': return 'دفع ونشر';
-			case 'payPublishNote': return 'ملاحظة: تأكد من أن جميع المحتوى الذي قدمته نهائي لأن النشر يُعتبر غير قابل للإرجاع والساتس المُنفقة غير قابلة للاسترداد.';
-			case 'userSubmittedPaidNote': return ({required Object name}) => '${name} قدم ملاحظة مدفوعة';
-			case 'getInvoice': return 'الحصول على فاتورة';
-			case 'pay': return 'دفع';
-			case 'compose': return 'تأليف';
-			case 'writeSomething': return 'اكتب شيئاً...';
-			case 'highlightedNote': return 'ملاحظة مُبرزة للمزيد من التعرض.';
-			case 'typeValidZapQuestion': return 'اكتب سؤال استطلاع صحيح!';
-			case 'pollOptions': return 'خيارات الاستطلاع';
-			case 'minimumSatoshis': return 'الحد الأدنى من الساتوشيس';
-			case 'minSats': return 'أقل ساتس';
-			case 'maxSats': return 'أكثر ساتس';
-			case 'maximumSatoshis': return 'الحد الأقصى من الساتوشيس';
-			case 'pollCloseDate': return 'تاريخ إغلاق الاستطلاع';
-			case 'optionsNumber': return ({required Object number}) => 'الخيارات: ${number}';
-			case 'zapSplits': return 'تقسيمات الزاب';
-			case 'minimumOfOneRequired': return 'مطلوب حد أدنى 1';
-			case 'valueBetweenMinMax': return 'يجب أن تكون القيمة بين الحد الأدنى والأقصى لمبلغ الساتس';
-			case 'writeCommentOptional': return 'اكتب تعليقاً (اختياري)';
-			case 'splitZapsWith': return 'تقسيم الزابس مع';
-			case 'useCannotBeZapped': return 'هذا المستخدم لا يمكن زابه';
-			case 'waitingGenerationOfInvoice': return 'انتظار توليد الفواتير.';
-			case 'userInvoiceGenerated': return ({required Object name}) => 'تم توليد فاتورة لـ ${name}';
-			case 'userInvoiceNotGenerated': return 'لا يمكن إنشاء فاتورة لهذا المستخدم.';
-			case 'payAmount': return ({required Object number}) => 'دفع ${number} ساتس';
-			case 'generateInvoices': return 'توليد الفواتير';
-			case 'userZappedSuccesfuly': return 'تم زاب المستخدم بنجاح';
-			case 'useValidTitle': return 'يجب استخدام عنوان صحيح';
-			case 'errorAddingBookmark': return 'حدث خطأ عند إضافة المفضلة';
-			case 'bookmarkAdded': return 'تم إضافة قائمة المفضلة';
-			case 'voteNotSubmitted': return 'لا يمكن إرسال التصويت';
-			case 'zapSplitsMessage': return 'لتقسيمات الزاب، يجب أن يكون هناك شخص واحد على الأقل';
-			case 'errorUpdatingCuration': return 'حدث خطأ أثناء تحديث التنسيق';
-			case 'errorAddingCuration': return 'حدث خطأ أثناء إضافة التنسيق';
-			case 'errorDeletingContent': return 'حدث خطأ أثناء حذف المحتوى';
-			case 'errorSigningEvent': return 'حدث خطأ أثناء توقيع الحدث';
-			case 'errorSendingEvent': return 'حدث خطأ أثناء إرسال الحدث';
-			case 'errorSendingMessage': return 'حدث خطأ أثناء إرسال الرسالة';
-			case 'userHasBeenMuted': return 'تم كتم المستخدم';
-			case 'userHasBeenUnmuted': return 'تم إلغاء كتم المستخدم';
-			case 'messageCouldNotBeDecrypted': return 'لا يمكن فك تشفير الرسالة';
-			case 'interestsUpdateMessage': return 'تم تحديث قائمة الاهتمامات بنجاح!';
-			case 'errorGeneratingEvent': return 'حدث خطأ أثناء توليد الحدث';
-			case 'oneFeedOptionAvailable': return 'يجب أن يكون هناك خيار تدفق واحد متاح على الأقل.';
-			case 'walletCreated': return 'تم إنشاء المحفظة بنجاح';
-			case 'walletLinked': return 'تم ربط المحفظة بنجاح';
-			case 'errorCreatingWallet': return 'حدث خطأ أثناء إنشاء المحفظة';
-			case 'walletNotLinked': return 'لا يمكن ربط المحفظة. عنوان lightning خاطئ';
-			case 'invalidPairingSecret': return 'سر الإقران غير صحيح';
-			case 'errorSettingToken': return 'حدث خطأ أثناء إعداد الرمز المميز';
-			case 'nwcInitialized': return 'تم تهيئة اتصال محفظة نوستر';
-			case 'noWalletLinkedMessage': return 'ليس لديك محفظة مربوطة بملفك الشخصي، هل تريد ربط هذه المحفظة؟';
-			case 'errorUsingWallet': return 'حدث خطأ أثناء استخدام المحفظة!';
-			case 'submitValidData': return 'تأكد من إرسال بيانات صحيحة';
-			case 'submitValidInvoice': return 'تأكد من إرسال فاتورة صحيحة';
-			case 'paymentSucceeded': return 'نجح الدفع';
-			case 'paymentFailed': return 'فشل الدفع';
-			case 'notEnoughBalance': return 'رصيد غير كافٍ لإجراء هذا الدفع.';
-			case 'permissionInvoiceNotGranted': return 'لم يتم منح إذن دفع الفواتير.';
-			case 'allUsersZapped': return 'تم زاب جميع المستخدمين!';
-			case 'partialUsersZapped': return 'تم زاب مستخدمين جزئياً!';
-			case 'noUserZapped': return 'لم يتم زاب أي مستخدم!';
-			case 'errorZappingUsers': return 'حدث خطأ أثناء زاب المستخدمين';
-			case 'selectDefaultWallet': return 'اختر محفظة افتراضية في الإعدادات.';
-			case 'noInvoiceAvailable': return 'لا توجد فواتير متاحة';
-			case 'invoicePaid': return 'تم دفع الفاتورة بنجاح';
-			case 'errorPayingInvoice': return 'حدث خطأ أثناء الدفع باستخدام الفاتورة';
-			case 'errorUsingExternalWallet': return 'خطأ أثناء استخدام المحفظة الخارجية.';
-			case 'paymentSurpassMax': return 'الدفع يتجاوز الحد الأقصى المسموح.';
-			case 'errorSendingSats': return 'حدث خطأ أثناء إرسال الساتس';
-			case 'setSatsMoreThanZero': return 'تعيين مبلغ ساتس أكبر من 0';
-			case 'processCompleted': return 'تم إكمال العملية';
-			case 'relayingStuff': return 'جاري الترحيل...';
-			case 'amberNotInstalled': return 'تطبيق Amber غير مثبت';
-			case 'alreadyLoggedIn': return 'أنت مسجل دخول بالفعل!';
-			case 'loggedIn': return 'أنت مسجل دخول!';
-			case 'attemptConnectAmber': return 'تم رفض محاولة الاتصال بـ Amber.';
-			case 'errorUploadingImage': return 'حدث خطأ أثناء رفع الصورة';
-			case 'invalidPrivateKey': return 'مفتاح خاص غير صحيح!';
-			case 'invalidHexKey': return 'مفتاح hex غير صحيح!';
-			case 'fetchingArticle': return 'جلب المقال';
-			case 'articleNotFound': return 'لم يتم العثور على المقال';
-			case 'fetchingCuration': return 'جلب التنسيق';
-			case 'curationNotFound': return 'لم يتم العثور على التنسيق';
-			case 'fetchingSmartWidget': return 'جلب الويدجت الذكية';
-			case 'smartWidgetNotFound': return 'لم يتم العثور على الويدجت الذكية';
-			case 'fetchingVideo': return 'جلب الفيديو';
-			case 'videoNotFound': return 'لم يتم العثور على الفيديو';
-			case 'fetchingNote': return 'جلب الملاحظة';
-			case 'noteNotFound': return 'لم يتم العثور على الملاحظة';
-			case 'eventNotFound': return 'لم يتم العثور على الحدث';
-			case 'verifiedNoteNotFound': return 'لم يتم العثور على الملاحظة المُتحقق منها';
-			case 'eventNotRecognized': return 'لا يمكن التعرف على الحدث';
-			case 'fetchingEventUserRelays': return 'جلب الحدث من مرحلات المستخدم';
-			case 'fetchingProfile': return 'جلب الملف الشخصي';
-			case 'fetchingEvent': return 'جلب الحدث';
-			case 'loggedToYakiChest': return 'أنت مسجل دخول في صندوق Yakihonne';
-			case 'errorLoggingYakiChest': return 'حدث خطأ أثناء تسجيل الدخول في صندوق Yakihonne';
-			case 'relayInUse': return 'المرحل قيد الاستخدام بالفعل';
-			case 'errorConnectingRelay': return 'حدث خطأ أثناء الاتصال بالمرحل';
-			case 'submitValidLud': return 'تأكد من الحصول على lud16/lud06 صحيح.';
-			case 'errorUpdatingData': return 'حدث خطأ أثناء تحديث البيانات';
-			case 'updatedSuccesfuly': return 'تم التحديث بنجاح';
-			case 'relaysListUpdated': return 'تم تحديث قائمة المرحلات';
-			case 'couldNotUpdateRelaysList': return 'لا يمكن تحديث قائمة المرحلات';
-			case 'errorUpdatingRelaysList': return 'حدث خطأ أثناء تحديث قائمة المرحلات';
-			case 'errorClaimingReward': return 'حدث خطأ أثناء المطالبة بالمكافأة';
-			case 'errorDecodingData': return 'حدث خطأ أثناء فك تشفير البيانات';
-			case 'loggingIn': return 'تسجيل الدخول...';
-			case 'loggingOut': return 'تسجيل الخروج...';
-			case 'disconnecting': return 'قطع الاتصال...';
-			case 'ratingSubmittedCheckReward': return 'تم إرسال تقييمك، تحقق من صفحة المكافآت لتطالب بمكافأة التقييم';
-			case 'errorSubmittingRating': return 'حدث خطأ أثناء إرسال تقييمك';
-			case 'verifiedNoteAdded': return 'تم إضافة ملاحظتك المُتحقق منها، تحقق من صفحة المكافآت لتطالب بمكافأة الكتابة';
-			case 'errorAddingVerifiedNote': return 'حدث خطأ أثناء إضافة ملاحظتك المُتحقق منها';
-			case 'ratingDeleted': return 'تم حذف تقييمك';
-			case 'errorDeletingRating': return 'حدث خطأ أثناء حذف تقييمك';
-			case 'autoSavedArticleDeleted': return 'تم حذف المقال المحفوظ تلقائياً';
-			case 'articlePublished': return 'تم نشر مقالك!';
-			case 'errorAddingArticle': return 'حدث خطأ أثناء إضافة المقال';
-			case 'writeValidNote': return 'اكتب ملاحظة صحيحة!';
-			case 'setOutboxRelays': return 'تأكد من إعداد مرحلات صندوق الصادر';
-			case 'notePublished': return 'تم نشر الملاحظة!';
-			case 'paidNotePublished': return 'تم نشر الملاحظة المدفوعة!';
-			case 'invoiceNotPayed': return 'يبدو أنك لم تدفع الفاتورة، تحقق مرة أخرى';
-			case 'autoSavedSMdeleted': return 'تم حذف الويدجت الذكية المحفوظة تلقائياً';
-			case 'errorUploadingMedia': return 'حدث خطأ أثناء رفع الوسائط';
-			case 'smartWidgetPublishedSuccessfuly': return 'تم نشر الويدجت الذكية بنجاح';
-			case 'errorAddingWidget': return 'حدث خطأ أثناء إضافة الويدجت الذكية';
-			case 'setAllRequiredContent': return 'تأكد من تعيين جميع المحتوى المطلوب.';
-			case 'noEventIdCanBeFound': return 'لم يتم العثور على حدث بهذا المعرف!';
-			case 'notValidVideoEvent': return 'هذا الحدث ليس حدث فيديو صحيح!';
-			case 'emptyVideoUrl': return 'هذا nevent له رابط فارغ';
-			case 'submitValidVideoEvent': return 'يرجى إرسال حدث فيديو صحيح';
-			case 'errorUploadingVideo': return 'حدث خطأ أثناء رفع الفيديو';
-			case 'errorAddingVideo': return 'حدث خطأ أثناء إضافة الفيديو';
-			case 'submitMinMaxSats': return 'تأكد من إرسال ساتوشيس صحيحة للحد الأدنى والأقصى';
-			case 'submitValidCloseDate': return 'تأكد من إرسال تاريخ إغلاق صحيح.';
-			case 'submitValidOptions': return 'تأكد من إرسال خيارات صحيحة.';
-			case 'pollZapPublished': return 'تم نشر استطلاع الزاب!';
-			case 'relaysNotReached': return 'لا يمكن الوصول للمرحلات';
-			case 'loginYakiChestPoints': return 'سجل دخول في صندوق Yakihonne، اجمع النقاط بكونك نشطاً على المنصة واربح جوائز ثمينة!';
-			case 'inaccessibleLink': return 'رابط غير قابل للوصول';
-			case 'mediaExceedsMaxSize': return 'الوسائط تتجاوز الحد الأقصى للحجم وهو 21 ميجابايت';
-			case 'fetchingUserInboxRelays': return 'جلب مرحلات صندوق وارد المستخدم';
-			case 'userZappedYou': return ({required Object name, required Object number}) => '${name} زابك ${number} ساتس';
-			case 'userReactedYou': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} معك';
-			case 'userRepostedYou': return ({required Object name}) => '${name} أعاد نشر محتواك';
-			case 'userMentionedYouInNote': return ({required Object name}) => '${name} ذكرك في ملاحظة';
-			case 'userMentionedYouInPaidNote': return ({required Object name}) => '${name} ذكرك في ملاحظة مدفوعة';
-			case 'userMentionedYouInArticle': return ({required Object name}) => '${name} ذكرك في مقال';
-			case 'userMentionedYouInVideo': return ({required Object name}) => '${name} ذكرك في فيديو';
-			case 'userMentionedYouInCuration': return ({required Object name}) => '${name} ذكرك في تنسيق';
-			case 'userMentionedYouInSmartWidget': return ({required Object name}) => '${name} ذكرك في ويدجت ذكية';
-			case 'userMentionedYouInPoll': return ({required Object name}) => '${name} ذكرك في استطلاع';
-			case 'userPublishedPaidNote': return ({required Object name}) => '${name} نشر ملاحظة مدفوعة';
-			case 'userPublishedArticle': return ({required Object name}) => '${name} نشر مقال';
-			case 'userPublishedVideo': return ({required Object name}) => '${name} نشر فيديو';
-			case 'userPublishedCuration': return ({required Object name}) => '${name} نشر تنسيق';
-			case 'userPublishedSmartWidget': return ({required Object name}) => '${name} نشر ويدجت ذكية';
-			case 'userPublishedPoll': return ({required Object name}) => '${name} نشر استطلاع';
-			case 'userZappedYourArticle': return ({required Object name, required Object number}) => '${name} زاب مقالك ${number} ساتس';
-			case 'userZappedYourCuration': return ({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتس';
-			case 'userZappedYourVideo': return ({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتس';
-			case 'userZappedYourSmartWidget': return ({required Object name, required Object number}) => '${name} زاب ويدجتك الذكية ${number} ساتس';
-			case 'userZappedYourPoll': return ({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتس';
-			case 'userZappedYourNote': return ({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتس';
-			case 'userZappedYourPaidNote': return ({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتس';
-			case 'userReactedYourArticle': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقالك';
-			case 'userReactedYourCuration': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيقك';
-			case 'userReactedYourVideo': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديوك';
-			case 'userReactedYourSmartWidget': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجتك الذكية';
-			case 'userReactedYourPoll': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاعك';
-			case 'userReactedYourNote': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك';
-			case 'userReactedYourPaidNote': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك المدفوعة';
-			case 'userReactedYourMessage': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع رسالتك';
-			case 'userRepostedYourNote': return ({required Object name}) => '${name} أعاد نشر ملاحظتك';
-			case 'userRepostedYourPaidNote': return ({required Object name}) => '${name} أعاد نشر ملاحظتك المدفوعة';
-			case 'userRepliedYourArticle': return ({required Object name}) => '${name} رد على مقالك';
-			case 'userRepliedYourCuration': return ({required Object name}) => '${name} رد على تنسيقك';
-			case 'userRepliedYourVideo': return ({required Object name}) => '${name} رد على فيديوك';
-			case 'userRepliedYourSmartWidget': return ({required Object name}) => '${name} رد على ويدجتك الذكية';
-			case 'userRepliedYourPoll': return ({required Object name}) => '${name} رد على استطلاعك';
-			case 'userRepliedYourNote': return ({required Object name}) => '${name} رد على ملاحظتك';
-			case 'userRepliedYourPaidNote': return ({required Object name}) => '${name} رد على ملاحظتك المدفوعة';
-			case 'userCommentedYourArticle': return ({required Object name}) => '${name} علق على مقالك';
-			case 'userCommentedYourCuration': return ({required Object name}) => '${name} علق على تنسيقك';
-			case 'userCommentedYourVideo': return ({required Object name}) => '${name} علق على فيديوك';
-			case 'userCommentedYourSmartWidget': return ({required Object name}) => '${name} علق على ويدجتك الذكية';
-			case 'userCommentedYourPoll': return ({required Object name}) => '${name} علق على استطلاعك';
-			case 'userCommentedYourNote': return ({required Object name}) => '${name} علق على ملاحظتك';
-			case 'userCommentedYourPaidNote': return ({required Object name}) => '${name} علق على ملاحظتك المدفوعة';
-			case 'userQuotedYourArticle': return ({required Object name}) => '${name} اقتبس مقالك';
-			case 'userQuotedYourCuration': return ({required Object name}) => '${name} اقتبس تنسيقك';
-			case 'userQuotedYourVideo': return ({required Object name}) => '${name} اقتبس فيديوك';
-			case 'userQuotedYourNote': return ({required Object name}) => '${name} اقتبس ملاحظتك';
-			case 'userQuotedYourPaidNote': return ({required Object name}) => '${name} اقتبس ملاحظتك المدفوعة';
-			case 'userReactedArticleYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقال ذُكرت فيه';
-			case 'userReactedCurationYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيق ذُكرت فيه';
-			case 'userReactedVideoYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديو ذُكرت فيه';
-			case 'userReactedSmartWidgetYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجت ذكية ذُكرت فيها';
-			case 'userReactedPollYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاع ذُكرت فيه';
-			case 'userReactedNoteYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة ذُكرت فيها';
-			case 'userReactedPaidNoteYouIn': return ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة مدفوعة ذُكرت فيها';
-			case 'userRepostedNoteYouIn': return ({required Object name}) => '${name} أعاد نشر ملاحظة ذُكرت فيها';
-			case 'userRepostedPaidNoteYouIn': return ({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذُكرت فيها';
-			case 'userRepliedArticleYouIn': return ({required Object name}) => '${name} رد على مقال ذُكرت فيه';
-			case 'userRepliedCurationYouIn': return ({required Object name}) => '${name} رد على تنسيق ذُكرت فيه';
-			case 'userRepliedVideoYouIn': return ({required Object name}) => '${name} رد على فيديو ذُكرت فيه';
-			case 'userRepliedSmartWidgetYouIn': return ({required Object name}) => '${name} رد على ويدجت ذكية ذُكرت فيها';
-			case 'userRepliedPollYouIn': return ({required Object name}) => '${name} رد على استطلاع ذُكرت فيه';
-			case 'userRepliedNoteYouIn': return ({required Object name}) => '${name} رد على ملاحظة ذُكرت فيها';
-			case 'userRepliedPaidNoteYouIn': return ({required Object name}) => '${name} رد على ملاحظة مدفوعة ذُكرت فيها';
-			case 'userCommentedArticleYouIn': return ({required Object name}) => '${name} علق على مقال ذُكرت فيه';
-			case 'userCommentedCurationYouIn': return ({required Object name}) => '${name} علق على تنسيق ذُكرت فيه';
-			case 'userCommentedVideoYouIn': return ({required Object name}) => '${name} علق على فيديو ذُكرت فيه';
-			case 'userCommentedSmartWidgetYouIn': return ({required Object name}) => '${name} علق على ويدجت ذكية ذُكرت فيها';
-			case 'userCommentedPollYouIn': return ({required Object name}) => '${name} علق على استطلاع ذُكرت فيه';
-			case 'userCommentedNoteYouIn': return ({required Object name}) => '${name} علق على ملاحظة ذُكرت فيها';
-			case 'userCommentedPaidNoteYouIn': return ({required Object name}) => '${name} علق على ملاحظة مدفوعة ذُكرت فيها';
-			case 'userQuotedArticleYouIn': return ({required Object name}) => '${name} اقتبس مقال ذُكرت فيه';
-			case 'userQuotedCurationYouIn': return ({required Object name}) => '${name} اقتبس تنسيق ذُكرت فيه';
-			case 'userQuotedVideoYouIn': return ({required Object name}) => '${name} اقتبس فيديو ذُكرت فيه';
-			case 'userQuotedNoteYouIn': return ({required Object name}) => '${name} اقتبس ملاحظة ذُكرت فيها';
-			case 'userQuotedPaidNoteYouIn': return ({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذُكرت فيها';
-			case 'reactedWith': return ({required Object name, required Object reaction}) => '${name} تفاعل بـ ${reaction}';
-			case 'verifiedNoteSealed': return 'تم ختم ملاحظتك المُتحقق منها.';
-			case 'verifiedNoteRateSealed': return 'تم ختم ملاحظة مُتحقق منها قيّمتها.';
-			case 'userNewVideo': return ({required Object name}) => 'فيديو ${name}';
-			case 'titleData': return ({required Object description}) => 'العنوان: ${description}';
-			case 'checkoutVideo': return 'تحقق من فيديوي';
-			case 'yakihonneNotification': return 'إشعار YakiHonne';
-			case 'unknownVerifiedNote': return 'ملاحظة مُتحقق منها مجهولة';
-			case 'userReply': return ({required Object name}) => 'رد ${name}';
-			case 'userPaidNote': return ({required Object name}) => 'ملاحظة ${name} المدفوعة الجديدة';
-			case 'contentData': return ({required Object description}) => 'المحتوى: ${description}';
-			case 'checkoutPaidNote': return 'تحقق من ملاحظتي المدفوعة';
-			case 'userNewCuration': return ({required Object name}) => 'تنسيق ${name} الجديد';
-			case 'userNewArticle': return ({required Object name}) => 'مقال ${name} الجديد';
-			case 'userNewSmartWidget': return ({required Object name}) => 'ويدجت ${name} الذكية الجديدة';
-			case 'checkoutArticle': return 'تحقق من مقالي';
-			case 'checkoutCuration': return 'تحقق من تنسيقي';
-			case 'checkoutSmartWidget': return 'تحقق من ويدجتي الذكية';
-			case 'languagePreferences': return 'تفضيلات اللغة';
-			case 'contentTranslation': return 'ترجمة المحتوى';
-			case 'appLanguage': return 'لغة التطبيق';
-			case 'apiKeyRequired': return 'مفتاح API (مطلوب)';
-			case 'getApiKey': return 'الحصول على مفتاح API';
-			case 'seeTranslation': return 'رؤية الترجمة';
-			case 'seeOriginal': return 'رؤية الأصل';
-			case 'plan': return 'الخطة';
-			case 'free': return 'مجاني';
-			case 'pro': return 'احترافي';
-			case 'errorTranslating': return 'حدث خطأ أثناء ترجمة المحتوى.';
-			case 'errorMissingKey': return 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات -> تفضيلات اللغة للمزيد.';
-			case 'comingSoon': return 'قريباً';
-			case 'content': return 'المحتوى';
-			case 'expiresOn': return ({required Object date}) => 'ينتهي في: ${date}';
-			case 'collapseNote': return 'طي الملاحظة';
-			case 'reactions': return 'التفاعلات';
-			case 'reposts': return 'إعادة النشر';
-			case 'notifDisabled': return 'الإشعارات معطلة!';
-			case 'notifDisabledMessage': return 'الإشعارات معطلة لهذا النوع، يمكنك تفعيلها في إعدادات الإشعارات.';
-			case 'oneNotifOptionAvailable': return 'يجب أن يكون هناك خيار إشعار واحد متاح على الأقل.';
-			case 'readAll': return 'قراءة الكل';
-			case 'usernameTaken': return 'اسم المستخدم مأخوذ';
-			case 'usernameRequired': return 'اسم المستخدم مطلوب';
-			case 'deleteWalletConfirmation': return 'يرجى التأكد من حفظ عبارة اتصال NWC الخاصة بك بأمان، لأننا لا نستطيع المساعدة في استرداد المحافظ المفقودة.';
-			case 'unsupportedKind': return 'نوع غير مدعوم';
-			case 'analyticsCrashlytics': return 'Crashlytics';
-			case 'analyticsCache': return 'Crashlytics والذاكرة المؤقتة';
-			case 'analyticsCacheOn': return 'تم تشغيل Crashlytics.';
-			case 'analyticsCacheOff': return 'تم إيقاف Crashlytics.';
-			case 'shareNoUsage': return 'أنت لا تشارك أي crashlytics معنا في الوقت الحالي.';
-			case 'wantShareAnalytics': return 'تريد مشاركة crashlytics؟';
-			case 'yakihonneAnCr': return 'Crashlytics الخاصة بـ YakiHonne';
-			case 'crashlyticsTerms': return 'جمع crashlytics مجهولة الهوية أمر حيوي لتحسين مزايا تطبيقنا وتجربة المستخدم. يمكننا من تحديد تفضيلات المستخدمين وتحسين المزايا الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقاً أكثر تخصيصاً وكفاءة لمستخدمينا.';
-			case 'collectAnonymised': return 'نجمع crashlytics مجهولة الهوية لتحسين تجربة التطبيق.';
-			case 'linkWalletToProfile': return 'ربط المحفظة بملفك الشخصي';
-			case 'linkWalletToProfileDesc': return 'المحفظة المربوطة ستُستخدم لاستقبال الساتس';
-			case 'noWalletLinked': return 'ليس لديك محفظة مربوطة بملفك الشخصي فكر في ربط إحدى محافظك في القائمة أعلاه';
-			case 'addPoll': return 'إضافة استطلاع';
-			case 'browsePolls': return 'تصفح الاستطلاعات';
-			case 'maciPolls': return 'استطلاع MACI';
-			case 'beta': return 'تجريبي';
-			case 'choosePollType': return 'اختر نوع الاستطلاع';
-			case 'created': return 'تم الإنشاء';
-			case 'tallying': return 'العد';
-			case 'ended': return 'انتهى';
-			case 'closed': return 'مُغلق';
-			case 'voteResultsBy': return 'نتائج التصويت بواسطة';
-			case 'votes': return 'الأصوات';
-			case 'voiceCredit': return 'رصيد الصوت';
-			case 'viewDetails': return 'عرض التفاصيل';
-			case 'signup': return 'التسجيل';
-			case 'notDownloadProof': return 'لا يمكن تحميل الأدلة';
-			case 'name': return 'الاسم';
-			case 'status': return 'الحالة';
-			case 'circuit': return 'الدائرة';
-			case 'votingSystem': return 'نظام التصويت';
-			case 'proofSystem': return 'نظام الإثبات';
-			case 'gasStation': return 'محطة الغاز';
-			case 'totalFund': return '(إجمالي التمويل)';
-			case 'roundStart': return 'بداية الجولة';
-			case 'roundEnd': return 'نهاية الجولة';
-			case 'operator': return 'المشغل';
-			case 'contractCreator': return 'منشئ العقد';
-			case 'contractAddress': return 'عنوان العقد';
-			case 'blockHeight': return 'ارتفاع الكتلة';
-			case 'atContractCreation': return ({required Object number}) => '${number} (عند إنشاء العقد)';
-			case 'zkProofs': return 'أدلة ZK';
-			case 'downloadZkProofs': return 'تحميل الأدلة';
-			case 'walletConnectionString': return 'نص اتصال المحفظة';
-			case 'walletConnectionStringDesc': return 'يرجى التأكد من نسخ أو تصدير نص اتصال محفظتك بأمان. نحن لا نخزن هذه المعلومات، وإذا فُقدت، لا يمكن استردادها.';
-			case 'export': return 'تصدير';
-			case 'logout': return 'تسجيل الخروج';
-			case 'exportAndLogout': return 'تصدير وتسجيل الخروج';
-			case 'exportWalletsDesc': return 'يبدو أن لديك محافظ مربوطة بحسابك. يرجى تحميل أسرار محفظتك قبل تسجيل الخروج.';
-			case 'manageWallets': return 'إدارة المحافظ';
-			case 'roundDuration': return 'مدة الجولة';
-			case 'startAt': return ({required Object date}) => 'يبدأ في: ${date}';
-			case 'loginAction': return 'تسجيل الدخول';
-			case 'addPicture': return 'إضافة صورة';
-			case 'editPicture': return 'تعديل الصورة';
-			case 'exportKeys': return 'تصدير المفاتيح';
-			case 'mutedUser': return 'مستخدم مكتوم';
-			case 'unaccessibleContent': return 'محتوى غير قابل للوصول';
-			case 'mutedUserDesc': return 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لرؤية هذا المحتوى';
-			case 'commentHidden': return 'هذا التعليق مخفي';
-			case 'upcoming': return 'قادم';
-			case 'exportCredentials': return 'تصدير بيانات الاعتماد';
-			case 'loginToYakihonne': return 'تسجيل الدخول إلى Yakihonne';
-			case 'alreadyUser': return 'مستخدم بالفعل؟';
-			case 'createPoll': return 'إنشاء استطلاع';
-			case 'gasStationTotal': return 'محطة الغاز (إجمالي الممول)';
-			case 'gasStationRemaining': return 'محطة الغاز (الرصيد المتبقي)';
-			case 'paste': return 'لصق';
-			case 'manual': return 'يدوي';
-			case 'contacts': return 'جهات الاتصال';
-			case 'typeManualDesc': return 'اكتب عنوان Lightning أو فاتورة Lightning أو LNURL';
-			case 'useValidPaymentRequest': return 'يرجى استخدام طلب دفع صحيح';
-			case 'save': return 'حفظ';
-			case 'saveImageGallery': return 'تم تحميل الصورة إلى معرضك';
-			case 'errorSavingImage': return 'حدث خطأ أثناء تحميل الصورة';
-			case 'copyImageGallery': return 'تم نسخ الصورة إلى الحافظة';
-			case 'errorCopyImage': return 'حدث خطأ أثناء نسخ الصورة';
-			case 'scan': return 'مسح';
-			case 'invalidLightningAddress': return 'عنوان lightning غير صحيح';
-			case 'deleteAccountDesc': return 'أنت على وشك حذف حسابك، هل تريد المتابعة؟';
-			case 'paymentFailedInvoice': return 'فشل الدفع: تحقق من صحة هذه الفاتورة';
-			case 'validSatsAmount': return 'تعيين مبلغ ساتس صحيح';
-			case 'placeholder': return 'نائب';
-			case 'inputFieldCustomization': return 'تخصيص حقل الإدخال';
-			case 'addInputField': return 'إضافة حقل إدخال';
-			case 'addButton': return 'إضافة زر';
-			case 'selectImage': return 'اختيار صورة';
-			case 'moveLeft': return 'نقل يساراً';
-			case 'moveRight': return 'نقل يميناً';
-			case 'buttonRequired': return 'يجب أن يكون هناك زر واحد متاح على الأقل';
-			case 'missingInputDesc': return 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ويدجتك الذكية، يرجى إضافة حقل إدخال لتعمل الوظيفة بشكل صحيح.';
-			case 'countdown': return 'العد التنازلي';
-			case 'contentEndsAt': return 'المحتوى ينتهي في';
-			case 'countdownTime': return 'وقت العد التنازلي إجباري';
-			case 'contentEndsDate': return 'تاريخ انتهاء المحتوى إجباري';
-			case 'lnMandatory': return 'عنوان lightning إجباري';
-			case 'pubkeysMandatory': return 'ملف شخصي واحد على الأقل إجباري';
-			case 'buttonNoUrl': return 'روابط الأزرار إجبارية';
-			case 'shareWidgetImage': return 'مشاركة صورة الويدجت';
-			case 'inputField': return 'حقل الإدخال';
-			case 'noReplies': return 'لا توجد ردود';
-			case 'message': return 'رسالة';
-			case 'chat': return 'دردشة';
-			case 'onlyLettersNumber': return 'الحروف والأرقام فقط مسموحة';
-			case 'appCache': return 'ذاكرة التطبيق المؤقتة';
-			case 'cachedData': return 'البيانات المخزنة مؤقتاً';
-			case 'cachedMedia': return 'الوسائط المخزنة مؤقتاً';
-			case 'cacheCleared': return 'تم مسح الذاكرة المؤقتة';
-			case 'closeAppClearingCache': return 'من الأفضل إعادة تشغيل التطبيق عند مسح الذاكرة المؤقتة لضمان سريان جميع التغييرات وتشغيل التطبيق بسلاسة';
-			case 'appCacheNotice': return 'ذاكرة التطبيق المؤقتة تزداد في الحجم. لضمان الأداء السلس، يُنصح بمسح البيانات القديمة.';
-			case 'manageCache': return 'إدارة الذاكرة المؤقتة';
-			case 'filterByTime': return 'التصفية حسب الوقت';
-			case 'allTime': return 'كل الأوقات';
-			case 'oneMonth': return 'شهر واحد';
-			case 'threeMonths': return '3 أشهر';
-			case 'sixMonths': return '6 أشهر';
-			case 'oneYear': return 'سنة واحدة';
-			case 'defaultZapAmount': return 'مبلغ الزاب الافتراضي';
-			case 'oneTapZap': return 'تفعيل زاب بنقرة واحدة';
-			case 'verify': return 'التحقق';
-			case 'reset': return 'إعادة تعيين';
-			case 'appCannotVerified': return 'لا يمكن التحقق من التطبيق أو أنه غير صحيح';
-			case 'useValidAppUrl': return 'استخدم رابط تطبيق صحيح';
-			case 'app': return 'التطبيق';
-			case 'userNotConnected': return 'المستخدم غير متصل';
-			case 'userCannotSignEvent': return 'هذا المستخدم لا يستطيع توقيع الأحداث.';
-			case 'invalidEvent': return 'حدث غير صحيح';
-			case 'eventCannotBeSigned': return 'لا يمكن توقيع الحدث';
-			case 'signEvent': return 'توقيع الحدث';
-			case 'sign': return 'توقيع';
-			case 'signPublish': return 'توقيع ونشر';
-			case 'signEventDes': return 'أنت على وشك توقيع الحدث التالي';
-			case 'enableAutomaticSigning': return 'التوقيع التلقائي';
-			case 'tools': return 'الأدوات';
-			case 'searchSmartWidgets': return 'البحث عن ويدجت ذكية';
-			case 'noToolsAvailable': return 'لا توجد أدوات متاحة';
-			case 'underMaintenance': return 'تحت الصيانة';
-			case 'smartWidgetMaintenance': return 'الويدجت الذكية معطلة للصيانة. نحن نصلحها وستعود قريباً!';
-			case 'mySavedTools': return 'أدواتي المحفوظة';
-			case 'availableTools': return 'الأدوات المتاحة';
-			case 'remove': return 'إزالة';
-			case 'youHaveNoTools': return 'ليس لديك أدوات';
-			case 'discoverTools': return 'اكتشف الأدوات المنشورة لمساعدتك في إنشاء المحتوى';
-			case 'addWidgetTools': return 'إضافة أدوات ويدجت';
-			case 'widgetSearch': return 'البحث عن ويدجت';
-			case 'widgetSearchDesc': return 'البحث عن ويدجت ذكية منشورة وما صنعه الناس';
-			case 'getInspired': return 'احصل على الإلهام';
-			case 'getInspirtedDesc': return 'اطلب من الذكاء الاصطناعي مساعدتك في بناء ويدجتك الذكية';
-			case 'trySearch': return 'جرب طرق بحث مختلفة';
-			case 'typeForCommands': return 'اكتب / للأوامر';
-			case 'loadMore': return 'تحميل المزيد';
-			case 'searchingFor': return ({required Object name}) => 'البحث عن: ${name}';
-			case 'playground': return 'ساحة اللعب';
-			case 'typeKeywords': return 'اكتب كلمات مفتاحية (مثال: كلمة1، كلمة2..)';
-			case 'enableGossip': return 'نموذج Gossip';
-			case 'enableGossipDesc': return 'نموذج Gossip معطل افتراضياً. يمكنك تفعيله في الإعدادات تحت إشراف المحتوى.';
-			case 'enableExternalBrowser': return 'استخدام متصفح خارجي';
-			case 'restartAppTakeEffect': return 'أعد تشغيل التطبيق لتسري العملية';
-			case 'tips': return 'نصائح';
-			case 'docs': return 'المستندات';
-			case 'tryMiniApp': return 'جرب تطبيقك المصغر بالاختبار العملي والتفاعلي.';
-			case 'exploreOurRepos': return 'استكشف مستودعاتنا أو تحقق من مستندات الويدجت الذكية.';
-			case 'bringAi': return 'نحن نجلب الذكاء الاصطناعي!';
-			case 'bringAiDesc': return 'نحن نصنع مساعد ذكاء اصطناعي لتبسيط عملك مع الويدجت القابلة للبرمجة وتطوير التطبيقات المصغرة—ترقبوا!';
-			case 'notesCount': return ({required Object number}) => '${number} ملاحظة(ات)';
-			case 'mixedContentCount': return ({required Object number}) => '${number} محتوى';
-			case 'noApp': return 'لم يتم العثور على تطبيق مناسب لفتح الملف المُصدَّر';
-			case 'andMore': return ({required Object number}) => 'و ${number} آخر(ين)';
-			case 'addFilter': return 'إضافة مرشح';
-			case 'entitleFilter': return 'عنوان المرشح';
-			case 'includedWords': return 'الكلمات المُضمنة';
-			case 'excludedWords': return 'الكلمات المُستبعدة';
-			case 'hideSensitiveContent': return 'إخفاء المحتوى الحساس';
-			case 'mustIncludeThumbnail': return 'يجب تضمين صورة مصغرة';
-			case 'forArticles': return 'للمقالات';
-			case 'forVideos': return 'للفيديوهات';
-			case 'forCurations': return 'للتنسيقات';
-			case 'articleMinWords': return 'الحد الأدنى لعدد كلمات المحتوى';
-			case 'showOnlyArticleMedia': return 'إظهار المقالات التي تحتوي على وسائط فقط';
-			case 'showOnlyNotesMedia': return 'إظهار الملاحظات التي تحتوي على وسائط فقط';
-			case 'curationsType': return 'نوع التنسيقات';
-			case 'minItemCount': return 'الحد الأدنى لعدد العناصر';
-			case 'addWord': return 'إضافة كلمة مناسبة';
-			case 'wordNotInIncluded': return 'تأكد من أن الكلمة ليست في الكلمات المُضمنة';
-			case 'wordNotInExcluded': return 'تأكد من أن الكلمة ليست في الكلمات المُستبعدة';
-			case 'fieldRequired': return 'الحقل مطلوب';
-			case 'filterAdded': return 'تم إضافة المرشح';
-			case 'filterUpdated': return 'تم تحديث المرشح';
-			case 'filterDeleted': return 'تم حذف المرشح';
-			case 'filters': return 'المرشحات';
-			case 'contentFeed': return 'تدفق المحتوى';
-			case 'communityFeed': return 'تدفق المجتمع';
-			case 'relaysFeed': return 'تدفق المرحلات';
-			case 'marketplaceFeed': return 'تدفق السوق';
-			case 'addYourFeed': return 'أضف تدفقك المفضل';
-			case 'myList': return 'قائمتي';
-			case 'allFreeFeeds': return 'جميع التدفقات المجانية';
-			case 'noRelays': return 'لا توجد مرحلات';
-			case 'addRelays': return 'أضف قائمة مرحلاتك للاستمتاع بتدفق نظيف ومخصص';
-			case 'adjustYourFeedList': return 'اضبط قائمة تدفقك';
-			case 'addRelayUrl': return 'إضافة رابط المرحل';
-			case 'feedOptionEnabled': return 'يجب تفعيل خيار تدفق واحد على الأقل';
-			case 'feedSetUpdate': return 'تم تحديث مجموعة التدفق';
-			case 'global': return 'عالمي';
-			case 'fromNetwork': return 'من الشبكة';
-			case 'top': return 'الأعلى';
-			case 'showFollowingList': return 'تدفقك الحالي مبني على قائمة متابعة شخص آخر، ابدأ في متابعة أشخاص لتخصيص تدفقك حسب تفضيلك';
-			case 'from': return 'من';
-			case 'to': return 'إلى';
-			case 'dayMonthYear': return 'يوم/شهر/سنة';
-			case 'fromDateMessage': return 'تاريخ \'من\' يجب أن يكون سابقاً لتاريخ \'إلى\'';
-			case 'toDateMessage': return 'تاريخ \'إلى\' يجب أن يكون لاحقاً لتاريخ \'من\'';
-			case 'noResults': return 'لا توجد نتائج';
-			case 'noResultsFilterMessage': return 'يبدو أنك تطبق مرشحاً مخصصاً، يرجى ضبط المعاملات والتواريخ للحصول على المزيد من البيانات';
-			case 'noResultsNoFilterMessage': return 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معاملات مرشح مختلفة';
-			case 'addToNotes': return 'إضافة للملاحظات';
-			case 'addToDiscover': return 'إضافة للاكتشاف';
-			case 'shareRelayContent': return 'مشاركة محتوى المرحل';
-			case 'shareRelayUrl': return 'مشاركة رابط المرحل';
-			case 'basic': return 'أساسي';
-			case 'privateMessages': return 'الرسائل الخاصة';
-			case 'pushNotifications': return 'الإشعارات الفورية';
-			case 'repliesView': return 'عرض الردود';
-			case 'threadView': return 'خيط';
-			case 'boxView': return 'صندوق';
-			case 'viewAs': return 'عرض كـ';
-			case 'feedSettings': return 'إعدادات التدفق';
-			case 'appliedFilterDesc': return 'هذه الملاحظة مخفية بسبب المرشح المطبق حالياً.';
-			case 'showNote': return 'إظهار الملاحظة';
-			case 'allMedia': return 'جميع الوسائط';
-			case 'searchInNostr': return 'البحث في نوستر';
-			case 'findPeopleContent': return 'البحث عن أشخاص وملاحظات ومحتوى';
-			case 'activeService': return 'الخدمة النشطة';
-			case 'regularServers': return 'الخوادم العادية';
-			case 'blossomServers': return 'خوادم BLOSSOM';
-			case 'mirrorAllServer': return 'مرآة جميع الخوادم';
-			case 'mainServer': return 'الخادم الرئيسي';
-			case 'select': return 'اختيار';
-			case 'noServerFound': return 'لم يتم العثور على خادم';
-			case 'serverExists': return 'الخادم موجود بالفعل في قائمتك';
-			case 'invalidUrl': return 'تنسيق رابط غير صحيح';
-			case 'serverPath': return 'مسار الخادم';
-			case 'errorAddingBlossom': return 'حدث خطأ أثناء إضافة خادم blossom';
-			case 'errorSelectBlossom': return 'حدث خطأ أثناء اختيار خادم blossom';
-			case 'errorDeleteBlossom': return 'حدث خطأ أثناء حذف خادم blossom';
-			case 'wotConfig': return 'إعداد شبكة الثقة';
-			case 'wot': return 'شبكة الثقة';
-			case 'wotThreshold': return 'عتبة شبكة الثقة';
-			case 'postActions': return 'إجراءات المنشور';
-			case 'enabledFor': return 'مُفعل لـ';
-			case 'dmRelayTitle': return 'مرحلات الرسائل الخاصة غير مُعدة!';
-			case 'dmRelayDesc': return 'حدث قائمة مرحلاتك وفقاً لذلك. ';
-			case 'youFollow': return 'أنت تتابع';
-			case 'quotaLimit': return 'لقد تجاوزت حد الحصة اليومي';
-			case 'alwaysUseExternal': return 'استخدم دائماً زابس المحفظة الخارجية';
-			case 'alwaysUseExternalDesc': return 'استخدم تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
-			case 'unreachableExternalWallet': return 'محفظة خارجية غير قابلة للوصول';
-			case 'secureStorageDesc': return 'مفاتيحك مُخزنة بأمان على جهازك ولا تُشارك معنا أو مع أي شخص آخر أبداً.';
-			case 'pubkeySharedDesc': return 'آمن للمشاركة - هذا يُعرفك على نوستر.';
-			case 'privKeyDesc': return 'احتفظ به خاصاً - احفظه بأمان للوصول لحسابك في مكان آخر.';
-			case 'settingsKeysDesc': return 'إدارة مفاتيح نوستر لهوية الشبكة وتوقيع الأحداث ومصادقة المنشورات.';
-			case 'settingsRelaysDesc': return 'إعداد اتصالات مرحل نوستر لتخزين وتوزيع الأحداث.';
-			case 'settingsCustomizationDesc': return 'تخصيص عرض تدفق YakiHonne والإيماءات والمعاينات والتفضيلات لتجربة نوستر أفضل.';
-			case 'settingsNotificationsDesc': return 'التحكم في الإشعارات للرسائل والإشارات والتفاعلات وأحداث نوستر الأخرى.';
-			case 'settingsContentDesc': return 'التحكم في تفاعلات المحتوى وإعدادات الخصوصية ومعالجة الوسائط وتفضيلات الرسائل على نوستر.';
-			case 'settingsLanguageDesc': return 'اختر لغتك المفضلة لواجهة YakiHonne وترجمة المحتوى.';
-			case 'settingsWalletDesc': return 'ربط وإدارة محافظ Bitcoin Lightning لإرسال/استقبال الزابس بمبالغ قابلة للتخصيص وتكامل خارجي.';
-			case 'settingsAppearanceDesc': return 'تخصيص المظهر البصري لـ YakiHonne ليطابق تفضيلاتك وراحة المشاهدة.';
-			case 'settingsCacheDesc': return 'إدارة مراقبة أداء التطبيق وتقارير الأخطاء وتحسين التخزين للتشغيل السلس.';
-			case 'addQuickRelayDesc': return 'إضافة مرحل جديد بسرعة عبر إدخال رابطه.';
-			case 'fewerRelays': return 'مرحلات مستقرة أقل = أداء أفضل ومزامنة أسرع.';
-			case 'greenDotsDesc': return 'النقاط الخضراء تُظهر الاتصالات النشطة.';
-			case 'redDotsDesc': return 'النقاط الحمراء تُظهر المرحلات غير المتصلة.';
-			case 'greyDotsDesc': return 'النقاط الرمادية تُظهر المرحلات المعلقة.';
-			case 'homeFeedCustomDesc': return 'اختر نمط عرض الردود (صندوق أو خيط) وإدارة تفضيلات الاقتراحات للأشخاص والمحتوى والاهتمامات.';
-			case 'NewPostDesc': return 'اختر ما يحدث عند الضغط المطول أثناء إنشاء المنشورات (مُعين حالياً على ملاحظة).';
-			case 'profilePreviewDesc': return 'إظهار معاينات الملف الشخصي للمستخدم عند النقر على أسماء المستخدمين في تدفقك.';
-			case 'collapseNoteDesc': return 'تصغير المنشورات الطويلة تلقائياً للحفاظ على تدفقك نظيفاً وقابلاً للقراءة.';
-			case 'pushNotificationsDesc': return 'احصل على تنبيهات فورية على جهازك. يركز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة';
-			case 'privateMessagesDesc': return 'احصل على تنبيه للرسائل المباشرة الجديدة والمحادثات الخاصة.';
-			case 'followingDesc': return 'احصل على إشعار عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.';
-			case 'mentionsDesc': return 'احصل على تنبيه عندما يذكرك شخص أو يرد على منشوراتك.';
-			case 'repostsDesc': return 'احصل على تنبيه عندما يشارك أو يعيد نشر شخص محتواك.';
-			case 'reactionsDesc': return 'احصل على إشعار عندما يعجب أو يتفاعل شخص مع منشوراتك.';
-			case 'zapDesc': return 'احصل على إشعار عندما تستقبل إكراميات Bitcoin (زابس) على منشوراتك.';
-			case 'muteListDesc': return 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تدفقك.';
-			case 'mediaUploaderDesc': return 'اختر أي خدمة ترفع صورك وملفات الوسائط.';
-			case 'autoSignDesc': return 'توقيع الأحداث المطلوبة من التطبيقات المصغرة (ويدجت ذكية للإجراء/الأداة) تلقائياً دون تأكيد يدوي في كل مرة.';
-			case 'gossipDesc': return 'إدارة مرحل متطورة تجد منشورات متابعيك تلقائياً عبر مرحلات مختلفة مع تقليل الاتصالات والتكيف مع المرحلات غير المتصلة.';
-			case 'useExternalBrowsDesc': return 'فتح الروابط في تطبيق المتصفح الافتراضي بدلاً من المتصفح المدمج.';
-			case 'secureDmDesc': return 'استخدام أحدث معيار رسائل خاصة (NIP-17) مع تشفير متقدم. عطل لاستخدام تنسيق NIP-4 القديم للتوافق.';
-			case 'wotConfigDesc': return 'آلية ثقة لامركزية تستخدم شهادات اجتماعية لإنشاء سمعة ضمن بروتوكول نوستر.';
-			case 'appLangDesc': return 'اختر اللغة لواجهة YakiHonne والقوائم والأزرار.';
-			case 'contentTransDesc': return 'اختر خدمة الترجمة للمنشورات بلغات أجنبية.';
-			case 'planDesc': return 'مستوى خطة الترجمة الحالية وحدود الاستخدام.';
-			case 'manageWalletsDesc': return 'إضافة وتنظيم محافظ Lightning لإرسال واستقبال زابس Bitcoin على نوستر.';
-			case 'defaultZapDesc': return 'تعيين مبلغ Bitcoin الافتراضي (بالساتس) عند إرسال زابس سريعة للمنشورات.';
-			case 'enableZapDesc': return 'نقرة واحدة ترسل المبلغ الافتراضي فوراً. النقر المزدوج يفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، النقر المزدوج يرسل المبلغ الافتراضي.';
-			case 'externalWalletDesc': return 'استخدام تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
-			case 'fontSizeDesc': return 'ضبط حجم النص في جميع أنحاء التطبيق لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.';
-			case 'appThemeDesc': return 'التبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.';
-			case 'crashlyticsDesc': return 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة تحسين الأداء وإصلاح الأخطاء. نستخدم تحليلات Umami لتحسين تجربتك. اختر عدم المشاركة في أي وقت.';
-			case 'showSuggDesc': return 'عرض توصيات المحتوى العامة في تدفقك.';
-			case 'showSuggPeople': return 'إظهار المستخدمين الموصى بهم للمتابعة بناءً على نشاطك.';
-			case 'showSuggContent': return 'عرض المنشورات والمقالات الموصى بها في تدفقك.';
-			case 'showSuggInterests': return 'إظهار توصيات الموضوعات والاهتمامات للاكتشاف.';
-			case 'striveToMake': return 'نسعى لتحقيق أفضل ما في نوستر، ادعمنا أدناه أو أرسل لنا تعليقاتك القيمة: زاب، رسائل مباشرة، github.';
-			case 'errorAmber': return 'لقد رفضت أو أنك متصل بالفعل بـ Amber';
-			case 'useOneRelay': return 'يجب أن تبقي على الأقل وسيط واحد متصل';
-			case 'automaticPurge': return 'تنظيف تلقائي للذاكرة المؤقتة';
-			case 'automaticPurgeDesc': return 'مسح ذاكرة التطبيق المؤقتة تلقائيًا عند وصولها إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام المفرط للتخزين.';
-			case 'customServices': return 'خدمات مخصصة';
-			case 'defaultServices': return 'الخدمات الافتراضية';
-			case 'addService': return 'إضافة خدمة';
-			case 'customServicesDesc': return 'الخدمات المخصصة المتوفرة التي أضفتها.';
-			case 'urlRequired': return 'عنوان URL مطلوب';
-			case 'serviceAdded': return 'تمت إضافة الخدمة';
-			case 'showRawEvent': return 'عرض الحدث الخام';
-			case 'rawEventData': return 'بيانات الحدث الخام';
-			case 'copyRawEventData': return 'تم نسخ بيانات الحدث الخام! 👏';
-			case 'kind': return 'النوع';
-			case 'shortNote': return 'ملاحظة قصيرة';
-			case 'postedOnDate': return 'نُشر في';
-			case 'showMore': return '... عرض المزيد';
-			case 'accountDeleted': return 'تم حذف هذا الحساب ولم يعد من الممكن الوصول إليه.';
-			case 'ok': return 'حسناً';
-			case 'redeem': return 'استبدال';
-			case 'redeemCode': return 'استبدال الرمز';
-			case 'redeemAndEarn': return 'استبدال واربح';
-			case 'redeemingFailed': return 'فشل الاستبدال';
-			case 'redeemInProgress': return 'جارٍ استبدال الرمز...';
-			case 'redeemCodeDesc': return 'أدخل الرمز لاستبداله';
-			case 'missingCode': return 'الرمز مفقود';
-			case 'missingPubkey': return 'المفتاح العام مفقود';
-			case 'invalidPubkey': return 'المفتاح العام غير صالح';
-			case 'missingLightningAddress': return 'عنوان لايتنينغ مفقود';
-			case 'codeNotFound': return 'الرمز غير موجود';
-			case 'redeemCodeRequired': return 'رمز الاستبدال مطلوب';
-			case 'redeemCodeInvalid': return 'رمز الاستبدال غير صالح';
-			case 'codeBeingRedeemed': return 'يتم الآن استبدال الرمز. إذا لم يكتمل بنجاح، يرجى المحاولة مرة أخرى قريبًا.';
-			case 'redeemCodeSuccess': return 'تم استبدال الرمز بنجاح';
-			case 'redeemFailed': return 'تعذر استبدال الرمز، يرجى المحاولة لاحقًا.';
-			case 'codeAlreadyRedeemed': return 'تم استبدال الرمز بالفعل';
-			case 'satsEarned': return ({required Object amount}) => '+${amount} ساتوشي مكتسبة.';
-			case 'selectReceivingWallet': return 'اختر المحفظة المستلمة';
-			case 'redeemCodeMessage': return 'احصل على ساتوشي مجانية باستخدام رموز YakiHonne — فقط أدخل الرمز وزد رصيدك فورًا.';
-			case 'scanCode': return 'مسح الرمز';
-			case 'enterCode': return 'أدخل الرمز';
-			case 'errorSharingMedia': return 'حدث خطأ أثناء مشاركة الوسائط';
-			case 'open': return 'فتح';
-			case 'openUrl': return 'فتح الرابط';
-			case 'openUrlDesc': return ({required Object url}) => 'هل تريد فتح "${url}"؟';
-			case 'openUrlPrompt': return 'تأكيد فتح الرابط';
-			case 'openUrlPromptDesc': return 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.';
-			case 'whatsNew': return 'ما الجديد';
-			case 'appCustom': return 'تخصيص التطبيق';
-			case 'poll': return 'استطلاع';
-			case 'pendingEvents': return 'الأحداث المعلقة';
-			case 'pendingEventsDesc': return 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.';
-			case 'singleColumnFeed': return 'عرض بعمود واحد';
-			case 'singleColumnFeedDesc': return 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.';
-			case 'waitingPayment': return 'في انتظار الدفع';
-			case 'copyId': return 'نسخ المعرف';
-			case 'idCopied': return 'تم نسخ المعرف! 👏';
-			case 'republish': return 'إعادة النشر';
-			case 'useRelayRepublish': return 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.';
-			case 'republishSucces': return 'تمت إعادة نشر الحدث بنجاح!';
-			case 'errorRepublishEvent': return 'حدث خطأ أثناء إعادة نشر الحدث';
-			case 'remoteSigner': return 'موقّع عن بُعد';
-			case 'amber': return 'Amber';
-			case 'useUrlBunker': return 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك';
-			case 'or': return 'أو';
-			case 'messagesDisabled': return 'الرسائل معطلة';
-			case 'messagesDisabledDesc': return 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.';
-			case 'sharedOn': return ({required Object date}) => 'تمت المشاركة في ${date}';
-			case 'shareAsImage': return 'مشاركة كصورة';
-			case 'viewOptions': return 'خيارات العرض';
-			case 'feedCustomization': return 'تخصيص الخلاصة';
-			case 'defaultReaction': return 'التفاعل الافتراضي';
-			case 'defaultReactionDesc': return 'حدد تفاعلًا افتراضيًا للرد على المنشورات.';
-			case 'oneTapReaction': return 'تفعيل التفاعل بنقرة واحدة';
-			case 'oneTapReactionDesc': return 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.';
-			case 'sendingTo': return 'يتم الإرسال إلى';
-			case 'shareEmptyUsers': return 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع';
-			case 'publishOnly': return 'النشر فقط إلى';
-			case 'protectedEvent': return 'حدث محمي';
-			case 'protectedEventDesc': return 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.';
-			case 'browseRelay': return 'تصفح المرسل';
-			case 'addFavorite': return 'إضافة إلى المفضلة';
-			case 'removeFavorite': return 'إزالة من المفضلة';
-			case 'collections': return 'المجموعات';
-			case 'online': return 'متصل';
-			case 'offline': return 'غير متصل';
-			case 'network': return 'الشبكة';
-			case 'followedBy': return ({required Object number}) => 'يتابعك ${number}';
-			case 'favoredBy': return ({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}';
-			case 'requiredAuthentication': return 'يتطلب المصادقة';
-			case 'relayOrbits': return 'دوائر المرسل';
-			case 'relayOrbitsDesc': return 'تصفح واستكشف خلاصات المرسلين';
-			case 'people': return 'الأشخاص';
-			case 'youNotConnected': return 'أنت غير متصل';
-			case 'youNotConnectedDesc': return 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك';
-			case 'checkingRelayConnectivity': return 'جاري التحقق من اتصال المرسل';
-			case 'unreachableRelay': return 'مرسل غير قابل للوصول';
-			case 'engageWithUsers': return 'تفاعل للتوسّع';
-			case 'engageWithUsersDesc': return 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.';
-			case 'loadingChatHistory': return 'جاري تحميل سجل المحادثة...';
-			case 'contentActionsOrder': return 'ترتيب إجراءات المحتوى';
-			case 'contentActionsOrderDesc': return 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.';
-			case 'quotes': return 'اقتباسات';
-			case 'eventLoading': return 'جارٍ تحميل الحدث...';
-			case 'loadMessages': return 'تحميل الرسائل';
-			case 'messagesNotLoaded': return 'لم يتم تحميل الرسائل';
-			case 'messagesNotLoadedDesc': return 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
-			case 'noteLoading': return 'جارٍ تحميل الملاحظة...';
-			case 'hideNonFollowedMedia': return 'إخفاء الوسائط من غير المتابعين';
-			case 'hideNonFollowedMediaDesc': return 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.';
-			case 'clickToView': return 'اضغط للعرض';
-			case 'relayFeedListEmpty': return 'قائمة موجز المبدلات فارغة';
-			case 'relayFeedListEmptyDesc': return 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.';
-			case 'addRelay': return 'أضف مبدلات';
-			case 'hiddenContent': return 'محتوى مخفي';
-			case 'hiddenContentDesc': return 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.';
-			case 'enabledActions': return 'الإجراءات المفعّلة';
-			case 'enabledActionsDesc': return 'لا توجد إجراءات مفعّلة متاحة.';
-			default: return null;
-		}
+		return _flatMapFunction$0(path)
+			?? _flatMapFunction$1(path)
+			?? _flatMapFunction$2(path);
+	}
+
+	dynamic _flatMapFunction$0(String path) {
+		return switch (path) {
+			'addNewBookmark' => 'لم يتم العثور على قائمة مفضلة، جرب إضافة واحدة!',
+			'setBookmarkTitleDescription' => 'تعيين عنوان ووصف لقائمة المفضلة الخاصة بك.',
+			'title' => 'العنوان',
+			'description' => 'الوصف',
+			'descriptionOptional' => 'الوصف (اختياري)',
+			'bookmarkLists' => 'قوائم المفضلة',
+			'submit' => 'إرسال',
+			'addBookmarkList' => 'إضافة قائمة مفضلة',
+			'submitBookmarkList' => 'إرسال قائمة المفضلة',
+			'next' => 'التالي',
+			'saveDraft' => 'حفظ المسودة',
+			'deleteDraft' => 'حذف المسودة',
+			'publish' => 'نشر',
+			'smHaveOneWidget' => 'يجب أن يحتوي الويدجت الذكي على مكون واحد على الأقل.',
+			'smHaveTitle' => 'يجب أن يحتوي الويدجت الذكي على عنوان على الأقل',
+			'whatsOnYourMind' => 'ما الذي تفكر فيه؟',
+			'sensitiveContent' => 'هذا محتوى حساس',
+			'addYourTopics' => 'أضف مواضيعك',
+			'article' => 'مقال',
+			'articles' => 'مقالات',
+			'video' => 'فيديو',
+			'videos' => 'فيديوهات',
+			'curation' => 'تنسيق',
+			'curations' => 'تنسيقات',
+			'thumbnailPreview' => 'معاينة الصورة المصغرة',
+			'selectAndUploadLocaleImage' => 'اختر وارفع صورة محلية',
+			'issueOccuredSelectingImage' => 'حدثت مشكلة أثناء اختيار الصورة.',
+			'imageUploadHistory' => 'تاريخ رفع الصور',
+			'noImageHistory' => 'لم يتم العثور على تاريخ صور',
+			'cancel' => 'إلغاء',
+			'uploadAndUse' => 'رفع واستخدام',
+			'publishRemoveDraft' => 'نشر وحذف المسودة',
+			'clearChat' => 'مسح المحادثة',
+			'noDataFromGpt' => 'لا توجد بيانات لعرضها من GPT.',
+			'askMeSomething' => 'اسألني شيئاً!',
+			'copy' => 'نسخ',
+			'textSuccesfulyCopied' => 'تم نسخ النص بنجاح!',
+			'insertText' => 'إدراج النص',
+			'searchContentByTitle' => ({required Object type}) => 'البحث عن ${type} بالعنوان',
+			'noContentCanBeFound' => ({required Object type}) => 'لم يتم العثور على ${type}',
+			'noContentBelongToCuration' => ({required Object type}) => 'لا يوجد ${type} ينتمي لهذا التنسيق',
+			'byPerson' => ({required Object name}) => 'بواسطة ${name}',
+			'allRelays' => 'جميع المرحلات',
+			'myArticles' => 'مقالاتي',
+			'myVideos' => 'فيديوهاتي',
+			'curationType' => 'نوع التنسيق',
+			'update' => 'تحديث',
+			'invalidInvoiceLnurl' => 'تأكد من تعيين فاتورة أو lnurl صحيحة',
+			'addValidUrl' => 'تأكد من إضافة رابط صحيح',
+			'layoutCustomization' => 'تخصيص التخطيط',
+			'duoLayout' => 'تخطيط مزدوج',
+			'monoLayout' => 'تخطيط مفرد',
+			'warning' => 'تحذير',
+			'switchToMonolayout' => 'أنت تنتقل إلى تخطيط مفرد بينما لديك عناصر على كلا الجانبين، هذا سيمحو محتوى الحاوية، هل تريد المتابعة؟',
+			'erase' => 'محو',
+			'textCustomization' => 'تخصيص النص',
+			'writeYourText' => 'اكتب نصك',
+			'size' => 'الحجم',
+			'weight' => 'الوزن',
+			'color' => 'اللون',
+			'videoCustomization' => 'تخصيص الفيديو',
+			'videoUrl' => 'رابط الفيديو',
+			'zapPollCustomization' => 'تخصيص استطلاع الزاب',
+			'contentTextColor' => 'لون نص المحتوى',
+			'optionTextColor' => 'لون نص الخيار',
+			'optionBackgroundColor' => 'لون خلفية الخيار',
+			'fillColor' => 'لون التعبئة',
+			'imageCustomization' => 'تخصيص الصورة',
+			'imageUrl' => 'رابط الصورة',
+			'imageAspectRatio' => 'نسبة أبعاد الصورة',
+			'buttonCustomization' => 'تخصيص الزر',
+			'buttonText' => 'نص الزر',
+			'type' => 'النوع',
+			'useInvoice' => 'استخدام الفاتورة',
+			'invoice' => 'فاتورة',
+			'lightningAddress' => 'عنوان Lightning',
+			'selectUserToZap' => 'اختر مستخدماً لزابه (اختياري)',
+			'zapPollNevent' => 'Nevent استطلاع الزاب',
+			'textColor' => 'لون النص',
+			'buttonColor' => 'لون الزر',
+			'url' => 'الرابط',
+			'invoiceOrLN' => 'فاتورة أو عنوان Lightning',
+			'youtubeUrl' => 'رابط يوتيوب',
+			'telegramUrl' => 'رابط تليجرام',
+			'xUrl' => 'رابط X',
+			'discordUrl' => 'رابط ديسكورد',
+			'nostrScheme' => 'مخطط نوستر',
+			'containerCustomization' => 'تخصيص الحاوية',
+			'backgroundColor' => 'لون الخلفية',
+			'borderColor' => 'لون الحدود',
+			'value' => 'القيمة',
+			'pickYourComponent' => 'اختر مكونك',
+			'selectComponent' => 'اختر المكون المناسب وعدله.',
+			'text' => 'نص',
+			'image' => 'صورة',
+			'button' => 'زر',
+			'summaryOptional' => 'ملخص (اختياري)',
+			'smartWidgetsDrafts' => 'مسودات الويدجت الذكية',
+			'noSmartWidget' => 'لم يتم العثور على مسودات ويدجت ذكية',
+			'noSmartWidgetCanBeFound' => 'لم يتم العثور على ويدجت ذكية',
+			'smartWidgetConvention' => 'هذا الويدجت الذكي لا يتبع الاتفاقية المتفق عليها.',
+			'monolayoutRequired' => 'التخطيط المفرد مطلوب',
+			'zapPoll' => 'استطلاع زاب',
+			'layout' => 'التخطيط',
+			'container' => 'حاوية',
+			'edit' => 'تعديل',
+			'moveUp' => 'نقل للأعلى',
+			'moveDown' => 'نقل للأسفل',
+			'delete' => 'حذف',
+			'editToAddZapPoll' => 'تعديل لإضافة استطلاع زاب',
+			'options' => 'خيارات',
+			'smartWidgetBuilder' => 'منشئ الويدجت الذكية',
+			'startBuildingSmartWidget' => 'ابدأ في البناء وتخصيص ويدجتك الذكية للاستخدام على شبكة نوستر',
+			'blankWidget' => 'ويدجت فارغة',
+			'myDrafts' => 'مسوداتي',
+			'templates' => 'قوالب',
+			'communityPolls' => 'استطلاعات المجتمع',
+			'myPolls' => 'استطلاعاتي',
+			'noPollsCanBeFound' => 'لم يتم العثور على استطلاعات',
+			'totalNumber' => ({required Object number}) => 'المجموع: ${number}',
+			'smartWidgetsTemplates' => 'قوالب الويدجت الذكية',
+			'noTemplatesCanBeFound' => 'لم يتم العثور على قوالب في هذه الفئة.',
+			'useTemplate' => 'استخدام القالب',
+			'pickYourVideo' => 'اختر فيديوك',
+			'canUploadPastLink' => 'يمكنك الرفع أو لصق رابط أو اختيار nevent نوع 1063 لفيديوك.',
+			'gallery' => 'المعرض',
+			'link' => 'رابط',
+			'fileSharing' => 'مشاركة الملفات',
+			'setUpYourLink' => 'إعداد رابطك',
+			'setUpYourNevent' => 'إعداد nevent الخاص بك',
+			'pasteYourLink' => 'الصق رابطك وأرسله',
+			'pasteKind1063' => 'الصق nevent نوع 1063 وأرسله',
+			'addUrlNevent' => 'أضف رابط/nevent مناسب',
+			'nevent' => 'nevent',
+			'addProperUrlNevent' => 'أضف رابط/nevent مناسب',
+			'horizontalVideo' => 'فيديو أفقي',
+			'preview' => 'معاينة',
+			'writeSummary' => 'اكتب ملخصاً',
+			'uploadImage' => 'رفع صورة',
+			'addToCuration' => 'إضافة للتنسيق',
+			'submitCuration' => 'إرسال التنسيق',
+			'selectValidUrlImage' => 'اختر رابط صورة صحيح.',
+			'noCurationsFound' => 'لم يتم العثور على تنسيقات. جرب إنشاء واحد لتتمكن من إضافة محتوى إليه.',
+			'availableArticles' => ({required Object number}) => '${number} مقال(ات) متاح(ة)',
+			'availableVideos' => ({required Object number}) => '${number} فيديو(هات) متاح(ة)',
+			'articlesNum' => ({required Object number}) => '${number} مقال(ات)',
+			'videosNum' => ({required Object number}) => '${number} فيديو(هات)',
+			'articlesAvailableCuration' => 'المقالات المتاحة في هذا التنسيق',
+			'videosAvailableCuration' => 'الفيديوهات المتاحة في هذا التنسيق',
+			'articleAddedCuration' => 'تم إضافة المقال إلى تنسيقك.',
+			'videoAddedCuration' => 'تم إضافة الفيديو إلى تنسيقك.',
+			'validTitleCuration' => 'تأكد من إضافة عنوان صحيح لهذا التنسيق',
+			'validDescriptionCuration' => 'تأكد من إضافة وصف صحيح لهذا التنسيق',
+			'validImageCuration' => 'تأكد من إضافة صورة صحيحة لهذا التنسيق',
+			'addCuration' => 'إضافة تنسيق',
+			'postedBy' => 'نُشر بواسطة',
+			'follow' => 'متابعة',
+			'unfollow' => 'إلغاء المتابعة',
+			'postedFrom' => 'نُشر من',
+			'noTitle' => 'لا يوجد عنوان',
+			'itemsNumber' => ({required Object number}) => '${number} عنصر(عناصر)',
+			'noArticlesInCuration' => 'لم يتم العثور على مقالات في هذا التنسيق',
+			'noVideosInCuration' => 'لم يتم العثور على فيديوهات في هذا التنسيق',
+			'add' => 'إضافة',
+			'noBookmarksListFound' => 'لم يتم العثور على قوائم مفضلة، جرب إضافة واحدة!',
+			'deleteBookmarkList' => 'حذف قائمة المفضلة',
+			'confirmDeleteBookmarkList' => 'أنت على وشك حذف قائمة المفضلة هذه، هل تريد المتابعة؟',
+			'bookmarks' => 'المفضلة',
+			'bookmarksListCount' => ({required Object number}) => '${number} قوائم مفضلة',
+			'noDescription' => 'لا يوجد وصف',
+			'editedOn' => ({required Object date}) => 'تم التعديل في: ${date}',
+			'publishedOn' => ({required Object date}) => 'تم النشر في: ${date}',
+			'publishedOnText' => 'تم النشر في',
+			'lastUpdatedOn' => ({required Object date}) => 'آخر تحديث في: ${date}',
+			'joinedOn' => ({required Object date}) => 'انضم في: ${date}',
+			'list' => 'قائمة',
+			'noElementsInBookmarks' => 'لم يتم العثور على عناصر في قائمة المفضلة',
+			'draft' => 'مسودة',
+			'note' => 'ملاحظة',
+			'notes' => 'ملاحظات',
+			'smartWidget' => 'ويدجت ذكية',
+			'widgets' => 'ويدجت',
+			'postNote' => 'نشر ملاحظة',
+			'postArticle' => 'نشر مقال',
+			'postCuration' => 'نشر تنسيق',
+			'postVideo' => 'نشر فيديو',
+			'postSmartWidget' => 'نشر ويدجت ذكية',
+			'ongoing' => 'جاري',
+			'componentsSMCount' => ({required Object number}) => '${number} مكونات في هذه الويدجت',
+			'share' => 'مشاركة',
+			'copyNoteId' => 'نسخ معرف الملاحظة',
+			'noteIdCopied' => 'تم نسخ معرف الملاحظة! 👏',
+			'confirmDeleteDraft' => 'أنت على وشك حذف هذه المسودة، هل تريد المتابعة؟',
+			'reposted' => 'أعيد نشره',
+			'postInNote' => 'نشر في ملاحظة',
+			'clone' => 'نسخ',
+			'checkValidity' => 'فحص الصحة',
+			'copyNaddr' => 'نسخ naddr',
+			'deleteContent' => ({required Object type}) => 'حذف ${type}',
+			'confirmDeleteContent' => ({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل تريد المتابعة؟',
+			'home' => 'الرئيسية',
+			'followings' => 'المتابَعون',
+			'followers' => 'المتابِعون',
+			'replies' => 'الردود',
+			'zapReceived' => 'الزابس المستلمة',
+			'totalAmount' => 'المبلغ الإجمالي',
+			'zapSent' => 'الزابس المرسلة',
+			'latest' => 'الأحدث',
+			'saved' => 'محفوظ',
+			'seeAll' => 'رؤية الكل',
+			'popularNotes' => 'الملاحظات الشائعة',
+			'getStartedNow' => 'ابدأ الآن',
+			'expandWorld' => 'وسع العالم بإضافة ما يذهلك. اختر اهتماماتك ودع الرحلة تبدأ',
+			'addInterests' => 'إضافة اهتمامات',
+			'manageInterests' => 'إدارة الاهتمامات',
+			'interests' => 'اهتمامات',
+			'yakihonneImprovements' => 'تحسينات YakiHonne',
+			'yakihonneNote' => 'ملاحظة YakiHonne',
+			'privacyNote' => 'تطبيقنا يضمن أقصى درجات الخصوصية عبر تخزين البيانات الحساسة محلياً وبشكل آمن على أجهزة المستخدمين، باستخدام تشفير صارم. كن مطمئناً، نحن نلتزم بسياسة عدم المشاركة الصارمة، مما يضمن بقاء المعلومات الحساسة سرية ولا تغادر جهاز المستخدم أبداً.',
+			'pickYourMedia' => 'اختر وسائطك',
+			'uploadSendMedia' => 'يمكنك رفع وإرسال الوسائط مباشرة بعد اختيارها أو التقاطها.',
+			'noMessagesToDisplay' => 'لا توجد رسائل للعرض.',
+			'enableSecureDmsMessage' => 'للمزيد من الأمان والخصوصية، فكر في تفعيل الرسائل المباشرة الآمنة.',
+			'replyingTo' => ({required Object name}) => 'الرد على: ${name}',
+			'writeYourMessage' => 'اكتب رسالة',
+			'zap' => 'زاب',
+			'disableSecureDms' => 'تعطيل الرسائل المباشرة الآمنة',
+			'enableSecureDms' => 'تفعيل الرسائل المباشرة الآمنة',
+			'notUsingSecureDms' => 'لم تعد تستخدم الرسائل المباشرة الآمنة',
+			'usingSecureDms' => 'أصبحت الآن تستخدم الرسائل المباشرة الآمنة',
+			'mute' => 'كتم',
+			'unmute' => 'إلغاء الكتم',
+			'muteUser' => 'كتم المستخدم',
+			'unmuteUser' => 'إلغاء كتم المستخدم',
+			'muteUserDesc' => ({required Object name}) => 'أنت على وشك كتم ${name}، هل تريد المتابعة؟',
+			'unmuteUserDesc' => ({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل تريد المتابعة؟',
+			'messageCopied' => 'تم نسخ الرسالة بنجاح!',
+			'messageNotDecrypted' => 'لم يتم فك تشفير الرسالة بعد!',
+			'reply' => 'رد',
+			'newMessage' => 'رسالة جديدة',
+			'searchNameNpub' => 'البحث بالاسم أو npub أو nprofile',
+			'searchByUserName' => 'البحث باسم المستخدم',
+			'known' => 'معروف',
+			'unknown' => 'غير معروف',
+			'noMessageCanBeFound' => 'لم يتم العثور على رسائل',
+			'you' => 'أنت: ',
+			'decrMessage' => 'فك تشفير الرسالة',
+			'gifs' => 'صور متحركة',
+			'stickers' => 'ملصقات',
+			'customizeYourFeed' => 'خصص تدفقك',
+			'feedOptions' => 'خيارات التدفق',
+			'recent' => 'حديث',
+			'recentWithReplies' => 'حديث مع الردود',
+			'explore' => 'استكشف',
+			'following' => 'المتابَعون',
+			'trending' => 'الرائج',
+			'highlights' => 'النقاط البارزة',
+			'paid' => 'مدفوع',
+			'others' => 'آخرون',
+			'suggestionsBox' => 'صندوق الاقتراحات',
+			'showSuggestions' => 'إظهار الاقتراحات',
+			'showSuggestedPeople' => 'إظهار الأشخاص المقترحين للمتابعة',
+			'showArticlesNotesSuggestions' => 'إظهار اقتراحات المقالات/الملاحظات',
+			'showSuggestedInterests' => 'إظهار الاهتمامات المقترحة',
+			'readTime' => ({required Object time}) => '${time} دقيقة قراءة',
+			'watchNow' => 'شاهد الآن',
+			'bookmark' => 'مفضلة',
+			'suggestions' => 'اقتراحات',
+			'hideSuggestions' => 'إخفاء الاقتراحات',
+			'enjoyExpOwnData' => 'استمتع بتجربة امتلاك\nبياناتك الخاصة!',
+			'signIn' => 'تسجيل الدخول',
+			'createAccount' => 'إنشاء حساب',
+			'byContinuing' => 'بالمتابعة أنت توافق على\n',
+			'eula' => 'اتفاقية ترخيص المستخدم النهائي (EULA)',
+			'continueAsGuest' => 'متابعة كضيف',
+			'heyWelcomeBack' => 'مرحباً،\nأهلاً\nبعودتك',
+			'npubNsecHex' => 'npub أو nsec أو hex',
+			'useAmber' => 'استخدام Amber',
+			'setValidKey' => 'تعيين مفتاح صحيح',
+			'pasteYourKey' => 'الصق مفتاحك',
+			'taylorExperienceInterests' => 'خصص تجربتك باختيار اهتماماتك الرئيسية',
+			'peopleCountPlus' => ({required Object number}) => '+${number} شخص',
+			'followAll' => 'متابعة الكل',
+			'unfollowAll' => 'إلغاء متابعة الكل',
+			'details' => 'التفاصيل',
+			'shareGlimps' => 'شارك لمحة عنك، بكلمات تبدو حقيقية.',
+			'addCover' => 'إضافة غلاف',
+			'editCover' => 'تعديل الغلاف',
+			'yourName' => 'اسمك',
+			'setProperName' => 'تعيين اسم مناسب',
+			'aboutYou' => 'عنك',
+			'secKeyDesc' => 'يمكنك العثور على المفتاح السري لحسابك في الإعدادات. هذا المفتاح ضروري لتأمين الوصول إلى حسابك. يرجى الاحتفاظ به آمناً وخاصاً.',
+			'secKeyWalletDesc' => 'يمكنك العثور على المفتاح السري لحسابك وسر الاتصال بالمحفظة في الإعدادات. هذه المفاتيح ضرورية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الاحتفاظ بها آمنة وخاصة.',
+			'initializingAccount' => 'تهيئة الحساب...',
+			'letsGetStarted' => 'لنبدأ!',
+			'dontHaveWallet' => 'ليس لديك محفظة؟',
+			'createWalletSendRecSats' => 'إنشاء محفظة لإرسال واستقبال الساتس',
+			'createWallet' => 'إنشاء محفظة',
+			'youreAllSet' => 'أنت جاهز',
+			'dashboard' => 'لوحة القيادة',
+			'verifyNotes' => 'التحقق من الملاحظات',
+			'settings' => 'الإعدادات',
+			'manageAccounts' => 'إدارة الحسابات',
+			'login' => 'تسجيل الدخول',
+			'switchAccounts' => 'تبديل الحسابات',
+			'addAccount' => 'إضافة حساب',
+			'logoutAllAccounts' => 'تسجيل الخروج من جميع الحسابات',
+			'search' => 'البحث',
+			'smartWidgets' => 'الويدجت الذكية',
+			'notifications' => 'الإشعارات',
+			'inbox' => 'صندوق الوارد',
+			'discover' => 'اكتشف',
+			'wallet' => 'محفظة',
+			'publicKey' => 'المفتاح العام',
+			'profileLink' => 'رابط الملف الشخصي',
+			'profileCopied' => 'تم نسخ رابط الملف الشخصي! 👏',
+			'publicKeyCopied' => 'تم نسخ المفتاح العام! 👏',
+			'lnCopied' => 'تم نسخ عنوان lightning! 👏',
+			'scanQrCode' => 'مسح رمز QR',
+			'viewQrCode' => 'عرض رمز QR',
+			'copyNpub' => 'نسخ npub',
+			'visitProfile' => 'زيارة الملف الشخصي',
+			'followMeOnNostr' => 'تابعني على نوستر',
+			'close' => 'إغلاق',
+			'loadingPreviousPosts' => 'تحميل المنشورات السابقة...',
+			'noRepliesDesc' => 'لم يتم العثور على ردود لهذه الملاحظة',
+			'thread' => 'خيط',
+			'all' => 'الكل',
+			'mentions' => 'الإشارات',
+			'zaps' => 'زابس',
+			'noNotificationCanBeFound' => 'لم يتم العثور على إشعارات',
+			'consumablePointsPerks1' => '1- تقديم محتواك للتصديق',
+			'consumablePointsPerks2' => '2- استبدال النقاط لنشر ملاحظات مدفوعة',
+			'consumablePointsPerks3' => '3- استبدال النقاط بـ SATs (يتم اختيار عتبات عشوائية وستُخطر كلما أصبح الاستبدال متاحاً)',
+			'yakihonneConsPoints' => 'نقاط YakiHonne القابلة للاستهلاك',
+			'soonUsers' => 'قريباً سيتمكن المستخدمون من استخدام النقاط القابلة للاستهلاك في مجموعة الأنشطة التالية:',
+			'startEarningPoints' => 'ابدأ في الكسب واستفد من نقاط Yaki الخاصة بك! 🎉',
+			'gotIt' => 'فهمت!',
+			'engagementChart' => 'مخطط المشاركة',
+			'lastGained' => ({required Object date}) => 'آخر كسب: ${date}',
+			'attemptsRemained' => 'المحاولات المتبقية ',
+			'congratulations' => 'تهانينا',
+			'congratsDesc' => ({required Object number}) => 'تم مكافأتك بـ ${number} xp للإجراءات التالية، كن نشطاً واكسب المكافآت!',
+			'yakihonneChest' => 'صندوق YakiHonne!',
+			'noImGood' => 'لا، أنا بخير',
+			'points' => 'النقاط',
+			'unlocked' => 'مفتوح',
+			'locked' => 'مقفل',
+			'whatsThis' => 'ما هذا؟',
+			'levelNumber' => ({required Object number}) => 'المستوى ${number}',
+			'pointsSystem' => 'نظام النقاط',
+			'oneTimeRewards' => 'مكافآت لمرة واحدة',
+			'repeatedRewards' => 'مكافآت متكررة',
+			'consumablePoints' => 'نقاط قابلة للاستهلاك',
+			'pointsRemaining' => ({required Object number}) => '${number} متبقي',
+			'gain' => 'كسب',
+			'forName' => ({required Object name}) => 'لـ ${name}',
+			'min' => 'دقيقة',
+			'levelsRequiredNum' => ({required Object number}) => '${number} مستويات مطلوبة',
+			'seeMore' => 'رؤية المزيد',
+			'deleteCoverPic' => 'حذف صورة الغلاف!',
+			'deleteCoverPicDesc' => 'أنت على وشك حذف صورة الغلاف، هل تريد المتابعة؟',
+			'editProfile' => 'تعديل الملف الشخصي',
+			'uploadingImage' => 'رفع الصورة...',
+			'updateProfile' => 'تحديث الملف الشخصي',
+			'userName' => 'اسم المستخدم',
+			'displayName' => 'الاسم المعروض',
+			'yourDisplayName' => 'اسمك المعروض',
+			'writeSomethingAboutYou' => 'اكتب شيئاً عنك!',
+			'website' => 'موقع ويب',
+			'yourWebsite' => 'موقعك الإلكتروني',
+			'verifyNip05' => 'عنوان نوستر المُتحقق منه (NIP 05)',
+			'enterNip05' => 'أدخل عنوان NIP-05 الخاص بك',
+			'enterLn' => 'أدخل عنوان LUD-06 أو LUD-16 الخاص بك',
+			'less' => 'أقل',
+			'more' => 'أكثر',
+			'pictureUrl' => 'رابط الصورة',
+			'coverUrl' => 'رابط الغلاف',
+			'enterPictureUrl' => 'أدخل رابط صورتك',
+			'enterCoverUrl' => 'أدخل رابط غلافك',
+			'userNoArticles' => ({required Object name}) => '${name} ليس لديه مقالات',
+			'userNoCurations' => ({required Object name}) => '${name} ليس لديه تنسيقات',
+			'userNoNotes' => ({required Object name}) => '${name} ليس لديه ملاحظات',
+			'userNoVideos' => ({required Object name}) => '${name} ليس لديه فيديوهات',
+			'loadingFollowings' => 'تحميل المتابَعين',
+			'loadingFollowers' => 'تحميل المتابِعين',
+			'followersNum' => ({required Object number}) => '${number} متابع',
+			'notFollowedByAnyoneYouFollow' => 'غير متابَع من قِبل أي شخص تتابعه.',
+			'mutuals' => 'مشترك(ون)',
+			'mutualsNum' => ({required Object number}) => '+ ${number} مشترك(ون)',
+			'followsYou' => 'يتابعك',
+			'userNameCopied' => 'تم نسخ اسم المستخدم بنجاح!',
+			'profileRelays' => ({required Object number}) => 'مرحلات الملف الشخصي الموصى بها - ${number}',
+			'noUserRelays' => 'لم يتم العثور على مرحلات لهذا المستخدم.',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} ليس لديه ويدجت ذكية',
+			'un1' => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد',
+			'un1Desc' => 'هذه التقييمات تُحسب مرتين لأنها غالباً ما تشير إلى الدعم للملاحظات التي اعتبرها آخرون مفيدة.',
+			'un2' => 'ملاحظات بتقييمات جارية',
+			'un2Desc' => 'تقييمات على ملاحظات لا تحمل حالياً حالة مفيد أو غير مفيد',
+			'unTextW1' => 'ملاحظات حصلت على حالة مفيد',
+			'unTextW1Desc' => 'هذه الملاحظات تُعرض الآن لكل من يرى المنشور، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.',
+			'unTextR1' => 'تقييمات ساعدت ملاحظة في الحصول على حالة مفيد',
+			'unTextR1Desc' => 'هذه التقييمات حددت ملاحظات مفيدة تُعرض للجميع، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.',
+			'unTextW2' => 'ملاحظات وصلت إلى حالة غير مفيد',
+			'unTextW2Desc' => 'هذه الملاحظات تم تقييمها كغير مفيدة من قِبل مساهمين كافيين، بما في ذلك أولئك الذين أحياناً لا يتفقون في تقييماتهم السابقة.',
+			'unTextR2' => 'تقييمات ساعدت ملاحظة في الحصول على حالة غير مفيد',
+			'unTextR2Desc' => 'هذه التقييمات تحسن الملاحظات المُتحقق منها بإعطاء تغذية راجعة لمؤلفي الملاحظات، وتسمح للمساهمين بالتركيز على الملاحظات الأكثر واعدية',
+			'unTextW3' => 'ملاحظات تحتاج لمزيد من التقييمات',
+			'unTextW3Desc' => 'ملاحظات لا تحمل بعد حالة مفيد أو غير مفيد.',
+			'unTextR3' => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد',
+			'unTextR3Desc' => 'لا تقلق، الجميع لديه بعض منها! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيدة\' ليست مفيدة بما فيه الكفاية.',
+			'refresh' => 'تحديث',
+			'userImpact' => 'تأثير المستخدم',
+			'userRelays' => 'مرحلات المستخدم',
+			'rewards' => 'المكافآت',
+			'noRewards' => 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات مُتحقق منها للحصول عليها.',
+			'onDate' => ({required Object date}) => 'في ${date}',
+			'youHaveRated' => 'لقد قيّمت',
+			'theFollowingNote' => 'الملاحظة التالية:',
+			'youHaveLeftNote' => 'لقد تركت ملاحظة على هذه الملاحظة المدفوعة:',
+			'paidNoteLoading' => 'تحميل الملاحظة المدفوعة',
+			'yourNoteSealed' => 'ملاحظتك التالية تم ختمها للتو:',
+			'ratedNoteSealed' => 'لقد قيّمت الملاحظة التالية التي تم ختمها:',
+			'claimTime' => ({required Object time}) => 'المطالبة خلال ${time}',
+			'claim' => 'مطالبة',
+			'requestInProgress' => 'طلب قيد التقدم',
+			'granted' => 'ممنوح',
+			'interested' => 'مهتم',
+			'notInterested' => 'غير مهتم',
+			'noResKeyword' => 'لا توجد نتائج لهذه الكلمة المفتاحية',
+			'noResKeywordDesc' => 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، جرب استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.',
+			'startSearchPeople' => 'ابدأ في البحث عن الأشخاص',
+			'startSearchContent' => 'ابدأ في البحث عن المحتوى',
+			'keys' => 'المفاتيح',
+			'myPublicKey' => 'مفتاحي العام',
+			'mySecretKey' => 'مفتاحي السري',
+			'show' => 'إظهار',
+			'showSecret' => 'إظهار المفتاح السري!',
+			'showSecretDesc' => 'تأكد من الاحتفاظ به آمناً لأنه يعطي وصولاً كاملاً لحسابك.',
+			'usingExternalSign' => 'استخدام موقع خارجي',
+			'usingExternalSignDesc' => 'أنت تستخدم موقعاً خارجياً',
+			'privKeyCopied' => 'تم نسخ المفتاح الخاص! 👏',
+			'muteList' => 'قائمة الكتم',
+			'noMutedUserFound' => 'لم يتم العثور على مستخدمين مكتومين.',
+			'searchRelay' => 'البحث عن مرحل',
+			'deleteAccount' => 'حذف الحساب',
+			'clearAppCache' => 'مسح ذاكرة التطبيق المؤقتة',
+			'clearAppCacheDesc' => 'أنت على وشك مسح ذاكرة التطبيق المؤقتة، هل تريد المتابعة؟',
+			'clear' => 'مسح',
+			'fontSize' => 'حجم الخط',
+			'appTheme' => 'سمة التطبيق',
+			'contentModeration' => 'إشراف المحتوى',
+			'mediaUploader' => 'رافع الوسائط',
+			'secureDirectMessaging' => 'الرسائل المباشرة الآمنة',
+			'customization' => 'التخصيص',
+			'hfCustomization' => 'تخصيص تدفق الصفحة الرئيسية',
+			'newPostGesture' => 'إيماءة الضغط المطول للمنشور الجديد',
+			'profilePreview' => 'معاينة الملف الشخصي',
+			'relaySettings' => ({required Object number}) => 'إعدادات المرحل ${number}',
+			'yakihonne' => 'YakiHonne',
+			'wallets' => 'محافظ',
+			'addWallet' => 'إضافة محفظة',
+			'externalWallet' => 'محفظة خارجية',
+			'yakiChest' => 'صندوق Yaki',
+			'connected' => 'متصل',
+			'connect' => 'اتصال',
+			'owner' => 'المالك',
+			'contact' => 'جهة الاتصال',
+			'software' => 'البرنامج',
+			'version' => 'النسخة',
+			'supportedNips' => 'Nips المدعومة',
+			'instantConntect' => 'اتصال فوري بالمرحل',
+			'invalidRelayUrl' => 'رابط مرحل غير صحيح',
+			'relays' => 'المرحلات',
+			'readOnly' => 'قراءة فقط',
+			'writeOnly' => 'كتابة فقط',
+			'readWrite' => 'قراءة/كتابة',
+			'defaultKey' => 'افتراضي',
+			'viewProfile' => 'عرض الملف الشخصي',
+			'appearance' => 'المظهر',
+			'untitled' => 'بدون عنوان',
+			'smartWidgetChecker' => 'فاحص الويدجت الذكية',
+			'naddr' => 'naddr',
+			'noComponentsDisplayed' => 'لا يمكن عرض مكونات',
+			'metadata' => 'البيانات الوصفية',
+			'createdAt' => 'تم الإنشاء في',
+			'identifier' => 'المعرف',
+			'enterSMaddr' => 'أدخل naddr ويدجت ذكية للتحقق من صحتها.',
+			'notFindSMwithAddr' => 'لا يمكن العثور على ويدجت ذكية بهذا العنوان',
+			'unableToOpenUrl' => 'غير قادر على فتح الرابط',
+			'voteToSeeStats' => 'يجب أن تصوت لتتمكن من رؤية الإحصائيات',
+			'votesByZaps' => 'الأصوات بالزابس',
+			'votesByUsers' => 'الأصوات بالمستخدمين',
+			'alreadyVoted' => 'لقد صوتت بالفعل في هذا الاستطلاع',
+			'userCannotBeFound' => 'لا يمكن العثور على المستخدم',
+			'votesNumber' => ({required Object number}) => 'الأصوات: ${number}',
+			'voteRequired' => 'التصويت مطلوب لعرض الإحصائيات.',
+			'showStats' => 'إظهار الإحصائيات',
+			'pollClosesAt' => ({required Object date}) => 'يُغلق في: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'أُغلق في: ${date}',
+			'checkSmartWidget' => 'فحص ويدجت ذكية',
+			'emptyVerifiedNote' => 'محتوى ملاحظة مُتحقق منها فارغ!',
+			'post' => 'نشر',
+			'seeAnything' => 'ترى أي شيء تريد تحسينه؟',
+			'writeNote' => 'كتابة ملاحظة',
+			'whatThinkThis' => 'ما رأيك في هذا؟',
+			'sourceRecommended' => 'المصدر (موصى به)',
+			'findPaidNoteCorrect' => 'تجد هذه الملاحظة المدفوعة صحيحة.',
+			'findPaidNoteMisleading' => 'تجد هذه الملاحظة المدفوعة مضللة.',
+			'selectOneReason' => 'اختر سبباً واحداً على الأقل',
+			'rateHelpful' => 'تقييم كمفيد',
+			'rateNotHelpful' => 'تقييم كغير مفيد',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
+			'ratedHelpful' => 'مُقيم كمفيد',
+			'ratedNotHelpful' => 'مُقيم كغير مفيد',
+			'youRatedHelpful' => 'قيّمت هذا كمفيد',
+			'youRatedNotHelpful' => 'قيّمت هذا كغير مفيد',
+			'findThisHelpful' => 'هل تجد هذا مفيداً؟',
+			'findThisNotHelpful' => 'هل تجد هذا غير مفيد؟',
+			'setYourRating' => 'تعيين تقييمك',
+			'whatThinkOfThat' => 'ما رأيك في ذلك؟',
+			'changeRatingNote' => 'ملاحظة: تغيير تقييمك سيكون صالحاً لمدة 5 دقائق فقط، بعد ذلك لن تعود لديك خيار التراجع أو التغيير.',
+			'paidNote' => 'ملاحظة مدفوعة',
+			'undo' => 'تراجع',
+			'undoRating' => 'تراجع عن التقييم',
+			'undoRatingDesc' => 'أنت على وشك التراجع عن تقييمك، هل تريد المتابعة؟',
+			'seeAllAttempts' => 'رؤية جميع المحاولات',
+			'addNote' => 'إضافة ملاحظة',
+			'alreadyContributed' => 'لقد ساهمت بالفعل',
+			'notesFromCommunity' => 'ملاحظات من المجتمع',
+			'noCommunityNotes' => 'هادئ هنا! لا توجد ملاحظات مجتمعية بعد.',
+			'notHelpful' => 'غير مفيد',
+			'sealed' => 'مختوم',
+			'notSealed' => 'غير مختوم',
+			'notSealedYet' => 'لم يُختم بعد',
+			'needsMoreRating' => 'يحتاج لمزيد من التقييمات',
+			'source' => 'المصدر',
+			'thisNoteAwaitRating' => 'هذه الملاحظة تنتظر تقييم المجتمع.',
+			'yourNoteAwaitRating' => 'هذه الملاحظة تنتظر تقييم المجتمع.',
+			'topReasonsSelected' => 'الأسباب الرئيسية المختارة من قِبل المقيمين:',
+			'noReasonsSpecified' => 'لم يتم تحديد أسباب!',
+			'postedOn' => ({required Object date}) => 'نُشر في ${date}',
+			'explanation' => 'التفسير',
+			'readAboutVerifyingNotes' => 'اقرأ عن التحقق من الملاحظات',
+			'readAboutVerifyingNotesDesc' => 'لقد كتبنا مقالاً لمساعدتك في فهم هدفنا',
+			'readArticle' => 'قراءة المقال',
+			'whyVerifyingNotes' => 'لماذا التحقق من الملاحظات؟',
+			'contributeUnderstanding' => 'المساهمة في بناء الفهم',
+			'actGoodFaith' => 'التصرف بنية حسنة',
+			'beHelpful' => 'كن مفيداً، حتى لأولئك الذين يختلفون',
+			'readMore' => 'قراءة المزيد',
+			'newKey' => 'جديد',
+			'needsYourHelp' => 'يحتاج مساعدتك',
+			'communityWallet' => 'محفظة المجتمع',
+			'noPaidNotesCanBeFound' => 'لم يتم العثور على ملاحظات مدفوعة.',
+			'updatesNews' => 'أخبار التحديثات',
+			'updates' => 'التحديثات',
+			'toBeAbleSendSats' => 'لتتمكن من إرسال الزابس، يرجى التأكد من ربط محفظة bitcoin lightning الخاصة بك.',
+			'receiveSats' => 'استقبال الساتس',
+			'messageOptional' => 'رسالة (اختيارية)',
+			'amountInSats' => 'المبلغ بالساتس',
+			'invoiceCopied' => 'تم نسخ كود الفاتورة!',
+			'copyInvoice' => 'نسخ الفاتورة',
+			'ensureLnSet' => 'تأكد من تعيين عنوان lightning بشكل صحيح',
+			'errorGeneratingInvoice' => 'حدث خطأ أثناء توليد الفاتورة',
+			'generateInvoice' => 'توليد فاتورة',
+			'qrCode' => 'رمز QR',
+			'scanPay' => 'مسح ودفع',
+			'slideToPay' => 'اسحب للدفع',
+			'invalidInvoice' => 'فاتورة غير صحيحة',
+			'invalidInvoiceDesc' => 'يبدو أن الفاتورة الممسوحة غير صحيحة، أعد المسح وحاول مرة أخرى.',
+			'scanAgain' => 'مسح مرة أخرى',
+			'sendSats' => 'إرسال ساتس',
+			'send' => 'إرسال',
+			'recentTransactions' => 'المعاملات الحديثة',
+			'noTransactionCanBeFound' => 'لم يتم العثور على معاملات',
+			'selectWalletTransactions' => 'اختر محفظة للحصول على آخر المعاملات.',
+			'noUserCanBeFound' => 'لم يتم العثور على مستخدمين.',
+			'balance' => 'الرصيد',
+			'noLnInNwc' => 'لم نتمكن من الحصول على عنوانك من سر NWC الخاص بك، يرجى التحقق من مزود خدمة عنوان lightning لنسخ عنوانك أو لتحديث ملفك الشخصي وفقاً لذلك.',
+			'copyLn' => 'نسخ عنوان lightning',
+			'receive' => 'استقبال',
+			'clickBelowToConnect' => 'انقر أدناه للاتصال',
+			'connectWithNwc' => 'الاتصال بـ NWC',
+			'pasteNwcAddress' => 'لصق عنوان NWC',
+			'createYakiWallet' => 'إنشاء محفظة YakiHonne',
+			'yakiNwc' => 'NWC الخاص بـ YakiHonne',
+			'yakiNwcDesc' => 'إنشاء محفظة باستخدام قناة YakiHonne',
+			'orUseYourWallet' => 'أو استخدم محفظتك',
+			'nostrWalletConnect' => 'اتصال محفظة نوستر',
+			'nostrWalletConnectDesc' => 'اتصال محفظة نوستر الأصلية',
+			'alby' => 'Alby',
+			'albyConnect' => 'اتصال Alby',
+			'walletDataNote' => 'ملاحظة: جميع البيانات المتعلقة بمحفظتك ستُخزن بأمان وحماية محلياً ولن تُشارك خارج حدود التطبيق أبداً.',
+			'availableWallets' => 'المحافظ المتاحة',
+			'noWalletLinkedToYouProfile' => 'ليس لديك محفظة مربوطة بملفك الشخصي.',
+			'noWalletConnectedToYourProfile' => 'لا توجد محافظ متصلة مربوطة بملفك الشخصي.',
+			'click' => 'انقر',
+			'onSelectedWalletLinkIt' => 'على محفظتك المختارة واربطها.',
+			'noWalletCanBeFound' => 'لم يتم العثور على محفظة',
+			'currentlyLinkedMessage' => 'مربوطة حالياً بملفك الشخصي لاستقبال الزابس',
+			'linked' => 'مربوط',
+			'linkWallet' => 'ربط المحفظة',
+			'linkWalletDesc' => 'أنت على وشك استبدال محفظتك السابقة وربط محفظة جديدة بملفك الشخصي، هل تريد المتابعة؟',
+			'copyNwc' => 'نسخ NWC',
+			'nwcCopied' => 'تم نسخ NWC بنجاح!',
+			'deleteWallet' => 'حذف المحفظة',
+			'deleteWalletDesc' => 'أنت على وشك حذف هذه المحفظة، هل تريد المتابعة؟',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتس',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} استقبل منك ${number} ساتس',
+			'ownSentSat' => ({required Object number}) => 'أرسلت ${number} ساتس',
+			'ownReceivedSat' => ({required Object number}) => 'استقبلت ${number} ساتس',
+			'comment' => 'تعليق',
+			'supportYakihonne' => 'دعم YakiHonne',
+			'fuelYakihonne' => 'ادعم نمو YakiHonne! دعمك يدفع المزايا الجديدة وتجربة أفضل للجميع.',
+			'supportUs' => '❤︎ ادعمنا',
+			'peopleToFollow' => 'أشخاص للمتابعة',
+			'donations' => 'التبرعات',
+			'inTag' => ({required Object name}) => 'في ${name}',
+			'shareProfile' => 'مشاركة الملف الشخصي',
+			'shareProfileDesc' => 'شارك ملفك الشخصي للوصول لمزيد من الناس والتواصل مع آخرين وتنمية شبكتك',
+			'moreDots' => 'المزيد...',
+			'comments' => 'التعليقات',
+			'noCommentsCanBeFound' => 'لم يتم العثور على تعليقات',
+			'beFirstCommentThisVideo' => 'كن أول من يعلق على هذا الفيديو!',
+			'errorLoadingVideo' => 'خطأ أثناء تحميل الفيديو',
+			'seeAlso' => 'انظر أيضاً',
+			'viewsNumber' => ({required Object number}) => '${number} مشاهدة',
+			'upvotes' => 'أصوات إيجابية',
+			'downvotes' => 'أصوات سلبية',
+			'views' => 'المشاهدات',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'تم الإنشاء في ${date1}، تم التعديل في ${date2}',
+			'loading' => 'تحميل',
+			'releaseToLoad' => 'اتركه لتحميل المزيد',
+			'finished' => 'انتهى!',
+			'noMoreData' => 'لا توجد بيانات أخرى',
+			'refreshed' => 'تم التحديث',
+			'refreshing' => 'جاري التحديث',
+			'pullToRefresh' => 'اسحب للتحديث',
+			'suggestedInterests' => 'اهتمامات مقترحة',
+			'reveal' => 'كشف',
+			'wantToShareRevenues' => 'أريد مشاركة هذه الإيرادات',
+			'splitRevenuesWithUsers' => 'تقسيم الإيرادات مع المستخدمين',
+			'addUser' => 'إضافة مستخدم',
+			'selectAdate' => 'اختيار تاريخ',
+			'clearDate' => 'مسح التاريخ',
+			'nothingToShowHere' => 'أوبس! لا شيء للعرض هنا!',
+			'confirmPayment' => 'تأكيد الدفع',
+			'payWithNwc' => 'الدفع بـ NWC',
+			'important' => 'مهم',
+			'adjustVolume' => 'ضبط الصوت',
+			'adjustSpeed' => 'ضبط السرعة',
+			'updateInterests' => 'تحديث الاهتمامات',
+			'usingViewMode' => 'أنت تستخدم وضع العرض',
+			'usingViewModeDesc' => 'سجل الدخول بمفتاحك الخاص وانضم للمجتمع.',
+			'noInternetAccess' => 'لا يوجد وصول للإنترنت',
+			'checkModelRouter' => 'تحقق من المودم أو الراوتر',
+			'reconnectWifi' => 'إعادة الاتصال بالواي فاي',
+			'somethingWentWrong' => 'حدث خطأ ما!',
+			'somethingWentWrongDesc' => 'يبدو أن شيئاً حدث أثناء تحميل البيانات، حاول مرة أخرى!',
+			'tryAgain' => 'حاول مرة أخرى',
+			'postNotFound' => 'لم يتم العثور على المنشور',
+			'user' => 'مستخدم',
+			'view' => 'عرض',
+			'itsLive' => 'إنه مباشر!',
+			'spreadWordSharingContent' => 'انشر الكلمة بمشاركة محتواك في كل مكان.',
+			'successfulRelays' => 'المرحلات الناجحة',
+			'noRelaysCanBeFound' => 'لم يتم العثور على مرحلات',
+			'dismiss' => 'تجاهل',
+			'deleteAccountMessage' => 'أنت تحاول تسجيل الدخول إلى حساب محذوف.',
+			'exit' => 'خروج',
+			'shareContent' => 'مشاركة المحتوى',
+			'profile' => 'الملف الشخصي',
+			'by' => 'بواسطة',
+			'shareLink' => 'مشاركة الرابط',
+			'shareImage' => 'مشاركة الصورة',
+			'shareNoteId' => 'مشاركة معرف الملاحظة',
+			'shareNprofile' => 'مشاركة nprofile',
+			'shareNaddr' => 'مشاركة naddr',
+			'bio' => ({required Object content}) => 'النبذة: ${content}',
+			'earnSats' => 'كسب SATs',
+			'earnSatsDesc' => 'ساعدنا في توفير رؤى لامركزية أكثر لمراجعة هذه الملاحظة المدفوعة.',
+			'verifyingNote' => 'التحقق من الملاحظة',
+			'pickYourImage' => 'اختر صورتك',
+			'uploadPasteUrl' => 'يمكنك الرفع أو لصق رابط لصورتك المفضلة',
+			'back' => 'رجوع',
+			'camera' => 'الكاميرا',
+			'communityWidgets' => 'ويدجت المجتمع',
+			'myWidgets' => 'ويدجتي',
+			'pendingUnfollowing' => 'إلغاء المتابعة...',
+			'pendingFollowing' => 'المتابعة...',
+			'zappers' => 'الزابرز',
+			'noZappersCanBeFound' => 'لم يتم العثور على زابرز.',
+			'payPublish' => 'دفع ونشر',
+			'payPublishNote' => 'ملاحظة: تأكد من أن جميع المحتوى الذي قدمته نهائي لأن النشر يُعتبر غير قابل للإرجاع والساتس المُنفقة غير قابلة للاسترداد.',
+			'userSubmittedPaidNote' => ({required Object name}) => '${name} قدم ملاحظة مدفوعة',
+			'getInvoice' => 'الحصول على فاتورة',
+			'pay' => 'دفع',
+			'compose' => 'تأليف',
+			'writeSomething' => 'اكتب شيئاً...',
+			'highlightedNote' => 'ملاحظة مُبرزة للمزيد من التعرض.',
+			'typeValidZapQuestion' => 'اكتب سؤال استطلاع صحيح!',
+			'pollOptions' => 'خيارات الاستطلاع',
+			'minimumSatoshis' => 'الحد الأدنى من الساتوشيس',
+			'minSats' => 'أقل ساتس',
+			'maxSats' => 'أكثر ساتس',
+			'maximumSatoshis' => 'الحد الأقصى من الساتوشيس',
+			'pollCloseDate' => 'تاريخ إغلاق الاستطلاع',
+			'optionsNumber' => ({required Object number}) => 'الخيارات: ${number}',
+			'zapSplits' => 'تقسيمات الزاب',
+			'minimumOfOneRequired' => 'مطلوب حد أدنى 1',
+			'valueBetweenMinMax' => 'يجب أن تكون القيمة بين الحد الأدنى والأقصى لمبلغ الساتس',
+			'writeCommentOptional' => 'اكتب تعليقاً (اختياري)',
+			'splitZapsWith' => 'تقسيم الزابس مع',
+			'useCannotBeZapped' => 'هذا المستخدم لا يمكن زابه',
+			'waitingGenerationOfInvoice' => 'انتظار توليد الفواتير.',
+			'userInvoiceGenerated' => ({required Object name}) => 'تم توليد فاتورة لـ ${name}',
+			'userInvoiceNotGenerated' => 'لا يمكن إنشاء فاتورة لهذا المستخدم.',
+			'payAmount' => ({required Object number}) => 'دفع ${number} ساتس',
+			'generateInvoices' => 'توليد الفواتير',
+			'userZappedSuccesfuly' => 'تم زاب المستخدم بنجاح',
+			'useValidTitle' => 'يجب استخدام عنوان صحيح',
+			'errorAddingBookmark' => 'حدث خطأ عند إضافة المفضلة',
+			'bookmarkAdded' => 'تم إضافة قائمة المفضلة',
+			'voteNotSubmitted' => 'لا يمكن إرسال التصويت',
+			'zapSplitsMessage' => 'لتقسيمات الزاب، يجب أن يكون هناك شخص واحد على الأقل',
+			'errorUpdatingCuration' => 'حدث خطأ أثناء تحديث التنسيق',
+			'errorAddingCuration' => 'حدث خطأ أثناء إضافة التنسيق',
+			'errorDeletingContent' => 'حدث خطأ أثناء حذف المحتوى',
+			'errorSigningEvent' => 'حدث خطأ أثناء توقيع الحدث',
+			'errorSendingEvent' => 'حدث خطأ أثناء إرسال الحدث',
+			'errorSendingMessage' => 'حدث خطأ أثناء إرسال الرسالة',
+			'userHasBeenMuted' => 'تم كتم المستخدم',
+			'userHasBeenUnmuted' => 'تم إلغاء كتم المستخدم',
+			'messageCouldNotBeDecrypted' => 'لا يمكن فك تشفير الرسالة',
+			'interestsUpdateMessage' => 'تم تحديث قائمة الاهتمامات بنجاح!',
+			'errorGeneratingEvent' => 'حدث خطأ أثناء توليد الحدث',
+			'oneFeedOptionAvailable' => 'يجب أن يكون هناك خيار تدفق واحد متاح على الأقل.',
+			'walletCreated' => 'تم إنشاء المحفظة بنجاح',
+			'walletLinked' => 'تم ربط المحفظة بنجاح',
+			'errorCreatingWallet' => 'حدث خطأ أثناء إنشاء المحفظة',
+			'walletNotLinked' => 'لا يمكن ربط المحفظة. عنوان lightning خاطئ',
+			'invalidPairingSecret' => 'سر الإقران غير صحيح',
+			'errorSettingToken' => 'حدث خطأ أثناء إعداد الرمز المميز',
+			'nwcInitialized' => 'تم تهيئة اتصال محفظة نوستر',
+			'noWalletLinkedMessage' => 'ليس لديك محفظة مربوطة بملفك الشخصي، هل تريد ربط هذه المحفظة؟',
+			'errorUsingWallet' => 'حدث خطأ أثناء استخدام المحفظة!',
+			'submitValidData' => 'تأكد من إرسال بيانات صحيحة',
+			'submitValidInvoice' => 'تأكد من إرسال فاتورة صحيحة',
+			'paymentSucceeded' => 'نجح الدفع',
+			'paymentFailed' => 'فشل الدفع',
+			'notEnoughBalance' => 'رصيد غير كافٍ لإجراء هذا الدفع.',
+			'permissionInvoiceNotGranted' => 'لم يتم منح إذن دفع الفواتير.',
+			'allUsersZapped' => 'تم زاب جميع المستخدمين!',
+			'partialUsersZapped' => 'تم زاب مستخدمين جزئياً!',
+			'noUserZapped' => 'لم يتم زاب أي مستخدم!',
+			'errorZappingUsers' => 'حدث خطأ أثناء زاب المستخدمين',
+			'selectDefaultWallet' => 'اختر محفظة افتراضية في الإعدادات.',
+			'noInvoiceAvailable' => 'لا توجد فواتير متاحة',
+			'invoicePaid' => 'تم دفع الفاتورة بنجاح',
+			'errorPayingInvoice' => 'حدث خطأ أثناء الدفع باستخدام الفاتورة',
+			'errorUsingExternalWallet' => 'خطأ أثناء استخدام المحفظة الخارجية.',
+			'paymentSurpassMax' => 'الدفع يتجاوز الحد الأقصى المسموح.',
+			'errorSendingSats' => 'حدث خطأ أثناء إرسال الساتس',
+			'setSatsMoreThanZero' => 'تعيين مبلغ ساتس أكبر من 0',
+			'processCompleted' => 'تم إكمال العملية',
+			'relayingStuff' => 'جاري الترحيل...',
+			'amberNotInstalled' => 'تطبيق Amber غير مثبت',
+			'alreadyLoggedIn' => 'أنت مسجل دخول بالفعل!',
+			'loggedIn' => 'أنت مسجل دخول!',
+			'attemptConnectAmber' => 'تم رفض محاولة الاتصال بـ Amber.',
+			'errorUploadingImage' => 'حدث خطأ أثناء رفع الصورة',
+			'invalidPrivateKey' => 'مفتاح خاص غير صحيح!',
+			'invalidHexKey' => 'مفتاح hex غير صحيح!',
+			'fetchingArticle' => 'جلب المقال',
+			'articleNotFound' => 'لم يتم العثور على المقال',
+			'fetchingCuration' => 'جلب التنسيق',
+			'curationNotFound' => 'لم يتم العثور على التنسيق',
+			'fetchingSmartWidget' => 'جلب الويدجت الذكية',
+			'smartWidgetNotFound' => 'لم يتم العثور على الويدجت الذكية',
+			'fetchingVideo' => 'جلب الفيديو',
+			'videoNotFound' => 'لم يتم العثور على الفيديو',
+			'fetchingNote' => 'جلب الملاحظة',
+			'noteNotFound' => 'لم يتم العثور على الملاحظة',
+			'eventNotFound' => 'لم يتم العثور على الحدث',
+			'verifiedNoteNotFound' => 'لم يتم العثور على الملاحظة المُتحقق منها',
+			'eventNotRecognized' => 'لا يمكن التعرف على الحدث',
+			'fetchingEventUserRelays' => 'جلب الحدث من مرحلات المستخدم',
+			'fetchingProfile' => 'جلب الملف الشخصي',
+			'fetchingEvent' => 'جلب الحدث',
+			'loggedToYakiChest' => 'أنت مسجل دخول في صندوق Yakihonne',
+			'errorLoggingYakiChest' => 'حدث خطأ أثناء تسجيل الدخول في صندوق Yakihonne',
+			'relayInUse' => 'المرحل قيد الاستخدام بالفعل',
+			'errorConnectingRelay' => 'حدث خطأ أثناء الاتصال بالمرحل',
+			'submitValidLud' => 'تأكد من الحصول على lud16/lud06 صحيح.',
+			'errorUpdatingData' => 'حدث خطأ أثناء تحديث البيانات',
+			'updatedSuccesfuly' => 'تم التحديث بنجاح',
+			'relaysListUpdated' => 'تم تحديث قائمة المرحلات',
+			'couldNotUpdateRelaysList' => 'لا يمكن تحديث قائمة المرحلات',
+			'errorUpdatingRelaysList' => 'حدث خطأ أثناء تحديث قائمة المرحلات',
+			'errorClaimingReward' => 'حدث خطأ أثناء المطالبة بالمكافأة',
+			'errorDecodingData' => 'حدث خطأ أثناء فك تشفير البيانات',
+			'loggingIn' => 'تسجيل الدخول...',
+			'loggingOut' => 'تسجيل الخروج...',
+			'disconnecting' => 'قطع الاتصال...',
+			'ratingSubmittedCheckReward' => 'تم إرسال تقييمك، تحقق من صفحة المكافآت لتطالب بمكافأة التقييم',
+			'errorSubmittingRating' => 'حدث خطأ أثناء إرسال تقييمك',
+			'verifiedNoteAdded' => 'تم إضافة ملاحظتك المُتحقق منها، تحقق من صفحة المكافآت لتطالب بمكافأة الكتابة',
+			'errorAddingVerifiedNote' => 'حدث خطأ أثناء إضافة ملاحظتك المُتحقق منها',
+			'ratingDeleted' => 'تم حذف تقييمك',
+			'errorDeletingRating' => 'حدث خطأ أثناء حذف تقييمك',
+			'autoSavedArticleDeleted' => 'تم حذف المقال المحفوظ تلقائياً',
+			'articlePublished' => 'تم نشر مقالك!',
+			'errorAddingArticle' => 'حدث خطأ أثناء إضافة المقال',
+			'writeValidNote' => 'اكتب ملاحظة صحيحة!',
+			'setOutboxRelays' => 'تأكد من إعداد مرحلات صندوق الصادر',
+			'notePublished' => 'تم نشر الملاحظة!',
+			'paidNotePublished' => 'تم نشر الملاحظة المدفوعة!',
+			'invoiceNotPayed' => 'يبدو أنك لم تدفع الفاتورة، تحقق مرة أخرى',
+			'autoSavedSMdeleted' => 'تم حذف الويدجت الذكية المحفوظة تلقائياً',
+			'errorUploadingMedia' => 'حدث خطأ أثناء رفع الوسائط',
+			'smartWidgetPublishedSuccessfuly' => 'تم نشر الويدجت الذكية بنجاح',
+			'errorAddingWidget' => 'حدث خطأ أثناء إضافة الويدجت الذكية',
+			'setAllRequiredContent' => 'تأكد من تعيين جميع المحتوى المطلوب.',
+			'noEventIdCanBeFound' => 'لم يتم العثور على حدث بهذا المعرف!',
+			'notValidVideoEvent' => 'هذا الحدث ليس حدث فيديو صحيح!',
+			'emptyVideoUrl' => 'هذا nevent له رابط فارغ',
+			'submitValidVideoEvent' => 'يرجى إرسال حدث فيديو صحيح',
+			'errorUploadingVideo' => 'حدث خطأ أثناء رفع الفيديو',
+			'errorAddingVideo' => 'حدث خطأ أثناء إضافة الفيديو',
+			'submitMinMaxSats' => 'تأكد من إرسال ساتوشيس صحيحة للحد الأدنى والأقصى',
+			'submitValidCloseDate' => 'تأكد من إرسال تاريخ إغلاق صحيح.',
+			'submitValidOptions' => 'تأكد من إرسال خيارات صحيحة.',
+			'pollZapPublished' => 'تم نشر استطلاع الزاب!',
+			'relaysNotReached' => 'لا يمكن الوصول للمرحلات',
+			'loginYakiChestPoints' => 'سجل دخول في صندوق Yakihonne، اجمع النقاط بكونك نشطاً على المنصة واربح جوائز ثمينة!',
+			'inaccessibleLink' => 'رابط غير قابل للوصول',
+			'mediaExceedsMaxSize' => 'الوسائط تتجاوز الحد الأقصى للحجم وهو 21 ميجابايت',
+			'fetchingUserInboxRelays' => 'جلب مرحلات صندوق وارد المستخدم',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتس',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} معك',
+			'userRepostedYou' => ({required Object name}) => '${name} أعاد نشر محتواك',
+			'userMentionedYouInNote' => ({required Object name}) => '${name} ذكرك في ملاحظة',
+			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} ذكرك في ملاحظة مدفوعة',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} ذكرك في مقال',
+			'userMentionedYouInVideo' => ({required Object name}) => '${name} ذكرك في فيديو',
+			'userMentionedYouInCuration' => ({required Object name}) => '${name} ذكرك في تنسيق',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} ذكرك في ويدجت ذكية',
+			'userMentionedYouInPoll' => ({required Object name}) => '${name} ذكرك في استطلاع',
+			'userPublishedPaidNote' => ({required Object name}) => '${name} نشر ملاحظة مدفوعة',
+			'userPublishedArticle' => ({required Object name}) => '${name} نشر مقال',
+			'userPublishedVideo' => ({required Object name}) => '${name} نشر فيديو',
+			'userPublishedCuration' => ({required Object name}) => '${name} نشر تنسيق',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} نشر ويدجت ذكية',
+			'userPublishedPoll' => ({required Object name}) => '${name} نشر استطلاع',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} زاب مقالك ${number} ساتس',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتس',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتس',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} زاب ويدجتك الذكية ${number} ساتس',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتس',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتس',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتس',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقالك',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيقك',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديوك',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجتك الذكية',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاعك',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك المدفوعة',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع رسالتك',
+			'userRepostedYourNote' => ({required Object name}) => '${name} أعاد نشر ملاحظتك',
+			'userRepostedYourPaidNote' => ({required Object name}) => '${name} أعاد نشر ملاحظتك المدفوعة',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} رد على مقالك',
+			'userRepliedYourCuration' => ({required Object name}) => '${name} رد على تنسيقك',
+			'userRepliedYourVideo' => ({required Object name}) => '${name} رد على فيديوك',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} رد على ويدجتك الذكية',
+			'userRepliedYourPoll' => ({required Object name}) => '${name} رد على استطلاعك',
+			'userRepliedYourNote' => ({required Object name}) => '${name} رد على ملاحظتك',
+			'userRepliedYourPaidNote' => ({required Object name}) => '${name} رد على ملاحظتك المدفوعة',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} علق على مقالك',
+			'userCommentedYourCuration' => ({required Object name}) => '${name} علق على تنسيقك',
+			'userCommentedYourVideo' => ({required Object name}) => '${name} علق على فيديوك',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} علق على ويدجتك الذكية',
+			'userCommentedYourPoll' => ({required Object name}) => '${name} علق على استطلاعك',
+			'userCommentedYourNote' => ({required Object name}) => '${name} علق على ملاحظتك',
+			'userCommentedYourPaidNote' => ({required Object name}) => '${name} علق على ملاحظتك المدفوعة',
+			'userQuotedYourArticle' => ({required Object name}) => '${name} اقتبس مقالك',
+			'userQuotedYourCuration' => ({required Object name}) => '${name} اقتبس تنسيقك',
+			'userQuotedYourVideo' => ({required Object name}) => '${name} اقتبس فيديوك',
+			'userQuotedYourNote' => ({required Object name}) => '${name} اقتبس ملاحظتك',
+			'userQuotedYourPaidNote' => ({required Object name}) => '${name} اقتبس ملاحظتك المدفوعة',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقال ذُكرت فيه',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيق ذُكرت فيه',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديو ذُكرت فيه',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجت ذكية ذُكرت فيها',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاع ذُكرت فيه',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة ذُكرت فيها',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة مدفوعة ذُكرت فيها',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة ذُكرت فيها',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذُكرت فيها',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} رد على مقال ذُكرت فيه',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} رد على تنسيق ذُكرت فيه',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} رد على فيديو ذُكرت فيه',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} رد على ويدجت ذكية ذُكرت فيها',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} رد على استطلاع ذُكرت فيه',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة ذُكرت فيها',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة مدفوعة ذُكرت فيها',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} علق على مقال ذُكرت فيه',
+			'userCommentedCurationYouIn' => ({required Object name}) => '${name} علق على تنسيق ذُكرت فيه',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} علق على فيديو ذُكرت فيه',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} علق على ويدجت ذكية ذُكرت فيها',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} علق على استطلاع ذُكرت فيه',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة ذُكرت فيها',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة مدفوعة ذُكرت فيها',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name} اقتبس مقال ذُكرت فيه',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} اقتبس تنسيق ذُكرت فيه',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name} اقتبس فيديو ذُكرت فيه',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة ذُكرت فيها',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذُكرت فيها',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} تفاعل بـ ${reaction}',
+			'verifiedNoteSealed' => 'تم ختم ملاحظتك المُتحقق منها.',
+			'verifiedNoteRateSealed' => 'تم ختم ملاحظة مُتحقق منها قيّمتها.',
+			'userNewVideo' => ({required Object name}) => 'فيديو ${name}',
+			'titleData' => ({required Object description}) => 'العنوان: ${description}',
+			'checkoutVideo' => 'تحقق من فيديوي',
+			'yakihonneNotification' => 'إشعار YakiHonne',
+			'unknownVerifiedNote' => 'ملاحظة مُتحقق منها مجهولة',
+			'userReply' => ({required Object name}) => 'رد ${name}',
+			'userPaidNote' => ({required Object name}) => 'ملاحظة ${name} المدفوعة الجديدة',
+			'contentData' => ({required Object description}) => 'المحتوى: ${description}',
+			'checkoutPaidNote' => 'تحقق من ملاحظتي المدفوعة',
+			'userNewCuration' => ({required Object name}) => 'تنسيق ${name} الجديد',
+			'userNewArticle' => ({required Object name}) => 'مقال ${name} الجديد',
+			'userNewSmartWidget' => ({required Object name}) => 'ويدجت ${name} الذكية الجديدة',
+			'checkoutArticle' => 'تحقق من مقالي',
+			'checkoutCuration' => 'تحقق من تنسيقي',
+			'checkoutSmartWidget' => 'تحقق من ويدجتي الذكية',
+			'languagePreferences' => 'تفضيلات اللغة',
+			'contentTranslation' => 'ترجمة المحتوى',
+			'appLanguage' => 'لغة التطبيق',
+			'apiKeyRequired' => 'مفتاح API (مطلوب)',
+			'getApiKey' => 'الحصول على مفتاح API',
+			'seeTranslation' => 'رؤية الترجمة',
+			'seeOriginal' => 'رؤية الأصل',
+			'plan' => 'الخطة',
+			'free' => 'مجاني',
+			'pro' => 'احترافي',
+			'errorTranslating' => 'حدث خطأ أثناء ترجمة المحتوى.',
+			'errorMissingKey' => 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات -> تفضيلات اللغة للمزيد.',
+			'comingSoon' => 'قريباً',
+			'content' => 'المحتوى',
+			'expiresOn' => ({required Object date}) => 'ينتهي في: ${date}',
+			'collapseNote' => 'طي الملاحظة',
+			'reactions' => 'التفاعلات',
+			'reposts' => 'إعادة النشر',
+			'notifDisabled' => 'الإشعارات معطلة!',
+			'notifDisabledMessage' => 'الإشعارات معطلة لهذا النوع، يمكنك تفعيلها في إعدادات الإشعارات.',
+			'oneNotifOptionAvailable' => 'يجب أن يكون هناك خيار إشعار واحد متاح على الأقل.',
+			'readAll' => 'قراءة الكل',
+			'usernameTaken' => 'اسم المستخدم مأخوذ',
+			'usernameRequired' => 'اسم المستخدم مطلوب',
+			'deleteWalletConfirmation' => 'يرجى التأكد من حفظ عبارة اتصال NWC الخاصة بك بأمان، لأننا لا نستطيع المساعدة في استرداد المحافظ المفقودة.',
+			'unsupportedKind' => 'نوع غير مدعوم',
+			'analyticsCrashlytics' => 'Crashlytics',
+			'analyticsCache' => 'Crashlytics والذاكرة المؤقتة',
+			'analyticsCacheOn' => 'تم تشغيل Crashlytics.',
+			'analyticsCacheOff' => 'تم إيقاف Crashlytics.',
+			'shareNoUsage' => 'أنت لا تشارك أي crashlytics معنا في الوقت الحالي.',
+			'wantShareAnalytics' => 'تريد مشاركة crashlytics؟',
+			'yakihonneAnCr' => 'Crashlytics الخاصة بـ YakiHonne',
+			'crashlyticsTerms' => 'جمع crashlytics مجهولة الهوية أمر حيوي لتحسين مزايا تطبيقنا وتجربة المستخدم. يمكننا من تحديد تفضيلات المستخدمين وتحسين المزايا الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقاً أكثر تخصيصاً وكفاءة لمستخدمينا.',
+			'collectAnonymised' => 'نجمع crashlytics مجهولة الهوية لتحسين تجربة التطبيق.',
+			'linkWalletToProfile' => 'ربط المحفظة بملفك الشخصي',
+			'linkWalletToProfileDesc' => 'المحفظة المربوطة ستُستخدم لاستقبال الساتس',
+			'noWalletLinked' => 'ليس لديك محفظة مربوطة بملفك الشخصي فكر في ربط إحدى محافظك في القائمة أعلاه',
+			'addPoll' => 'إضافة استطلاع',
+			'browsePolls' => 'تصفح الاستطلاعات',
+			'maciPolls' => 'استطلاع MACI',
+			'beta' => 'تجريبي',
+			'choosePollType' => 'اختر نوع الاستطلاع',
+			'created' => 'تم الإنشاء',
+			'tallying' => 'العد',
+			'ended' => 'انتهى',
+			'closed' => 'مُغلق',
+			'voteResultsBy' => 'نتائج التصويت بواسطة',
+			'votes' => 'الأصوات',
+			'voiceCredit' => 'رصيد الصوت',
+			'viewDetails' => 'عرض التفاصيل',
+			'signup' => 'التسجيل',
+			'notDownloadProof' => 'لا يمكن تحميل الأدلة',
+			'name' => 'الاسم',
+			'status' => 'الحالة',
+			'circuit' => 'الدائرة',
+			'votingSystem' => 'نظام التصويت',
+			'proofSystem' => 'نظام الإثبات',
+			'gasStation' => 'محطة الغاز',
+			'totalFund' => '(إجمالي التمويل)',
+			'roundStart' => 'بداية الجولة',
+			'roundEnd' => 'نهاية الجولة',
+			'operator' => 'المشغل',
+			'contractCreator' => 'منشئ العقد',
+			'contractAddress' => 'عنوان العقد',
+			'blockHeight' => 'ارتفاع الكتلة',
+			'atContractCreation' => ({required Object number}) => '${number} (عند إنشاء العقد)',
+			'zkProofs' => 'أدلة ZK',
+			'downloadZkProofs' => 'تحميل الأدلة',
+			'walletConnectionString' => 'نص اتصال المحفظة',
+			'walletConnectionStringDesc' => 'يرجى التأكد من نسخ أو تصدير نص اتصال محفظتك بأمان. نحن لا نخزن هذه المعلومات، وإذا فُقدت، لا يمكن استردادها.',
+			'export' => 'تصدير',
+			'logout' => 'تسجيل الخروج',
+			'exportAndLogout' => 'تصدير وتسجيل الخروج',
+			'exportWalletsDesc' => 'يبدو أن لديك محافظ مربوطة بحسابك. يرجى تحميل أسرار محفظتك قبل تسجيل الخروج.',
+			'manageWallets' => 'إدارة المحافظ',
+			'roundDuration' => 'مدة الجولة',
+			'startAt' => ({required Object date}) => 'يبدأ في: ${date}',
+			'loginAction' => 'تسجيل الدخول',
+			'addPicture' => 'إضافة صورة',
+			'editPicture' => 'تعديل الصورة',
+			'exportKeys' => 'تصدير المفاتيح',
+			'mutedUser' => 'مستخدم مكتوم',
+			'unaccessibleContent' => 'محتوى غير قابل للوصول',
+			'mutedUserDesc' => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لرؤية هذا المحتوى',
+			'commentHidden' => 'هذا التعليق مخفي',
+			'upcoming' => 'قادم',
+			'exportCredentials' => 'تصدير بيانات الاعتماد',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
+			'loginToYakihonne' => 'تسجيل الدخول إلى Yakihonne',
+			'alreadyUser' => 'مستخدم بالفعل؟',
+			'createPoll' => 'إنشاء استطلاع',
+			'gasStationTotal' => 'محطة الغاز (إجمالي الممول)',
+			'gasStationRemaining' => 'محطة الغاز (الرصيد المتبقي)',
+			'paste' => 'لصق',
+			'manual' => 'يدوي',
+			'contacts' => 'جهات الاتصال',
+			'typeManualDesc' => 'اكتب عنوان Lightning أو فاتورة Lightning أو LNURL',
+			'useValidPaymentRequest' => 'يرجى استخدام طلب دفع صحيح',
+			'save' => 'حفظ',
+			'saveImageGallery' => 'تم تحميل الصورة إلى معرضك',
+			'errorSavingImage' => 'حدث خطأ أثناء تحميل الصورة',
+			'copyImageGallery' => 'تم نسخ الصورة إلى الحافظة',
+			'errorCopyImage' => 'حدث خطأ أثناء نسخ الصورة',
+			'scan' => 'مسح',
+			'invalidLightningAddress' => 'عنوان lightning غير صحيح',
+			'deleteAccountDesc' => 'أنت على وشك حذف حسابك، هل تريد المتابعة؟',
+			'paymentFailedInvoice' => 'فشل الدفع: تحقق من صحة هذه الفاتورة',
+			'validSatsAmount' => 'تعيين مبلغ ساتس صحيح',
+			'placeholder' => 'نائب',
+			'inputFieldCustomization' => 'تخصيص حقل الإدخال',
+			'addInputField' => 'إضافة حقل إدخال',
+			'addButton' => 'إضافة زر',
+			'selectImage' => 'اختيار صورة',
+			'moveLeft' => 'نقل يساراً',
+			'moveRight' => 'نقل يميناً',
+			'buttonRequired' => 'يجب أن يكون هناك زر واحد متاح على الأقل',
+			'missingInputDesc' => 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ويدجتك الذكية، يرجى إضافة حقل إدخال لتعمل الوظيفة بشكل صحيح.',
+			'countdown' => 'العد التنازلي',
+			'contentEndsAt' => 'المحتوى ينتهي في',
+			'countdownTime' => 'وقت العد التنازلي إجباري',
+			'contentEndsDate' => 'تاريخ انتهاء المحتوى إجباري',
+			'lnMandatory' => 'عنوان lightning إجباري',
+			'pubkeysMandatory' => 'ملف شخصي واحد على الأقل إجباري',
+			'buttonNoUrl' => 'روابط الأزرار إجبارية',
+			'shareWidgetImage' => 'مشاركة صورة الويدجت',
+			'inputField' => 'حقل الإدخال',
+			'noReplies' => 'لا توجد ردود',
+			'message' => 'رسالة',
+			'chat' => 'دردشة',
+			'onlyLettersNumber' => 'الحروف والأرقام فقط مسموحة',
+			'appCache' => 'ذاكرة التطبيق المؤقتة',
+			'cachedData' => 'البيانات المخزنة مؤقتاً',
+			'cachedMedia' => 'الوسائط المخزنة مؤقتاً',
+			'cacheCleared' => 'تم مسح الذاكرة المؤقتة',
+			'closeAppClearingCache' => 'من الأفضل إعادة تشغيل التطبيق عند مسح الذاكرة المؤقتة لضمان سريان جميع التغييرات وتشغيل التطبيق بسلاسة',
+			'appCacheNotice' => 'ذاكرة التطبيق المؤقتة تزداد في الحجم. لضمان الأداء السلس، يُنصح بمسح البيانات القديمة.',
+			'manageCache' => 'إدارة الذاكرة المؤقتة',
+			'filterByTime' => 'التصفية حسب الوقت',
+			'allTime' => 'كل الأوقات',
+			'oneMonth' => 'شهر واحد',
+			'threeMonths' => '3 أشهر',
+			'sixMonths' => '6 أشهر',
+			'oneYear' => 'سنة واحدة',
+			'defaultZapAmount' => 'مبلغ الزاب الافتراضي',
+			'oneTapZap' => 'تفعيل زاب بنقرة واحدة',
+			'verify' => 'التحقق',
+			'reset' => 'إعادة تعيين',
+			'appCannotVerified' => 'لا يمكن التحقق من التطبيق أو أنه غير صحيح',
+			'useValidAppUrl' => 'استخدم رابط تطبيق صحيح',
+			'app' => 'التطبيق',
+			'userNotConnected' => 'المستخدم غير متصل',
+			'userCannotSignEvent' => 'هذا المستخدم لا يستطيع توقيع الأحداث.',
+			'invalidEvent' => 'حدث غير صحيح',
+			'eventCannotBeSigned' => 'لا يمكن توقيع الحدث',
+			'signEvent' => 'توقيع الحدث',
+			'sign' => 'توقيع',
+			'signPublish' => 'توقيع ونشر',
+			'signEventDes' => 'أنت على وشك توقيع الحدث التالي',
+			'enableAutomaticSigning' => 'التوقيع التلقائي',
+			'tools' => 'الأدوات',
+			'searchSmartWidgets' => 'البحث عن ويدجت ذكية',
+			'noToolsAvailable' => 'لا توجد أدوات متاحة',
+			'underMaintenance' => 'تحت الصيانة',
+			'smartWidgetMaintenance' => 'الويدجت الذكية معطلة للصيانة. نحن نصلحها وستعود قريباً!',
+			'mySavedTools' => 'أدواتي المحفوظة',
+			'availableTools' => 'الأدوات المتاحة',
+			'remove' => 'إزالة',
+			'youHaveNoTools' => 'ليس لديك أدوات',
+			'discoverTools' => 'اكتشف الأدوات المنشورة لمساعدتك في إنشاء المحتوى',
+			'addWidgetTools' => 'إضافة أدوات ويدجت',
+			'widgetSearch' => 'البحث عن ويدجت',
+			'widgetSearchDesc' => 'البحث عن ويدجت ذكية منشورة وما صنعه الناس',
+			'getInspired' => 'احصل على الإلهام',
+			'getInspirtedDesc' => 'اطلب من الذكاء الاصطناعي مساعدتك في بناء ويدجتك الذكية',
+			'trySearch' => 'جرب طرق بحث مختلفة',
+			'typeForCommands' => 'اكتب / للأوامر',
+			'loadMore' => 'تحميل المزيد',
+			'searchingFor' => ({required Object name}) => 'البحث عن: ${name}',
+			'playground' => 'ساحة اللعب',
+			'typeKeywords' => 'اكتب كلمات مفتاحية (مثال: كلمة1، كلمة2..)',
+			'enableGossip' => 'نموذج Gossip',
+			'enableGossipDesc' => 'نموذج Gossip معطل افتراضياً. يمكنك تفعيله في الإعدادات تحت إشراف المحتوى.',
+			'enableExternalBrowser' => 'استخدام متصفح خارجي',
+			'restartAppTakeEffect' => 'أعد تشغيل التطبيق لتسري العملية',
+			'tips' => 'نصائح',
+			'docs' => 'المستندات',
+			'tryMiniApp' => 'جرب تطبيقك المصغر بالاختبار العملي والتفاعلي.',
+			'exploreOurRepos' => 'استكشف مستودعاتنا أو تحقق من مستندات الويدجت الذكية.',
+			'bringAi' => 'نحن نجلب الذكاء الاصطناعي!',
+			'bringAiDesc' => 'نحن نصنع مساعد ذكاء اصطناعي لتبسيط عملك مع الويدجت القابلة للبرمجة وتطوير التطبيقات المصغرة—ترقبوا!',
+			'notesCount' => ({required Object number}) => '${number} ملاحظة(ات)',
+			'mixedContentCount' => ({required Object number}) => '${number} محتوى',
+			'noApp' => 'لم يتم العثور على تطبيق مناسب لفتح الملف المُصدَّر',
+			'andMore' => ({required Object number}) => 'و ${number} آخر(ين)',
+			'addFilter' => 'إضافة مرشح',
+			'entitleFilter' => 'عنوان المرشح',
+			'includedWords' => 'الكلمات المُضمنة',
+			'excludedWords' => 'الكلمات المُستبعدة',
+			'hideSensitiveContent' => 'إخفاء المحتوى الحساس',
+			'mustIncludeThumbnail' => 'يجب تضمين صورة مصغرة',
+			'forArticles' => 'للمقالات',
+			'forVideos' => 'للفيديوهات',
+			'forCurations' => 'للتنسيقات',
+			'articleMinWords' => 'الحد الأدنى لعدد كلمات المحتوى',
+			'showOnlyArticleMedia' => 'إظهار المقالات التي تحتوي على وسائط فقط',
+			'showOnlyNotesMedia' => 'إظهار الملاحظات التي تحتوي على وسائط فقط',
+			'curationsType' => 'نوع التنسيقات',
+			'minItemCount' => 'الحد الأدنى لعدد العناصر',
+			'addWord' => 'إضافة كلمة مناسبة',
+			'wordNotInIncluded' => 'تأكد من أن الكلمة ليست في الكلمات المُضمنة',
+			'wordNotInExcluded' => 'تأكد من أن الكلمة ليست في الكلمات المُستبعدة',
+			'fieldRequired' => 'الحقل مطلوب',
+			'filterAdded' => 'تم إضافة المرشح',
+			'filterUpdated' => 'تم تحديث المرشح',
+			'filterDeleted' => 'تم حذف المرشح',
+			'filters' => 'المرشحات',
+			'contentFeed' => 'تدفق المحتوى',
+			'communityFeed' => 'تدفق المجتمع',
+			'relaysFeed' => 'تدفق المرحلات',
+			'marketplaceFeed' => 'تدفق السوق',
+			'addYourFeed' => 'أضف تدفقك المفضل',
+			'myList' => 'قائمتي',
+			'allFreeFeeds' => 'جميع التدفقات المجانية',
+			'noRelays' => 'لا توجد مرحلات',
+			'addRelays' => 'أضف قائمة مرحلاتك للاستمتاع بتدفق نظيف ومخصص',
+			'adjustYourFeedList' => 'اضبط قائمة تدفقك',
+			'addRelayUrl' => 'إضافة رابط المرحل',
+			'feedOptionEnabled' => 'يجب تفعيل خيار تدفق واحد على الأقل',
+			'feedSetUpdate' => 'تم تحديث مجموعة التدفق',
+			'global' => 'عالمي',
+			'fromNetwork' => 'من الشبكة',
+			'top' => 'الأعلى',
+			'showFollowingList' => 'تدفقك الحالي مبني على قائمة متابعة شخص آخر، ابدأ في متابعة أشخاص لتخصيص تدفقك حسب تفضيلك',
+			'from' => 'من',
+			'to' => 'إلى',
+			'dayMonthYear' => 'يوم/شهر/سنة',
+			'fromDateMessage' => 'تاريخ \'من\' يجب أن يكون سابقاً لتاريخ \'إلى\'',
+			'toDateMessage' => 'تاريخ \'إلى\' يجب أن يكون لاحقاً لتاريخ \'من\'',
+			'noResults' => 'لا توجد نتائج',
+			'noResultsFilterMessage' => 'يبدو أنك تطبق مرشحاً مخصصاً، يرجى ضبط المعاملات والتواريخ للحصول على المزيد من البيانات',
+			'noResultsNoFilterMessage' => 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معاملات مرشح مختلفة',
+			'addToNotes' => 'إضافة للملاحظات',
+			'addToDiscover' => 'إضافة للاكتشاف',
+			'shareRelayContent' => 'مشاركة محتوى المرحل',
+			'shareRelayUrl' => 'مشاركة رابط المرحل',
+			'basic' => 'أساسي',
+			'privateMessages' => 'الرسائل الخاصة',
+			'pushNotifications' => 'الإشعارات الفورية',
+			'repliesView' => 'عرض الردود',
+			'threadView' => 'خيط',
+			'boxView' => 'صندوق',
+			'viewAs' => 'عرض كـ',
+			'feedSettings' => 'إعدادات التدفق',
+			'appliedFilterDesc' => 'هذه الملاحظة مخفية بسبب المرشح المطبق حالياً.',
+			'showNote' => 'إظهار الملاحظة',
+			'allMedia' => 'جميع الوسائط',
+			'searchInNostr' => 'البحث في نوستر',
+			'findPeopleContent' => 'البحث عن أشخاص وملاحظات ومحتوى',
+			'activeService' => 'الخدمة النشطة',
+			'regularServers' => 'الخوادم العادية',
+			'blossomServers' => 'خوادم BLOSSOM',
+			'mirrorAllServer' => 'مرآة جميع الخوادم',
+			'mainServer' => 'الخادم الرئيسي',
+			'select' => 'اختيار',
+			'noServerFound' => 'لم يتم العثور على خادم',
+			'serverExists' => 'الخادم موجود بالفعل في قائمتك',
+			'invalidUrl' => 'تنسيق رابط غير صحيح',
+			'serverPath' => 'مسار الخادم',
+			'errorAddingBlossom' => 'حدث خطأ أثناء إضافة خادم blossom',
+			'errorSelectBlossom' => 'حدث خطأ أثناء اختيار خادم blossom',
+			'errorDeleteBlossom' => 'حدث خطأ أثناء حذف خادم blossom',
+			'wotConfig' => 'إعداد شبكة الثقة',
+			'wot' => 'شبكة الثقة',
+			'wotThreshold' => 'عتبة شبكة الثقة',
+			'postActions' => 'إجراءات المنشور',
+			'enabledFor' => 'مُفعل لـ',
+			'dmRelayTitle' => 'مرحلات الرسائل الخاصة غير مُعدة!',
+			'dmRelayDesc' => 'حدث قائمة مرحلاتك وفقاً لذلك. ',
+			'youFollow' => 'أنت تتابع',
+			'quotaLimit' => 'لقد تجاوزت حد الحصة اليومي',
+			'alwaysUseExternal' => 'استخدم دائماً زابس المحفظة الخارجية',
+			'alwaysUseExternalDesc' => 'استخدم تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
+			'unreachableExternalWallet' => 'محفظة خارجية غير قابلة للوصول',
+			'secureStorageDesc' => 'مفاتيحك مُخزنة بأمان على جهازك ولا تُشارك معنا أو مع أي شخص آخر أبداً.',
+			'pubkeySharedDesc' => 'آمن للمشاركة - هذا يُعرفك على نوستر.',
+			'privKeyDesc' => 'احتفظ به خاصاً - احفظه بأمان للوصول لحسابك في مكان آخر.',
+			'settingsKeysDesc' => 'إدارة مفاتيح نوستر لهوية الشبكة وتوقيع الأحداث ومصادقة المنشورات.',
+			'settingsRelaysDesc' => 'إعداد اتصالات مرحل نوستر لتخزين وتوزيع الأحداث.',
+			'settingsCustomizationDesc' => 'تخصيص عرض تدفق YakiHonne والإيماءات والمعاينات والتفضيلات لتجربة نوستر أفضل.',
+			'settingsNotificationsDesc' => 'التحكم في الإشعارات للرسائل والإشارات والتفاعلات وأحداث نوستر الأخرى.',
+			'settingsContentDesc' => 'التحكم في تفاعلات المحتوى وإعدادات الخصوصية ومعالجة الوسائط وتفضيلات الرسائل على نوستر.',
+			'settingsLanguageDesc' => 'اختر لغتك المفضلة لواجهة YakiHonne وترجمة المحتوى.',
+			'settingsWalletDesc' => 'ربط وإدارة محافظ Bitcoin Lightning لإرسال/استقبال الزابس بمبالغ قابلة للتخصيص وتكامل خارجي.',
+			'settingsAppearanceDesc' => 'تخصيص المظهر البصري لـ YakiHonne ليطابق تفضيلاتك وراحة المشاهدة.',
+			'settingsCacheDesc' => 'إدارة مراقبة أداء التطبيق وتقارير الأخطاء وتحسين التخزين للتشغيل السلس.',
+			'addQuickRelayDesc' => 'إضافة مرحل جديد بسرعة عبر إدخال رابطه.',
+			'fewerRelays' => 'مرحلات مستقرة أقل = أداء أفضل ومزامنة أسرع.',
+			'greenDotsDesc' => 'النقاط الخضراء تُظهر الاتصالات النشطة.',
+			'redDotsDesc' => 'النقاط الحمراء تُظهر المرحلات غير المتصلة.',
+			'greyDotsDesc' => 'النقاط الرمادية تُظهر المرحلات المعلقة.',
+			'homeFeedCustomDesc' => 'اختر نمط عرض الردود (صندوق أو خيط) وإدارة تفضيلات الاقتراحات للأشخاص والمحتوى والاهتمامات.',
+			'NewPostDesc' => 'اختر ما يحدث عند الضغط المطول أثناء إنشاء المنشورات (مُعين حالياً على ملاحظة).',
+			'profilePreviewDesc' => 'إظهار معاينات الملف الشخصي للمستخدم عند النقر على أسماء المستخدمين في تدفقك.',
+			'collapseNoteDesc' => 'تصغير المنشورات الطويلة تلقائياً للحفاظ على تدفقك نظيفاً وقابلاً للقراءة.',
+			'pushNotificationsDesc' => 'احصل على تنبيهات فورية على جهازك. يركز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة',
+			'privateMessagesDesc' => 'احصل على تنبيه للرسائل المباشرة الجديدة والمحادثات الخاصة.',
+			'followingDesc' => 'احصل على إشعار عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.',
+			'mentionsDesc' => 'احصل على تنبيه عندما يذكرك شخص أو يرد على منشوراتك.',
+			'repostsDesc' => 'احصل على تنبيه عندما يشارك أو يعيد نشر شخص محتواك.',
+			'reactionsDesc' => 'احصل على إشعار عندما يعجب أو يتفاعل شخص مع منشوراتك.',
+			'zapDesc' => 'احصل على إشعار عندما تستقبل إكراميات Bitcoin (زابس) على منشوراتك.',
+			'muteListDesc' => 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تدفقك.',
+			'mediaUploaderDesc' => 'اختر أي خدمة ترفع صورك وملفات الوسائط.',
+			'autoSignDesc' => 'توقيع الأحداث المطلوبة من التطبيقات المصغرة (ويدجت ذكية للإجراء/الأداة) تلقائياً دون تأكيد يدوي في كل مرة.',
+			'gossipDesc' => 'إدارة مرحل متطورة تجد منشورات متابعيك تلقائياً عبر مرحلات مختلفة مع تقليل الاتصالات والتكيف مع المرحلات غير المتصلة.',
+			'useExternalBrowsDesc' => 'فتح الروابط في تطبيق المتصفح الافتراضي بدلاً من المتصفح المدمج.',
+			'secureDmDesc' => 'استخدام أحدث معيار رسائل خاصة (NIP-17) مع تشفير متقدم. عطل لاستخدام تنسيق NIP-4 القديم للتوافق.',
+			'wotConfigDesc' => 'آلية ثقة لامركزية تستخدم شهادات اجتماعية لإنشاء سمعة ضمن بروتوكول نوستر.',
+			'appLangDesc' => 'اختر اللغة لواجهة YakiHonne والقوائم والأزرار.',
+			'contentTransDesc' => 'اختر خدمة الترجمة للمنشورات بلغات أجنبية.',
+			'planDesc' => 'مستوى خطة الترجمة الحالية وحدود الاستخدام.',
+			'manageWalletsDesc' => 'إضافة وتنظيم محافظ Lightning لإرسال واستقبال زابس Bitcoin على نوستر.',
+			'defaultZapDesc' => 'تعيين مبلغ Bitcoin الافتراضي (بالساتس) عند إرسال زابس سريعة للمنشورات.',
+			'enableZapDesc' => 'نقرة واحدة ترسل المبلغ الافتراضي فوراً. النقر المزدوج يفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، النقر المزدوج يرسل المبلغ الافتراضي.',
+			'externalWalletDesc' => 'استخدام تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
+			'fontSizeDesc' => 'ضبط حجم النص في جميع أنحاء التطبيق لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.',
+			'appThemeDesc' => 'التبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.',
+			'crashlyticsDesc' => 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة تحسين الأداء وإصلاح الأخطاء. نستخدم تحليلات Umami لتحسين تجربتك. اختر عدم المشاركة في أي وقت.',
+			'showSuggDesc' => 'عرض توصيات المحتوى العامة في تدفقك.',
+			'showSuggPeople' => 'إظهار المستخدمين الموصى بهم للمتابعة بناءً على نشاطك.',
+			'showSuggContent' => 'عرض المنشورات والمقالات الموصى بها في تدفقك.',
+			'showSuggInterests' => 'إظهار توصيات الموضوعات والاهتمامات للاكتشاف.',
+			'striveToMake' => 'نسعى لتحقيق أفضل ما في نوستر، ادعمنا أدناه أو أرسل لنا تعليقاتك القيمة: زاب، رسائل مباشرة، github.',
+			'errorAmber' => 'لقد رفضت أو أنك متصل بالفعل بـ Amber',
+			'useOneRelay' => 'يجب أن تبقي على الأقل وسيط واحد متصل',
+			'automaticPurge' => 'تنظيف تلقائي للذاكرة المؤقتة',
+			'automaticPurgeDesc' => 'مسح ذاكرة التطبيق المؤقتة تلقائيًا عند وصولها إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام المفرط للتخزين.',
+			'customServices' => 'خدمات مخصصة',
+			'defaultServices' => 'الخدمات الافتراضية',
+			'addService' => 'إضافة خدمة',
+			'customServicesDesc' => 'الخدمات المخصصة المتوفرة التي أضفتها.',
+			'urlRequired' => 'عنوان URL مطلوب',
+			'serviceAdded' => 'تمت إضافة الخدمة',
+			'showRawEvent' => 'عرض الحدث الخام',
+			'rawEventData' => 'بيانات الحدث الخام',
+			'copyRawEventData' => 'تم نسخ بيانات الحدث الخام! 👏',
+			'kind' => 'النوع',
+			'shortNote' => 'ملاحظة قصيرة',
+			'postedOnDate' => 'نُشر في',
+			'showMore' => '... عرض المزيد',
+			'accountDeleted' => 'تم حذف هذا الحساب ولم يعد من الممكن الوصول إليه.',
+			'ok' => 'حسناً',
+			'redeem' => 'استبدال',
+			'redeemCode' => 'استبدال الرمز',
+			'redeemAndEarn' => 'استبدال واربح',
+			'redeemingFailed' => 'فشل الاستبدال',
+			'redeemInProgress' => 'جارٍ استبدال الرمز...',
+			'redeemCodeDesc' => 'أدخل الرمز لاستبداله',
+			'missingCode' => 'الرمز مفقود',
+			'missingPubkey' => 'المفتاح العام مفقود',
+			'invalidPubkey' => 'المفتاح العام غير صالح',
+			'missingLightningAddress' => 'عنوان لايتنينغ مفقود',
+			'codeNotFound' => 'الرمز غير موجود',
+			'redeemCodeRequired' => 'رمز الاستبدال مطلوب',
+			'redeemCodeInvalid' => 'رمز الاستبدال غير صالح',
+			'codeBeingRedeemed' => 'يتم الآن استبدال الرمز. إذا لم يكتمل بنجاح، يرجى المحاولة مرة أخرى قريبًا.',
+			'redeemCodeSuccess' => 'تم استبدال الرمز بنجاح',
+			'redeemFailed' => 'تعذر استبدال الرمز، يرجى المحاولة لاحقًا.',
+			'codeAlreadyRedeemed' => 'تم استبدال الرمز بالفعل',
+			'satsEarned' => ({required Object amount}) => '+${amount} ساتوشي مكتسبة.',
+			'selectReceivingWallet' => 'اختر المحفظة المستلمة',
+			'redeemCodeMessage' => 'احصل على ساتوشي مجانية باستخدام رموز YakiHonne — فقط أدخل الرمز وزد رصيدك فورًا.',
+			'scanCode' => 'مسح الرمز',
+			'enterCode' => 'أدخل الرمز',
+			'errorSharingMedia' => 'حدث خطأ أثناء مشاركة الوسائط',
+			'open' => 'فتح',
+			'openUrl' => 'فتح الرابط',
+			'openUrlDesc' => ({required Object url}) => 'هل تريد فتح "${url}"؟',
+			'openUrlPrompt' => 'تأكيد فتح الرابط',
+			'openUrlPromptDesc' => 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.',
+			'whatsNew' => 'ما الجديد',
+			'appCustom' => 'تخصيص التطبيق',
+			'poll' => 'استطلاع',
+			'pendingEvents' => 'الأحداث المعلقة',
+			'pendingEventsDesc' => 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.',
+			'singleColumnFeed' => 'عرض بعمود واحد',
+			'singleColumnFeedDesc' => 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.',
+			'waitingPayment' => 'في انتظار الدفع',
+			'copyId' => 'نسخ المعرف',
+			'idCopied' => 'تم نسخ المعرف! 👏',
+			'republish' => 'إعادة النشر',
+			'useRelayRepublish' => 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.',
+			'republishSucces' => 'تمت إعادة نشر الحدث بنجاح!',
+			'errorRepublishEvent' => 'حدث خطأ أثناء إعادة نشر الحدث',
+			'remoteSigner' => 'موقّع عن بُعد',
+			'amber' => 'Amber',
+			'useUrlBunker' => 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك',
+			'or' => 'أو',
+			'messagesDisabled' => 'الرسائل معطلة',
+			'messagesDisabledDesc' => 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.',
+			'sharedOn' => ({required Object date}) => 'تمت المشاركة في ${date}',
+			'shareAsImage' => 'مشاركة كصورة',
+			'viewOptions' => 'خيارات العرض',
+			'feedCustomization' => 'تخصيص الخلاصة',
+			'defaultReaction' => 'التفاعل الافتراضي',
+			'defaultReactionDesc' => 'حدد تفاعلًا افتراضيًا للرد على المنشورات.',
+			'oneTapReaction' => 'تفعيل التفاعل بنقرة واحدة',
+			'oneTapReactionDesc' => 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.',
+			'sendingTo' => 'يتم الإرسال إلى',
+			'shareEmptyUsers' => 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع',
+			'publishOnly' => 'النشر فقط إلى',
+			'protectedEvent' => 'حدث محمي',
+			'protectedEventDesc' => 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.',
+			'browseRelay' => 'تصفح المرسل',
+			'addFavorite' => 'إضافة إلى المفضلة',
+			'removeFavorite' => 'إزالة من المفضلة',
+			'collections' => 'المجموعات',
+			'online' => 'متصل',
+			'offline' => 'غير متصل',
+			'network' => 'الشبكة',
+			'followedBy' => ({required Object number}) => 'يتابعك ${number}',
+			'favoredBy' => ({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}',
+			'requiredAuthentication' => 'يتطلب المصادقة',
+			'relayOrbits' => 'دوائر المرسل',
+			'relayOrbitsDesc' => 'تصفح واستكشف خلاصات المرسلين',
+			'people' => 'الأشخاص',
+			'youNotConnected' => 'أنت غير متصل',
+			'youNotConnectedDesc' => 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك',
+			'checkingRelayConnectivity' => 'جاري التحقق من اتصال المرسل',
+			'unreachableRelay' => 'مرسل غير قابل للوصول',
+			'engageWithUsers' => 'تفاعل للتوسّع',
+			'engageWithUsersDesc' => 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.',
+			'loadingChatHistory' => 'جاري تحميل سجل المحادثة...',
+			'contentActionsOrder' => 'ترتيب إجراءات المحتوى',
+			'contentActionsOrderDesc' => 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.',
+			'quotes' => 'اقتباسات',
+			'eventLoading' => 'جارٍ تحميل الحدث...',
+			'loadMessages' => 'تحميل الرسائل',
+			'messagesNotLoaded' => 'لم يتم تحميل الرسائل',
+			'messagesNotLoadedDesc' => 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.',
+			'noteLoading' => 'جارٍ تحميل الملاحظة...',
+			'hideNonFollowedMedia' => 'إخفاء الوسائط من غير المتابعين',
+			'hideNonFollowedMediaDesc' => 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.',
+			'clickToView' => 'اضغط للعرض',
+			'relayFeedListEmpty' => 'قائمة موجز المبدلات فارغة',
+			'relayFeedListEmptyDesc' => 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.',
+			'addRelay' => 'أضف مبدلات',
+			'hiddenContent' => 'محتوى مخفي',
+			'hiddenContentDesc' => 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.',
+			'enabledActions' => 'الإجراءات المفعّلة',
+			'enabledActionsDesc' => 'لا توجد إجراءات مفعّلة متاحة.',
+			_ => null,
+		};
 	}
 }
 

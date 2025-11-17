@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -1427,1400 +1428,1421 @@ class TranslationsJa extends Translations {
 	@override String get enabledActionsDesc => '利用可能な有効なアクションはありません。';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <ja>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsJa {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'userCommentedCurationYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションにコメントしました';
-			case 'userCommentedNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたノートにコメントしました';
-			case 'userCommentedPaidNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートにコメントしました';
-			case 'userCommentedPollYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた投票にコメントしました';
-			case 'userCommentedSmartWidgetYouIn': return ({required Object name}) => '${name} ウィジェットで言及されたスマートにコメントしました';
-			case 'userCommentedVideoYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた動画にコメントしました';
-			case 'userCommentedArticleYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた記事にコメントしました';
-			case 'userCommentedYourArticle': return ({required Object name}) => '${name} さんがあなたの記事にコメントしました';
-			case 'userCommentedYourCuration': return ({required Object name}) => '${name} さんがあなたのキュレーションにコメントしました';
-			case 'userCommentedYourNote': return ({required Object name}) => '${name} さんがあなたのノートにコメントしました';
-			case 'userCommentedYourPaidNote': return ({required Object name}) => '${name} さんがあなたの有料ノートにコメントしました';
-			case 'userCommentedYourPoll': return ({required Object name}) => '${name} さんがあなたの投票にコメントしました';
-			case 'userCommentedYourSmartWidget': return ({required Object name}) => '${name} さんがあなたのスマートウィジェットにコメントしました';
-			case 'userCommentedYourVideo': return ({required Object name}) => '${name} さんがあなたのビデオにコメントしました';
-			case 'userNoArticles': return ({required Object name}) => '${name} さんは記事がありません';
-			case 'userNoCurations': return ({required Object name}) => '${name} さんはキュレーションがありません';
-			case 'userNoNotes': return ({required Object name}) => '${name} さんはメモがありません';
-			case 'userNoSmartWidgets': return ({required Object name}) => '${name} さんはスマートウィジェットがありません';
-			case 'userNoVideos': return ({required Object name}) => '${name} さんは動画がありません';
-			case 'userSubmittedPaidNote': return ({required Object name}) => '${name} さんが有料ノートを提出しました';
-			case 'userMentionedYouInCuration': return ({required Object name}) => '${name} さんがキュレーションであなたをメンションしました';
-			case 'userMentionedYouInNote': return ({required Object name}) => '${name} さんがノートであなたをメンションしました';
-			case 'userMentionedYouInPaidNote': return ({required Object name}) => '${name} さんが有料ノートであなたをメンションしました';
-			case 'userMentionedYouInPoll': return ({required Object name}) => '${name} さんが投票であなたをメンションしました';
-			case 'userMentionedYouInSmartWidget': return ({required Object name}) => '${name} さんがスマートウィジェットであなたをメンションしました';
-			case 'userMentionedYouInVideo': return ({required Object name}) => '${name} さんが動画であなたをメンションしました';
-			case 'userMentionedYouInArticle': return ({required Object name}) => '${name} さんが記事であなたをメンションしました';
-			case 'userPublishedCuration': return ({required Object name}) => '${name} さんがキュレーションを公開しました';
-			case 'userPublishedPaidNote': return ({required Object name}) => '${name} さんが有料ノートを公開しました';
-			case 'userPublishedPoll': return ({required Object name}) => '${name} さんが投票を公開しました';
-			case 'userPublishedSmartWidget': return ({required Object name}) => '${name} さんがスマートウィジェットを公開しました';
-			case 'userPublishedVideo': return ({required Object name}) => '${name} さんが動画を公開しました';
-			case 'userPublishedArticle': return ({required Object name}) => '${name} さんが記事を公開しました';
-			case 'userQuotedCurationYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションを引用しました';
-			case 'userQuotedNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたノートを引用しました';
-			case 'userQuotedPaidNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートを引用しました';
-			case 'userQuotedVideoYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた動画を引用しました';
-			case 'userQuotedArticleYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた記事を引用しました';
-			case 'userQuotedYourArticle': return ({required Object name}) => '${name} さんがあなたの記事を引用しました';
-			case 'userQuotedYourCuration': return ({required Object name}) => '${name} さんがあなたのキュレーションを引用しました';
-			case 'userQuotedYourNote': return ({required Object name}) => '${name} さんがあなたのノートを引用しました';
-			case 'userQuotedYourPaidNote': return ({required Object name}) => '${name} さんがあなたの有料ノートを引用しました';
-			case 'userQuotedYourVideo': return ({required Object name}) => '${name} さんがあなたの動画を引用しました';
-			case 'userReactedCurationYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたキュレーションに${reaction} でリアクションしました';
-			case 'userReactedNoteYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたノートに ${reaction} でリアクションしました';
-			case 'userReactedPaidNoteYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた有料ノートに${reaction} でリアクションしました';
-			case 'userReactedPollYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた投票に ${reaction} でリアクションしました';
-			case 'userReactedSmartWidgetYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたスマートウィジェットに ${reaction} でリアクションしました';
-			case 'userReactedVideoYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた動画に ${reaction} でリアクションしました';
-			case 'userReactedArticleYouIn': return ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた記事に ${reaction} でリアクションしました';
-			case 'userReactedYou': return ({required Object name, required Object reaction}) => '${name} さんがあなたに ${reaction} でリアクションしました';
-			case 'userReactedYourArticle': return ({required Object name, required Object reaction}) => '${name} さんがあなたの記事に ${reaction} でリアクションしました';
-			case 'userReactedYourCuration': return ({required Object name, required Object reaction}) => '${name} さんがあなたのキュレーションに ${reaction} でリアクションしました';
-			case 'userReactedYourMessage': return ({required Object name, required Object reaction}) => '${name} さんがあなたのメッセージに ${reaction} でリアクションしました';
-			case 'userReactedYourNote': return ({required Object name, required Object reaction}) => '${name} さんがあなたのノートに ${reaction} でリアクションしました';
-			case 'userReactedYourPaidNote': return ({required Object name, required Object reaction}) => '${name} さんがあなたの有料ノートに ${reaction} でリアクションしました';
-			case 'userReactedYourPoll': return ({required Object name, required Object reaction}) => '${name} さんがあなたの投票に ${reaction} でリアクションしました';
-			case 'userReactedYourSmartWidget': return ({required Object name, required Object reaction}) => '${name} さんがあなたのスマートウィジェットに ${reaction} でリアクションしました';
-			case 'userReactedYourVideo': return ({required Object name, required Object reaction}) => '${name} さんがあなたの動画に ${reaction} でリアクションしました';
-			case 'reactedWith': return ({required Object name, required Object reaction}) => '${name} さんが ${reaction} でリアクションしました';
-			case 'userReceivedSat': return ({required Object name, required Object number}) => '${name} さんがあなたから ${number} Satsを受け取りました';
-			case 'userRepliedArticleYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた記事に返信しました';
-			case 'userRepliedCurationYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションに返信しました';
-			case 'userRepliedNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたノートに返信しました';
-			case 'userRepliedPaidNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートに返信しました';
-			case 'userRepliedPollYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた投票に返信しました';
-			case 'userRepliedSmartWidgetYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたスマートウィジェットに返信しました';
-			case 'userRepliedVideoYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた動画に返信しました';
-			case 'userRepliedYourArticle': return ({required Object name}) => '${name} さんがあなたの記事に返信しました';
-			case 'userRepliedYourCuration': return ({required Object name}) => '${name} さんがあなたのキュレーションに返信しました';
-			case 'userRepliedYourNote': return ({required Object name}) => '${name} さんがあなたのノートに返信しました';
-			case 'userRepliedYourPaidNote': return ({required Object name}) => '${name} さんがあなたの有料ノートに返信しました';
-			case 'userRepliedYourPoll': return ({required Object name}) => '${name} さんがあなたの投票に返信しました';
-			case 'userRepliedYourSmartWidget': return ({required Object name}) => '${name} さんがあなたのスマートウィジェットに返信しました';
-			case 'userRepliedYourVideo': return ({required Object name}) => '${name} さんがあなたの動画に返信しました';
-			case 'userRepostedNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされたノートをリポストしました';
-			case 'userRepostedPaidNoteYouIn': return ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートをリポストしました';
-			case 'userRepostedYou': return ({required Object name}) => '${name} さんがあなたのコンテンツをリポストしました';
-			case 'userRepostedYourNote': return ({required Object name}) => '${name} さんがあなたのノートをリポストしました';
-			case 'userRepostedYourPaidNote': return ({required Object name}) => '${name} さんがあなたの有料ノートをリポストしました';
-			case 'userSentSat': return ({required Object name, required Object number}) => '${name} さんがあなたに ${number} Satsを送りました';
-			case 'userZappedYou': return ({required Object name, required Object number}) => '${name} さんがあなたに ${number} Satsをzapしました';
-			case 'userZappedYourArticle': return ({required Object name, required Object number}) => '${name} さんがあなたの記事に ${number} Satsをzapしました';
-			case 'userZappedYourCuration': return ({required Object name, required Object number}) => '${name} さんがあなたのキュレーションに ${number} Satsをzapしました';
-			case 'userZappedYourNote': return ({required Object name, required Object number}) => '${name} さんがあなたのノートに ${number} Satsをzapしました';
-			case 'userZappedYourPaidNote': return ({required Object name, required Object number}) => '${name} さんがあなたの有料ノートに ${number} Satsをzapしました';
-			case 'userZappedYourPoll': return ({required Object name, required Object number}) => '${name} さんがあなたの投票に ${number} Satsをzapしました';
-			case 'userZappedYourSmartWidget': return ({required Object name, required Object number}) => '${name} さんがあなたのスマートウィジェットに ${number} Satsをzapしました';
-			case 'userZappedYourVideo': return ({required Object name, required Object number}) => '${name} さんがあなたの動画に ${number} Satsをzapしました';
-			case 'userNewArticle': return ({required Object name}) => '${name} さんの新着記事';
-			case 'userNewCuration': return ({required Object name}) => '${name} さんの新着キュレーション';
-			case 'userPaidNote': return ({required Object name}) => '${name} さんの新着有料ノート';
-			case 'userNewSmartWidget': return ({required Object name}) => '${name} さんの新着スマートウィジェット';
-			case 'userReply': return ({required Object name}) => '${name} さんの返信';
-			case 'userNewVideo': return ({required Object name}) => '${name} さんの動画';
-			case 'articlesNum': return ({required Object number}) => '${number} 件の記事';
-			case 'availableArticles': return ({required Object number}) => '${number} 件の利用可能な記事';
-			case 'availableVideos': return ({required Object number}) => '${number} 本の利用可能な動画';
-			case 'bookmarksListCount': return ({required Object number}) => '${number} 件のブックマークリスト';
-			case 'componentsSMCount': return ({required Object number}) => 'このウィジェットには ${number} 個のコンポーネントがあります';
-			case 'followersNum': return ({required Object number}) => 'フォロワー ${number} 人';
-			case 'itemsNumber': return ({required Object number}) => '${number} 件のアイテム';
-			case 'levelsRequiredNum': return ({required Object number}) => '必要なレベルは ${number}';
-			case 'pointsRemaining': return ({required Object number}) => '残り ${number}';
-			case 'videosNum': return ({required Object number}) => '${number} 本の動画';
-			case 'viewsNumber': return ({required Object number}) => '${number} 回閲覧';
-			case 'readTime': return ({required Object time}) => '${time} 分読んだ';
-			case 'mutualsNum': return ({required Object number}) => '+ ${number} 人の相互フォロー';
-			case 'peopleCountPlus': return ({required Object number}) => '+ ${number} 人';
-			case 'supportUs': return '❤︎ 応援してね';
-			case 'consumablePointsPerks1': return '1- 認証のためにコンテンツを提出する';
-			case 'consumablePointsPerks2': return '2- 有料ノートを公開するためにポイントを引き換える';
-			case 'consumablePointsPerks3': return '3- SATs用にポイントを引き換える（ランダムな閾値が設定され、引き換え可能な場合は通知されます）';
-			case 'highlightedNote': return '注目を集めるためのハイライトされたノート';
-			case 'minimumOfOneRequired': return '最低数量 1 が必要です';
-			case 'useValidTitle': return '有効なタイトルを使用する必要があります';
-			case 'aboutYou': return 'あなたについて';
-			case 'actGoodFaith': return '誠実に行動する';
-			case 'add': return '追加';
-			case 'addUrlNevent': return '適切な URL/neventを追加する';
-			case 'addProperUrlNevent': return '適切な URL/neventを追加する';
-			case 'addAccount': return 'アカウントを追加する';
-			case 'addBookmarkList': return 'ブックマークリストを追加する';
-			case 'addCover': return 'カバーを追加する';
-			case 'addCuration': return 'キュレーションを追加する';
-			case 'addInterests': return '興味を追加する';
-			case 'addNote': return 'ノートを追加する';
-			case 'addToCuration': return 'キュレーションに追加する';
-			case 'addUser': return 'ユーザーを追加する';
-			case 'addWallet': return 'ウォレットを追加する';
-			case 'addYourTopics': return 'あなたのトピックを追加する';
-			case 'adjustSpeed': return '速度を調整する';
-			case 'adjustVolume': return '音量を調整する';
-			case 'alby': return 'Alby';
-			case 'albyConnect': return 'Albyコネクト';
-			case 'all': return 'すべて';
-			case 'allRelays': return 'すべてのリレー';
-			case 'allUsersZapped': return 'すべてのユーザーがzapされました！';
-			case 'amberNotInstalled': return 'アプリAmberがインストールされていません';
-			case 'amountInSats': return 'Satsでの金額';
-			case 'errorAddingArticle': return '記事の追加中にエラーが発生しました';
-			case 'errorAddingCuration': return 'キュレーションの追加中にエラーが発生しました';
-			case 'errorAddingWidget': return 'スマートウィジェットの追加中にエラーが発生しました';
-			case 'errorAddingVideo': return '動画の追加中にエラーが発生しました';
-			case 'errorUpdatingCuration': return 'キュレーションの更新中にエラーが発生しました';
-			case 'userInvoiceGenerated': return ({required Object name}) => '${name} のinvoiceが生成されました';
-			case 'verifiedNoteRateSealed': return 'あなたが評価した認証済みノートが封印されました';
-			case 'apiKeyRequired': return 'APIキー（必須）';
-			case 'appLanguage': return 'アプリの言語';
-			case 'appTheme': return 'アプリのテーマ';
-			case 'appearance': return '外観';
-			case 'article': return '記事';
-			case 'articleNotFound': return '記事が見つかりませんでした';
-			case 'articleAddedCuration': return '記事がキュレーションに追加されました';
-			case 'articles': return '記事';
-			case 'articlesAvailableCuration': return 'このキュレーションで利用可能な記事';
-			case 'askMeSomething': return '何か聞いてください！';
-			case 'attemptConnectAmber': return 'Amberへの接続試行が拒否されました';
-			case 'attemptsRemained': return '残りの試行回数';
-			case 'autoSavedArticleDeleted': return '自動保存された記事が削除されました';
-			case 'autoSavedSMdeleted': return '自動保存されたスマートウィジェットが削除されました';
-			case 'availableWallets': return '利用可能なウォレット';
-			case 'back': return '戻る';
-			case 'backgroundColor': return '背景色';
-			case 'balance': return '残高';
-			case 'beHelpful': return '意見が合わない人にも親切にしましょう';
-			case 'beFirstCommentThisVideo': return 'この動画に最初のコメントを投稿しましょう！';
-			case 'bio': return ({required Object content}) => 'プロフィール： ${content}';
-			case 'blankWidget': return '空白のウィジェット';
-			case 'bookmark': return 'ブックマーク';
-			case 'bookmarkAdded': return 'ブックマークリストが追加されました';
-			case 'bookmarkLists': return 'ブックマークリスト';
-			case 'bookmarks': return 'ブックマーク';
-			case 'borderColor': return '枠線の色';
-			case 'button': return 'ボタン';
-			case 'buttonColor': return 'ボタンの色';
-			case 'buttonCustomization': return 'ボタンのカスタマイズ';
-			case 'buttonText': return 'ボタンのテキスト';
-			case 'by': return '作成者';
-			case 'byPerson': return ({required Object name}) => '作成者 ${name}';
-			case 'byContinuing': return '続行することで、以下に同意したものとみなされます\n';
-			case 'camera': return 'カメラ';
-			case 'cancel': return 'キャンセル';
-			case 'checkSmartWidget': return 'スマートウィジェットをチェックする';
-			case 'checkoutArticle': return '私の記事をチェックする';
-			case 'checkoutCuration': return '私のキュレーションをチェックする';
-			case 'checkoutPaidNote': return '私の有料ノートをチェックする';
-			case 'checkoutSmartWidget': return '私のスマートウィジェットをチェックする';
-			case 'checkValidity': return '有効性をチェックする';
-			case 'checkModelRouter': return 'モデムまたはルーターを確認してください';
-			case 'checkoutVideo': return '私の動画をチェックする';
-			case 'claim': return '請求する';
-			case 'claimTime': return ({required Object time}) => '${time} 後に請求する';
-			case 'clear': return 'クリアする';
-			case 'clearAppCache': return 'アプリのキャッシュをクリアする';
-			case 'clearChat': return 'チャットをクリアする';
-			case 'clearDate': return '日付をクリアする';
-			case 'click': return 'クリックする';
-			case 'clickBelowToConnect': return '下記をクリックして接続してください';
-			case 'clone': return 'クローンする';
-			case 'close': return '閉じる';
-			case 'pollClosedAt': return ({required Object date}) => '${date} に終了しました';
-			case 'pollClosesAt': return ({required Object date}) => '${date} に終了しました';
-			case 'color': return '色';
-			case 'comment': return 'コメント';
-			case 'comments': return 'コメント';
-			case 'communityPolls': return 'コミュニティ投票';
-			case 'communityWallet': return 'コミュニティウォレット';
-			case 'communityWidgets': return 'コミュニティウィジェット';
-			case 'compose': return '作成する';
-			case 'confirmPayment': return '支払いを確認する';
-			case 'congratulations': return 'おめでとうございます';
-			case 'connect': return '接続する';
-			case 'connectWithNwc': return 'NWCに接続する';
-			case 'connected': return '接続済み';
-			case 'consumablePoints': return '使用可能なポイント';
-			case 'contact': return '連絡する';
-			case 'container': return 'コンテナ';
-			case 'containerCustomization': return 'コンテナのカスタマイズ';
-			case 'contentModeration': return 'コンテンツのモデレーション';
-			case 'contentTextColor': return 'コンテンツのテキストの色';
-			case 'contentTranslation': return 'コンテンツの翻訳';
-			case 'contentData': return ({required Object description}) => 'コンテンツ: ${description}';
-			case 'continueAsGuest': return 'ゲストとして続行する';
-			case 'contributeUnderstanding': return '理解を深めるために貢献する';
-			case 'copy': return 'コピーする';
-			case 'copyInvoice': return 'invoiceをコピーする';
-			case 'copyLn': return 'ライトニングアドレスをコピーする';
-			case 'copyNaddr': return 'naddrをコピーする';
-			case 'copyNoteId': return 'ノートIDをコピーする';
-			case 'copyNpub': return 'npubをコピーする';
-			case 'copyNwc': return 'NWCをコピーする';
-			case 'userInvoiceNotGenerated': return 'このユーザーのinvoiceを作成できませんでした。';
-			case 'notFindSMwithAddr': return 'このアドレスに対応するスマートウィジェットが見つかりませんでした';
-			case 'couldNotUpdateRelaysList': return 'リレーリストを更新できませんでした';
-			case 'coverUrl': return 'カバーURL';
-			case 'createWalletSendRecSats': return 'Satsの送受信用ウォレットを作成する';
-			case 'createAccount': return 'アカウントを作成する';
-			case 'createWallet': return 'ウォレットを作成する';
-			case 'yakiNwcDesc': return 'YakiHonneのチャンネルを利用してウォレットを作成する';
-			case 'createYakiWallet': return 'YakiHonneのウォレットを作成する';
-			case 'createdAt': return '作成日時';
-			case 'createdAtEditedAt': return ({required Object date1, required Object date2}) => '作成日時 ${date1}、編集日時 ${date2}';
-			case 'curation': return 'キュレーション';
-			case 'curationNotFound': return 'キュレーションが見つかりませんでした';
-			case 'curationType': return 'キュレーションタイプ';
-			case 'curations': return 'キュレーション';
-			case 'currentlyLinkedMessage': return '現在、zap受信のためにあなたのプロフィールとリンクされています';
-			case 'customization': return 'カスタマイズ';
-			case 'customizeYourFeed': return 'フィードをカスタマイズする';
-			case 'dashboard': return 'ダッシュボード';
-			case 'decrMessage': return 'メッセージを復号化中';
-			case 'defaultKey': return 'デフォルト';
-			case 'delete': return '削除する';
-			case 'deleteContent': return ({required Object type}) => '${type} を削除する';
-			case 'deleteAccount': return 'アカウントを削除する';
-			case 'deleteBookmarkList': return 'ブックマークリストを削除する';
-			case 'deleteCoverPic': return 'カバー写真を削除する！';
-			case 'deleteDraft': return '下書きを削除する';
-			case 'deleteWallet': return 'ウォレットを削除する';
-			case 'description': return '説明';
-			case 'descriptionOptional': return '説明 (任意)';
-			case 'details': return '詳細';
-			case 'disableSecureDms': return 'セキュアDMを無効化する';
-			case 'disconnecting': return '切断中...';
-			case 'discordUrl': return 'Discord URL';
-			case 'discover': return '発見する';
-			case 'dismiss': return '無視する';
-			case 'displayName': return '表示名';
-			case 'findThisHelpful': return 'これが役に立ちましたか？';
-			case 'findThisNotHelpful': return 'これは役に立ちませんでしたか？';
-			case 'dontHaveWallet': return 'ウォレットをお持ちではありませんか？';
-			case 'unTextR3Desc': return 'ご安心ください、誰にでもこうした評価はあります！これらの評価は一般的で、多くの人が「役に立つ」ノートが十分に役に立たないと同意すれば、ステータス変更につながることがあります。';
-			case 'donations': return '寄付';
-			case 'downvotes': return '低評価';
-			case 'draft': return '下書き';
-			case 'duoLayout': return 'デュオレイアウト';
-			case 'earnSats': return 'SATを稼ぐ';
-			case 'edit': return '編集する';
-			case 'editCover': return 'カバーを編集する';
-			case 'editProfile': return 'プロフィールを編集する';
-			case 'editToAddZapPoll': return 'zap投票を追加するために編集する';
-			case 'editedOn': return ({required Object date}) => '編集日: ${date}';
-			case 'emptyVerifiedNote': return '認証済みノートの内容が空白です！';
-			case 'enableSecureDms': return 'セキュアDMを有効化する';
-			case 'eula': return 'エンドユーザーライセンス契約 (EULA)';
-			case 'engagementChart': return 'エンゲージメントチャート';
-			case 'enjoyExpOwnData': return 'あなた自身のデータを所有する体験をお楽しみください！\n';
-			case 'ensureLnSet': return 'ライトニングアドレスが正しく設定されていることを確認してください';
-			case 'enterSMaddr': return 'スマートウィジェットnaddrを入力して有効性を確認する。';
-			case 'enterLn': return 'LUD-06またはLUD-16のアドレスを入力してください';
-			case 'enterCoverUrl': return 'カバーURLを入力してください';
-			case 'enterNip05': return 'NIP-05アドレスを入力してください';
-			case 'enterPictureUrl': return '画像URLを入力してください';
-			case 'erase': return '消去する';
-			case 'errorAddingBookmark': return 'ブックマークの追加時にエラーが発生しました';
-			case 'errorAddingVerifiedNote': return '認証済みノートを追加中にエラーが発生しました';
-			case 'errorClaimingReward': return '報酬を請求中にエラーが発生しました';
-			case 'errorConnectingRelay': return 'リレーに接続中にエラーが発生しました';
-			case 'errorCreatingWallet': return 'ウォレット作成中にエラーが発生しました';
-			case 'errorDecodingData': return 'データデコード中にエラーが発生しました';
-			case 'errorDeletingContent': return 'コンテンツ削除中にエラーが発生しました';
-			case 'errorDeletingRating': return '評価削除中にエラーが発生しました';
-			case 'errorGeneratingEvent': return 'イベント生成中にエラーが発生しました';
-			case 'errorGeneratingInvoice': return 'invoice生成中にエラーが発生しました';
-			case 'errorLoggingYakiChest': return 'YakiHonneのチェストにログイン中にエラーが発生しました';
-			case 'errorPayingInvoice': return 'invoiceを使用した支払い中にエラーが発生しました';
-			case 'errorSendingSats': return 'Sats送信中にエラーが発生しました';
-			case 'errorSendingEvent': return 'イベント送信中にエラーが発生しました';
-			case 'errorSendingMessage': return 'メッセージ送信中にエラーが発生しました';
-			case 'errorSettingToken': return 'トークン設定中にエラーが発生しました';
-			case 'errorSigningEvent': return 'イベント署名中にエラーが発生しました';
-			case 'errorSubmittingRating': return '評価提出中にエラーが発生しました';
-			case 'errorTranslating': return 'コンテンツ翻訳中にエラーが発生しました。';
-			case 'errorUpdatingData': return 'データ更新中にエラーが発生しました';
-			case 'errorUpdatingRelaysList': return 'リレーリスト更新中にエラーが発生しました';
-			case 'errorUploadingMedia': return 'メディアアップロード中にエラーが発生しました';
-			case 'errorUploadingVideo': return '動画のアップロード中にエラーが発生しました';
-			case 'errorUsingWallet': return 'ウォレット使用中にエラーが発生しました！';
-			case 'errorZappingUsers': return 'ユーザーへのZap送信中にエラーが発生しました';
-			case 'errorUploadingImage': return '画像のアップロード中にエラーが発生しました';
-			case 'errorLoadingVideo': return '動画の読み込み中にエラーが発生しました';
-			case 'errorUsingExternalWallet': return '外部ウォレット使用中にエラーが発生しました。';
-			case 'eventNotFound': return 'イベントが見つかりませんでした';
-			case 'eventNotRecognized': return 'イベントが認識されませんでした';
-			case 'exit': return '終了する';
-			case 'expandWorld': return '興味のあるものを追加して世界を広げましょう。興味を選んで、冒険を始めましょう。';
-			case 'explanation': return '説明';
-			case 'explore': return '探索する';
-			case 'externalWallet': return '外部ウォレット';
-			case 'feedOptions': return 'フィードオプション';
-			case 'fetchingArticle': return '記事を取得中';
-			case 'fetchingCuration': return 'キュレーションを取得中';
-			case 'fetchingEvent': return 'イベントを取得中';
-			case 'fetchingEventUserRelays': return 'ユーザーのリレーからイベントを取得中';
-			case 'fetchingNote': return 'ノートを取得中';
-			case 'fetchingProfile': return 'プロフィールを取得中';
-			case 'fetchingSmartWidget': return 'スマートウィジェットを取得中';
-			case 'fetchingUserInboxRelays': return 'ユーザーのインボックスリレーを取得中';
-			case 'fetchingVideo': return '動画を取得中';
-			case 'fileSharing': return 'ファイル共有';
-			case 'fillColor': return '塗りつぶし色';
-			case 'finished': return '完了しました！';
-			case 'follow': return 'フォローする';
-			case 'followAll': return 'すべてフォローする';
-			case 'followMeOnNostr': return 'Nostrでフォローしてください';
-			case 'followers': return 'フォロワー';
-			case 'following': return 'フォロー中';
-			case 'pendingFollowing': return 'フォロー中...';
-			case 'followings': return 'フォロー中';
-			case 'followsYou': return 'あなたをフォローしています';
-			case 'fontSize': return 'フォントサイズ';
-			case 'forName': return ({required Object name}) => '${name} さんのために';
-			case 'enableSecureDmsMessage': return 'さらなるセキュリティとプライバシーのため、セキュアDMを有効にすることを検討してください。';
-			case 'zapSplitsMessage': return 'zapの分割には少なくとも1人必要です';
-			case 'free': return '無料';
-			case 'fuelYakihonne': return 'YakiHonneの成長を支援しましょう！あなたのサポートが新機能を生み出し、すべての人により良い体験を提供します。';
-			case 'gain': return '獲得する';
-			case 'gallery': return 'ギャラリー';
-			case 'generateInvoice': return 'invoiceを生成する';
-			case 'generateInvoices': return 'invoiceを生成する';
-			case 'getApiKey': return 'APIキーを取得する';
-			case 'getInvoice': return 'invoiceを取得する';
-			case 'getStartedNow': return '今すぐ始める';
-			case 'gifs': return 'GIF';
-			case 'gotIt': return '分かりました！';
-			case 'granted': return '許可されました';
-			case 'earnSatsDesc': return 'この有料ノートをレビューするために、より分散化されたインサイトの提供をお願いします。';
-			case 'heyWelcomeBack': return 'おかえりなさい';
-			case 'hideSuggestions': return '提案を非表示にする';
-			case 'highlights': return 'ハイライト';
-			case 'home': return 'ホーム';
-			case 'hfCustomization': return 'ホームフィードのカスタマイズ';
-			case 'horizontalVideo': return '横型動画';
-			case 'wantToShareRevenues': return 'この収益を共有したいです';
-			case 'identifier': return '識別子';
-			case 'image': return '画像';
-			case 'imageAspectRatio': return '画像のアスペクト比';
-			case 'imageCustomization': return '画像のカスタマイズ';
-			case 'imageUrl': return '画像のURL';
-			case 'imageUploadHistory': return '画像アップロード履歴';
-			case 'important': return '重要';
-			case 'inTag': return ({required Object name}) => '${name} 内';
-			case 'inaccessibleLink': return 'アクセス不能なリンク';
-			case 'inbox': return 'インボックス';
-			case 'initializingAccount': return 'アカウントを初期化中...';
-			case 'insertText': return 'テキストを挿入する';
-			case 'instantConntect': return 'リレーに即時接続';
-			case 'interestsUpdateMessage': return '興味リストが正常に更新されました！';
-			case 'interested': return '興味あり';
-			case 'interests': return '興味';
-			case 'invalidHexKey': return '無効な16進キーです！';
-			case 'invalidInvoice': return '無効なinvoice';
-			case 'invalidPairingSecret': return '無効なペアリング シークレット';
-			case 'invalidPrivateKey': return '無効な秘密鍵です!';
-			case 'invalidRelayUrl': return '無効なリレーURL';
-			case 'invoice': return 'invoice';
-			case 'invoiceCopied': return 'invoiceコードをコピーしました！';
-			case 'invoicePaid': return 'invoiceが正常に支払われました';
-			case 'invoiceOrLN': return 'invoiceまたはライトニングアドレス';
-			case 'issueOccuredSelectingImage': return '画像を選択中に問題が発生しました';
-			case 'somethingWentWrongDesc': return 'データの読み込み中に何かが発生したようです。もう一度お試しください！';
-			case 'invalidInvoiceDesc': return 'スキャンされたinvoiceが無効なようです。再スキャンしてもう一度試してください。';
-			case 'invoiceNotPayed': return 'invoiceが未払いのようです。再確認してください。';
-			case 'itsLive': return 'ライブ中です！';
-			case 'noCommunityNotes': return 'ここは静かですね！コミュニティノートはまだありません。';
-			case 'joinedOn': return ({required Object date}) => '参加日:  ${date}';
-			case 'keys': return 'キー';
-			case 'known': return '既知';
-			case 'languagePreferences': return '言語設定';
-			case 'lastGained': return ({required Object date}) => '最後に獲得した日： ${date}';
-			case 'lastUpdatedOn': return ({required Object date}) => '最終更新日： ${date}';
-			case 'latest': return '最新';
-			case 'layout': return 'レイアウト';
-			case 'layoutCustomization': return 'レイアウトのカスタマイズ';
-			case 'less': return '少ない';
-			case 'letsGetStarted': return '始めましょう!';
-			case 'levelNumber': return ({required Object number}) => 'レベル ${number}';
-			case 'lightningAddress': return 'ライトニングアドレス';
-			case 'lnCopied': return 'Lightningアドレスをコピーしました！👏';
-			case 'link': return 'リンク';
-			case 'linkWallet': return 'リンクウォレット';
-			case 'linked': return 'リンク済み';
-			case 'list': return 'リスト';
-			case 'loading': return '読み込み中';
-			case 'loadingFollowings': return 'フォロー中を読み込み中';
-			case 'loadingPreviousPosts': return '以前のポストを読み込み中...';
-			case 'loadingFollowers': return 'フォロワーを読み込み中';
-			case 'locked': return 'ロックされています';
-			case 'loggingIn': return 'ログイン中...';
-			case 'loggingOut': return 'ログアウト中...';
-			case 'login': return 'ログイン';
-			case 'loginYakiChestPoints': return 'YakiHonneのチェストにログインして、プラットフォームでアクティブに活動してポイントを貯め、貴重な賞品を手に入れましょう！';
-			case 'logoutAllAccounts': return 'すべてのアカウントをログアウトする';
-			case 'validDescriptionCuration': return 'このキュレーションに有効な説明を追加してください';
-			case 'validImageCuration': return 'このキュレーションに有効な画像を追加してください';
-			case 'validTitleCuration': return 'このキュレーションに有効なタイトルを追加してください';
-			case 'addValidUrl': return '有効なURLを追加してください';
-			case 'submitValidLud': return '有効なlud16/lud06を取得してください。';
-			case 'showSecretDesc': return 'これはアカウントへの完全なアクセスを提供するため、安全に保管してください。';
-			case 'invalidInvoiceLnurl': return '有効なinvoiceまたはlnurlを設定してください';
-			case 'setAllRequiredContent': return '必要なすべてのコンテンツを設定してください';
-			case 'setOutboxRelays': return 'アウトボックスリレーを設定してください';
-			case 'submitValidCloseDate': return '有効な終了日を提出してください。';
-			case 'submitMinMaxSats': return '有効な最小および最大のSatsを提出してください';
-			case 'submitValidOptions': return '有効なオプションを提出してください';
-			case 'submitValidData': return '有効なデータを提出してください';
-			case 'submitValidInvoice': return '有効なinvoiceを提出してください';
-			case 'manageAccounts': return 'アカウントを管理する';
-			case 'manageInterests': return '興味を管理する';
-			case 'maxSats': return '最大Sats';
-			case 'maximumSatoshis': return '最大Sats';
-			case 'mediaExceedsMaxSize': return 'メディアが最大サイズ21MBを超えています';
-			case 'mediaUploader': return 'メディアアップローダー';
-			case 'mentions': return 'メンション';
-			case 'messageOptional': return 'メッセージ (任意)';
-			case 'messageCouldNotBeDecrypted': return 'メッセージを復号できませんでした';
-			case 'messageNotDecrypted': return 'メッセージがまだ復号されていません！';
-			case 'messageCopied': return 'メッセージが正常にコピーされました。';
-			case 'metadata': return 'メタデータ';
-			case 'min': return '分';
-			case 'minSats': return '最小Sats';
-			case 'minimumSatoshis': return '最小Sats';
-			case 'errorMissingKey': return 'APIキーが欠落しているか、サブスクリプションが期限切れです。[設定] > [言語設定]で確認してください。';
-			case 'monoLayout': return 'モノレイアウト';
-			case 'monolayoutRequired': return 'モノレイアウトが必要です';
-			case 'more': return 'もっと見る';
-			case 'moreDots': return 'もっと...';
-			case 'moveDown': return '下に移動';
-			case 'moveUp': return '上に移動';
-			case 'mute': return 'ミュートする';
-			case 'muteList': return 'ミュートリスト';
-			case 'muteUser': return 'ユーザーをミュートする';
-			case 'mutuals': return '相互フォロー';
-			case 'myArticles': return '私の記事';
-			case 'myDrafts': return '私の下書き';
-			case 'myPolls': return '私の投票';
-			case 'myPublicKey': return '私の公開鍵';
-			case 'mySecretKey': return '私の秘密鍵';
-			case 'myVideos': return '私の動画';
-			case 'myWidgets': return '私のウィジェット';
-			case 'naddr': return 'naddr';
-			case 'nostrWalletConnectDesc': return 'ネイティブnostrウォレット接続';
-			case 'needsMoreRating': return 'もっと評価が必要です';
-			case 'needsYourHelp': return 'あなたの助けが必要です';
-			case 'nevent': return 'nevent';
-			case 'newKey': return '新着';
-			case 'newMessage': return '新着メッセージ';
-			case 'newPostGesture': return '新着ポストの長押しジェスチャー';
-			case 'next': return '次へ';
-			case 'noContentBelongToCuration': return ({required Object type}) => 'このキュレーションに属する ${type} はありません';
-			case 'noContentCanBeFound': return ({required Object type}) => '${type} が見つかりません';
-			case 'noArticlesInCuration': return 'このキュレーションに記事は見つかりませんでした';
-			case 'addNewBookmark': return 'ブックマークリストが見つかりません。追加してみてください！';
-			case 'noBookmarksListFound': return 'ブックマークリストが見つかりません。追加してみてください！';
-			case 'noCommentsCanBeFound': return 'コメントが見つかりません';
-			case 'noComponentsDisplayed': return 'コンポーネントを表示できません';
-			case 'noCurationsFound': return 'キュレーションが見つかりませんでした。コンテンツを追加できるように、新しいキュレーションを作成してください。';
-			case 'noDescription': return '説明がありません';
-			case 'noElementsInBookmarks': return 'ブックマークリストにエレメントが見つかりませんでした';
-			case 'noEventIdCanBeFound': return 'このIDのイベントは見つかりませんでした！';
-			case 'noImageHistory': return '画像履歴が見つかりませんでした';
-			case 'noInternetAccess': return 'インターネットアクセスがありません';
-			case 'noInvoiceAvailable': return '利用可能なinvoiceがありません';
-			case 'noMessageCanBeFound': return 'メッセージが見つかりません';
-			case 'noMessagesToDisplay': return '表示されるメッセージがありません。';
-			case 'noMoreData': return 'これ以上のデータはありません';
-			case 'noMutedUserFound': return 'ミュートされたユーザーが見つかりませんでした';
-			case 'noNotificationCanBeFound': return '通知が見つかりません';
-			case 'noPaidNotesCanBeFound': return '有料ノートが見つかりません。';
-			case 'noPollsCanBeFound': return '投票が見つかりません';
-			case 'noReasonsSpecified': return '理由が指定されていません！';
-			case 'noRelaysCanBeFound': return 'リレーが見つかりません';
-			case 'noUserRelays': return 'このユーザーのリレーが見つかりませんでした';
-			case 'noRepliesDesc': return 'このノートへの返信が見つかりません';
-			case 'noResKeyword': return 'このキーワードに対する結果がありません';
-			case 'noResKeywordDesc': return 'このキーワードでは結果が見つかりませんでした。他のキーワードを使用して、より良い結果を試してください。';
-			case 'noSmartWidgetCanBeFound': return 'スマートウィジェットが見つかりません';
-			case 'noSmartWidget': return 'スマート ウィジェットの下書きが見つかりません';
-			case 'noTemplatesCanBeFound': return 'このカテゴリにはテンプレートが見つかりません。';
-			case 'noTitle': return 'タイトルがありません';
-			case 'noTransactionCanBeFound': return 'トランザクションが見つかりません';
-			case 'noUserZapped': return 'zapされたユーザーはいません！';
-			case 'noUserCanBeFound': return 'ユーザーが見つかりません。';
-			case 'noVideosInCuration': return 'このキュレーションに動画が見つかりませんでした';
-			case 'noWalletCanBeFound': return 'ウォレットが見つかりません';
-			case 'noZappersCanBeFound': return 'zapperが見つかりません。';
-			case 'noImGood': return 'いいえ、結構です';
-			case 'noWalletConnectedToYourProfile': return '接続されたウォレットはあなたのプロフィールにリンクされていません';
-			case 'nostrScheme': return 'Nostrスキーム';
-			case 'nostrWalletConnect': return 'Nostrウォレット接続';
-			case 'nwcInitialized': return 'Nostr ウォレット接続が初期化されました';
-			case 'notEnoughBalance': return 'この支払いを行うための残高が不足しています。';
-			case 'notFollowedByAnyoneYouFollow': return 'あなたがフォローしている人からフォローされていません。';
-			case 'notHelpful': return '役に立たない';
-			case 'notInterested': return '興味がありません';
-			case 'notSealed': return '封印されていません';
-			case 'notSealedYet': return 'まだ封印されていません';
-			case 'note': return 'ノート';
-			case 'noteNotFound': return 'ノートが見つかりませんでした';
-			case 'notePublished': return 'ノートが公開されました！';
-			case 'noteIdCopied': return 'ノートIDがコピーされました! 👏';
-			case 'walletDataNote': return '注意: ウォレットに関連するすべてのデータは安全かつ確実にローカルに保存され、アプリケーションの範囲外に共有されることはありません。';
-			case 'changeRatingNote': return '評価の変更は5分間のみ有効です。それ以降は元に戻すことも変更することもできません。';
-			case 'payPublishNote': return '注意: 提供されたすべてのコンテンツは最終的なものであることを確認してください。公開は不可逆的とみなされ、使用されたSATSは返金されません。';
-			case 'notes': return 'ノート';
-			case 'notesFromCommunity': return 'コミュニティからのメモ';
-			case 'unTextW3Desc': return '「役に立つ」または「役立たない」のステータスがまだありません';
-			case 'unTextW1': return '「役に立つ」ステータスを獲得したノート';
-			case 'unTextW3': return 'さらに評価が必要なノート';
-			case 'unTextW2': return '「役に立たない」ステータスを獲得したノート';
-			case 'un2': return '評価中のノート';
-			case 'notifications': return '通知';
-			case 'npubNsecHex': return 'npub, nsecまたはhex';
-			case 'nwcCopied': return 'NWCが正常にコピーされました！';
-			case 'onDate': return ({required Object date}) => '${date} に';
-			case 'onSelectedWalletLinkIt': return '選択したウォレットにリンクします。';
-			case 'oneTimeRewards': return '一度きりの報酬';
-			case 'ongoing': return '進行中';
-			case 'nothingToShowHere': return 'おっと！ここには表示するものがありません！';
-			case 'optionBackgroundColor': return 'オプションの背景色';
-			case 'optionTextColor': return 'オプションのテキスト色';
-			case 'options': return 'オプション';
-			case 'optionsNumber': return ({required Object number}) => 'オプション: ${number}';
-			case 'orUseYourWallet': return 'またはウォレットを使用してください';
-			case 'others': return 'その他';
-			case 'privacyNote': return '当社のアプリは、厳格な暗号化を使用して、ユーザーのデバイスに重要なデータを安全にローカル保存します。情報が外部に共有されないよう厳格なポリシーを守り、機密性が確保されますのでご安心ください。';
-			case 'owner': return '所有者';
-			case 'paid': return '支払い済み';
-			case 'paidNote': return '有料ノート';
-			case 'paidNotePublished': return '有料ノートが公開されました！';
-			case 'paidNoteLoading': return '有料ノートを読み込み中';
-			case 'partialUsersZapped': return '一部のユーザーがzapされました!';
-			case 'pasteNwcAddress': return 'NWCアドレスを貼り付ける';
-			case 'pasteYourKey': return 'キーを貼り付けてください';
-			case 'pasteKind1063': return '種類1063のnEventを貼り付けて提出してください';
-			case 'pasteYourLink': return 'リンクを貼り付けて提出してください';
-			case 'pay': return '支払う';
-			case 'payAmount': return ({required Object number}) => ' ${number} Sats を支払う';
-			case 'payPublish': return '支払い＆公開';
-			case 'payWithNwc': return 'NWC で支払う';
-			case 'paymentFailed': return '支払いに失敗しました';
-			case 'paymentSucceeded': return '支払いが成功しました';
-			case 'paymentSurpassMax': return '支払いが許可されている最大金額を超えています。';
-			case 'peopleToFollow': return 'フォローすべき人';
-			case 'permissionInvoiceNotGranted': return 'invoiceの支払い許可がありません。';
-			case 'pickYourComponent': return 'コンポーネントを選択してください';
-			case 'pickYourImage': return '画像を選択してください';
-			case 'pickYourMedia': return 'メディアを選択してください';
-			case 'pickYourVideo': return '動画を選択してください';
-			case 'pictureUrl': return '画像URL';
-			case 'plan': return 'プラン';
-			case 'submitValidVideoEvent': return '有効な動画イベントを提出してください';
-			case 'points': return 'ポイント';
-			case 'pointsSystem': return 'ポイントシステム';
-			case 'pollCloseDate': return '投票の終了日';
-			case 'pollOptions': return '投票オプション';
-			case 'pollZapPublished': return '投票zapが公開されました！';
-			case 'popularNotes': return '人気のノート';
-			case 'post': return 'ポストする';
-			case 'postArticle': return '記事をポストする';
-			case 'postNotFound': return 'ポストが見つかりませんでした';
-			case 'postCuration': return 'キュレーションをポストする';
-			case 'postInNote': return 'ノート内にポストする';
-			case 'postNote': return 'ノートをポストする';
-			case 'postSmartWidget': return 'スマートウィジェットをポストする';
-			case 'postVideo': return '動画をポストする';
-			case 'postedBy': return 'ポスト元';
-			case 'postedFrom': return 'ポスト元';
-			case 'postedOn': return ({required Object date}) => '${date} にポストされました';
-			case 'preview': return 'プレビュー';
-			case 'privKeyCopied': return '秘密鍵がコピーされました！👏';
-			case 'pro': return 'プロ';
-			case 'processCompleted': return '処理が完了しました';
-			case 'profile': return 'プロフィール';
-			case 'profileLink': return 'プロフィールリンク';
-			case 'profileCopied': return 'プロフィールリンクがコピーされました！👏';
-			case 'profilePreview': return 'プロフィールをプレビューする';
-			case 'profileRelays': return ({required Object number}) => 'プロファイル推奨リレー - ${number}';
-			case 'publicKey': return '公開鍵';
-			case 'publicKeyCopied': return '公開鍵がコピーされました! ';
-			case 'publish': return '公開する';
-			case 'publishRemoveDraft': return '下書きを公開して削除する';
-			case 'publishedOnText': return '公開日';
-			case 'publishedOn': return ({required Object date}) => '公開日: ${date}';
-			case 'pullToRefresh': return '画面を引き下げて更新';
-			case 'qrCode': return 'QRコード';
-			case 'rateHelpful': return '「役に立つ」と評価する';
-			case 'rateNotHelpful': return '「役に立たない」と評価する';
-			case 'ratedHelpful': return '「役に立つ」と評価した';
-			case 'ratedNotHelpful': return '「役に立たない」と評価した';
-			case 'un1': return '「役に立つ」のステータスになったノートへの「役に立たない」評価';
-			case 'unTextR3': return '「役に立つ」のステータスになったノートへの「役に立たない」評価';
-			case 'un2Desc': return '現在「役に立つ」または「役に立たない」のステータスがないノートへの評価';
-			case 'unTextR1': return 'ノートが「役に立つ」ステータスを獲得するのに役立った評価';
-			case 'unTextR2': return 'ノートが「役に立たない」ステータスを獲得するのに役立った評価';
-			case 'readAboutVerifyingNotes': return 'ノートの認証について読む';
-			case 'readArticle': return '記事を読む';
-			case 'readMore': return '続きを読む';
-			case 'readOnly': return '読み取り専用';
-			case 'readWrite': return '読み取り/書き込み';
-			case 'receive': return '受け取る';
-			case 'receiveSats': return 'satsを受け取る';
-			case 'recent': return '最近の';
-			case 'recentTransactions': return '最近のトランザクション';
-			case 'recentWithReplies': return '返信付きの最近のポスト';
-			case 'reconnectWifi': return 'WiFiに再接続する';
-			case 'refresh': return '更新する';
-			case 'refreshed': return '更新されました';
-			case 'refreshing': return '更新中';
-			case 'relayInUse': return 'リレーはすでに使用されています';
-			case 'relaySettings': return ({required Object number}) => 'リレー設定 ${number}';
-			case 'relayingStuff': return 'リレー中...';
-			case 'relays': return 'リレー';
-			case 'relaysNotReached': return 'リレーに到達できませんでした';
-			case 'relaysListUpdated': return 'リレーリストが更新されました';
-			case 'releaseToLoad': return '指を離してさらに読み込む';
-			case 'repeatedRewards': return '繰り返し報酬';
-			case 'replies': return '返信';
-			case 'reply': return '返信する';
-			case 'replyingTo': return ({required Object name}) => '${name} に返信中';
-			case 'reposted': return 'リポストした';
-			case 'requestInProgress': return '処理中のリクエスト';
-			case 'reveal': return '表示する';
-			case 'rewards': return '報酬';
-			case 'saveDraft': return '下書きを保存する';
-			case 'saved': return '保存されました';
-			case 'scanPay': return 'スキャンして支払う';
-			case 'scanAgain': return '再度スキャンしてください';
-			case 'scanQrCode': return 'QRコードをスキャンする';
-			case 'sealed': return '封印された';
-			case 'search': return '検索する';
-			case 'searchContentByTitle': return ({required Object type}) => 'タイトルで ${type} を検索する ';
-			case 'searchNameNpub': return '名前、npub、nprofile で検索する';
-			case 'searchByUserName': return 'ユーザー名で検索する';
-			case 'searchRelay': return 'リレーを検索する';
-			case 'secureDirectMessaging': return 'セキュアDM';
-			case 'seeAll': return 'すべて表示する';
-			case 'seeAllAttempts': return 'すべての試行を表示する';
-			case 'seeAlso': return '参考する';
-			case 'seeAnything': return '改善したい点はありますか?';
-			case 'seeMore': return 'もっと見る';
-			case 'seeOriginal': return 'オリジナルを見る';
-			case 'seeTranslation': return '翻訳を見る';
-			case 'selectAndUploadLocaleImage': return 'ローカル画像を選択してアップロードしてください';
-			case 'selectAdate': return '日付を選択してください';
-			case 'selectDefaultWallet': return '設定でデフォルトウォレットを選択してください。';
-			case 'selectUserToZap': return 'Zapを送るユーザーを選択してください（任意）';
-			case 'selectValidUrlImage': return '有効なURL画像を選択してください';
-			case 'selectWalletTransactions': return '最新のトランザクションを取得するウォレットを選択してください。';
-			case 'selectOneReason': return '少なくとも1つの理由を選択してください';
-			case 'selectComponent': return '都合の良いコンポーネントを選択して編集してください';
-			case 'send': return '送る';
-			case 'sendSats': return 'satsを送る';
-			case 'setProperName': return '適切な名前を設定する';
-			case 'setSatsMoreThanZero': return '0より大きいSatsの金額を設定してください';
-			case 'setBookmarkTitleDescription': return 'ブックマークリストのタイトルと説明を設定してください。';
-			case 'setValidKey': return '有効なキーを設定してください';
-			case 'setUpYourLink': return 'リンクを設定してください';
-			case 'setUpYourNevent': return 'nEventを設定してください';
-			case 'setYourRating': return '評価を設定してください';
-			case 'settings': return '設定';
-			case 'share': return '共有する';
-			case 'shareGlimps': return 'あなた自身のことを真実の言葉で紹介してください。';
-			case 'shareContent': return 'コンテンツを共有する';
-			case 'shareImage': return '画像を共有する';
-			case 'shareLink': return 'リンクを共有する';
-			case 'shareNaddr': return 'naddrをシェアする';
-			case 'shareNoteId': return 'ノートIDを共有する';
-			case 'shareNprofile': return 'エヌプロフィールを共有する';
-			case 'shareProfile': return 'プロフィールを共有する';
-			case 'shareProfileDesc': return 'プロフィールを共有して、より多くの人々とつながり、ネットワークを広げましょう';
-			case 'show': return '表示する';
-			case 'showArticlesNotesSuggestions': return '記事/ノートの提案を表示する';
-			case 'showSecret': return '秘密鍵を表示する！';
-			case 'showStats': return '統計を表示する';
-			case 'showSuggestedInterests': return '提案された興味を表示する';
-			case 'showSuggestedPeople': return 'フォローすべき人の提案を表示する';
-			case 'showSuggestions': return '提案を表示する';
-			case 'signIn': return 'サインイン';
-			case 'usingViewModeDesc': return '秘密鍵でサインインして、コミュニティに参加してください。';
-			case 'size': return 'サイズ';
-			case 'slideToPay': return 'スライドして支払う';
-			case 'smartWidget': return 'スマートウィジェット';
-			case 'smartWidgetBuilder': return 'スマートウィジェットビルダー';
-			case 'smartWidgetChecker': return 'スマートウィジェットチェッカー';
-			case 'smartWidgetNotFound': return 'スマートウィジェットが見つかりませんでした';
-			case 'smartWidgetPublishedSuccessfuly': return 'スマート ウィジェットが正常に公開されました';
-			case 'smartWidgets': return 'スマートウィジェット';
-			case 'smartWidgetsDrafts': return 'スマートウィジェットの下書き';
-			case 'smartWidgetsTemplates': return 'スマートウィジェットのテンプレート';
-			case 'software': return 'ソフトウェア';
-			case 'somethingWentWrong': return '問題が発生しました！';
-			case 'soonUsers': return 'ユーザーは以下のアクティビティで使用可能なポイントを間もなく利用できるようになります：';
-			case 'source': return 'ソース';
-			case 'sourceRecommended': return 'ソース (推奨)';
-			case 'splitRevenuesWithUsers': return 'ユーザーと収益を分配する';
-			case 'splitZapsWith': return 'zapを分配する';
-			case 'spreadWordSharingContent': return 'コンテンツをどこにでも共有して知らせましょう。';
-			case 'startBuildingSmartWidget': return 'Nostrネットワークで使用するスマートウィジェットを構築してカスタマイズしてください';
-			case 'startEarningPoints': return 'Yakiポイントを稼ぎ、最大限に活用しましょう！🎉';
-			case 'startSearchContent': return 'コンテンツを検索し始める';
-			case 'startSearchPeople': return '人を検索し始める';
-			case 'stickers': return 'ステッカー';
-			case 'submit': return '提出する';
-			case 'submitBookmarkList': return 'ブックマークリストを提出する';
-			case 'submitCuration': return 'キュレーションを提出する';
-			case 'successfulRelays': return '成功したリレー';
-			case 'suggestedInterests': return '提案される興味';
-			case 'suggestions': return '提案';
-			case 'suggestionsBox': return '提案ボックス';
-			case 'summaryOptional': return 'サマリー (任意)';
-			case 'supportYakihonne': return 'YakiHonneをサポートする';
-			case 'supportedNips': return 'サポートされているNIP';
-			case 'switchAccounts': return 'アカウントを切り替える';
-			case 'taylorExperienceInterests': return 'あなたの主要な興味を選んで体験を調整してください';
-			case 'telegramUrl': return 'TelegramのURL';
-			case 'templates': return 'テンプレート';
-			case 'text': return 'テキスト';
-			case 'textColor': return 'テキストの色';
-			case 'textCustomization': return 'テキストカスタマイズ';
-			case 'textSuccesfulyCopied': return 'テキストが正常にコピーされました！';
-			case 'theFollowingNote': return '以下のノート：';
-			case 'smHaveTitle': return 'スマートウィジェットには少なくとも一つのタイトルが必要です';
-			case 'smHaveOneWidget': return 'スマートウィジェットには少なくとも1つのコンポーネントが必要です';
-			case 'valueBetweenMinMax': return '値は最小および最大Satsの範囲内である必要があります';
-			case 'noDataFromGpt': return 'GPTから表示するデータがあります。';
-			case 'oneFeedOptionAvailable': return '少なくとも1つのフィードオプションが利用可能である必要があります。';
-			case 'unTextW1Desc': return 'これらのノートは投稿を見たすべての人に表示され、文脈を追加し、人々が情報を得られるようにします。';
-			case 'unTextW2Desc': return 'これらのノートは、過去に異なる評価をすることがある貢献者を含む十分な数の寄稿者によって「役立たない」と評価されました。';
-			case 'un1Desc': return 'これらの評価は他の人が役立つと見なしたノートをサポートしていることを示すため、2回カウントされます。';
-			case 'unTextR1Desc': return 'これらの評価は、すべての人に表示され、文脈を追加して情報提供に役立つ「役に立つ」ノートを特定しました。';
-			case 'unTextR2Desc': return 'これらの評価は、ノートの作成者にフィードバックを提供し、貢献者が最も有望なノートに集中できるようにすることで、認証済みノートを改善します。';
-			case 'notValidVideoEvent': return 'このイベントは有効な動画イベントではありません！';
-			case 'sensitiveContent': return 'これはセンシティブな内容です';
-			case 'emptyVideoUrl': return 'このnEventにはURLがありません。';
-			case 'thisNoteAwaitRating': return 'このノートはコミュニティ評価を待っています。';
-			case 'yourNoteAwaitRating': return 'このノートはコミュニティ評価を待っています。';
-			case 'smartWidgetConvention': return 'このスマートウィジェットは合意された規約に従っていません。';
-			case 'useCannotBeZapped': return 'このユーザーにはzapを送れません';
-			case 'thread': return 'スレッド';
-			case 'thumbnailPreview': return 'サムネイルプレビュー';
-			case 'title': return 'タイトル';
-			case 'titleData': return ({required Object description}) => 'タイトル： ${description}';
-			case 'toBeAbleSendSats': return 'zapを送るには、ビットコインライトニングウォレットを接続してください。';
-			case 'topReasonsSelected': return '評価者が選択した主な理由：';
-			case 'totalAmount': return '合計金額';
-			case 'totalNumber': return ({required Object number}) => '合計：  ${number}';
-			case 'trending': return 'トレンド';
-			case 'tryAgain': return 'もう一度お試しください';
-			case 'type': return 'タイプ';
-			case 'typeValidZapQuestion': return '有効な投票の質問を入力してください！';
-			case 'unableToOpenUrl': return 'URLを開くことができません';
-			case 'undo': return '元に戻す';
-			case 'undoRating': return '評価を元に戻す';
-			case 'unfollow': return 'フォローを解除する';
-			case 'unfollowAll': return 'すべてフォロー解除する';
-			case 'pendingUnfollowing': return 'フォローを解除中...';
-			case 'unknown': return '不明';
-			case 'unknownVerifiedNote': return '不明なユーザーの認証済みノート';
-			case 'unlocked': return 'ロック解除済み';
-			case 'unmute': return 'ミュートを解除する';
-			case 'unmuteUser': return 'ユーザーのミュートを解除する';
-			case 'untitled': return '無題';
-			case 'update': return 'アップデートする';
-			case 'updateInterests': return '興味をアップデートする';
-			case 'updateProfile': return 'プロフィールをアップデートする';
-			case 'updatedSuccesfuly': return 'アップデートが成功しました';
-			case 'updates': return 'アップデート';
-			case 'updatesNews': return 'ニュースをアップデートする';
-			case 'uploadAndUse': return 'アップロードして使用する';
-			case 'uploadImage': return '画像をアップロードする';
-			case 'uploadingImage': return '画像をアップロードしています...';
-			case 'upvotes': return '賛成票';
-			case 'url': return 'URL';
-			case 'useAmber': return 'Amberを使用する';
-			case 'useInvoice': return '請求書を使用する';
-			case 'useTemplate': return 'テンプレートを使用する';
-			case 'user': return 'ユーザー';
-			case 'userCannotBeFound': return 'ユーザーが見つかりません';
-			case 'userHasBeenMuted': return 'ユーザーがミュートされました';
-			case 'userHasBeenUnmuted': return 'ユーザーのミュートが解除されました';
-			case 'userName': return 'ユーザー名';
-			case 'userNameCopied': return 'ユーザー名が正常にコピーされました！';
-			case 'userZappedSuccesfuly': return 'ユーザーが正常にzapされました';
-			case 'userImpact': return 'ユーザーの影響';
-			case 'userRelays': return 'ユーザーのリレー';
-			case 'usingExternalSign': return '外部署名者を使用中';
-			case 'value': return '値';
-			case 'verifyNip05': return '認証済みのNostrアドレス（NIP 05）';
-			case 'verifiedNoteNotFound': return '認証済みノートが見つかりませんでした';
-			case 'verifyNotes': return 'ノートを認証する';
-			case 'verifyingNote': return 'ノートを認証中';
-			case 'version': return 'バージョン';
-			case 'video': return '動画';
-			case 'videoNotFound': return '動画が見つかりませんでした';
-			case 'videoCustomization': return '動画のカスタマイズ';
-			case 'videoAddedCuration': return '動画がキュレーションに追加されました。';
-			case 'videoUrl': return '動画のURL';
-			case 'videos': return '動画';
-			case 'videosAvailableCuration': return 'キュレーションで利用可能な動画';
-			case 'view': return '表示する';
-			case 'viewProfile': return 'プロフィールを表示する';
-			case 'viewQrCode': return 'QRコードを表示する';
-			case 'views': return '閲覧回数';
-			case 'visitProfile': return 'プロフィールを訪問する';
-			case 'voteNotSubmitted': return '投票をできませんでした';
-			case 'voteRequired': return '統計を表示するには投票が必要です。';
-			case 'votesByUsers': return 'ユーザー別の投票';
-			case 'votesByZaps': return 'zap別の投票';
-			case 'votesNumber': return ({required Object number}) => '投票: ${number}';
-			case 'waitingGenerationOfInvoice': return 'invoices の生成を待っています';
-			case 'wallet': return 'ウォレット';
-			case 'walletNotLinked': return 'ウォレットをリンクできません。間違ったライトニングアドレス';
-			case 'walletCreated': return 'ウォレットが正常に作成されました';
-			case 'walletLinked': return 'ウォレットが正常にリンクされました';
-			case 'wallets': return 'ウォレット';
-			case 'warning': return '警告';
-			case 'watchNow': return '今すぐ見る';
-			case 'noLnInNwc': return 'NWC シークレットからアドレスを取得できませんでした。ライトニングアドレスサービスプロバイダーを確認し、アドレスをコピーするか、プロフィールを更新してください。';
-			case 'readAboutVerifyingNotesDesc': return '私たちの目的を理解するための記事を作成しました';
-			case 'website': return 'ウェブサイト';
-			case 'weight': return '重さ';
-			case 'whatThinkThis': return 'これについてどう思いますか？';
-			case 'whatThinkOfThat': return 'それについてどう思いますか？';
-			case 'whatsOnYourMind': return '何を考えていますか？';
-			case 'whatsThis': return 'これは何ですか？';
-			case 'whyVerifyingNotes': return 'なぜノートを認証するのですか？';
-			case 'widgets': return 'ウィジェット';
-			case 'writeCommentOptional': return 'コメントを書く (任意)';
-			case 'writeYourMessage': return 'メッセージを書く';
-			case 'writeNote': return 'ノートを書く';
-			case 'writeSummary': return 'を書く';
-			case 'writeValidNote': return '有効なノートを書いてください！';
-			case 'writeOnly': return '書くだけ';
-			case 'writeSomethingAboutYou': return 'あなたについて何か書いてください！';
-			case 'writeSomething': return '何かを書く...';
-			case 'writeYourText': return 'テキストを書いてください';
-			case 'xUrl': return 'X URL';
-			case 'yakiChest': return 'Yakiチェスト';
-			case 'yakihonne': return 'YakiHonne';
-			case 'yakihonneChest': return 'YakiHonneのチェスト！';
-			case 'yakihonneConsPoints': return 'YakiHonneの消費可能なポイント';
-			case 'yakihonneImprovements': return 'YakiHonneの改善';
-			case 'yakihonneNote': return 'YakiHonneのノート';
-			case 'yakihonneNotification': return 'YakiHonneの通知';
-			case 'yakiNwc': return 'YakiHonneのNWC';
-			case 'clearAppCacheDesc': return 'アプリのキャッシュをクリアしようとしています。続行しますか？';
-			case 'deleteWalletDesc': return 'このウォレットを削除しようとしています。続行しますか？';
-			case 'linkWalletDesc': return '以前のウォレットを上書きし、新しいウォレットをプロフィールにリンクしようとしています。続行しますか？';
-			case 'undoRatingDesc': return '評価を取り消そうとしています。続行しますか?';
-			case 'alreadyLoggedIn': return '既にログインしています！';
-			case 'deleteAccountMessage': return '削除されたアカウントにログインしようとしています。';
-			case 'loggedToYakiChest': return 'Yakihonneのチェストにログインしています';
-			case 'loggedIn': return 'ログインしました!';
-			case 'notUsingSecureDms': return 'セキュアDMを使用していません。';
-			case 'usingSecureDms': return '現在セキュアDMを使用しています';
-			case 'usingExternalSignDesc': return '外部署名者を使用しています';
-			case 'secKeyWalletDesc': return '設定でアカウントの秘密鍵とウォレット接続秘密鍵を確認できます。これらの鍵は、アカウントとウォレットへの安全なアクセスに不可欠です。安全かつ秘密に保管してください。';
-			case 'secKeyDesc': return '設定でアカウントの秘密鍵を確認できます。この鍵は、アカウントへの安全なアクセスに不可欠です。安全かつ秘密に保管してください。';
-			case 'uploadSendMedia': return '選択または撮影後、すぐにメディアをアップロードして送信できます。';
-			case 'uploadPasteUrl': return 'お好みの画像のURLを貼り付けるか、アップロードできます';
-			case 'canUploadPastLink': return 'ビデオにアップロードしたり、リンクを貼り付けたり、種類 1063 を選択したりできます。';
-			case 'findPaidNoteCorrect': return 'この有料ノートは正しいと判断しました。';
-			case 'findPaidNoteMisleading': return 'この有料ノートは誤解を招きやすいと判断しました。';
-			case 'alreadyContributed': return 'すでに貢献済みです。';
-			case 'alreadyVoted': return 'この投票にはすでに投票しました。';
-			case 'congratsDesc': return ({required Object number}) => '以下のアクションに対して ${number} xpが付与されました。さらに活動して報酬を獲得しましょう！';
-			case 'youHaveLeftNote': return 'この有料ノートにノートを残しました。';
-			case 'noRewards': return '報酬がありません。報酬を取得するために、認証済みのノートを操作したり書き込んだりする必要はあります。';
-			case 'noWalletLinkedMessage': return 'プロフィールにウォレットがリンクされていません。このウォレットをリンクしますか？';
-			case 'noWalletLinkedToYouProfile': return 'プロフィールにウォレットがリンクされていません。';
-			case 'youHaveRated': return '評価済みです';
-			case 'ratedNoteSealed': return '次のノートを評価しましたが、それは封印されました：';
-			case 'youRatedHelpful': return 'これを「役に立つ」と評価しました';
-			case 'youRatedNotHelpful': return 'これを「役に立た立たない」と評価しました';
-			case 'ownReceivedSat': return ({required Object number}) => 'あなたが ${number} Satsを受け取りました ';
-			case 'ownSentSat': return ({required Object number}) => 'あなたが ${number} Satsを送った';
-			case 'voteToSeeStats': return '統計を見るには投票する必要があります';
-			case 'you': return 'あなた： ';
-			case 'confirmDeleteContent': return ({required Object type}) => 'この ${type} を削除しようとしています。続行しますか？';
-			case 'confirmDeleteBookmarkList': return 'このブックマーク リストを削除しようとしています。続行しますか?';
-			case 'confirmDeleteDraft': return 'この下書きを削除しようとしています。続行しますか？';
-			case 'deleteCoverPicDesc': return 'カバー画像を削除しようとしています。続行しますか？?';
-			case 'youreAllSet': return '準備は完了です';
-			case 'switchToMonolayout': return '両側に要素がある状態でモノレイアウトに切り替えようとしています。これによりコンテナの内容が消去されます。続行しますか？';
-			case 'usingViewMode': return '表示モードを使用しています';
-			case 'muteUserDesc': return ({required Object name}) => '${name} さんをミュートしようとしています。続行しますか？';
-			case 'unmuteUserDesc': return ({required Object name}) => '${name} さんのミュートを解除しようとしています。続行しますか？';
-			case 'articlePublished': return 'あなたの記事が公開されました！';
-			case 'yourDisplayName': return 'あなたの表示名';
-			case 'yourNoteSealed': return 'あなたの以下のノートが封印されました:';
-			case 'yourName': return 'お名前';
-			case 'ratingDeleted': return 'あなたの評価は削除されました';
-			case 'ratingSubmittedCheckReward': return 'あなたの評価が提出されました。報酬を受け取るには報酬ページをチェックしてください';
-			case 'verifiedNoteAdded': return 'あなたの認証済みノートが追加されました。報酬ページを確認して執筆報酬を受け取ってください';
-			case 'verifiedNoteSealed': return 'あなたの認証済みノートが封印されました';
-			case 'yourWebsite': return 'あなたのウェブサイト';
-			case 'youtubeUrl': return 'YoutubeのURL';
-			case 'zap': return 'zap';
-			case 'zapPoll': return 'zap投票';
-			case 'zapPollCustomization': return 'zap投票のカスタマイズ';
-			case 'zapPollNevent': return 'zap投票イベント';
-			case 'zapSplits': return 'zap分配';
-			case 'zappers': return 'zapper';
-			case 'zaps': return 'zap';
-			case 'zapReceived': return '受け取ったzap';
-			case 'zapSent': return '送ったzap';
-			case 'comingSoon': return '近日公開';
-			case 'content': return 'コンテンツ';
-			case 'expiresOn': return ({required Object date}) => '${date} に期限切れになります';
-			case 'reactions': return 'リアクション';
-			case 'reposts': return 'リポスト';
-			case 'collapseNote': return 'メモを折りたたむ';
-			case 'notifDisabled': return '通知が無効になっています!';
-			case 'notifDisabledMessage': return 'このタイプの通知は無効になっています。通知設定で有効にできます。';
-			case 'oneNotifOptionAvailable': return '少なくとも 1 つの通知オプションが利用可能である必要があります。';
-			case 'readAll': return 'すべて読む';
-			case 'usernameTaken': return 'ユーザー名が取得されました';
-			case 'usernameRequired': return 'ユーザー名は必須です';
-			case 'deleteWalletConfirmation': return '紛失したウォレットの回復はサポートできないため、NWC 接続フレーズを安全に保存してください。';
-			case 'unsupportedKind': return 'サポートされていない種類';
-			case 'analyticsCrashlytics': return 'クラッシュリティクス';
-			case 'analyticsCache': return 'クラッシュリティクスとキャッシュ';
-			case 'analyticsCacheOn': return 'クラッシュリティクスがオンになっています。';
-			case 'analyticsCacheOff': return 'クラッシュリティクスがオフになっています。';
-			case 'shareNoUsage': return 'あなたは現時点で私たちとクラッシュリチックを共有していません。';
-			case 'wantShareAnalytics': return 'クラッシュリティクスを共有したいですか？';
-			case 'yakihonneAnCr': return 'Yakihonneクラッシュリティクス';
-			case 'crashlyticsTerms': return '匿名化されたクラッシュリティクスを収集することは、アプリの機能とユーザーエクスペリエンスを改善するために不可欠です。';
-			case 'collectAnonymised': return 'アプリエクスペリエンスを改善するために、匿名化されたクラッシュリティクスを収集します。';
-			case 'linkWalletToProfile': return 'プロフィールにウォレットをリンクします';
-			case 'linkWalletToProfileDesc': return 'リンクされたウォレットはSATを受け取るために使用されます';
-			case 'noWalletLinked': return 'あなたのプロフィールにリンクされた財布がありません。上のメニューにあなたの1つをリンクすることを検討してください';
-			case 'addPoll': return '投票を追加します';
-			case 'browsePolls': return '投票を閲覧します';
-			case 'maciPolls': return 'Maci Poll';
-			case 'beta': return 'ベータ';
-			case 'choosePollType': return '投票タイプを選択してください';
-			case 'created': return '作成されました';
-			case 'tallying': return '集計';
-			case 'ended': return '終了しました';
-			case 'closed': return '閉じた';
-			case 'voteResultsBy': return '投票結果';
-			case 'votes': return '投票';
-			case 'voiceCredit': return '音声クレジット';
-			case 'viewDetails': return '詳細を表示します';
-			case 'signup': return 'サインアップ';
-			case 'notDownloadProof': return '証明をダウンロードできませんでした';
-			case 'name': return '名前';
-			case 'status': return '状態';
-			case 'circuit': return '回路';
-			case 'votingSystem': return '投票システム';
-			case 'proofSystem': return '証明システム';
-			case 'gasStation': return 'ガソリンスタンド';
-			case 'totalFund': return '（総資金）';
-			case 'roundStart': return 'ラウンドスタート';
-			case 'roundEnd': return '丸い端';
-			case 'operator': return 'オペレーター';
-			case 'contractCreator': return '契約作成者';
-			case 'contractAddress': return '契約アドレス';
-			case 'blockHeight': return 'ブロックの高さ';
-			case 'atContractCreation': return ({required Object number}) => '${number} （契約作成時）';
-			case 'zkProofs': return 'ZKプルーフ';
-			case 'downloadZkProofs': return '証明をダウンロードします';
-			case 'walletConnectionString': return 'ウォレット接続文字列';
-			case 'walletConnectionStringDesc': return 'ウォレット接続文字列を安全にコピーまたはエクスポートするようにしてください。';
-			case 'export': return '輸出';
-			case 'logout': return 'ログアウト';
-			case 'exportAndLogout': return 'エクスポートとログアウト';
-			case 'exportWalletsDesc': return 'アカウントにリンクされた財布があるようです。';
-			case 'manageWallets': return 'ウォレットを管理します';
-			case 'roundDuration': return '丸い期間';
-			case 'startAt': return ({required Object date}) => 'から始まります： ${date}';
-			case 'loginAction': return 'ログイン';
-			case 'addPicture': return '写真を追加します';
-			case 'editPicture': return '画像を編集します';
-			case 'exportKeys': return 'エクスポートキー';
-			case 'mutedUser': return 'ミュートユーザー';
-			case 'unaccessibleContent': return 'アクセスできないコンテンツ';
-			case 'mutedUserDesc': return 'あなたはこのユーザーをミュートしました、このコンテンツを表示するために出ることを検討してください';
-			case 'commentHidden': return 'このコメントは隠されています';
-			case 'upcoming': return '今後';
-			case 'exportCredentials': return '資格情報をエクスポートします';
-			case 'loginToYakihonne': return 'Yakihonneにログインします';
-			case 'alreadyUser': return 'すでにユーザー？';
-			case 'createPoll': return '投票を作成します';
-			case 'gasStationTotal': return 'ガソリンスタンド（総資金）';
-			case 'gasStationRemaining': return 'ガソリンスタンド（残り残高）';
-			case 'paste': return 'ペースト';
-			case 'manual': return 'マニュアル';
-			case 'contacts': return '連絡先';
-			case 'typeManualDesc': return '稲妻アドレス、稲妻請求書、またはlnurlを入力します';
-			case 'useValidPaymentRequest': return '有効な支払いリクエストを使用してください';
-			case 'save': return '保存';
-			case 'saveImageGallery': return '画像はギャラリーにダウンロードされました';
-			case 'errorSavingImage': return '画像のダウンロード中にエラーが発生しました';
-			case 'copyImageGallery': return '画像はクリップボードにコピーされています';
-			case 'errorCopyImage': return '画像のコピー中にエラーが発生しました';
-			case 'scan': return 'スキャン';
-			case 'invalidLightningAddress': return '無効な稲妻アドレス';
-			case 'deleteAccountDesc': return 'あなたはあなたのアカウントを削除しようとしています、あなたは続行したいですか？';
-			case 'paymentFailedInvoice': return '支払いが失敗しました：この請求書の有効性を確認してください';
-			case 'validSatsAmount': return '有効なSATの金額を設定します';
-			case 'placeholder': return 'プレースホルダー';
-			case 'inputFieldCustomization': return '入力フィールドのカスタマイズ';
-			case 'addInputField': return '入力フィールドを追加します';
-			case 'addButton': return 'ボタンを追加します';
-			case 'selectImage': return '画像を選択します';
-			case 'moveLeft': return '左に移動します';
-			case 'moveRight': return '右に移動します';
-			case 'buttonRequired': return '少なくとも1つのボタンを利用できるはずです';
-			case 'missingInputDesc': return 'スマートウィジェットに埋め込むことなく入力フィールドコンポーネントを必要とするカスタム関数の1つを使用しているように見えます。入力フィールドを追加して、機能が正しく機能するようにしてください。';
-			case 'countdown': return 'カウントダウン';
-			case 'contentEndsAt': return 'コンテンツはで終わります';
-			case 'countdownTime': return 'カウントダウン時間は必須です';
-			case 'contentEndsDate': return 'コンテンツの終了日は必須です';
-			case 'lnMandatory': return '稲妻アドレスは必須です';
-			case 'pubkeysMandatory': return '少なくとも1つのプロファイルが必須です';
-			case 'buttonNoUrl': return 'ボタンURLは必須です';
-			case 'shareWidgetImage': return 'ウィジェット画像を共有します';
-			case 'inputField': return '入力フィールド';
-			case 'noReplies': return '返信はありません';
-			case 'message': return 'メッセージ';
-			case 'chat': return 'チャット';
-			case 'onlyLettersNumber': return '許可されている文字と番号のみ';
-			case 'appCache': return 'アプリキャッシュ';
-			case 'cachedData': return 'キャッシュされたデータ';
-			case 'cachedMedia': return 'キャッシュされたメディア';
-			case 'cacheCleared': return 'キャッシュがクリアされました';
-			case 'closeAppClearingCache': return 'キャッシュをクリアしてアプリを再起動して、すべての変更が有効になり、アプリがスムーズに実行されるようにすることが望ましいです';
-			case 'appCacheNotice': return 'アプリのキャッシュのサイズは増加しています。';
-			case 'manageCache': return 'キャッシュを管理します';
-			case 'filterByTime': return '時間ごとにフィルタリングします';
-			case 'allTime': return 'いつも';
-			case 'oneMonth': return '1か月';
-			case 'threeMonths': return '3ヶ月';
-			case 'sixMonths': return '6ヶ月';
-			case 'oneYear': return '1年';
-			case 'defaultZapAmount': return 'デフォルトのZAP額';
-			case 'oneTapZap': return '1タップzapを有効にします';
-			case 'verify': return '確認する';
-			case 'reset': return 'リセット';
-			case 'appCannotVerified': return 'アプリを検証したり無効にしたりすることはできません';
-			case 'useValidAppUrl': return '有効なアプリURLを使用します';
-			case 'app': return 'アプリ';
-			case 'userNotConnected': return 'ユーザーが接続されていません';
-			case 'userCannotSignEvent': return 'このユーザーはイベントに署名できません。';
-			case 'invalidEvent': return '無効なイベント';
-			case 'eventCannotBeSigned': return 'イベントに署名できません';
-			case 'signEvent': return 'サインイベント';
-			case 'sign': return 'サイン';
-			case 'signPublish': return 'サイン＆パブリッシュ';
-			case 'signEventDes': return '次のイベントに署名しようとしています';
-			case 'enableAutomaticSigning': return '自動署名を有効にします';
-			case 'tools': return 'ツール';
-			case 'searchSmartWidgets': return 'スマートウィジェットを検索します';
-			case 'noToolsAvailable': return '利用可能なツールはありません';
-			case 'underMaintenance': return 'メンテナンス中';
-			case 'smartWidgetMaintenance': return 'スマートウィジェットはメンテナンスのためにダウンしています。';
-			case 'mySavedTools': return '私の保存されたツール';
-			case 'availableTools': return '利用可能なツール';
-			case 'remove': return '取り除く';
-			case 'youHaveNoTools': return 'ツールはありません';
-			case 'discoverTools': return 'あなたのコンテンツ作成を支援する公開されたツールを発見する';
-			case 'addWidgetTools': return 'ウィジェットツールを追加します';
-			case 'widgetSearch': return 'ウィジェット検索';
-			case 'widgetSearchDesc': return '公開されたスマートウィジェットと人々が作ったものを探します';
-			case 'getInspired': return 'インスピレーションを得てください';
-			case 'getInspirtedDesc': return 'AIにスマートウィジェットの構築を支援するように依頼してください';
-			case 'trySearch': return 'さまざまな検索方法を試してください';
-			case 'typeForCommands': return 'コマンドのタイプ /';
-			case 'loadMore': return 'もっとロードします';
-			case 'searchingFor': return ({required Object name}) => '検索する： ${name}';
-			case 'playground': return '遊び場';
-			case 'typeKeywords': return 'タイプキーワード（つまり：keyword1、keyword2 ..）';
-			case 'enableGossip': return 'ゴシップモデル';
-			case 'enableGossipDesc': return 'ゴシップモデルはデフォルトで無効になっています。';
-			case 'enableExternalBrowser': return '外部ブラウザを使用します';
-			case 'restartAppTakeEffect': return 'アクションが有効になるようにアプリを再起動します';
-			case 'tips': return 'ヒント';
-			case 'docs': return 'ドキュメント';
-			case 'tryMiniApp': return '実践的なインタラクティブなテストでミニアプリを試してみてください。';
-			case 'exploreOurRepos': return 'リポジトリを探索するか、スマートウィジェットドキュメントを確認してください。';
-			case 'bringAi': return '私たちはAIを持っています！';
-			case 'bringAiDesc': return 'AIアシスタントを作成して、プログラム可能なウィジェットとミニアプリの開発で作業を合理化しています。';
-			case 'notesCount': return ({required Object number}) => '${number} メモ';
-			case 'mixedContentCount': return ({required Object number}) => '${number} コンテンツ';
-			case 'noApp': return 'エクスポートされたファイルを開くために適したアプリは見つかりません';
-			case 'andMore': return ({required Object number}) => '＆ ${number} その他';
-			case 'addFilter': return 'フィルターを追加します';
-			case 'entitleFilter': return 'フィルターの資格';
-			case 'includedWords': return '含まれている単語';
-			case 'excludedWords': return '除外された単語';
-			case 'hideSensitiveContent': return '敏感なコンテンツを非表示にします';
-			case 'mustIncludeThumbnail': return 'サムネイルを含める必要があります';
-			case 'forArticles': return '記事用';
-			case 'forVideos': return 'ビデオ用';
-			case 'forCurations': return 'キュレーションのために';
-			case 'articleMinWords': return 'コンテンツの最小単語数';
-			case 'showOnlyArticleMedia': return 'メディアの記事のみを表示します';
-			case 'showOnlyNotesMedia': return 'メディアでメモのみを表示します';
-			case 'curationsType': return 'キュレーションタイプ';
-			case 'minItemCount': return '最小アイテム数';
-			case 'addWord': return '適切な単語を追加します';
-			case 'wordNotInIncluded': return '単語が含まれていないことを確認してください';
-			case 'wordNotInExcluded': return '単語が除外された単語にないことを確認してください';
-			case 'fieldRequired': return '必要なフィールド';
-			case 'filterAdded': return 'フィルターが追加されました';
-			case 'filterUpdated': return 'フィルターが更新されました';
-			case 'filterDeleted': return 'フィルターが削除されました';
-			case 'filters': return 'フィルター';
-			case 'contentFeed': return 'コンテンツフィード';
-			case 'communityFeed': return 'コミュニティフィード';
-			case 'relaysFeed': return 'リレーフィード';
-			case 'marketplaceFeed': return 'マーケットフィード';
-			case 'addYourFeed': return '好みのフィードを追加します';
-			case 'myList': return '私のリスト';
-			case 'allFreeFeeds': return 'すべての無料フィード';
-			case 'noRelays': return 'リレーは存在しません';
-			case 'addRelays': return 'リレーリストを追加して、クリーンでカスタムフィードをお楽しみください';
-			case 'adjustYourFeedList': return 'フィードリストを調整します';
-			case 'addRelayUrl': return 'リレーURLを追加します';
-			case 'feedOptionEnabled': return '少なくとも1つのフィードオプションを有効にする必要があります';
-			case 'feedSetUpdate': return 'フィードセットが更新されました';
-			case 'global': return 'グローバル';
-			case 'fromNetwork': return 'ネットワークから';
-			case 'top': return 'トップ';
-			case 'showFollowingList': return '現在のフィードは他の誰かの次のリストに基づいています。';
-			case 'from': return 'から';
-			case 'to': return 'に';
-			case 'dayMonthYear': return 'dd/mm/yyyy';
-			case 'fromDateMessage': return '「 \'からの日付は「」より早いものでなければなりません';
-			case 'toDateMessage': return '\'to\'日付は、 \'from\'よりも遅くなければなりません';
-			case 'noResults': return '結果はありません';
-			case 'noResultsFilterMessage': return 'カスタムフィルターを適用しているように見えます。パラメーターと日付を調整して、より多くのデータを取得してください';
-			case 'noResultsNoFilterMessage': return '何も見つかりませんでした、コンテンツソースを変更するか、異なるフィルターパラメーションを適用してください';
-			case 'addToNotes': return 'メモに追加します';
-			case 'addToDiscover': return '発見するために追加します';
-			case 'shareRelayContent': return 'リレーコンテンツを共有します';
-			case 'shareRelayUrl': return 'リレーURLを共有します';
-			case 'basic': return '基本';
-			case 'privateMessages': return 'プライベートメッセージ';
-			case 'pushNotifications': return '通知をプッシュします';
-			case 'repliesView': return '返信ビュー';
-			case 'threadView': return '糸';
-			case 'boxView': return '箱';
-			case 'viewAs': return 'として表示されます';
-			case 'feedSettings': return 'フィード設定';
-			case 'appliedFilterDesc': return 'このメモは、現在の適用フィルターのために隠されています。';
-			case 'showNote': return 'ノートを表示します';
-			case 'allMedia': return 'すべてのメディア';
-			case 'searchInNostr': return 'Nostrで検索します';
-			case 'findPeopleContent': return '人、メモ、コンテンツを見つけます';
-			case 'activeService': return 'アクティブサービス';
-			case 'regularServers': return '通常のサーバー';
-			case 'blossomServers': return '開花サーバー';
-			case 'mirrorAllServer': return 'すべてのサーバーをミラーリングします';
-			case 'mainServer': return 'メインサーバー';
-			case 'select': return '選択します';
-			case 'noServerFound': return 'サーバーは見つかりません';
-			case 'serverExists': return 'サーバーはすでにリストに存在しています';
-			case 'invalidUrl': return '無効なURL形式';
-			case 'serverPath': return 'サーバーパス';
-			case 'errorAddingBlossom': return 'Blossomサーバーの追加中にエラーが発生しました';
-			case 'errorSelectBlossom': return 'Blossomサーバーの選択中にエラーが発生しました';
-			case 'errorDeleteBlossom': return 'Blossomサーバーの削除中にエラーが発生しました';
-			case 'wotConfig': return 'Web of Trust Configuration';
-			case 'wot': return '信頼のウェブ';
-			case 'wotThreshold': return '信頼のしきい値のWeb';
-			case 'postActions': return 'アクションを投稿します';
-			case 'enabledFor': return 'のために有効になります';
-			case 'dmRelayTitle': return 'プライベートメッセージリレーは構成されていません！';
-			case 'dmRelayDesc': return 'それに応じてリレーリストを更新します。 ';
-			case 'youFollow': return 'あなたは従います';
-			case 'quotaLimit': return 'あなたはあなたの毎日のクォータの制限を超えました';
-			case 'alwaysUseExternal': return '常に外部ウォレットザップを使用してください';
-			case 'alwaysUseExternalDesc': return 'すべてのZAPトランザクションには、Yakihonneの組み込みウォレットの代わりに外部Lightningウォレットアプリを使用します。';
-			case 'unreachableExternalWallet': return '到達不可能な外部ウォレット';
-			case 'secureStorageDesc': return 'キーはデバイスに安全に保管されており、私たちや他の人と共有することはありません。';
-			case 'pubkeySharedDesc': return '共有するのは安全です - これはNostrであなたを識別します。';
-			case 'privKeyDesc': return 'プライベートを維持 - バックアップは安全にバックアップして、他の場所にアカウントにアクセスします。';
-			case 'settingsKeysDesc': return 'ネットワークのアイデンティティ、イベントの署名、および認証の投稿のために、NOSTRキーを管理します。';
-			case 'settingsRelaysDesc': return 'イベントを保存および配布するために、NoStrリレー接続を構成します。';
-			case 'settingsCustomizationDesc': return 'Yakihonneのフィードディスプレイ、ジェスチャー、プレビュー、および好みをパーソナライズして、ノストルエクスペリエンスを向上させます。';
-			case 'settingsNotificationsDesc': return 'メッセージ、言及、反応、およびその他のNOSTRイベントの通知を制御します。';
-			case 'settingsContentDesc': return 'NOSTRでのコンテンツの相互作用、プライバシー設定、メディア処理、およびメッセージング設定を制御します。';
-			case 'settingsLanguageDesc': return 'Yakihonneインターフェイスとコンテンツ翻訳のために、お好みの言語を選択してください。';
-			case 'settingsWalletDesc': return 'カスタマイズ可能な量と外部統合でZAPを送信/受信するために、ビットコインライトニングウォレットを接続および管理します。';
-			case 'settingsAppearanceDesc': return 'Yakihonneの視覚的な外観をカスタマイズして、好みと快適さを視聴します。';
-			case 'settingsCacheDesc': return 'スムーズな動作のために、アプリのパフォーマンス監視、エラーレポート、およびストレージの最適化を管理します。';
-			case 'addQuickRelayDesc': return 'URLを入力して、新しいリレーをすばやく追加します。';
-			case 'fewerRelays': return '安定したリレー=パフォーマンスが向上し、同期が高くなります。';
-			case 'greenDotsDesc': return '緑のドットはアクティブな接続を示しています。';
-			case 'redDotsDesc': return '赤い点はオフラインリレーを示します。';
-			case 'greyDotsDesc': return '灰色のドットは保留中のリレーを示します。';
-			case 'homeFeedCustomDesc': return '返信ディスプレイスタイル（ボックスまたはスレッド）を選択し、人、コンテンツ、興味の提案の好みを管理します。';
-			case 'NewPostDesc': return '投稿を作成しているときにロングプレスをしたときに何が起こるかを選択します（現在は注意するように設定されています）。';
-			case 'profilePreviewDesc': return 'フィード内のユーザー名をタップするときにユーザープロファイルがプレビューします。';
-			case 'collapseNoteDesc': return '長い投稿を自動的に最小限に抑えて、フィードを清潔で読みやすくします。';
-			case 'pushNotificationsDesc': return 'デバイスでインスタントアラートを取得します。 ';
-			case 'privateMessagesDesc': return '新しい直接的なメッセージとプライベートな会話についてアラートを受けてください。';
-			case 'followingDesc': return 'あなたがフォローしている人が新しいコンテンツを投稿したときに通知を受け取ります。';
-			case 'mentionsDesc': return '誰かがあなたに言及したり、あなたの投稿に返信したときに警告を受けてください。';
-			case 'repostsDesc': return '誰かがあなたのコンテンツを共有または再投稿したときに警告を受けます。';
-			case 'reactionsDesc': return 'あなたの投稿に何らかの好きまたは反応したときに通知を受け取ります。';
-			case 'zapDesc': return '投稿にビットコインのヒント（ZAP）を受け取ったときに通知を受け取ります。';
-			case 'muteListDesc': return 'ブロックしたユーザーがフィードに表示されることを表示および管理します。';
-			case 'mediaUploaderDesc': return '画像とメディアファイルをアップロードするサービスを選択します。';
-			case 'autoSignDesc': return '毎回手動で確認することなく、ミニアプリ（アクション/ツールスマートウィジェット）が要求したイベントに自動的に署名します。';
-			case 'gossipDesc': return '接続を最小限に抑え、オフラインリレーに適応しながら、さまざまなリレーであなたのフォローズの投稿を自動的に見つけた洗練されたリレー管理。';
-			case 'useExternalBrowsDesc': return '内蔵ブラウザの代わりに、デフォルトのブラウザアプリにリンクを開きます。';
-			case 'secureDmDesc': return '高度な暗号化を備えた最新のプライベートメッセージ標準（NIP-17）を使用します。';
-			case 'wotConfigDesc': return 'NOSTRプロトコル内で評判を確立するための社会的認証を使用した分散型信頼メカニズム。';
-			case 'appLangDesc': return 'Yakihonneのインターフェイス、メニュー、およびボタンの言語を選択してください。';
-			case 'contentTransDesc': return '外国語の投稿の翻訳サービスを選択します。';
-			case 'planDesc': return '現在の翻訳計画層と使用制限。';
-			case 'manageWalletsDesc': return 'NostrでビットコインZapを送信および受信するために、Lightningウォレットを追加して整理します。';
-			case 'defaultZapDesc': return 'Quick Zapsを投稿に送信するときに、デフォルトのビットコイン額（SAT）を設定します。';
-			case 'enableZapDesc': return '1回のタップは、デフォルトの金額を即座に送信します。';
-			case 'externalWalletDesc': return 'すべてのZAPトランザクションには、Yakihonneの組み込みウォレットの代わりに外部Lightningウォレットアプリを使用します。';
-			case 'fontSizeDesc': return 'アプリ全体でテキストサイズを調整して、読みやすくすることができます。スライダーを使用して、テキストを大きくしたり小さくしたりします。';
-			case 'appThemeDesc': return 'ライトモードとダークモードを切り替えて、アプリの視覚的な外観をカスタマイズします。';
-			case 'crashlyticsDesc': return 'パフォーマンスの改善とバグの修正に役立つ匿名のクラッシュレポートとアプリ分析。 ';
-			case 'showSuggDesc': return 'フィードに一般的なコンテンツの推奨事項を表示します。';
-			case 'showSuggPeople': return 'アクティビティに基づいてフォローする推奨ユーザーを表示します。';
-			case 'showSuggContent': return 'フィードに推奨される投稿と記事を表示します。';
-			case 'showSuggInterests': return '発見のためのトピックと関心の推奨事項を表示します。';
-			case 'striveToMake': return '私たちは、Nostrを最大限に活用したり、以下で私たちをサポートしたり、貴重なフィードを送ったりするよう努めています：Zap、DMS、Github。';
-			case 'errorAmber': return '拒否したか、すでにAmberに接続しています';
-			case 'useOneRelay': return '少なくとも1つのリレーを接続したままにしてください';
-			case 'automaticPurge': return 'キャッシュの自動削除';
-			case 'automaticPurgeDesc': return 'アプリのキャッシュが2GBに達したときに自動的に削除します。パフォーマンスを維持し、過剰なストレージ使用を防ぎます。';
-			case 'customServices': return 'カスタムサービス';
-			case 'defaultServices': return 'デフォルトサービス';
-			case 'addService': return 'サービスを追加';
-			case 'customServicesDesc': return 'あなたが追加した利用可能なカスタムサービス。';
-			case 'urlRequired': return 'URLが必要です';
-			case 'serviceAdded': return 'サービスが追加されました';
-			case 'showRawEvent': return '生のイベントを表示';
-			case 'rawEventData': return '生のイベントデータ';
-			case 'copyRawEventData': return '生のイベントデータをコピーしました！👏';
-			case 'kind': return '種類';
-			case 'shortNote': return '短いメモ';
-			case 'postedOnDate': return '投稿日';
-			case 'showMore': return '... もっと見る';
-			case 'accountDeleted': return 'このアカウントは削除され、もうアクセスできません。';
-			case 'ok': return 'OK';
-			case 'redeem': return 'コード入力';
-			case 'redeemCode': return 'コードを入力';
-			case 'redeemAndEarn': return 'コード入力で獲得';
-			case 'redeemingFailed': return 'コードの利用に失敗しました';
-			case 'redeemInProgress': return 'コード利用中...';
-			case 'redeemCodeDesc': return 'コードを入力してください';
-			case 'missingCode': return 'コードがありません';
-			case 'missingPubkey': return '公開鍵がありません';
-			case 'invalidPubkey': return '無効な公開鍵';
-			case 'missingLightningAddress': return 'ライトニングアドレスがありません';
-			case 'codeNotFound': return 'コードが見つかりません';
-			case 'redeemCodeRequired': return 'コードの入力が必要です';
-			case 'redeemCodeInvalid': return '無効なコードです';
-			case 'codeBeingRedeemed': return 'コードを利用中です。完了しない場合は、しばらくしてから再試行してください。';
-			case 'redeemCodeSuccess': return 'コードが正常に利用されました';
-			case 'redeemFailed': return 'コードを利用できませんでした。後でもう一度お試しください。';
-			case 'codeAlreadyRedeemed': return 'コードはすでに利用済みです';
-			case 'satsEarned': return ({required Object amount}) => '+${amount} sats 獲得しました。';
-			case 'selectReceivingWallet': return '受取ウォレットを選択';
-			case 'redeemCodeMessage': return 'YakiHonneのコードで無料のsatsを獲得 — コードを入力するだけで残高がすぐに増えます。';
-			case 'scanCode': return 'コードをスキャン';
-			case 'enterCode': return 'コードを入力';
-			case 'errorSharingMedia': return 'メディア共有中にエラーが発生しました';
-			case 'open': return '開く';
-			case 'openUrl': return 'URLを開く';
-			case 'openUrlDesc': return ({required Object url}) => '"${url}" を開きますか？';
-			case 'openUrlPrompt': return 'URL確認プロンプト';
-			case 'openUrlPromptDesc': return 'ブラウザで開く前に完全なURLを表示する安全確認。';
-			case 'whatsNew': return '新着情報';
-			case 'appCustom': return 'アプリのカスタマイズ';
-			case 'poll': return '投票';
-			case 'pendingEvents': return '保留中のイベント';
-			case 'pendingEventsDesc': return '保留中のイベントは、オフライン時または接続が不安定なときに作成されます。インターネット接続が復元されると自動的に送信されます。';
-			case 'singleColumnFeed': return '単一カラムフィード';
-			case 'singleColumnFeedDesc': return '読みやすさを向上させるために、ホームフィードを幅の広い単一の列で表示します。';
-			case 'waitingPayment': return '支払い待ち';
-			case 'copyId': return 'IDをコピー';
-			case 'idCopied': return 'IDをコピーしました！ 👏';
-			case 'republish': return '再投稿';
-			case 'useRelayRepublish': return '再投稿するには少なくとも1つのリレーを選択してください。';
-			case 'republishSucces': return 'イベントが正常に再投稿されました！';
-			case 'errorRepublishEvent': return 'イベントの再投稿中にエラーが発生しました';
-			case 'remoteSigner': return 'リモート署名者';
-			case 'amber': return 'Amber';
-			case 'useUrlBunker': return '以下のURLを使ってバンカーに接続してください';
-			case 'or': return 'または';
-			case 'messagesDisabled': return 'メッセージは無効です';
-			case 'messagesDisabledDesc': return 'リモート署名者に接続しています。ダイレクトメッセージは大量のデータを含む可能性があり、正常に動作しないことがあります。最良の体験のために、ローカル署名者を使用してダイレクトメッセージを有効にしてください。';
-			case 'sharedOn': return ({required Object date}) => '${date}に共有';
-			case 'shareAsImage': return '画像として共有';
-			case 'viewOptions': return '表示オプション';
-			case 'feedCustomization': return 'フィードのカスタマイズ';
-			case 'defaultReaction': return 'デフォルトのリアクション';
-			case 'defaultReactionDesc': return '投稿に反応するためのデフォルトのリアクションを設定します。';
-			case 'oneTapReaction': return 'ワンタップリアクションを有効にする';
-			case 'oneTapReactionDesc': return 'ワンタップでデフォルトのリアクションを即時に反映します。ダブルタップで絵文字リストが開き選択できます。無効にすると、ダブルタップでデフォルトのリアクションが送信されます。';
-			case 'sendingTo': return '送信先';
-			case 'shareEmptyUsers': return 'フォロー中のユーザーと友達がここに表示され、より速い共有体験が可能になります';
-			case 'publishOnly': return '次にのみ公開';
-			case 'protectedEvent': return '保護されたイベント';
-			case 'protectedEventDesc': return '保護されたイベントは、その作成者のみが再投稿できるイベントです。これによりコンテンツの真正性が保たれ、他者がコピーまたは再発行するのを防ぎます。';
-			case 'browseRelay': return 'リレーを閲覧';
-			case 'addFavorite': return 'お気に入りに追加';
-			case 'removeFavorite': return 'お気に入りから削除';
-			case 'collections': return 'コレクション';
-			case 'online': return 'オンライン';
-			case 'offline': return 'オフライン';
-			case 'network': return 'ネットワーク';
-			case 'followedBy': return ({required Object number}) => '${number}にフォローされています';
-			case 'favoredBy': return ({required Object number}) => '${number}にお気に入りされています';
-			case 'requiredAuthentication': return '認証が必要';
-			case 'relayOrbits': return 'リレーオービット';
-			case 'relayOrbitsDesc': return 'リレーのフィードを閲覧して探索します';
-			case 'people': return 'ユーザー';
-			case 'youNotConnected': return '接続されていません';
-			case 'youNotConnectedDesc': return 'ネットワークリレーを閲覧するにはアカウントにログインしてください';
-			case 'checkingRelayConnectivity': return 'リレー接続を確認中';
-			case 'unreachableRelay': return '到達不能なリレー';
-			case 'engageWithUsers': return '交流して広がろう';
-			case 'engageWithUsersDesc': return 'より多くのユーザーと交流することで、新しいリレーを発見し、より豊かでつながった体験のためにリレーリストを増やすことができます。';
-			case 'loadingChatHistory': return 'チャット履歴を読み込んでいます...';
-			case 'contentActionsOrder': return 'コンテンツアクションの順序';
-			case 'contentActionsOrderDesc': return '投稿の操作を好みの順序に簡単に並べ替えることができます。';
-			case 'quotes': return '引用';
-			case 'eventLoading': return 'イベントを読み込み中...';
-			case 'loadMessages': return 'メッセージを読み込む';
-			case 'messagesNotLoaded': return 'メッセージが読み込まれていません';
-			case 'messagesNotLoadedDesc': return 'ローカルリモート署名者を使用しているため、メッセージは読み込まれていません。読み込みたい場合は、下のボタンをクリックしてください。';
-			case 'noteLoading': return 'ノートを読み込み中...';
-			case 'hideNonFollowedMedia': return 'フォローしていないユーザーのメディアを非表示にする';
-			case 'hideNonFollowedMediaDesc': return 'フォローしていないユーザーの画像や動画を、タップして表示するまで自動的に非表示にします。';
-			case 'clickToView': return 'クリックして表示';
-			case 'relayFeedListEmpty': return 'リレーのフィードリストが空です';
-			case 'relayFeedListEmptyDesc': return 'よりパーソナライズされたフィードを楽しむために、リレーを追加してください。';
-			case 'addRelay': return 'リレーを追加';
-			case 'hiddenContent': return '非表示のコンテンツ';
-			case 'hiddenContentDesc': return 'このアカウントをフォローしていないため、このコンテンツを非表示にしました。';
-			case 'enabledActions': return '有効なアクション';
-			case 'enabledActionsDesc': return '利用可能な有効なアクションはありません。';
-			default: return null;
-		}
+		return _flatMapFunction$0(path)
+			?? _flatMapFunction$1(path)
+			?? _flatMapFunction$2(path);
+	}
+
+	dynamic _flatMapFunction$0(String path) {
+		return switch (path) {
+			'userCommentedCurationYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションにコメントしました',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたノートにコメントしました',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートにコメントしました',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた投票にコメントしました',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} ウィジェットで言及されたスマートにコメントしました',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた動画にコメントしました',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた記事にコメントしました',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} さんがあなたの記事にコメントしました',
+			'userCommentedYourCuration' => ({required Object name}) => '${name} さんがあなたのキュレーションにコメントしました',
+			'userCommentedYourNote' => ({required Object name}) => '${name} さんがあなたのノートにコメントしました',
+			'userCommentedYourPaidNote' => ({required Object name}) => '${name} さんがあなたの有料ノートにコメントしました',
+			'userCommentedYourPoll' => ({required Object name}) => '${name} さんがあなたの投票にコメントしました',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} さんがあなたのスマートウィジェットにコメントしました',
+			'userCommentedYourVideo' => ({required Object name}) => '${name} さんがあなたのビデオにコメントしました',
+			'userNoArticles' => ({required Object name}) => '${name} さんは記事がありません',
+			'userNoCurations' => ({required Object name}) => '${name} さんはキュレーションがありません',
+			'userNoNotes' => ({required Object name}) => '${name} さんはメモがありません',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} さんはスマートウィジェットがありません',
+			'userNoVideos' => ({required Object name}) => '${name} さんは動画がありません',
+			'userSubmittedPaidNote' => ({required Object name}) => '${name} さんが有料ノートを提出しました',
+			'userMentionedYouInCuration' => ({required Object name}) => '${name} さんがキュレーションであなたをメンションしました',
+			'userMentionedYouInNote' => ({required Object name}) => '${name} さんがノートであなたをメンションしました',
+			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} さんが有料ノートであなたをメンションしました',
+			'userMentionedYouInPoll' => ({required Object name}) => '${name} さんが投票であなたをメンションしました',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} さんがスマートウィジェットであなたをメンションしました',
+			'userMentionedYouInVideo' => ({required Object name}) => '${name} さんが動画であなたをメンションしました',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} さんが記事であなたをメンションしました',
+			'userPublishedCuration' => ({required Object name}) => '${name} さんがキュレーションを公開しました',
+			'userPublishedPaidNote' => ({required Object name}) => '${name} さんが有料ノートを公開しました',
+			'userPublishedPoll' => ({required Object name}) => '${name} さんが投票を公開しました',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} さんがスマートウィジェットを公開しました',
+			'userPublishedVideo' => ({required Object name}) => '${name} さんが動画を公開しました',
+			'userPublishedArticle' => ({required Object name}) => '${name} さんが記事を公開しました',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションを引用しました',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたノートを引用しました',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートを引用しました',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた動画を引用しました',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた記事を引用しました',
+			'userQuotedYourArticle' => ({required Object name}) => '${name} さんがあなたの記事を引用しました',
+			'userQuotedYourCuration' => ({required Object name}) => '${name} さんがあなたのキュレーションを引用しました',
+			'userQuotedYourNote' => ({required Object name}) => '${name} さんがあなたのノートを引用しました',
+			'userQuotedYourPaidNote' => ({required Object name}) => '${name} さんがあなたの有料ノートを引用しました',
+			'userQuotedYourVideo' => ({required Object name}) => '${name} さんがあなたの動画を引用しました',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたキュレーションに${reaction} でリアクションしました',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたノートに ${reaction} でリアクションしました',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた有料ノートに${reaction} でリアクションしました',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた投票に ${reaction} でリアクションしました',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされたスマートウィジェットに ${reaction} でリアクションしました',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた動画に ${reaction} でリアクションしました',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} さんがあなたがメンションされた記事に ${reaction} でリアクションしました',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} さんがあなたに ${reaction} でリアクションしました',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} さんがあなたの記事に ${reaction} でリアクションしました',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} さんがあなたのキュレーションに ${reaction} でリアクションしました',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} さんがあなたのメッセージに ${reaction} でリアクションしました',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} さんがあなたのノートに ${reaction} でリアクションしました',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} さんがあなたの有料ノートに ${reaction} でリアクションしました',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} さんがあなたの投票に ${reaction} でリアクションしました',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} さんがあなたのスマートウィジェットに ${reaction} でリアクションしました',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} さんがあなたの動画に ${reaction} でリアクションしました',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} さんが ${reaction} でリアクションしました',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} さんがあなたから ${number} Satsを受け取りました',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた記事に返信しました',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたキュレーションに返信しました',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたノートに返信しました',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートに返信しました',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた投票に返信しました',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたスマートウィジェットに返信しました',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた動画に返信しました',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} さんがあなたの記事に返信しました',
+			'userRepliedYourCuration' => ({required Object name}) => '${name} さんがあなたのキュレーションに返信しました',
+			'userRepliedYourNote' => ({required Object name}) => '${name} さんがあなたのノートに返信しました',
+			'userRepliedYourPaidNote' => ({required Object name}) => '${name} さんがあなたの有料ノートに返信しました',
+			'userRepliedYourPoll' => ({required Object name}) => '${name} さんがあなたの投票に返信しました',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} さんがあなたのスマートウィジェットに返信しました',
+			'userRepliedYourVideo' => ({required Object name}) => '${name} さんがあなたの動画に返信しました',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされたノートをリポストしました',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} さんがあなたがメンションされた有料ノートをリポストしました',
+			'userRepostedYou' => ({required Object name}) => '${name} さんがあなたのコンテンツをリポストしました',
+			'userRepostedYourNote' => ({required Object name}) => '${name} さんがあなたのノートをリポストしました',
+			'userRepostedYourPaidNote' => ({required Object name}) => '${name} さんがあなたの有料ノートをリポストしました',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} さんがあなたに ${number} Satsを送りました',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} さんがあなたに ${number} Satsをzapしました',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} さんがあなたの記事に ${number} Satsをzapしました',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} さんがあなたのキュレーションに ${number} Satsをzapしました',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} さんがあなたのノートに ${number} Satsをzapしました',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} さんがあなたの有料ノートに ${number} Satsをzapしました',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} さんがあなたの投票に ${number} Satsをzapしました',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} さんがあなたのスマートウィジェットに ${number} Satsをzapしました',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} さんがあなたの動画に ${number} Satsをzapしました',
+			'userNewArticle' => ({required Object name}) => '${name} さんの新着記事',
+			'userNewCuration' => ({required Object name}) => '${name} さんの新着キュレーション',
+			'userPaidNote' => ({required Object name}) => '${name} さんの新着有料ノート',
+			'userNewSmartWidget' => ({required Object name}) => '${name} さんの新着スマートウィジェット',
+			'userReply' => ({required Object name}) => '${name} さんの返信',
+			'userNewVideo' => ({required Object name}) => '${name} さんの動画',
+			'articlesNum' => ({required Object number}) => '${number} 件の記事',
+			'availableArticles' => ({required Object number}) => '${number} 件の利用可能な記事',
+			'availableVideos' => ({required Object number}) => '${number} 本の利用可能な動画',
+			'bookmarksListCount' => ({required Object number}) => '${number} 件のブックマークリスト',
+			'componentsSMCount' => ({required Object number}) => 'このウィジェットには ${number} 個のコンポーネントがあります',
+			'followersNum' => ({required Object number}) => 'フォロワー ${number} 人',
+			'itemsNumber' => ({required Object number}) => '${number} 件のアイテム',
+			'levelsRequiredNum' => ({required Object number}) => '必要なレベルは ${number}',
+			'pointsRemaining' => ({required Object number}) => '残り ${number}',
+			'videosNum' => ({required Object number}) => '${number} 本の動画',
+			'viewsNumber' => ({required Object number}) => '${number} 回閲覧',
+			'readTime' => ({required Object time}) => '${time} 分読んだ',
+			'mutualsNum' => ({required Object number}) => '+ ${number} 人の相互フォロー',
+			'peopleCountPlus' => ({required Object number}) => '+ ${number} 人',
+			'supportUs' => '❤︎ 応援してね',
+			'consumablePointsPerks1' => '1- 認証のためにコンテンツを提出する',
+			'consumablePointsPerks2' => '2- 有料ノートを公開するためにポイントを引き換える',
+			'consumablePointsPerks3' => '3- SATs用にポイントを引き換える（ランダムな閾値が設定され、引き換え可能な場合は通知されます）',
+			'highlightedNote' => '注目を集めるためのハイライトされたノート',
+			'minimumOfOneRequired' => '最低数量 1 が必要です',
+			'useValidTitle' => '有効なタイトルを使用する必要があります',
+			'aboutYou' => 'あなたについて',
+			'actGoodFaith' => '誠実に行動する',
+			'add' => '追加',
+			'addUrlNevent' => '適切な URL/neventを追加する',
+			'addProperUrlNevent' => '適切な URL/neventを追加する',
+			'addAccount' => 'アカウントを追加する',
+			'addBookmarkList' => 'ブックマークリストを追加する',
+			'addCover' => 'カバーを追加する',
+			'addCuration' => 'キュレーションを追加する',
+			'addInterests' => '興味を追加する',
+			'addNote' => 'ノートを追加する',
+			'addToCuration' => 'キュレーションに追加する',
+			'addUser' => 'ユーザーを追加する',
+			'addWallet' => 'ウォレットを追加する',
+			'addYourTopics' => 'あなたのトピックを追加する',
+			'adjustSpeed' => '速度を調整する',
+			'adjustVolume' => '音量を調整する',
+			'alby' => 'Alby',
+			'albyConnect' => 'Albyコネクト',
+			'all' => 'すべて',
+			'allRelays' => 'すべてのリレー',
+			'allUsersZapped' => 'すべてのユーザーがzapされました！',
+			'amberNotInstalled' => 'アプリAmberがインストールされていません',
+			'amountInSats' => 'Satsでの金額',
+			'errorAddingArticle' => '記事の追加中にエラーが発生しました',
+			'errorAddingCuration' => 'キュレーションの追加中にエラーが発生しました',
+			'errorAddingWidget' => 'スマートウィジェットの追加中にエラーが発生しました',
+			'errorAddingVideo' => '動画の追加中にエラーが発生しました',
+			'errorUpdatingCuration' => 'キュレーションの更新中にエラーが発生しました',
+			'userInvoiceGenerated' => ({required Object name}) => '${name} のinvoiceが生成されました',
+			'verifiedNoteRateSealed' => 'あなたが評価した認証済みノートが封印されました',
+			'apiKeyRequired' => 'APIキー（必須）',
+			'appLanguage' => 'アプリの言語',
+			'appTheme' => 'アプリのテーマ',
+			'appearance' => '外観',
+			'article' => '記事',
+			'articleNotFound' => '記事が見つかりませんでした',
+			'articleAddedCuration' => '記事がキュレーションに追加されました',
+			'articles' => '記事',
+			'articlesAvailableCuration' => 'このキュレーションで利用可能な記事',
+			'askMeSomething' => '何か聞いてください！',
+			'attemptConnectAmber' => 'Amberへの接続試行が拒否されました',
+			'attemptsRemained' => '残りの試行回数',
+			'autoSavedArticleDeleted' => '自動保存された記事が削除されました',
+			'autoSavedSMdeleted' => '自動保存されたスマートウィジェットが削除されました',
+			'availableWallets' => '利用可能なウォレット',
+			'back' => '戻る',
+			'backgroundColor' => '背景色',
+			'balance' => '残高',
+			'beHelpful' => '意見が合わない人にも親切にしましょう',
+			'beFirstCommentThisVideo' => 'この動画に最初のコメントを投稿しましょう！',
+			'bio' => ({required Object content}) => 'プロフィール： ${content}',
+			'blankWidget' => '空白のウィジェット',
+			'bookmark' => 'ブックマーク',
+			'bookmarkAdded' => 'ブックマークリストが追加されました',
+			'bookmarkLists' => 'ブックマークリスト',
+			'bookmarks' => 'ブックマーク',
+			'borderColor' => '枠線の色',
+			'button' => 'ボタン',
+			'buttonColor' => 'ボタンの色',
+			'buttonCustomization' => 'ボタンのカスタマイズ',
+			'buttonText' => 'ボタンのテキスト',
+			'by' => '作成者',
+			'byPerson' => ({required Object name}) => '作成者 ${name}',
+			'byContinuing' => '続行することで、以下に同意したものとみなされます\n',
+			'camera' => 'カメラ',
+			'cancel' => 'キャンセル',
+			'checkSmartWidget' => 'スマートウィジェットをチェックする',
+			'checkoutArticle' => '私の記事をチェックする',
+			'checkoutCuration' => '私のキュレーションをチェックする',
+			'checkoutPaidNote' => '私の有料ノートをチェックする',
+			'checkoutSmartWidget' => '私のスマートウィジェットをチェックする',
+			'checkValidity' => '有効性をチェックする',
+			'checkModelRouter' => 'モデムまたはルーターを確認してください',
+			'checkoutVideo' => '私の動画をチェックする',
+			'claim' => '請求する',
+			'claimTime' => ({required Object time}) => '${time} 後に請求する',
+			'clear' => 'クリアする',
+			'clearAppCache' => 'アプリのキャッシュをクリアする',
+			'clearChat' => 'チャットをクリアする',
+			'clearDate' => '日付をクリアする',
+			'click' => 'クリックする',
+			'clickBelowToConnect' => '下記をクリックして接続してください',
+			'clone' => 'クローンする',
+			'close' => '閉じる',
+			'pollClosedAt' => ({required Object date}) => '${date} に終了しました',
+			'pollClosesAt' => ({required Object date}) => '${date} に終了しました',
+			'color' => '色',
+			'comment' => 'コメント',
+			'comments' => 'コメント',
+			'communityPolls' => 'コミュニティ投票',
+			'communityWallet' => 'コミュニティウォレット',
+			'communityWidgets' => 'コミュニティウィジェット',
+			'compose' => '作成する',
+			'confirmPayment' => '支払いを確認する',
+			'congratulations' => 'おめでとうございます',
+			'connect' => '接続する',
+			'connectWithNwc' => 'NWCに接続する',
+			'connected' => '接続済み',
+			'consumablePoints' => '使用可能なポイント',
+			'contact' => '連絡する',
+			'container' => 'コンテナ',
+			'containerCustomization' => 'コンテナのカスタマイズ',
+			'contentModeration' => 'コンテンツのモデレーション',
+			'contentTextColor' => 'コンテンツのテキストの色',
+			'contentTranslation' => 'コンテンツの翻訳',
+			'contentData' => ({required Object description}) => 'コンテンツ: ${description}',
+			'continueAsGuest' => 'ゲストとして続行する',
+			'contributeUnderstanding' => '理解を深めるために貢献する',
+			'copy' => 'コピーする',
+			'copyInvoice' => 'invoiceをコピーする',
+			'copyLn' => 'ライトニングアドレスをコピーする',
+			'copyNaddr' => 'naddrをコピーする',
+			'copyNoteId' => 'ノートIDをコピーする',
+			'copyNpub' => 'npubをコピーする',
+			'copyNwc' => 'NWCをコピーする',
+			'userInvoiceNotGenerated' => 'このユーザーのinvoiceを作成できませんでした。',
+			'notFindSMwithAddr' => 'このアドレスに対応するスマートウィジェットが見つかりませんでした',
+			'couldNotUpdateRelaysList' => 'リレーリストを更新できませんでした',
+			'coverUrl' => 'カバーURL',
+			'createWalletSendRecSats' => 'Satsの送受信用ウォレットを作成する',
+			'createAccount' => 'アカウントを作成する',
+			'createWallet' => 'ウォレットを作成する',
+			'yakiNwcDesc' => 'YakiHonneのチャンネルを利用してウォレットを作成する',
+			'createYakiWallet' => 'YakiHonneのウォレットを作成する',
+			'createdAt' => '作成日時',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => '作成日時 ${date1}、編集日時 ${date2}',
+			'curation' => 'キュレーション',
+			'curationNotFound' => 'キュレーションが見つかりませんでした',
+			'curationType' => 'キュレーションタイプ',
+			'curations' => 'キュレーション',
+			'currentlyLinkedMessage' => '現在、zap受信のためにあなたのプロフィールとリンクされています',
+			'customization' => 'カスタマイズ',
+			'customizeYourFeed' => 'フィードをカスタマイズする',
+			'dashboard' => 'ダッシュボード',
+			'decrMessage' => 'メッセージを復号化中',
+			'defaultKey' => 'デフォルト',
+			'delete' => '削除する',
+			'deleteContent' => ({required Object type}) => '${type} を削除する',
+			'deleteAccount' => 'アカウントを削除する',
+			'deleteBookmarkList' => 'ブックマークリストを削除する',
+			'deleteCoverPic' => 'カバー写真を削除する！',
+			'deleteDraft' => '下書きを削除する',
+			'deleteWallet' => 'ウォレットを削除する',
+			'description' => '説明',
+			'descriptionOptional' => '説明 (任意)',
+			'details' => '詳細',
+			'disableSecureDms' => 'セキュアDMを無効化する',
+			'disconnecting' => '切断中...',
+			'discordUrl' => 'Discord URL',
+			'discover' => '発見する',
+			'dismiss' => '無視する',
+			'displayName' => '表示名',
+			'findThisHelpful' => 'これが役に立ちましたか？',
+			'findThisNotHelpful' => 'これは役に立ちませんでしたか？',
+			'dontHaveWallet' => 'ウォレットをお持ちではありませんか？',
+			'unTextR3Desc' => 'ご安心ください、誰にでもこうした評価はあります！これらの評価は一般的で、多くの人が「役に立つ」ノートが十分に役に立たないと同意すれば、ステータス変更につながることがあります。',
+			'donations' => '寄付',
+			'downvotes' => '低評価',
+			'draft' => '下書き',
+			'duoLayout' => 'デュオレイアウト',
+			'earnSats' => 'SATを稼ぐ',
+			'edit' => '編集する',
+			'editCover' => 'カバーを編集する',
+			'editProfile' => 'プロフィールを編集する',
+			'editToAddZapPoll' => 'zap投票を追加するために編集する',
+			'editedOn' => ({required Object date}) => '編集日: ${date}',
+			'emptyVerifiedNote' => '認証済みノートの内容が空白です！',
+			'enableSecureDms' => 'セキュアDMを有効化する',
+			'eula' => 'エンドユーザーライセンス契約 (EULA)',
+			'engagementChart' => 'エンゲージメントチャート',
+			'enjoyExpOwnData' => 'あなた自身のデータを所有する体験をお楽しみください！\n',
+			'ensureLnSet' => 'ライトニングアドレスが正しく設定されていることを確認してください',
+			'enterSMaddr' => 'スマートウィジェットnaddrを入力して有効性を確認する。',
+			'enterLn' => 'LUD-06またはLUD-16のアドレスを入力してください',
+			'enterCoverUrl' => 'カバーURLを入力してください',
+			'enterNip05' => 'NIP-05アドレスを入力してください',
+			'enterPictureUrl' => '画像URLを入力してください',
+			'erase' => '消去する',
+			'errorAddingBookmark' => 'ブックマークの追加時にエラーが発生しました',
+			'errorAddingVerifiedNote' => '認証済みノートを追加中にエラーが発生しました',
+			'errorClaimingReward' => '報酬を請求中にエラーが発生しました',
+			'errorConnectingRelay' => 'リレーに接続中にエラーが発生しました',
+			'errorCreatingWallet' => 'ウォレット作成中にエラーが発生しました',
+			'errorDecodingData' => 'データデコード中にエラーが発生しました',
+			'errorDeletingContent' => 'コンテンツ削除中にエラーが発生しました',
+			'errorDeletingRating' => '評価削除中にエラーが発生しました',
+			'errorGeneratingEvent' => 'イベント生成中にエラーが発生しました',
+			'errorGeneratingInvoice' => 'invoice生成中にエラーが発生しました',
+			'errorLoggingYakiChest' => 'YakiHonneのチェストにログイン中にエラーが発生しました',
+			'errorPayingInvoice' => 'invoiceを使用した支払い中にエラーが発生しました',
+			'errorSendingSats' => 'Sats送信中にエラーが発生しました',
+			'errorSendingEvent' => 'イベント送信中にエラーが発生しました',
+			'errorSendingMessage' => 'メッセージ送信中にエラーが発生しました',
+			'errorSettingToken' => 'トークン設定中にエラーが発生しました',
+			'errorSigningEvent' => 'イベント署名中にエラーが発生しました',
+			'errorSubmittingRating' => '評価提出中にエラーが発生しました',
+			'errorTranslating' => 'コンテンツ翻訳中にエラーが発生しました。',
+			'errorUpdatingData' => 'データ更新中にエラーが発生しました',
+			'errorUpdatingRelaysList' => 'リレーリスト更新中にエラーが発生しました',
+			'errorUploadingMedia' => 'メディアアップロード中にエラーが発生しました',
+			'errorUploadingVideo' => '動画のアップロード中にエラーが発生しました',
+			'errorUsingWallet' => 'ウォレット使用中にエラーが発生しました！',
+			'errorZappingUsers' => 'ユーザーへのZap送信中にエラーが発生しました',
+			'errorUploadingImage' => '画像のアップロード中にエラーが発生しました',
+			'errorLoadingVideo' => '動画の読み込み中にエラーが発生しました',
+			'errorUsingExternalWallet' => '外部ウォレット使用中にエラーが発生しました。',
+			'eventNotFound' => 'イベントが見つかりませんでした',
+			'eventNotRecognized' => 'イベントが認識されませんでした',
+			'exit' => '終了する',
+			'expandWorld' => '興味のあるものを追加して世界を広げましょう。興味を選んで、冒険を始めましょう。',
+			'explanation' => '説明',
+			'explore' => '探索する',
+			'externalWallet' => '外部ウォレット',
+			'feedOptions' => 'フィードオプション',
+			'fetchingArticle' => '記事を取得中',
+			'fetchingCuration' => 'キュレーションを取得中',
+			'fetchingEvent' => 'イベントを取得中',
+			'fetchingEventUserRelays' => 'ユーザーのリレーからイベントを取得中',
+			'fetchingNote' => 'ノートを取得中',
+			'fetchingProfile' => 'プロフィールを取得中',
+			'fetchingSmartWidget' => 'スマートウィジェットを取得中',
+			'fetchingUserInboxRelays' => 'ユーザーのインボックスリレーを取得中',
+			'fetchingVideo' => '動画を取得中',
+			'fileSharing' => 'ファイル共有',
+			'fillColor' => '塗りつぶし色',
+			'finished' => '完了しました！',
+			'follow' => 'フォローする',
+			'followAll' => 'すべてフォローする',
+			'followMeOnNostr' => 'Nostrでフォローしてください',
+			'followers' => 'フォロワー',
+			'following' => 'フォロー中',
+			'pendingFollowing' => 'フォロー中...',
+			'followings' => 'フォロー中',
+			'followsYou' => 'あなたをフォローしています',
+			'fontSize' => 'フォントサイズ',
+			'forName' => ({required Object name}) => '${name} さんのために',
+			'enableSecureDmsMessage' => 'さらなるセキュリティとプライバシーのため、セキュアDMを有効にすることを検討してください。',
+			'zapSplitsMessage' => 'zapの分割には少なくとも1人必要です',
+			'free' => '無料',
+			'fuelYakihonne' => 'YakiHonneの成長を支援しましょう！あなたのサポートが新機能を生み出し、すべての人により良い体験を提供します。',
+			'gain' => '獲得する',
+			'gallery' => 'ギャラリー',
+			'generateInvoice' => 'invoiceを生成する',
+			'generateInvoices' => 'invoiceを生成する',
+			'getApiKey' => 'APIキーを取得する',
+			'getInvoice' => 'invoiceを取得する',
+			'getStartedNow' => '今すぐ始める',
+			'gifs' => 'GIF',
+			'gotIt' => '分かりました！',
+			'granted' => '許可されました',
+			'earnSatsDesc' => 'この有料ノートをレビューするために、より分散化されたインサイトの提供をお願いします。',
+			'heyWelcomeBack' => 'おかえりなさい',
+			'hideSuggestions' => '提案を非表示にする',
+			'highlights' => 'ハイライト',
+			'home' => 'ホーム',
+			'hfCustomization' => 'ホームフィードのカスタマイズ',
+			'horizontalVideo' => '横型動画',
+			'wantToShareRevenues' => 'この収益を共有したいです',
+			'identifier' => '識別子',
+			'image' => '画像',
+			'imageAspectRatio' => '画像のアスペクト比',
+			'imageCustomization' => '画像のカスタマイズ',
+			'imageUrl' => '画像のURL',
+			'imageUploadHistory' => '画像アップロード履歴',
+			'important' => '重要',
+			'inTag' => ({required Object name}) => '${name} 内',
+			'inaccessibleLink' => 'アクセス不能なリンク',
+			'inbox' => 'インボックス',
+			'initializingAccount' => 'アカウントを初期化中...',
+			'insertText' => 'テキストを挿入する',
+			'instantConntect' => 'リレーに即時接続',
+			'interestsUpdateMessage' => '興味リストが正常に更新されました！',
+			'interested' => '興味あり',
+			'interests' => '興味',
+			'invalidHexKey' => '無効な16進キーです！',
+			'invalidInvoice' => '無効なinvoice',
+			'invalidPairingSecret' => '無効なペアリング シークレット',
+			'invalidPrivateKey' => '無効な秘密鍵です!',
+			'invalidRelayUrl' => '無効なリレーURL',
+			'invoice' => 'invoice',
+			'invoiceCopied' => 'invoiceコードをコピーしました！',
+			'invoicePaid' => 'invoiceが正常に支払われました',
+			'invoiceOrLN' => 'invoiceまたはライトニングアドレス',
+			'issueOccuredSelectingImage' => '画像を選択中に問題が発生しました',
+			'somethingWentWrongDesc' => 'データの読み込み中に何かが発生したようです。もう一度お試しください！',
+			'invalidInvoiceDesc' => 'スキャンされたinvoiceが無効なようです。再スキャンしてもう一度試してください。',
+			'invoiceNotPayed' => 'invoiceが未払いのようです。再確認してください。',
+			'itsLive' => 'ライブ中です！',
+			'noCommunityNotes' => 'ここは静かですね！コミュニティノートはまだありません。',
+			'joinedOn' => ({required Object date}) => '参加日:  ${date}',
+			'keys' => 'キー',
+			'known' => '既知',
+			'languagePreferences' => '言語設定',
+			'lastGained' => ({required Object date}) => '最後に獲得した日： ${date}',
+			'lastUpdatedOn' => ({required Object date}) => '最終更新日： ${date}',
+			'latest' => '最新',
+			'layout' => 'レイアウト',
+			'layoutCustomization' => 'レイアウトのカスタマイズ',
+			'less' => '少ない',
+			'letsGetStarted' => '始めましょう!',
+			'levelNumber' => ({required Object number}) => 'レベル ${number}',
+			'lightningAddress' => 'ライトニングアドレス',
+			'lnCopied' => 'Lightningアドレスをコピーしました！👏',
+			'link' => 'リンク',
+			'linkWallet' => 'リンクウォレット',
+			'linked' => 'リンク済み',
+			'list' => 'リスト',
+			'loading' => '読み込み中',
+			'loadingFollowings' => 'フォロー中を読み込み中',
+			'loadingPreviousPosts' => '以前のポストを読み込み中...',
+			'loadingFollowers' => 'フォロワーを読み込み中',
+			'locked' => 'ロックされています',
+			'loggingIn' => 'ログイン中...',
+			'loggingOut' => 'ログアウト中...',
+			'login' => 'ログイン',
+			'loginYakiChestPoints' => 'YakiHonneのチェストにログインして、プラットフォームでアクティブに活動してポイントを貯め、貴重な賞品を手に入れましょう！',
+			'logoutAllAccounts' => 'すべてのアカウントをログアウトする',
+			'validDescriptionCuration' => 'このキュレーションに有効な説明を追加してください',
+			'validImageCuration' => 'このキュレーションに有効な画像を追加してください',
+			'validTitleCuration' => 'このキュレーションに有効なタイトルを追加してください',
+			'addValidUrl' => '有効なURLを追加してください',
+			'submitValidLud' => '有効なlud16/lud06を取得してください。',
+			'showSecretDesc' => 'これはアカウントへの完全なアクセスを提供するため、安全に保管してください。',
+			'invalidInvoiceLnurl' => '有効なinvoiceまたはlnurlを設定してください',
+			'setAllRequiredContent' => '必要なすべてのコンテンツを設定してください',
+			'setOutboxRelays' => 'アウトボックスリレーを設定してください',
+			'submitValidCloseDate' => '有効な終了日を提出してください。',
+			'submitMinMaxSats' => '有効な最小および最大のSatsを提出してください',
+			'submitValidOptions' => '有効なオプションを提出してください',
+			'submitValidData' => '有効なデータを提出してください',
+			'submitValidInvoice' => '有効なinvoiceを提出してください',
+			'manageAccounts' => 'アカウントを管理する',
+			'manageInterests' => '興味を管理する',
+			'maxSats' => '最大Sats',
+			'maximumSatoshis' => '最大Sats',
+			'mediaExceedsMaxSize' => 'メディアが最大サイズ21MBを超えています',
+			'mediaUploader' => 'メディアアップローダー',
+			'mentions' => 'メンション',
+			'messageOptional' => 'メッセージ (任意)',
+			'messageCouldNotBeDecrypted' => 'メッセージを復号できませんでした',
+			'messageNotDecrypted' => 'メッセージがまだ復号されていません！',
+			'messageCopied' => 'メッセージが正常にコピーされました。',
+			'metadata' => 'メタデータ',
+			'min' => '分',
+			'minSats' => '最小Sats',
+			'minimumSatoshis' => '最小Sats',
+			'errorMissingKey' => 'APIキーが欠落しているか、サブスクリプションが期限切れです。[設定] > [言語設定]で確認してください。',
+			'monoLayout' => 'モノレイアウト',
+			'monolayoutRequired' => 'モノレイアウトが必要です',
+			'more' => 'もっと見る',
+			'moreDots' => 'もっと...',
+			'moveDown' => '下に移動',
+			'moveUp' => '上に移動',
+			'mute' => 'ミュートする',
+			'muteList' => 'ミュートリスト',
+			'muteUser' => 'ユーザーをミュートする',
+			'mutuals' => '相互フォロー',
+			'myArticles' => '私の記事',
+			'myDrafts' => '私の下書き',
+			'myPolls' => '私の投票',
+			'myPublicKey' => '私の公開鍵',
+			'mySecretKey' => '私の秘密鍵',
+			'myVideos' => '私の動画',
+			'myWidgets' => '私のウィジェット',
+			'naddr' => 'naddr',
+			'nostrWalletConnectDesc' => 'ネイティブnostrウォレット接続',
+			'needsMoreRating' => 'もっと評価が必要です',
+			'needsYourHelp' => 'あなたの助けが必要です',
+			'nevent' => 'nevent',
+			'newKey' => '新着',
+			'newMessage' => '新着メッセージ',
+			'newPostGesture' => '新着ポストの長押しジェスチャー',
+			'next' => '次へ',
+			'noContentBelongToCuration' => ({required Object type}) => 'このキュレーションに属する ${type} はありません',
+			'noContentCanBeFound' => ({required Object type}) => '${type} が見つかりません',
+			'noArticlesInCuration' => 'このキュレーションに記事は見つかりませんでした',
+			'addNewBookmark' => 'ブックマークリストが見つかりません。追加してみてください！',
+			'noBookmarksListFound' => 'ブックマークリストが見つかりません。追加してみてください！',
+			'noCommentsCanBeFound' => 'コメントが見つかりません',
+			'noComponentsDisplayed' => 'コンポーネントを表示できません',
+			'noCurationsFound' => 'キュレーションが見つかりませんでした。コンテンツを追加できるように、新しいキュレーションを作成してください。',
+			'noDescription' => '説明がありません',
+			'noElementsInBookmarks' => 'ブックマークリストにエレメントが見つかりませんでした',
+			'noEventIdCanBeFound' => 'このIDのイベントは見つかりませんでした！',
+			'noImageHistory' => '画像履歴が見つかりませんでした',
+			'noInternetAccess' => 'インターネットアクセスがありません',
+			'noInvoiceAvailable' => '利用可能なinvoiceがありません',
+			'noMessageCanBeFound' => 'メッセージが見つかりません',
+			'noMessagesToDisplay' => '表示されるメッセージがありません。',
+			'noMoreData' => 'これ以上のデータはありません',
+			'noMutedUserFound' => 'ミュートされたユーザーが見つかりませんでした',
+			'noNotificationCanBeFound' => '通知が見つかりません',
+			'noPaidNotesCanBeFound' => '有料ノートが見つかりません。',
+			'noPollsCanBeFound' => '投票が見つかりません',
+			'noReasonsSpecified' => '理由が指定されていません！',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
+			'noRelaysCanBeFound' => 'リレーが見つかりません',
+			'noUserRelays' => 'このユーザーのリレーが見つかりませんでした',
+			'noRepliesDesc' => 'このノートへの返信が見つかりません',
+			'noResKeyword' => 'このキーワードに対する結果がありません',
+			'noResKeywordDesc' => 'このキーワードでは結果が見つかりませんでした。他のキーワードを使用して、より良い結果を試してください。',
+			'noSmartWidgetCanBeFound' => 'スマートウィジェットが見つかりません',
+			'noSmartWidget' => 'スマート ウィジェットの下書きが見つかりません',
+			'noTemplatesCanBeFound' => 'このカテゴリにはテンプレートが見つかりません。',
+			'noTitle' => 'タイトルがありません',
+			'noTransactionCanBeFound' => 'トランザクションが見つかりません',
+			'noUserZapped' => 'zapされたユーザーはいません！',
+			'noUserCanBeFound' => 'ユーザーが見つかりません。',
+			'noVideosInCuration' => 'このキュレーションに動画が見つかりませんでした',
+			'noWalletCanBeFound' => 'ウォレットが見つかりません',
+			'noZappersCanBeFound' => 'zapperが見つかりません。',
+			'noImGood' => 'いいえ、結構です',
+			'noWalletConnectedToYourProfile' => '接続されたウォレットはあなたのプロフィールにリンクされていません',
+			'nostrScheme' => 'Nostrスキーム',
+			'nostrWalletConnect' => 'Nostrウォレット接続',
+			'nwcInitialized' => 'Nostr ウォレット接続が初期化されました',
+			'notEnoughBalance' => 'この支払いを行うための残高が不足しています。',
+			'notFollowedByAnyoneYouFollow' => 'あなたがフォローしている人からフォローされていません。',
+			'notHelpful' => '役に立たない',
+			'notInterested' => '興味がありません',
+			'notSealed' => '封印されていません',
+			'notSealedYet' => 'まだ封印されていません',
+			'note' => 'ノート',
+			'noteNotFound' => 'ノートが見つかりませんでした',
+			'notePublished' => 'ノートが公開されました！',
+			'noteIdCopied' => 'ノートIDがコピーされました! 👏',
+			'walletDataNote' => '注意: ウォレットに関連するすべてのデータは安全かつ確実にローカルに保存され、アプリケーションの範囲外に共有されることはありません。',
+			'changeRatingNote' => '評価の変更は5分間のみ有効です。それ以降は元に戻すことも変更することもできません。',
+			'payPublishNote' => '注意: 提供されたすべてのコンテンツは最終的なものであることを確認してください。公開は不可逆的とみなされ、使用されたSATSは返金されません。',
+			'notes' => 'ノート',
+			'notesFromCommunity' => 'コミュニティからのメモ',
+			'unTextW3Desc' => '「役に立つ」または「役立たない」のステータスがまだありません',
+			'unTextW1' => '「役に立つ」ステータスを獲得したノート',
+			'unTextW3' => 'さらに評価が必要なノート',
+			'unTextW2' => '「役に立たない」ステータスを獲得したノート',
+			'un2' => '評価中のノート',
+			'notifications' => '通知',
+			'npubNsecHex' => 'npub, nsecまたはhex',
+			'nwcCopied' => 'NWCが正常にコピーされました！',
+			'onDate' => ({required Object date}) => '${date} に',
+			'onSelectedWalletLinkIt' => '選択したウォレットにリンクします。',
+			'oneTimeRewards' => '一度きりの報酬',
+			'ongoing' => '進行中',
+			'nothingToShowHere' => 'おっと！ここには表示するものがありません！',
+			'optionBackgroundColor' => 'オプションの背景色',
+			'optionTextColor' => 'オプションのテキスト色',
+			'options' => 'オプション',
+			'optionsNumber' => ({required Object number}) => 'オプション: ${number}',
+			'orUseYourWallet' => 'またはウォレットを使用してください',
+			'others' => 'その他',
+			'privacyNote' => '当社のアプリは、厳格な暗号化を使用して、ユーザーのデバイスに重要なデータを安全にローカル保存します。情報が外部に共有されないよう厳格なポリシーを守り、機密性が確保されますのでご安心ください。',
+			'owner' => '所有者',
+			'paid' => '支払い済み',
+			'paidNote' => '有料ノート',
+			'paidNotePublished' => '有料ノートが公開されました！',
+			'paidNoteLoading' => '有料ノートを読み込み中',
+			'partialUsersZapped' => '一部のユーザーがzapされました!',
+			'pasteNwcAddress' => 'NWCアドレスを貼り付ける',
+			'pasteYourKey' => 'キーを貼り付けてください',
+			'pasteKind1063' => '種類1063のnEventを貼り付けて提出してください',
+			'pasteYourLink' => 'リンクを貼り付けて提出してください',
+			'pay' => '支払う',
+			'payAmount' => ({required Object number}) => ' ${number} Sats を支払う',
+			'payPublish' => '支払い＆公開',
+			'payWithNwc' => 'NWC で支払う',
+			'paymentFailed' => '支払いに失敗しました',
+			'paymentSucceeded' => '支払いが成功しました',
+			'paymentSurpassMax' => '支払いが許可されている最大金額を超えています。',
+			'peopleToFollow' => 'フォローすべき人',
+			'permissionInvoiceNotGranted' => 'invoiceの支払い許可がありません。',
+			'pickYourComponent' => 'コンポーネントを選択してください',
+			'pickYourImage' => '画像を選択してください',
+			'pickYourMedia' => 'メディアを選択してください',
+			'pickYourVideo' => '動画を選択してください',
+			'pictureUrl' => '画像URL',
+			'plan' => 'プラン',
+			'submitValidVideoEvent' => '有効な動画イベントを提出してください',
+			'points' => 'ポイント',
+			'pointsSystem' => 'ポイントシステム',
+			'pollCloseDate' => '投票の終了日',
+			'pollOptions' => '投票オプション',
+			'pollZapPublished' => '投票zapが公開されました！',
+			'popularNotes' => '人気のノート',
+			'post' => 'ポストする',
+			'postArticle' => '記事をポストする',
+			'postNotFound' => 'ポストが見つかりませんでした',
+			'postCuration' => 'キュレーションをポストする',
+			'postInNote' => 'ノート内にポストする',
+			'postNote' => 'ノートをポストする',
+			'postSmartWidget' => 'スマートウィジェットをポストする',
+			'postVideo' => '動画をポストする',
+			'postedBy' => 'ポスト元',
+			'postedFrom' => 'ポスト元',
+			'postedOn' => ({required Object date}) => '${date} にポストされました',
+			'preview' => 'プレビュー',
+			'privKeyCopied' => '秘密鍵がコピーされました！👏',
+			'pro' => 'プロ',
+			'processCompleted' => '処理が完了しました',
+			'profile' => 'プロフィール',
+			'profileLink' => 'プロフィールリンク',
+			'profileCopied' => 'プロフィールリンクがコピーされました！👏',
+			'profilePreview' => 'プロフィールをプレビューする',
+			'profileRelays' => ({required Object number}) => 'プロファイル推奨リレー - ${number}',
+			'publicKey' => '公開鍵',
+			'publicKeyCopied' => '公開鍵がコピーされました! ',
+			'publish' => '公開する',
+			'publishRemoveDraft' => '下書きを公開して削除する',
+			'publishedOnText' => '公開日',
+			'publishedOn' => ({required Object date}) => '公開日: ${date}',
+			'pullToRefresh' => '画面を引き下げて更新',
+			'qrCode' => 'QRコード',
+			'rateHelpful' => '「役に立つ」と評価する',
+			'rateNotHelpful' => '「役に立たない」と評価する',
+			'ratedHelpful' => '「役に立つ」と評価した',
+			'ratedNotHelpful' => '「役に立たない」と評価した',
+			'un1' => '「役に立つ」のステータスになったノートへの「役に立たない」評価',
+			'unTextR3' => '「役に立つ」のステータスになったノートへの「役に立たない」評価',
+			'un2Desc' => '現在「役に立つ」または「役に立たない」のステータスがないノートへの評価',
+			'unTextR1' => 'ノートが「役に立つ」ステータスを獲得するのに役立った評価',
+			'unTextR2' => 'ノートが「役に立たない」ステータスを獲得するのに役立った評価',
+			'readAboutVerifyingNotes' => 'ノートの認証について読む',
+			'readArticle' => '記事を読む',
+			'readMore' => '続きを読む',
+			'readOnly' => '読み取り専用',
+			'readWrite' => '読み取り/書き込み',
+			'receive' => '受け取る',
+			'receiveSats' => 'satsを受け取る',
+			'recent' => '最近の',
+			'recentTransactions' => '最近のトランザクション',
+			'recentWithReplies' => '返信付きの最近のポスト',
+			'reconnectWifi' => 'WiFiに再接続する',
+			'refresh' => '更新する',
+			'refreshed' => '更新されました',
+			'refreshing' => '更新中',
+			'relayInUse' => 'リレーはすでに使用されています',
+			'relaySettings' => ({required Object number}) => 'リレー設定 ${number}',
+			'relayingStuff' => 'リレー中...',
+			'relays' => 'リレー',
+			'relaysNotReached' => 'リレーに到達できませんでした',
+			'relaysListUpdated' => 'リレーリストが更新されました',
+			'releaseToLoad' => '指を離してさらに読み込む',
+			'repeatedRewards' => '繰り返し報酬',
+			'replies' => '返信',
+			'reply' => '返信する',
+			'replyingTo' => ({required Object name}) => '${name} に返信中',
+			'reposted' => 'リポストした',
+			'requestInProgress' => '処理中のリクエスト',
+			'reveal' => '表示する',
+			'rewards' => '報酬',
+			'saveDraft' => '下書きを保存する',
+			'saved' => '保存されました',
+			'scanPay' => 'スキャンして支払う',
+			'scanAgain' => '再度スキャンしてください',
+			'scanQrCode' => 'QRコードをスキャンする',
+			'sealed' => '封印された',
+			'search' => '検索する',
+			'searchContentByTitle' => ({required Object type}) => 'タイトルで ${type} を検索する ',
+			'searchNameNpub' => '名前、npub、nprofile で検索する',
+			'searchByUserName' => 'ユーザー名で検索する',
+			'searchRelay' => 'リレーを検索する',
+			'secureDirectMessaging' => 'セキュアDM',
+			'seeAll' => 'すべて表示する',
+			'seeAllAttempts' => 'すべての試行を表示する',
+			'seeAlso' => '参考する',
+			'seeAnything' => '改善したい点はありますか?',
+			'seeMore' => 'もっと見る',
+			'seeOriginal' => 'オリジナルを見る',
+			'seeTranslation' => '翻訳を見る',
+			'selectAndUploadLocaleImage' => 'ローカル画像を選択してアップロードしてください',
+			'selectAdate' => '日付を選択してください',
+			'selectDefaultWallet' => '設定でデフォルトウォレットを選択してください。',
+			'selectUserToZap' => 'Zapを送るユーザーを選択してください（任意）',
+			'selectValidUrlImage' => '有効なURL画像を選択してください',
+			'selectWalletTransactions' => '最新のトランザクションを取得するウォレットを選択してください。',
+			'selectOneReason' => '少なくとも1つの理由を選択してください',
+			'selectComponent' => '都合の良いコンポーネントを選択して編集してください',
+			'send' => '送る',
+			'sendSats' => 'satsを送る',
+			'setProperName' => '適切な名前を設定する',
+			'setSatsMoreThanZero' => '0より大きいSatsの金額を設定してください',
+			'setBookmarkTitleDescription' => 'ブックマークリストのタイトルと説明を設定してください。',
+			'setValidKey' => '有効なキーを設定してください',
+			'setUpYourLink' => 'リンクを設定してください',
+			'setUpYourNevent' => 'nEventを設定してください',
+			'setYourRating' => '評価を設定してください',
+			'settings' => '設定',
+			'share' => '共有する',
+			'shareGlimps' => 'あなた自身のことを真実の言葉で紹介してください。',
+			'shareContent' => 'コンテンツを共有する',
+			'shareImage' => '画像を共有する',
+			'shareLink' => 'リンクを共有する',
+			'shareNaddr' => 'naddrをシェアする',
+			'shareNoteId' => 'ノートIDを共有する',
+			'shareNprofile' => 'エヌプロフィールを共有する',
+			'shareProfile' => 'プロフィールを共有する',
+			'shareProfileDesc' => 'プロフィールを共有して、より多くの人々とつながり、ネットワークを広げましょう',
+			'show' => '表示する',
+			'showArticlesNotesSuggestions' => '記事/ノートの提案を表示する',
+			'showSecret' => '秘密鍵を表示する！',
+			'showStats' => '統計を表示する',
+			'showSuggestedInterests' => '提案された興味を表示する',
+			'showSuggestedPeople' => 'フォローすべき人の提案を表示する',
+			'showSuggestions' => '提案を表示する',
+			'signIn' => 'サインイン',
+			'usingViewModeDesc' => '秘密鍵でサインインして、コミュニティに参加してください。',
+			'size' => 'サイズ',
+			'slideToPay' => 'スライドして支払う',
+			'smartWidget' => 'スマートウィジェット',
+			'smartWidgetBuilder' => 'スマートウィジェットビルダー',
+			'smartWidgetChecker' => 'スマートウィジェットチェッカー',
+			'smartWidgetNotFound' => 'スマートウィジェットが見つかりませんでした',
+			'smartWidgetPublishedSuccessfuly' => 'スマート ウィジェットが正常に公開されました',
+			'smartWidgets' => 'スマートウィジェット',
+			'smartWidgetsDrafts' => 'スマートウィジェットの下書き',
+			'smartWidgetsTemplates' => 'スマートウィジェットのテンプレート',
+			'software' => 'ソフトウェア',
+			'somethingWentWrong' => '問題が発生しました！',
+			'soonUsers' => 'ユーザーは以下のアクティビティで使用可能なポイントを間もなく利用できるようになります：',
+			'source' => 'ソース',
+			'sourceRecommended' => 'ソース (推奨)',
+			'splitRevenuesWithUsers' => 'ユーザーと収益を分配する',
+			'splitZapsWith' => 'zapを分配する',
+			'spreadWordSharingContent' => 'コンテンツをどこにでも共有して知らせましょう。',
+			'startBuildingSmartWidget' => 'Nostrネットワークで使用するスマートウィジェットを構築してカスタマイズしてください',
+			'startEarningPoints' => 'Yakiポイントを稼ぎ、最大限に活用しましょう！🎉',
+			'startSearchContent' => 'コンテンツを検索し始める',
+			'startSearchPeople' => '人を検索し始める',
+			'stickers' => 'ステッカー',
+			'submit' => '提出する',
+			'submitBookmarkList' => 'ブックマークリストを提出する',
+			'submitCuration' => 'キュレーションを提出する',
+			'successfulRelays' => '成功したリレー',
+			'suggestedInterests' => '提案される興味',
+			'suggestions' => '提案',
+			'suggestionsBox' => '提案ボックス',
+			'summaryOptional' => 'サマリー (任意)',
+			'supportYakihonne' => 'YakiHonneをサポートする',
+			'supportedNips' => 'サポートされているNIP',
+			'switchAccounts' => 'アカウントを切り替える',
+			'taylorExperienceInterests' => 'あなたの主要な興味を選んで体験を調整してください',
+			'telegramUrl' => 'TelegramのURL',
+			'templates' => 'テンプレート',
+			'text' => 'テキスト',
+			'textColor' => 'テキストの色',
+			'textCustomization' => 'テキストカスタマイズ',
+			'textSuccesfulyCopied' => 'テキストが正常にコピーされました！',
+			'theFollowingNote' => '以下のノート：',
+			'smHaveTitle' => 'スマートウィジェットには少なくとも一つのタイトルが必要です',
+			'smHaveOneWidget' => 'スマートウィジェットには少なくとも1つのコンポーネントが必要です',
+			'valueBetweenMinMax' => '値は最小および最大Satsの範囲内である必要があります',
+			'noDataFromGpt' => 'GPTから表示するデータがあります。',
+			'oneFeedOptionAvailable' => '少なくとも1つのフィードオプションが利用可能である必要があります。',
+			'unTextW1Desc' => 'これらのノートは投稿を見たすべての人に表示され、文脈を追加し、人々が情報を得られるようにします。',
+			'unTextW2Desc' => 'これらのノートは、過去に異なる評価をすることがある貢献者を含む十分な数の寄稿者によって「役立たない」と評価されました。',
+			'un1Desc' => 'これらの評価は他の人が役立つと見なしたノートをサポートしていることを示すため、2回カウントされます。',
+			'unTextR1Desc' => 'これらの評価は、すべての人に表示され、文脈を追加して情報提供に役立つ「役に立つ」ノートを特定しました。',
+			'unTextR2Desc' => 'これらの評価は、ノートの作成者にフィードバックを提供し、貢献者が最も有望なノートに集中できるようにすることで、認証済みノートを改善します。',
+			'notValidVideoEvent' => 'このイベントは有効な動画イベントではありません！',
+			'sensitiveContent' => 'これはセンシティブな内容です',
+			'emptyVideoUrl' => 'このnEventにはURLがありません。',
+			'thisNoteAwaitRating' => 'このノートはコミュニティ評価を待っています。',
+			'yourNoteAwaitRating' => 'このノートはコミュニティ評価を待っています。',
+			'smartWidgetConvention' => 'このスマートウィジェットは合意された規約に従っていません。',
+			'useCannotBeZapped' => 'このユーザーにはzapを送れません',
+			'thread' => 'スレッド',
+			'thumbnailPreview' => 'サムネイルプレビュー',
+			'title' => 'タイトル',
+			'titleData' => ({required Object description}) => 'タイトル： ${description}',
+			'toBeAbleSendSats' => 'zapを送るには、ビットコインライトニングウォレットを接続してください。',
+			'topReasonsSelected' => '評価者が選択した主な理由：',
+			'totalAmount' => '合計金額',
+			'totalNumber' => ({required Object number}) => '合計：  ${number}',
+			'trending' => 'トレンド',
+			'tryAgain' => 'もう一度お試しください',
+			'type' => 'タイプ',
+			'typeValidZapQuestion' => '有効な投票の質問を入力してください！',
+			'unableToOpenUrl' => 'URLを開くことができません',
+			'undo' => '元に戻す',
+			'undoRating' => '評価を元に戻す',
+			'unfollow' => 'フォローを解除する',
+			'unfollowAll' => 'すべてフォロー解除する',
+			'pendingUnfollowing' => 'フォローを解除中...',
+			'unknown' => '不明',
+			'unknownVerifiedNote' => '不明なユーザーの認証済みノート',
+			'unlocked' => 'ロック解除済み',
+			'unmute' => 'ミュートを解除する',
+			'unmuteUser' => 'ユーザーのミュートを解除する',
+			'untitled' => '無題',
+			'update' => 'アップデートする',
+			'updateInterests' => '興味をアップデートする',
+			'updateProfile' => 'プロフィールをアップデートする',
+			'updatedSuccesfuly' => 'アップデートが成功しました',
+			'updates' => 'アップデート',
+			'updatesNews' => 'ニュースをアップデートする',
+			'uploadAndUse' => 'アップロードして使用する',
+			'uploadImage' => '画像をアップロードする',
+			'uploadingImage' => '画像をアップロードしています...',
+			'upvotes' => '賛成票',
+			'url' => 'URL',
+			'useAmber' => 'Amberを使用する',
+			'useInvoice' => '請求書を使用する',
+			'useTemplate' => 'テンプレートを使用する',
+			'user' => 'ユーザー',
+			'userCannotBeFound' => 'ユーザーが見つかりません',
+			'userHasBeenMuted' => 'ユーザーがミュートされました',
+			'userHasBeenUnmuted' => 'ユーザーのミュートが解除されました',
+			'userName' => 'ユーザー名',
+			'userNameCopied' => 'ユーザー名が正常にコピーされました！',
+			'userZappedSuccesfuly' => 'ユーザーが正常にzapされました',
+			'userImpact' => 'ユーザーの影響',
+			'userRelays' => 'ユーザーのリレー',
+			'usingExternalSign' => '外部署名者を使用中',
+			'value' => '値',
+			'verifyNip05' => '認証済みのNostrアドレス（NIP 05）',
+			'verifiedNoteNotFound' => '認証済みノートが見つかりませんでした',
+			'verifyNotes' => 'ノートを認証する',
+			'verifyingNote' => 'ノートを認証中',
+			'version' => 'バージョン',
+			'video' => '動画',
+			'videoNotFound' => '動画が見つかりませんでした',
+			'videoCustomization' => '動画のカスタマイズ',
+			'videoAddedCuration' => '動画がキュレーションに追加されました。',
+			'videoUrl' => '動画のURL',
+			'videos' => '動画',
+			'videosAvailableCuration' => 'キュレーションで利用可能な動画',
+			'view' => '表示する',
+			'viewProfile' => 'プロフィールを表示する',
+			'viewQrCode' => 'QRコードを表示する',
+			'views' => '閲覧回数',
+			'visitProfile' => 'プロフィールを訪問する',
+			'voteNotSubmitted' => '投票をできませんでした',
+			'voteRequired' => '統計を表示するには投票が必要です。',
+			'votesByUsers' => 'ユーザー別の投票',
+			'votesByZaps' => 'zap別の投票',
+			'votesNumber' => ({required Object number}) => '投票: ${number}',
+			'waitingGenerationOfInvoice' => 'invoices の生成を待っています',
+			'wallet' => 'ウォレット',
+			'walletNotLinked' => 'ウォレットをリンクできません。間違ったライトニングアドレス',
+			'walletCreated' => 'ウォレットが正常に作成されました',
+			'walletLinked' => 'ウォレットが正常にリンクされました',
+			'wallets' => 'ウォレット',
+			'warning' => '警告',
+			'watchNow' => '今すぐ見る',
+			'noLnInNwc' => 'NWC シークレットからアドレスを取得できませんでした。ライトニングアドレスサービスプロバイダーを確認し、アドレスをコピーするか、プロフィールを更新してください。',
+			'readAboutVerifyingNotesDesc' => '私たちの目的を理解するための記事を作成しました',
+			'website' => 'ウェブサイト',
+			'weight' => '重さ',
+			'whatThinkThis' => 'これについてどう思いますか？',
+			'whatThinkOfThat' => 'それについてどう思いますか？',
+			'whatsOnYourMind' => '何を考えていますか？',
+			'whatsThis' => 'これは何ですか？',
+			'whyVerifyingNotes' => 'なぜノートを認証するのですか？',
+			'widgets' => 'ウィジェット',
+			'writeCommentOptional' => 'コメントを書く (任意)',
+			'writeYourMessage' => 'メッセージを書く',
+			'writeNote' => 'ノートを書く',
+			'writeSummary' => 'を書く',
+			'writeValidNote' => '有効なノートを書いてください！',
+			'writeOnly' => '書くだけ',
+			'writeSomethingAboutYou' => 'あなたについて何か書いてください！',
+			'writeSomething' => '何かを書く...',
+			'writeYourText' => 'テキストを書いてください',
+			'xUrl' => 'X URL',
+			'yakiChest' => 'Yakiチェスト',
+			'yakihonne' => 'YakiHonne',
+			'yakihonneChest' => 'YakiHonneのチェスト！',
+			'yakihonneConsPoints' => 'YakiHonneの消費可能なポイント',
+			'yakihonneImprovements' => 'YakiHonneの改善',
+			'yakihonneNote' => 'YakiHonneのノート',
+			'yakihonneNotification' => 'YakiHonneの通知',
+			'yakiNwc' => 'YakiHonneのNWC',
+			'clearAppCacheDesc' => 'アプリのキャッシュをクリアしようとしています。続行しますか？',
+			'deleteWalletDesc' => 'このウォレットを削除しようとしています。続行しますか？',
+			'linkWalletDesc' => '以前のウォレットを上書きし、新しいウォレットをプロフィールにリンクしようとしています。続行しますか？',
+			'undoRatingDesc' => '評価を取り消そうとしています。続行しますか?',
+			'alreadyLoggedIn' => '既にログインしています！',
+			'deleteAccountMessage' => '削除されたアカウントにログインしようとしています。',
+			'loggedToYakiChest' => 'Yakihonneのチェストにログインしています',
+			'loggedIn' => 'ログインしました!',
+			'notUsingSecureDms' => 'セキュアDMを使用していません。',
+			'usingSecureDms' => '現在セキュアDMを使用しています',
+			'usingExternalSignDesc' => '外部署名者を使用しています',
+			'secKeyWalletDesc' => '設定でアカウントの秘密鍵とウォレット接続秘密鍵を確認できます。これらの鍵は、アカウントとウォレットへの安全なアクセスに不可欠です。安全かつ秘密に保管してください。',
+			'secKeyDesc' => '設定でアカウントの秘密鍵を確認できます。この鍵は、アカウントへの安全なアクセスに不可欠です。安全かつ秘密に保管してください。',
+			'uploadSendMedia' => '選択または撮影後、すぐにメディアをアップロードして送信できます。',
+			'uploadPasteUrl' => 'お好みの画像のURLを貼り付けるか、アップロードできます',
+			'canUploadPastLink' => 'ビデオにアップロードしたり、リンクを貼り付けたり、種類 1063 を選択したりできます。',
+			'findPaidNoteCorrect' => 'この有料ノートは正しいと判断しました。',
+			'findPaidNoteMisleading' => 'この有料ノートは誤解を招きやすいと判断しました。',
+			'alreadyContributed' => 'すでに貢献済みです。',
+			'alreadyVoted' => 'この投票にはすでに投票しました。',
+			'congratsDesc' => ({required Object number}) => '以下のアクションに対して ${number} xpが付与されました。さらに活動して報酬を獲得しましょう！',
+			'youHaveLeftNote' => 'この有料ノートにノートを残しました。',
+			'noRewards' => '報酬がありません。報酬を取得するために、認証済みのノートを操作したり書き込んだりする必要はあります。',
+			'noWalletLinkedMessage' => 'プロフィールにウォレットがリンクされていません。このウォレットをリンクしますか？',
+			'noWalletLinkedToYouProfile' => 'プロフィールにウォレットがリンクされていません。',
+			'youHaveRated' => '評価済みです',
+			'ratedNoteSealed' => '次のノートを評価しましたが、それは封印されました：',
+			'youRatedHelpful' => 'これを「役に立つ」と評価しました',
+			'youRatedNotHelpful' => 'これを「役に立た立たない」と評価しました',
+			'ownReceivedSat' => ({required Object number}) => 'あなたが ${number} Satsを受け取りました ',
+			'ownSentSat' => ({required Object number}) => 'あなたが ${number} Satsを送った',
+			'voteToSeeStats' => '統計を見るには投票する必要があります',
+			'you' => 'あなた： ',
+			'confirmDeleteContent' => ({required Object type}) => 'この ${type} を削除しようとしています。続行しますか？',
+			'confirmDeleteBookmarkList' => 'このブックマーク リストを削除しようとしています。続行しますか?',
+			'confirmDeleteDraft' => 'この下書きを削除しようとしています。続行しますか？',
+			'deleteCoverPicDesc' => 'カバー画像を削除しようとしています。続行しますか？?',
+			'youreAllSet' => '準備は完了です',
+			'switchToMonolayout' => '両側に要素がある状態でモノレイアウトに切り替えようとしています。これによりコンテナの内容が消去されます。続行しますか？',
+			'usingViewMode' => '表示モードを使用しています',
+			'muteUserDesc' => ({required Object name}) => '${name} さんをミュートしようとしています。続行しますか？',
+			'unmuteUserDesc' => ({required Object name}) => '${name} さんのミュートを解除しようとしています。続行しますか？',
+			'articlePublished' => 'あなたの記事が公開されました！',
+			'yourDisplayName' => 'あなたの表示名',
+			'yourNoteSealed' => 'あなたの以下のノートが封印されました:',
+			'yourName' => 'お名前',
+			'ratingDeleted' => 'あなたの評価は削除されました',
+			'ratingSubmittedCheckReward' => 'あなたの評価が提出されました。報酬を受け取るには報酬ページをチェックしてください',
+			'verifiedNoteAdded' => 'あなたの認証済みノートが追加されました。報酬ページを確認して執筆報酬を受け取ってください',
+			'verifiedNoteSealed' => 'あなたの認証済みノートが封印されました',
+			'yourWebsite' => 'あなたのウェブサイト',
+			'youtubeUrl' => 'YoutubeのURL',
+			'zap' => 'zap',
+			'zapPoll' => 'zap投票',
+			'zapPollCustomization' => 'zap投票のカスタマイズ',
+			'zapPollNevent' => 'zap投票イベント',
+			'zapSplits' => 'zap分配',
+			'zappers' => 'zapper',
+			'zaps' => 'zap',
+			'zapReceived' => '受け取ったzap',
+			'zapSent' => '送ったzap',
+			'comingSoon' => '近日公開',
+			'content' => 'コンテンツ',
+			'expiresOn' => ({required Object date}) => '${date} に期限切れになります',
+			'reactions' => 'リアクション',
+			'reposts' => 'リポスト',
+			'collapseNote' => 'メモを折りたたむ',
+			'notifDisabled' => '通知が無効になっています!',
+			'notifDisabledMessage' => 'このタイプの通知は無効になっています。通知設定で有効にできます。',
+			'oneNotifOptionAvailable' => '少なくとも 1 つの通知オプションが利用可能である必要があります。',
+			'readAll' => 'すべて読む',
+			'usernameTaken' => 'ユーザー名が取得されました',
+			'usernameRequired' => 'ユーザー名は必須です',
+			'deleteWalletConfirmation' => '紛失したウォレットの回復はサポートできないため、NWC 接続フレーズを安全に保存してください。',
+			'unsupportedKind' => 'サポートされていない種類',
+			'analyticsCrashlytics' => 'クラッシュリティクス',
+			'analyticsCache' => 'クラッシュリティクスとキャッシュ',
+			'analyticsCacheOn' => 'クラッシュリティクスがオンになっています。',
+			'analyticsCacheOff' => 'クラッシュリティクスがオフになっています。',
+			'shareNoUsage' => 'あなたは現時点で私たちとクラッシュリチックを共有していません。',
+			'wantShareAnalytics' => 'クラッシュリティクスを共有したいですか？',
+			'yakihonneAnCr' => 'Yakihonneクラッシュリティクス',
+			'crashlyticsTerms' => '匿名化されたクラッシュリティクスを収集することは、アプリの機能とユーザーエクスペリエンスを改善するために不可欠です。',
+			'collectAnonymised' => 'アプリエクスペリエンスを改善するために、匿名化されたクラッシュリティクスを収集します。',
+			'linkWalletToProfile' => 'プロフィールにウォレットをリンクします',
+			'linkWalletToProfileDesc' => 'リンクされたウォレットはSATを受け取るために使用されます',
+			'noWalletLinked' => 'あなたのプロフィールにリンクされた財布がありません。上のメニューにあなたの1つをリンクすることを検討してください',
+			'addPoll' => '投票を追加します',
+			'browsePolls' => '投票を閲覧します',
+			'maciPolls' => 'Maci Poll',
+			'beta' => 'ベータ',
+			'choosePollType' => '投票タイプを選択してください',
+			'created' => '作成されました',
+			'tallying' => '集計',
+			'ended' => '終了しました',
+			'closed' => '閉じた',
+			'voteResultsBy' => '投票結果',
+			'votes' => '投票',
+			'voiceCredit' => '音声クレジット',
+			'viewDetails' => '詳細を表示します',
+			'signup' => 'サインアップ',
+			'notDownloadProof' => '証明をダウンロードできませんでした',
+			'name' => '名前',
+			'status' => '状態',
+			'circuit' => '回路',
+			'votingSystem' => '投票システム',
+			'proofSystem' => '証明システム',
+			'gasStation' => 'ガソリンスタンド',
+			'totalFund' => '（総資金）',
+			'roundStart' => 'ラウンドスタート',
+			'roundEnd' => '丸い端',
+			'operator' => 'オペレーター',
+			'contractCreator' => '契約作成者',
+			'contractAddress' => '契約アドレス',
+			'blockHeight' => 'ブロックの高さ',
+			'atContractCreation' => ({required Object number}) => '${number} （契約作成時）',
+			'zkProofs' => 'ZKプルーフ',
+			'downloadZkProofs' => '証明をダウンロードします',
+			'walletConnectionString' => 'ウォレット接続文字列',
+			'walletConnectionStringDesc' => 'ウォレット接続文字列を安全にコピーまたはエクスポートするようにしてください。',
+			'export' => '輸出',
+			'logout' => 'ログアウト',
+			'exportAndLogout' => 'エクスポートとログアウト',
+			'exportWalletsDesc' => 'アカウントにリンクされた財布があるようです。',
+			'manageWallets' => 'ウォレットを管理します',
+			'roundDuration' => '丸い期間',
+			'startAt' => ({required Object date}) => 'から始まります： ${date}',
+			'loginAction' => 'ログイン',
+			'addPicture' => '写真を追加します',
+			'editPicture' => '画像を編集します',
+			'exportKeys' => 'エクスポートキー',
+			'mutedUser' => 'ミュートユーザー',
+			'unaccessibleContent' => 'アクセスできないコンテンツ',
+			'mutedUserDesc' => 'あなたはこのユーザーをミュートしました、このコンテンツを表示するために出ることを検討してください',
+			'commentHidden' => 'このコメントは隠されています',
+			'upcoming' => '今後',
+			'exportCredentials' => '資格情報をエクスポートします',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
+			'loginToYakihonne' => 'Yakihonneにログインします',
+			'alreadyUser' => 'すでにユーザー？',
+			'createPoll' => '投票を作成します',
+			'gasStationTotal' => 'ガソリンスタンド（総資金）',
+			'gasStationRemaining' => 'ガソリンスタンド（残り残高）',
+			'paste' => 'ペースト',
+			'manual' => 'マニュアル',
+			'contacts' => '連絡先',
+			'typeManualDesc' => '稲妻アドレス、稲妻請求書、またはlnurlを入力します',
+			'useValidPaymentRequest' => '有効な支払いリクエストを使用してください',
+			'save' => '保存',
+			'saveImageGallery' => '画像はギャラリーにダウンロードされました',
+			'errorSavingImage' => '画像のダウンロード中にエラーが発生しました',
+			'copyImageGallery' => '画像はクリップボードにコピーされています',
+			'errorCopyImage' => '画像のコピー中にエラーが発生しました',
+			'scan' => 'スキャン',
+			'invalidLightningAddress' => '無効な稲妻アドレス',
+			'deleteAccountDesc' => 'あなたはあなたのアカウントを削除しようとしています、あなたは続行したいですか？',
+			'paymentFailedInvoice' => '支払いが失敗しました：この請求書の有効性を確認してください',
+			'validSatsAmount' => '有効なSATの金額を設定します',
+			'placeholder' => 'プレースホルダー',
+			'inputFieldCustomization' => '入力フィールドのカスタマイズ',
+			'addInputField' => '入力フィールドを追加します',
+			'addButton' => 'ボタンを追加します',
+			'selectImage' => '画像を選択します',
+			'moveLeft' => '左に移動します',
+			'moveRight' => '右に移動します',
+			'buttonRequired' => '少なくとも1つのボタンを利用できるはずです',
+			'missingInputDesc' => 'スマートウィジェットに埋め込むことなく入力フィールドコンポーネントを必要とするカスタム関数の1つを使用しているように見えます。入力フィールドを追加して、機能が正しく機能するようにしてください。',
+			'countdown' => 'カウントダウン',
+			'contentEndsAt' => 'コンテンツはで終わります',
+			'countdownTime' => 'カウントダウン時間は必須です',
+			'contentEndsDate' => 'コンテンツの終了日は必須です',
+			'lnMandatory' => '稲妻アドレスは必須です',
+			'pubkeysMandatory' => '少なくとも1つのプロファイルが必須です',
+			'buttonNoUrl' => 'ボタンURLは必須です',
+			'shareWidgetImage' => 'ウィジェット画像を共有します',
+			'inputField' => '入力フィールド',
+			'noReplies' => '返信はありません',
+			'message' => 'メッセージ',
+			'chat' => 'チャット',
+			'onlyLettersNumber' => '許可されている文字と番号のみ',
+			'appCache' => 'アプリキャッシュ',
+			'cachedData' => 'キャッシュされたデータ',
+			'cachedMedia' => 'キャッシュされたメディア',
+			'cacheCleared' => 'キャッシュがクリアされました',
+			'closeAppClearingCache' => 'キャッシュをクリアしてアプリを再起動して、すべての変更が有効になり、アプリがスムーズに実行されるようにすることが望ましいです',
+			'appCacheNotice' => 'アプリのキャッシュのサイズは増加しています。',
+			'manageCache' => 'キャッシュを管理します',
+			'filterByTime' => '時間ごとにフィルタリングします',
+			'allTime' => 'いつも',
+			'oneMonth' => '1か月',
+			'threeMonths' => '3ヶ月',
+			'sixMonths' => '6ヶ月',
+			'oneYear' => '1年',
+			'defaultZapAmount' => 'デフォルトのZAP額',
+			'oneTapZap' => '1タップzapを有効にします',
+			'verify' => '確認する',
+			'reset' => 'リセット',
+			'appCannotVerified' => 'アプリを検証したり無効にしたりすることはできません',
+			'useValidAppUrl' => '有効なアプリURLを使用します',
+			'app' => 'アプリ',
+			'userNotConnected' => 'ユーザーが接続されていません',
+			'userCannotSignEvent' => 'このユーザーはイベントに署名できません。',
+			'invalidEvent' => '無効なイベント',
+			'eventCannotBeSigned' => 'イベントに署名できません',
+			'signEvent' => 'サインイベント',
+			'sign' => 'サイン',
+			'signPublish' => 'サイン＆パブリッシュ',
+			'signEventDes' => '次のイベントに署名しようとしています',
+			'enableAutomaticSigning' => '自動署名を有効にします',
+			'tools' => 'ツール',
+			'searchSmartWidgets' => 'スマートウィジェットを検索します',
+			'noToolsAvailable' => '利用可能なツールはありません',
+			'underMaintenance' => 'メンテナンス中',
+			'smartWidgetMaintenance' => 'スマートウィジェットはメンテナンスのためにダウンしています。',
+			'mySavedTools' => '私の保存されたツール',
+			'availableTools' => '利用可能なツール',
+			'remove' => '取り除く',
+			'youHaveNoTools' => 'ツールはありません',
+			'discoverTools' => 'あなたのコンテンツ作成を支援する公開されたツールを発見する',
+			'addWidgetTools' => 'ウィジェットツールを追加します',
+			'widgetSearch' => 'ウィジェット検索',
+			'widgetSearchDesc' => '公開されたスマートウィジェットと人々が作ったものを探します',
+			'getInspired' => 'インスピレーションを得てください',
+			'getInspirtedDesc' => 'AIにスマートウィジェットの構築を支援するように依頼してください',
+			'trySearch' => 'さまざまな検索方法を試してください',
+			'typeForCommands' => 'コマンドのタイプ /',
+			'loadMore' => 'もっとロードします',
+			'searchingFor' => ({required Object name}) => '検索する： ${name}',
+			'playground' => '遊び場',
+			'typeKeywords' => 'タイプキーワード（つまり：keyword1、keyword2 ..）',
+			'enableGossip' => 'ゴシップモデル',
+			'enableGossipDesc' => 'ゴシップモデルはデフォルトで無効になっています。',
+			'enableExternalBrowser' => '外部ブラウザを使用します',
+			'restartAppTakeEffect' => 'アクションが有効になるようにアプリを再起動します',
+			'tips' => 'ヒント',
+			'docs' => 'ドキュメント',
+			'tryMiniApp' => '実践的なインタラクティブなテストでミニアプリを試してみてください。',
+			'exploreOurRepos' => 'リポジトリを探索するか、スマートウィジェットドキュメントを確認してください。',
+			'bringAi' => '私たちはAIを持っています！',
+			'bringAiDesc' => 'AIアシスタントを作成して、プログラム可能なウィジェットとミニアプリの開発で作業を合理化しています。',
+			'notesCount' => ({required Object number}) => '${number} メモ',
+			'mixedContentCount' => ({required Object number}) => '${number} コンテンツ',
+			'noApp' => 'エクスポートされたファイルを開くために適したアプリは見つかりません',
+			'andMore' => ({required Object number}) => '＆ ${number} その他',
+			'addFilter' => 'フィルターを追加します',
+			'entitleFilter' => 'フィルターの資格',
+			'includedWords' => '含まれている単語',
+			'excludedWords' => '除外された単語',
+			'hideSensitiveContent' => '敏感なコンテンツを非表示にします',
+			'mustIncludeThumbnail' => 'サムネイルを含める必要があります',
+			'forArticles' => '記事用',
+			'forVideos' => 'ビデオ用',
+			'forCurations' => 'キュレーションのために',
+			'articleMinWords' => 'コンテンツの最小単語数',
+			'showOnlyArticleMedia' => 'メディアの記事のみを表示します',
+			'showOnlyNotesMedia' => 'メディアでメモのみを表示します',
+			'curationsType' => 'キュレーションタイプ',
+			'minItemCount' => '最小アイテム数',
+			'addWord' => '適切な単語を追加します',
+			'wordNotInIncluded' => '単語が含まれていないことを確認してください',
+			'wordNotInExcluded' => '単語が除外された単語にないことを確認してください',
+			'fieldRequired' => '必要なフィールド',
+			'filterAdded' => 'フィルターが追加されました',
+			'filterUpdated' => 'フィルターが更新されました',
+			'filterDeleted' => 'フィルターが削除されました',
+			'filters' => 'フィルター',
+			'contentFeed' => 'コンテンツフィード',
+			'communityFeed' => 'コミュニティフィード',
+			'relaysFeed' => 'リレーフィード',
+			'marketplaceFeed' => 'マーケットフィード',
+			'addYourFeed' => '好みのフィードを追加します',
+			'myList' => '私のリスト',
+			'allFreeFeeds' => 'すべての無料フィード',
+			'noRelays' => 'リレーは存在しません',
+			'addRelays' => 'リレーリストを追加して、クリーンでカスタムフィードをお楽しみください',
+			'adjustYourFeedList' => 'フィードリストを調整します',
+			'addRelayUrl' => 'リレーURLを追加します',
+			'feedOptionEnabled' => '少なくとも1つのフィードオプションを有効にする必要があります',
+			'feedSetUpdate' => 'フィードセットが更新されました',
+			'global' => 'グローバル',
+			'fromNetwork' => 'ネットワークから',
+			'top' => 'トップ',
+			'showFollowingList' => '現在のフィードは他の誰かの次のリストに基づいています。',
+			'from' => 'から',
+			'to' => 'に',
+			'dayMonthYear' => 'dd/mm/yyyy',
+			'fromDateMessage' => '「 \'からの日付は「」より早いものでなければなりません',
+			'toDateMessage' => '\'to\'日付は、 \'from\'よりも遅くなければなりません',
+			'noResults' => '結果はありません',
+			'noResultsFilterMessage' => 'カスタムフィルターを適用しているように見えます。パラメーターと日付を調整して、より多くのデータを取得してください',
+			'noResultsNoFilterMessage' => '何も見つかりませんでした、コンテンツソースを変更するか、異なるフィルターパラメーションを適用してください',
+			'addToNotes' => 'メモに追加します',
+			'addToDiscover' => '発見するために追加します',
+			'shareRelayContent' => 'リレーコンテンツを共有します',
+			'shareRelayUrl' => 'リレーURLを共有します',
+			'basic' => '基本',
+			'privateMessages' => 'プライベートメッセージ',
+			'pushNotifications' => '通知をプッシュします',
+			'repliesView' => '返信ビュー',
+			'threadView' => '糸',
+			'boxView' => '箱',
+			'viewAs' => 'として表示されます',
+			'feedSettings' => 'フィード設定',
+			'appliedFilterDesc' => 'このメモは、現在の適用フィルターのために隠されています。',
+			'showNote' => 'ノートを表示します',
+			'allMedia' => 'すべてのメディア',
+			'searchInNostr' => 'Nostrで検索します',
+			'findPeopleContent' => '人、メモ、コンテンツを見つけます',
+			'activeService' => 'アクティブサービス',
+			'regularServers' => '通常のサーバー',
+			'blossomServers' => '開花サーバー',
+			'mirrorAllServer' => 'すべてのサーバーをミラーリングします',
+			'mainServer' => 'メインサーバー',
+			'select' => '選択します',
+			'noServerFound' => 'サーバーは見つかりません',
+			'serverExists' => 'サーバーはすでにリストに存在しています',
+			'invalidUrl' => '無効なURL形式',
+			'serverPath' => 'サーバーパス',
+			'errorAddingBlossom' => 'Blossomサーバーの追加中にエラーが発生しました',
+			'errorSelectBlossom' => 'Blossomサーバーの選択中にエラーが発生しました',
+			'errorDeleteBlossom' => 'Blossomサーバーの削除中にエラーが発生しました',
+			'wotConfig' => 'Web of Trust Configuration',
+			'wot' => '信頼のウェブ',
+			'wotThreshold' => '信頼のしきい値のWeb',
+			'postActions' => 'アクションを投稿します',
+			'enabledFor' => 'のために有効になります',
+			'dmRelayTitle' => 'プライベートメッセージリレーは構成されていません！',
+			'dmRelayDesc' => 'それに応じてリレーリストを更新します。 ',
+			'youFollow' => 'あなたは従います',
+			'quotaLimit' => 'あなたはあなたの毎日のクォータの制限を超えました',
+			'alwaysUseExternal' => '常に外部ウォレットザップを使用してください',
+			'alwaysUseExternalDesc' => 'すべてのZAPトランザクションには、Yakihonneの組み込みウォレットの代わりに外部Lightningウォレットアプリを使用します。',
+			'unreachableExternalWallet' => '到達不可能な外部ウォレット',
+			'secureStorageDesc' => 'キーはデバイスに安全に保管されており、私たちや他の人と共有することはありません。',
+			'pubkeySharedDesc' => '共有するのは安全です - これはNostrであなたを識別します。',
+			'privKeyDesc' => 'プライベートを維持 - バックアップは安全にバックアップして、他の場所にアカウントにアクセスします。',
+			'settingsKeysDesc' => 'ネットワークのアイデンティティ、イベントの署名、および認証の投稿のために、NOSTRキーを管理します。',
+			'settingsRelaysDesc' => 'イベントを保存および配布するために、NoStrリレー接続を構成します。',
+			'settingsCustomizationDesc' => 'Yakihonneのフィードディスプレイ、ジェスチャー、プレビュー、および好みをパーソナライズして、ノストルエクスペリエンスを向上させます。',
+			'settingsNotificationsDesc' => 'メッセージ、言及、反応、およびその他のNOSTRイベントの通知を制御します。',
+			'settingsContentDesc' => 'NOSTRでのコンテンツの相互作用、プライバシー設定、メディア処理、およびメッセージング設定を制御します。',
+			'settingsLanguageDesc' => 'Yakihonneインターフェイスとコンテンツ翻訳のために、お好みの言語を選択してください。',
+			'settingsWalletDesc' => 'カスタマイズ可能な量と外部統合でZAPを送信/受信するために、ビットコインライトニングウォレットを接続および管理します。',
+			'settingsAppearanceDesc' => 'Yakihonneの視覚的な外観をカスタマイズして、好みと快適さを視聴します。',
+			'settingsCacheDesc' => 'スムーズな動作のために、アプリのパフォーマンス監視、エラーレポート、およびストレージの最適化を管理します。',
+			'addQuickRelayDesc' => 'URLを入力して、新しいリレーをすばやく追加します。',
+			'fewerRelays' => '安定したリレー=パフォーマンスが向上し、同期が高くなります。',
+			'greenDotsDesc' => '緑のドットはアクティブな接続を示しています。',
+			'redDotsDesc' => '赤い点はオフラインリレーを示します。',
+			'greyDotsDesc' => '灰色のドットは保留中のリレーを示します。',
+			'homeFeedCustomDesc' => '返信ディスプレイスタイル（ボックスまたはスレッド）を選択し、人、コンテンツ、興味の提案の好みを管理します。',
+			'NewPostDesc' => '投稿を作成しているときにロングプレスをしたときに何が起こるかを選択します（現在は注意するように設定されています）。',
+			'profilePreviewDesc' => 'フィード内のユーザー名をタップするときにユーザープロファイルがプレビューします。',
+			'collapseNoteDesc' => '長い投稿を自動的に最小限に抑えて、フィードを清潔で読みやすくします。',
+			'pushNotificationsDesc' => 'デバイスでインスタントアラートを取得します。 ',
+			'privateMessagesDesc' => '新しい直接的なメッセージとプライベートな会話についてアラートを受けてください。',
+			'followingDesc' => 'あなたがフォローしている人が新しいコンテンツを投稿したときに通知を受け取ります。',
+			'mentionsDesc' => '誰かがあなたに言及したり、あなたの投稿に返信したときに警告を受けてください。',
+			'repostsDesc' => '誰かがあなたのコンテンツを共有または再投稿したときに警告を受けます。',
+			'reactionsDesc' => 'あなたの投稿に何らかの好きまたは反応したときに通知を受け取ります。',
+			'zapDesc' => '投稿にビットコインのヒント（ZAP）を受け取ったときに通知を受け取ります。',
+			'muteListDesc' => 'ブロックしたユーザーがフィードに表示されることを表示および管理します。',
+			'mediaUploaderDesc' => '画像とメディアファイルをアップロードするサービスを選択します。',
+			'autoSignDesc' => '毎回手動で確認することなく、ミニアプリ（アクション/ツールスマートウィジェット）が要求したイベントに自動的に署名します。',
+			'gossipDesc' => '接続を最小限に抑え、オフラインリレーに適応しながら、さまざまなリレーであなたのフォローズの投稿を自動的に見つけた洗練されたリレー管理。',
+			'useExternalBrowsDesc' => '内蔵ブラウザの代わりに、デフォルトのブラウザアプリにリンクを開きます。',
+			'secureDmDesc' => '高度な暗号化を備えた最新のプライベートメッセージ標準（NIP-17）を使用します。',
+			'wotConfigDesc' => 'NOSTRプロトコル内で評判を確立するための社会的認証を使用した分散型信頼メカニズム。',
+			'appLangDesc' => 'Yakihonneのインターフェイス、メニュー、およびボタンの言語を選択してください。',
+			'contentTransDesc' => '外国語の投稿の翻訳サービスを選択します。',
+			'planDesc' => '現在の翻訳計画層と使用制限。',
+			'manageWalletsDesc' => 'NostrでビットコインZapを送信および受信するために、Lightningウォレットを追加して整理します。',
+			'defaultZapDesc' => 'Quick Zapsを投稿に送信するときに、デフォルトのビットコイン額（SAT）を設定します。',
+			'enableZapDesc' => '1回のタップは、デフォルトの金額を即座に送信します。',
+			'externalWalletDesc' => 'すべてのZAPトランザクションには、Yakihonneの組み込みウォレットの代わりに外部Lightningウォレットアプリを使用します。',
+			'fontSizeDesc' => 'アプリ全体でテキストサイズを調整して、読みやすくすることができます。スライダーを使用して、テキストを大きくしたり小さくしたりします。',
+			'appThemeDesc' => 'ライトモードとダークモードを切り替えて、アプリの視覚的な外観をカスタマイズします。',
+			'crashlyticsDesc' => 'パフォーマンスの改善とバグの修正に役立つ匿名のクラッシュレポートとアプリ分析。 ',
+			'showSuggDesc' => 'フィードに一般的なコンテンツの推奨事項を表示します。',
+			'showSuggPeople' => 'アクティビティに基づいてフォローする推奨ユーザーを表示します。',
+			'showSuggContent' => 'フィードに推奨される投稿と記事を表示します。',
+			'showSuggInterests' => '発見のためのトピックと関心の推奨事項を表示します。',
+			'striveToMake' => '私たちは、Nostrを最大限に活用したり、以下で私たちをサポートしたり、貴重なフィードを送ったりするよう努めています：Zap、DMS、Github。',
+			'errorAmber' => '拒否したか、すでにAmberに接続しています',
+			'useOneRelay' => '少なくとも1つのリレーを接続したままにしてください',
+			'automaticPurge' => 'キャッシュの自動削除',
+			'automaticPurgeDesc' => 'アプリのキャッシュが2GBに達したときに自動的に削除します。パフォーマンスを維持し、過剰なストレージ使用を防ぎます。',
+			'customServices' => 'カスタムサービス',
+			'defaultServices' => 'デフォルトサービス',
+			'addService' => 'サービスを追加',
+			'customServicesDesc' => 'あなたが追加した利用可能なカスタムサービス。',
+			'urlRequired' => 'URLが必要です',
+			'serviceAdded' => 'サービスが追加されました',
+			'showRawEvent' => '生のイベントを表示',
+			'rawEventData' => '生のイベントデータ',
+			'copyRawEventData' => '生のイベントデータをコピーしました！👏',
+			'kind' => '種類',
+			'shortNote' => '短いメモ',
+			'postedOnDate' => '投稿日',
+			'showMore' => '... もっと見る',
+			'accountDeleted' => 'このアカウントは削除され、もうアクセスできません。',
+			'ok' => 'OK',
+			'redeem' => 'コード入力',
+			'redeemCode' => 'コードを入力',
+			'redeemAndEarn' => 'コード入力で獲得',
+			'redeemingFailed' => 'コードの利用に失敗しました',
+			'redeemInProgress' => 'コード利用中...',
+			'redeemCodeDesc' => 'コードを入力してください',
+			'missingCode' => 'コードがありません',
+			'missingPubkey' => '公開鍵がありません',
+			'invalidPubkey' => '無効な公開鍵',
+			'missingLightningAddress' => 'ライトニングアドレスがありません',
+			'codeNotFound' => 'コードが見つかりません',
+			'redeemCodeRequired' => 'コードの入力が必要です',
+			'redeemCodeInvalid' => '無効なコードです',
+			'codeBeingRedeemed' => 'コードを利用中です。完了しない場合は、しばらくしてから再試行してください。',
+			'redeemCodeSuccess' => 'コードが正常に利用されました',
+			'redeemFailed' => 'コードを利用できませんでした。後でもう一度お試しください。',
+			'codeAlreadyRedeemed' => 'コードはすでに利用済みです',
+			'satsEarned' => ({required Object amount}) => '+${amount} sats 獲得しました。',
+			'selectReceivingWallet' => '受取ウォレットを選択',
+			'redeemCodeMessage' => 'YakiHonneのコードで無料のsatsを獲得 — コードを入力するだけで残高がすぐに増えます。',
+			'scanCode' => 'コードをスキャン',
+			'enterCode' => 'コードを入力',
+			'errorSharingMedia' => 'メディア共有中にエラーが発生しました',
+			'open' => '開く',
+			'openUrl' => 'URLを開く',
+			'openUrlDesc' => ({required Object url}) => '"${url}" を開きますか？',
+			'openUrlPrompt' => 'URL確認プロンプト',
+			'openUrlPromptDesc' => 'ブラウザで開く前に完全なURLを表示する安全確認。',
+			'whatsNew' => '新着情報',
+			'appCustom' => 'アプリのカスタマイズ',
+			'poll' => '投票',
+			'pendingEvents' => '保留中のイベント',
+			'pendingEventsDesc' => '保留中のイベントは、オフライン時または接続が不安定なときに作成されます。インターネット接続が復元されると自動的に送信されます。',
+			'singleColumnFeed' => '単一カラムフィード',
+			'singleColumnFeedDesc' => '読みやすさを向上させるために、ホームフィードを幅の広い単一の列で表示します。',
+			'waitingPayment' => '支払い待ち',
+			'copyId' => 'IDをコピー',
+			'idCopied' => 'IDをコピーしました！ 👏',
+			'republish' => '再投稿',
+			'useRelayRepublish' => '再投稿するには少なくとも1つのリレーを選択してください。',
+			'republishSucces' => 'イベントが正常に再投稿されました！',
+			'errorRepublishEvent' => 'イベントの再投稿中にエラーが発生しました',
+			'remoteSigner' => 'リモート署名者',
+			'amber' => 'Amber',
+			'useUrlBunker' => '以下のURLを使ってバンカーに接続してください',
+			'or' => 'または',
+			'messagesDisabled' => 'メッセージは無効です',
+			'messagesDisabledDesc' => 'リモート署名者に接続しています。ダイレクトメッセージは大量のデータを含む可能性があり、正常に動作しないことがあります。最良の体験のために、ローカル署名者を使用してダイレクトメッセージを有効にしてください。',
+			'sharedOn' => ({required Object date}) => '${date}に共有',
+			'shareAsImage' => '画像として共有',
+			'viewOptions' => '表示オプション',
+			'feedCustomization' => 'フィードのカスタマイズ',
+			'defaultReaction' => 'デフォルトのリアクション',
+			'defaultReactionDesc' => '投稿に反応するためのデフォルトのリアクションを設定します。',
+			'oneTapReaction' => 'ワンタップリアクションを有効にする',
+			'oneTapReactionDesc' => 'ワンタップでデフォルトのリアクションを即時に反映します。ダブルタップで絵文字リストが開き選択できます。無効にすると、ダブルタップでデフォルトのリアクションが送信されます。',
+			'sendingTo' => '送信先',
+			'shareEmptyUsers' => 'フォロー中のユーザーと友達がここに表示され、より速い共有体験が可能になります',
+			'publishOnly' => '次にのみ公開',
+			'protectedEvent' => '保護されたイベント',
+			'protectedEventDesc' => '保護されたイベントは、その作成者のみが再投稿できるイベントです。これによりコンテンツの真正性が保たれ、他者がコピーまたは再発行するのを防ぎます。',
+			'browseRelay' => 'リレーを閲覧',
+			'addFavorite' => 'お気に入りに追加',
+			'removeFavorite' => 'お気に入りから削除',
+			'collections' => 'コレクション',
+			'online' => 'オンライン',
+			'offline' => 'オフライン',
+			'network' => 'ネットワーク',
+			'followedBy' => ({required Object number}) => '${number}にフォローされています',
+			'favoredBy' => ({required Object number}) => '${number}にお気に入りされています',
+			'requiredAuthentication' => '認証が必要',
+			'relayOrbits' => 'リレーオービット',
+			'relayOrbitsDesc' => 'リレーのフィードを閲覧して探索します',
+			'people' => 'ユーザー',
+			'youNotConnected' => '接続されていません',
+			'youNotConnectedDesc' => 'ネットワークリレーを閲覧するにはアカウントにログインしてください',
+			'checkingRelayConnectivity' => 'リレー接続を確認中',
+			'unreachableRelay' => '到達不能なリレー',
+			'engageWithUsers' => '交流して広がろう',
+			'engageWithUsersDesc' => 'より多くのユーザーと交流することで、新しいリレーを発見し、より豊かでつながった体験のためにリレーリストを増やすことができます。',
+			'loadingChatHistory' => 'チャット履歴を読み込んでいます...',
+			'contentActionsOrder' => 'コンテンツアクションの順序',
+			'contentActionsOrderDesc' => '投稿の操作を好みの順序に簡単に並べ替えることができます。',
+			'quotes' => '引用',
+			'eventLoading' => 'イベントを読み込み中...',
+			'loadMessages' => 'メッセージを読み込む',
+			'messagesNotLoaded' => 'メッセージが読み込まれていません',
+			'messagesNotLoadedDesc' => 'ローカルリモート署名者を使用しているため、メッセージは読み込まれていません。読み込みたい場合は、下のボタンをクリックしてください。',
+			'noteLoading' => 'ノートを読み込み中...',
+			'hideNonFollowedMedia' => 'フォローしていないユーザーのメディアを非表示にする',
+			'hideNonFollowedMediaDesc' => 'フォローしていないユーザーの画像や動画を、タップして表示するまで自動的に非表示にします。',
+			'clickToView' => 'クリックして表示',
+			'relayFeedListEmpty' => 'リレーのフィードリストが空です',
+			'relayFeedListEmptyDesc' => 'よりパーソナライズされたフィードを楽しむために、リレーを追加してください。',
+			'addRelay' => 'リレーを追加',
+			'hiddenContent' => '非表示のコンテンツ',
+			'hiddenContentDesc' => 'このアカウントをフォローしていないため、このコンテンツを非表示にしました。',
+			'enabledActions' => '有効なアクション',
+			'enabledActionsDesc' => '利用可能な有効なアクションはありません。',
+			_ => null,
+		};
 	}
 }
 

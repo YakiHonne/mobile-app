@@ -5,11 +5,13 @@ class ThemeState extends Equatable {
   final double textScaleFactor;
   final AppThemeMode mode;
   final ThemeData theme;
+  final Color primaryColor;
 
   const ThemeState({
     required this.textScaleFactor,
     required this.mode,
     required this.theme,
+    required this.primaryColor,
   });
 
   @override
@@ -17,17 +19,20 @@ class ThemeState extends Equatable {
         textScaleFactor,
         mode,
         theme,
+        primaryColor,
       ];
 
   ThemeState copyWith({
     double? textScaleFactor,
     AppThemeMode? mode,
     ThemeData? theme,
+    Color? primaryColor,
   }) {
     return ThemeState(
       textScaleFactor: textScaleFactor ?? this.textScaleFactor,
       mode: mode ?? this.mode,
       theme: theme ?? this.theme,
+      primaryColor: primaryColor ?? this.primaryColor,
     );
   }
 }

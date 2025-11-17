@@ -78,13 +78,11 @@ class _CustomPullDownButton extends StatelessWidget {
     required this.buttonText,
     required this.itemBuilder,
     this.iconPath,
-    this.onTap,
   });
 
   final String buttonText;
   final String? iconPath;
   final List<PullDownMenuEntry> Function(BuildContext) itemBuilder;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +93,7 @@ class _CustomPullDownButton extends StatelessWidget {
       ),
       itemBuilder: itemBuilder,
       buttonBuilder: (context, showMenu) => GestureDetector(
-        onTap: onTap ?? showMenu,
+        onTap: showMenu,
         behavior: HitTestBehavior.translucent,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -578,8 +576,10 @@ class _GetApiKeyButton extends StatelessWidget {
       ),
       child: Text(
         context.t.getApiKey.capitalizeFirst(),
-        style:
-            Theme.of(context).textTheme.bodyMedium!.copyWith(color: kMainColor),
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: Theme.of(context).primaryColor),
       ),
     );
   }

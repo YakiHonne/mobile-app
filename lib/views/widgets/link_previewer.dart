@@ -17,6 +17,7 @@ import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import 'content_renderer/url_type_checker.dart';
 import 'seek_bar.dart';
+import 'video_components/video_download.dart';
 
 class LinkPreviewer extends HookWidget {
   const LinkPreviewer({
@@ -411,6 +412,7 @@ class CustomVideoPlayer extends StatefulWidget {
     this.removeControls,
     this.removeBorders,
     this.autoPlay,
+    this.fallbackUrls,
   });
 
   final String link;
@@ -420,6 +422,7 @@ class CustomVideoPlayer extends StatefulWidget {
   final bool? removeControls;
   final bool? removeBorders;
   final bool? autoPlay;
+  final List<String>? fallbackUrls;
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -476,17 +479,22 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                     ),
               ),
             )
-          : getVideoPlayer(),
+          : getVideoPlayer(widget.fallbackUrls),
     );
   }
 
-  Widget getVideoPlayer() {
+  Widget getVideoPlayer(List<String>? fallbackUrls) {
     try {
+      // return AppVideoPlayer(
+      //   url: widget.link,
+      //   ratio: widget.ratio,
+      // );
       return OverrideTextScaleFactor(
         child: RegularVideoPlayer(
           link: widget.link,
           removeControls: widget.removeControls,
           autoPlay: widget.autoPlay,
+          fallbackUrls: fallbackUrls,
         ),
       );
     } catch (_) {
@@ -509,39 +517,62 @@ class RegularVideoPlayer extends StatefulWidget {
     this.isNetwork = true,
     this.removeControls,
     this.autoPlay,
+    this.fallbackUrls,
   });
 
   final String link;
   final bool isNetwork;
   final bool? removeControls;
   final bool? autoPlay;
+  final List<String>? fallbackUrls;
 
   @override
   State<RegularVideoPlayer> createState() => _RegularVideoPlayerState();
 }
 
 class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
-  late VideoControllerManagerCubit videoCubit;
   late String _ownerId;
+  late String _usedUrl;
 
   @override
   void initState() {
     super.initState();
     _ownerId = '${widget.link}_${DateTime.now().microsecondsSinceEpoch}';
-    videoCubit = context.read<VideoControllerManagerCubit>();
 
-    videoCubit.acquireVideo(
-      widget.link,
+    _usedUrl = widget.link;
+
+    videoControllerManagerCubit.acquireVideo(
+      _usedUrl,
       _ownerId,
       autoPlay: widget.autoPlay ?? false,
       removeControls: widget.removeControls,
       isNetwork: widget.isNetwork,
+      fallbackUrls: widget.fallbackUrls,
+      onFallbackUrlCalled: (url) {
+        _usedUrl = url;
+      },
+      onDownloadVideo: (url) {
+        showModalBottomSheet(
+          context: context,
+          elevation: 0,
+          builder: (_) {
+            return VideoDownload(
+              url: _usedUrl,
+            );
+          },
+          isScrollControlled: true,
+          useRootNavigator: true,
+          useSafeArea: true,
+          enableDrag: false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        );
+      },
     );
   }
 
   @override
   void dispose() {
-    videoCubit.releaseVideo(url: widget.link, id: _ownerId);
+    videoControllerManagerCubit.releaseVideo(url: _usedUrl, id: _ownerId);
     super.dispose();
   }
 
@@ -549,8 +580,14 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
   Widget build(BuildContext context) {
     return BlocBuilder<VideoControllerManagerCubit,
         VideoControllerManagerState>(
+      buildWhen: (previous, current) =>
+          current.chewieControllers[_usedUrl] !=
+              previous.chewieControllers[_usedUrl] ||
+          current.videoControllers[_usedUrl] !=
+              previous.videoControllers[_usedUrl],
       builder: (context, state) {
-        final chewieController = videoCubit.getChewieController(widget.link);
+        final chewieController =
+            videoControllerManagerCubit.getChewieController(_usedUrl);
 
         return VisibilityDetector(
           key: ValueKey(widget.link),
@@ -558,15 +595,15 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
             final isVisible = info.visibleFraction > 0.5;
 
             if (!isVisible) {
-              videoCubit.pauseVideo(widget.link);
+              videoControllerManagerCubit.pauseVideo(widget.link);
             }
           },
           child: chewieController != null
               ? Chewie(controller: chewieController)
               : const Center(
                   child: SizedBox(
-                    height: 25,
-                    width: 25,
+                    height: 20,
+                    width: 20,
                     child: CircularProgressIndicator(strokeWidth: 1),
                   ),
                 ),

@@ -25,8 +25,10 @@ import '../../../article_view/article_view.dart';
 import '../../../curation_view/curation_view.dart';
 import '../../../gallery_view/gallery_view.dart';
 import '../../../note_view/note_view.dart';
+import '../../../search_view/search_view.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
+import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/empty_list.dart';
 import '../../../widgets/response_snackbar.dart';
 import '../../../widgets/video_components/horizontal_video_view.dart';
@@ -76,6 +78,9 @@ class BookmarksListDetails extends HookWidget {
         )
       ],
       child: Scaffold(
+        appBar: CustomAppBar(
+          title: context.t.bookmark.capitalizeFirst(),
+        ),
         body: Stack(
           children: [
             _nestedScrollView(scrollController, bookmarkType),
@@ -92,20 +97,21 @@ class BookmarksListDetails extends HookWidget {
       controller: scrollController,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
-          BookmarksListDetailsAppbar(
-            scrollController: scrollController,
-          ),
           _bookmarkListInfo(),
-          _bookmarkListOptions(context, bookmarkType),
           const SliverToBoxAdapter(
             child: SizedBox(
               height: kDefaultPadding,
             ),
           ),
-          _bookmarkListItems(),
+          _bookmarkListOptions(context, bookmarkType),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+          ),
         ];
       },
-      body: Container(),
+      body: _bookmarkListItems(),
     );
   }
 
@@ -113,11 +119,9 @@ class BookmarksListDetails extends HookWidget {
     return BlocBuilder<BookmarkDetailsCubit, BookmarkDetailsState>(
       builder: (context, state) {
         if (state.isLoading || state.content.isEmpty) {
-          return SliverToBoxAdapter(
-            child: EmptyList(
-              description: context.t.noElementsInBookmarks.capitalizeFirst(),
-              icon: FeatureIcons.bookmark,
-            ),
+          return EmptyList(
+            description: context.t.noElementsInBookmarks.capitalizeFirst(),
+            icon: FeatureIcons.bookmark,
           );
         } else {
           if (!ResponsiveBreakpoints.of(context).isMobile) {
@@ -182,6 +186,22 @@ class BookmarksListDetails extends HookWidget {
           (context) => NoteView(note: item),
         );
       };
+    } else if (item is BookmarkOtherType) {
+      content = item.val;
+      kind = EventKind.TEXT_NOTE;
+      id = item.id;
+      onClick = () {
+        if (item.isTag) {
+          YNavigator.pushPage(
+            context,
+            (context) => SearchView(
+              search: content,
+            ),
+          );
+        } else {
+          openWebPage(url: content);
+        }
+      };
     }
 
     return DashboardBookmarkContainer(
@@ -197,25 +217,27 @@ class BookmarksListDetails extends HookWidget {
     );
   }
 
-  SliverPadding _itemsList(BookmarkDetailsState state) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      sliver: SliverList.separated(
-        itemCount: state.content.length,
-        itemBuilder: (context, index) =>
-            _buildBookmarkItem(context, state.content[index]),
-        separatorBuilder: (context, index) =>
-            const SizedBox(height: kDefaultPadding / 2),
+  Widget _itemsList(BookmarkDetailsState state) {
+    return ListView.separated(
+      padding: const EdgeInsets.only(
+        left: kDefaultPadding / 2,
+        right: kDefaultPadding / 2,
+        bottom: kBottomNavigationBarHeight,
       ),
+      itemCount: state.content.length,
+      itemBuilder: (context, index) =>
+          _buildBookmarkItem(context, state.content[index]),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: kDefaultPadding / 2),
     );
   }
 
-  SliverMasonryGrid _itemsGrid(BookmarkDetailsState state) {
-    return SliverMasonryGrid.count(
+  Widget _itemsGrid(BookmarkDetailsState state) {
+    return MasonryGridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: kDefaultPadding / 2,
       crossAxisSpacing: kDefaultPadding / 2,
-      childCount: state.content.length,
+      itemCount: state.content.length,
       itemBuilder: (context, index) =>
           _buildBookmarkItem(context, state.content[index]),
     );
@@ -297,72 +319,93 @@ class BookmarksListDetails extends HookWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        state.bookmarkListModel.title.trim().capitalize(),
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (state.bookmarkListModel.description
-                          .trim()
-                          .isNotEmpty) ...[
-                        const SizedBox(
-                          height: kDefaultPadding / 4,
-                        ),
-                        Text(
-                          state.bookmarkListModel.description.trim(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                  color: Theme.of(context).highlightColor),
-                        ),
-                      ],
-                      const SizedBox(
-                        height: kDefaultPadding / 4,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            context.t.itemsNumber(
-                              number: state.content.length
-                                  .toString()
-                                  .padLeft(2, '0'),
-                            ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall!
-                                .copyWith(
-                                    color: Theme.of(context).highlightColor),
-                          ),
-                          const DotContainer(color: kLightPurple),
-                          Text(
-                            context.t.editedOn(
-                              date: dateFormat2.format(
-                                state.bookmarkListModel.createdAt,
-                              ),
-                            ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall!
-                                .copyWith(color: kMainColor),
-                          ),
-                        ],
-                      ),
-                    ],
+                SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: CommonThumbnail(
+                    image: state.bookmarkListModel.image,
+                    placeholder: getRandomPlaceholder(
+                      input: state.bookmarkListModel.id,
+                      isPfp: false,
+                    ),
                   ),
                 ),
                 const SizedBox(
-                  width: kDefaultPadding / 2,
+                  height: kDefaultPadding / 2,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            state.bookmarkListModel.title.trim().capitalize(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (state.bookmarkListModel.description
+                              .trim()
+                              .isNotEmpty) ...[
+                            const SizedBox(
+                              height: kDefaultPadding / 4,
+                            ),
+                            Text(
+                              state.bookmarkListModel.description.trim(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                      color: Theme.of(context).highlightColor),
+                            ),
+                          ],
+                          const SizedBox(
+                            height: kDefaultPadding / 4,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                context.t.itemsNumber(
+                                  number: state.content.length
+                                      .toString()
+                                      .padLeft(2, '0'),
+                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                        color:
+                                            Theme.of(context).highlightColor),
+                              ),
+                              DotContainer(
+                                  color: Theme.of(context).primaryColor),
+                              Text(
+                                context.t.editedOn(
+                                  date: dateFormat2.format(
+                                    state.bookmarkListModel.createdAt,
+                                  ),
+                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                        color: Theme.of(context).primaryColor),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -585,7 +628,7 @@ class DashboardBookmarkContainer extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: kDefaultPadding / 2,
           children: [
             if (image != null)
               CommonThumbnail(
@@ -600,9 +643,6 @@ class DashboardBookmarkContainer extends StatelessWidget {
               ContentTypeIconBox(
                 icon: getIcon(),
               ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            ),
             _bookmarkInfo(context),
             GestureDetector(
               onTap: onBookmark,
@@ -624,49 +664,58 @@ class DashboardBookmarkContainer extends StatelessWidget {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: kDefaultPadding / 3,
         children: [
-          Row(
-            children: [
-              Text(
-                context.t.publishedOn(
-                  date: dateFormat2.format(createdAt),
-                ),
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      color: Theme.of(context).highlightColor,
-                    ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kDefaultPadding / 4),
-                  color: Theme.of(context).cardColor,
-                  border: Border.all(
-                    color: Theme.of(context).dividerColor,
-                    width: 0.3,
-                  ),
-                ),
-                margin: const EdgeInsets.only(
-                  left: kDefaultPadding / 2,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: kDefaultPadding / 8,
-                  horizontal: kDefaultPadding / 2,
-                ),
-                child: Text(
-                  getType(context),
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-              ),
-              const Spacer(),
+          if (item is BookmarkOtherType) ...[
+            if (!(item as BookmarkOtherType).isTag) ...[
+              Builder(builder: (context) {
+                lg.i((item as BookmarkOtherType).description);
+                return Text(
+                  (item as BookmarkOtherType).description,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                );
+              }),
             ],
-          ),
-          const SizedBox(
-            height: kDefaultPadding / 4,
-          ),
+          ] else ...[
+            Text(
+              context.t.publishedOn(
+                date: dateFormat2.format(createdAt),
+              ),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: Theme.of(context).highlightColor,
+                  ),
+            ),
+          ],
           Text(
             content,
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: item is BookmarkOtherType &&
+                          !(item as BookmarkOtherType).isTag
+                      ? noBlue
+                      : null,
+                ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(kDefaultPadding / 4),
+              color: Theme.of(context).cardColor,
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.3,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: kDefaultPadding / 8,
+              horizontal: kDefaultPadding / 2,
+            ),
+            child: Text(
+              getType(context),
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
           ),
         ],
       ),
@@ -674,6 +723,12 @@ class DashboardBookmarkContainer extends StatelessWidget {
   }
 
   String getIcon() {
+    if (item is BookmarkOtherType) {
+      return (item as BookmarkOtherType).isTag
+          ? FeatureIcons.hashtag
+          : FeatureIcons.link;
+    }
+
     switch (kind) {
       case EventKind.TEXT_NOTE:
         return FeatureIcons.uncensoredNote;
@@ -686,6 +741,12 @@ class DashboardBookmarkContainer extends StatelessWidget {
   }
 
   String getType(BuildContext context) {
+    if (item is BookmarkOtherType) {
+      return (item as BookmarkOtherType).isTag
+          ? context.t.tag.capitalizeFirst()
+          : context.t.url.capitalizeFirst();
+    }
+
     String type = '';
 
     switch (kind) {

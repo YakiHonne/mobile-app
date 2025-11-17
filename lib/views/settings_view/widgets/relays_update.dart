@@ -21,7 +21,6 @@ import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import 'properties_relay_list.dart';
 import 'relay_info_view.dart';
-import 'settings_text.dart';
 
 class RelayUpdateView extends HookWidget {
   RelayUpdateView({super.key, this.initialIndex}) {
@@ -42,7 +41,8 @@ class RelayUpdateView extends HookWidget {
     final addRelayState = useState('');
     final addRelayController = useTextEditingController();
     final connect = useState<RelayConnectivity>(RelayConnectivity.idle);
-    final formkey = useMemoized(() => GlobalKey<FormState>());
+    final outboxRelaysformkey = useMemoized(() => GlobalKey<FormState>());
+    final dmRelaysformkey = useMemoized(() => GlobalKey<FormState>());
     final pageController = PageController(
       viewportFraction: 0.95,
       initialPage: initialIndex ?? 0,
@@ -97,15 +97,32 @@ class RelayUpdateView extends HookWidget {
           height: kDefaultPadding * 1.5,
           thickness: 0.5,
         ),
-        TitleDescriptionComponent(
-          title: context.t.instantConntect.capitalizeFirst(),
-          description: context.t.addQuickRelayDesc,
+        Row(
+          spacing: kDefaultPadding / 2,
+          children: [
+            Expanded(
+              child: Row(
+                spacing: kDefaultPadding / 4,
+                children: [
+                  Flexible(
+                    child: Text(
+                      index.value == 0
+                          ? context.t.content.capitalizeFirst()
+                          : index.value == 1
+                              ? context.t.privateMessages.capitalizeFirst()
+                              : context.t.search.capitalizeFirst(),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                  _relaysRow(context),
+                ],
+              ),
+            ),
+            _togglePageView(pageController, context, index),
+          ],
         ),
-        const SizedBox(
-          height: kDefaultPadding / 2,
-        ),
-        _searchRow(formkey, addRelayController, connect, addRelay,
-            addRelayState, index),
       ],
     );
 
@@ -117,79 +134,11 @@ class RelayUpdateView extends HookWidget {
             spacing: kDefaultPadding,
             children: [
               addingRelayManually,
-              Row(
-                spacing: kDefaultPadding / 4,
-                children: [
-                  Expanded(
-                    child: Row(
-                      spacing: kDefaultPadding / 4,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            context.t.relays,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ),
-                        _relaysRow(context)
-                      ],
-                    ),
-                  ),
-                  RotatedBox(
-                    quarterTurns: 3,
-                    child: CustomIconButton(
-                      onClicked: () {
-                        pageController.animateToPage(
-                          0,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                        );
-                      },
-                      icon: FeatureIcons.arrowUp,
-                      size: 17,
-                      backgroundColor: kTransparent,
-                      vd: -4,
-                    ),
-                  ),
-                  DotContainer(
-                    color: Theme.of(context).primaryColorDark,
-                    isNotMarging: false,
-                    height: 7,
-                    width: index.value == 0 ? 32 : 7,
-                  ),
-                  DotContainer(
-                    color: Theme.of(context).primaryColorDark,
-                    isNotMarging: false,
-                    height: 7,
-                    width: index.value != 0 ? 32 : 7,
-                  ),
-                  RotatedBox(
-                    quarterTurns: 1,
-                    child: CustomIconButton(
-                      onClicked: () {
-                        pageController.animateToPage(
-                          1,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                        );
-                      },
-                      icon: FeatureIcons.arrowUp,
-                      size: 17,
-                      backgroundColor: kTransparent,
-                      vd: -4,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
         const SizedBox(
-          height: kDefaultPadding / 2,
+          height: kDefaultPadding / 1.5,
         ),
         Expanded(
           child: PageView(
@@ -197,24 +146,92 @@ class RelayUpdateView extends HookWidget {
             onPageChanged: (value) {
               index.value = value;
             },
-            children: const [
+            children: [
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding / 8,
                 ),
                 child: Column(
+                  spacing: kDefaultPadding / 2,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(child: ContentRelaysContainer()),
+                    _quickConnectToRelay(context, context.t.quickConnectRelay),
+                    _searchRow(outboxRelaysformkey, addRelayController, connect,
+                        addRelay, addRelayState, index),
+                    const Flexible(child: ContentRelaysContainer()),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding / 4,
                 ),
                 child: Column(
+                  spacing: kDefaultPadding / 2,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(child: PrivateMessageRelaysContainer()),
+                    _quickConnectToRelay(context, context.t.quickConnectRelay),
+                    _searchRow(dmRelaysformkey, addRelayController, connect,
+                        addRelay, addRelayState, index),
+                    const Flexible(child: PrivateMessageRelaysContainer()),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 4,
+                ),
+                child: Column(
+                  spacing: kDefaultPadding / 2,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _quickConnectToRelay(
+                        context, context.t.exploreSearchRelays),
+                    Builder(builder: (context) {
+                      return GestureDetector(
+                        onTap: () {
+                          context
+                              .read<UpdateRelaysCubit>()
+                              .setOnlineRelays(isSearch: true);
+
+                          showModalBottomSheet(
+                            context: context,
+                            elevation: 0,
+                            builder: (_) {
+                              return BlocProvider.value(
+                                value: context.read<UpdateRelaysCubit>(),
+                                child: RelaysList(
+                                  index: index.value,
+                                ),
+                              );
+                            },
+                            isScrollControlled: true,
+                            useRootNavigator: true,
+                            useSafeArea: true,
+                            backgroundColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                          );
+                        },
+                        child: Row(
+                          spacing: kDefaultPadding / 2,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.t.navigateToSearch,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color: Theme.of(context).highlightColor,
+                                    ),
+                              ),
+                            ),
+                            _searchButton(context, index),
+                          ],
+                        ),
+                      );
+                    }),
+                    const Flexible(child: SearchRelaysContainer()),
                   ],
                 ),
               ),
@@ -236,6 +253,75 @@ class RelayUpdateView extends HookWidget {
           children: widgets,
         ),
       ),
+    );
+  }
+
+  Text _quickConnectToRelay(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).highlightColor,
+          ),
+    );
+  }
+
+  Row _togglePageView(PageController pageController, BuildContext context,
+      ValueNotifier<int> index) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        RotatedBox(
+          quarterTurns: 3,
+          child: CustomIconButton(
+            onClicked: () {
+              pageController.animateToPage(
+                index.value == 0 ? 0 : index.value - 1,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeIn,
+              );
+            },
+            icon: FeatureIcons.arrowUp,
+            size: 17,
+            backgroundColor: kTransparent,
+            vd: -4,
+          ),
+        ),
+        DotContainer(
+          color: Theme.of(context).primaryColorDark,
+          isNotMarging: false,
+          height: 7,
+          width: index.value == 0 ? 32 : 7,
+        ),
+        DotContainer(
+          color: Theme.of(context).primaryColorDark,
+          isNotMarging: false,
+          height: 7,
+          width: index.value == 1 ? 32 : 7,
+        ),
+        DotContainer(
+          color: Theme.of(context).primaryColorDark,
+          isNotMarging: false,
+          height: 7,
+          width: index.value == 2 ? 32 : 7,
+        ),
+        RotatedBox(
+          quarterTurns: 1,
+          child: CustomIconButton(
+            onClicked: () {
+              pageController.animateToPage(
+                index.value < 2 ? index.value + 1 : 2,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeIn,
+              );
+            },
+            icon: FeatureIcons.arrowUp,
+            size: 17,
+            backgroundColor: kTransparent,
+            vd: -4,
+          ),
+        ),
+      ],
     );
   }
 
@@ -376,7 +462,9 @@ class RelayUpdateView extends HookWidget {
         backgroundColor: Theme.of(context).cardColor,
         vd: -2,
         onClicked: () {
-          context.read<UpdateRelaysCubit>().setOnlineRelays();
+          context
+              .read<UpdateRelaysCubit>()
+              .setOnlineRelays(isSearch: index.value == 2);
 
           showModalBottomSheet(
             context: context,
@@ -385,7 +473,7 @@ class RelayUpdateView extends HookWidget {
               return BlocProvider.value(
                 value: context.read<UpdateRelaysCubit>(),
                 child: RelaysList(
-                  isPrivateMessages: index.value == 1,
+                  index: index.value,
                 ),
               );
             },
@@ -515,25 +603,6 @@ class ContentRelaysContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addRelays = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            context.t.content.capitalizeFirst(),
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).highlightColor,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ),
-        const SizedBox(
-          height: kDefaultPadding / 2,
-        ),
-      ],
-    );
-
     final relaysList = BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
       builder: (context, state) {
         final rEntries = state.relays.entries.toList();
@@ -597,7 +666,6 @@ class ContentRelaysContainer extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              addRelays,
               Flexible(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -642,13 +710,184 @@ class ContentRelaysContainer extends StatelessWidget {
                 ),
                 child: Text(
                   context.t.save,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: kWhite,
+                      ),
                 ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class SearchRelaysContainer extends HookWidget {
+  const SearchRelaysContainer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final relaysList = BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
+      builder: (context, state) {
+        final relays = state.searchRelays;
+
+        if (relays.isEmpty) {
+          return SizedBox(
+            width: double.infinity,
+            child: Text(
+              context.t.noRelays,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: Theme.of(context).highlightColor,
+                  ),
+            ),
+          );
+        }
+
+        return MediaQuery.removePadding(
+          context: context,
+          removeBottom: true,
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            separatorBuilder: (context, index) {
+              return const Divider();
+            },
+            itemBuilder: (context, index) {
+              final relay = relays[index];
+
+              return RelayInfoProvider(
+                relay: relay,
+                child: (info) => DefaultRelayUpdateContainer(
+                  relay: relay,
+                  isActive: state.activeSearchRelays.contains(relay),
+                  relayInfo: info,
+                  onDelete: () {
+                    context.read<UpdateRelaysCubit>().updateSearchRelay(
+                          relay: relay,
+                          isAdding: false,
+                        );
+                  },
+                ),
+              );
+            },
+            itemCount: relays.length,
+          ),
+        );
+      },
+    );
+
+    return BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
+      builder: (context, state) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(
+                      kDefaultPadding / 1.5,
+                    ),
+                    border: Border.all(
+                      color: Theme.of(context).dividerColor,
+                      width: 0.5,
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(kDefaultPadding / 2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: constraints.maxHeight - 120,
+                        ),
+                        child: relaysList,
+                      ),
+                      _searchRelays(constraints, state.searchRelays.isEmpty),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  ConstrainedBox _searchRelays(
+      BoxConstraints constraints, bool hasNoSearchRelays) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: constraints.maxHeight - 120,
+      ),
+      child: BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
+        builder: (context, state) {
+          final relays = DEFAULT_SEARCH_RELAYS
+              .toSet()
+              .difference(state.searchRelays.toSet());
+
+          if (hasNoSearchRelays || relays.isNotEmpty) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: kDefaultPadding,
+                  ),
+                  Text(
+                    context.t.suggestions,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  const SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  _itemsList(context, relays),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  MediaQuery _itemsList(BuildContext context, Set<String> relays) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        primary: false,
+        itemBuilder: (context, index) {
+          final r = relays.elementAt(index);
+
+          return DefaultRelaySuggestionContainer(
+            relay: r,
+            onAdd: () async {
+              await context.read<UpdateRelaysCubit>().updateSearchRelay(
+                    relay: r,
+                    isAdding: true,
+                  );
+            },
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const Divider();
+        },
+        itemCount: relays.length,
+      ),
     );
   }
 }
@@ -661,22 +900,6 @@ class PrivateMessageRelaysContainer extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final hasNoDms = useState(nostrRepository.dmRelays.isEmpty);
-
-    final addRelays = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.t.privateMessages.capitalizeFirst(),
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Theme.of(context).highlightColor,
-                fontWeight: FontWeight.w600,
-              ),
-        ),
-        const SizedBox(
-          height: kDefaultPadding / 2,
-        ),
-      ],
-    );
 
     final relaysList = BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
       builder: (context, state) {
@@ -708,7 +931,7 @@ class PrivateMessageRelaysContainer extends HookWidget {
 
               return RelayInfoProvider(
                 relay: relay,
-                child: (info) => DmRelayUpdateContainer(
+                child: (info) => DefaultRelayUpdateContainer(
                   relay: relay,
                   isActive: state.activeRelays.contains(relay),
                   relayInfo: info,
@@ -729,32 +952,36 @@ class PrivateMessageRelaysContainer extends HookWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(
-              kDefaultPadding / 1.5,
-            ),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              addRelays,
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: constraints.maxHeight - 120,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(
+                  kDefaultPadding / 1.5,
                 ),
-                child: relaysList,
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
               ),
-              _dmRelays(constraints, hasNoDms),
-            ],
-          ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: constraints.maxHeight - 120,
+                    ),
+                    child: relaysList,
+                  ),
+                  _dmRelays(constraints, hasNoDms),
+                ],
+              ),
+            ),
+          ],
         );
       },
     );
@@ -811,7 +1038,7 @@ class PrivateMessageRelaysContainer extends HookWidget {
         itemBuilder: (context, index) {
           final r = relays.elementAt(index);
 
-          return DmRelaySuggestionContainer(
+          return DefaultRelaySuggestionContainer(
             relay: r,
             onAdd: () async {
               await context.read<UpdateRelaysCubit>().updateDmRelay(
@@ -831,8 +1058,8 @@ class PrivateMessageRelaysContainer extends HookWidget {
   }
 }
 
-class DmRelaySuggestionContainer extends StatelessWidget {
-  const DmRelaySuggestionContainer({
+class DefaultRelaySuggestionContainer extends StatelessWidget {
+  const DefaultRelaySuggestionContainer({
     super.key,
     required this.relay,
     required this.onAdd,
@@ -970,8 +1197,8 @@ class DmRelaySuggestionContainer extends StatelessWidget {
   }
 }
 
-class DmRelayUpdateContainer extends StatelessWidget {
-  const DmRelayUpdateContainer({
+class DefaultRelayUpdateContainer extends StatelessWidget {
+  const DefaultRelayUpdateContainer({
     super.key,
     required this.relay,
     required this.isActive,

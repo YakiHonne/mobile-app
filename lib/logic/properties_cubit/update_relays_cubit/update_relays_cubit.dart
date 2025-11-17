@@ -31,9 +31,12 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
             pendingRelays: const {},
             toBeDeleted: const {},
             dmRelays: nostrRepository.dmRelays,
+            searchRelays: nostrRepository.searchRelays,
+            activeSearchRelays: const [],
           ),
         ) {
     _initializeState();
+    _updateActiveSearchRelays();
   }
 
   static const Duration _relayStatusUpdateInterval = Duration(seconds: 3);
@@ -197,6 +200,87 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
       );
 
       onSuccess?.call();
+    } else {
+      _showErrorMessage(t.errorSendingEvent);
+    }
+  }
+
+  /// Update active search relays
+  Future<void> _updateActiveSearchRelays() async {
+    final activeSearchRelays = List<String>.from(state.activeSearchRelays);
+    final nonCheckedSearchRelays = List<String>.from(state.searchRelays)
+      ..removeWhere(
+        (element) => activeSearchRelays.contains(element),
+      );
+
+    if (nonCheckedSearchRelays.isNotEmpty) {
+      final res = await Future.wait(
+        nonCheckedSearchRelays.map(
+          (r) => nc.checkRelayConnectivity(r),
+        ),
+      );
+
+      for (int i = 0; i < res.length; i++) {
+        if (res[i]) {
+          activeSearchRelays.add(nonCheckedSearchRelays[i]);
+        }
+      }
+
+      if (activeSearchRelays.isNotEmpty) {
+        _emitIfNotClosed(
+          state.copyWith(
+            activeSearchRelays: activeSearchRelays,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> updateSearchRelay({
+    required String relay,
+    required bool isAdding,
+  }) async {
+    if (state.searchRelays.contains(relay) && isAdding) {
+      _showErrorMessage(gc.t.relayInUse);
+      return;
+    }
+
+    final relays = List<String>.from(state.searchRelays);
+
+    if (isAdding) {
+      relays.insert(0, relay);
+    } else {
+      relays.remove(relay);
+    }
+
+    final rTags = relays.map((e) => ['relay', e]).toList();
+
+    final ev = await Event.genEvent(
+      kind: EventKind.SEARCH_RELAYS,
+      tags: rTags,
+      content: '',
+      signer: currentSigner,
+    );
+
+    if (ev == null) {
+      _showErrorMessage(gc.t.errorGeneratingEvent);
+      return;
+    }
+
+    final isSuccessful = await NostrFunctionsRepository.sendEvent(
+      event: ev,
+      setProgress: true,
+    );
+
+    if (isSuccessful) {
+      _emitIfNotClosed(
+        state.copyWith(
+          searchRelays: relays,
+        ),
+      );
+
+      nostrRepository.searchRelays = relays;
+      _updateActiveSearchRelays();
     } else {
       _showErrorMessage(t.errorSendingEvent);
     }
@@ -430,13 +514,20 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
   }
 
   /// Fetch and set online relays with improved error handling
-  Future<void> setOnlineRelays() async {
-    if (state.onlineRelays.isNotEmpty) {
-      return;
-    }
+  Future<void> setOnlineRelays({bool isSearch = false}) async {
+    _emitIfNotClosed(state.copyWith(onlineRelays: []));
 
     try {
-      final onlineRelays = await nostrRepository.getOnlineRelays();
+      List<String> onlineRelays = [];
+
+      if (isSearch) {
+        onlineRelays = await nostrRepository.fetchRelays(
+          nip: isSearch ? 50 : null,
+        );
+      } else {
+        onlineRelays = await relayInfoCubit.getActiveGlobalRelays();
+      }
+
       _emitIfNotClosed(state.copyWith(onlineRelays: onlineRelays));
     } catch (e) {
       // Log error if needed and set empty list as fallback

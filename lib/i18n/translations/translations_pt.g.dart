@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -1427,1400 +1428,1421 @@ class TranslationsPt extends Translations {
 	@override String get enabledActionsDesc => 'Nenhuma ação habilitada disponível.';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <pt>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsPt {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'userCommentedCurationYouIn': return ({required Object name}) => '${name} comentou uma curadoria em que foste mencionado';
-			case 'userCommentedNoteYouIn': return ({required Object name}) => '${name} comentou uma nota em que foste mencionado';
-			case 'userCommentedPaidNoteYouIn': return ({required Object name}) => '${name} comentou um pagamento em que foste mencionado na nota';
-			case 'userCommentedPollYouIn': return ({required Object name}) => '${name} comentou uma sondagem em que foste mencionado';
-			case 'userCommentedSmartWidgetYouIn': return ({required Object name}) => '${name} comentou um smart que foste mencionado no widget';
-			case 'userCommentedVideoYouIn': return ({required Object name}) => '${name} comentou um vídeo em que foste mencionado';
-			case 'userCommentedArticleYouIn': return ({required Object name}) => '${name} comentou um artigo em que foste mencionado';
-			case 'userCommentedYourArticle': return ({required Object name}) => '${name} comentou o teu artigo';
-			case 'userCommentedYourCuration': return ({required Object name}) => '${name} comentou a tua curadoria';
-			case 'userCommentedYourNote': return ({required Object name}) => '${name} comentou a tua nota';
-			case 'userCommentedYourPaidNote': return ({required Object name}) => '${name} comentou a tua nota paga';
-			case 'userCommentedYourPoll': return ({required Object name}) => '${name} comentou a tua sondagem';
-			case 'userCommentedYourSmartWidget': return ({required Object name}) => '${name} comentou o teu smart widget';
-			case 'userCommentedYourVideo': return ({required Object name}) => '${name} comentou o teu vídeo';
-			case 'userNoArticles': return ({required Object name}) => '${name} não tem artigos';
-			case 'userNoCurations': return ({required Object name}) => '${name} não tem curadorias';
-			case 'userNoNotes': return ({required Object name}) => '${name} não tem notas';
-			case 'userNoSmartWidgets': return ({required Object name}) => '${name} não tem smart widgets';
-			case 'userNoVideos': return ({required Object name}) => '${name} não tem vídeos';
-			case 'userSubmittedPaidNote': return ({required Object name}) => '${name} submeteu uma nota paga';
-			case 'userMentionedYouInCuration': return ({required Object name}) => '${name} mencionou-te numa curadoria';
-			case 'userMentionedYouInNote': return ({required Object name}) => '${name} mencionou-te numa nota';
-			case 'userMentionedYouInPaidNote': return ({required Object name}) => '${name} mencionou-te numa nota paga';
-			case 'userMentionedYouInPoll': return ({required Object name}) => '${name} mencionou-te numa sondagem';
-			case 'userMentionedYouInSmartWidget': return ({required Object name}) => '${name} mencionou-te num smart widget';
-			case 'userMentionedYouInVideo': return ({required Object name}) => '${name} mencionou-te num vídeo';
-			case 'userMentionedYouInArticle': return ({required Object name}) => '${name} mencionou-te num artigo';
-			case 'userPublishedCuration': return ({required Object name}) => '${name} publicou uma curadoria';
-			case 'userPublishedPaidNote': return ({required Object name}) => '${name} publicou uma nota paga';
-			case 'userPublishedPoll': return ({required Object name}) => '${name} publicou uma sondagem';
-			case 'userPublishedSmartWidget': return ({required Object name}) => '${name} publicou um smart widget';
-			case 'userPublishedVideo': return ({required Object name}) => '${name} publicou um vídeo';
-			case 'userPublishedArticle': return ({required Object name}) => '${name} publicou um artigo';
-			case 'userQuotedCurationYouIn': return ({required Object name}) => '${name} citou uma curadoria em que foste mencionado';
-			case 'userQuotedNoteYouIn': return ({required Object name}) => '${name} citou uma nota em que foste mencionado';
-			case 'userQuotedPaidNoteYouIn': return ({required Object name}) => '${name} citou uma nota paga em foste mencionado';
-			case 'userQuotedVideoYouIn': return ({required Object name}) => '${name} citou um vídeo em que foste mencionado';
-			case 'userQuotedArticleYouIn': return ({required Object name}) => '${name} citou um artigo em que foste mencionado';
-			case 'userQuotedYourArticle': return ({required Object name}) => '${name} citou o teu artigo';
-			case 'userQuotedYourCuration': return ({required Object name}) => '${name} citou a tua curadoria';
-			case 'userQuotedYourNote': return ({required Object name}) => '${name} citou a tua nota';
-			case 'userQuotedYourPaidNote': return ({required Object name}) => '${name} citou a tua nota paga';
-			case 'userQuotedYourVideo': return ({required Object name}) => '${name} citou o teu vídeo';
-			case 'userReactedCurationYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma curadoria em que foste mencionado';
-			case 'userReactedNoteYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma nota em que foste mencionado';
-			case 'userReactedPaidNoteYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma nota paga em que foste mencionado';
-			case 'userReactedPollYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma sondagem em que foste mencionado';
-			case 'userReactedSmartWidgetYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um smart widget em que foste mencionado';
-			case 'userReactedVideoYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um vídeo em que foste mencionado';
-			case 'userReactedArticleYouIn': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um artigo em que foste mencionado';
-			case 'userReactedYou': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction}';
-			case 'userReactedYourArticle': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu artigo';
-			case 'userReactedYourCuration': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua curadoria';
-			case 'userReactedYourMessage': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua mensagem';
-			case 'userReactedYourNote': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua nota';
-			case 'userReactedYourPaidNote': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua nota paga';
-			case 'userReactedYourPoll': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua sondagem';
-			case 'userReactedYourSmartWidget': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu smart widget';
-			case 'userReactedYourVideo': return ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu vídeo';
-			case 'reactedWith': return ({required Object name, required Object reaction}) => '${name} reagiu com ${reaction}';
-			case 'userReceivedSat': return ({required Object name, required Object number}) => '${name} recebeu os teus ${number} Sats';
-			case 'userRepliedArticleYouIn': return ({required Object name}) => '${name} respondeu a um artigo em que foste mencionado';
-			case 'userRepliedCurationYouIn': return ({required Object name}) => '${name} respondeu a uma curadoria em que foste mencionado';
-			case 'userRepliedNoteYouIn': return ({required Object name}) => '${name} respondeu a uma nota em que foste mencionado';
-			case 'userRepliedPaidNoteYouIn': return ({required Object name}) => '${name} respondeu a uma nota paga em que foste mencionado';
-			case 'userRepliedPollYouIn': return ({required Object name}) => '${name} respondeu a uma sondagem em que foste mencionado';
-			case 'userRepliedSmartWidgetYouIn': return ({required Object name}) => '${name} respondeu a um smart widget em que foste mencionado';
-			case 'userRepliedVideoYouIn': return ({required Object name}) => '${name} respondeu a um vídeo em que foste mencionado';
-			case 'userRepliedYourArticle': return ({required Object name}) => '${name} respondeu ao teu artigo';
-			case 'userRepliedYourCuration': return ({required Object name}) => '${name} respondeu à tua curadoria';
-			case 'userRepliedYourNote': return ({required Object name}) => '${name} respondeu à tua nota';
-			case 'userRepliedYourPaidNote': return ({required Object name}) => '${name} respondeu à tua nota paga';
-			case 'userRepliedYourPoll': return ({required Object name}) => '${name} respondeu à tua sondagem';
-			case 'userRepliedYourSmartWidget': return ({required Object name}) => '${name} respondeu ao teu smart widget';
-			case 'userRepliedYourVideo': return ({required Object name}) => '${name} respondeu ao teu vídeo';
-			case 'userRepostedNoteYouIn': return ({required Object name}) => '${name} republicou uma nota em que foste mencionado';
-			case 'userRepostedPaidNoteYouIn': return ({required Object name}) => '${name} republicou uma nota paga em que foste mencionado';
-			case 'userRepostedYou': return ({required Object name}) => '${name} republicou o teu conteúdo';
-			case 'userRepostedYourNote': return ({required Object name}) => '${name} republicou a tua nota';
-			case 'userRepostedYourPaidNote': return ({required Object name}) => '${name} republicou a tua nota paga';
-			case 'userSentSat': return ({required Object name, required Object number}) => '${name} enviou-te ${number} Sats';
-			case 'userZappedYou': return ({required Object name, required Object number}) => '${name} enviou-te um zap de ${number} sats';
-			case 'userZappedYourArticle': return ({required Object name, required Object number}) => '${name} zapped o teu artigo ${number} sats';
-			case 'userZappedYourCuration': return ({required Object name, required Object number}) => '${name} zapped a tua curadoria ${number} sats';
-			case 'userZappedYourNote': return ({required Object name, required Object number}) => '${name} zapped a tua nota ${number} sats';
-			case 'userZappedYourPaidNote': return ({required Object name, required Object number}) => '${name} zapped a tua nota paga ${number} sats';
-			case 'userZappedYourPoll': return ({required Object name, required Object number}) => '${name} zapped a tua sondagem ${number} sats';
-			case 'userZappedYourSmartWidget': return ({required Object name, required Object number}) => '${name} zapped o teu smart widget ${number} sats';
-			case 'userZappedYourVideo': return ({required Object name, required Object number}) => '${name} zapped o teu vídeo ${number} sats';
-			case 'userNewArticle': return ({required Object name}) => 'novo artigo de ${name}';
-			case 'userNewCuration': return ({required Object name}) => 'nova curadoria de ${name}';
-			case 'userPaidNote': return ({required Object name}) => 'nova nota paga de ${name}';
-			case 'userNewSmartWidget': return ({required Object name}) => 'novo smart widget de ${name}';
-			case 'userReply': return ({required Object name}) => 'a resposta de ${name}';
-			case 'userNewVideo': return ({required Object name}) => 'o vídeo de ${name}';
-			case 'articlesNum': return ({required Object number}) => '${number} artigo(s)';
-			case 'availableArticles': return ({required Object number}) => '${number} artigo(s) disponível(véis)';
-			case 'availableVideos': return ({required Object number}) => '${number} vídeo(s) disponível(véis)';
-			case 'bookmarksListCount': return ({required Object number}) => '${number} listas de marcadores';
-			case 'componentsSMCount': return ({required Object number}) => '${number} componentes neste widget';
-			case 'followersNum': return ({required Object number}) => '${number} seguidores';
-			case 'itemsNumber': return ({required Object number}) => '${number} item(ns)';
-			case 'levelsRequiredNum': return ({required Object number}) => '${number} níveis necessários';
-			case 'pointsRemaining': return ({required Object number}) => '${number} restante';
-			case 'videosNum': return ({required Object number}) => '${number} vídeo(s)';
-			case 'viewsNumber': return ({required Object number}) => '${number} visualização';
-			case 'readTime': return ({required Object time}) => '${time} min de leitura';
-			case 'mutualsNum': return ({required Object number}) => '+ ${number} mútuo(s)';
-			case 'peopleCountPlus': return ({required Object number}) => '+${number} pessoas';
-			case 'supportUs': return '❤︎ Apoia-nos';
-			case 'consumablePointsPerks1': return '1- Envia o teu conteúdo para certificação';
-			case 'consumablePointsPerks2': return '2- Resgata pontos para publicar notas pagas';
-			case 'consumablePointsPerks3': return '3- Resgata pontos para SATs (Limites aleatórios são selecionados e serás notificado sempre que o resgate estiver disponível)';
-			case 'highlightedNote': return 'Uma nota destacada para mais exposição.';
-			case 'minimumOfOneRequired': return 'É necessária uma quantidade mínima de 1';
-			case 'useValidTitle': return 'Um título válido necessita de ser utilizado';
-			case 'aboutYou': return 'Sobre ti';
-			case 'actGoodFaith': return 'Age em Boa-fé';
-			case 'add': return 'adicionar';
-			case 'addUrlNevent': return 'Adiciona um URL/nevent adequado';
-			case 'addProperUrlNevent': return 'Adiciona um URL/nevent adequado';
-			case 'addAccount': return 'Adiciona conta';
-			case 'addBookmarkList': return 'Adiciona lista de marcadores';
-			case 'addCover': return 'Adiciona capa';
-			case 'addCuration': return 'Adiciona curadoria';
-			case 'addInterests': return 'Adiciona interesses';
-			case 'addNote': return 'Adiciona nota';
-			case 'addToCuration': return 'Adiciona à curadoria';
-			case 'addUser': return 'Adiciona utilizador';
-			case 'addWallet': return 'Adicionar carteira';
-			case 'addYourTopics': return 'Adiciona os teus tópicos';
-			case 'adjustSpeed': return 'Ajusta velocidade';
-			case 'adjustVolume': return 'Ajusta volume';
-			case 'alby': return 'Alby';
-			case 'albyConnect': return 'Alby connect';
-			case 'all': return 'todos';
-			case 'allRelays': return 'Todas as relays';
-			case 'allUsersZapped': return 'Todos os utilizadores foram zapped!';
-			case 'amberNotInstalled': return 'O aplicativo Amber não está instalado';
-			case 'amountInSats': return 'Quantia em sats';
-			case 'errorAddingArticle': return 'Ocorreu um erro ao adicionar o artigo';
-			case 'errorAddingCuration': return 'Ocorreu um erro ao adicionar a curadoria';
-			case 'errorAddingWidget': return 'Ocorreu um erro ao adicionar o smart widget';
-			case 'errorAddingVideo': return 'Ocorreu um erro ao adicionar o vídeo';
-			case 'errorUpdatingCuration': return 'Ocorreu um erro ao atualizar a curadoria';
-			case 'userInvoiceGenerated': return ({required Object name}) => 'Uma fatura para ${name} foi gerada';
-			case 'verifiedNoteRateSealed': return 'Uma nota verificada que avaliaste foi selada.';
-			case 'apiKeyRequired': return 'Chave de API (obrigatória)';
-			case 'appLanguage': return 'Idioma do aplicativo';
-			case 'appTheme': return 'Tema do aplicativo';
-			case 'appearance': return 'Aparência';
-			case 'article': return 'artigo';
-			case 'articleNotFound': return 'Não foi possível encontrar o artigo';
-			case 'articleAddedCuration': return 'O artigo foi adicionado à tua curadoria.';
-			case 'articles': return 'artigos';
-			case 'articlesAvailableCuration': return 'Artigos disponíveis nesta curadoria';
-			case 'askMeSomething': return 'Pergunte-me alguma coisa!';
-			case 'attemptConnectAmber': return 'A tentativa de conexão com Amber foi rejeitada.';
-			case 'attemptsRemained': return 'Tentativas restantes ';
-			case 'autoSavedArticleDeleted': return 'O artigo salvo automaticamente foi excluído';
-			case 'autoSavedSMdeleted': return 'O widget inteligente salvo automaticamente foi excluído';
-			case 'availableWallets': return 'Carteiras disponíveis';
-			case 'back': return 'voltar';
-			case 'backgroundColor': return 'Cor de fundo';
-			case 'balance': return 'Equilíbrio';
-			case 'beHelpful': return 'Sê útil, mesmo para com aqueles que discordam';
-			case 'beFirstCommentThisVideo': return 'Sê o primeiro a comentar este vídeo!';
-			case 'bio': return ({required Object content}) => 'Biografia: ${content}';
-			case 'blankWidget': return 'Widget em branco';
-			case 'bookmark': return 'marcador';
-			case 'bookmarkAdded': return 'Lista de marcadores foi adicionada';
-			case 'bookmarkLists': return 'Listas de marcadores';
-			case 'bookmarks': return 'Marcadores';
-			case 'borderColor': return 'Cor da marchem';
-			case 'button': return 'botão';
-			case 'buttonColor': return 'Cor do botão';
-			case 'buttonCustomization': return 'Personalização de botão';
-			case 'buttonText': return 'Texto do botão';
-			case 'by': return 'por';
-			case 'byPerson': return ({required Object name}) => 'Por ${name}';
-			case 'byContinuing': return 'Ao continuar, concordas com o nosso\n';
-			case 'camera': return 'Câmera';
-			case 'cancel': return 'cancelar';
-			case 'checkSmartWidget': return 'Confere um smart widget';
-			case 'checkoutArticle': return 'confere o meu artigo';
-			case 'checkoutCuration': return 'confere a minha curadoria';
-			case 'checkoutPaidNote': return 'confere a minha nota paga';
-			case 'checkoutSmartWidget': return 'confere o meu smart widget';
-			case 'checkValidity': return 'Verifica a validade';
-			case 'checkModelRouter': return 'Verifica o teu modem ou router';
-			case 'checkoutVideo': return 'confere o meu vídeo';
-			case 'claim': return 'Reivindicação';
-			case 'claimTime': return ({required Object time}) => 'Reivindica em ${time}';
-			case 'clear': return 'limpar';
-			case 'clearAppCache': return 'Limpar cache do aplicativo';
-			case 'clearChat': return 'Limpar chat';
-			case 'clearDate': return 'Limpar dados';
-			case 'click': return 'Clique';
-			case 'clickBelowToConnect': return 'Clique abaixo para conectar';
-			case 'clone': return 'copiar conforme';
-			case 'close': return 'encerrar';
-			case 'pollClosedAt': return ({required Object date}) => 'Encerrado em: ${date}';
-			case 'pollClosesAt': return ({required Object date}) => 'Encerra em: ${date}';
-			case 'color': return 'cor';
-			case 'comment': return 'Comentário';
-			case 'comments': return 'Comentários';
-			case 'communityPolls': return 'Sondagens da comunidade';
-			case 'communityWallet': return 'Carteira comunitária';
-			case 'communityWidgets': return 'Widgets da comunidade';
-			case 'compose': return 'Compor';
-			case 'confirmPayment': return 'Confirmar pagamento';
-			case 'congratulations': return 'Parabéns';
-			case 'connect': return 'Conectar';
-			case 'connectWithNwc': return 'Conectar com NWC';
-			case 'connected': return 'Conectado';
-			case 'consumablePoints': return 'Pontos consumíveis';
-			case 'contact': return 'Contato';
-			case 'container': return 'recipiente';
-			case 'containerCustomization': return 'Personalização do recipiente';
-			case 'contentModeration': return 'Moderação do conteúdo';
-			case 'contentTextColor': return 'Cor do texto do conteúdo';
-			case 'contentTranslation': return 'Tradução do conteúdo';
-			case 'contentData': return ({required Object description}) => 'Conteúdo: ${description}';
-			case 'continueAsGuest': return 'Continuar como convidado';
-			case 'contributeUnderstanding': return 'Contribua para a criação de entendimento';
-			case 'copy': return 'cópia';
-			case 'copyInvoice': return 'Copiar fatura';
-			case 'copyLn': return 'Copiar endereço lightining';
-			case 'copyNaddr': return 'copiar naddr';
-			case 'copyNoteId': return 'Copiar ID da nota';
-			case 'copyNpub': return 'Copiar npub';
-			case 'copyNwc': return 'Copiar NWC';
-			case 'userInvoiceNotGenerated': return 'Não foi possível criar uma fatura para este utilizador.';
-			case 'notFindSMwithAddr': return 'Não foi possível encontrar o smart widget com esse endereço';
-			case 'couldNotUpdateRelaysList': return 'Não foi possível atualizar a lista de relays';
-			case 'coverUrl': return 'Ocultar url';
-			case 'createWalletSendRecSats': return 'Cria uma carteira para enviar e receber sats';
-			case 'createAccount': return 'Cria uma conta';
-			case 'createWallet': return 'Criar carteira';
-			case 'yakiNwcDesc': return 'Cria uma carteira usando o canal de YakiHonne';
-			case 'createYakiWallet': return 'Cria uma carteira YakiHonne';
-			case 'createdAt': return 'Criado em';
-			case 'createdAtEditedAt': return ({required Object date1, required Object date2}) => 'criado em ${date1}, editado em ${date2}';
-			case 'curation': return 'curadoria';
-			case 'curationNotFound': return 'Não foi possível encontrar a curadoria';
-			case 'curationType': return 'Tipo de curadoria';
-			case 'curations': return 'curadorias';
-			case 'currentlyLinkedMessage': return 'Atualmente vinculado ao teu perfil para recepção de zaps';
-			case 'customization': return 'Personalização';
-			case 'customizeYourFeed': return 'Personaliza o teu feed';
-			case 'dashboard': return 'painel';
-			case 'decrMessage': return 'Decifrando mensagem';
-			case 'defaultKey': return 'Padrão';
-			case 'delete': return 'excluir';
-			case 'deleteContent': return ({required Object type}) => 'Excluir ${type}';
-			case 'deleteAccount': return 'Excluir conta';
-			case 'deleteBookmarkList': return 'Excluir lista de marcadores';
-			case 'deleteCoverPic': return 'Excluir foto da capa!';
-			case 'deleteDraft': return 'Excluir rascunho';
-			case 'deleteWallet': return 'Excluir carteira';
-			case 'description': return 'descrição';
-			case 'descriptionOptional': return 'descrição (opcional)';
-			case 'details': return 'detalhes';
-			case 'disableSecureDms': return 'Desative DMs seguras';
-			case 'disconnecting': return 'Desconectando...';
-			case 'discordUrl': return 'url do Discord';
-			case 'discover': return 'descobrir';
-			case 'dismiss': return 'dispensar';
-			case 'displayName': return 'Nome de exibição';
-			case 'findThisHelpful': return 'Achas isto útil?';
-			case 'findThisNotHelpful': return 'Achas que isto não é útil?';
-			case 'dontHaveWallet': return 'Não tens ainda uma carteira?';
-			case 'unTextR3Desc': return 'Não te preocupes, todos nós recebemos algumas destas! Estas classificações são comuns e podem levar a alterações de status se um número suficiente de pessoas concordarem que uma nota útil não é suficientemente útil.';
-			case 'donations': return 'Doações';
-			case 'downvotes': return 'Votos negativos';
-			case 'draft': return 'rascunho';
-			case 'duoLayout': return 'Layout duplo';
-			case 'earnSats': return 'Ganha SATs';
-			case 'edit': return 'editar';
-			case 'editCover': return 'Editar capa';
-			case 'editProfile': return 'Editar perfil';
-			case 'editToAddZapPoll': return 'Edite para adicionar enquete zap';
-			case 'editedOn': return ({required Object date}) => 'Editado em: ${date}';
-			case 'emptyVerifiedNote': return 'Conteúdo de nota verificado vazio!';
-			case 'enableSecureDms': return 'Habilite DMs seguros';
-			case 'eula': return 'Contrato de licença de usuário final (EULA)';
-			case 'engagementChart': return 'Gráfico de engajamento';
-			case 'enjoyExpOwnData': return 'Aproveite a experiência de possuir\n';
-			case 'ensureLnSet': return 'Certifique-se de que seu endereço relâmpago esteja bem definido';
-			case 'enterSMaddr': return 'Insira um widget inteligente naddr para verificar sua validade.';
-			case 'enterLn': return 'Digite seu endereço LUD-06 ou LUD-16';
-			case 'enterCoverUrl': return 'Insira o URL da sua capa';
-			case 'enterNip05': return 'Digite seu endereço NIP-05';
-			case 'enterPictureUrl': return 'Digite o URL da sua foto';
-			case 'erase': return 'apagar';
-			case 'errorAddingBookmark': return 'Ocorreu um erro ao adicionar o favorito';
-			case 'errorAddingVerifiedNote': return 'Ocorreu um erro ao adicionar sua nota verificada';
-			case 'errorClaimingReward': return 'Ocorreu um erro ao reivindicar uma recompensa';
-			case 'errorConnectingRelay': return 'Ocorreu um erro ao conectar ao relé';
-			case 'errorCreatingWallet': return 'Ocorreu um erro ao criar a carteira';
-			case 'errorDecodingData': return 'Ocorreu um erro ao decodificar os dados';
-			case 'errorDeletingContent': return 'Ocorreu um erro ao excluir o conteúdo';
-			case 'errorDeletingRating': return 'Ocorreu um erro ao excluir sua avaliação';
-			case 'errorGeneratingEvent': return 'Ocorreu um erro ao gerar o evento';
-			case 'errorGeneratingInvoice': return 'Ocorreu um erro ao gerar a fatura';
-			case 'errorLoggingYakiChest': return 'Ocorreu um erro ao fazer login no baú de Yakihonne';
-			case 'errorPayingInvoice': return 'Ocorreu um erro ao pagar usando a fatura';
-			case 'errorSendingSats': return 'Ocorreu um erro ao enviar sats';
-			case 'errorSendingEvent': return 'Ocorreu um erro ao enviar o evento';
-			case 'errorSendingMessage': return 'ocorreu um erro ao enviar a mensagem';
-			case 'errorSettingToken': return 'Ocorreu um erro ao configurar o token';
-			case 'errorSigningEvent': return 'Ocorreu um erro ao assinar o evento';
-			case 'errorSubmittingRating': return 'Ocorreu um erro ao enviar sua classificação';
-			case 'errorTranslating': return 'Ocorreu um erro ao traduzir o conteúdo.';
-			case 'errorUpdatingData': return 'Ocorreu um erro ao atualizar os dados';
-			case 'errorUpdatingRelaysList': return 'Ocorreu um erro ao atualizar a lista de relés';
-			case 'errorUploadingMedia': return 'Ocorreu um erro ao enviar a mídia';
-			case 'errorUploadingVideo': return 'Ocorreu um erro ao carregar o vídeo';
-			case 'errorUsingWallet': return 'Ocorreu um erro ao usar a carteira!';
-			case 'errorZappingUsers': return 'Ocorreu um erro ao enviar zapps aos utilizadores';
-			case 'errorUploadingImage': return 'Ocorreu um erro ao carregar a imagem';
-			case 'errorLoadingVideo': return 'Erro ao carregar o vídeo';
-			case 'errorUsingExternalWallet': return 'Erro ao usar carteira externa.';
-			case 'eventNotFound': return 'Não foi possível encontrar o evento';
-			case 'eventNotRecognized': return 'O evento não pôde ser reconhecido';
-			case 'exit': return 'Sair';
-			case 'expandWorld': return 'Expande o mundo adicionando o que mais te fascina. Seleciona os teus interesses e deixa que a viagem comece.';
-			case 'explanation': return 'Explicação';
-			case 'explore': return 'explorar';
-			case 'externalWallet': return 'Carteira externa';
-			case 'feedOptions': return 'Opções do feed';
-			case 'fetchingArticle': return 'Rastreando artigo';
-			case 'fetchingCuration': return 'Rastreando curadoria';
-			case 'fetchingEvent': return 'Rastreando evento';
-			case 'fetchingEventUserRelays': return 'Rastreando evento nas relays do utilizador';
-			case 'fetchingNote': return 'Rastreando nota';
-			case 'fetchingProfile': return 'Rastreando perfil';
-			case 'fetchingSmartWidget': return 'Rastreando smart widget';
-			case 'fetchingUserInboxRelays': return 'Rastreando relays da caixa de entrada do utilizador';
-			case 'fetchingVideo': return 'Rastreando vídeo';
-			case 'fileSharing': return 'Partilha de arquivos';
-			case 'fillColor': return 'Cor de preenchimento';
-			case 'finished': return 'finalizado!';
-			case 'follow': return 'segue';
-			case 'followAll': return 'Segue todos';
-			case 'followMeOnNostr': return 'Segue-me no Nostr';
-			case 'followers': return 'Seguidores';
-			case 'following': return 'seguindo';
-			case 'pendingFollowing': return 'Seguindo...';
-			case 'followings': return 'Seguidores';
-			case 'followsYou': return 'Segue-te';
-			case 'fontSize': return 'Tamanho da fonte';
-			case 'forName': return ({required Object name}) => 'para ${name}';
-			case 'enableSecureDmsMessage': return 'Para mais segurança e privacidade, considera ativar DMs seguros.';
-			case 'zapSplitsMessage': return 'Para zap splits, deve haver pelo menos uma pessoa';
-			case 'free': return 'Grátis';
-			case 'fuelYakihonne': return 'Estimula o crescimento de YakiHonne! O teu apoio contribui para a criação de novos recursos e a para uma melhor experiência para todos.';
-			case 'gain': return 'Ganho';
-			case 'gallery': return 'Galeria';
-			case 'generateInvoice': return 'Gerar fatura';
-			case 'generateInvoices': return 'Gerar faturas';
-			case 'getApiKey': return 'Obtém chave API';
-			case 'getInvoice': return 'Obtém fatura';
-			case 'getStartedNow': return 'Começa já';
-			case 'gifs': return 'gifs';
-			case 'gotIt': return 'Entendi!';
-			case 'granted': return 'Concedido';
-			case 'earnSatsDesc': return 'Ajuda-nos a fornecer perspetivas mais descentralizadas para rever esta nota paga.';
-			case 'heyWelcomeBack': return 'Olá,\nBem-vindo\nDe volta';
-			case 'hideSuggestions': return 'Ocultar sugestões';
-			case 'highlights': return 'destaques';
-			case 'home': return 'Página principal';
-			case 'hfCustomization': return 'Personalização do feed da página principal';
-			case 'horizontalVideo': return 'Vídeo horizontal';
-			case 'wantToShareRevenues': return 'Quero compartilhar estas receitas';
-			case 'identifier': return 'Identificador';
-			case 'image': return 'imagem';
-			case 'imageAspectRatio': return 'Proporção da imagem';
-			case 'imageCustomization': return 'Personalização de imagem';
-			case 'imageUrl': return 'URL da imagem';
-			case 'imageUploadHistory': return 'Histórico de carregamento de imagens';
-			case 'important': return 'Importante';
-			case 'inTag': return ({required Object name}) => 'Em ${name}';
-			case 'inaccessibleLink': return 'Link inacessível';
-			case 'inbox': return 'caixa de entrada';
-			case 'initializingAccount': return 'Inicializando conta...';
-			case 'insertText': return 'Inserir texto';
-			case 'instantConntect': return 'Conexão instantânea à relay';
-			case 'interestsUpdateMessage': return 'A lista de interesses foi atualizada com sucesso!';
-			case 'interested': return 'Interessado';
-			case 'interests': return 'interesses';
-			case 'invalidHexKey': return 'Hex key inválida!';
-			case 'invalidInvoice': return 'Fatura inválida';
-			case 'invalidPairingSecret': return 'Emparelhamento de segredo inválido';
-			case 'invalidPrivateKey': return 'Chave privada inválida!';
-			case 'invalidRelayUrl': return 'URL de relay inválido';
-			case 'invoice': return 'fatura';
-			case 'invoiceCopied': return 'Código da fatura copiado!';
-			case 'invoicePaid': return 'A fatura foi paga com sucesso';
-			case 'invoiceOrLN': return 'Fatura ou endereço Lightning';
-			case 'issueOccuredSelectingImage': return 'Ocorreu um problema ao selecionar a imagem.';
-			case 'somethingWentWrongDesc': return 'Parece que algo de errado aconteceu durante o carregamento de dados. Tenta novamente!';
-			case 'invalidInvoiceDesc': return 'Parece que a fatura digitalizada é inválida. Redigitaliza e tenta novamente.';
-			case 'invoiceNotPayed': return 'Parece que não pagaste a fatura, verifica novamente';
-			case 'itsLive': return 'Estás ao Vivo!';
-			case 'noCommunityNotes': return 'Está tudo tranquilo por aqui! Não existem ainda notas da comunidade.';
-			case 'joinedOn': return ({required Object date}) => 'Associou-se em: ${date}';
-			case 'keys': return 'Chaves';
-			case 'known': return 'Conhecido';
-			case 'languagePreferences': return 'Preferências de idioma';
-			case 'lastGained': return ({required Object date}) => 'Último ganho: ${date}';
-			case 'lastUpdatedOn': return ({required Object date}) => 'Última atualização em: ${date}';
-			case 'latest': return 'mais recente';
-			case 'layout': return 'layout';
-			case 'layoutCustomization': return 'Personalização do layout';
-			case 'less': return 'Menos';
-			case 'letsGetStarted': return 'Vamos começar!';
-			case 'levelNumber': return ({required Object number}) => 'Nível ${number}';
-			case 'lightningAddress': return 'Endereço Lightning';
-			case 'lnCopied': return 'O endereço Lightning foi copiado! 👏';
-			case 'link': return 'Link';
-			case 'linkWallet': return 'Conecta Carteira';
-			case 'linked': return 'Conectado';
-			case 'list': return 'lista';
-			case 'loading': return 'A carregar';
-			case 'loadingFollowings': return 'A carregar seguidores';
-			case 'loadingPreviousPosts': return 'A carregar publicação(ões) anterior(es)...';
-			case 'loadingFollowers': return 'A carregar seguidores';
-			case 'locked': return 'Bloqueado';
-			case 'loggingIn': return 'Acedendo...';
-			case 'loggingOut': return 'Fazendo logout...';
-			case 'login': return 'Nome de acesso';
-			case 'loginYakiChestPoints': return 'Faz login no baú de Yakihonne, acumula pontos sendo ativo na plataforma e ganha recompensas preciosos!';
-			case 'logoutAllAccounts': return 'Sair de todas as contas';
-			case 'validDescriptionCuration': return 'Certifica-te que adicionaste uma descrição válida para esta curadoria';
-			case 'validImageCuration': return 'Certifica-te que adicionaste uma imagem válida para esta curadoria';
-			case 'validTitleCuration': return 'Certifica-te que adicionaste um título válido para esta curadoria';
-			case 'addValidUrl': return 'Certifica-te de adicionar um URL válido';
-			case 'submitValidLud': return 'Certifica-te de obter um lud16/lud06 válido.';
-			case 'showSecretDesc': return 'Certifica-te que o manténs seguro, pois ele dá acesso total à tua conta.';
-			case 'invalidInvoiceLnurl': return 'Certifica-te de definir uma fatura válida ou lnurl';
-			case 'setAllRequiredContent': return 'Certifica-te de definir todo o conteúdo necessário.';
-			case 'setOutboxRelays': return 'Certifica-te de configurar as tuas relays de caixa de saída';
-			case 'submitValidCloseDate': return 'Certifica-te de enviar uma data de encerramento válida.';
-			case 'submitMinMaxSats': return 'Certifica-te de submeter uma quantia válida mínima e máxima de satoshis';
-			case 'submitValidOptions': return 'Certifica-te de submeter opções válidas.';
-			case 'submitValidData': return 'Certifica-te de submeter dados válidos';
-			case 'submitValidInvoice': return 'Certifica-te de submeter uma fatura válida';
-			case 'manageAccounts': return 'Gerenciar contas';
-			case 'manageInterests': return 'Gerenciar interesses';
-			case 'maxSats': return 'Máx. sats';
-			case 'maximumSatoshis': return 'Máximo de sats';
-			case 'mediaExceedsMaxSize': return 'A multimidia excede o tamanho máximo que é 21 MB';
-			case 'mediaUploader': return 'Carregador de multimidia';
-			case 'mentions': return 'menções';
-			case 'messageOptional': return 'Mensagem (opcional)';
-			case 'messageCouldNotBeDecrypted': return 'a mensagem não pôde ser decifrada';
-			case 'messageNotDecrypted': return 'A mensagem ainda não foi decifrada!';
-			case 'messageCopied': return 'Mensagem copiada com sucesso!';
-			case 'metadata': return 'metadados';
-			case 'min': return 'min';
-			case 'minSats': return 'Mínimo de sats';
-			case 'minimumSatoshis': return 'Mínimo de Sats';
-			case 'errorMissingKey': return 'Chave de API ausente ou subscrição expirada.';
-			case 'monoLayout': return 'MonoLayout';
-			case 'monolayoutRequired': return 'Monolayout é obrigatório';
-			case 'more': return 'Mais';
-			case 'moreDots': return 'mais...';
-			case 'moveDown': return 'Mover para baixo';
-			case 'moveUp': return 'Ir para cima';
-			case 'mute': return 'modo silencioso';
-			case 'muteList': return 'Lista silenciada';
-			case 'muteUser': return 'Silenciar utilizador';
-			case 'mutuals': return 'mútuo(s)';
-			case 'myArticles': return 'Os meus artigos';
-			case 'myDrafts': return 'Os meus rascunhos';
-			case 'myPolls': return 'As minhas sondagens';
-			case 'myPublicKey': return 'A minha chave pública';
-			case 'mySecretKey': return 'A minha chave secreta';
-			case 'myVideos': return 'Os meus vídeos';
-			case 'myWidgets': return 'Os meus widgets';
-			case 'naddr': return 'naddr';
-			case 'nostrWalletConnectDesc': return 'Conexão nativa de carteira nostr';
-			case 'needsMoreRating': return 'Precisa de mais classificação';
-			case 'needsYourHelp': return 'Precisa do teu útil';
-			case 'nevent': return 'nevent';
-			case 'newKey': return 'Novo';
-			case 'newMessage': return 'Nova mensagem';
-			case 'newPostGesture': return 'Nova publicação com gesto de pressão longa';
-			case 'next': return 'próximo';
-			case 'noContentBelongToCuration': return ({required Object type}) => 'Nenhum ${type} pertence a esta curadoria';
-			case 'noContentCanBeFound': return ({required Object type}) => 'Nenhum ${type} foi encontrado';
-			case 'noArticlesInCuration': return 'Nenhum artigo sobre esta curadoria foi encontrado';
-			case 'addNewBookmark': return 'Nenhuma lista de marcadores foi encontrada, tenta adicionar uma!';
-			case 'noBookmarksListFound': return 'Nenhuma lista de marcadores foi encontrada, tente adicionar uma!';
-			case 'noCommentsCanBeFound': return 'Nenhum comentário foi encontrado';
-			case 'noComponentsDisplayed': return 'Nenhum componente pode ser exibido';
-			case 'noCurationsFound': return 'Nenhuma curadoria foi encontrada. Tenta criar uma para poderes adicionar conteúdo à mesma.';
-			case 'noDescription': return 'Nenhuma descrição';
-			case 'noElementsInBookmarks': return 'Nenhum elemento foi encontrado na lista de marcadores';
-			case 'noEventIdCanBeFound': return 'Nenhum evento com este ID foi encontrado!';
-			case 'noImageHistory': return 'Nenhum histórico de imagens foi encontrado';
-			case 'noInternetAccess': return 'Sem acesso à Internet';
-			case 'noInvoiceAvailable': return 'Não há faturas disponíveis';
-			case 'noMessageCanBeFound': return 'Nenhuma mensagem foi encontrada';
-			case 'noMessagesToDisplay': return 'Nenhuma mensagem pode ser exibida.';
-			case 'noMoreData': return 'Não há mais dados';
-			case 'noMutedUserFound': return 'Nenhum usuário silenciado foi encontrado.';
-			case 'noNotificationCanBeFound': return 'Nenhuma notificação pode ser encontrada';
-			case 'noPaidNotesCanBeFound': return 'Nenhuma nota paga pode ser encontrada.';
-			case 'noPollsCanBeFound': return 'Nenhuma sondagem foi encontrada';
-			case 'noReasonsSpecified': return 'Sem razão especificada!';
-			case 'noRelaysCanBeFound': return 'Nenhuma relay pode ser encontrada';
-			case 'noUserRelays': return 'Nenhuma relay foi encontrada para este utilizador.';
-			case 'noRepliesDesc': return 'Nenhuma resposta para esta nota pode ser encontrada';
-			case 'noResKeyword': return 'Nenhum resultado para esta palavra-chave';
-			case 'noResKeywordDesc': return 'Nenhum resultado foi encontrado ao usar esta palavra-chave, tenta usar outras palavras-chave para obter melhores resultados.';
-			case 'noSmartWidgetCanBeFound': return 'Nenhum smart widget pode ser encontrado';
-			case 'noSmartWidget': return 'Nenhum rascunho de smart widget pode ser encontrado';
-			case 'noTemplatesCanBeFound': return 'Nenhum modelo pode ser encontrado nesta categoria.';
-			case 'noTitle': return 'Sem título';
-			case 'noTransactionCanBeFound': return 'Nenhuma transação pode ser encontrada';
-			case 'noUserZapped': return 'Nenhum utilizador recebeu zaps!';
-			case 'noUserCanBeFound': return 'Nenhum utilizador pode ser encontrado.';
-			case 'noVideosInCuration': return 'Nenhum vídeo sobre esta curadoria foi encontrado';
-			case 'noWalletCanBeFound': return 'Nenhuma carteira pode ser encontrada';
-			case 'noZappersCanBeFound': return 'Nenhum zapper pode ser encontrado.';
-			case 'noImGood': return 'Não, estou bem';
-			case 'noWalletConnectedToYourProfile': return 'Nenhuma das carteiras conectadas está vinculada ao seu perfil.';
-			case 'nostrScheme': return 'Esquema Nostr';
-			case 'nostrWalletConnect': return 'Conexão de carteira Nostr';
-			case 'nwcInitialized': return 'A conexão da carteira Nostr foi inicializada';
-			case 'notEnoughBalance': return 'Não tens saldo suficiente para efetuar este pagamento.';
-			case 'notFollowedByAnyoneYouFollow': return 'Não é seguido por ninguém que segues.';
-			case 'notHelpful': return 'Não é útil';
-			case 'notInterested': return 'Não estou interessado';
-			case 'notSealed': return 'Não selado';
-			case 'notSealedYet': return 'Ainda não está selado';
-			case 'note': return 'nota';
-			case 'noteNotFound': return 'A nota não pôde ser encontrada';
-			case 'notePublished': return 'A nota foi publicada!';
-			case 'noteIdCopied': return 'ID da nota copiado! 👏';
-			case 'walletDataNote': return 'Nota: Todos os dados relacionados à sua carteira serão armazenados localmente em segurança e jamais serão partilhados fora dos limites da aplicação.';
-			case 'changeRatingNote': return 'Nota: a alteração à tua classificação será válida apenas por 5 minutos, após este período deixarás de a poder desfazer ou de a alterar.';
-			case 'payPublishNote': return 'Nota: Certifica-te de que todo o conteúdo que forneces é definitivo, pois a publicação é considerada irreversível e os SATS gastos não são reembolsáveis.';
-			case 'notes': return 'notas';
-			case 'notesFromCommunity': return 'Notas da comunidade';
-			case 'unTextW3Desc': return 'Notas que ainda não têm o status de Útil ou Não Útil.';
-			case 'unTextW1': return 'Notas que receberam o status de Útil';
-			case 'unTextW3': return 'Notas que precisam de mais classificações';
-			case 'unTextW2': return 'Notas que receberam o status de Não Útil';
-			case 'un2': return 'Notas em contínua classificação ';
-			case 'notifications': return 'notificações';
-			case 'npubNsecHex': return 'npub, nsec ou hex';
-			case 'nwcCopied': return 'NWC foi copiado com sucesso!';
-			case 'onDate': return ({required Object date}) => 'Em ${date}';
-			case 'onSelectedWalletLinkIt': return 'na tua carteira selecionada e vincule-a.';
-			case 'oneTimeRewards': return 'Recompensas únicas';
-			case 'ongoing': return 'a decorrer';
-			case 'nothingToShowHere': return 'Ops! Nada para mostrar aqui!';
-			case 'optionBackgroundColor': return 'Cor de fundo da opção';
-			case 'optionTextColor': return 'Cor do texto da opção';
-			case 'options': return 'opções';
-			case 'optionsNumber': return ({required Object number}) => 'Opções: ${number}';
-			case 'orUseYourWallet': return 'Ou usa a tua carteira';
-			case 'others': return 'outros';
-			case 'privacyNote': return 'A nossa aplicação garante o máximo de privacidade ao armazenar, localmente e em segurança, os dados confidenciais dos utilizadores, empregando rigorosa criptografia. Descansa, sustentamos de uma política bastante restrita quanto ao fornecimento de dados, assegurando que informações sensíveis permanecem confidenciais e jamais sairão do equipamento electrónico do utilizador.  ';
-			case 'owner': return 'Proprietário';
-			case 'paid': return 'pago';
-			case 'paidNote': return 'Nota paga';
-			case 'paidNotePublished': return 'A nota paga foi publicada!';
-			case 'paidNoteLoading': return 'Nota paga a carregar';
-			case 'partialUsersZapped': return 'Utilizadores parciais recebem zaps!';
-			case 'pasteNwcAddress': return 'Cola o endereço NWC';
-			case 'pasteYourKey': return 'Cola a tua chave';
-			case 'pasteKind1063': return 'Cola o teu kind 1063 nevent e envia-o';
-			case 'pasteYourLink': return 'Cola o teu teu link e envia-o';
-			case 'pay': return 'Pagar';
-			case 'payAmount': return ({required Object number}) => 'Pagar ${number} sats';
-			case 'payPublish': return 'Paga & Publica';
-			case 'payWithNwc': return 'Paga com NWC';
-			case 'paymentFailed': return 'Falha no pagamento';
-			case 'paymentSucceeded': return 'Pagamento bem-sucedido';
-			case 'paymentSurpassMax': return 'Pagamento ultrapassa o valor máximo permitido.';
-			case 'peopleToFollow': return 'Pessoas a seguir';
-			case 'permissionInvoiceNotGranted': return 'A permissão para pagar faturas não é concedida.';
-			case 'pickYourComponent': return 'Escolhe o teu componente';
-			case 'pickYourImage': return 'Escolhe a tua imagem';
-			case 'pickYourMedia': return 'Escolhe a tua multimidia';
-			case 'pickYourVideo': return 'Escolhe o teu vídeo';
-			case 'pictureUrl': return 'URL da imagem';
-			case 'plan': return 'Plano';
-			case 'submitValidVideoEvent': return 'Por favor, submete um evento de vídeo válido';
-			case 'points': return 'Pontos';
-			case 'pointsSystem': return 'Sistema de pontos';
-			case 'pollCloseDate': return 'Data de encerramento da sondagem';
-			case 'pollOptions': return 'Opções da sondagem';
-			case 'pollZapPublished': return 'A sondagem de zap foi publicada!';
-			case 'popularNotes': return 'Notas populares';
-			case 'post': return 'Publica';
-			case 'postArticle': return 'Publica um artigo';
-			case 'postNotFound': return 'Publicação não encontrada';
-			case 'postCuration': return 'Publica curadoria';
-			case 'postInNote': return 'Publica em nota';
-			case 'postNote': return 'Publica nota';
-			case 'postSmartWidget': return 'Publica smart widget';
-			case 'postVideo': return 'Publica vídeo';
-			case 'postedBy': return 'Publicado por';
-			case 'postedFrom': return 'publicado de';
-			case 'postedOn': return ({required Object date}) => 'Publicado a ${date}';
-			case 'preview': return 'Pré-visualização';
-			case 'privKeyCopied': return 'A chave privada foi copiada!👏';
-			case 'pro': return 'Pro';
-			case 'processCompleted': return 'O processo foi concluído';
-			case 'profile': return 'Perfil';
-			case 'profileLink': return 'Link do perfil';
-			case 'profileCopied': return 'O link do perfil foi copiado! 👏';
-			case 'profilePreview': return 'Pré-visualização do perfil';
-			case 'profileRelays': return ({required Object number}) => 'Relays recomendadas para o perfil - ${number}';
-			case 'publicKey': return 'Chave pública';
-			case 'publicKeyCopied': return 'A chave pública foi copiada! 👏';
-			case 'publish': return 'publicar';
-			case 'publishRemoveDraft': return 'Publicar e remover o rascunho';
-			case 'publishedOnText': return 'Publicado em';
-			case 'publishedOn': return ({required Object date}) => 'Publicado a: ${date}';
-			case 'pullToRefresh': return 'Puxe para atualizar';
-			case 'qrCode': return 'Código QR';
-			case 'rateHelpful': return 'Classifica como útil';
-			case 'rateNotHelpful': return 'Classifica como não útil';
-			case 'ratedHelpful': return 'Classificado como útil';
-			case 'ratedNotHelpful': return 'Classificado como não útil';
-			case 'un1': return 'Classificações de Não Útil em notas que terminaram com um status de Útil';
-			case 'unTextR3': return 'Classificações de Não Útil em notas que terminaram com um status de Útil';
-			case 'un2Desc': return 'Classificações em notas que atualmente não têm um status de Útil ou Não Útil';
-			case 'unTextR1': return 'Classificações que ajudaram uma nota a ganhar o status de Útil';
-			case 'unTextR2': return 'Classificações que ajudaram uma nota a ganhar o status de Não Útil';
-			case 'readAboutVerifyingNotes': return 'Lê sobre como verificar notas';
-			case 'readArticle': return 'Lê o artigo';
-			case 'readMore': return 'Lê mais';
-			case 'readOnly': return 'Somente leitura';
-			case 'readWrite': return 'Lê/Escreve';
-			case 'receive': return 'Recebe';
-			case 'receiveSats': return 'Recebe sats';
-			case 'recent': return 'recente';
-			case 'recentTransactions': return 'Transações recentes';
-			case 'recentWithReplies': return 'Recente com respostas';
-			case 'reconnectWifi': return 'Reconectar a um wi-fi';
-			case 'refresh': return 'atualizar';
-			case 'refreshed': return 'Atualizado';
-			case 'refreshing': return 'A atualizar';
-			case 'relayInUse': return 'A relay já está a ser usada';
-			case 'relaySettings': return ({required Object number}) => 'Configurações da relay ${number}';
-			case 'relayingStuff': return 'A retransmitir coisas...';
-			case 'relays': return 'Relays';
-			case 'relaysNotReached': return 'Não foi possível alcançar as relays';
-			case 'relaysListUpdated': return 'A lista de relays foi atualizada';
-			case 'releaseToLoad': return 'Solte para carregar mais';
-			case 'repeatedRewards': return 'Recompensas repetidas';
-			case 'replies': return 'respostas';
-			case 'reply': return 'responder';
-			case 'replyingTo': return ({required Object name}) => 'Respondendo a: ${name}';
-			case 'reposted': return 'rerepublicado';
-			case 'requestInProgress': return 'Solicitação em andamento';
-			case 'reveal': return 'Revelar';
-			case 'rewards': return 'recompensas';
-			case 'saveDraft': return 'Salvar rascunho';
-			case 'saved': return 'salvo';
-			case 'scanPay': return 'Digitaliza & paga';
-			case 'scanAgain': return 'Digitaliza novamente';
-			case 'scanQrCode': return 'Digitaliza o código QR';
-			case 'sealed': return 'Selado';
-			case 'search': return 'pesquisar';
-			case 'searchContentByTitle': return ({required Object type}) => 'Pesquisar ${type} pelo título';
-			case 'searchNameNpub': return 'Pesquisar por nome, npub, nprofile';
-			case 'searchByUserName': return 'Pesquisar por nome de utilizador';
-			case 'searchRelay': return 'Pesquisar relay';
-			case 'secureDirectMessaging': return 'Mensagens diretas seguras';
-			case 'seeAll': return 'Ver tudo';
-			case 'seeAllAttempts': return 'Ver todas as tentativas';
-			case 'seeAlso': return 'Ver também';
-			case 'seeAnything': return 'Viste alguma coisa que desejas melhorar?';
-			case 'seeMore': return 'Ver mais';
-			case 'seeOriginal': return 'Ver original';
-			case 'seeTranslation': return 'Ver tradução';
-			case 'selectAndUploadLocaleImage': return 'Seleciona & carrega uma imagem local';
-			case 'selectAdate': return 'Seleciona uma data';
-			case 'selectDefaultWallet': return 'Seleciona uma carteira padrão nas configurações.';
-			case 'selectUserToZap': return 'Seleciona um utilizador para enviares zap (opcional)';
-			case 'selectValidUrlImage': return 'Seleciona um Url da imagem válido.';
-			case 'selectWalletTransactions': return 'Seleciona uma carteira para obter as transações mais recentes.';
-			case 'selectOneReason': return 'Seleciona pelo menos um motivo';
-			case 'selectComponent': return 'Seleciona o componente conveniente e edita-o.';
-			case 'send': return 'Enviar';
-			case 'sendSats': return 'Enviar sats';
-			case 'setProperName': return 'Define um nome apropriado';
-			case 'setSatsMoreThanZero': return 'Define uma quantidade de sats maior que 0';
-			case 'setBookmarkTitleDescription': return 'Define um título e uma descrição para a tua lista de marcadores.';
-			case 'setValidKey': return 'Define uma chave válida';
-			case 'setUpYourLink': return 'Configura o teu link';
-			case 'setUpYourNevent': return 'Configura o teu evento';
-			case 'setYourRating': return 'Define a tua classificação';
-			case 'settings': return 'configurações';
-			case 'share': return 'compartilhar';
-			case 'shareGlimps': return 'Partilha um vislumbre de ti próprio, em palavras que pareçam verdadeiras.';
-			case 'shareContent': return 'Partilhar conteúdo';
-			case 'shareImage': return 'Partilhar imagem';
-			case 'shareLink': return 'Partilhar link';
-			case 'shareNaddr': return 'Partilhe naddr';
-			case 'shareNoteId': return 'Partilhar ID da nota';
-			case 'shareNprofile': return 'Partilhar nprofile';
-			case 'shareProfile': return 'Partilhar perfil';
-			case 'shareProfileDesc': return 'Partilha o teu perfil para alcançar mais pessoas, conecta-te com outras pessoas e aumenta a tua rede';
-			case 'show': return 'mostrar';
-			case 'showArticlesNotesSuggestions': return 'Mostrar sugestões de artigos/notas';
-			case 'showSecret': return 'Mostrar chave secreta!';
-			case 'showStats': return 'Mostrar estatísticas';
-			case 'showSuggestedInterests': return 'Mostrar interesses sugeridos';
-			case 'showSuggestedPeople': return 'Mostrar pessoas sugeridas para seguir';
-			case 'showSuggestions': return 'Mostrar sugestões';
-			case 'signIn': return 'Entrar';
-			case 'usingViewModeDesc': return 'Entra com a tua chave privada e junta-te à comunidade.';
-			case 'size': return 'tamanho';
-			case 'slideToPay': return 'Desliza para pagar';
-			case 'smartWidget': return 'Smart widget';
-			case 'smartWidgetBuilder': return 'Criador de smart widget';
-			case 'smartWidgetChecker': return 'Verificador de smart widget';
-			case 'smartWidgetNotFound': return 'O smart widget não pôde ser encontrado';
-			case 'smartWidgetPublishedSuccessfuly': return 'O smart widget foi publicado com sucesso';
-			case 'smartWidgets': return 'Smart widgets';
-			case 'smartWidgetsDrafts': return 'Rascunhos de smart widgets';
-			case 'smartWidgetsTemplates': return 'Modelos de smart widgets';
-			case 'software': return 'Programas de Software';
-			case 'somethingWentWrong': return 'Há algo errado!';
-			case 'soonUsers': return 'Em breve os utilizadores poderão utilizar os pontos consumíveis no seguinte conjunto de atividades:';
-			case 'source': return 'Fonte';
-			case 'sourceRecommended': return 'Fonte (recomendado)';
-			case 'splitRevenuesWithUsers': return 'Divide as receitas com utilizadores';
-			case 'splitZapsWith': return 'Divide zaps com';
-			case 'spreadWordSharingContent': return 'Divulga o teu conteúdo, partilhando-o em qualquer lugar.';
-			case 'startBuildingSmartWidget': return 'Começa a construir e a personalizar o teu smart widget para usar na rede Nostr';
-			case 'startEarningPoints': return 'Começa a ganhar e aproveita ao máximo os teus Pontos Yaki 🎉';
-			case 'startSearchContent': return 'Começa a pesquisar conteúdo';
-			case 'startSearchPeople': return 'Começa a pesquisar por outras pessoas';
-			case 'stickers': return 'adesivos';
-			case 'submit': return 'enviar';
-			case 'submitBookmarkList': return 'Submeter lista de marcadores';
-			case 'submitCuration': return 'Submeter curadoria';
-			case 'successfulRelays': return 'relays bem-sucedidas';
-			case 'suggestedInterests': return 'Interesses sugeridos';
-			case 'suggestions': return 'Sugestões';
-			case 'suggestionsBox': return 'Caixa de sugestões';
-			case 'summaryOptional': return 'Resumo (opcional)';
-			case 'supportYakihonne': return 'Apoia YakiHonne';
-			case 'supportedNips': return 'Nips suportados';
-			case 'switchAccounts': return 'Trocar de contas';
-			case 'taylorExperienceInterests': return 'Personaliza a tua experiência selecionando os teus interesses principais';
-			case 'telegramUrl': return 'Url do Telegram';
-			case 'templates': return 'modelos';
-			case 'text': return 'texto';
-			case 'textColor': return 'Cor do texto';
-			case 'textCustomization': return 'Personalização de texto';
-			case 'textSuccesfulyCopied': return 'Texto copiado com sucesso!';
-			case 'theFollowingNote': return 'a seguinte nota:';
-			case 'smHaveTitle': return 'O smart widget deve ter pelo menos um título';
-			case 'smHaveOneWidget': return 'O smart widget deve ter pelo menos um componente.';
-			case 'valueBetweenMinMax': return 'O valor deve estar entre a quantia mínima e máxima de sats';
-			case 'noDataFromGpt': return 'Existem dados por mostrar do GPT.';
-			case 'oneFeedOptionAvailable': return 'Deve haver pelo menos uma opção de feed disponível.';
-			case 'unTextW1Desc': return 'Estas notas estão agora a ser exibidas para todas as outras pessoas que vêem a publicação, acrescentando contexto e ajudando a mantendo-as informadas.';
-			case 'unTextW2Desc': return 'Estas notas foram classificadas como Não Úteis por um número suficiente de contribuidores, incluindo aqueles que às vezes discordam nas suas avaliações anteriores.';
-			case 'un1Desc': return 'Estas classificações são contadas duplamente porque indicam muitas vezes apoio a notas que outros consideraram úteis.';
-			case 'unTextR1Desc': return 'Estas classificações identificaram notas Úteis, mostradas a todos, e acrescentam contexto e ajudam a manter as pessoas informadas.';
-			case 'unTextR2Desc': return 'Estas classificações melhoram as Notas da Comunidade, fornecendo feedback aos autores das notas e permitindo que os contribuidores se concentrem nas notas mais promissoras';
-			case 'notValidVideoEvent': return 'Este evento não é um evento de vídeo válido!';
-			case 'sensitiveContent': return 'Este é um conteúdo sensível';
-			case 'emptyVideoUrl': return 'Este nevento tem um Url vazio';
-			case 'thisNoteAwaitRating': return 'esta nota aguarda classificação da comunidade.';
-			case 'yourNoteAwaitRating': return 'esta nota aguarda classificação da comunidade.';
-			case 'smartWidgetConvention': return 'Este smart widget não segue a convenção acordada.';
-			case 'useCannotBeZapped': return 'Este utilizador não pode receber zaps';
-			case 'thread': return 'tópico';
-			case 'thumbnailPreview': return 'Pré-visualização da miniatura';
-			case 'title': return 'título';
-			case 'titleData': return ({required Object description}) => 'Título: ${description}';
-			case 'toBeAbleSendSats': return 'Para poderes enviar zaps, certifica-te de conectar a tua carteira bitcoin lighting.';
-			case 'topReasonsSelected': return 'Principais motivos selecionados pelos avaliadores:';
-			case 'totalAmount': return 'Montante total';
-			case 'totalNumber': return ({required Object number}) => 'Total: ${number}';
-			case 'trending': return 'tendências';
-			case 'tryAgain': return 'Tente novamente';
-			case 'type': return 'escrever';
-			case 'typeValidZapQuestion': return 'Escreve uma pergunta de sondagem válida!';
-			case 'unableToOpenUrl': return 'Não foi possível abrir o URL';
-			case 'undo': return 'Desfazer';
-			case 'undoRating': return 'Desfazer classificação';
-			case 'unfollow': return 'deixar de seguir';
-			case 'unfollowAll': return 'Deixar de seguir todos';
-			case 'pendingUnfollowing': return 'A deixar de seguir...';
-			case 'unknown': return 'Desconhecido';
-			case 'unknownVerifiedNote': return 'Nota de desconhecido verificada';
-			case 'unlocked': return 'Desbloqueado';
-			case 'unmute': return 'ativar o som';
-			case 'unmuteUser': return 'Remover silêncio ao utilizador';
-			case 'untitled': return 'Sem título';
-			case 'update': return 'atualizar';
-			case 'updateInterests': return 'Atualizar interesses';
-			case 'updateProfile': return 'Atualizar perfil';
-			case 'updatedSuccesfuly': return 'Atualizado com sucesso';
-			case 'updates': return 'Atualizações';
-			case 'updatesNews': return 'Notícias de atualizações';
-			case 'uploadAndUse': return 'Carrega & usa';
-			case 'uploadImage': return 'Carregar imagem';
-			case 'uploadingImage': return 'A carregar imagem...';
-			case 'upvotes': return 'Votos positivos';
-			case 'url': return 'Url';
-			case 'useAmber': return 'Usar Amber';
-			case 'useInvoice': return 'Usar fatura';
-			case 'useTemplate': return 'Usar modelo';
-			case 'user': return 'utilizador';
-			case 'userCannotBeFound': return 'O utilizador não pôde ser encontrado';
-			case 'userHasBeenMuted': return 'O utilizador foi silenciado';
-			case 'userHasBeenUnmuted': return 'O utilizador foi reativado';
-			case 'userName': return 'Nome de utilizador';
-			case 'userNameCopied': return 'O nome de utilizador foi copiado com sucesso!';
-			case 'userZappedSuccesfuly': return 'O utilizador recebeu zapscom sucesso';
-			case 'userImpact': return 'Impacto do utilizador';
-			case 'userRelays': return 'Relays do utilizador';
-			case 'usingExternalSign': return 'Usando um signer externo';
-			case 'value': return 'valor';
-			case 'verifyNip05': return 'Endereço Nostr verificado (NIP 05)';
-			case 'verifiedNoteNotFound': return 'Não foi possível encontrar a nota verificada';
-			case 'verifyNotes': return 'Verificar notas';
-			case 'verifyingNote': return 'A verificar nota';
-			case 'version': return 'Versão';
-			case 'video': return 'vídeo';
-			case 'videoNotFound': return 'Não foi possível encontrar o vídeo';
-			case 'videoCustomization': return 'Personalização de vídeo';
-			case 'videoAddedCuration': return 'O vídeo foi adicionado à tua curadoria.';
-			case 'videoUrl': return 'Url do vídeo';
-			case 'videos': return 'vídeos';
-			case 'videosAvailableCuration': return 'Vídeos disponíveis nesta curadoria';
-			case 'view': return 'visualizar';
-			case 'viewProfile': return 'Ver perfil';
-			case 'viewQrCode': return 'Ver código QR';
-			case 'views': return 'Visualizações';
-			case 'visitProfile': return 'Visitar perfil';
-			case 'voteNotSubmitted': return 'Não foi possível submeter o voto';
-			case 'voteRequired': return 'É necessário votar para exibir estatísticas.';
-			case 'votesByUsers': return 'Votos por utilizadores';
-			case 'votesByZaps': return 'Votos por zaps';
-			case 'votesNumber': return ({required Object number}) => 'Votos: ${number}';
-			case 'waitingGenerationOfInvoice': return 'A aguardar a criação de faturas.';
-			case 'wallet': return 'carteira';
-			case 'walletNotLinked': return 'A carteira não pode ser vinculada. Endereço Lighting errado';
-			case 'walletCreated': return 'A carteira foi criada com sucesso';
-			case 'walletLinked': return 'A carteira foi vinculada com sucesso';
-			case 'wallets': return 'carteiras';
-			case 'warning': return 'aviso';
-			case 'watchNow': return 'vê agora';
-			case 'noLnInNwc': return 'Não nos foi possível recuperar o endereço do teu segredo NWC. Por favor, verifica o teu provedor de serviços de Lighting para copiar o teu endereço ou para convenientemente atualizares o teu perfil.';
-			case 'readAboutVerifyingNotesDesc': return 'Criamos um artigo para te ajudar a entender melhor o nosso objetivo';
-			case 'website': return 'Website';
-			case 'weight': return 'peso';
-			case 'whatThinkThis': return 'O que pensas sobre isto?';
-			case 'whatThinkOfThat': return 'O que pensas sobre isso?';
-			case 'whatsOnYourMind': return 'Em que estás a pensar?';
-			case 'whatsThis': return 'O que é isto?';
-			case 'whyVerifyingNotes': return 'Porquê as notas de verificação?';
-			case 'widgets': return 'widgets';
-			case 'writeCommentOptional': return 'Escreve um comentário (opcional)';
-			case 'writeYourMessage': return 'Escreva uma mensagem';
-			case 'writeNote': return 'Escreve uma nota';
-			case 'writeSummary': return 'Escreve um resumo';
-			case 'writeValidNote': return 'Anota uma nota válida!';
-			case 'writeOnly': return 'Escrever apenas';
-			case 'writeSomethingAboutYou': return 'Escreve algo sobre sobre ti!';
-			case 'writeSomething': return 'Escreve alguma coisa...';
-			case 'writeYourText': return 'Escreve o teu texto';
-			case 'xUrl': return 'Url do X';
-			case 'yakiChest': return 'Baú Yaki';
-			case 'yakihonne': return 'YakiHonne';
-			case 'yakihonneChest': return 'Baú do YakiHonne!';
-			case 'yakihonneConsPoints': return 'Pontos consumíveis do YakiHonne';
-			case 'yakihonneImprovements': return 'Melhorias do YakiHonne';
-			case 'yakihonneNote': return 'Nota do YakiHonne';
-			case 'yakihonneNotification': return 'Notificação do YakiHonne';
-			case 'yakiNwc': return 'NWC do YakiHonne';
-			case 'clearAppCacheDesc': return 'Estás prestes a limpar o cache da aplicação. Desejas continuar?';
-			case 'deleteWalletDesc': return 'Estás prestes a excluir esta carteira. Desejas prosseguir?';
-			case 'linkWalletDesc': return 'Estás prestes a substituir a tua carteira anterior e a vincular uma carteira nova ao teu perfil. Desejas prosseguir?';
-			case 'undoRatingDesc': return 'Você está prestes a desfazer sua classificação. Deseja prosseguir?';
-			case 'alreadyLoggedIn': return 'Já te encontras conectado!';
-			case 'deleteAccountMessage': return 'Estás a tentar aceder a uma conta que foi posteriormente eliminada.';
-			case 'loggedToYakiChest': return 'Estás conectado ao baú do Yakihonne';
-			case 'loggedIn': return 'Estás conectado!';
-			case 'notUsingSecureDms': return 'Já não estás a usar as Dms seguras';
-			case 'usingSecureDms': return 'Estás agora a usar as Dms seguras';
-			case 'usingExternalSignDesc': return 'Estás a usar um signer externo';
-			case 'secKeyWalletDesc': return 'Podes encontrar a chave secreta da sua conta e o segredo da conexão da carteira nas tuas configurações. Estas chaves são essenciais para garantir o acesso à tua conta e carteira. Por favor, mantem ambas em segurança e privadas.';
-			case 'secKeyDesc': return 'Podes encontrar a chave secreta da sua conta nas tuas configurações. Esta chave é essencial para garantir o acesso à tua conta. Por favor, mantém-la em segurança e privada.';
-			case 'uploadSendMedia': return 'Podes fazer o carregamento e enviar multimidia logo após a selecionar ou à sua captação.';
-			case 'uploadPasteUrl': return 'Podes fazer o carregamento ou colar um url para a tua imagem preferida';
-			case 'canUploadPastLink': return 'Podes fazer o carregamento, colar um link ou escolher um evento kind 1063 para o teu vídeo.';
-			case 'findPaidNoteCorrect': return 'Achas esta nota paga correta.';
-			case 'findPaidNoteMisleading': return 'Achas esta nota paga enganosa.';
-			case 'alreadyContributed': return 'Já contribuiste';
-			case 'alreadyVoted': return 'Já votaste nesta sondagem';
-			case 'congratsDesc': return ({required Object number}) => 'Foste recompensado com ${number} Xp pelas seguintes ações, sê ativo e ganha recompensas!';
-			case 'youHaveLeftNote': return 'Deixaste uma nota nesta nota paga:';
-			case 'noRewards': return 'Não tens recompensas, interage ou escreve notas verificadas para as obter.';
-			case 'noWalletLinkedMessage': return 'Não tens nenhuma carteira vinculada ao teu perfil, desejas vincular esta carteira?';
-			case 'noWalletLinkedToYouProfile': return 'Não tens nenhuma carteira vinculada ao teu perfil.';
-			case 'youHaveRated': return 'Classificaste';
-			case 'ratedNoteSealed': return 'Avaliaste a seguinte nota, a qual foi selada:';
-			case 'youRatedHelpful': return 'classificaste isto como útil';
-			case 'youRatedNotHelpful': return 'classificaste isto como não útil';
-			case 'ownReceivedSat': return ({required Object number}) => 'Você recebeu ${number} Sábados';
-			case 'ownSentSat': return ({required Object number}) => 'Você enviou ${number} Sats';
-			case 'voteToSeeStats': return 'Você deveria votar para poder ver as estatísticas';
-			case 'you': return 'Você: ';
-			case 'confirmDeleteContent': return ({required Object type}) => 'Você está prestes a excluir isto ${type}, deseja prosseguir?';
-			case 'confirmDeleteBookmarkList': return 'Você está prestes a excluir esta lista de favoritos. Deseja continuar?';
-			case 'confirmDeleteDraft': return 'Você está prestes a excluir este rascunho. Deseja prosseguir?';
-			case 'deleteCoverPicDesc': return 'Você está prestes a excluir sua foto de capa. Deseja prosseguir?';
-			case 'youreAllSet': return 'Você está pronto';
-			case 'switchToMonolayout': return 'Você está mudando para um layout mono e possui elementos em ambos os lados. Isso apagará o conteúdo do contêiner. Deseja continuar?';
-			case 'usingViewMode': return 'Você está usando o modo de visualização';
-			case 'muteUserDesc': return ({required Object name}) => 'Você está prestes a silenciar ${name}, deseja prosseguir?';
-			case 'unmuteUserDesc': return ({required Object name}) => 'Você está prestes a ativar o som ${name}, deseja prosseguir?';
-			case 'articlePublished': return 'Seu artigo foi publicado!';
-			case 'yourDisplayName': return 'Seu nome de exibição';
-			case 'yourNoteSealed': return 'Sua seguinte nota acabou de ser selada:';
-			case 'yourName': return 'Seu nome';
-			case 'ratingDeleted': return 'Sua avaliação foi excluída';
-			case 'ratingSubmittedCheckReward': return 'Sua classificação foi enviada. Verifique sua página de recompensas para reivindicar sua recompensa de classificação';
-			case 'verifiedNoteAdded': return 'A tua nota verificada foi adicionada. Verifica a tua página de recompensas para resgatar a tua recompensa por escrito';
-			case 'verifiedNoteSealed': return 'A tua nota verificada foi selada.';
-			case 'yourWebsite': return 'O teu Website';
-			case 'youtubeUrl': return 'Url do YouTube';
-			case 'zap': return 'zap';
-			case 'zapPoll': return 'Sondagem Zap';
-			case 'zapPollCustomization': return 'Personalização da sondagem Zap';
-			case 'zapPollNevent': return 'Sondagem Zap nevent';
-			case 'zapSplits': return 'Divisões de Zap';
-			case 'zappers': return 'Zappers';
-			case 'zaps': return 'zaps';
-			case 'zapReceived': return 'Zaps recebidos';
-			case 'zapSent': return 'Zaps enviados';
-			case 'comingSoon': return 'Em breve';
-			case 'content': return 'Contente';
-			case 'expiresOn': return ({required Object date}) => 'Expira em ${date}';
-			case 'reactions': return 'Reações';
-			case 'reposts': return 'Republicações';
-			case 'collapseNote': return 'Recolher nota';
-			case 'notifDisabled': return 'As notificações estão desativadas!';
-			case 'notifDisabledMessage': return 'As notificações estão desabilitadas para este tipo, você pode habilitá-las nas configurações de notificações.';
-			case 'oneNotifOptionAvailable': return 'Deve haver pelo menos uma opção de notificação disponível.';
-			case 'readAll': return 'Leia tudo';
-			case 'usernameTaken': return 'O nome de usuário está em uso';
-			case 'usernameRequired': return 'O nome de usuário é obrigatório';
-			case 'deleteWalletConfirmation': return 'Certifique-se de salvar sua frase de conexão NWC com segurança, pois não podemos ajudar na recuperação de carteiras perdidas.';
-			case 'unsupportedKind': return 'Tipo não compatível';
-			case 'analyticsCrashlytics': return 'Crashytics';
-			case 'analyticsCache': return 'Crashlytics e cache';
-			case 'analyticsCacheOn': return 'A Crashytics foi ativada.';
-			case 'analyticsCacheOff': return 'Crashytics foi desligado.';
-			case 'shareNoUsage': return 'Você não compartilha que a Crashlytics conosco no momento.';
-			case 'wantShareAnalytics': return 'Quer compartilhar o Crashlytics?';
-			case 'yakihonneAnCr': return 'Crashlytics de Yakihonne';
-			case 'crashlyticsTerms': return 'A coleta de Crashlytics anonimizados é vital para refinar os recursos e a experiência do usuário do nosso aplicativo. ';
-			case 'collectAnonymised': return 'Coletamos o Crashytics anonimizado para melhorar a experiência do aplicativo.';
-			case 'linkWalletToProfile': return 'Link Wallet com seu perfil';
-			case 'linkWalletToProfileDesc': return 'A carteira vinculada será usada para receber SATs';
-			case 'noWalletLinked': return 'Você não tem carteira ligada ao seu perfil, considere vincular um dos seus no menu acima';
-			case 'addPoll': return 'Adicionar pesquisa';
-			case 'browsePolls': return 'Navegue por pesquisas';
-			case 'maciPolls': return 'Poll Maci';
-			case 'beta': return 'Beta';
-			case 'choosePollType': return 'Escolha um tipo de enquete';
-			case 'created': return 'Criado';
-			case 'tallying': return 'Contatando';
-			case 'ended': return 'Terminou';
-			case 'closed': return 'Fechado';
-			case 'voteResultsBy': return 'Resultados da votação por';
-			case 'votes': return 'votos';
-			case 'voiceCredit': return 'Crédito de voz';
-			case 'viewDetails': return 'Ver detalhes';
-			case 'signup': return 'Inscrever-se';
-			case 'notDownloadProof': return 'Não foi possível baixar provas';
-			case 'name': return 'Nome';
-			case 'status': return 'Status';
-			case 'circuit': return 'Circuito';
-			case 'votingSystem': return 'Sistema de votação';
-			case 'proofSystem': return 'Sistema de prova';
-			case 'gasStation': return 'Posto de gasolina';
-			case 'totalFund': return '(Fundo Total)';
-			case 'roundStart': return 'Início redondo';
-			case 'roundEnd': return 'Final redondo';
-			case 'operator': return 'Operador';
-			case 'contractCreator': return 'Criador de contratos';
-			case 'contractAddress': return 'Endereço do contrato';
-			case 'blockHeight': return 'Altura do bloco';
-			case 'atContractCreation': return ({required Object number}) => '${number} (na criação de contratos)';
-			case 'zkProofs': return 'Provas de zk';
-			case 'downloadZkProofs': return 'Baixar provas';
-			case 'walletConnectionString': return 'String de conexão com carteira';
-			case 'walletConnectionStringDesc': return 'Certifique -se de copiar ou exportar com segurança sua sequência de conexão com carteira. ';
-			case 'export': return 'Exportar';
-			case 'logout': return 'Log Out';
-			case 'exportAndLogout': return 'Exportar e fazer logon';
-			case 'exportWalletsDesc': return 'Parece que você tem carteiras ligadas à sua conta. ';
-			case 'manageWallets': return 'Gerenciar carteiras';
-			case 'roundDuration': return 'Duração redonda';
-			case 'startAt': return ({required Object date}) => 'Começa em: ${date}';
-			case 'loginAction': return 'Conecte-se';
-			case 'addPicture': return 'Adicione a imagem';
-			case 'editPicture': return 'Editar imagem';
-			case 'exportKeys': return 'Chaves de exportação';
-			case 'mutedUser': return 'Usuário silenciado';
-			case 'unaccessibleContent': return 'Conteúdo inacessível';
-			case 'mutedUserDesc': return 'Você silenciou este usuário, considere desmembrar para visualizar este conteúdo';
-			case 'commentHidden': return 'Este comentário está escondido';
-			case 'upcoming': return 'Por vir';
-			case 'exportCredentials': return 'Credenciais de exportação';
-			case 'loginToYakihonne': return 'Faça login em Yakihonne';
-			case 'alreadyUser': return 'Já é um usuário?';
-			case 'createPoll': return 'Criar enquete';
-			case 'gasStationTotal': return 'Posto de gasolina (total financiado)';
-			case 'gasStationRemaining': return 'Posto de gasolina (saldo restante)';
-			case 'paste': return 'Colar';
-			case 'manual': return 'Manual';
-			case 'contacts': return 'Contatos';
-			case 'typeManualDesc': return 'Digite o endereço de raios, fatura de raios ou lnurl';
-			case 'useValidPaymentRequest': return 'Por favor, use solicitação de pagamento válida';
-			case 'save': return 'Salvar';
-			case 'saveImageGallery': return 'A imagem foi baixada na sua galeria';
-			case 'errorSavingImage': return 'Ocorreu o erro ao baixar a imagem';
-			case 'copyImageGallery': return 'A imagem foi copiada para sua área de transferência';
-			case 'errorCopyImage': return 'Ocorreu o erro ao copiar a imagem';
-			case 'scan': return 'Scan';
-			case 'invalidLightningAddress': return 'Endereço de raios inválidos';
-			case 'deleteAccountDesc': return 'Você está prestes a excluir sua conta, deseja prosseguir?';
-			case 'paymentFailedInvoice': return 'Falha no pagamento: verifique a validade desta fatura';
-			case 'validSatsAmount': return 'Defina uma quantidade válida de SATs';
-			case 'placeholder': return 'Espaço reservado';
-			case 'inputFieldCustomization': return 'Personalização do campo de entrada';
-			case 'addInputField': return 'Adicione o campo de entrada';
-			case 'addButton': return 'Adicionar botão';
-			case 'selectImage': return 'Selecione Imagem';
-			case 'moveLeft': return 'Mover para a esquerda';
-			case 'moveRight': return 'Mova -se para a direita';
-			case 'buttonRequired': return 'Deve haver pelo menos um botão disponível';
-			case 'missingInputDesc': return 'Parece que você está usando uma das funções personalizadas que requer um componente de campo de entrada sem incorporar um no seu widget inteligente, adicione um campo de entrada para que a função funcione corretamente.';
-			case 'countdown': return 'Contagem regressiva';
-			case 'contentEndsAt': return 'O conteúdo termina em';
-			case 'countdownTime': return 'O tempo de contagem regressiva é obrigatório';
-			case 'contentEndsDate': return 'O conteúdo termina a data é obrigatória';
-			case 'lnMandatory': return 'O endereço de relâmpago é obrigatório';
-			case 'pubkeysMandatory': return 'Pelo menos um perfil é obrigatório';
-			case 'buttonNoUrl': return 'URLs de botões são obrigatórios';
-			case 'shareWidgetImage': return 'Compartilhe a imagem do widget';
-			case 'inputField': return 'Campo de entrada';
-			case 'noReplies': return 'Sem respostas';
-			case 'message': return 'Mensagem';
-			case 'chat': return 'Bater papo';
-			case 'onlyLettersNumber': return 'Somente cartas e números permitidos';
-			case 'appCache': return 'Cache de app';
-			case 'cachedData': return 'Dados em cache';
-			case 'cachedMedia': return 'Mídia em cache';
-			case 'cacheCleared': return 'Cache foi limpo';
-			case 'closeAppClearingCache': return 'É preferível reiniciar o aplicativo ao limpar o cache para garantir que todas as alterações tenham efeito e o aplicativo seja executado sem problemas';
-			case 'appCacheNotice': return 'Seu cache de aplicativos está crescendo em tamanho. ';
-			case 'manageCache': return 'Gerencie o cache';
-			case 'filterByTime': return 'Filtre por tempo';
-			case 'allTime': return 'O tempo todo';
-			case 'oneMonth': return '1 mês';
-			case 'threeMonths': return '3 meses';
-			case 'sixMonths': return '6 meses';
-			case 'oneYear': return '1 ano';
-			case 'defaultZapAmount': return 'Valor Zap padrão';
-			case 'oneTapZap': return 'Ativar um toque zap';
-			case 'verify': return 'Verificar';
-			case 'reset': return 'reiniciar';
-			case 'appCannotVerified': return 'O aplicativo não pode ser verificado ou inválido';
-			case 'useValidAppUrl': return 'Use um URL de aplicativo válido';
-			case 'app': return 'App';
-			case 'userNotConnected': return 'Usuário não conectado';
-			case 'userCannotSignEvent': return 'Este usuário não pode assinar eventos.';
-			case 'invalidEvent': return 'Evento inválido';
-			case 'eventCannotBeSigned': return 'Evento não pode ser assinado';
-			case 'signEvent': return 'Evento de assinatura';
-			case 'sign': return 'Sinal';
-			case 'signPublish': return 'Sign & Publish';
-			case 'signEventDes': return 'Você está prestes a assinar o seguinte evento';
-			case 'enableAutomaticSigning': return 'Ativar assinatura automática';
-			case 'tools': return 'Ferramentas';
-			case 'searchSmartWidgets': return 'Procure widgets inteligentes';
-			case 'noToolsAvailable': return 'Nenhuma ferramenta disponível';
-			case 'underMaintenance': return 'Sob manutenção';
-			case 'smartWidgetMaintenance': return 'O Widget Smart está abaixado para manutenção. ';
-			case 'mySavedTools': return 'Minhas ferramentas salvas';
-			case 'availableTools': return 'Ferramentas disponíveis';
-			case 'remove': return 'Remover';
-			case 'youHaveNoTools': return 'Você não tem ferramentas';
-			case 'discoverTools': return 'Descubra ferramentas publicadas para ajudá -lo com sua criação de conteúdo';
-			case 'addWidgetTools': return 'Adicione ferramentas de widget';
-			case 'widgetSearch': return 'Pesquisa de widgets';
-			case 'widgetSearchDesc': return 'Procurando por widgets inteligentes publicados e o que as pessoas fizeram';
-			case 'getInspired': return 'Inspire -se';
-			case 'getInspirtedDesc': return 'Peça à nossa IA para ajudá -lo a construir seu widget inteligente';
-			case 'trySearch': return 'Experimente diferentes métodos de pesquisa';
-			case 'typeForCommands': return 'Tipo / para comandos';
-			case 'loadMore': return 'Carregar mais';
-			case 'searchingFor': return ({required Object name}) => 'Procurar: ${name}';
-			case 'playground': return 'Playground';
-			case 'typeKeywords': return 'Tipo Palavras -chave (ou seja: palavra -chave1, palavra -chave2 ..)';
-			case 'enableGossip': return 'Modelo de fofoca';
-			case 'enableGossipDesc': return 'O modelo de fofoca está desativado por padrão. ';
-			case 'enableExternalBrowser': return 'Use navegador externo';
-			case 'restartAppTakeEffect': return 'Reinicie o aplicativo para que a ação entre em vigor';
-			case 'tips': return 'Pontas';
-			case 'docs': return 'Documentos';
-			case 'tryMiniApp': return 'Experimente seu mini-aplicativo com testes interativos e práticos.';
-			case 'exploreOurRepos': return 'Explore nossos repositórios ou verifique nossos Widgets Smart.';
-			case 'bringAi': return 'Estamos trazendo ai!';
-			case 'bringAiDesc': return 'Estamos criando um assistente de IA para otimizar seu trabalho com widgets programáveis ​​e desenvolvimento de mini-app-mantenha-se de olho!';
-			case 'notesCount': return ({required Object number}) => '${number} Nota (s)';
-			case 'mixedContentCount': return ({required Object number}) => '${number} contente';
-			case 'noApp': return 'Nenhum aplicativo adequado pode ser encontrado para abrir o arquivo exportado';
-			case 'andMore': return ({required Object number}) => '& ${number} outros)';
-			case 'addFilter': return 'Adicione o filtro';
-			case 'entitleFilter': return 'Direito do filtro';
-			case 'includedWords': return 'Palavras incluídas';
-			case 'excludedWords': return 'Palavras excluídas';
-			case 'hideSensitiveContent': return 'Ocultar conteúdo sensível';
-			case 'mustIncludeThumbnail': return 'Deve incluir miniatura';
-			case 'forArticles': return 'Para artigos';
-			case 'forVideos': return 'Para vídeos';
-			case 'forCurations': return 'Para curações';
-			case 'articleMinWords': return 'Conteúdo contagem de palavras mínimas';
-			case 'showOnlyArticleMedia': return 'Mostre apenas artigos com mídia';
-			case 'showOnlyNotesMedia': return 'Mostre apenas notas com mídia';
-			case 'curationsType': return 'Tipo de curadoria';
-			case 'minItemCount': return 'Itens mínimos contam';
-			case 'addWord': return 'Adicione uma palavra adequada';
-			case 'wordNotInIncluded': return 'Verifique se a palavra não está nas palavras incluídas';
-			case 'wordNotInExcluded': return 'Verifique se a palavra não está nas palavras excluídas';
-			case 'fieldRequired': return 'Campo necessário';
-			case 'filterAdded': return 'Filtro foi adicionado';
-			case 'filterUpdated': return 'O filtro foi atualizado';
-			case 'filterDeleted': return 'O filtro foi excluído';
-			case 'filters': return 'Filtros';
-			case 'contentFeed': return 'Feed de conteúdo';
-			case 'communityFeed': return 'Feed comunitário';
-			case 'relaysFeed': return 'Relés feed';
-			case 'marketplaceFeed': return 'Feed de mercado';
-			case 'addYourFeed': return 'Adicione seu feed preferido';
-			case 'myList': return 'Minha lista';
-			case 'allFreeFeeds': return 'Todos os feeds gratuitos';
-			case 'noRelays': return 'Nenhum relés está presente';
-			case 'addRelays': return 'Adicione sua lista de revezamentos para desfrutar de um feed limpo e personalizado';
-			case 'adjustYourFeedList': return 'Ajuste sua lista de feeds';
-			case 'addRelayUrl': return 'Adicione URL do relé';
-			case 'feedOptionEnabled': return 'Pelo menos uma opção de alimentação deve ser ativada';
-			case 'feedSetUpdate': return 'O conjunto de feeds foi atualizado';
-			case 'global': return 'Global';
-			case 'fromNetwork': return 'Da rede';
-			case 'top': return 'Principal';
-			case 'showFollowingList': return 'Seu feed atual é baseado na lista seguinte de outra pessoa, comece a seguir as pessoas para adaptar seu feed de sua preferência';
-			case 'from': return 'De';
-			case 'to': return 'Para';
-			case 'dayMonthYear': return 'dd/mm/aaaa';
-			case 'fromDateMessage': return 'A data de \'de\' deve ser mais cedo do que \'a\' data';
-			case 'toDateMessage': return '\'Data\' deve ser mais tarde que \'data\'';
-			case 'noResults': return 'Sem resultados';
-			case 'noResultsFilterMessage': return 'Parece que você está aplicando um filtro personalizado, por favor ajuste os parâmetros e datas para adquirir mais dados';
-			case 'noResultsNoFilterMessage': return 'Nada foi encontrado, altere sua fonte de conteúdo ou aplique diferentes parâmetros de filtro';
-			case 'addToNotes': return 'Adicione às notas';
-			case 'addToDiscover': return 'Adicione para descobrir';
-			case 'shareRelayContent': return 'Compartilhe o conteúdo do relé';
-			case 'shareRelayUrl': return 'Compartilhe URL do relé';
-			case 'basic': return 'Básico';
-			case 'privateMessages': return 'Mensagens privadas';
-			case 'pushNotifications': return 'Notificações push';
-			case 'repliesView': return 'Visualização de respostas';
-			case 'threadView': return 'Fio';
-			case 'boxView': return 'Caixa';
-			case 'viewAs': return 'Ver como';
-			case 'feedSettings': return 'Configurações de alimentação';
-			case 'appliedFilterDesc': return 'Esta nota está oculta devido ao filtro aplicado atual.';
-			case 'showNote': return 'Mostre nota';
-			case 'allMedia': return 'Toda a mídia';
-			case 'searchInNostr': return 'Pesquise em Nostr';
-			case 'findPeopleContent': return 'Encontre pessoas, anotações e conteúdo';
-			case 'activeService': return 'Serviço ativo';
-			case 'regularServers': return 'Servidores regulares';
-			case 'blossomServers': return 'Servidores de flor';
-			case 'mirrorAllServer': return 'Espelhe todos os servidores';
-			case 'mainServer': return 'Servidor principal';
-			case 'select': return 'Selecione';
-			case 'noServerFound': return 'Nenhum servidor encontrado';
-			case 'serverExists': return 'O servidor já existe em sua lista';
-			case 'invalidUrl': return 'Formato de URL inválido';
-			case 'serverPath': return 'Caminho do servidor';
-			case 'errorAddingBlossom': return 'Ocorreu o erro ao adicionar servidor de flor';
-			case 'errorSelectBlossom': return 'Ocorreu o erro ao selecionar o servidor de flor';
-			case 'errorDeleteBlossom': return 'Ocorreu o erro ao excluir o servidor de flor';
-			case 'wotConfig': return 'Web of Trust Configuration';
-			case 'wot': return 'Web of Trust';
-			case 'wotThreshold': return 'Limite da Web of Trust';
-			case 'postActions': return 'Pós -ações';
-			case 'enabledFor': return 'Ativado para';
-			case 'dmRelayTitle': return 'Mensagens privadas Os relés não estão configurados!';
-			case 'dmRelayDesc': return 'Atualize sua lista de relés de acordo. ';
-			case 'youFollow': return 'Você segue';
-			case 'quotaLimit': return 'Você excedeu seu limite diário de cota';
-			case 'alwaysUseExternal': return 'Sempre use zaps de carteira externos';
-			case 'alwaysUseExternalDesc': return 'Use um aplicativo de carteira de raios externos em vez da carteira embutida de Yakihonne para todas as transações ZAP.';
-			case 'unreachableExternalWallet': return 'Carteira externa inacessível';
-			case 'secureStorageDesc': return 'Suas chaves são armazenadas com segurança no seu dispositivo e nunca compartilhadas conosco ou com qualquer outra pessoa.';
-			case 'pubkeySharedDesc': return 'Seguro de compartilhar - isso identifica você no Nostr.';
-			case 'privKeyDesc': return 'Mantenha -se privado - faça o backup com segurança para acessar sua conta em outro lugar.';
-			case 'settingsKeysDesc': return 'Gerencie suas teclas NOSTR para identidade de rede, assinatura de eventos e pós -autenticação.';
-			case 'settingsRelaysDesc': return 'Configure conexões de relé NOSTR para armazenar e distribuir eventos.';
-			case 'settingsCustomizationDesc': return 'Personalize sua exibição de feed, gestos, pré -visualizações e preferências de Yakihonne para uma melhor experiência na nariz.';
-			case 'settingsNotificationsDesc': return 'Notificações de controle para mensagens, menções, reações e outros eventos da nariz.';
-			case 'settingsContentDesc': return 'Controle interações de conteúdo, configurações de privacidade, manuseio de mídia e preferências de mensagens no Nostr.';
-			case 'settingsLanguageDesc': return 'Escolha o seu idioma preferido para a interface Yakihonne e a tradução de conteúdo.';
-			case 'settingsWalletDesc': return 'Conecte e gerencie as carteiras Lightning Bitcoin para enviar/receber zaps com quantidades personalizáveis e integração externa.';
-			case 'settingsAppearanceDesc': return 'Personalize a aparência visual de Yakihonne para corresponder às suas preferências e à visualização do conforto.';
-			case 'settingsCacheDesc': return 'Gerencie o monitoramento do desempenho do aplicativo, o relatório de erros e a otimização de armazenamento para operação suave.';
-			case 'addQuickRelayDesc': return 'Adicione rapidamente um novo revezamento entrando em seu URL.';
-			case 'fewerRelays': return 'Menos relés estáveis = melhor desempenho e sincronização mais rápida.';
-			case 'greenDotsDesc': return 'Os pontos verdes mostram conexões ativas.';
-			case 'redDotsDesc': return 'Os pontos vermelhos mostram relés offline.';
-			case 'greyDotsDesc': return 'Os pontos cinza mostram relés pendentes.';
-			case 'homeFeedCustomDesc': return 'Escolha Responder o estilo de exibição (caixa ou tópico) e gerencie as preferências de sugestões para pessoas, conteúdo e interesses.';
-			case 'NewPostDesc': return 'Escolha o que acontece quando você pressiona há muito tempo ao criar postagens (atualmente definidas para observar).';
-			case 'profilePreviewDesc': return 'Mostre visualizações ao perfil de usuário ao tocar em nomes de usuário em seu feed.';
-			case 'collapseNoteDesc': return 'Minimize automaticamente as postagens longas para manter seu feed limpo e legível.';
-			case 'pushNotificationsDesc': return 'Obtenha alertas instantâneos no seu dispositivo. ';
-			case 'privateMessagesDesc': return 'Seja alertado para novas mensagens diretas e conversas privadas.';
-			case 'followingDesc': return 'Seja notificado quando as pessoas que você seguirem postagem de novo conteúdo.';
-			case 'mentionsDesc': return 'Seja alertado quando alguém mencionar ou responder às suas postagens.';
-			case 'repostsDesc': return 'Seja alertado quando alguém compartilha ou repasse seu conteúdo.';
-			case 'reactionsDesc': return 'Seja notificado quando alguns curtidas ou reagirem às suas postagens.';
-			case 'zapDesc': return 'Seja notificado ao receber dicas de bitcoin (zaps) em suas postagens.';
-			case 'muteListDesc': return 'Veja e gerencie os usuários que você impediu de aparecer em seu feed.';
-			case 'mediaUploaderDesc': return 'Escolha qual serviço carrega suas imagens e arquivos de mídia.';
-			case 'autoSignDesc': return 'Assine automaticamente os eventos solicitados por mini aplicativos (widgets de ação/ferramenta) sem confirmação manual a cada vez.';
-			case 'gossipDesc': return 'Gerenciamento sofisticado de relé que encontra automaticamente as postagens de seus seguidores em diferentes relés, minimizando conexões e se adaptando aos relés offline.';
-			case 'useExternalBrowsDesc': return 'Abra os links no seu aplicativo de navegador padrão em vez do navegador embutido.';
-			case 'secureDmDesc': return 'Use o mais recente padrão de mensagens privadas (NIP-17) com criptografia avançada. ';
-			case 'wotConfigDesc': return 'Um mecanismo de confiança descentralizado usando atestados sociais para estabelecer reputação dentro do protocolo Nostr.';
-			case 'appLangDesc': return 'Escolha o idioma para a interface, menus e botões de Yakihonne.';
-			case 'contentTransDesc': return 'Selecione o serviço de tradução para postagens em idiomas estrangeiros.';
-			case 'planDesc': return 'Seu nível atual de tradução e limites de uso.';
-			case 'manageWalletsDesc': return 'Adicione e organize suas carteiras de raios para enviar e receber zaps de bitcoin no Nostr.';
-			case 'defaultZapDesc': return 'Defina o valor padrão do Bitcoin (nos SATs) ao enviar zaps rápidos para as postagens.';
-			case 'enableZapDesc': return 'Uma torneira envia o valor padrão instantaneamente. ';
-			case 'externalWalletDesc': return 'Use um aplicativo de carteira de raios externos em vez da carteira embutida de Yakihonne para todas as transações ZAP.';
-			case 'fontSizeDesc': return 'Ajuste o tamanho do texto em todo o aplicativo para melhor legibilidade - use o controle deslizante para aumentar o texto maior ou menor.';
-			case 'appThemeDesc': return 'Alterne entre o modo claro e escuro para personalizar a aparência visual do aplicativo.';
-			case 'crashlyticsDesc': return 'Relatórios de falhas anônimos e análise de aplicativos para ajudar a melhorar o desempenho e corrigir bugs. ';
-			case 'showSuggDesc': return 'Exiba recomendações gerais de conteúdo em seu feed.';
-			case 'showSuggPeople': return 'Mostre usuários recomendados a seguir com base em sua atividade.';
-			case 'showSuggContent': return 'Exiba postagens e artigos recomendados em seu feed.';
-			case 'showSuggInterests': return 'Mostre recomendações de tópico e interesse para descoberta.';
-			case 'striveToMake': return 'Nós nos esforçamos para tirar o melhor proveito de Nostr, nos apoiar abaixo ou nos enviar seu valioso feed: Zap, DMS, Github.';
-			case 'errorAmber': return 'Você rejeitou ou já está conectado ao Amber';
-			case 'useOneRelay': return 'Você deve manter pelo menos um relay conectado';
-			case 'automaticPurge': return 'Limpeza automática de cache';
-			case 'automaticPurgeDesc': return 'Limpa automaticamente o cache do aplicativo quando ele atinge 2GB. Mantém o desempenho e evita o uso excessivo de armazenamento.';
-			case 'customServices': return 'Serviços personalizados';
-			case 'defaultServices': return 'Serviços padrão';
-			case 'addService': return 'Adicionar serviço';
-			case 'customServicesDesc': return 'Serviços personalizados disponíveis adicionados por você.';
-			case 'urlRequired': return 'URL obrigatório';
-			case 'serviceAdded': return 'O serviço foi adicionado';
-			case 'showRawEvent': return 'Mostrar evento bruto';
-			case 'rawEventData': return 'Dados brutos do evento';
-			case 'copyRawEventData': return 'Dados brutos do evento copiados! 👏';
-			case 'kind': return 'Tipo';
-			case 'shortNote': return 'Nota curta';
-			case 'postedOnDate': return 'Publicado em';
-			case 'showMore': return '... mostrar mais';
-			case 'accountDeleted': return 'Esta conta foi excluída e não pode mais ser acessada.';
-			case 'ok': return 'OK';
-			case 'redeem': return 'Resgatar';
-			case 'redeemCode': return 'Resgatar código';
-			case 'redeemAndEarn': return 'Resgatar e ganhar';
-			case 'redeemingFailed': return 'Falha ao resgatar';
-			case 'redeemInProgress': return 'Resgatando código...';
-			case 'redeemCodeDesc': return 'Digite seu código para resgatar';
-			case 'missingCode': return 'Código ausente';
-			case 'missingPubkey': return 'Chave pública ausente';
-			case 'invalidPubkey': return 'Chave pública inválida';
-			case 'missingLightningAddress': return 'Endereço Lightning ausente';
-			case 'codeNotFound': return 'Código não encontrado';
-			case 'redeemCodeRequired': return 'Código de resgate obrigatório';
-			case 'redeemCodeInvalid': return 'Código de resgate inválido';
-			case 'codeBeingRedeemed': return 'Seu código está sendo resgatado. Se não for concluído, tente novamente em breve.';
-			case 'redeemCodeSuccess': return 'Código resgatado com sucesso';
-			case 'redeemFailed': return 'Não foi possível resgatar o código, tente novamente mais tarde.';
-			case 'codeAlreadyRedeemed': return 'O código já foi resgatado';
-			case 'satsEarned': return ({required Object amount}) => '+${amount} sats ganhos.';
-			case 'selectReceivingWallet': return 'Selecionar carteira de recebimento';
-			case 'redeemCodeMessage': return 'Resgate sats grátis com os códigos YakiHonne — basta inserir seu código e aumentar seu saldo instantaneamente.';
-			case 'scanCode': return 'Escanear código';
-			case 'enterCode': return 'Inserir código';
-			case 'errorSharingMedia': return 'Erro ao compartilhar mídia';
-			case 'open': return 'Abrir';
-			case 'openUrl': return 'Abrir URL';
-			case 'openUrlDesc': return ({required Object url}) => 'Deseja abrir "${url}"?';
-			case 'openUrlPrompt': return 'Aviso de abertura de URL';
-			case 'openUrlPromptDesc': return 'Um aviso de segurança exibindo a URL completa antes de abri-la no navegador.';
-			case 'whatsNew': return 'Novidades';
-			case 'appCustom': return 'Personalização do aplicativo';
-			case 'poll': return 'Enquete';
-			case 'pendingEvents': return 'Eventos pendentes';
-			case 'pendingEventsDesc': return 'Os eventos pendentes são criados quando você está offline ou com conexão fraca. Eles serão enviados automaticamente quando sua conexão com a internet for restabelecida.';
-			case 'singleColumnFeed': return 'Feed de coluna única';
-			case 'singleColumnFeedDesc': return 'Exiba o feed inicial como uma única coluna larga para melhor legibilidade.';
-			case 'waitingPayment': return 'Aguardando pagamento';
-			case 'copyId': return 'Copiar ID';
-			case 'idCopied': return 'ID copiado! 👏';
-			case 'republish': return 'Republicar';
-			case 'useRelayRepublish': return 'Você deve escolher pelo menos um relay para republicar.';
-			case 'republishSucces': return 'O evento foi republicado com sucesso!';
-			case 'errorRepublishEvent': return 'Ocorreu um erro ao republicar o evento';
-			case 'remoteSigner': return 'Assinador remoto';
-			case 'amber': return 'Amber';
-			case 'useUrlBunker': return 'Use a URL abaixo para se conectar ao seu bunker';
-			case 'or': return 'Ou';
-			case 'messagesDisabled': return 'Mensagens desativadas';
-			case 'messagesDisabledDesc': return 'Você está conectado a um assinador remoto. Mensagens diretas podem conter grandes quantidades de dados e podem não funcionar corretamente. Para a melhor experiência, use um assinador local para habilitar mensagens diretas.';
-			case 'sharedOn': return ({required Object date}) => 'Compartilhado em ${date}';
-			case 'shareAsImage': return 'Compartilhar como imagem';
-			case 'viewOptions': return 'Opções de visualização';
-			case 'feedCustomization': return 'Personalização do feed';
-			case 'defaultReaction': return 'Reação padrão';
-			case 'defaultReactionDesc': return 'Defina uma reação padrão para reagir às publicações.';
-			case 'oneTapReaction': return 'Ativar reação com um toque';
-			case 'oneTapReactionDesc': return 'Reaja instantaneamente com a reação padrão ao tocar uma vez. Toque duplo abre a lista de emojis para escolher. Quando desativado, o toque duplo envia a reação padrão.';
-			case 'sendingTo': return 'Enviando para';
-			case 'shareEmptyUsers': return 'A lista de seguidos e amigos aparecerá aqui para uma experiência de compartilhamento mais rápida';
-			case 'publishOnly': return 'Publicar somente em';
-			case 'protectedEvent': return 'Evento protegido';
-			case 'protectedEventDesc': return 'Um evento protegido é um evento que apenas seu autor pode republicar. Isso mantém o conteúdo autêntico e impede que outros o copiem ou republicem.';
-			case 'browseRelay': return 'Navegar pelo relay';
-			case 'addFavorite': return 'Adicionar aos favoritos';
-			case 'removeFavorite': return 'Remover dos favoritos';
-			case 'collections': return 'Coleções';
-			case 'online': return 'Online';
-			case 'offline': return 'Offline';
-			case 'network': return 'Rede';
-			case 'followedBy': return ({required Object number}) => 'Seguido por ${number}';
-			case 'favoredBy': return ({required Object number}) => 'Favoritado por ${number}';
-			case 'requiredAuthentication': return 'Autenticação necessária';
-			case 'relayOrbits': return 'Órbitas de relay';
-			case 'relayOrbitsDesc': return 'Navegue e explore os feeds dos relays';
-			case 'people': return 'Pessoas';
-			case 'youNotConnected': return 'Você não está conectado';
-			case 'youNotConnectedDesc': return 'Faça login na sua conta para navegar pelos relays da sua rede';
-			case 'checkingRelayConnectivity': return 'Verificando conectividade do relay';
-			case 'unreachableRelay': return 'Relay inacessível';
-			case 'engageWithUsers': return 'Interaja para expandir';
-			case 'engageWithUsersDesc': return 'Interagir com mais usuários ajuda a descobrir novos relays e aumentar sua lista de relays para uma experiência mais rica e conectada.';
-			case 'loadingChatHistory': return 'Carregando histórico de chat...';
-			case 'contentActionsOrder': return 'Ordem das ações do conteúdo';
-			case 'contentActionsOrderDesc': return 'Reorganize facilmente as interações das suas publicações na ordem que preferir.';
-			case 'quotes': return 'Citações';
-			case 'eventLoading': return 'Carregando evento...';
-			case 'loadMessages': return 'Carregar mensagens';
-			case 'messagesNotLoaded': return 'Mensagens não carregadas';
-			case 'messagesNotLoadedDesc': return 'As mensagens não foram carregadas devido ao uso de um assinante remoto local. Se desejar carregá-las, clique no botão abaixo.';
-			case 'noteLoading': return 'Carregando nota...';
-			case 'hideNonFollowedMedia': return 'Ocultar mídia de não seguidos';
-			case 'hideNonFollowedMediaDesc': return 'Oculta automaticamente imagens e vídeos de usuários que você não segue até que toque para exibir.';
-			case 'clickToView': return 'Clique para visualizar';
-			case 'relayFeedListEmpty': return 'Lista de relés vazia';
-			case 'relayFeedListEmptyDesc': return 'Adicione mais relés à sua lista para aproveitar um feed personalizado.';
-			case 'addRelay': return 'Adicionar relés';
-			case 'hiddenContent': return 'Conteúdo oculto';
-			case 'hiddenContentDesc': return 'Ocultamos este conteúdo porque você não segue esta conta.';
-			case 'enabledActions': return 'Ações habilitadas';
-			case 'enabledActionsDesc': return 'Nenhuma ação habilitada disponível.';
-			default: return null;
-		}
+		return _flatMapFunction$0(path)
+			?? _flatMapFunction$1(path)
+			?? _flatMapFunction$2(path);
+	}
+
+	dynamic _flatMapFunction$0(String path) {
+		return switch (path) {
+			'userCommentedCurationYouIn' => ({required Object name}) => '${name} comentou uma curadoria em que foste mencionado',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} comentou uma nota em que foste mencionado',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} comentou um pagamento em que foste mencionado na nota',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} comentou uma sondagem em que foste mencionado',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} comentou um smart que foste mencionado no widget',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} comentou um vídeo em que foste mencionado',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} comentou um artigo em que foste mencionado',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} comentou o teu artigo',
+			'userCommentedYourCuration' => ({required Object name}) => '${name} comentou a tua curadoria',
+			'userCommentedYourNote' => ({required Object name}) => '${name} comentou a tua nota',
+			'userCommentedYourPaidNote' => ({required Object name}) => '${name} comentou a tua nota paga',
+			'userCommentedYourPoll' => ({required Object name}) => '${name} comentou a tua sondagem',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} comentou o teu smart widget',
+			'userCommentedYourVideo' => ({required Object name}) => '${name} comentou o teu vídeo',
+			'userNoArticles' => ({required Object name}) => '${name} não tem artigos',
+			'userNoCurations' => ({required Object name}) => '${name} não tem curadorias',
+			'userNoNotes' => ({required Object name}) => '${name} não tem notas',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} não tem smart widgets',
+			'userNoVideos' => ({required Object name}) => '${name} não tem vídeos',
+			'userSubmittedPaidNote' => ({required Object name}) => '${name} submeteu uma nota paga',
+			'userMentionedYouInCuration' => ({required Object name}) => '${name} mencionou-te numa curadoria',
+			'userMentionedYouInNote' => ({required Object name}) => '${name} mencionou-te numa nota',
+			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} mencionou-te numa nota paga',
+			'userMentionedYouInPoll' => ({required Object name}) => '${name} mencionou-te numa sondagem',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} mencionou-te num smart widget',
+			'userMentionedYouInVideo' => ({required Object name}) => '${name} mencionou-te num vídeo',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} mencionou-te num artigo',
+			'userPublishedCuration' => ({required Object name}) => '${name} publicou uma curadoria',
+			'userPublishedPaidNote' => ({required Object name}) => '${name} publicou uma nota paga',
+			'userPublishedPoll' => ({required Object name}) => '${name} publicou uma sondagem',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} publicou um smart widget',
+			'userPublishedVideo' => ({required Object name}) => '${name} publicou um vídeo',
+			'userPublishedArticle' => ({required Object name}) => '${name} publicou um artigo',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} citou uma curadoria em que foste mencionado',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} citou uma nota em que foste mencionado',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} citou uma nota paga em foste mencionado',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name} citou um vídeo em que foste mencionado',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name} citou um artigo em que foste mencionado',
+			'userQuotedYourArticle' => ({required Object name}) => '${name} citou o teu artigo',
+			'userQuotedYourCuration' => ({required Object name}) => '${name} citou a tua curadoria',
+			'userQuotedYourNote' => ({required Object name}) => '${name} citou a tua nota',
+			'userQuotedYourPaidNote' => ({required Object name}) => '${name} citou a tua nota paga',
+			'userQuotedYourVideo' => ({required Object name}) => '${name} citou o teu vídeo',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma curadoria em que foste mencionado',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma nota em que foste mencionado',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma nota paga em que foste mencionado',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a uma sondagem em que foste mencionado',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um smart widget em que foste mencionado',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um vídeo em que foste mencionado',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} a um artigo em que foste mencionado',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction}',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu artigo',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua curadoria',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua mensagem',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua nota',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua nota paga',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} à tua sondagem',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu smart widget',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} ao teu vídeo',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} reagiu com ${reaction}',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} recebeu os teus ${number} Sats',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} respondeu a um artigo em que foste mencionado',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} respondeu a uma curadoria em que foste mencionado',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} respondeu a uma nota em que foste mencionado',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} respondeu a uma nota paga em que foste mencionado',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} respondeu a uma sondagem em que foste mencionado',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} respondeu a um smart widget em que foste mencionado',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} respondeu a um vídeo em que foste mencionado',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} respondeu ao teu artigo',
+			'userRepliedYourCuration' => ({required Object name}) => '${name} respondeu à tua curadoria',
+			'userRepliedYourNote' => ({required Object name}) => '${name} respondeu à tua nota',
+			'userRepliedYourPaidNote' => ({required Object name}) => '${name} respondeu à tua nota paga',
+			'userRepliedYourPoll' => ({required Object name}) => '${name} respondeu à tua sondagem',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} respondeu ao teu smart widget',
+			'userRepliedYourVideo' => ({required Object name}) => '${name} respondeu ao teu vídeo',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name} republicou uma nota em que foste mencionado',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} republicou uma nota paga em que foste mencionado',
+			'userRepostedYou' => ({required Object name}) => '${name} republicou o teu conteúdo',
+			'userRepostedYourNote' => ({required Object name}) => '${name} republicou a tua nota',
+			'userRepostedYourPaidNote' => ({required Object name}) => '${name} republicou a tua nota paga',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} enviou-te ${number} Sats',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} enviou-te um zap de ${number} sats',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} zapped o teu artigo ${number} sats',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} zapped a tua curadoria ${number} sats',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} zapped a tua nota ${number} sats',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} zapped a tua nota paga ${number} sats',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} zapped a tua sondagem ${number} sats',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} zapped o teu smart widget ${number} sats',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} zapped o teu vídeo ${number} sats',
+			'userNewArticle' => ({required Object name}) => 'novo artigo de ${name}',
+			'userNewCuration' => ({required Object name}) => 'nova curadoria de ${name}',
+			'userPaidNote' => ({required Object name}) => 'nova nota paga de ${name}',
+			'userNewSmartWidget' => ({required Object name}) => 'novo smart widget de ${name}',
+			'userReply' => ({required Object name}) => 'a resposta de ${name}',
+			'userNewVideo' => ({required Object name}) => 'o vídeo de ${name}',
+			'articlesNum' => ({required Object number}) => '${number} artigo(s)',
+			'availableArticles' => ({required Object number}) => '${number} artigo(s) disponível(véis)',
+			'availableVideos' => ({required Object number}) => '${number} vídeo(s) disponível(véis)',
+			'bookmarksListCount' => ({required Object number}) => '${number} listas de marcadores',
+			'componentsSMCount' => ({required Object number}) => '${number} componentes neste widget',
+			'followersNum' => ({required Object number}) => '${number} seguidores',
+			'itemsNumber' => ({required Object number}) => '${number} item(ns)',
+			'levelsRequiredNum' => ({required Object number}) => '${number} níveis necessários',
+			'pointsRemaining' => ({required Object number}) => '${number} restante',
+			'videosNum' => ({required Object number}) => '${number} vídeo(s)',
+			'viewsNumber' => ({required Object number}) => '${number} visualização',
+			'readTime' => ({required Object time}) => '${time} min de leitura',
+			'mutualsNum' => ({required Object number}) => '+ ${number} mútuo(s)',
+			'peopleCountPlus' => ({required Object number}) => '+${number} pessoas',
+			'supportUs' => '❤︎ Apoia-nos',
+			'consumablePointsPerks1' => '1- Envia o teu conteúdo para certificação',
+			'consumablePointsPerks2' => '2- Resgata pontos para publicar notas pagas',
+			'consumablePointsPerks3' => '3- Resgata pontos para SATs (Limites aleatórios são selecionados e serás notificado sempre que o resgate estiver disponível)',
+			'highlightedNote' => 'Uma nota destacada para mais exposição.',
+			'minimumOfOneRequired' => 'É necessária uma quantidade mínima de 1',
+			'useValidTitle' => 'Um título válido necessita de ser utilizado',
+			'aboutYou' => 'Sobre ti',
+			'actGoodFaith' => 'Age em Boa-fé',
+			'add' => 'adicionar',
+			'addUrlNevent' => 'Adiciona um URL/nevent adequado',
+			'addProperUrlNevent' => 'Adiciona um URL/nevent adequado',
+			'addAccount' => 'Adiciona conta',
+			'addBookmarkList' => 'Adiciona lista de marcadores',
+			'addCover' => 'Adiciona capa',
+			'addCuration' => 'Adiciona curadoria',
+			'addInterests' => 'Adiciona interesses',
+			'addNote' => 'Adiciona nota',
+			'addToCuration' => 'Adiciona à curadoria',
+			'addUser' => 'Adiciona utilizador',
+			'addWallet' => 'Adicionar carteira',
+			'addYourTopics' => 'Adiciona os teus tópicos',
+			'adjustSpeed' => 'Ajusta velocidade',
+			'adjustVolume' => 'Ajusta volume',
+			'alby' => 'Alby',
+			'albyConnect' => 'Alby connect',
+			'all' => 'todos',
+			'allRelays' => 'Todas as relays',
+			'allUsersZapped' => 'Todos os utilizadores foram zapped!',
+			'amberNotInstalled' => 'O aplicativo Amber não está instalado',
+			'amountInSats' => 'Quantia em sats',
+			'errorAddingArticle' => 'Ocorreu um erro ao adicionar o artigo',
+			'errorAddingCuration' => 'Ocorreu um erro ao adicionar a curadoria',
+			'errorAddingWidget' => 'Ocorreu um erro ao adicionar o smart widget',
+			'errorAddingVideo' => 'Ocorreu um erro ao adicionar o vídeo',
+			'errorUpdatingCuration' => 'Ocorreu um erro ao atualizar a curadoria',
+			'userInvoiceGenerated' => ({required Object name}) => 'Uma fatura para ${name} foi gerada',
+			'verifiedNoteRateSealed' => 'Uma nota verificada que avaliaste foi selada.',
+			'apiKeyRequired' => 'Chave de API (obrigatória)',
+			'appLanguage' => 'Idioma do aplicativo',
+			'appTheme' => 'Tema do aplicativo',
+			'appearance' => 'Aparência',
+			'article' => 'artigo',
+			'articleNotFound' => 'Não foi possível encontrar o artigo',
+			'articleAddedCuration' => 'O artigo foi adicionado à tua curadoria.',
+			'articles' => 'artigos',
+			'articlesAvailableCuration' => 'Artigos disponíveis nesta curadoria',
+			'askMeSomething' => 'Pergunte-me alguma coisa!',
+			'attemptConnectAmber' => 'A tentativa de conexão com Amber foi rejeitada.',
+			'attemptsRemained' => 'Tentativas restantes ',
+			'autoSavedArticleDeleted' => 'O artigo salvo automaticamente foi excluído',
+			'autoSavedSMdeleted' => 'O widget inteligente salvo automaticamente foi excluído',
+			'availableWallets' => 'Carteiras disponíveis',
+			'back' => 'voltar',
+			'backgroundColor' => 'Cor de fundo',
+			'balance' => 'Equilíbrio',
+			'beHelpful' => 'Sê útil, mesmo para com aqueles que discordam',
+			'beFirstCommentThisVideo' => 'Sê o primeiro a comentar este vídeo!',
+			'bio' => ({required Object content}) => 'Biografia: ${content}',
+			'blankWidget' => 'Widget em branco',
+			'bookmark' => 'marcador',
+			'bookmarkAdded' => 'Lista de marcadores foi adicionada',
+			'bookmarkLists' => 'Listas de marcadores',
+			'bookmarks' => 'Marcadores',
+			'borderColor' => 'Cor da marchem',
+			'button' => 'botão',
+			'buttonColor' => 'Cor do botão',
+			'buttonCustomization' => 'Personalização de botão',
+			'buttonText' => 'Texto do botão',
+			'by' => 'por',
+			'byPerson' => ({required Object name}) => 'Por ${name}',
+			'byContinuing' => 'Ao continuar, concordas com o nosso\n',
+			'camera' => 'Câmera',
+			'cancel' => 'cancelar',
+			'checkSmartWidget' => 'Confere um smart widget',
+			'checkoutArticle' => 'confere o meu artigo',
+			'checkoutCuration' => 'confere a minha curadoria',
+			'checkoutPaidNote' => 'confere a minha nota paga',
+			'checkoutSmartWidget' => 'confere o meu smart widget',
+			'checkValidity' => 'Verifica a validade',
+			'checkModelRouter' => 'Verifica o teu modem ou router',
+			'checkoutVideo' => 'confere o meu vídeo',
+			'claim' => 'Reivindicação',
+			'claimTime' => ({required Object time}) => 'Reivindica em ${time}',
+			'clear' => 'limpar',
+			'clearAppCache' => 'Limpar cache do aplicativo',
+			'clearChat' => 'Limpar chat',
+			'clearDate' => 'Limpar dados',
+			'click' => 'Clique',
+			'clickBelowToConnect' => 'Clique abaixo para conectar',
+			'clone' => 'copiar conforme',
+			'close' => 'encerrar',
+			'pollClosedAt' => ({required Object date}) => 'Encerrado em: ${date}',
+			'pollClosesAt' => ({required Object date}) => 'Encerra em: ${date}',
+			'color' => 'cor',
+			'comment' => 'Comentário',
+			'comments' => 'Comentários',
+			'communityPolls' => 'Sondagens da comunidade',
+			'communityWallet' => 'Carteira comunitária',
+			'communityWidgets' => 'Widgets da comunidade',
+			'compose' => 'Compor',
+			'confirmPayment' => 'Confirmar pagamento',
+			'congratulations' => 'Parabéns',
+			'connect' => 'Conectar',
+			'connectWithNwc' => 'Conectar com NWC',
+			'connected' => 'Conectado',
+			'consumablePoints' => 'Pontos consumíveis',
+			'contact' => 'Contato',
+			'container' => 'recipiente',
+			'containerCustomization' => 'Personalização do recipiente',
+			'contentModeration' => 'Moderação do conteúdo',
+			'contentTextColor' => 'Cor do texto do conteúdo',
+			'contentTranslation' => 'Tradução do conteúdo',
+			'contentData' => ({required Object description}) => 'Conteúdo: ${description}',
+			'continueAsGuest' => 'Continuar como convidado',
+			'contributeUnderstanding' => 'Contribua para a criação de entendimento',
+			'copy' => 'cópia',
+			'copyInvoice' => 'Copiar fatura',
+			'copyLn' => 'Copiar endereço lightining',
+			'copyNaddr' => 'copiar naddr',
+			'copyNoteId' => 'Copiar ID da nota',
+			'copyNpub' => 'Copiar npub',
+			'copyNwc' => 'Copiar NWC',
+			'userInvoiceNotGenerated' => 'Não foi possível criar uma fatura para este utilizador.',
+			'notFindSMwithAddr' => 'Não foi possível encontrar o smart widget com esse endereço',
+			'couldNotUpdateRelaysList' => 'Não foi possível atualizar a lista de relays',
+			'coverUrl' => 'Ocultar url',
+			'createWalletSendRecSats' => 'Cria uma carteira para enviar e receber sats',
+			'createAccount' => 'Cria uma conta',
+			'createWallet' => 'Criar carteira',
+			'yakiNwcDesc' => 'Cria uma carteira usando o canal de YakiHonne',
+			'createYakiWallet' => 'Cria uma carteira YakiHonne',
+			'createdAt' => 'Criado em',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'criado em ${date1}, editado em ${date2}',
+			'curation' => 'curadoria',
+			'curationNotFound' => 'Não foi possível encontrar a curadoria',
+			'curationType' => 'Tipo de curadoria',
+			'curations' => 'curadorias',
+			'currentlyLinkedMessage' => 'Atualmente vinculado ao teu perfil para recepção de zaps',
+			'customization' => 'Personalização',
+			'customizeYourFeed' => 'Personaliza o teu feed',
+			'dashboard' => 'painel',
+			'decrMessage' => 'Decifrando mensagem',
+			'defaultKey' => 'Padrão',
+			'delete' => 'excluir',
+			'deleteContent' => ({required Object type}) => 'Excluir ${type}',
+			'deleteAccount' => 'Excluir conta',
+			'deleteBookmarkList' => 'Excluir lista de marcadores',
+			'deleteCoverPic' => 'Excluir foto da capa!',
+			'deleteDraft' => 'Excluir rascunho',
+			'deleteWallet' => 'Excluir carteira',
+			'description' => 'descrição',
+			'descriptionOptional' => 'descrição (opcional)',
+			'details' => 'detalhes',
+			'disableSecureDms' => 'Desative DMs seguras',
+			'disconnecting' => 'Desconectando...',
+			'discordUrl' => 'url do Discord',
+			'discover' => 'descobrir',
+			'dismiss' => 'dispensar',
+			'displayName' => 'Nome de exibição',
+			'findThisHelpful' => 'Achas isto útil?',
+			'findThisNotHelpful' => 'Achas que isto não é útil?',
+			'dontHaveWallet' => 'Não tens ainda uma carteira?',
+			'unTextR3Desc' => 'Não te preocupes, todos nós recebemos algumas destas! Estas classificações são comuns e podem levar a alterações de status se um número suficiente de pessoas concordarem que uma nota útil não é suficientemente útil.',
+			'donations' => 'Doações',
+			'downvotes' => 'Votos negativos',
+			'draft' => 'rascunho',
+			'duoLayout' => 'Layout duplo',
+			'earnSats' => 'Ganha SATs',
+			'edit' => 'editar',
+			'editCover' => 'Editar capa',
+			'editProfile' => 'Editar perfil',
+			'editToAddZapPoll' => 'Edite para adicionar enquete zap',
+			'editedOn' => ({required Object date}) => 'Editado em: ${date}',
+			'emptyVerifiedNote' => 'Conteúdo de nota verificado vazio!',
+			'enableSecureDms' => 'Habilite DMs seguros',
+			'eula' => 'Contrato de licença de usuário final (EULA)',
+			'engagementChart' => 'Gráfico de engajamento',
+			'enjoyExpOwnData' => 'Aproveite a experiência de possuir\n',
+			'ensureLnSet' => 'Certifique-se de que seu endereço relâmpago esteja bem definido',
+			'enterSMaddr' => 'Insira um widget inteligente naddr para verificar sua validade.',
+			'enterLn' => 'Digite seu endereço LUD-06 ou LUD-16',
+			'enterCoverUrl' => 'Insira o URL da sua capa',
+			'enterNip05' => 'Digite seu endereço NIP-05',
+			'enterPictureUrl' => 'Digite o URL da sua foto',
+			'erase' => 'apagar',
+			'errorAddingBookmark' => 'Ocorreu um erro ao adicionar o favorito',
+			'errorAddingVerifiedNote' => 'Ocorreu um erro ao adicionar sua nota verificada',
+			'errorClaimingReward' => 'Ocorreu um erro ao reivindicar uma recompensa',
+			'errorConnectingRelay' => 'Ocorreu um erro ao conectar ao relé',
+			'errorCreatingWallet' => 'Ocorreu um erro ao criar a carteira',
+			'errorDecodingData' => 'Ocorreu um erro ao decodificar os dados',
+			'errorDeletingContent' => 'Ocorreu um erro ao excluir o conteúdo',
+			'errorDeletingRating' => 'Ocorreu um erro ao excluir sua avaliação',
+			'errorGeneratingEvent' => 'Ocorreu um erro ao gerar o evento',
+			'errorGeneratingInvoice' => 'Ocorreu um erro ao gerar a fatura',
+			'errorLoggingYakiChest' => 'Ocorreu um erro ao fazer login no baú de Yakihonne',
+			'errorPayingInvoice' => 'Ocorreu um erro ao pagar usando a fatura',
+			'errorSendingSats' => 'Ocorreu um erro ao enviar sats',
+			'errorSendingEvent' => 'Ocorreu um erro ao enviar o evento',
+			'errorSendingMessage' => 'ocorreu um erro ao enviar a mensagem',
+			'errorSettingToken' => 'Ocorreu um erro ao configurar o token',
+			'errorSigningEvent' => 'Ocorreu um erro ao assinar o evento',
+			'errorSubmittingRating' => 'Ocorreu um erro ao enviar sua classificação',
+			'errorTranslating' => 'Ocorreu um erro ao traduzir o conteúdo.',
+			'errorUpdatingData' => 'Ocorreu um erro ao atualizar os dados',
+			'errorUpdatingRelaysList' => 'Ocorreu um erro ao atualizar a lista de relés',
+			'errorUploadingMedia' => 'Ocorreu um erro ao enviar a mídia',
+			'errorUploadingVideo' => 'Ocorreu um erro ao carregar o vídeo',
+			'errorUsingWallet' => 'Ocorreu um erro ao usar a carteira!',
+			'errorZappingUsers' => 'Ocorreu um erro ao enviar zapps aos utilizadores',
+			'errorUploadingImage' => 'Ocorreu um erro ao carregar a imagem',
+			'errorLoadingVideo' => 'Erro ao carregar o vídeo',
+			'errorUsingExternalWallet' => 'Erro ao usar carteira externa.',
+			'eventNotFound' => 'Não foi possível encontrar o evento',
+			'eventNotRecognized' => 'O evento não pôde ser reconhecido',
+			'exit' => 'Sair',
+			'expandWorld' => 'Expande o mundo adicionando o que mais te fascina. Seleciona os teus interesses e deixa que a viagem comece.',
+			'explanation' => 'Explicação',
+			'explore' => 'explorar',
+			'externalWallet' => 'Carteira externa',
+			'feedOptions' => 'Opções do feed',
+			'fetchingArticle' => 'Rastreando artigo',
+			'fetchingCuration' => 'Rastreando curadoria',
+			'fetchingEvent' => 'Rastreando evento',
+			'fetchingEventUserRelays' => 'Rastreando evento nas relays do utilizador',
+			'fetchingNote' => 'Rastreando nota',
+			'fetchingProfile' => 'Rastreando perfil',
+			'fetchingSmartWidget' => 'Rastreando smart widget',
+			'fetchingUserInboxRelays' => 'Rastreando relays da caixa de entrada do utilizador',
+			'fetchingVideo' => 'Rastreando vídeo',
+			'fileSharing' => 'Partilha de arquivos',
+			'fillColor' => 'Cor de preenchimento',
+			'finished' => 'finalizado!',
+			'follow' => 'segue',
+			'followAll' => 'Segue todos',
+			'followMeOnNostr' => 'Segue-me no Nostr',
+			'followers' => 'Seguidores',
+			'following' => 'seguindo',
+			'pendingFollowing' => 'Seguindo...',
+			'followings' => 'Seguidores',
+			'followsYou' => 'Segue-te',
+			'fontSize' => 'Tamanho da fonte',
+			'forName' => ({required Object name}) => 'para ${name}',
+			'enableSecureDmsMessage' => 'Para mais segurança e privacidade, considera ativar DMs seguros.',
+			'zapSplitsMessage' => 'Para zap splits, deve haver pelo menos uma pessoa',
+			'free' => 'Grátis',
+			'fuelYakihonne' => 'Estimula o crescimento de YakiHonne! O teu apoio contribui para a criação de novos recursos e a para uma melhor experiência para todos.',
+			'gain' => 'Ganho',
+			'gallery' => 'Galeria',
+			'generateInvoice' => 'Gerar fatura',
+			'generateInvoices' => 'Gerar faturas',
+			'getApiKey' => 'Obtém chave API',
+			'getInvoice' => 'Obtém fatura',
+			'getStartedNow' => 'Começa já',
+			'gifs' => 'gifs',
+			'gotIt' => 'Entendi!',
+			'granted' => 'Concedido',
+			'earnSatsDesc' => 'Ajuda-nos a fornecer perspetivas mais descentralizadas para rever esta nota paga.',
+			'heyWelcomeBack' => 'Olá,\nBem-vindo\nDe volta',
+			'hideSuggestions' => 'Ocultar sugestões',
+			'highlights' => 'destaques',
+			'home' => 'Página principal',
+			'hfCustomization' => 'Personalização do feed da página principal',
+			'horizontalVideo' => 'Vídeo horizontal',
+			'wantToShareRevenues' => 'Quero compartilhar estas receitas',
+			'identifier' => 'Identificador',
+			'image' => 'imagem',
+			'imageAspectRatio' => 'Proporção da imagem',
+			'imageCustomization' => 'Personalização de imagem',
+			'imageUrl' => 'URL da imagem',
+			'imageUploadHistory' => 'Histórico de carregamento de imagens',
+			'important' => 'Importante',
+			'inTag' => ({required Object name}) => 'Em ${name}',
+			'inaccessibleLink' => 'Link inacessível',
+			'inbox' => 'caixa de entrada',
+			'initializingAccount' => 'Inicializando conta...',
+			'insertText' => 'Inserir texto',
+			'instantConntect' => 'Conexão instantânea à relay',
+			'interestsUpdateMessage' => 'A lista de interesses foi atualizada com sucesso!',
+			'interested' => 'Interessado',
+			'interests' => 'interesses',
+			'invalidHexKey' => 'Hex key inválida!',
+			'invalidInvoice' => 'Fatura inválida',
+			'invalidPairingSecret' => 'Emparelhamento de segredo inválido',
+			'invalidPrivateKey' => 'Chave privada inválida!',
+			'invalidRelayUrl' => 'URL de relay inválido',
+			'invoice' => 'fatura',
+			'invoiceCopied' => 'Código da fatura copiado!',
+			'invoicePaid' => 'A fatura foi paga com sucesso',
+			'invoiceOrLN' => 'Fatura ou endereço Lightning',
+			'issueOccuredSelectingImage' => 'Ocorreu um problema ao selecionar a imagem.',
+			'somethingWentWrongDesc' => 'Parece que algo de errado aconteceu durante o carregamento de dados. Tenta novamente!',
+			'invalidInvoiceDesc' => 'Parece que a fatura digitalizada é inválida. Redigitaliza e tenta novamente.',
+			'invoiceNotPayed' => 'Parece que não pagaste a fatura, verifica novamente',
+			'itsLive' => 'Estás ao Vivo!',
+			'noCommunityNotes' => 'Está tudo tranquilo por aqui! Não existem ainda notas da comunidade.',
+			'joinedOn' => ({required Object date}) => 'Associou-se em: ${date}',
+			'keys' => 'Chaves',
+			'known' => 'Conhecido',
+			'languagePreferences' => 'Preferências de idioma',
+			'lastGained' => ({required Object date}) => 'Último ganho: ${date}',
+			'lastUpdatedOn' => ({required Object date}) => 'Última atualização em: ${date}',
+			'latest' => 'mais recente',
+			'layout' => 'layout',
+			'layoutCustomization' => 'Personalização do layout',
+			'less' => 'Menos',
+			'letsGetStarted' => 'Vamos começar!',
+			'levelNumber' => ({required Object number}) => 'Nível ${number}',
+			'lightningAddress' => 'Endereço Lightning',
+			'lnCopied' => 'O endereço Lightning foi copiado! 👏',
+			'link' => 'Link',
+			'linkWallet' => 'Conecta Carteira',
+			'linked' => 'Conectado',
+			'list' => 'lista',
+			'loading' => 'A carregar',
+			'loadingFollowings' => 'A carregar seguidores',
+			'loadingPreviousPosts' => 'A carregar publicação(ões) anterior(es)...',
+			'loadingFollowers' => 'A carregar seguidores',
+			'locked' => 'Bloqueado',
+			'loggingIn' => 'Acedendo...',
+			'loggingOut' => 'Fazendo logout...',
+			'login' => 'Nome de acesso',
+			'loginYakiChestPoints' => 'Faz login no baú de Yakihonne, acumula pontos sendo ativo na plataforma e ganha recompensas preciosos!',
+			'logoutAllAccounts' => 'Sair de todas as contas',
+			'validDescriptionCuration' => 'Certifica-te que adicionaste uma descrição válida para esta curadoria',
+			'validImageCuration' => 'Certifica-te que adicionaste uma imagem válida para esta curadoria',
+			'validTitleCuration' => 'Certifica-te que adicionaste um título válido para esta curadoria',
+			'addValidUrl' => 'Certifica-te de adicionar um URL válido',
+			'submitValidLud' => 'Certifica-te de obter um lud16/lud06 válido.',
+			'showSecretDesc' => 'Certifica-te que o manténs seguro, pois ele dá acesso total à tua conta.',
+			'invalidInvoiceLnurl' => 'Certifica-te de definir uma fatura válida ou lnurl',
+			'setAllRequiredContent' => 'Certifica-te de definir todo o conteúdo necessário.',
+			'setOutboxRelays' => 'Certifica-te de configurar as tuas relays de caixa de saída',
+			'submitValidCloseDate' => 'Certifica-te de enviar uma data de encerramento válida.',
+			'submitMinMaxSats' => 'Certifica-te de submeter uma quantia válida mínima e máxima de satoshis',
+			'submitValidOptions' => 'Certifica-te de submeter opções válidas.',
+			'submitValidData' => 'Certifica-te de submeter dados válidos',
+			'submitValidInvoice' => 'Certifica-te de submeter uma fatura válida',
+			'manageAccounts' => 'Gerenciar contas',
+			'manageInterests' => 'Gerenciar interesses',
+			'maxSats' => 'Máx. sats',
+			'maximumSatoshis' => 'Máximo de sats',
+			'mediaExceedsMaxSize' => 'A multimidia excede o tamanho máximo que é 21 MB',
+			'mediaUploader' => 'Carregador de multimidia',
+			'mentions' => 'menções',
+			'messageOptional' => 'Mensagem (opcional)',
+			'messageCouldNotBeDecrypted' => 'a mensagem não pôde ser decifrada',
+			'messageNotDecrypted' => 'A mensagem ainda não foi decifrada!',
+			'messageCopied' => 'Mensagem copiada com sucesso!',
+			'metadata' => 'metadados',
+			'min' => 'min',
+			'minSats' => 'Mínimo de sats',
+			'minimumSatoshis' => 'Mínimo de Sats',
+			'errorMissingKey' => 'Chave de API ausente ou subscrição expirada.',
+			'monoLayout' => 'MonoLayout',
+			'monolayoutRequired' => 'Monolayout é obrigatório',
+			'more' => 'Mais',
+			'moreDots' => 'mais...',
+			'moveDown' => 'Mover para baixo',
+			'moveUp' => 'Ir para cima',
+			'mute' => 'modo silencioso',
+			'muteList' => 'Lista silenciada',
+			'muteUser' => 'Silenciar utilizador',
+			'mutuals' => 'mútuo(s)',
+			'myArticles' => 'Os meus artigos',
+			'myDrafts' => 'Os meus rascunhos',
+			'myPolls' => 'As minhas sondagens',
+			'myPublicKey' => 'A minha chave pública',
+			'mySecretKey' => 'A minha chave secreta',
+			'myVideos' => 'Os meus vídeos',
+			'myWidgets' => 'Os meus widgets',
+			'naddr' => 'naddr',
+			'nostrWalletConnectDesc' => 'Conexão nativa de carteira nostr',
+			'needsMoreRating' => 'Precisa de mais classificação',
+			'needsYourHelp' => 'Precisa do teu útil',
+			'nevent' => 'nevent',
+			'newKey' => 'Novo',
+			'newMessage' => 'Nova mensagem',
+			'newPostGesture' => 'Nova publicação com gesto de pressão longa',
+			'next' => 'próximo',
+			'noContentBelongToCuration' => ({required Object type}) => 'Nenhum ${type} pertence a esta curadoria',
+			'noContentCanBeFound' => ({required Object type}) => 'Nenhum ${type} foi encontrado',
+			'noArticlesInCuration' => 'Nenhum artigo sobre esta curadoria foi encontrado',
+			'addNewBookmark' => 'Nenhuma lista de marcadores foi encontrada, tenta adicionar uma!',
+			'noBookmarksListFound' => 'Nenhuma lista de marcadores foi encontrada, tente adicionar uma!',
+			'noCommentsCanBeFound' => 'Nenhum comentário foi encontrado',
+			'noComponentsDisplayed' => 'Nenhum componente pode ser exibido',
+			'noCurationsFound' => 'Nenhuma curadoria foi encontrada. Tenta criar uma para poderes adicionar conteúdo à mesma.',
+			'noDescription' => 'Nenhuma descrição',
+			'noElementsInBookmarks' => 'Nenhum elemento foi encontrado na lista de marcadores',
+			'noEventIdCanBeFound' => 'Nenhum evento com este ID foi encontrado!',
+			'noImageHistory' => 'Nenhum histórico de imagens foi encontrado',
+			'noInternetAccess' => 'Sem acesso à Internet',
+			'noInvoiceAvailable' => 'Não há faturas disponíveis',
+			'noMessageCanBeFound' => 'Nenhuma mensagem foi encontrada',
+			'noMessagesToDisplay' => 'Nenhuma mensagem pode ser exibida.',
+			'noMoreData' => 'Não há mais dados',
+			'noMutedUserFound' => 'Nenhum usuário silenciado foi encontrado.',
+			'noNotificationCanBeFound' => 'Nenhuma notificação pode ser encontrada',
+			'noPaidNotesCanBeFound' => 'Nenhuma nota paga pode ser encontrada.',
+			'noPollsCanBeFound' => 'Nenhuma sondagem foi encontrada',
+			'noReasonsSpecified' => 'Sem razão especificada!',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
+			'noRelaysCanBeFound' => 'Nenhuma relay pode ser encontrada',
+			'noUserRelays' => 'Nenhuma relay foi encontrada para este utilizador.',
+			'noRepliesDesc' => 'Nenhuma resposta para esta nota pode ser encontrada',
+			'noResKeyword' => 'Nenhum resultado para esta palavra-chave',
+			'noResKeywordDesc' => 'Nenhum resultado foi encontrado ao usar esta palavra-chave, tenta usar outras palavras-chave para obter melhores resultados.',
+			'noSmartWidgetCanBeFound' => 'Nenhum smart widget pode ser encontrado',
+			'noSmartWidget' => 'Nenhum rascunho de smart widget pode ser encontrado',
+			'noTemplatesCanBeFound' => 'Nenhum modelo pode ser encontrado nesta categoria.',
+			'noTitle' => 'Sem título',
+			'noTransactionCanBeFound' => 'Nenhuma transação pode ser encontrada',
+			'noUserZapped' => 'Nenhum utilizador recebeu zaps!',
+			'noUserCanBeFound' => 'Nenhum utilizador pode ser encontrado.',
+			'noVideosInCuration' => 'Nenhum vídeo sobre esta curadoria foi encontrado',
+			'noWalletCanBeFound' => 'Nenhuma carteira pode ser encontrada',
+			'noZappersCanBeFound' => 'Nenhum zapper pode ser encontrado.',
+			'noImGood' => 'Não, estou bem',
+			'noWalletConnectedToYourProfile' => 'Nenhuma das carteiras conectadas está vinculada ao seu perfil.',
+			'nostrScheme' => 'Esquema Nostr',
+			'nostrWalletConnect' => 'Conexão de carteira Nostr',
+			'nwcInitialized' => 'A conexão da carteira Nostr foi inicializada',
+			'notEnoughBalance' => 'Não tens saldo suficiente para efetuar este pagamento.',
+			'notFollowedByAnyoneYouFollow' => 'Não é seguido por ninguém que segues.',
+			'notHelpful' => 'Não é útil',
+			'notInterested' => 'Não estou interessado',
+			'notSealed' => 'Não selado',
+			'notSealedYet' => 'Ainda não está selado',
+			'note' => 'nota',
+			'noteNotFound' => 'A nota não pôde ser encontrada',
+			'notePublished' => 'A nota foi publicada!',
+			'noteIdCopied' => 'ID da nota copiado! 👏',
+			'walletDataNote' => 'Nota: Todos os dados relacionados à sua carteira serão armazenados localmente em segurança e jamais serão partilhados fora dos limites da aplicação.',
+			'changeRatingNote' => 'Nota: a alteração à tua classificação será válida apenas por 5 minutos, após este período deixarás de a poder desfazer ou de a alterar.',
+			'payPublishNote' => 'Nota: Certifica-te de que todo o conteúdo que forneces é definitivo, pois a publicação é considerada irreversível e os SATS gastos não são reembolsáveis.',
+			'notes' => 'notas',
+			'notesFromCommunity' => 'Notas da comunidade',
+			'unTextW3Desc' => 'Notas que ainda não têm o status de Útil ou Não Útil.',
+			'unTextW1' => 'Notas que receberam o status de Útil',
+			'unTextW3' => 'Notas que precisam de mais classificações',
+			'unTextW2' => 'Notas que receberam o status de Não Útil',
+			'un2' => 'Notas em contínua classificação ',
+			'notifications' => 'notificações',
+			'npubNsecHex' => 'npub, nsec ou hex',
+			'nwcCopied' => 'NWC foi copiado com sucesso!',
+			'onDate' => ({required Object date}) => 'Em ${date}',
+			'onSelectedWalletLinkIt' => 'na tua carteira selecionada e vincule-a.',
+			'oneTimeRewards' => 'Recompensas únicas',
+			'ongoing' => 'a decorrer',
+			'nothingToShowHere' => 'Ops! Nada para mostrar aqui!',
+			'optionBackgroundColor' => 'Cor de fundo da opção',
+			'optionTextColor' => 'Cor do texto da opção',
+			'options' => 'opções',
+			'optionsNumber' => ({required Object number}) => 'Opções: ${number}',
+			'orUseYourWallet' => 'Ou usa a tua carteira',
+			'others' => 'outros',
+			'privacyNote' => 'A nossa aplicação garante o máximo de privacidade ao armazenar, localmente e em segurança, os dados confidenciais dos utilizadores, empregando rigorosa criptografia. Descansa, sustentamos de uma política bastante restrita quanto ao fornecimento de dados, assegurando que informações sensíveis permanecem confidenciais e jamais sairão do equipamento electrónico do utilizador.  ',
+			'owner' => 'Proprietário',
+			'paid' => 'pago',
+			'paidNote' => 'Nota paga',
+			'paidNotePublished' => 'A nota paga foi publicada!',
+			'paidNoteLoading' => 'Nota paga a carregar',
+			'partialUsersZapped' => 'Utilizadores parciais recebem zaps!',
+			'pasteNwcAddress' => 'Cola o endereço NWC',
+			'pasteYourKey' => 'Cola a tua chave',
+			'pasteKind1063' => 'Cola o teu kind 1063 nevent e envia-o',
+			'pasteYourLink' => 'Cola o teu teu link e envia-o',
+			'pay' => 'Pagar',
+			'payAmount' => ({required Object number}) => 'Pagar ${number} sats',
+			'payPublish' => 'Paga & Publica',
+			'payWithNwc' => 'Paga com NWC',
+			'paymentFailed' => 'Falha no pagamento',
+			'paymentSucceeded' => 'Pagamento bem-sucedido',
+			'paymentSurpassMax' => 'Pagamento ultrapassa o valor máximo permitido.',
+			'peopleToFollow' => 'Pessoas a seguir',
+			'permissionInvoiceNotGranted' => 'A permissão para pagar faturas não é concedida.',
+			'pickYourComponent' => 'Escolhe o teu componente',
+			'pickYourImage' => 'Escolhe a tua imagem',
+			'pickYourMedia' => 'Escolhe a tua multimidia',
+			'pickYourVideo' => 'Escolhe o teu vídeo',
+			'pictureUrl' => 'URL da imagem',
+			'plan' => 'Plano',
+			'submitValidVideoEvent' => 'Por favor, submete um evento de vídeo válido',
+			'points' => 'Pontos',
+			'pointsSystem' => 'Sistema de pontos',
+			'pollCloseDate' => 'Data de encerramento da sondagem',
+			'pollOptions' => 'Opções da sondagem',
+			'pollZapPublished' => 'A sondagem de zap foi publicada!',
+			'popularNotes' => 'Notas populares',
+			'post' => 'Publica',
+			'postArticle' => 'Publica um artigo',
+			'postNotFound' => 'Publicação não encontrada',
+			'postCuration' => 'Publica curadoria',
+			'postInNote' => 'Publica em nota',
+			'postNote' => 'Publica nota',
+			'postSmartWidget' => 'Publica smart widget',
+			'postVideo' => 'Publica vídeo',
+			'postedBy' => 'Publicado por',
+			'postedFrom' => 'publicado de',
+			'postedOn' => ({required Object date}) => 'Publicado a ${date}',
+			'preview' => 'Pré-visualização',
+			'privKeyCopied' => 'A chave privada foi copiada!👏',
+			'pro' => 'Pro',
+			'processCompleted' => 'O processo foi concluído',
+			'profile' => 'Perfil',
+			'profileLink' => 'Link do perfil',
+			'profileCopied' => 'O link do perfil foi copiado! 👏',
+			'profilePreview' => 'Pré-visualização do perfil',
+			'profileRelays' => ({required Object number}) => 'Relays recomendadas para o perfil - ${number}',
+			'publicKey' => 'Chave pública',
+			'publicKeyCopied' => 'A chave pública foi copiada! 👏',
+			'publish' => 'publicar',
+			'publishRemoveDraft' => 'Publicar e remover o rascunho',
+			'publishedOnText' => 'Publicado em',
+			'publishedOn' => ({required Object date}) => 'Publicado a: ${date}',
+			'pullToRefresh' => 'Puxe para atualizar',
+			'qrCode' => 'Código QR',
+			'rateHelpful' => 'Classifica como útil',
+			'rateNotHelpful' => 'Classifica como não útil',
+			'ratedHelpful' => 'Classificado como útil',
+			'ratedNotHelpful' => 'Classificado como não útil',
+			'un1' => 'Classificações de Não Útil em notas que terminaram com um status de Útil',
+			'unTextR3' => 'Classificações de Não Útil em notas que terminaram com um status de Útil',
+			'un2Desc' => 'Classificações em notas que atualmente não têm um status de Útil ou Não Útil',
+			'unTextR1' => 'Classificações que ajudaram uma nota a ganhar o status de Útil',
+			'unTextR2' => 'Classificações que ajudaram uma nota a ganhar o status de Não Útil',
+			'readAboutVerifyingNotes' => 'Lê sobre como verificar notas',
+			'readArticle' => 'Lê o artigo',
+			'readMore' => 'Lê mais',
+			'readOnly' => 'Somente leitura',
+			'readWrite' => 'Lê/Escreve',
+			'receive' => 'Recebe',
+			'receiveSats' => 'Recebe sats',
+			'recent' => 'recente',
+			'recentTransactions' => 'Transações recentes',
+			'recentWithReplies' => 'Recente com respostas',
+			'reconnectWifi' => 'Reconectar a um wi-fi',
+			'refresh' => 'atualizar',
+			'refreshed' => 'Atualizado',
+			'refreshing' => 'A atualizar',
+			'relayInUse' => 'A relay já está a ser usada',
+			'relaySettings' => ({required Object number}) => 'Configurações da relay ${number}',
+			'relayingStuff' => 'A retransmitir coisas...',
+			'relays' => 'Relays',
+			'relaysNotReached' => 'Não foi possível alcançar as relays',
+			'relaysListUpdated' => 'A lista de relays foi atualizada',
+			'releaseToLoad' => 'Solte para carregar mais',
+			'repeatedRewards' => 'Recompensas repetidas',
+			'replies' => 'respostas',
+			'reply' => 'responder',
+			'replyingTo' => ({required Object name}) => 'Respondendo a: ${name}',
+			'reposted' => 'rerepublicado',
+			'requestInProgress' => 'Solicitação em andamento',
+			'reveal' => 'Revelar',
+			'rewards' => 'recompensas',
+			'saveDraft' => 'Salvar rascunho',
+			'saved' => 'salvo',
+			'scanPay' => 'Digitaliza & paga',
+			'scanAgain' => 'Digitaliza novamente',
+			'scanQrCode' => 'Digitaliza o código QR',
+			'sealed' => 'Selado',
+			'search' => 'pesquisar',
+			'searchContentByTitle' => ({required Object type}) => 'Pesquisar ${type} pelo título',
+			'searchNameNpub' => 'Pesquisar por nome, npub, nprofile',
+			'searchByUserName' => 'Pesquisar por nome de utilizador',
+			'searchRelay' => 'Pesquisar relay',
+			'secureDirectMessaging' => 'Mensagens diretas seguras',
+			'seeAll' => 'Ver tudo',
+			'seeAllAttempts' => 'Ver todas as tentativas',
+			'seeAlso' => 'Ver também',
+			'seeAnything' => 'Viste alguma coisa que desejas melhorar?',
+			'seeMore' => 'Ver mais',
+			'seeOriginal' => 'Ver original',
+			'seeTranslation' => 'Ver tradução',
+			'selectAndUploadLocaleImage' => 'Seleciona & carrega uma imagem local',
+			'selectAdate' => 'Seleciona uma data',
+			'selectDefaultWallet' => 'Seleciona uma carteira padrão nas configurações.',
+			'selectUserToZap' => 'Seleciona um utilizador para enviares zap (opcional)',
+			'selectValidUrlImage' => 'Seleciona um Url da imagem válido.',
+			'selectWalletTransactions' => 'Seleciona uma carteira para obter as transações mais recentes.',
+			'selectOneReason' => 'Seleciona pelo menos um motivo',
+			'selectComponent' => 'Seleciona o componente conveniente e edita-o.',
+			'send' => 'Enviar',
+			'sendSats' => 'Enviar sats',
+			'setProperName' => 'Define um nome apropriado',
+			'setSatsMoreThanZero' => 'Define uma quantidade de sats maior que 0',
+			'setBookmarkTitleDescription' => 'Define um título e uma descrição para a tua lista de marcadores.',
+			'setValidKey' => 'Define uma chave válida',
+			'setUpYourLink' => 'Configura o teu link',
+			'setUpYourNevent' => 'Configura o teu evento',
+			'setYourRating' => 'Define a tua classificação',
+			'settings' => 'configurações',
+			'share' => 'compartilhar',
+			'shareGlimps' => 'Partilha um vislumbre de ti próprio, em palavras que pareçam verdadeiras.',
+			'shareContent' => 'Partilhar conteúdo',
+			'shareImage' => 'Partilhar imagem',
+			'shareLink' => 'Partilhar link',
+			'shareNaddr' => 'Partilhe naddr',
+			'shareNoteId' => 'Partilhar ID da nota',
+			'shareNprofile' => 'Partilhar nprofile',
+			'shareProfile' => 'Partilhar perfil',
+			'shareProfileDesc' => 'Partilha o teu perfil para alcançar mais pessoas, conecta-te com outras pessoas e aumenta a tua rede',
+			'show' => 'mostrar',
+			'showArticlesNotesSuggestions' => 'Mostrar sugestões de artigos/notas',
+			'showSecret' => 'Mostrar chave secreta!',
+			'showStats' => 'Mostrar estatísticas',
+			'showSuggestedInterests' => 'Mostrar interesses sugeridos',
+			'showSuggestedPeople' => 'Mostrar pessoas sugeridas para seguir',
+			'showSuggestions' => 'Mostrar sugestões',
+			'signIn' => 'Entrar',
+			'usingViewModeDesc' => 'Entra com a tua chave privada e junta-te à comunidade.',
+			'size' => 'tamanho',
+			'slideToPay' => 'Desliza para pagar',
+			'smartWidget' => 'Smart widget',
+			'smartWidgetBuilder' => 'Criador de smart widget',
+			'smartWidgetChecker' => 'Verificador de smart widget',
+			'smartWidgetNotFound' => 'O smart widget não pôde ser encontrado',
+			'smartWidgetPublishedSuccessfuly' => 'O smart widget foi publicado com sucesso',
+			'smartWidgets' => 'Smart widgets',
+			'smartWidgetsDrafts' => 'Rascunhos de smart widgets',
+			'smartWidgetsTemplates' => 'Modelos de smart widgets',
+			'software' => 'Programas de Software',
+			'somethingWentWrong' => 'Há algo errado!',
+			'soonUsers' => 'Em breve os utilizadores poderão utilizar os pontos consumíveis no seguinte conjunto de atividades:',
+			'source' => 'Fonte',
+			'sourceRecommended' => 'Fonte (recomendado)',
+			'splitRevenuesWithUsers' => 'Divide as receitas com utilizadores',
+			'splitZapsWith' => 'Divide zaps com',
+			'spreadWordSharingContent' => 'Divulga o teu conteúdo, partilhando-o em qualquer lugar.',
+			'startBuildingSmartWidget' => 'Começa a construir e a personalizar o teu smart widget para usar na rede Nostr',
+			'startEarningPoints' => 'Começa a ganhar e aproveita ao máximo os teus Pontos Yaki 🎉',
+			'startSearchContent' => 'Começa a pesquisar conteúdo',
+			'startSearchPeople' => 'Começa a pesquisar por outras pessoas',
+			'stickers' => 'adesivos',
+			'submit' => 'enviar',
+			'submitBookmarkList' => 'Submeter lista de marcadores',
+			'submitCuration' => 'Submeter curadoria',
+			'successfulRelays' => 'relays bem-sucedidas',
+			'suggestedInterests' => 'Interesses sugeridos',
+			'suggestions' => 'Sugestões',
+			'suggestionsBox' => 'Caixa de sugestões',
+			'summaryOptional' => 'Resumo (opcional)',
+			'supportYakihonne' => 'Apoia YakiHonne',
+			'supportedNips' => 'Nips suportados',
+			'switchAccounts' => 'Trocar de contas',
+			'taylorExperienceInterests' => 'Personaliza a tua experiência selecionando os teus interesses principais',
+			'telegramUrl' => 'Url do Telegram',
+			'templates' => 'modelos',
+			'text' => 'texto',
+			'textColor' => 'Cor do texto',
+			'textCustomization' => 'Personalização de texto',
+			'textSuccesfulyCopied' => 'Texto copiado com sucesso!',
+			'theFollowingNote' => 'a seguinte nota:',
+			'smHaveTitle' => 'O smart widget deve ter pelo menos um título',
+			'smHaveOneWidget' => 'O smart widget deve ter pelo menos um componente.',
+			'valueBetweenMinMax' => 'O valor deve estar entre a quantia mínima e máxima de sats',
+			'noDataFromGpt' => 'Existem dados por mostrar do GPT.',
+			'oneFeedOptionAvailable' => 'Deve haver pelo menos uma opção de feed disponível.',
+			'unTextW1Desc' => 'Estas notas estão agora a ser exibidas para todas as outras pessoas que vêem a publicação, acrescentando contexto e ajudando a mantendo-as informadas.',
+			'unTextW2Desc' => 'Estas notas foram classificadas como Não Úteis por um número suficiente de contribuidores, incluindo aqueles que às vezes discordam nas suas avaliações anteriores.',
+			'un1Desc' => 'Estas classificações são contadas duplamente porque indicam muitas vezes apoio a notas que outros consideraram úteis.',
+			'unTextR1Desc' => 'Estas classificações identificaram notas Úteis, mostradas a todos, e acrescentam contexto e ajudam a manter as pessoas informadas.',
+			'unTextR2Desc' => 'Estas classificações melhoram as Notas da Comunidade, fornecendo feedback aos autores das notas e permitindo que os contribuidores se concentrem nas notas mais promissoras',
+			'notValidVideoEvent' => 'Este evento não é um evento de vídeo válido!',
+			'sensitiveContent' => 'Este é um conteúdo sensível',
+			'emptyVideoUrl' => 'Este nevento tem um Url vazio',
+			'thisNoteAwaitRating' => 'esta nota aguarda classificação da comunidade.',
+			'yourNoteAwaitRating' => 'esta nota aguarda classificação da comunidade.',
+			'smartWidgetConvention' => 'Este smart widget não segue a convenção acordada.',
+			'useCannotBeZapped' => 'Este utilizador não pode receber zaps',
+			'thread' => 'tópico',
+			'thumbnailPreview' => 'Pré-visualização da miniatura',
+			'title' => 'título',
+			'titleData' => ({required Object description}) => 'Título: ${description}',
+			'toBeAbleSendSats' => 'Para poderes enviar zaps, certifica-te de conectar a tua carteira bitcoin lighting.',
+			'topReasonsSelected' => 'Principais motivos selecionados pelos avaliadores:',
+			'totalAmount' => 'Montante total',
+			'totalNumber' => ({required Object number}) => 'Total: ${number}',
+			'trending' => 'tendências',
+			'tryAgain' => 'Tente novamente',
+			'type' => 'escrever',
+			'typeValidZapQuestion' => 'Escreve uma pergunta de sondagem válida!',
+			'unableToOpenUrl' => 'Não foi possível abrir o URL',
+			'undo' => 'Desfazer',
+			'undoRating' => 'Desfazer classificação',
+			'unfollow' => 'deixar de seguir',
+			'unfollowAll' => 'Deixar de seguir todos',
+			'pendingUnfollowing' => 'A deixar de seguir...',
+			'unknown' => 'Desconhecido',
+			'unknownVerifiedNote' => 'Nota de desconhecido verificada',
+			'unlocked' => 'Desbloqueado',
+			'unmute' => 'ativar o som',
+			'unmuteUser' => 'Remover silêncio ao utilizador',
+			'untitled' => 'Sem título',
+			'update' => 'atualizar',
+			'updateInterests' => 'Atualizar interesses',
+			'updateProfile' => 'Atualizar perfil',
+			'updatedSuccesfuly' => 'Atualizado com sucesso',
+			'updates' => 'Atualizações',
+			'updatesNews' => 'Notícias de atualizações',
+			'uploadAndUse' => 'Carrega & usa',
+			'uploadImage' => 'Carregar imagem',
+			'uploadingImage' => 'A carregar imagem...',
+			'upvotes' => 'Votos positivos',
+			'url' => 'Url',
+			'useAmber' => 'Usar Amber',
+			'useInvoice' => 'Usar fatura',
+			'useTemplate' => 'Usar modelo',
+			'user' => 'utilizador',
+			'userCannotBeFound' => 'O utilizador não pôde ser encontrado',
+			'userHasBeenMuted' => 'O utilizador foi silenciado',
+			'userHasBeenUnmuted' => 'O utilizador foi reativado',
+			'userName' => 'Nome de utilizador',
+			'userNameCopied' => 'O nome de utilizador foi copiado com sucesso!',
+			'userZappedSuccesfuly' => 'O utilizador recebeu zapscom sucesso',
+			'userImpact' => 'Impacto do utilizador',
+			'userRelays' => 'Relays do utilizador',
+			'usingExternalSign' => 'Usando um signer externo',
+			'value' => 'valor',
+			'verifyNip05' => 'Endereço Nostr verificado (NIP 05)',
+			'verifiedNoteNotFound' => 'Não foi possível encontrar a nota verificada',
+			'verifyNotes' => 'Verificar notas',
+			'verifyingNote' => 'A verificar nota',
+			'version' => 'Versão',
+			'video' => 'vídeo',
+			'videoNotFound' => 'Não foi possível encontrar o vídeo',
+			'videoCustomization' => 'Personalização de vídeo',
+			'videoAddedCuration' => 'O vídeo foi adicionado à tua curadoria.',
+			'videoUrl' => 'Url do vídeo',
+			'videos' => 'vídeos',
+			'videosAvailableCuration' => 'Vídeos disponíveis nesta curadoria',
+			'view' => 'visualizar',
+			'viewProfile' => 'Ver perfil',
+			'viewQrCode' => 'Ver código QR',
+			'views' => 'Visualizações',
+			'visitProfile' => 'Visitar perfil',
+			'voteNotSubmitted' => 'Não foi possível submeter o voto',
+			'voteRequired' => 'É necessário votar para exibir estatísticas.',
+			'votesByUsers' => 'Votos por utilizadores',
+			'votesByZaps' => 'Votos por zaps',
+			'votesNumber' => ({required Object number}) => 'Votos: ${number}',
+			'waitingGenerationOfInvoice' => 'A aguardar a criação de faturas.',
+			'wallet' => 'carteira',
+			'walletNotLinked' => 'A carteira não pode ser vinculada. Endereço Lighting errado',
+			'walletCreated' => 'A carteira foi criada com sucesso',
+			'walletLinked' => 'A carteira foi vinculada com sucesso',
+			'wallets' => 'carteiras',
+			'warning' => 'aviso',
+			'watchNow' => 'vê agora',
+			'noLnInNwc' => 'Não nos foi possível recuperar o endereço do teu segredo NWC. Por favor, verifica o teu provedor de serviços de Lighting para copiar o teu endereço ou para convenientemente atualizares o teu perfil.',
+			'readAboutVerifyingNotesDesc' => 'Criamos um artigo para te ajudar a entender melhor o nosso objetivo',
+			'website' => 'Website',
+			'weight' => 'peso',
+			'whatThinkThis' => 'O que pensas sobre isto?',
+			'whatThinkOfThat' => 'O que pensas sobre isso?',
+			'whatsOnYourMind' => 'Em que estás a pensar?',
+			'whatsThis' => 'O que é isto?',
+			'whyVerifyingNotes' => 'Porquê as notas de verificação?',
+			'widgets' => 'widgets',
+			'writeCommentOptional' => 'Escreve um comentário (opcional)',
+			'writeYourMessage' => 'Escreva uma mensagem',
+			'writeNote' => 'Escreve uma nota',
+			'writeSummary' => 'Escreve um resumo',
+			'writeValidNote' => 'Anota uma nota válida!',
+			'writeOnly' => 'Escrever apenas',
+			'writeSomethingAboutYou' => 'Escreve algo sobre sobre ti!',
+			'writeSomething' => 'Escreve alguma coisa...',
+			'writeYourText' => 'Escreve o teu texto',
+			'xUrl' => 'Url do X',
+			'yakiChest' => 'Baú Yaki',
+			'yakihonne' => 'YakiHonne',
+			'yakihonneChest' => 'Baú do YakiHonne!',
+			'yakihonneConsPoints' => 'Pontos consumíveis do YakiHonne',
+			'yakihonneImprovements' => 'Melhorias do YakiHonne',
+			'yakihonneNote' => 'Nota do YakiHonne',
+			'yakihonneNotification' => 'Notificação do YakiHonne',
+			'yakiNwc' => 'NWC do YakiHonne',
+			'clearAppCacheDesc' => 'Estás prestes a limpar o cache da aplicação. Desejas continuar?',
+			'deleteWalletDesc' => 'Estás prestes a excluir esta carteira. Desejas prosseguir?',
+			'linkWalletDesc' => 'Estás prestes a substituir a tua carteira anterior e a vincular uma carteira nova ao teu perfil. Desejas prosseguir?',
+			'undoRatingDesc' => 'Você está prestes a desfazer sua classificação. Deseja prosseguir?',
+			'alreadyLoggedIn' => 'Já te encontras conectado!',
+			'deleteAccountMessage' => 'Estás a tentar aceder a uma conta que foi posteriormente eliminada.',
+			'loggedToYakiChest' => 'Estás conectado ao baú do Yakihonne',
+			'loggedIn' => 'Estás conectado!',
+			'notUsingSecureDms' => 'Já não estás a usar as Dms seguras',
+			'usingSecureDms' => 'Estás agora a usar as Dms seguras',
+			'usingExternalSignDesc' => 'Estás a usar um signer externo',
+			'secKeyWalletDesc' => 'Podes encontrar a chave secreta da sua conta e o segredo da conexão da carteira nas tuas configurações. Estas chaves são essenciais para garantir o acesso à tua conta e carteira. Por favor, mantem ambas em segurança e privadas.',
+			'secKeyDesc' => 'Podes encontrar a chave secreta da sua conta nas tuas configurações. Esta chave é essencial para garantir o acesso à tua conta. Por favor, mantém-la em segurança e privada.',
+			'uploadSendMedia' => 'Podes fazer o carregamento e enviar multimidia logo após a selecionar ou à sua captação.',
+			'uploadPasteUrl' => 'Podes fazer o carregamento ou colar um url para a tua imagem preferida',
+			'canUploadPastLink' => 'Podes fazer o carregamento, colar um link ou escolher um evento kind 1063 para o teu vídeo.',
+			'findPaidNoteCorrect' => 'Achas esta nota paga correta.',
+			'findPaidNoteMisleading' => 'Achas esta nota paga enganosa.',
+			'alreadyContributed' => 'Já contribuiste',
+			'alreadyVoted' => 'Já votaste nesta sondagem',
+			'congratsDesc' => ({required Object number}) => 'Foste recompensado com ${number} Xp pelas seguintes ações, sê ativo e ganha recompensas!',
+			'youHaveLeftNote' => 'Deixaste uma nota nesta nota paga:',
+			'noRewards' => 'Não tens recompensas, interage ou escreve notas verificadas para as obter.',
+			'noWalletLinkedMessage' => 'Não tens nenhuma carteira vinculada ao teu perfil, desejas vincular esta carteira?',
+			'noWalletLinkedToYouProfile' => 'Não tens nenhuma carteira vinculada ao teu perfil.',
+			'youHaveRated' => 'Classificaste',
+			'ratedNoteSealed' => 'Avaliaste a seguinte nota, a qual foi selada:',
+			'youRatedHelpful' => 'classificaste isto como útil',
+			'youRatedNotHelpful' => 'classificaste isto como não útil',
+			'ownReceivedSat' => ({required Object number}) => 'Você recebeu ${number} Sábados',
+			'ownSentSat' => ({required Object number}) => 'Você enviou ${number} Sats',
+			'voteToSeeStats' => 'Você deveria votar para poder ver as estatísticas',
+			'you' => 'Você: ',
+			'confirmDeleteContent' => ({required Object type}) => 'Você está prestes a excluir isto ${type}, deseja prosseguir?',
+			'confirmDeleteBookmarkList' => 'Você está prestes a excluir esta lista de favoritos. Deseja continuar?',
+			'confirmDeleteDraft' => 'Você está prestes a excluir este rascunho. Deseja prosseguir?',
+			'deleteCoverPicDesc' => 'Você está prestes a excluir sua foto de capa. Deseja prosseguir?',
+			'youreAllSet' => 'Você está pronto',
+			'switchToMonolayout' => 'Você está mudando para um layout mono e possui elementos em ambos os lados. Isso apagará o conteúdo do contêiner. Deseja continuar?',
+			'usingViewMode' => 'Você está usando o modo de visualização',
+			'muteUserDesc' => ({required Object name}) => 'Você está prestes a silenciar ${name}, deseja prosseguir?',
+			'unmuteUserDesc' => ({required Object name}) => 'Você está prestes a ativar o som ${name}, deseja prosseguir?',
+			'articlePublished' => 'Seu artigo foi publicado!',
+			'yourDisplayName' => 'Seu nome de exibição',
+			'yourNoteSealed' => 'Sua seguinte nota acabou de ser selada:',
+			'yourName' => 'Seu nome',
+			'ratingDeleted' => 'Sua avaliação foi excluída',
+			'ratingSubmittedCheckReward' => 'Sua classificação foi enviada. Verifique sua página de recompensas para reivindicar sua recompensa de classificação',
+			'verifiedNoteAdded' => 'A tua nota verificada foi adicionada. Verifica a tua página de recompensas para resgatar a tua recompensa por escrito',
+			'verifiedNoteSealed' => 'A tua nota verificada foi selada.',
+			'yourWebsite' => 'O teu Website',
+			'youtubeUrl' => 'Url do YouTube',
+			'zap' => 'zap',
+			'zapPoll' => 'Sondagem Zap',
+			'zapPollCustomization' => 'Personalização da sondagem Zap',
+			'zapPollNevent' => 'Sondagem Zap nevent',
+			'zapSplits' => 'Divisões de Zap',
+			'zappers' => 'Zappers',
+			'zaps' => 'zaps',
+			'zapReceived' => 'Zaps recebidos',
+			'zapSent' => 'Zaps enviados',
+			'comingSoon' => 'Em breve',
+			'content' => 'Contente',
+			'expiresOn' => ({required Object date}) => 'Expira em ${date}',
+			'reactions' => 'Reações',
+			'reposts' => 'Republicações',
+			'collapseNote' => 'Recolher nota',
+			'notifDisabled' => 'As notificações estão desativadas!',
+			'notifDisabledMessage' => 'As notificações estão desabilitadas para este tipo, você pode habilitá-las nas configurações de notificações.',
+			'oneNotifOptionAvailable' => 'Deve haver pelo menos uma opção de notificação disponível.',
+			'readAll' => 'Leia tudo',
+			'usernameTaken' => 'O nome de usuário está em uso',
+			'usernameRequired' => 'O nome de usuário é obrigatório',
+			'deleteWalletConfirmation' => 'Certifique-se de salvar sua frase de conexão NWC com segurança, pois não podemos ajudar na recuperação de carteiras perdidas.',
+			'unsupportedKind' => 'Tipo não compatível',
+			'analyticsCrashlytics' => 'Crashytics',
+			'analyticsCache' => 'Crashlytics e cache',
+			'analyticsCacheOn' => 'A Crashytics foi ativada.',
+			'analyticsCacheOff' => 'Crashytics foi desligado.',
+			'shareNoUsage' => 'Você não compartilha que a Crashlytics conosco no momento.',
+			'wantShareAnalytics' => 'Quer compartilhar o Crashlytics?',
+			'yakihonneAnCr' => 'Crashlytics de Yakihonne',
+			'crashlyticsTerms' => 'A coleta de Crashlytics anonimizados é vital para refinar os recursos e a experiência do usuário do nosso aplicativo. ',
+			'collectAnonymised' => 'Coletamos o Crashytics anonimizado para melhorar a experiência do aplicativo.',
+			'linkWalletToProfile' => 'Link Wallet com seu perfil',
+			'linkWalletToProfileDesc' => 'A carteira vinculada será usada para receber SATs',
+			'noWalletLinked' => 'Você não tem carteira ligada ao seu perfil, considere vincular um dos seus no menu acima',
+			'addPoll' => 'Adicionar pesquisa',
+			'browsePolls' => 'Navegue por pesquisas',
+			'maciPolls' => 'Poll Maci',
+			'beta' => 'Beta',
+			'choosePollType' => 'Escolha um tipo de enquete',
+			'created' => 'Criado',
+			'tallying' => 'Contatando',
+			'ended' => 'Terminou',
+			'closed' => 'Fechado',
+			'voteResultsBy' => 'Resultados da votação por',
+			'votes' => 'votos',
+			'voiceCredit' => 'Crédito de voz',
+			'viewDetails' => 'Ver detalhes',
+			'signup' => 'Inscrever-se',
+			'notDownloadProof' => 'Não foi possível baixar provas',
+			'name' => 'Nome',
+			'status' => 'Status',
+			'circuit' => 'Circuito',
+			'votingSystem' => 'Sistema de votação',
+			'proofSystem' => 'Sistema de prova',
+			'gasStation' => 'Posto de gasolina',
+			'totalFund' => '(Fundo Total)',
+			'roundStart' => 'Início redondo',
+			'roundEnd' => 'Final redondo',
+			'operator' => 'Operador',
+			'contractCreator' => 'Criador de contratos',
+			'contractAddress' => 'Endereço do contrato',
+			'blockHeight' => 'Altura do bloco',
+			'atContractCreation' => ({required Object number}) => '${number} (na criação de contratos)',
+			'zkProofs' => 'Provas de zk',
+			'downloadZkProofs' => 'Baixar provas',
+			'walletConnectionString' => 'String de conexão com carteira',
+			'walletConnectionStringDesc' => 'Certifique -se de copiar ou exportar com segurança sua sequência de conexão com carteira. ',
+			'export' => 'Exportar',
+			'logout' => 'Log Out',
+			'exportAndLogout' => 'Exportar e fazer logon',
+			'exportWalletsDesc' => 'Parece que você tem carteiras ligadas à sua conta. ',
+			'manageWallets' => 'Gerenciar carteiras',
+			'roundDuration' => 'Duração redonda',
+			'startAt' => ({required Object date}) => 'Começa em: ${date}',
+			'loginAction' => 'Conecte-se',
+			'addPicture' => 'Adicione a imagem',
+			'editPicture' => 'Editar imagem',
+			'exportKeys' => 'Chaves de exportação',
+			'mutedUser' => 'Usuário silenciado',
+			'unaccessibleContent' => 'Conteúdo inacessível',
+			'mutedUserDesc' => 'Você silenciou este usuário, considere desmembrar para visualizar este conteúdo',
+			'commentHidden' => 'Este comentário está escondido',
+			'upcoming' => 'Por vir',
+			'exportCredentials' => 'Credenciais de exportação',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
+			'loginToYakihonne' => 'Faça login em Yakihonne',
+			'alreadyUser' => 'Já é um usuário?',
+			'createPoll' => 'Criar enquete',
+			'gasStationTotal' => 'Posto de gasolina (total financiado)',
+			'gasStationRemaining' => 'Posto de gasolina (saldo restante)',
+			'paste' => 'Colar',
+			'manual' => 'Manual',
+			'contacts' => 'Contatos',
+			'typeManualDesc' => 'Digite o endereço de raios, fatura de raios ou lnurl',
+			'useValidPaymentRequest' => 'Por favor, use solicitação de pagamento válida',
+			'save' => 'Salvar',
+			'saveImageGallery' => 'A imagem foi baixada na sua galeria',
+			'errorSavingImage' => 'Ocorreu o erro ao baixar a imagem',
+			'copyImageGallery' => 'A imagem foi copiada para sua área de transferência',
+			'errorCopyImage' => 'Ocorreu o erro ao copiar a imagem',
+			'scan' => 'Scan',
+			'invalidLightningAddress' => 'Endereço de raios inválidos',
+			'deleteAccountDesc' => 'Você está prestes a excluir sua conta, deseja prosseguir?',
+			'paymentFailedInvoice' => 'Falha no pagamento: verifique a validade desta fatura',
+			'validSatsAmount' => 'Defina uma quantidade válida de SATs',
+			'placeholder' => 'Espaço reservado',
+			'inputFieldCustomization' => 'Personalização do campo de entrada',
+			'addInputField' => 'Adicione o campo de entrada',
+			'addButton' => 'Adicionar botão',
+			'selectImage' => 'Selecione Imagem',
+			'moveLeft' => 'Mover para a esquerda',
+			'moveRight' => 'Mova -se para a direita',
+			'buttonRequired' => 'Deve haver pelo menos um botão disponível',
+			'missingInputDesc' => 'Parece que você está usando uma das funções personalizadas que requer um componente de campo de entrada sem incorporar um no seu widget inteligente, adicione um campo de entrada para que a função funcione corretamente.',
+			'countdown' => 'Contagem regressiva',
+			'contentEndsAt' => 'O conteúdo termina em',
+			'countdownTime' => 'O tempo de contagem regressiva é obrigatório',
+			'contentEndsDate' => 'O conteúdo termina a data é obrigatória',
+			'lnMandatory' => 'O endereço de relâmpago é obrigatório',
+			'pubkeysMandatory' => 'Pelo menos um perfil é obrigatório',
+			'buttonNoUrl' => 'URLs de botões são obrigatórios',
+			'shareWidgetImage' => 'Compartilhe a imagem do widget',
+			'inputField' => 'Campo de entrada',
+			'noReplies' => 'Sem respostas',
+			'message' => 'Mensagem',
+			'chat' => 'Bater papo',
+			'onlyLettersNumber' => 'Somente cartas e números permitidos',
+			'appCache' => 'Cache de app',
+			'cachedData' => 'Dados em cache',
+			'cachedMedia' => 'Mídia em cache',
+			'cacheCleared' => 'Cache foi limpo',
+			'closeAppClearingCache' => 'É preferível reiniciar o aplicativo ao limpar o cache para garantir que todas as alterações tenham efeito e o aplicativo seja executado sem problemas',
+			'appCacheNotice' => 'Seu cache de aplicativos está crescendo em tamanho. ',
+			'manageCache' => 'Gerencie o cache',
+			'filterByTime' => 'Filtre por tempo',
+			'allTime' => 'O tempo todo',
+			'oneMonth' => '1 mês',
+			'threeMonths' => '3 meses',
+			'sixMonths' => '6 meses',
+			'oneYear' => '1 ano',
+			'defaultZapAmount' => 'Valor Zap padrão',
+			'oneTapZap' => 'Ativar um toque zap',
+			'verify' => 'Verificar',
+			'reset' => 'reiniciar',
+			'appCannotVerified' => 'O aplicativo não pode ser verificado ou inválido',
+			'useValidAppUrl' => 'Use um URL de aplicativo válido',
+			'app' => 'App',
+			'userNotConnected' => 'Usuário não conectado',
+			'userCannotSignEvent' => 'Este usuário não pode assinar eventos.',
+			'invalidEvent' => 'Evento inválido',
+			'eventCannotBeSigned' => 'Evento não pode ser assinado',
+			'signEvent' => 'Evento de assinatura',
+			'sign' => 'Sinal',
+			'signPublish' => 'Sign & Publish',
+			'signEventDes' => 'Você está prestes a assinar o seguinte evento',
+			'enableAutomaticSigning' => 'Ativar assinatura automática',
+			'tools' => 'Ferramentas',
+			'searchSmartWidgets' => 'Procure widgets inteligentes',
+			'noToolsAvailable' => 'Nenhuma ferramenta disponível',
+			'underMaintenance' => 'Sob manutenção',
+			'smartWidgetMaintenance' => 'O Widget Smart está abaixado para manutenção. ',
+			'mySavedTools' => 'Minhas ferramentas salvas',
+			'availableTools' => 'Ferramentas disponíveis',
+			'remove' => 'Remover',
+			'youHaveNoTools' => 'Você não tem ferramentas',
+			'discoverTools' => 'Descubra ferramentas publicadas para ajudá -lo com sua criação de conteúdo',
+			'addWidgetTools' => 'Adicione ferramentas de widget',
+			'widgetSearch' => 'Pesquisa de widgets',
+			'widgetSearchDesc' => 'Procurando por widgets inteligentes publicados e o que as pessoas fizeram',
+			'getInspired' => 'Inspire -se',
+			'getInspirtedDesc' => 'Peça à nossa IA para ajudá -lo a construir seu widget inteligente',
+			'trySearch' => 'Experimente diferentes métodos de pesquisa',
+			'typeForCommands' => 'Tipo / para comandos',
+			'loadMore' => 'Carregar mais',
+			'searchingFor' => ({required Object name}) => 'Procurar: ${name}',
+			'playground' => 'Playground',
+			'typeKeywords' => 'Tipo Palavras -chave (ou seja: palavra -chave1, palavra -chave2 ..)',
+			'enableGossip' => 'Modelo de fofoca',
+			'enableGossipDesc' => 'O modelo de fofoca está desativado por padrão. ',
+			'enableExternalBrowser' => 'Use navegador externo',
+			'restartAppTakeEffect' => 'Reinicie o aplicativo para que a ação entre em vigor',
+			'tips' => 'Pontas',
+			'docs' => 'Documentos',
+			'tryMiniApp' => 'Experimente seu mini-aplicativo com testes interativos e práticos.',
+			'exploreOurRepos' => 'Explore nossos repositórios ou verifique nossos Widgets Smart.',
+			'bringAi' => 'Estamos trazendo ai!',
+			'bringAiDesc' => 'Estamos criando um assistente de IA para otimizar seu trabalho com widgets programáveis ​​e desenvolvimento de mini-app-mantenha-se de olho!',
+			'notesCount' => ({required Object number}) => '${number} Nota (s)',
+			'mixedContentCount' => ({required Object number}) => '${number} contente',
+			'noApp' => 'Nenhum aplicativo adequado pode ser encontrado para abrir o arquivo exportado',
+			'andMore' => ({required Object number}) => '& ${number} outros)',
+			'addFilter' => 'Adicione o filtro',
+			'entitleFilter' => 'Direito do filtro',
+			'includedWords' => 'Palavras incluídas',
+			'excludedWords' => 'Palavras excluídas',
+			'hideSensitiveContent' => 'Ocultar conteúdo sensível',
+			'mustIncludeThumbnail' => 'Deve incluir miniatura',
+			'forArticles' => 'Para artigos',
+			'forVideos' => 'Para vídeos',
+			'forCurations' => 'Para curações',
+			'articleMinWords' => 'Conteúdo contagem de palavras mínimas',
+			'showOnlyArticleMedia' => 'Mostre apenas artigos com mídia',
+			'showOnlyNotesMedia' => 'Mostre apenas notas com mídia',
+			'curationsType' => 'Tipo de curadoria',
+			'minItemCount' => 'Itens mínimos contam',
+			'addWord' => 'Adicione uma palavra adequada',
+			'wordNotInIncluded' => 'Verifique se a palavra não está nas palavras incluídas',
+			'wordNotInExcluded' => 'Verifique se a palavra não está nas palavras excluídas',
+			'fieldRequired' => 'Campo necessário',
+			'filterAdded' => 'Filtro foi adicionado',
+			'filterUpdated' => 'O filtro foi atualizado',
+			'filterDeleted' => 'O filtro foi excluído',
+			'filters' => 'Filtros',
+			'contentFeed' => 'Feed de conteúdo',
+			'communityFeed' => 'Feed comunitário',
+			'relaysFeed' => 'Relés feed',
+			'marketplaceFeed' => 'Feed de mercado',
+			'addYourFeed' => 'Adicione seu feed preferido',
+			'myList' => 'Minha lista',
+			'allFreeFeeds' => 'Todos os feeds gratuitos',
+			'noRelays' => 'Nenhum relés está presente',
+			'addRelays' => 'Adicione sua lista de revezamentos para desfrutar de um feed limpo e personalizado',
+			'adjustYourFeedList' => 'Ajuste sua lista de feeds',
+			'addRelayUrl' => 'Adicione URL do relé',
+			'feedOptionEnabled' => 'Pelo menos uma opção de alimentação deve ser ativada',
+			'feedSetUpdate' => 'O conjunto de feeds foi atualizado',
+			'global' => 'Global',
+			'fromNetwork' => 'Da rede',
+			'top' => 'Principal',
+			'showFollowingList' => 'Seu feed atual é baseado na lista seguinte de outra pessoa, comece a seguir as pessoas para adaptar seu feed de sua preferência',
+			'from' => 'De',
+			'to' => 'Para',
+			'dayMonthYear' => 'dd/mm/aaaa',
+			'fromDateMessage' => 'A data de \'de\' deve ser mais cedo do que \'a\' data',
+			'toDateMessage' => '\'Data\' deve ser mais tarde que \'data\'',
+			'noResults' => 'Sem resultados',
+			'noResultsFilterMessage' => 'Parece que você está aplicando um filtro personalizado, por favor ajuste os parâmetros e datas para adquirir mais dados',
+			'noResultsNoFilterMessage' => 'Nada foi encontrado, altere sua fonte de conteúdo ou aplique diferentes parâmetros de filtro',
+			'addToNotes' => 'Adicione às notas',
+			'addToDiscover' => 'Adicione para descobrir',
+			'shareRelayContent' => 'Compartilhe o conteúdo do relé',
+			'shareRelayUrl' => 'Compartilhe URL do relé',
+			'basic' => 'Básico',
+			'privateMessages' => 'Mensagens privadas',
+			'pushNotifications' => 'Notificações push',
+			'repliesView' => 'Visualização de respostas',
+			'threadView' => 'Fio',
+			'boxView' => 'Caixa',
+			'viewAs' => 'Ver como',
+			'feedSettings' => 'Configurações de alimentação',
+			'appliedFilterDesc' => 'Esta nota está oculta devido ao filtro aplicado atual.',
+			'showNote' => 'Mostre nota',
+			'allMedia' => 'Toda a mídia',
+			'searchInNostr' => 'Pesquise em Nostr',
+			'findPeopleContent' => 'Encontre pessoas, anotações e conteúdo',
+			'activeService' => 'Serviço ativo',
+			'regularServers' => 'Servidores regulares',
+			'blossomServers' => 'Servidores de flor',
+			'mirrorAllServer' => 'Espelhe todos os servidores',
+			'mainServer' => 'Servidor principal',
+			'select' => 'Selecione',
+			'noServerFound' => 'Nenhum servidor encontrado',
+			'serverExists' => 'O servidor já existe em sua lista',
+			'invalidUrl' => 'Formato de URL inválido',
+			'serverPath' => 'Caminho do servidor',
+			'errorAddingBlossom' => 'Ocorreu o erro ao adicionar servidor de flor',
+			'errorSelectBlossom' => 'Ocorreu o erro ao selecionar o servidor de flor',
+			'errorDeleteBlossom' => 'Ocorreu o erro ao excluir o servidor de flor',
+			'wotConfig' => 'Web of Trust Configuration',
+			'wot' => 'Web of Trust',
+			'wotThreshold' => 'Limite da Web of Trust',
+			'postActions' => 'Pós -ações',
+			'enabledFor' => 'Ativado para',
+			'dmRelayTitle' => 'Mensagens privadas Os relés não estão configurados!',
+			'dmRelayDesc' => 'Atualize sua lista de relés de acordo. ',
+			'youFollow' => 'Você segue',
+			'quotaLimit' => 'Você excedeu seu limite diário de cota',
+			'alwaysUseExternal' => 'Sempre use zaps de carteira externos',
+			'alwaysUseExternalDesc' => 'Use um aplicativo de carteira de raios externos em vez da carteira embutida de Yakihonne para todas as transações ZAP.',
+			'unreachableExternalWallet' => 'Carteira externa inacessível',
+			'secureStorageDesc' => 'Suas chaves são armazenadas com segurança no seu dispositivo e nunca compartilhadas conosco ou com qualquer outra pessoa.',
+			'pubkeySharedDesc' => 'Seguro de compartilhar - isso identifica você no Nostr.',
+			'privKeyDesc' => 'Mantenha -se privado - faça o backup com segurança para acessar sua conta em outro lugar.',
+			'settingsKeysDesc' => 'Gerencie suas teclas NOSTR para identidade de rede, assinatura de eventos e pós -autenticação.',
+			'settingsRelaysDesc' => 'Configure conexões de relé NOSTR para armazenar e distribuir eventos.',
+			'settingsCustomizationDesc' => 'Personalize sua exibição de feed, gestos, pré -visualizações e preferências de Yakihonne para uma melhor experiência na nariz.',
+			'settingsNotificationsDesc' => 'Notificações de controle para mensagens, menções, reações e outros eventos da nariz.',
+			'settingsContentDesc' => 'Controle interações de conteúdo, configurações de privacidade, manuseio de mídia e preferências de mensagens no Nostr.',
+			'settingsLanguageDesc' => 'Escolha o seu idioma preferido para a interface Yakihonne e a tradução de conteúdo.',
+			'settingsWalletDesc' => 'Conecte e gerencie as carteiras Lightning Bitcoin para enviar/receber zaps com quantidades personalizáveis e integração externa.',
+			'settingsAppearanceDesc' => 'Personalize a aparência visual de Yakihonne para corresponder às suas preferências e à visualização do conforto.',
+			'settingsCacheDesc' => 'Gerencie o monitoramento do desempenho do aplicativo, o relatório de erros e a otimização de armazenamento para operação suave.',
+			'addQuickRelayDesc' => 'Adicione rapidamente um novo revezamento entrando em seu URL.',
+			'fewerRelays' => 'Menos relés estáveis = melhor desempenho e sincronização mais rápida.',
+			'greenDotsDesc' => 'Os pontos verdes mostram conexões ativas.',
+			'redDotsDesc' => 'Os pontos vermelhos mostram relés offline.',
+			'greyDotsDesc' => 'Os pontos cinza mostram relés pendentes.',
+			'homeFeedCustomDesc' => 'Escolha Responder o estilo de exibição (caixa ou tópico) e gerencie as preferências de sugestões para pessoas, conteúdo e interesses.',
+			'NewPostDesc' => 'Escolha o que acontece quando você pressiona há muito tempo ao criar postagens (atualmente definidas para observar).',
+			'profilePreviewDesc' => 'Mostre visualizações ao perfil de usuário ao tocar em nomes de usuário em seu feed.',
+			'collapseNoteDesc' => 'Minimize automaticamente as postagens longas para manter seu feed limpo e legível.',
+			'pushNotificationsDesc' => 'Obtenha alertas instantâneos no seu dispositivo. ',
+			'privateMessagesDesc' => 'Seja alertado para novas mensagens diretas e conversas privadas.',
+			'followingDesc' => 'Seja notificado quando as pessoas que você seguirem postagem de novo conteúdo.',
+			'mentionsDesc' => 'Seja alertado quando alguém mencionar ou responder às suas postagens.',
+			'repostsDesc' => 'Seja alertado quando alguém compartilha ou repasse seu conteúdo.',
+			'reactionsDesc' => 'Seja notificado quando alguns curtidas ou reagirem às suas postagens.',
+			'zapDesc' => 'Seja notificado ao receber dicas de bitcoin (zaps) em suas postagens.',
+			'muteListDesc' => 'Veja e gerencie os usuários que você impediu de aparecer em seu feed.',
+			'mediaUploaderDesc' => 'Escolha qual serviço carrega suas imagens e arquivos de mídia.',
+			'autoSignDesc' => 'Assine automaticamente os eventos solicitados por mini aplicativos (widgets de ação/ferramenta) sem confirmação manual a cada vez.',
+			'gossipDesc' => 'Gerenciamento sofisticado de relé que encontra automaticamente as postagens de seus seguidores em diferentes relés, minimizando conexões e se adaptando aos relés offline.',
+			'useExternalBrowsDesc' => 'Abra os links no seu aplicativo de navegador padrão em vez do navegador embutido.',
+			'secureDmDesc' => 'Use o mais recente padrão de mensagens privadas (NIP-17) com criptografia avançada. ',
+			'wotConfigDesc' => 'Um mecanismo de confiança descentralizado usando atestados sociais para estabelecer reputação dentro do protocolo Nostr.',
+			'appLangDesc' => 'Escolha o idioma para a interface, menus e botões de Yakihonne.',
+			'contentTransDesc' => 'Selecione o serviço de tradução para postagens em idiomas estrangeiros.',
+			'planDesc' => 'Seu nível atual de tradução e limites de uso.',
+			'manageWalletsDesc' => 'Adicione e organize suas carteiras de raios para enviar e receber zaps de bitcoin no Nostr.',
+			'defaultZapDesc' => 'Defina o valor padrão do Bitcoin (nos SATs) ao enviar zaps rápidos para as postagens.',
+			'enableZapDesc' => 'Uma torneira envia o valor padrão instantaneamente. ',
+			'externalWalletDesc' => 'Use um aplicativo de carteira de raios externos em vez da carteira embutida de Yakihonne para todas as transações ZAP.',
+			'fontSizeDesc' => 'Ajuste o tamanho do texto em todo o aplicativo para melhor legibilidade - use o controle deslizante para aumentar o texto maior ou menor.',
+			'appThemeDesc' => 'Alterne entre o modo claro e escuro para personalizar a aparência visual do aplicativo.',
+			'crashlyticsDesc' => 'Relatórios de falhas anônimos e análise de aplicativos para ajudar a melhorar o desempenho e corrigir bugs. ',
+			'showSuggDesc' => 'Exiba recomendações gerais de conteúdo em seu feed.',
+			'showSuggPeople' => 'Mostre usuários recomendados a seguir com base em sua atividade.',
+			'showSuggContent' => 'Exiba postagens e artigos recomendados em seu feed.',
+			'showSuggInterests' => 'Mostre recomendações de tópico e interesse para descoberta.',
+			'striveToMake' => 'Nós nos esforçamos para tirar o melhor proveito de Nostr, nos apoiar abaixo ou nos enviar seu valioso feed: Zap, DMS, Github.',
+			'errorAmber' => 'Você rejeitou ou já está conectado ao Amber',
+			'useOneRelay' => 'Você deve manter pelo menos um relay conectado',
+			'automaticPurge' => 'Limpeza automática de cache',
+			'automaticPurgeDesc' => 'Limpa automaticamente o cache do aplicativo quando ele atinge 2GB. Mantém o desempenho e evita o uso excessivo de armazenamento.',
+			'customServices' => 'Serviços personalizados',
+			'defaultServices' => 'Serviços padrão',
+			'addService' => 'Adicionar serviço',
+			'customServicesDesc' => 'Serviços personalizados disponíveis adicionados por você.',
+			'urlRequired' => 'URL obrigatório',
+			'serviceAdded' => 'O serviço foi adicionado',
+			'showRawEvent' => 'Mostrar evento bruto',
+			'rawEventData' => 'Dados brutos do evento',
+			'copyRawEventData' => 'Dados brutos do evento copiados! 👏',
+			'kind' => 'Tipo',
+			'shortNote' => 'Nota curta',
+			'postedOnDate' => 'Publicado em',
+			'showMore' => '... mostrar mais',
+			'accountDeleted' => 'Esta conta foi excluída e não pode mais ser acessada.',
+			'ok' => 'OK',
+			'redeem' => 'Resgatar',
+			'redeemCode' => 'Resgatar código',
+			'redeemAndEarn' => 'Resgatar e ganhar',
+			'redeemingFailed' => 'Falha ao resgatar',
+			'redeemInProgress' => 'Resgatando código...',
+			'redeemCodeDesc' => 'Digite seu código para resgatar',
+			'missingCode' => 'Código ausente',
+			'missingPubkey' => 'Chave pública ausente',
+			'invalidPubkey' => 'Chave pública inválida',
+			'missingLightningAddress' => 'Endereço Lightning ausente',
+			'codeNotFound' => 'Código não encontrado',
+			'redeemCodeRequired' => 'Código de resgate obrigatório',
+			'redeemCodeInvalid' => 'Código de resgate inválido',
+			'codeBeingRedeemed' => 'Seu código está sendo resgatado. Se não for concluído, tente novamente em breve.',
+			'redeemCodeSuccess' => 'Código resgatado com sucesso',
+			'redeemFailed' => 'Não foi possível resgatar o código, tente novamente mais tarde.',
+			'codeAlreadyRedeemed' => 'O código já foi resgatado',
+			'satsEarned' => ({required Object amount}) => '+${amount} sats ganhos.',
+			'selectReceivingWallet' => 'Selecionar carteira de recebimento',
+			'redeemCodeMessage' => 'Resgate sats grátis com os códigos YakiHonne — basta inserir seu código e aumentar seu saldo instantaneamente.',
+			'scanCode' => 'Escanear código',
+			'enterCode' => 'Inserir código',
+			'errorSharingMedia' => 'Erro ao compartilhar mídia',
+			'open' => 'Abrir',
+			'openUrl' => 'Abrir URL',
+			'openUrlDesc' => ({required Object url}) => 'Deseja abrir "${url}"?',
+			'openUrlPrompt' => 'Aviso de abertura de URL',
+			'openUrlPromptDesc' => 'Um aviso de segurança exibindo a URL completa antes de abri-la no navegador.',
+			'whatsNew' => 'Novidades',
+			'appCustom' => 'Personalização do aplicativo',
+			'poll' => 'Enquete',
+			'pendingEvents' => 'Eventos pendentes',
+			'pendingEventsDesc' => 'Os eventos pendentes são criados quando você está offline ou com conexão fraca. Eles serão enviados automaticamente quando sua conexão com a internet for restabelecida.',
+			'singleColumnFeed' => 'Feed de coluna única',
+			'singleColumnFeedDesc' => 'Exiba o feed inicial como uma única coluna larga para melhor legibilidade.',
+			'waitingPayment' => 'Aguardando pagamento',
+			'copyId' => 'Copiar ID',
+			'idCopied' => 'ID copiado! 👏',
+			'republish' => 'Republicar',
+			'useRelayRepublish' => 'Você deve escolher pelo menos um relay para republicar.',
+			'republishSucces' => 'O evento foi republicado com sucesso!',
+			'errorRepublishEvent' => 'Ocorreu um erro ao republicar o evento',
+			'remoteSigner' => 'Assinador remoto',
+			'amber' => 'Amber',
+			'useUrlBunker' => 'Use a URL abaixo para se conectar ao seu bunker',
+			'or' => 'Ou',
+			'messagesDisabled' => 'Mensagens desativadas',
+			'messagesDisabledDesc' => 'Você está conectado a um assinador remoto. Mensagens diretas podem conter grandes quantidades de dados e podem não funcionar corretamente. Para a melhor experiência, use um assinador local para habilitar mensagens diretas.',
+			'sharedOn' => ({required Object date}) => 'Compartilhado em ${date}',
+			'shareAsImage' => 'Compartilhar como imagem',
+			'viewOptions' => 'Opções de visualização',
+			'feedCustomization' => 'Personalização do feed',
+			'defaultReaction' => 'Reação padrão',
+			'defaultReactionDesc' => 'Defina uma reação padrão para reagir às publicações.',
+			'oneTapReaction' => 'Ativar reação com um toque',
+			'oneTapReactionDesc' => 'Reaja instantaneamente com a reação padrão ao tocar uma vez. Toque duplo abre a lista de emojis para escolher. Quando desativado, o toque duplo envia a reação padrão.',
+			'sendingTo' => 'Enviando para',
+			'shareEmptyUsers' => 'A lista de seguidos e amigos aparecerá aqui para uma experiência de compartilhamento mais rápida',
+			'publishOnly' => 'Publicar somente em',
+			'protectedEvent' => 'Evento protegido',
+			'protectedEventDesc' => 'Um evento protegido é um evento que apenas seu autor pode republicar. Isso mantém o conteúdo autêntico e impede que outros o copiem ou republicem.',
+			'browseRelay' => 'Navegar pelo relay',
+			'addFavorite' => 'Adicionar aos favoritos',
+			'removeFavorite' => 'Remover dos favoritos',
+			'collections' => 'Coleções',
+			'online' => 'Online',
+			'offline' => 'Offline',
+			'network' => 'Rede',
+			'followedBy' => ({required Object number}) => 'Seguido por ${number}',
+			'favoredBy' => ({required Object number}) => 'Favoritado por ${number}',
+			'requiredAuthentication' => 'Autenticação necessária',
+			'relayOrbits' => 'Órbitas de relay',
+			'relayOrbitsDesc' => 'Navegue e explore os feeds dos relays',
+			'people' => 'Pessoas',
+			'youNotConnected' => 'Você não está conectado',
+			'youNotConnectedDesc' => 'Faça login na sua conta para navegar pelos relays da sua rede',
+			'checkingRelayConnectivity' => 'Verificando conectividade do relay',
+			'unreachableRelay' => 'Relay inacessível',
+			'engageWithUsers' => 'Interaja para expandir',
+			'engageWithUsersDesc' => 'Interagir com mais usuários ajuda a descobrir novos relays e aumentar sua lista de relays para uma experiência mais rica e conectada.',
+			'loadingChatHistory' => 'Carregando histórico de chat...',
+			'contentActionsOrder' => 'Ordem das ações do conteúdo',
+			'contentActionsOrderDesc' => 'Reorganize facilmente as interações das suas publicações na ordem que preferir.',
+			'quotes' => 'Citações',
+			'eventLoading' => 'Carregando evento...',
+			'loadMessages' => 'Carregar mensagens',
+			'messagesNotLoaded' => 'Mensagens não carregadas',
+			'messagesNotLoadedDesc' => 'As mensagens não foram carregadas devido ao uso de um assinante remoto local. Se desejar carregá-las, clique no botão abaixo.',
+			'noteLoading' => 'Carregando nota...',
+			'hideNonFollowedMedia' => 'Ocultar mídia de não seguidos',
+			'hideNonFollowedMediaDesc' => 'Oculta automaticamente imagens e vídeos de usuários que você não segue até que toque para exibir.',
+			'clickToView' => 'Clique para visualizar',
+			'relayFeedListEmpty' => 'Lista de relés vazia',
+			'relayFeedListEmptyDesc' => 'Adicione mais relés à sua lista para aproveitar um feed personalizado.',
+			'addRelay' => 'Adicionar relés',
+			'hiddenContent' => 'Conteúdo oculto',
+			'hiddenContentDesc' => 'Ocultamos este conteúdo porque você não segue esta conta.',
+			'enabledActions' => 'Ações habilitadas',
+			'enabledActionsDesc' => 'Nenhuma ação habilitada disponível.',
+			_ => null,
+		};
 	}
 }
 

@@ -8,7 +8,6 @@ import '../../../../models/article_model.dart';
 import '../../../../models/bookmark_list_model.dart';
 import '../../../../models/curation_model.dart';
 import '../../../../models/detailed_note_model.dart';
-import '../../../../models/flash_news_model.dart';
 import '../../../../models/video_model.dart';
 import '../../../../repositories/nostr_data_repository.dart';
 import '../../../../repositories/nostr_functions_repository.dart';
@@ -24,7 +23,7 @@ class BookmarkDetailsCubit extends Cubit<BookmarkDetailsState> {
           BookmarkDetailsState(
             content: const <dynamic>[],
             metadatas: const <String, Metadata>{},
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             bookmarkListModel: bookmarkListModel,
             followings: contactListCubit.contacts,
             isLoading: true,
@@ -53,11 +52,11 @@ class BookmarkDetailsCubit extends Cubit<BookmarkDetailsState> {
     );
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (Set<String> mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
             ),
           );
         }
@@ -74,12 +73,16 @@ class BookmarkDetailsCubit extends Cubit<BookmarkDetailsState> {
     final String requestId = NostrFunctionsRepository.getBookmarks(
       bookmarksModel: state.bookmarkListModel,
       contentFunc: (List<dynamic> content) {
-        globalContent = content;
+        globalContent = [
+          ...content,
+          ...state.bookmarkListModel.bookmarkedTags,
+          ...state.bookmarkListModel.bookmarkedUrls,
+        ];
 
         if (!isClosed) {
           emit(
             state.copyWith(
-              content: content,
+              content: globalContent,
               isLoading: false,
             ),
           );
@@ -128,16 +131,6 @@ class BookmarkDetailsCubit extends Cubit<BookmarkDetailsState> {
         );
       }
     } else if (bookmarkType == bookmarksTypes[3]) {
-      final List<FlashNews> newContent =
-          globalContent.whereType<FlashNews>().toList();
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            content: newContent,
-          ),
-        );
-      }
-    } else if (bookmarkType == bookmarksTypes[4]) {
       final List<DetailedNoteModel> newContent =
           globalContent.whereType<DetailedNoteModel>().toList();
       if (!isClosed) {
@@ -147,9 +140,30 @@ class BookmarkDetailsCubit extends Cubit<BookmarkDetailsState> {
           ),
         );
       }
-    } else if (bookmarkType == bookmarksTypes[5]) {
+    } else if (bookmarkType == bookmarksTypes[4]) {
       final List<VideoModel> newContent =
           globalContent.whereType<VideoModel>().toList();
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            content: newContent,
+          ),
+        );
+      }
+    } else {
+      if (!isClosed) {
+        emit(state.copyWith(content: []));
+      }
+
+      final newContent = globalContent
+          .whereType<BookmarkOtherType>()
+          .where(
+            (element) => bookmarkType == bookmarksTypes[5]
+                ? !element.isTag
+                : element.isTag,
+          )
+          .toList();
+
       if (!isClosed) {
         emit(
           state.copyWith(

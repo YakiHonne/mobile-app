@@ -60,7 +60,7 @@ class ContactListCubit extends Cubit<ContactListState> {
       c,
       currentUserRelayList.writes,
       currentSigner!,
-      nostrRepository.mutes,
+      nostrRepository.muteModel.usersMutes,
     );
 
     syncContacts();

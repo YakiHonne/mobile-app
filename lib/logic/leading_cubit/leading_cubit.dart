@@ -77,11 +77,12 @@ class LeadingCubit extends Cubit<LeadingState> {
 
     // Listen for mutes changes
     mutesStream = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         final newContent = List<Event>.from(state.content)
           ..removeWhere(
-            (e) => mutes.contains(e.pubkey),
+            (e) => isUserMuted(e.pubkey) || isThreadMutedByEvent(e),
           );
+
         if (!isClosed) {
           emit(
             state.copyWith(

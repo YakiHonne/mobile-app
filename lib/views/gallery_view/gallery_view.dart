@@ -9,7 +9,6 @@ import 'package:interactiveviewer_gallery_plus/interactiveviewer_gallery_plus.da
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../common/media_handler/media_handler.dart';
-import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../../utils/video_utils.dart';
@@ -432,7 +431,7 @@ class OpenGalleryWidget extends HookWidget {
                       ),
                       const Spacer(),
                       CustomIconButton(
-                        onClicked: () => saveNetworkImage(
+                        onClicked: () => MediaHandler.saveNetworkImage(
                           currentSource.value.key,
                         ),
                         vd: -1,
@@ -545,7 +544,7 @@ class OpenGalleryWidget extends HookWidget {
             Expanded(
               child: LinearProgressIndicator(
                 value: (currentIndex.value + 1) / media.length,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(kDefaultPadding),
                 backgroundColor: Theme.of(context).cardColor,
               ),

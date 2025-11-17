@@ -101,8 +101,6 @@ PODS:
     - sqlite3/session
   - url_launcher_ios (0.0.1):
     - Flutter
-  - vibration (1.7.5):
-    - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -142,7 +140,6 @@ DEPENDENCIES:
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - vibration (from `.symlinks/plugins/vibration/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
@@ -214,8 +211,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
-  vibration:
-    :path: ".symlinks/plugins/vibration/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   wakelock_plus:
@@ -231,7 +226,7 @@ SPEC CHECKSUMS:
   device_info_plus: 71ffc6ab7634ade6267c7a93088ed7e4f74e5896
   emoji_picker_flutter: ece213fc274bdddefb77d502d33080dc54e616cc
   fc_native_video_thumbnail: b511cec81fad66be9b28dd54b9adb39d40fcd6cc
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_file_manager_ios: 799b040e45c8d2ed1226440f630ca69b65547e66
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
   flutter_native_splash: 35ddbc7228eafcb3969dcc5f1fbbe27c1145a4f0
@@ -258,10 +253,9 @@ SPEC CHECKSUMS:
   sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
   sqlite3_flutter_libs: 616267f2fca40e9c6af8c5d82324e05667040b6e
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
-  vibration: 8e2f50fc35bb736f9eecb7dd9f7047fbb6a6e888
-  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
-  wakelock_plus: fd58c82b1388f4afe3fe8aa2c856503a262a5b03
-  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
+  video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
+  wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
+  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
 PODFILE CHECKSUM: 6edd9a4d1d01753326f3162046603c5f96ecf265
 

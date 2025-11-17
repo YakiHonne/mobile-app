@@ -36,7 +36,7 @@ class CurationCubit extends Cubit<CurationState> {
             isArticleLoading: true,
             refresh: false,
             votes: const <String, VoteModel>{},
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             articles: const <Article>[],
             currentUserPubkey: nostrRepository.currentMetadata.pubkey,
             canBeZapped: false,
@@ -66,11 +66,11 @@ class CurationCubit extends Cubit<CurationState> {
     }
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (Set<String> mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
               refresh: !state.refresh,
             ),
           );

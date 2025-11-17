@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -1426,1399 +1427,1420 @@ class TranslationsTh extends Translations {
 	@override String get enabledActionsDesc => 'ไม่มีการกระทำที่เปิดใช้งาน';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <th>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsTh {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'userCommentedCurationYouIn': return ({required Object name}) => '\n${name} แสดงความคิดเห็นต่อคิวเรชันที่คุณถูกกล่าวถึง';
-			case 'userCommentedNoteYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นตื่อโน๊ตที่คุณถูกกล่าวถึง';
-			case 'userCommentedPaidNoteYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตโปรโมตที่คุณถูกกล่าวถึง';
-			case 'userCommentedPollYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อโพลล์ที่คุณถูกกล่าวถึง';
-			case 'userCommentedSmartWidgetYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง';
-			case 'userCommentedVideoYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อวิดีโอที่คุณถูกกล่าวถึง';
-			case 'userCommentedArticleYouIn': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อบทความที่คุณถูกกล่าวถึง';
-			case 'userCommentedYourArticle': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อบทความของคุณ';
-			case 'userCommentedYourCuration': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อคิวเรชันของคุณ';
-			case 'userCommentedYourNote': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตของคุณ';
-			case 'userCommentedYourPaidNote': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตโปรโมทของคุณ';
-			case 'userCommentedYourPoll': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อโพลล์ของคุณ';
-			case 'userCommentedYourSmartWidget': return ({required Object name}) => '${name} แสดงความคิดเห็นต่อสมาร์ทวิดเจ็ตของคุณ';
-			case 'userCommentedYourVideo': return ({required Object name}) => '${name} แสดงความคิดเห็นในวิดีโอของคุณ';
-			case 'userNoArticles': return ({required Object name}) => '${name} ไม่มีบทความใดๆ';
-			case 'userNoCurations': return ({required Object name}) => '${name} ไม่มีคิวเรชัน';
-			case 'userNoNotes': return ({required Object name}) => '${name} ไม่มีโน๊ต';
-			case 'userNoSmartWidgets': return ({required Object name}) => '${name} ไม่มีสมาร์ทวิดเจ็ต';
-			case 'userNoVideos': return ({required Object name}) => '${name} ไม่มีวิดีโอ';
-			case 'userSubmittedPaidNote': return ({required Object name}) => '${name} ได้ส่งโน๊ตโปรโมทแล้ว';
-			case 'userMentionedYouInCuration': return ({required Object name}) => '${name} กล่าวถึงคุณในคิวเรชัน';
-			case 'userMentionedYouInNote': return ({required Object name}) => '${name} กล่าวถึงคุณในโน๊ต';
-			case 'userMentionedYouInPaidNote': return ({required Object name}) => '${name} กล่าวถึงคุณในโน๊ตโปรโมท';
-			case 'userMentionedYouInPoll': return ({required Object name}) => '${name} กล่าวถึงคุณในโพลล์';
-			case 'userMentionedYouInSmartWidget': return ({required Object name}) => '${name} กล่าวถึงคุณในสมาร์ทวิดเจ็ต';
-			case 'userMentionedYouInVideo': return ({required Object name}) => '${name} กล่าวถึงคุณในวิดีโอ';
-			case 'userMentionedYouInArticle': return ({required Object name}) => '${name} กล่าวถึงคุณในบทความ';
-			case 'userPublishedCuration': return ({required Object name}) => '${name} เผยแพร่คิวเรชัน';
-			case 'userPublishedPaidNote': return ({required Object name}) => '${name} เผยแพร่โน๊ตโปรโมท';
-			case 'userPublishedPoll': return ({required Object name}) => '${name} เผยแพร่โพลล์';
-			case 'userPublishedSmartWidget': return ({required Object name}) => '${name} เผยแพร่สมาร์ทวิดเจ็ต';
-			case 'userPublishedVideo': return ({required Object name}) => '${name} เผยแพร่วิดีโอ';
-			case 'userPublishedArticle': return ({required Object name}) => '${name} เผยแพร่บทความ';
-			case 'userQuotedCurationYouIn': return ({required Object name}) => '${name} อ้างอิงคิวเรชันที่คุณถูกกล่าวถึง';
-			case 'userQuotedNoteYouIn': return ({required Object name}) => '${name} อ้างอิงโน๊ตที่คุณถูกกล่าวถึง';
-			case 'userQuotedPaidNoteYouIn': return ({required Object name}) => '${name} อ้างอิงโน๊ตโปรโมทที่คุณถูกกล่าวถึง';
-			case 'userQuotedVideoYouIn': return ({required Object name}) => '${name} อ้างอิงวิดีโอที่คุณถูกกล่าวถึง';
-			case 'userQuotedArticleYouIn': return ({required Object name}) => '${name} อ้างอิงบทความที่คุณถูกกล่าวถึง';
-			case 'userQuotedYourArticle': return ({required Object name}) => '${name} อ้างอิงบทความของคุณ';
-			case 'userQuotedYourCuration': return ({required Object name}) => '${name} อ้างอิงคิวเรชันของคุณ';
-			case 'userQuotedYourNote': return ({required Object name}) => '${name} อ้างอิงโน๊ตของคุณ';
-			case 'userQuotedYourPaidNote': return ({required Object name}) => '${name} อ้างอิงโน๊ตโปรโมทของคุณ';
-			case 'userQuotedYourVideo': return ({required Object name}) => '${name} อ้างอิงวิดีโอของคุณ';
-			case 'userReactedCurationYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคิวเรชันที่คุณถูกกล่าวถึง';
-			case 'userReactedNoteYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตที่คุณถูกกล่าวถึง';
-			case 'userReactedPaidNoteYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตโปรโมทที่คุณถูกกล่าวถึง';
-			case 'userReactedPollYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโพลล์ที่คุณถูกกล่าวถึง';
-			case 'userReactedSmartWidgetYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง';
-			case 'userReactedVideoYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อวิดีโอที่คุณถูกกล่าวถึง';
-			case 'userReactedArticleYouIn': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อบทความที่คุณถูกกล่าวถึง';
-			case 'userReactedYou': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคุณ';
-			case 'userReactedYourArticle': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อบทความของคุณ';
-			case 'userReactedYourCuration': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคิวเรชันของคุณ';
-			case 'userReactedYourMessage': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อข้อความของคุณ';
-			case 'userReactedYourNote': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตของคุณ';
-			case 'userReactedYourPaidNote': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตโปรโมทของคุณ';
-			case 'userReactedYourPoll': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโพลล์ของคุณ';
-			case 'userReactedYourSmartWidget': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อสมาร์ทวิดเจ็ตของคุณ';
-			case 'userReactedYourVideo': return ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อวิดีโอของคุณ';
-			case 'reactedWith': return ({required Object name, required Object reaction}) => '${name} ตอบสนองด้วย ${reaction}';
-			case 'userReceivedSat': return ({required Object name, required Object number}) => '${name} ได้รับ ${number} Sats จากคุณ';
-			case 'userRepliedArticleYouIn': return ({required Object name}) => '${name} ตอบกลับบทความที่คุณถูกกล่าวถึง';
-			case 'userRepliedCurationYouIn': return ({required Object name}) => '${name} ตอบกลับคิวเรชันที่คุณถูกกล่าวถึง';
-			case 'userRepliedNoteYouIn': return ({required Object name}) => '${name} ตอบกลับโน๊ตที่คุณถูกกล่าวถึง';
-			case 'userRepliedPaidNoteYouIn': return ({required Object name}) => '${name} ตอบกลับโน๊ตโปรโมทที่คุณถูกกล่าวถึง';
-			case 'userRepliedPollYouIn': return ({required Object name}) => '${name} ตอบกลับโพลล์ที่คุณถูกกล่าวถึง';
-			case 'userRepliedSmartWidgetYouIn': return ({required Object name}) => '${name} ตอบกลับสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง';
-			case 'userRepliedVideoYouIn': return ({required Object name}) => '${name} ตอบกลับวิดีโอที่คุณถูกกล่าวถึง';
-			case 'userRepliedYourArticle': return ({required Object name}) => '${name} ตอบกลับบทความของคุณ';
-			case 'userRepliedYourCuration': return ({required Object name}) => '${name} ตอบกลับคิวเรชันของคุณ';
-			case 'userRepliedYourNote': return ({required Object name}) => '${name} ตอบกลับโน๊ตของคุณ';
-			case 'userRepliedYourPaidNote': return ({required Object name}) => '${name} ตอบกลับโน๊ตโปรโมทของคุณ';
-			case 'userRepliedYourPoll': return ({required Object name}) => '${name} ตอบกลับโพลล์ของคุณ';
-			case 'userRepliedYourSmartWidget': return ({required Object name}) => '${name} ตอบกลับสมาร์ทวิดเจ็ตของคุณ';
-			case 'userRepliedYourVideo': return ({required Object name}) => '${name} ตอบกลับวิดีโอของคุณ';
-			case 'userRepostedNoteYouIn': return ({required Object name}) => '${name} รีโพสต์โน๊ตที่คุณถูกกล่าวถึง';
-			case 'userRepostedPaidNoteYouIn': return ({required Object name}) => '${name} รีโพสต์โน๊ตโปรโมทที่คุณถูกกล่าวถึง';
-			case 'userRepostedYou': return ({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ';
-			case 'userRepostedYourNote': return ({required Object name}) => '${name} รีโพสต์โน๊ตของคุณ';
-			case 'userRepostedYourPaidNote': return ({required Object name}) => '${name} รีโพสต์โน๊ตโปรโมทของคุณ';
-			case 'userSentSat': return ({required Object name, required Object number}) => '${name} ส่ง ${number} Sats ให้คุณ';
-			case 'userZappedYou': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้คุณ';
-			case 'userZappedYourArticle': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับบทความของคุณ';
-			case 'userZappedYourCuration': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับคิวเรชันของคุณ';
-			case 'userZappedYourNote': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโน๊ตของคุณ';
-			case 'userZappedYourPaidNote': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโน๊ตโปรโมทของคุณ';
-			case 'userZappedYourPoll': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโพลล์ของคุณ';
-			case 'userZappedYourSmartWidget': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับสมาร์ทวิดเจ็ตของคุณ';
-			case 'userZappedYourVideo': return ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับวิดีโอของคุณ';
-			case 'userNewArticle': return ({required Object name}) => 'บทความใหม่ของ ${name}';
-			case 'userNewCuration': return ({required Object name}) => 'คิวเรชันใหม่ของ ${name}';
-			case 'userPaidNote': return ({required Object name}) => 'โน๊ตโปรโมทใหม่ของ ${name}';
-			case 'userNewSmartWidget': return ({required Object name}) => 'สมาร์ทวิดเจ็ตใหม่ของ ${name}';
-			case 'userReply': return ({required Object name}) => '${name} ได้ตอบกลับ';
-			case 'userNewVideo': return ({required Object name}) => 'วิดีโอของ ${name}';
-			case 'articlesNum': return ({required Object number}) => 'บทความของ ${number}';
-			case 'availableArticles': return ({required Object number}) => 'บทความที่พร้อมใช้งาน ${number}';
-			case 'availableVideos': return ({required Object number}) => 'วิดีโอที่พร้อมใช้งาน ${number}';
-			case 'bookmarksListCount': return ({required Object number}) => 'รายการบุ๊กมาร์ก ${number}';
-			case 'componentsSMCount': return ({required Object number}) => 'ส่วนประกอบ ${number} ชิ้นในวิดเจ็ตนี้';
-			case 'followersNum': return ({required Object number}) => 'ผู้ติดตาม ${number} คน';
-			case 'itemsNumber': return ({required Object number}) => '${number} รายการ';
-			case 'levelsRequiredNum': return ({required Object number}) => '${number} เลเวลที่ต้องการ';
-			case 'pointsRemaining': return ({required Object number}) => 'คงเหลือ ${number}';
-			case 'videosNum': return ({required Object number}) => '${number} วิดีโอ';
-			case 'viewsNumber': return ({required Object number}) => '${number} การรับชม';
-			case 'readTime': return ({required Object time}) => 'อ่าน ${time} นาที';
-			case 'mutualsNum': return ({required Object number}) => 'เพื่อนร่วมกัน ${number} คน';
-			case 'peopleCountPlus': return ({required Object number}) => '-${number} คน';
-			case 'supportUs': return '❤︎ สนับสนุนเรา';
-			case 'consumablePointsPerks1': return '1- ส่งเนื้อหาของคุณเพื่อการรับรอง';
-			case 'consumablePointsPerks2': return '2- แลกคะแนนเพื่อเผยแพร่โน๊ตโปรโมท';
-			case 'consumablePointsPerks3': return '3- แลกคะแนนเป็น SATs (จะมีการเลือกเกณฑ์แบบสุ่มและคุณจะได้รับการแจ้งเตือนเมื่อสามารถแลกคะแนนได้)';
-			case 'highlightedNote': return 'โน๊ตที่ไฮไลต์เพื่อเพิ่มการมองเห็น';
-			case 'minimumOfOneRequired': return 'ต้องกำหนดจำนวนขั้นต่ำอย่างน้อย 1 ';
-			case 'useValidTitle': return 'กรุงณาใช้ชื่อที่ถูกต้อง';
-			case 'aboutYou': return 'เกี่ยวกับคุณ';
-			case 'actGoodFaith': return 'กระทำการโดยสุจริต';
-			case 'add': return 'เพิ่ม';
-			case 'addUrlNevent': return 'เพิ่ม URL/nevent ที่เหมาะสม';
-			case 'addProperUrlNevent': return 'เพิ่ม URL/nevent ที่เหมาะสม';
-			case 'addAccount': return 'เพิ่มบัญชี';
-			case 'addBookmarkList': return 'เพิ่มรายการบุ๊กมาร์ก';
-			case 'addCuration': return 'เพิ่มคิวเรชัน';
-			case 'addInterests': return 'เพิ่มความสนใจ';
-			case 'addNote': return 'เพิ่มโน๊ต';
-			case 'addToCuration': return 'เพิ่มไปยังคิวเรชัน';
-			case 'addUser': return 'เพิ่มผู้ใช้';
-			case 'addWallet': return 'เพิ่มวอลเล็ท';
-			case 'addYourTopics': return 'เพิ่มหัวข้อของคุณ';
-			case 'adjustSpeed': return 'ปรับระดับความเร็ว';
-			case 'adjustVolume': return 'ปรับระดับเสียง';
-			case 'alby': return 'Alby ';
-			case 'albyConnect': return 'Alby Connect ';
-			case 'all': return 'ทั้งหมด';
-			case 'allRelays': return 'รีเลย์ทั้งหมด';
-			case 'allUsersZapped': return 'ผู้ใช้ทุกคนได้รับการชำระเงินแล้ว';
-			case 'amberNotInstalled': return 'ยังไม่ได้ติดตั้งแอป Amber';
-			case 'amountInSats': return 'จำนวนเงินใน Sats';
-			case 'errorAddingArticle': return 'เกิดข้อผิดพลาดขณะเพิ่มบทความ';
-			case 'errorAddingCuration': return 'เกิดข้อผิดพลาดขณะเพิ่มคิวเรชัน';
-			case 'errorAddingWidget': return 'เกิดข้อผิดพลาดขณะเพิ่มสมาร์ทวิดเจ็ต';
-			case 'errorAddingVideo': return 'เกิดข้อผิดพลาดขณะเพิ่มวิดีโอ';
-			case 'errorUpdatingCuration': return 'เกิดข้อผิดพลาดขณะอัปเดตคิวเรชัน';
-			case 'userInvoiceGenerated': return ({required Object name}) => 'ใบแจ้งหนี้สำหรับ ${name} ได้ถูกสร้างขึ้นแล้ว';
-			case 'verifiedNoteRateSealed': return 'โน๊ตที่ได้รับการยืนยันที่คุณให้คะแนนแล้วได้ถูกปิดการเข้าถึง';
-			case 'apiKeyRequired': return 'API Key (จำเป็น)';
-			case 'appLanguage': return 'ภาษาของแอป';
-			case 'appTheme': return 'ธีมของแอป';
-			case 'appearance': return 'การแสดงผล';
-			case 'article': return 'บทความ';
-			case 'articleNotFound': return 'ไม่พบบทความ';
-			case 'articleAddedCuration': return 'เพิ่มบทความในคิวเรชันของคุณแล้ว';
-			case 'articles': return 'บทความ';
-			case 'articlesAvailableCuration': return 'บทความที่มีอยู่ในคิวเรชันนี้';
-			case 'askMeSomething': return 'อยากรู้อะไร ถามมาเลย!';
-			case 'attemptConnectAmber': return 'การพยายามเชื่อมต่อกับ Amber ถูกปฏิเสธ';
-			case 'attemptsRemained': return 'จำนวนครั้งที่เหลืออยู่';
-			case 'autoSavedArticleDeleted': return 'บทความที่บันทึกอัตโนมัติถูกลบแล้ว';
-			case 'autoSavedSMdeleted': return 'สมาร์ทวิดเจ็ตที่บันทึกอัตโนมัติถูกลบแล้ว';
-			case 'availableWallets': return 'วอลเล็ทที่พร้อมใช้งาน';
-			case 'back': return 'กลับ';
-			case 'backgroundColor': return 'สีพื้นหลัง';
-			case 'balance': return 'ยอดคงเหลือ';
-			case 'beHelpful': return 'จงช่วยเหลือ แม้กับคนที่ไม่เห็นด้วยกับคุณ';
-			case 'beFirstCommentThisVideo': return 'แสดงความคิดเห็นในวิดีโอนี้เป็นคนแรก!';
-			case 'bio': return ({required Object content}) => 'Bio: ${content}';
-			case 'blankWidget': return 'วิดเจ็ตเปล่า';
-			case 'bookmark': return 'บุ๊คมาร์ก';
-			case 'bookmarkAdded': return 'รายการบุ๊คมาร์กได้ถูกเพิ่มแล้ว';
-			case 'bookmarkLists': return 'รายการบุ๊คมาร์ก';
-			case 'bookmarks': return 'บุ๊คมาร์ก';
-			case 'borderColor': return 'สีขอบ';
-			case 'button': return 'ปุ่ม';
-			case 'buttonColor': return 'สีปุ่ม';
-			case 'buttonCustomization': return 'การปรับแต่งปุ่ม';
-			case 'buttonText': return 'ข้อความของปุ่ม';
-			case 'by': return 'โดย';
-			case 'byPerson': return ({required Object name}) => 'โดย ${name}';
-			case 'byContinuing': return 'การดำเนินการต่อ หมายความว่าคุณยอมรับเงื่อนไขของเรา\n';
-			case 'camera': return 'กล้อง';
-			case 'cancel': return 'ยกเลิก';
-			case 'checkSmartWidget': return 'ตรวจสอบสมาร์ทวิดเจ็ต';
-			case 'checkoutArticle': return 'ลองอ่านบทความของฉันดูสิ!';
-			case 'checkoutCuration': return 'ลองอ่านคิวเรชันของฉันดูสิ!';
-			case 'checkoutPaidNote': return 'ลองอ่านโน๊ตโปรโมทของฉันดูสิ!';
-			case 'checkoutSmartWidget': return 'ลองอ่านสมาร์ทวิดเจ็ตของฉันดูสิ!';
-			case 'checkValidity': return 'ตรวจสอบความถูกต้อง';
-			case 'checkModelRouter': return 'ตรวจสอบโมเด็มหรือเราเตอร์ของคุณ';
-			case 'checkoutVideo': return 'ลองดูวิดีโอของฉันสิ!';
-			case 'claim': return 'เคลม';
-			case 'claimTime': return ({required Object time}) => 'เคลมเงินคืนภายใน ${time}';
-			case 'clear': return 'ลบ';
-			case 'clearAppCache': return 'ลบแคชของแอป';
-			case 'clearChat': return 'ลบแชท';
-			case 'clearDate': return 'ลบวันที่';
-			case 'click': return 'คลิก';
-			case 'clickBelowToConnect': return 'คลิกด้านล่างเพื่อเชื่อมต่อ';
-			case 'clone': return 'โคลน';
-			case 'close': return 'ปิด';
-			case 'pollClosedAt': return ({required Object date}) => 'ปิดเมื่อวันที่: ${date}';
-			case 'pollClosesAt': return ({required Object date}) => 'ปิดในวันที่: ${date}';
-			case 'color': return 'สี';
-			case 'comment': return 'ความคิดเห็น';
-			case 'comments': return 'ความคิดเห็น';
-			case 'communityPolls': return 'คอมมูนิตี้โพลล์';
-			case 'communityWallet': return 'คอมมูนิตี้วอลเล็ท';
-			case 'communityWidgets': return 'คอมมูนิตี้วิดเจ็ต';
-			case 'compose': return 'เขียนเนื้อหา';
-			case 'confirmPayment': return 'ยืนยันการชำระเงิน';
-			case 'congratulations': return 'ยินดีด้วย';
-			case 'connect': return 'เชื่อมต่อ';
-			case 'connectWithNwc': return 'เชื่อมต่อกับ NWC';
-			case 'connected': return 'เชื่อมต่อแล้ว';
-			case 'consumablePoints': return 'คะแนนที่สามารถใช้ได้';
-			case 'contact': return 'ติดต่อ';
-			case 'container': return 'คอนเทนเนอร์';
-			case 'containerCustomization': return 'การปรับแต่งคอนเทนเนอร์';
-			case 'contentModeration': return 'การควบคุมเนื้อหา';
-			case 'contentTextColor': return 'สีข้อความในเนื้อหา';
-			case 'contentTranslation': return 'การแปลเนื้อหา';
-			case 'contentData': return ({required Object description}) => 'เนื้อหา: ${description}';
-			case 'continueAsGuest': return 'ดำเนินการต่อโดยไม่ลงทะเบียน';
-			case 'contributeUnderstanding': return 'มีส่วนร่วมในการสร้างความเข้าใจ';
-			case 'copy': return 'คัดลอก';
-			case 'copyInvoice': return 'คัดลอกใบแจ้งหนี้';
-			case 'copyLn': return 'คัดลอกที่อยู่ Lightning';
-			case 'copyNaddr': return 'คัดลอก Naddr';
-			case 'copyNoteId': return 'คัดลอกโน๊ต ID';
-			case 'copyNpub': return 'คัดลอก npub';
-			case 'copyNwc': return 'คัดลอก NWC';
-			case 'userInvoiceNotGenerated': return 'ไม่สามารถสร้างใบแจ้งหนี้สำหรับผู้ใช้รายนี้ได้';
-			case 'notFindSMwithAddr': return 'ไม่พบสมาร์ทวิดเจ็ตที่มีที่อยู่ดังกล่าว';
-			case 'couldNotUpdateRelaysList': return 'ไม่สามารถอัปเดตรายการรีเลย์ได้';
-			case 'coverUrl': return 'URL หน้าปก';
-			case 'createWalletSendRecSats': return 'สร้างวอลเล็ทเพื่อส่งและรับ Sats';
-			case 'createAccount': return 'สร้างบัญชี';
-			case 'createWallet': return 'สร้างวอลเล็ท';
-			case 'yakiNwcDesc': return 'สร้างวอลเล็ทโดยใช้ช่องทางของ YakiHonne';
-			case 'createYakiWallet': return 'สร้างวอลเล็ทของ YakiHonne';
-			case 'createdAt': return 'สร้างเมื่อ';
-			case 'createdAtEditedAt': return ({required Object date1, required Object date2}) => 'สร้างเมื่อ ${date1}, แก้ไขเมื่อ ${date2}';
-			case 'curation': return 'คิวเรชัน';
-			case 'curationNotFound': return 'ไม่พบคิวเรชัน';
-			case 'curationType': return 'ประเภทคิวเรชัน';
-			case 'curations': return 'คิวเรชัน';
-			case 'currentlyLinkedMessage': return 'ขณะนี้เชื่อมโยงกับโปรไฟล์ของคุณเพื่อรับ zaps';
-			case 'customization': return 'การปรับแต่ง';
-			case 'customizeYourFeed': return 'ปรับแต่งฟีดของคุณ';
-			case 'dashboard': return 'แดชบอร์ด';
-			case 'decrMessage': return 'กำลังถอดรหัสข้อความ';
-			case 'defaultKey': return 'ค่าเริ่มต้น';
-			case 'delete': return 'ลบ';
-			case 'deleteContent': return ({required Object type}) => 'ลบ ${type}';
-			case 'deleteAccount': return 'ลบบัญชี';
-			case 'deleteBookmarkList': return 'ลบรายการบุ๊กมาร์ก';
-			case 'deleteCoverPic': return 'ลบภาพปก!';
-			case 'deleteDraft': return 'ลบฉบับร่าง';
-			case 'deleteWallet': return 'ลบวอลเล็ท';
-			case 'description': return 'คำอธิบาย';
-			case 'descriptionOptional': return 'คำอธิบาย (ไม่บังคับ)';
-			case 'details': return 'รายละเอียด';
-			case 'disableSecureDms': return 'ปิดการใช้งาน DM ที่ปลอดภัย';
-			case 'disconnecting': return 'กำลังยกเลิกการเชื่อมต่อ...';
-			case 'discordUrl': return 'Discord URL';
-			case 'discover': return 'ค้นพบ';
-			case 'dismiss': return 'ปิด';
-			case 'displayName': return 'ชื่อที่แสดง';
-			case 'findThisHelpful': return 'คุณพบว่าสิ่งนี้มีประโยชน์หรือไม่?';
-			case 'findThisNotHelpful': return 'คุณพบว่าสิ่งนี้ไม่มีประโยชน์หรือไม่?';
-			case 'dontHaveWallet': return 'ไม่มีวอลเล็ทใช่ไหม?';
-			case 'unTextR3Desc': return 'อย่ากังวลไป ทุกคนจะได้รับสิ่งเหล่านี้! การให้คะแนนเหล่านี้เป็นเรื่องปกติและอาจนำไปสู่การเปลี่ยนแปลงสถานะหากมีคนจำนวนมากเห็นว่าโน๊ตนั้น "เป็นประโยชน์" ไม่เพียงพอที่จะถือว่าเป็นโน๊ตที่มีประโยชน์จริงๆ';
-			case 'donations': return 'การบริจาค';
-			case 'downvotes': return 'โหวตลบ';
-			case 'draft': return 'ฉบับร่าง';
-			case 'duoLayout': return 'ดูโอเลย์เอาต์';
-			case 'earnSats': return 'รับ SATs';
-			case 'edit': return 'แก้ไข';
-			case 'editCover': return 'แก้ไขปก';
-			case 'editProfile': return 'แก้ไขโปรไฟล์';
-			case 'editToAddZapPoll': return 'แก้ไขเพื่อเพิ่มโพลล์ Zap';
-			case 'editedOn': return ({required Object date}) => 'แก้ไขเมื่อ: ${date}';
-			case 'emptyVerifiedNote': return 'เนื้อหาของโน๊ตที่ได้รับการยืนยันแล้ว ว่างเปล่า!';
-			case 'enableSecureDms': return 'เปิดใช้งาน DM ที่ปลอดภัย';
-			case 'eula': return 'ข้อตกลงสิทธิ์การใช้งานสำหรับผู้ใช้ปลายทาง (EULA)';
-			case 'engagementChart': return 'แผนภูมิการมีส่วนร่วม';
-			case 'enjoyExpOwnData': return 'เพลิดเพลินไปกับประสบการณ์การเป็นเจ้าของข้อมูลของคุณ\n';
-			case 'ensureLnSet': return 'ตรวจสอบให้แน่ใจว่าที่อยู่ Lightning ของคุณตั้งค่าถูกต้อง';
-			case 'enterSMaddr': return 'กรอกที่อยู่ naddr ของสมาร์ทวิดเจ็ต เพื่อตรวจสอบความถูกต้อง';
-			case 'enterLn': return 'กรอกที่อยู่ LUD-06 หรือ LUD-16 ของคุณ';
-			case 'enterCoverUrl': return 'กรอก URL หน้าปกของคุณ';
-			case 'enterNip05': return 'กรอกที่อยู่ NIP-05 ของคุณ';
-			case 'enterPictureUrl': return 'กรอก URL รูปภาพของคุณ';
-			case 'erase': return 'ลบ';
-			case 'errorAddingBookmark': return 'เกิดข้อผิดพลาดขณะเพิ่มบุ๊กมาร์ก';
-			case 'errorAddingVerifiedNote': return 'เกิดข้อผิดพลาดขณะเพิ่มโน๊ตที่ได้รับการยืนยันของคุณ';
-			case 'errorClaimingReward': return 'เกิดข้อผิดพลาดขณะรับรางวัล';
-			case 'errorConnectingRelay': return 'เกิดข้อผิดพลาดขณะเชื่อมต่อกับรีเลย์';
-			case 'errorCreatingWallet': return 'เกิดข้อผิดพลาดขณะสร้างวอลเล็ท';
-			case 'errorDecodingData': return 'เกิดข้อผิดพลาดขณะถอดรหัสข้อมูล';
-			case 'errorDeletingContent': return 'เกิดข้อผิดพลาดขณะลบเนื้อหา';
-			case 'errorDeletingRating': return 'เกิดข้อผิดพลาดขณะลบการให้คะแนนของคุณ';
-			case 'errorGeneratingEvent': return 'เกิดข้อผิดพลาดขณะสร้างกิจกรรม';
-			case 'errorGeneratingInvoice': return 'เกิดข้อผิดพลาดขณะสร้างใบแจ้งหนี้';
-			case 'errorLoggingYakiChest': return 'เกิดข้อผิดพลาดขณะเข้าสู่ระบบ Yakihonne\'s Chest';
-			case 'errorPayingInvoice': return 'เกิดข้อผิดพลาดขณะชำระเงินโดยใช้ใบแจ้งหนี้';
-			case 'errorSendingSats': return 'เกิดข้อผิดพลาดขณะส่ง sats';
-			case 'errorSendingEvent': return 'เกิดข้อผิดพลาดขณะส่งกิจกรรม';
-			case 'errorSendingMessage': return 'เกิดข้อผิดพลาดขณะส่งข้อความ';
-			case 'errorSettingToken': return 'เกิดข้อผิดพลาดขณะตั้งค่าโทเค็น';
-			case 'errorSigningEvent': return 'เกิดข้อผิดพลาดขณะลงนามกิจกรรม';
-			case 'errorSubmittingRating': return 'เกิดข้อผิดพลาดขณะส่งคะแนนของคุณ';
-			case 'errorTranslating': return 'เกิดข้อผิดพลาดขณะแปลเนื้อหา';
-			case 'errorUpdatingData': return 'เกิดข้อผิดพลาดขณะอัปเดตข้อมูล';
-			case 'errorUpdatingRelaysList': return 'เกิดข้อผิดพลาดขณะอัปเดตรายการรีเลย์';
-			case 'errorUploadingMedia': return 'เกิดข้อผิดพลาดขณะอัปโหลดสื่อ';
-			case 'errorUploadingVideo': return 'เกิดข้อผิดพลาดขณะอัปโหลดวิดีโอ';
-			case 'errorUsingWallet': return 'เกิดข้อผิดพลาดขณะใช้วอลเล็ท!';
-			case 'errorZappingUsers': return 'เกิดข้อผิดพลาดขณะทำการ Zapping ผู้ใช้';
-			case 'errorUploadingImage': return 'เกิดข้อผิดพลาดขณะอัปโหลดรูปภาพ';
-			case 'errorLoadingVideo': return 'เกิดข้อผิดพลาดขณะโหลดวิดีโอ';
-			case 'errorUsingExternalWallet': return 'เกิดข้อผิดพลาดขณะใช้วอลเล็ทอื่น';
-			case 'eventNotFound': return 'ไม่พบกิจกรรม';
-			case 'eventNotRecognized': return 'ไม่สามารถรับรู้เหตุการณ์ได้';
-			case 'exit': return 'ออก';
-			case 'expandWorld': return 'ขยายขอบเขตด้วยการเพิ่มสิ่งที่ทำให้คุณหลงใหล เลือกความสนใจของคุณและให้การเดินทางเริ่มต้นขึ้น';
-			case 'explanation': return 'คำอธิบาย';
-			case 'explore': return 'สำรวจ';
-			case 'externalWallet': return 'วอลเล็ทอื่น';
-			case 'feedOptions': return 'ตัวเลือกฟีด';
-			case 'fetchingArticle': return 'กำลังดึงข้อมูลบทความ';
-			case 'fetchingCuration': return 'กำลังดึงข้อมูลคิวเรชัน';
-			case 'fetchingEvent': return 'กำลังดึงข้อมูลกิจกรรม';
-			case 'fetchingEventUserRelays': return 'กำลังดึงข้อมูลเหตุการณ์จากรีเลย์ของผู้ใช้';
-			case 'fetchingNote': return 'กำลังดึงข้อมูลโน๊ต';
-			case 'fetchingProfile': return 'กำลังดึงข้อมูลโปรไฟล์';
-			case 'fetchingSmartWidget': return 'กำลังดึงข้อมูลสมาร์ทวิดเจ็ต';
-			case 'fetchingUserInboxRelays': return 'กำลังดึงข้อมูลรีเลย์กล่องจดหมายของผู้ใช้';
-			case 'fetchingVideo': return 'กำลังดึงข้อมูลวิดีโอ';
-			case 'fileSharing': return 'การแชร์ไฟล์';
-			case 'fillColor': return 'เติมสี';
-			case 'finished': return 'เสร็จสิ้น!';
-			case 'follow': return 'ติดตาม';
-			case 'followAll': return 'ติดตามทั้งหมด';
-			case 'followMeOnNostr': return 'ติดตามฉันที่ Nostr';
-			case 'followers': return 'ผู้ติดตาม';
-			case 'following': return 'กำลังติดตาม';
-			case 'pendingFollowing': return 'กำลังติดตาม...';
-			case 'followings': return 'กําลังติดตาม';
-			case 'followsYou': return 'ติดตามคุณ';
-			case 'fontSize': return 'ขนาดตัวอักษร';
-			case 'forName': return ({required Object name}) => 'สำหรับ ${name}';
-			case 'enableSecureDmsMessage': return 'เพื่อความปลอดภัยและความเป็นส่วนตัวมากขึ้น โปรดพิจารณาเปิดใช้งาน DM ที่ปลอดภัย';
-			case 'zapSplitsMessage': return 'สำหรับการแบ่ง zap ต้องมีอย่างน้อยหนึ่งคน';
-			case 'free': return 'ฟรี';
-			case 'fuelYakihonne': return 'สนับสนุนการเติบโตของ YakiHonne! สนับสนุนของคุณช่วยขับเคลื่อนฟีเจอร์ใหม่ๆ และประสบการณ์ที่ดีกว่าสำหรับทุกคน';
-			case 'gain': return 'ได้รับ';
-			case 'gallery': return 'แกลเลอรี่';
-			case 'generateInvoice': return 'สร้างใบแจ้งหนี้';
-			case 'generateInvoices': return 'สร้างใบแจ้งหนี้';
-			case 'getApiKey': return 'รับ API Key';
-			case 'getInvoice': return 'รับใบแจ้งหนี้';
-			case 'getStartedNow': return 'เริ่มต้นตอนนี้เลย';
-			case 'gifs': return 'GIFS';
-			case 'gotIt': return 'เข้าใจแล้ว!';
-			case 'granted': return 'ได้รับการอนุมัติ';
-			case 'earnSatsDesc': return 'ช่วยเราให้ข้อมูลเชิงลึกแบบกระจายศูนย์ได้มากขึ้นเพื่อตรวจสอบโน๊ตโปรโมทนี้';
-			case 'heyWelcomeBack': return 'เฮ้, ยินดีต้อนรับกลับ!\n';
-			case 'hideSuggestions': return 'ซ่อนข้อเสนอแนะ';
-			case 'highlights': return 'ไฮไลท์';
-			case 'home': return 'หน้าหลัก';
-			case 'hfCustomization': return 'การปรับแต่งฟีดหน้าหลัก';
-			case 'horizontalVideo': return 'วิดีโอแนวนอน';
-			case 'wantToShareRevenues': return 'ฉันต้องการแชร์รายได้นี้';
-			case 'identifier': return 'ตัวระบุ';
-			case 'image': return 'ภาพ';
-			case 'imageAspectRatio': return 'อัตราส่วนภาพ';
-			case 'imageCustomization': return 'การปรับแต่งภาพ';
-			case 'imageUrl': return 'URL รูปภาพ';
-			case 'imageUploadHistory': return 'ประวัติการอัพโหลดรูปภาพ';
-			case 'important': return 'สำคัญ';
-			case 'inTag': return ({required Object name}) => 'ใน ${name}';
-			case 'inaccessibleLink': return 'ลิงก์ที่ไม่สามารถเข้าถึงได้';
-			case 'inbox': return 'กล่องจดหมาย';
-			case 'initializingAccount': return 'กำลังเริ่มต้นบัญชี...';
-			case 'insertText': return 'แทรกข้อความ';
-			case 'instantConntect': return 'เชื่อมต่อกับรีเลย์ทันที';
-			case 'interestsUpdateMessage': return 'อัปเดตรายการความสนใจสำเร็จแล้ว!';
-			case 'interested': return 'สนใจ';
-			case 'interests': return 'ความสนใจ';
-			case 'invalidHexKey': return 'รหัสเฮกซ์ไม่ถูกต้อง!';
-			case 'invalidInvoice': return 'ใบแจ้งหนี้ไม่ถูกต้อง';
-			case 'invalidPairingSecret': return 'ข้อมูลการเชื่อมต่อไม่ถูกต้อง';
-			case 'invalidPrivateKey': return 'Private key ไม่ถูกต้อง!';
-			case 'invalidRelayUrl': return 'URL รีเลย์ไม่ถูกต้อง';
-			case 'invoice': return 'ใบแจ้งหนี้';
-			case 'invoiceCopied': return 'คัดลอกรหัสใบแจ้งหนี้แล้ว!';
-			case 'invoicePaid': return 'ใบแจ้งหนี้ได้รับการชำระเรียบร้อยแล้ว';
-			case 'invoiceOrLN': return 'แจ้งหนี้ หรือ ที่อยู่ Lightning';
-			case 'issueOccuredSelectingImage': return 'เกิดปัญหาขณะเลือกภาพ';
-			case 'somethingWentWrongDesc': return 'ดูเหมือนว่ามีบางอย่างเกิดขึ้นขณะโหลดข้อมูล โปรดลองอีกครั้ง!';
-			case 'invalidInvoiceDesc': return 'ดูเหมือนว่าใบแจ้งหนี้ที่สแกนไม่ถูกต้อง โปรดสแกนใหม่และลองอีกครั้ง';
-			case 'invoiceNotPayed': return 'ดูเหมือนว่าคุณไม่ได้ชำระตามใบแจ้งหนี้ โปรดตรวจสอบอีกครั้ง';
-			case 'itsLive': return 'ถ่ายทอดสด!';
-			case 'noCommunityNotes': return 'ที่นี่เงียบมาก! ยังไม่มีโน๊ตจากคอมมูนิตี้';
-			case 'joinedOn': return ({required Object date}) => 'เข้าร่วมเมื่อ: ${date}';
-			case 'keys': return 'รหัส';
-			case 'known': return 'เป็นที่รู้จัก';
-			case 'languagePreferences': return 'การตั้งค่าภาษา';
-			case 'lastGained': return ({required Object date}) => 'ได้รับล่าสุด: ${date}';
-			case 'lastUpdatedOn': return ({required Object date}) => 'อัปเดตล่าสุดเมื่อ: ${date}';
-			case 'latest': return 'ล่าสุด';
-			case 'layout': return 'เค้าโครง';
-			case 'layoutCustomization': return 'การปรับแต่งเค้าโครง';
-			case 'less': return 'น้อย';
-			case 'letsGetStarted': return 'มาเริ่มกันเลย!';
-			case 'levelNumber': return ({required Object number}) => 'เลเวล ${number}';
-			case 'lightningAddress': return 'ที่อยู่ Lightning ';
-			case 'lnCopied': return 'คัดลอกที่อยู่ Lightning แล้ว!';
-			case 'link': return 'ลิงก์';
-			case 'linkWallet': return 'ลิงก์วอลเล็ท';
-			case 'linked': return 'เชื่อมต่อแล้ว';
-			case 'list': return 'รายการ';
-			case 'loading': return 'กำลังโหลด';
-			case 'loadingFollowings': return 'กำลังโหลดผู้ที่ติดตาม';
-			case 'loadingPreviousPosts': return 'กำลังโหลดโพสต์ก่อนหน้า...';
-			case 'loadingFollowers': return 'กำลังโหลดผู้ติดตาม';
-			case 'locked': return 'ถูกล็อก';
-			case 'loggingIn': return 'กำลังเข้าสู่ระบบ...';
-			case 'loggingOut': return 'กำลังออกจากระบบ...';
-			case 'login': return 'เข้าสู่ระบบ';
-			case 'loginYakiChestPoints': return 'เข้าสู่ระบบของ Yakihonne\'s Chest สะสมคะแนนจากการใช้งานบนแพลตฟอร์มและรับรางวัลล้ำค่า!';
-			case 'logoutAllAccounts': return 'ออกจากระบบบัญชีทั้งหมด';
-			case 'validDescriptionCuration': return 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มคำอธิบายที่ถูกต้องสำหรับคิวเรชันนี้';
-			case 'validImageCuration': return 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มรูปภาพที่ถูกต้องสำหรับคิวเรชันนี้';
-			case 'validTitleCuration': return 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มชื่อที่ถูกต้องสำหรับคิวเรชันนี้';
-			case 'addValidUrl': return 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่ม URL ที่ถูกต้อง';
-			case 'submitValidLud': return 'โปรดตรวจสอบให้แน่ใจว่าได้รับ lud16/lud06 ที่ถูกต้อง';
-			case 'showSecretDesc': return 'โปรดตรวจสอบให้แน่ใจว่าได้เก็บไว้อย่างปลอดภัย เนื่องจากจะทำให้สามารถเข้าถึงบัญชีของคุณได้ทั้งหมด';
-			case 'invalidInvoiceLnurl': return 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่าใบแจ้งหนี้หรือ LNURL ที่ถูกต้อง';
-			case 'setAllRequiredContent': return 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่าเนื้อหาที่จำเป็นทั้งหมดแล้ว';
-			case 'setOutboxRelays': return 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่ารีเลย์กล่องข้อความของคุณ';
-			case 'submitValidCloseDate': return 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งวันที่ปิดที่ถูกต้อง';
-			case 'submitMinMaxSats': return 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งจำนวนขั้นต่ำและสูงสุดของ satoshis ที่ถูกต้อง';
-			case 'submitValidOptions': return 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งตัวเลือกที่ถูกต้อง';
-			case 'submitValidData': return 'โปรดตรวจสอบให้แน่ใจว่าคุณได้ส่งข้อมูลที่ถูกต้อง';
-			case 'submitValidInvoice': return 'โปรดตรวจสอบให้แน่ใจว่าคุณได้ส่งใบแจ้งหนี้ที่ถูกต้อง';
-			case 'manageAccounts': return 'จัดการบัญชี';
-			case 'manageInterests': return 'จัดการความสนใจ';
-			case 'maxSats': return 'Sats สูงสุด';
-			case 'maximumSatoshis': return 'Satoshis สูงสุด';
-			case 'mediaExceedsMaxSize': return 'สื่อมีขนาดเกินขีดจำกัดสูงสุดที่กำหนดไว้คือ 21 MB';
-			case 'mediaUploader': return 'เครื่องมืออัปโหลดสื่อ';
-			case 'mentions': return 'การกล่าวถึง';
-			case 'messageOptional': return 'ข้อความ (ไม่บังคับ)';
-			case 'messageCouldNotBeDecrypted': return 'ไม่สามารถถอดรหัสข้อความได้';
-			case 'messageNotDecrypted': return 'ข้อความยังไม่ได้ถอดรหัส!';
-			case 'messageCopied': return 'คัดลอกข้อความเรียบร้อยแล้ว!';
-			case 'metadata': return 'ข้อมูลเมตา';
-			case 'min': return 'นาที';
-			case 'minSats': return 'Sats ขั้นต่ำ';
-			case 'minimumSatoshis': return 'Satoshis ขั้นต่ำ';
-			case 'errorMissingKey': return 'API Key หายไปหรือการสมัครสมาชิกหมดอายุ โปรดตรวจสอบการตั้งค่า > การตั้งค่าภาษา สำหรับข้อมูลเพิ่มเติม';
-			case 'monoLayout': return 'MonoLayout';
-			case 'monolayoutRequired': return 'จำเป็นต้องมีรูปแบบโมโน';
-			case 'more': return 'เพิ่มเติม';
-			case 'moreDots': return 'เพิ่มเติม...';
-			case 'moveDown': return 'เลื่อนลง';
-			case 'moveUp': return 'เลื่อนขึ้น';
-			case 'mute': return 'ปิดเสียง';
-			case 'muteList': return 'ปิดเสียงรายการ';
-			case 'muteUser': return 'ปิดเสียงผู้ใช้';
-			case 'mutuals': return 'ร่วมกัน';
-			case 'myArticles': return 'บทความของฉัน';
-			case 'myDrafts': return 'ฉบับร่างของฉัน';
-			case 'myPolls': return 'โพลล์ของฉัน';
-			case 'myPublicKey': return 'Public Key ของฉัน';
-			case 'mySecretKey': return 'รหัสลับของฉัน';
-			case 'myVideos': return 'วิดีโอของฉัน';
-			case 'myWidgets': return 'วิดเจ็ตของฉัน';
-			case 'naddr': return 'naddr ';
-			case 'nostrWalletConnectDesc': return 'การเชื่อมต่อวอลเล็ท nostr แบบพื้นฐาน';
-			case 'needsMoreRating': return 'ต้องการคะแนนมากกว่านี้';
-			case 'needsYourHelp': return 'ต้องการความช่วยเหลือของคุณ';
-			case 'nevent': return 'nevent ';
-			case 'newKey': return 'ใหม่';
-			case 'newMessage': return 'ข้อความใหม่';
-			case 'newPostGesture': return 'กดค้างเพื่อสร้างโพสต์ใหม่';
-			case 'next': return 'ต่อไป';
-			case 'noContentBelongToCuration': return ({required Object type}) => 'ไม่มี ${type} ที่เกี่ยวข้องกับคิวเรชันนี้';
-			case 'noContentCanBeFound': return ({required Object type}) => 'ไม่มี ${type} สามารถพบได้';
-			case 'noArticlesInCuration': return 'ไม่พบบทความในคิวเรชันนี้';
-			case 'addNewBookmark': return 'ไม่พบรายการบุ๊กมาร์ก โปรดลองเพิ่มรายการหนึ่ง';
-			case 'noBookmarksListFound': return 'ไม่พบรายการบุ๊กมาร์ก โปรดลองเพิ่มรายการหนึ่ง';
-			case 'noCommentsCanBeFound': return 'ไม่พบความคิดเห็น';
-			case 'noComponentsDisplayed': return 'ไม่สามารถแสดงส่วนประกอบได้';
-			case 'noCurationsFound': return 'ไม่พบการคิวเรชัน ลองสร้างขึ้นมาเพื่อที่จะสามารถเพิ่มเนื้อหาลงไปได้';
-			case 'noDescription': return 'ไม่มีคำอธิบาย';
-			case 'noElementsInBookmarks': return 'ไม่พบองค์ประกอบในรายการบุ๊กมาร์ก';
-			case 'noEventIdCanBeFound': return 'ไม่พบกิจกรรมที่มีรหัสนี้!';
-			case 'noImageHistory': return 'ไม่พบประวัติรูปภาพ';
-			case 'noInternetAccess': return 'ไม่มีการเข้าถึงอินเทอร์เน็ต';
-			case 'noInvoiceAvailable': return 'ไม่มีใบแจ้งหนี้';
-			case 'noMessageCanBeFound': return 'ไม่พบข้อความ';
-			case 'noMessagesToDisplay': return 'ไม่มีข้อความที่จะแสดง';
-			case 'noMoreData': return 'ไม่มีข้อมูลอีกต่อไป';
-			case 'noMutedUserFound': return 'ไม่พบผู้ใช้ที่ถูกปิดเสียง';
-			case 'noNotificationCanBeFound': return 'ไม่พบการแจ้งเตือน';
-			case 'noPaidNotesCanBeFound': return 'ไม่พบโน๊ตโปรโมท';
-			case 'noPollsCanBeFound': return 'ไม่พบโพลล์';
-			case 'noReasonsSpecified': return 'ไม่ได้ระบุเหตุผล!';
-			case 'noRelaysCanBeFound': return 'ไม่สามารถหารีเลย์ได้';
-			case 'noUserRelays': return 'ไม่พบรีเลย์สำหรับผู้ใช้รายนี้';
-			case 'noRepliesDesc': return 'ไม่พบการตอบกลับสำหรับโน๊ตนี้';
-			case 'noResKeyword': return 'ไม่พบผลลัพธ์สำหรับคำค้นหานี้';
-			case 'noResKeywordDesc': return 'ไม่พบผลลัพธ์จากคำค้นหานี้ ลองใช้คำค้นหาอื่นเพื่อผลลัพธ์ที่ดีกว่า';
-			case 'noSmartWidgetCanBeFound': return 'ไม่พบสมาร์ทวิดเจ็ต';
-			case 'noSmartWidget': return 'ไม่พบฉบับร่างสมาร์ทวิดเจ็ต';
-			case 'noTemplatesCanBeFound': return 'ไม่พบเทมเพลตในหมวดหมู่นี้';
-			case 'noTitle': return 'ไม่มีชื่อเรื่อง';
-			case 'noTransactionCanBeFound': return 'ไม่พบธุรกรรม';
-			case 'noUserZapped': return 'ไม่มีผู้ใช้ถูก zapped!';
-			case 'noUserCanBeFound': return 'ไม่พบผู้ใช้งาน';
-			case 'noVideosInCuration': return 'ไม่พบวิดีโอในคิวเรชันนี้';
-			case 'noWalletCanBeFound': return 'ไม่พบวอลเล็ท';
-			case 'noZappersCanBeFound': return 'ไม่พบ zappers';
-			case 'noImGood': return 'ไม่ ฉันสบายดี';
-			case 'noWalletConnectedToYourProfile': return 'ไม่มีวอลเล็ทที่เชื่อมต่อกับโปรไฟล์ของคุณ';
-			case 'nostrScheme': return 'Nostr Scheme';
-			case 'nostrWalletConnect': return 'เชื่อมต่อวอลเล็ท Nostr';
-			case 'nwcInitialized': return 'การเชื่อมต่อวอลเล็ท Nostr ได้เริ่มต้นขึ้น';
-			case 'notEnoughBalance': return 'ยอดคงเหลือไม่เพียงพอสำหรับการชำระเงินนี้';
-			case 'notFollowedByAnyoneYouFollow': return 'ไม่ได้รับการติดตามจากคนที่คุณติดตาม';
-			case 'notHelpful': return 'ไม่เป็นประโยชน์';
-			case 'notInterested': return 'ไม่สนใจ';
-			case 'notSealed': return 'ไม่ปิดการเข้าถึง';
-			case 'notSealedYet': return 'ยังไม่ปิดการเข้าถึง';
-			case 'note': return 'โน๊ต';
-			case 'noteNotFound': return 'ไม่พบโน๊ต';
-			case 'notePublished': return 'โน๊ตถูกเผยแพร่แล้ว!';
-			case 'noteIdCopied': return 'ID โน๊ตถูกคัดลอกแล้ว!';
-			case 'walletDataNote': return 'หมายเหตุ: ข้อมูลทั้งหมดที่เกี่ยวข้องกับวอลเล็ทของคุณจะถูกจัดเก็บอย่างปลอดภัยในเครื่องของคุณ และจะไม่ถูกแชร์ออกไปภายนอกแอปพลิเคชัน';
-			case 'changeRatingNote': return 'หมายเหตุ: การเปลี่ยนคะแนนของคุณจะมีผลเพียง 5 นาที หลังจากนั้นคุณจะไม่สามารถย้อนกลับหรือเปลี่ยนแปลงได้';
-			case 'payPublishNote': return 'หมายเหตุ: โปรดตรวจสอบให้แน่ใจว่าเนื้อหาทั้งหมดที่คุณให้ไว้ถือเป็นที่สิ้นสุด เนื่องจากหากมีการเผยแพร่แล้วจะไม่สามารถย้อนกลับได้ และ SATS ที่ใช้ไปแล้วไม่สามารถขอคืนเงินได้';
-			case 'notes': return 'โน๊ต';
-			case 'notesFromCommunity': return 'โน๊ตจากคอมมูนิตี้';
-			case 'unTextW3Desc': return 'โน๊ตที่ยังไม่ได้รับสถานะ "เป็นประโยชน์" หรือ "ไม่เป็นประโยชน์"';
-			case 'unTextW1': return 'โน๊ตที่ได้รับสถานะ “เป็นประโยชน์" ';
-			case 'unTextW3': return 'โน๊ตที่ต้องการคะแนนเพิ่มเติม';
-			case 'unTextW2': return 'โน๊ตที่ได้รับสถานะ "ไม่เป็นประโยชน์"';
-			case 'un2': return 'โน๊ตที่มีการให้คะแนนอย่างต่อเนื่อง';
-			case 'notifications': return 'การแจ้งเตือน';
-			case 'npubNsecHex': return 'npub, nsec หรือ hex';
-			case 'nwcCopied': return 'คัดลอก NWC สำเร็จแล้ว!';
-			case 'onDate': return ({required Object date}) => 'ในวันที่ ${date}';
-			case 'onSelectedWalletLinkIt': return 'ในวอลเล็ทที่คุณเลือกและเชื่อมโยง';
-			case 'oneTimeRewards': return 'รางวัลครั้งเดียว';
-			case 'ongoing': return 'กำลังดำเนินการอยู่';
-			case 'nothingToShowHere': return 'โอ๊ะ! ไม่มีอะไรให้แสดงที่นี่';
-			case 'optionBackgroundColor': return 'สีพื้นหลังตัวเลือก';
-			case 'optionTextColor': return 'สีข้อความตัวเลือก';
-			case 'options': return 'ตัวเลือก';
-			case 'optionsNumber': return ({required Object number}) => 'ตัวเลือก: ${number}';
-			case 'orUseYourWallet': return 'หรือใช้วอลเล็ทของคุณ';
-			case 'others': return 'อื่นๆ';
-			case 'privacyNote': return 'แอปของเรารับประกันความเป็นส่วนตัวสูงสุด โดยการจัดเก็บข้อมูลที่ละเอียดอ่อนอย่างปลอดภัยไว้ในอุปกรณ์ของคุณ พร้อมใช้การเข้ารหัสที่เข้มงวด มั่นใจได้ว่าเรามีนโยบายการไม่แชร์ข้อมูลอย่างเคร่งครัด เพื่อให้ข้อมูลที่ละเอียดอ่อนยังคงเป็นความลับและไม่ออกจากอุปกรณ์ของผู้ใช้ ';
-			case 'owner': return 'เจ้าของ';
-			case 'paid': return 'ชำระแล้ว';
-			case 'paidNote': return 'โน๊ตโปรโมท';
-			case 'paidNotePublished': return 'โน๊ตโปรโมทถูกเผยแพร่แล้ว!';
-			case 'paidNoteLoading': return 'กำลังโหลดโน๊ตโปรโมท';
-			case 'partialUsersZapped': return 'ผู้ใช้บางส่วนถูก zapped!';
-			case 'pasteNwcAddress': return 'วางที่อยู่ NWC';
-			case 'pasteYourKey': return 'วางรหัสของคุณ';
-			case 'pasteKind1063': return 'วาง nevent 1063 ของคุณแล้วส่งไป';
-			case 'pasteYourLink': return 'วางลิงก์ของคุณแล้วส่งไป';
-			case 'pay': return 'ชำระเงิน';
-			case 'payAmount': return ({required Object number}) => 'ชำระเงิน ${number} sats';
-			case 'payPublish': return 'ชำระและเผยแพร่';
-			case 'payWithNwc': return 'ชำระเงินกับ NWC ';
-			case 'paymentFailed': return 'การชำระเงินล้มเหลว';
-			case 'paymentSucceeded': return 'การชำระเงินสำเร็จ';
-			case 'paymentSurpassMax': return 'การชำระเงินเกินกว่าจำนวนเงินสูงสุดที่อนุญาต';
-			case 'peopleToFollow': return 'ผู้คนที่จะติดตาม';
-			case 'permissionInvoiceNotGranted': return 'ไม่อนุญาตให้ชำระใบแจ้งหนี้';
-			case 'pickYourComponent': return 'เลือกส่วนประกอบของคุณ';
-			case 'pickYourImage': return 'เลือกภาพของคุณ';
-			case 'pickYourMedia': return 'เลือกสื่อของคุณ';
-			case 'pickYourVideo': return 'เลือกวิดีโอของคุณ';
-			case 'pictureUrl': return 'URL รูปภาพ';
-			case 'plan': return 'วางแผน';
-			case 'submitValidVideoEvent': return 'โปรดส่งกิจกรรมวิดีโอที่ถูกต้อง';
-			case 'points': return 'คะแนน';
-			case 'pointsSystem': return 'ระบบคะแนน';
-			case 'pollCloseDate': return 'วันปิดโพลล์';
-			case 'pollOptions': return 'ตัวเลือกโพลล์';
-			case 'pollZapPublished': return 'โพลล์ zap ได้ถูกเผยแพร่แล้ว!';
-			case 'popularNotes': return 'โน๊ตยอดนิยม';
-			case 'post': return 'โพสต์';
-			case 'postArticle': return 'โพสต์บทความ';
-			case 'postNotFound': return 'ไม่พบโพสต์';
-			case 'postCuration': return 'โพสต์คิวเรชัน';
-			case 'postInNote': return 'โพสต์ในโน๊ต';
-			case 'postNote': return 'โพสต์โน๊ต';
-			case 'postSmartWidget': return 'โพสต์สมาร์ทวิดเจ็ต';
-			case 'postVideo': return 'โพสต์วิดีโอ';
-			case 'postedBy': return 'โพสต์โดย';
-			case 'postedFrom': return 'โพสต์จาก';
-			case 'postedOn': return ({required Object date}) => 'โพสต์เมื่อ ${date}';
-			case 'preview': return 'พรีวิว';
-			case 'privKeyCopied': return 'คัดลอก Private Key แล้ว!';
-			case 'pro': return 'โปร';
-			case 'processCompleted': return 'กระบวนการเสร็จสิ้นแล้ว';
-			case 'profile': return 'โปรไฟล์';
-			case 'profileLink': return 'ลิงก์โปรไฟล์';
-			case 'profileCopied': return 'คัดลอกลิงก์โปรไฟล์แล้ว!';
-			case 'profilePreview': return 'พรีวิวโปรไฟล์';
-			case 'profileRelays': return ({required Object number}) => 'โปรไฟล์แนะนำรีเลย์ - ${number}';
-			case 'publicKey': return 'Pubkey';
-			case 'publicKeyCopied': return 'คัดลอก Pubkey แล้ว!';
-			case 'publish': return 'เผยแพร่';
-			case 'publishRemoveDraft': return 'เผยแพร่และลบฉบับร่าง';
-			case 'publishedOnText': return 'เผยแพร่เมื่อ';
-			case 'publishedOn': return ({required Object date}) => 'เผยแพร่เมื่อ: ${date}';
-			case 'pullToRefresh': return 'ดึงเพื่อรีเฟรช';
-			case 'qrCode': return 'รหัส QR';
-			case 'rateHelpful': return 'ให้คะแนนที่เป็นประโยชน์';
-			case 'rateNotHelpful': return 'ให้คะแนนที่ไม่เป็นประโยชน์';
-			case 'ratedHelpful': return 'ให้คะแนนที่เป็นประโยชน์';
-			case 'ratedNotHelpful': return 'ให้คะแนนที่ไม่เป็นประโยชน์';
-			case 'un1': return 'การให้คะแนน "ไม่เป็นประโยชน์" ในโน๊ต ที่ท้ายสุดแล้วได้รับสถานะ "เป็นประโยชน์"';
-			case 'unTextR3': return 'การให้คะแนน "ไม่เป็นประโยชน์" ในโน๊ต ที่ท้ายสุดแล้วได้รับสถานะ "เป็นประโยชน์"';
-			case 'un2Desc': return 'การให้คะแนนในโน๊ตที่ยังไม่มีสถานะ "เป็นประโยชน์" หรือ "ไม่เป็นประโยชน์"';
-			case 'unTextR1': return 'การให้คะแนนช่วยให้โน้ตมีสถานะ "เป็นประโยชน์"';
-			case 'unTextR2': return 'การให้คะแนนช่วยให้โน้ตมีสถานะ "ไม่เป็นประโยชน์"';
-			case 'readAboutVerifyingNotes': return 'อ่านเกี่ยวกับการยืนยันโน๊ต';
-			case 'readArticle': return 'อ่านบทความ';
-			case 'readMore': return 'อ่านเพิ่มเติม';
-			case 'readOnly': return 'อ่านอย่างเดียว';
-			case 'readWrite': return 'อ่าน/เขียน';
-			case 'receive': return 'รับ';
-			case 'receiveSats': return 'รับ sats';
-			case 'recent': return 'ล่าสุด';
-			case 'recentTransactions': return 'ธุรกรรมล่าสุด';
-			case 'recentWithReplies': return 'ตอบกลับล่าสุด';
-			case 'reconnectWifi': return 'เชื่อมต่อ wifi อีกครั้ง';
-			case 'refresh': return 'รีเฟรช';
-			case 'refreshed': return 'รีเฟรชแล้ว';
-			case 'refreshing': return 'กำลังรีเฟรช';
-			case 'relayInUse': return 'รีเลย์ถูกใช้งานแล้ว';
-			case 'relaySettings': return ({required Object number}) => 'การตั้งค่ารีเลย์ ${number}';
-			case 'relayingStuff': return 'กำลังส่งข้อมูล...';
-			case 'relays': return 'รีเลย์';
-			case 'relaysNotReached': return 'ไม่สามารถเข้าถึงรีเลย์ได้';
-			case 'relaysListUpdated': return 'รายการรีเลย์ได้รับการอัปเดตแล้ว';
-			case 'releaseToLoad': return 'ปล่อยเพื่อโหลดเพิ่มเติม';
-			case 'repeatedRewards': return 'รางวัลที่ได้รับซ้ำ';
-			case 'replies': return 'ตอบกลับ';
-			case 'reply': return 'ตอบกลับ';
-			case 'replyingTo': return ({required Object name}) => 'กำลังตอบกลับถึง: ${name}';
-			case 'reposted': return 'รีโพสต์แล้ว';
-			case 'requestInProgress': return 'คำขออยู่ระหว่างดำเนินการ';
-			case 'reveal': return 'เปิดเผย';
-			case 'rewards': return 'รางวัล';
-			case 'saveDraft': return 'บันทึกฉบับร่าง';
-			case 'saved': return 'บันทึกแล้ว';
-			case 'scanPay': return 'สแกนและชำระเงิน';
-			case 'scanAgain': return 'สแกนอีกครั้ง';
-			case 'scanQrCode': return 'สแกนรหัส QR';
-			case 'sealed': return 'ปิดการใช้งาน';
-			case 'search': return 'ค้นหา';
-			case 'searchContentByTitle': return ({required Object type}) => 'ค้นหา ${type} ตามชื่อ';
-			case 'searchNameNpub': return 'ค้นหาตามชื่อ npub nprofile';
-			case 'searchByUserName': return 'ค้นหาด้วยชื่อผู้ใช้';
-			case 'searchRelay': return 'ค้นหารีเลย์';
-			case 'secureDirectMessaging': return 'การส่งข้อความโดยตรงที่ปลอดภัย';
-			case 'seeAll': return 'ดูทั้งหมด';
-			case 'seeAllAttempts': return 'ดูการพยายามทั้งหมด';
-			case 'seeAlso': return 'ดูเพิ่มเติม';
-			case 'seeAnything': return 'เห็นสิ่งที่คุณต้องการปรับปรุงหรือไม่?';
-			case 'seeMore': return 'ดูเพิ่มเติม';
-			case 'seeOriginal': return 'ดูต้นฉบับ';
-			case 'seeTranslation': return 'ดูคำแปล';
-			case 'selectAndUploadLocaleImage': return 'เลือกและอัปโหลดรูปภาพจากเครื่อง';
-			case 'selectAdate': return 'เลือกวันที่';
-			case 'selectDefaultWallet': return 'เลือกวอลเล็ทเริ่มต้นในการตั้งค่า';
-			case 'selectUserToZap': return 'เลือกผู้ใช้ที่จะ zap (ไม่บังคับ)';
-			case 'selectValidUrlImage': return 'เลือกรูปภาพ URL ที่ถูกต้อง';
-			case 'selectWalletTransactions': return 'เลือกวอลเล็ทเพื่อดูธุรกรรมล่าสุด';
-			case 'selectOneReason': return 'เลือกเหตุผลอย่างน้อยหนึ่งข้อ';
-			case 'selectComponent': return 'เลือกคอมโพเนนต์ตามที่ต้องการและแก้ไข';
-			case 'send': return 'ส่ง';
-			case 'sendSats': return 'ส่ง sats';
-			case 'setProperName': return 'ตั้งชื่อให้เหมาะสม';
-			case 'setSatsMoreThanZero': return 'ตั้งค่าจำนวน sats ให้มากกว่า 0';
-			case 'setBookmarkTitleDescription': return 'ตั้งชื่อและคำอธิบายสำหรับรายการบุ๊กมาร์กของคุณ';
-			case 'setValidKey': return 'ตั้งรหัสที่ถูกต้อง';
-			case 'setUpYourLink': return 'ตั้งค่าลิงก์ของคุณ';
-			case 'setUpYourNevent': return 'ตั้งค่าเนเวนต์ของคุณ';
-			case 'setYourRating': return 'ตั้งคะแนนของคุณ';
-			case 'settings': return 'การตั้งค่า';
-			case 'share': return 'แชร์';
-			case 'shareGlimps': return 'แชร์มุมมองของคุณในคำที่รู้สึกจริงใจ';
-			case 'shareContent': return 'แชร์เนื้อหา';
-			case 'shareImage': return 'แชร์รูปภาพ';
-			case 'shareLink': return 'แชร์ลิงก์';
-			case 'shareNaddr': return 'แชร์ naddr';
-			case 'shareNoteId': return 'แชร์ ID โน๊ต';
-			case 'shareNprofile': return 'แชร์โปรไฟล์';
-			case 'shareProfile': return 'แชร์โปรไฟล์';
-			case 'shareProfileDesc': return 'แชร์โปรไฟล์ของคุณเพื่อเข้าถึงผู้คนมากขึ้น เชื่อมต่อกับผู้อื่น และขยายเครือข่ายของคุณ';
-			case 'show': return 'แสดง';
-			case 'showArticlesNotesSuggestions': return 'แสดงคำแนะนำบทความ/โน๊ต';
-			case 'showSecret': return 'แสดงรหัสลับ!';
-			case 'showStats': return 'แสดงสถิติ';
-			case 'showSuggestedInterests': return 'แสดงความสนใจที่แนะนำ';
-			case 'showSuggestedPeople': return 'แสดงรายการแนะนำคนติดตาม';
-			case 'showSuggestions': return 'แสดงคำแนะนำ';
-			case 'signIn': return 'เข้าสู่ระบบ';
-			case 'usingViewModeDesc': return 'ลงชื่อเข้าใช้ด้วยรหัสส่วนตัวของคุณและเข้าร่วมคอมมูนิตี้';
-			case 'size': return 'ขนาด';
-			case 'slideToPay': return 'เลื่อนไปชำระเงิน';
-			case 'smartWidget': return 'สมาร์ทวิดเจ็ต';
-			case 'smartWidgetBuilder': return 'เครื่องมือสร้างสมาร์ทวิดเจ็ต';
-			case 'smartWidgetChecker': return 'ตัวตรวจสอบสมาร์ทวิดเจ็ต';
-			case 'smartWidgetNotFound': return 'ไม่พบสมาร์ทวิดเจ็ต';
-			case 'smartWidgetPublishedSuccessfuly': return 'เผยแพร่สมาร์ทวิดเจ็ตเรียบร้อยแล้ว';
-			case 'smartWidgets': return 'สมาร์ทวิดเจ็ต';
-			case 'smartWidgetsDrafts': return 'ร่างสมาร์ทวิดเจ็ต';
-			case 'smartWidgetsTemplates': return 'เทมเพลตสมาร์ทวิดเจ็ต';
-			case 'software': return 'ซอฟต์แวร์';
-			case 'somethingWentWrong': return 'มีบางอย่างผิดพลาด!';
-			case 'soonUsers': return 'เร็วๆ นี้ ผู้ใช้จะสามารถใช้คะแนนสะสมในชุดกิจกรรมต่อไปนี้:';
-			case 'source': return 'แหล่งที่มา';
-			case 'sourceRecommended': return 'แหล่งที่มา (แนะนำ)';
-			case 'splitRevenuesWithUsers': return 'แบ่งรายได้กับผู้ใช้';
-			case 'splitZapsWith': return 'แบ่ง zaps กับ';
-			case 'spreadWordSharingContent': return 'กระจายข่าวด้วยการแชร์เนื้อหาของคุณไปทั่วทุกที่';
-			case 'startBuildingSmartWidget': return 'เริ่มสร้างและปรับแต่งสมาร์ทวิดเจ็ตของคุณเพื่อใช้บนเครือข่าย Nostr';
-			case 'startEarningPoints': return 'เริ่มทำรายได้และใช้คะแนน Yaki ของคุณให้เกิดประโยชน์สูงสุด 🎉';
-			case 'startSearchContent': return 'เริ่มค้นหาเนื้อหา';
-			case 'startSearchPeople': return 'เริ่มค้นหาผู้คน';
-			case 'stickers': return 'สติ๊กเกอร์';
-			case 'submit': return 'ส่ง';
-			case 'submitBookmarkList': return 'ส่งรายการบุ๊กมาร์ก';
-			case 'submitCuration': return 'ส่งคิวเรชัน';
-			case 'successfulRelays': return 'การรีเลย์ที่สำเร็จ';
-			case 'suggestedInterests': return 'ความสนใจที่แนะนำ';
-			case 'suggestions': return 'ข้อเสนอแนะ';
-			case 'suggestionsBox': return 'กล่องข้อเสนอแนะ';
-			case 'summaryOptional': return 'สรุป (ไม่บังคับ)';
-			case 'supportYakihonne': return 'สนับสนุน YakiHonne';
-			case 'supportedNips': return 'Nips ที่รองรับ';
-			case 'switchAccounts': return 'สลับบัญชี';
-			case 'taylorExperienceInterests': return 'ปรับแต่งประสบการณ์ของคุณโดยเลือกความสนใจสูงสุดของคุณ';
-			case 'telegramUrl': return 'URL โทรเลข';
-			case 'templates': return 'เทมเพลต';
-			case 'text': return 'ข้อความ';
-			case 'textColor': return 'สีข้อความ';
-			case 'textCustomization': return 'การปรับแต่งข้อความ';
-			case 'textSuccesfulyCopied': return 'คัดลอกข้อความเรียบร้อยแล้ว!';
-			case 'theFollowingNote': return 'หมายเหตุต่อไปนี้:';
-			case 'smHaveTitle': return 'อย่างน้อยสมาร์ทวิดเจ็ตควรมีชื่อ';
-			case 'smHaveOneWidget': return 'สมาร์ทวิดเจ็ตควรมีอย่างน้อยหนึ่งส่วนประกอบ';
-			case 'valueBetweenMinMax': return 'ค่าต้องอยู่ระหว่างจำนวนขั้นต่ำและสูงสุดของ Sats';
-			case 'noDataFromGpt': return 'มีข้อมูลที่จะแสดงจาก GPT';
-			case 'oneFeedOptionAvailable': return 'ต้องมีตัวเลือกฟีดอย่างน้อยหนึ่งรายการที่สามารถใช้ได้';
-			case 'unTextW1Desc': return 'โน๊ตเหล่านี้จะแสดงให้ทุกคนเห็น เพื่อเพิ่มบริบทและช่วยให้ผู้คนรับทราบข้อมูลอยู่เสมอ';
-			case 'unTextW2Desc': return 'โน๊ตเหล่านี้ได้รับการจัดอันดับว่า "ไม่เป็นประโยชน์" จากผู้มีส่วนร่วมจำนวนมาก รวมถึงผู้ที่ไม่เห็นด้วยในคะแนนก่อนหน้านี้';
-			case 'un1Desc': return 'การให้คะแนนเหล่านี้จะถูกนับสองครั้งเนื่องจากมักบ่งชี้ถึงการสนับสนุนโน๊ตที่ผู้อื่นเห็นว่าเป็นประโยชน์';
-			case 'unTextR1Desc': return 'การให้คะแนนเหล่านี้ระบุโน๊ตที่เป็นประโยชน์ที่จะแสดงต่อทุกคน โดยเพิ่มบริบทและช่วยให้ผู้คนรับทราบข้อมูล';
-			case 'unTextR2Desc': return 'การให้คะแนนเหล่านี้ช่วยปรับปรุง Verified Notes โดยการให้ข้อเสนอแนะแก่ผู้เขียนโน๊ต และช่วยให้ผู้มีส่วนร่วมมุ่งเน้นไปที่โน๊ตที่มีแนวโน้มมากที่สุด';
-			case 'notValidVideoEvent': return 'กิจกรรมนี้ไม่ใช่กิจกรรมวิดีโอที่ถูกต้อง!';
-			case 'sensitiveContent': return 'นี่คือเนื้อหาที่ละเอียดอ่อน';
-			case 'emptyVideoUrl': return 'Nevent นี้มี URL ว่างเปล่า';
-			case 'thisNoteAwaitRating': return 'โน๊ตนี้กำลังรอการให้คะแนนของคอมมูนิตี้';
-			case 'yourNoteAwaitRating': return 'โน๊ตนี้กำลังรอการให้คะแนนของคอมมูนิตี้';
-			case 'smartWidgetConvention': return 'สมาร์ทวิดเจ็ตนี้ไม่เป็นไปตามแบบแผนที่ตกลงกันไว้';
-			case 'useCannotBeZapped': return 'ผู้ใช้รายนี้ไม่สามารถ zapped ได้';
-			case 'thread': return 'เธรด';
-			case 'thumbnailPreview': return 'ตัวอย่างภาพขนาดย่อ';
-			case 'title': return 'ชื่อ';
-			case 'titleData': return ({required Object description}) => 'ชื่อ: ${description}';
-			case 'toBeAbleSendSats': return 'เพื่อให้สามารถส่ง zaps ได้ โปรดตรวจสอบให้แน่ใจว่าได้เชื่อมต่อกับ bitcoin lightning wallet ของคุณแล้ว';
-			case 'topReasonsSelected': return 'เหตุผลหลักที่ผู้ประเมินเลือก:';
-			case 'totalAmount': return 'จำนวนเงินทั้งหมด';
-			case 'totalNumber': return ({required Object number}) => 'ทั้งหมด: ${number}';
-			case 'trending': return 'กำลังเป็นที่นิยม';
-			case 'tryAgain': return 'ลองอีกครั้ง';
-			case 'type': return 'พิมพ์';
-			case 'typeValidZapQuestion': return 'พิมพ์คำถามโพลล์ที่ถูกต้อง!';
-			case 'unableToOpenUrl': return 'ไม่สามารถเปิด url ได้';
-			case 'undo': return 'เลิกทำ';
-			case 'undoRating': return 'ยกเลิกการให้คะแนน';
-			case 'unfollow': return 'เลิกติดตาม';
-			case 'unfollowAll': return 'เลิกติดตามทั้งหมด';
-			case 'pendingUnfollowing': return 'กำลังเลิกติดตาม...';
-			case 'unknown': return 'ไม่ทราบ';
-			case 'unknownVerifiedNote': return 'ไม่ทราบยืนยันโน๊ต';
-			case 'unlocked': return 'ปลดล็อคแล้ว';
-			case 'unmute': return 'เปิดเสียง';
-			case 'unmuteUser': return 'เปิดเสียงผู้ใช้';
-			case 'untitled': return 'ไม่มีชื่อ';
-			case 'update': return 'อัปเดต';
-			case 'updateInterests': return 'อัปเดตความสนใจ';
-			case 'updateProfile': return 'อัพเดตโปรไฟล์';
-			case 'updatedSuccesfuly': return 'อัปเดตเรียบร้อยแล้ว';
-			case 'updates': return 'อัพเดท';
-			case 'updatesNews': return 'อัพเดทข่าว';
-			case 'uploadAndUse': return 'อัปโหลดและใช้งาน';
-			case 'uploadImage': return 'อัพโหลดรูปภาพ';
-			case 'uploadingImage': return 'กำลังอัพโหลดภาพ...';
-			case 'upvotes': return 'โหวตเห็นด้วย';
-			case 'url': return 'URL';
-			case 'useAmber': return 'ใช้ Amber';
-			case 'useInvoice': return 'ใช้ใบแจ้งหนี้';
-			case 'useTemplate': return 'ใช้เทมเพลต';
-			case 'user': return 'ผู้ใช้';
-			case 'userCannotBeFound': return 'ไม่พบผู้ใช้';
-			case 'userHasBeenMuted': return 'ผู้ใช้ถูกปิดเสียง';
-			case 'userHasBeenUnmuted': return 'ผู้ใช้ถูกเปิดเสียงแล้ว';
-			case 'userName': return 'ชื่อผู้ใช้';
-			case 'userNameCopied': return 'คัดลอกชื่อผู้ใช้เรียบร้อยแล้ว!';
-			case 'userZappedSuccesfuly': return 'ผู้ใช้ถูก zapped สำเร็จ';
-			case 'userImpact': return 'ผลกระทบของผู้ใช้';
-			case 'userRelays': return 'รีเลย์ของผู้ใช้';
-			case 'usingExternalSign': return 'การใช้ผู้ลงนามภายนอก';
-			case 'value': return 'มูลค่า';
-			case 'verifyNip05': return 'ที่อยู่ Nostr ที่ได้รับการยืนยันแล้ว (NIP 05)';
-			case 'verifiedNoteNotFound': return 'ไม่พบโน๊ตที่ยืนยันแล้ว';
-			case 'verifyNotes': return 'ยืนยันโน๊ต';
-			case 'verifyingNote': return 'กำลังยืนยันโน๊ต';
-			case 'version': return 'เวอร์ชัน';
-			case 'video': return 'วิดีโอ';
-			case 'videoNotFound': return 'ไม่พบวิดีโอ';
-			case 'videoCustomization': return 'การปรับแต่งวิดีโอ';
-			case 'videoAddedCuration': return 'เพิ่มวิดีโอในคิวเรชันของคุณแล้ว';
-			case 'videoUrl': return 'URL ของวิดีโอ';
-			case 'videos': return 'วิดีโอ';
-			case 'videosAvailableCuration': return 'วิดีโอที่มีอยู่ในคิวเรชันนี้';
-			case 'view': return 'ดู';
-			case 'viewProfile': return 'ดูโปรไฟล์';
-			case 'viewQrCode': return 'ดูรหัส QR';
-			case 'views': return 'จำนวนการรับชม';
-			case 'visitProfile': return 'เยี่ยมชมโปรไฟล์';
-			case 'voteNotSubmitted': return 'ไม่สามารถส่งคะแนนโหวตได้';
-			case 'voteRequired': return 'จำเป็นต้องลงโหวตเพื่อแสดงสถิติ';
-			case 'votesByUsers': return 'โหวตโดยผู้ใช้';
-			case 'votesByZaps': return 'โหวตโดย zaps';
-			case 'votesNumber': return ({required Object number}) => 'โหวต: ${number}';
-			case 'waitingGenerationOfInvoice': return 'กำลังรอการสร้างใบแจ้งหนี้';
-			case 'wallet': return 'วอลเล็ท';
-			case 'walletNotLinked': return 'ไม่สามารถเชื่อมกับวอลเล็ทได้ ที่อยู่ Lightning ผิดพลาด';
-			case 'walletCreated': return 'สร้างวอลเล็ทสำเร็จแล้ว';
-			case 'walletLinked': return 'เชื่อมกับวอลเล็ทสำเร็จแล้ว';
-			case 'wallets': return 'วอลเล็ท';
-			case 'warning': return 'คำเตือน';
-			case 'watchNow': return 'ดูตอนนี้';
-			case 'noLnInNwc': return 'เราไม่สามารถเรียกที่อยู่ของคุณจาก NWC Secret ของคุณได้ โปรดตรวจสอบผู้ให้บริการ ที่อยู่Lightning ของคุณ เพื่อคัดลอกที่อยู่ของคุณหรืออัปเดตโปรไฟล์ของคุณตามลำดับ';
-			case 'readAboutVerifyingNotesDesc': return 'เราได้จัดทำบทความสำหรับคุณเพื่อช่วยให้คุณเข้าใจวัตถุประสงค์ของเรา';
-			case 'website': return 'เว็บไซต์';
-			case 'weight': return 'น้ำหนัก';
-			case 'whatThinkThis': return 'คุณคิดอย่างไรเกี่ยวกับเรื่องนี้?';
-			case 'whatThinkOfThat': return 'คุณคิดอย่างไรกับสิ่งนั้น?';
-			case 'whatsOnYourMind': return 'คุณคิดอะไรอยู่?';
-			case 'whatsThis': return 'นี่อะไรน่ะ?';
-			case 'whyVerifyingNotes': return 'ทำไมต้องมีการยืนยันโน๊ต?';
-			case 'widgets': return 'วิดเจ็ต';
-			case 'writeCommentOptional': return 'เขียนความคิดเห็น (ไม่บังคับ)';
-			case 'writeYourMessage': return 'เขียนข้อความ';
-			case 'writeNote': return 'เขียนโน๊ต';
-			case 'writeSummary': return 'เขียนสรุป';
-			case 'writeValidNote': return 'เขียนโน๊ตที่ถูกต้อง!';
-			case 'writeOnly': return 'เขียนเท่านั้น';
-			case 'writeSomethingAboutYou': return 'เขียนอะไรบางอย่างเกี่ยวกับคุณ!';
-			case 'writeSomething': return 'เขียนอะไรบางอย่าง...';
-			case 'writeYourText': return 'เขียนข้อความของคุณ';
-			case 'xUrl': return 'URL X';
-			case 'yakiChest': return 'Yaki chest';
-			case 'yakihonne': return 'Yakihonne';
-			case 'yakihonneChest': return 'Yakihonne\'s Chest!';
-			case 'yakihonneConsPoints': return 'คะแนนสะสมของ YakiHonne';
-			case 'yakihonneImprovements': return 'การปรับปรุงของ YakiHonne';
-			case 'yakihonneNote': return 'โน๊ตของ YakiHonne';
-			case 'yakihonneNotification': return 'การแจ้งเตือนของ YakiHonne';
-			case 'yakiNwc': return 'NWC ของ YakiHonne';
-			case 'clearAppCacheDesc': return 'คุณกำลังจะล้างแคชของแอป คุณต้องการดำเนินการต่อหรือไม่';
-			case 'deleteWalletDesc': return 'คุณกำลังจะลบวอลเล็ทนี้ คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'linkWalletDesc': return 'คุณกำลังจะแทนที่วอลเล็ทเดิมของคุณ และเชื่อมวอลเล็ทใหม่กับโปรไฟล์ของคุณ คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'undoRatingDesc': return 'คุณกำลังจะยกเลิกการให้คะแนนของคุณ คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'alreadyLoggedIn': return 'คุณเข้าสู่ระบบแล้ว!';
-			case 'deleteAccountMessage': return 'คุณกำลังพยายามเข้าสู่ระบบบัญชีที่ถูกลบ';
-			case 'loggedToYakiChest': return 'คุณได้ลงชื่อเข้าใช้ใน Yakihonne chest';
-			case 'loggedIn': return 'คุณเข้าสู่ระบบแล้ว!';
-			case 'notUsingSecureDms': return 'คุณไม่ได้ใช้ Dms ที่มีความปลอดภัยอีกต่อไป';
-			case 'usingSecureDms': return 'ขณะนี้คุณกำลังใช้งาน Dms ที่ปลอดภัย';
-			case 'usingExternalSignDesc': return 'คุณกำลังใช้ผู้ลงนามภายนอก';
-			case 'secKeyWalletDesc': return 'คุณสามารถค้นหารหัสลับบัญชีของคุณ และความลับในการเชื่อมต่อวอลเล็ทได้ในการตั้งค่าของคุณ ';
-			case 'secKeyDesc': return 'คุณสามารถค้นหารหัสลับบัญชีของคุณได้ในการตั้งค่า รหัสเหล่านี้จำเป็นสำหรับการเข้าถึงบัญชีและวอลเล็ทของคุณอย่างปลอดภัย กรุณาเก็บรักษาไว้อย่างปลอดภัยและเป็นความลับ';
-			case 'uploadSendMedia': return 'คุณสามารถอัปโหลดและส่งสื่อได้ทันทีหลังจากที่คุณเลือกหรือรับสื่อเหล่านั้น';
-			case 'uploadPasteUrl': return 'คุณสามารถอัปโหลดหรือวาง URL สำหรับภาพที่คุณต้องการได้';
-			case 'canUploadPastLink': return 'คุณสามารถอัปโหลด วางลิงก์ หรือเลือกประเภท 1063 ลงในวิดีโอของคุณได้';
-			case 'findPaidNoteCorrect': return 'คุณพบว่าโน๊ตโปรโมทนี้ถูกต้อง';
-			case 'findPaidNoteMisleading': return 'คุณพบว่าโน๊ตโปรโมทนี้ทำให้เข้าใจผิด';
-			case 'alreadyContributed': return 'คุณได้มีส่วนร่วมแล้ว';
-			case 'alreadyVoted': return 'คุณได้ลงคะแนนในโพลล์นี้แล้ว';
-			case 'congratsDesc': return ({required Object number}) => 'คุณได้รับรางวัล ${number} xp สำหรับการดำเนินการต่อไปนี้ ใช้งานและรับรางวัล!';
-			case 'youHaveLeftNote': return 'คุณได้ทิ้งโน๊ตไว้ในโน๊ตโปรโมทนี้:';
-			case 'noRewards': return 'คุณไม่ได้รับรางวัล โต้ตอบหรือเขียนโน๊ตที่ได้รับการยืนยันเพื่อรับสิ่งเหล่านั้น';
-			case 'noWalletLinkedMessage': return 'คุณไม่มีวอลเล็ทที่เชื่อมโยงกับโปรไฟล์ของคุณ คุณต้องการเชื่อมโยงวอลเล็ทนี้หรือไม่?';
-			case 'noWalletLinkedToYouProfile': return 'คุณไม่มีวอลเล็ทที่เชื่อมโยงกับโปรไฟล์ของคุณ';
-			case 'youHaveRated': return 'คุณได้ให้คะแนนแล้ว';
-			case 'ratedNoteSealed': return 'คุณได้ให้คะแนนโน๊ตต่อไปนี้ซึ่งได้รับการปิดการเข้าถึงแล้ว:';
-			case 'youRatedHelpful': return 'คุณให้คะแนนสิ่งนี้ว่าเป็นประโยชน์';
-			case 'youRatedNotHelpful': return 'คุณให้คะแนนสิ่งนี้ว่าไม่เป็นประโยชน์';
-			case 'ownReceivedSat': return ({required Object number}) => 'คุณได้รับ ${number} Sats';
-			case 'ownSentSat': return ({required Object number}) => 'คุณส่ง ${number} Sats';
-			case 'voteToSeeStats': return 'คุณควรโหวตเพื่อให้สามารถดูสถิติได้';
-			case 'you': return 'คุณ: ';
-			case 'confirmDeleteContent': return ({required Object type}) => 'คุณกำลังจะลบสิ่งนี้ ${type}คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'confirmDeleteBookmarkList': return 'คุณกำลังจะลบรายการบุ๊กมาร์กนี้ คุณต้องการดำเนินการต่อหรือไม่';
-			case 'confirmDeleteDraft': return 'คุณกำลังจะลบฉบับร่างนี้ คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'deleteCoverPicDesc': return 'คุณกำลังจะลบภาพหน้าปกของคุณ คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'youreAllSet': return 'คุณพร้อมแล้ว';
-			case 'switchToMonolayout': return 'คุณกำลังเปลี่ยนไปใช้เลย์เอาต์แบบโมโนในขณะที่มีองค์ประกอบอยู่ทั้งสองด้าน การดำเนินการนี้จะลบเนื้อหาในคอนเทนเนอร์ คุณต้องการดำเนินการต่อหรือไม่';
-			case 'usingViewMode': return 'คุณกำลังใช้โหมดมุมมอง';
-			case 'muteUserDesc': return ({required Object name}) => 'คุณกำลังจะปิดเสียง ${name}คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'unmuteUserDesc': return ({required Object name}) => 'คุณกำลังจะเปิดเสียง ${name}คุณต้องการดำเนินการต่อหรือไม่?';
-			case 'articlePublished': return 'บทความของคุณได้รับการเผยแพร่แล้ว!';
-			case 'yourDisplayName': return 'ชื่อที่แสดงของคุณ';
-			case 'yourNoteSealed': return 'โน๊ตต่อไปนี้ของคุณเพิ่งถูกปิดการเข้าถึง:';
-			case 'yourName': return 'ชื่อของคุณ';
-			case 'ratingDeleted': return 'คะแนนของคุณถูกลบแล้ว';
-			case 'ratingSubmittedCheckReward': return 'คะแนนของคุณถูกส่งแล้ว กรุณาตรวจสอบหน้ารางวัลของคุณเพื่อรับรางวัลคะแนนของคุณ';
-			case 'verifiedNoteAdded': return 'โน๊ตที่ได้รับการยืนยันของคุณได้ถูกเพิ่มแล้ว โปรดตรวจสอบหน้ารางวัลของคุณเพื่อรับรางวัลการเขียนของคุณ';
-			case 'verifiedNoteSealed': return 'โน๊ตที่ได้รับการยืนยันแล้วของคุณถูกปิดการเข้าถึงแล้ว';
-			case 'yourWebsite': return 'เว็บไซต์ของคุณ';
-			case 'youtubeUrl': return 'YouTube URL ';
-			case 'zap': return 'Zap';
-			case 'zapPoll': return ' Zap โพลล์';
-			case 'zapPollCustomization': return 'การปรับแต่งโพลล์ Zap';
-			case 'zapPollNevent': return 'โพลล์ zap nevent';
-			case 'zapSplits': return 'แบ่ง Zap';
-			case 'zappers': return 'Zappers';
-			case 'zaps': return 'Zaps ';
-			case 'zapReceived': return 'ได้รับ Zaps แล้ว';
-			case 'zapSent': return 'ส่ง zaps แล้ว';
-			case 'comingSoon': return 'เร็วๆ นี้';
-			case 'content': return 'เนื้อหา';
-			case 'expiresOn': return ({required Object date}) => 'หมดอายุวันที่ ${date}';
-			case 'reactions': return 'รีโพสต์';
-			case 'reposts': return 'การตอบสนอง';
-			case 'collapseNote': return 'ยุบบันทึกย่อ';
-			case 'notifDisabled': return 'การแจ้งเตือนถูกปิดใช้งาน!';
-			case 'notifDisabledMessage': return 'การแจ้งเตือนถูกปิดใช้งานสำหรับประเภทนี้ คุณสามารถเปิดใช้งานได้ในการตั้งค่าการแจ้งเตือน';
-			case 'oneNotifOptionAvailable': return 'ควรมีตัวเลือกการแจ้งเตือนอย่างน้อยหนึ่งตัวเลือก';
-			case 'readAll': return 'อ่านทั้งหมด';
-			case 'usernameTaken': return 'ชื่อผู้ใช้ถูกใช้แล้ว';
-			case 'usernameRequired': return 'ชื่อผู้ใช้ เป็นสิ่งจำเป็น';
-			case 'deleteWalletConfirmation': return 'โปรดตรวจสอบให้แน่ใจว่าคุณได้บันทึกวลีการเชื่อมต่อ NWC ของคุณอย่างปลอดภัย เนื่องจากเราไม่สามารถช่วยเหลือในการกู้คืนกระเป๋าเงินที่สูญหายได้';
-			case 'unsupportedKind': return 'ชนิดที่ไม่รองรับ';
-			case 'analyticsCrashlytics': return 'ความผิดพลาด';
-			case 'analyticsCache': return 'Crashlytics และแคช';
-			case 'analyticsCacheOn': return 'Crashlytics เปิดอยู่';
-			case 'analyticsCacheOff': return 'Crashlytics ถูกปิด';
-			case 'shareNoUsage': return 'คุณไม่แบ่งปันความผิดพลาดกับเราในขณะนี้';
-			case 'wantShareAnalytics': return 'ต้องการแบ่งปัน Crashlytics หรือไม่?';
-			case 'yakihonneAnCr': return 'Crashlytics ของ Yakihonne';
-			case 'crashlyticsTerms': return 'การรวบรวม Crashlytics ที่ไม่ระบุชื่อเป็นสิ่งสำคัญสำหรับการปรับแต่งคุณสมบัติของแอปและประสบการณ์ผู้ใช้ของเรา ';
-			case 'collectAnonymised': return 'เรารวบรวม Crashlytics ที่ไม่ระบุชื่อเพื่อปรับปรุงประสบการณ์แอพ';
-			case 'linkWalletToProfile': return 'ลิงก์กระเป๋าเงินกับโปรไฟล์ของคุณ';
-			case 'linkWalletToProfileDesc': return 'กระเป๋าเงินที่เชื่อมโยงจะถูกใช้เพื่อรับ SATS';
-			case 'noWalletLinked': return 'คุณไม่มีกระเป๋าเงินที่เชื่อมโยงกับโปรไฟล์ของคุณให้ลองเชื่อมโยงหนึ่งของคุณในเมนูด้านบน';
-			case 'addPoll': return 'เพิ่มแบบสำรวจ';
-			case 'browsePolls': return 'เรียกดูโพล';
-			case 'maciPolls': return 'โพล MACI';
-			case 'beta': return 'เบต้า';
-			case 'choosePollType': return 'เลือกประเภทแบบสำรวจ';
-			case 'created': return 'สร้าง';
-			case 'tallying': return 'การนับ';
-			case 'ended': return 'จบ';
-			case 'closed': return 'ปิด';
-			case 'voteResultsBy': return 'โหวตผลลัพธ์โดย';
-			case 'votes': return 'โหวต';
-			case 'voiceCredit': return 'เครดิตเสียง';
-			case 'viewDetails': return 'ดูรายละเอียด';
-			case 'signup': return 'การลงทะเบียน';
-			case 'notDownloadProof': return 'ไม่สามารถดาวน์โหลดหลักฐานได้';
-			case 'name': return 'ชื่อ';
-			case 'status': return 'สถานะ';
-			case 'circuit': return 'วงจร';
-			case 'votingSystem': return 'ระบบลงคะแนนเสียง';
-			case 'proofSystem': return 'ระบบพิสูจน์';
-			case 'gasStation': return 'ปั๊มน้ำมัน';
-			case 'totalFund': return '(กองทุนรวม)';
-			case 'roundStart': return 'รอบ';
-			case 'roundEnd': return 'รอบ';
-			case 'operator': return 'ผู้ดำเนินการ';
-			case 'contractCreator': return 'ผู้สร้างสัญญา';
-			case 'contractAddress': return 'ที่อยู่สัญญา';
-			case 'blockHeight': return 'ความสูงของบล็อก';
-			case 'atContractCreation': return ({required Object number}) => '${number} (ที่การสร้างสัญญา)';
-			case 'zkProofs': return 'บทพิสูจน์ ZK';
-			case 'downloadZkProofs': return 'ดาวน์โหลดหลักฐาน';
-			case 'walletConnectionString': return 'สตริงการเชื่อมต่อกระเป๋าเงิน';
-			case 'walletConnectionStringDesc': return 'โปรดตรวจสอบให้แน่ใจว่าได้คัดลอกหรือส่งออกสตริงการเชื่อมต่อกระเป๋าเงินของคุณอย่างปลอดภัย ';
-			case 'export': return 'ส่งออก';
-			case 'logout': return 'ออกจากระบบ';
-			case 'exportAndLogout': return 'ส่งออกและออกจากระบบ';
-			case 'exportWalletsDesc': return 'ดูเหมือนว่าคุณมีกระเป๋าเงินที่เชื่อมโยงกับบัญชีของคุณ ';
-			case 'manageWallets': return 'จัดการกระเป๋าเงิน';
-			case 'roundDuration': return 'ระยะเวลารอบ';
-			case 'startAt': return ({required Object date}) => 'เริ่มต้นที่: ${date}';
-			case 'loginAction': return 'เข้าสู่ระบบ';
-			case 'addPicture': return 'เพิ่มรูปภาพ';
-			case 'editPicture': return 'แก้ไขรูปภาพ';
-			case 'exportKeys': return 'กุญแจส่งออก';
-			case 'mutedUser': return 'ผู้ใช้ที่ปิดเสียง';
-			case 'unaccessibleContent': return 'เนื้อหาที่ไม่สามารถเข้าถึงได้';
-			case 'mutedUserDesc': return 'คุณได้ปิดเสียงผู้ใช้รายนี้ลองพิจารณาดูเนื้อหานี้';
-			case 'commentHidden': return 'ความคิดเห็นนี้ซ่อนอยู่';
-			case 'upcoming': return 'ที่กำลังจะมาถึง';
-			case 'exportCredentials': return 'ข้อมูลรับรองการส่งออก';
-			case 'loginToYakihonne': return 'เข้าสู่ระบบ Yakihonne';
-			case 'alreadyUser': return 'ผู้ใช้แล้ว?';
-			case 'createPoll': return 'สร้างแบบสำรวจ';
-			case 'gasStationTotal': return 'ปั๊มน้ำมัน (กองทุนรวม)';
-			case 'gasStationRemaining': return 'ปั๊มน้ำมัน (ดุลที่เหลือ)';
-			case 'paste': return 'แปะ';
-			case 'manual': return 'คู่มือ';
-			case 'contacts': return 'ผู้ติดต่อ';
-			case 'typeManualDesc': return 'พิมพ์ที่อยู่สายฟ้าใบแจ้งหนี้สายฟ้าหรือ lnurl';
-			case 'useValidPaymentRequest': return 'โปรดใช้คำขอการชำระเงินที่ถูกต้อง';
-			case 'save': return 'บันทึก';
-			case 'saveImageGallery': return 'รูปภาพถูกดาวน์โหลดไปยังแกลเลอรี่ของคุณ';
-			case 'errorSavingImage': return 'เกิดข้อผิดพลาดขณะดาวน์โหลดภาพ';
-			case 'copyImageGallery': return 'รูปภาพถูกคัดลอกไปยังคลิปบอร์ดของคุณ';
-			case 'errorCopyImage': return 'เกิดข้อผิดพลาดในขณะที่คัดลอกภาพ';
-			case 'scan': return 'สแกน';
-			case 'invalidLightningAddress': return 'ที่อยู่สายฟ้าที่ไม่ถูกต้อง';
-			case 'deleteAccountDesc': return 'คุณกำลังจะลบบัญชีของคุณคุณต้องการดำเนินการต่อหรือไม่?';
-			case 'paymentFailedInvoice': return 'การชำระเงินล้มเหลว: ตรวจสอบความถูกต้องของใบแจ้งหนี้นี้';
-			case 'validSatsAmount': return 'ตั้งค่าจำนวน SAT ที่ถูกต้อง';
-			case 'placeholder': return '占位符';
-			case 'inputFieldCustomization': return '输入字段自定义';
-			case 'addInputField': return '添加输入字段';
-			case 'addButton': return '添加按钮';
-			case 'selectImage': return '选择图像';
-			case 'moveLeft': return '向左移动';
-			case 'moveRight': return '向右移动';
-			case 'buttonRequired': return '至少应该有一个按钮';
-			case 'missingInputDesc': return '看来您使用的是一个自定义功能，它需要一个需要输入字段组件的情况，而无需嵌入智能小部件中的一个，请添加一个输入字段，以便该函数正常工作。';
-			case 'countdown': return '倒数';
-			case 'contentEndsAt': return '内容结束';
-			case 'countdownTime': return '倒计时时间是强制性的';
-			case 'contentEndsDate': return '内容结束日期是强制性的';
-			case 'lnMandatory': return '闪电地址是强制性的';
-			case 'pubkeysMandatory': return '至少一个配置文件是必须的';
-			case 'buttonNoUrl': return '按钮URL是强制性的';
-			case 'shareWidgetImage': return '共享小部件图像';
-			case 'inputField': return '输入字段';
-			case 'noReplies': return '没有答复';
-			case 'message': return '信息';
-			case 'chat': return '聊天';
-			case 'onlyLettersNumber': return '只允许的字母和数字';
-			case 'appCache': return '应用缓存';
-			case 'cachedData': return '缓存数据';
-			case 'cachedMedia': return '缓存媒体';
-			case 'cacheCleared': return '缓存已清除';
-			case 'closeAppClearingCache': return '最好在清除缓存时重新启动应用程序以确保所有更改生效，并且应用程序顺利运行';
-			case 'appCacheNotice': return '您的应用程序缓存的尺寸正在增长。';
-			case 'manageCache': return '管理缓存';
-			case 'filterByTime': return '按时间过滤';
-			case 'allTime': return '一直以来';
-			case 'oneMonth': return '1个月';
-			case 'threeMonths': return '3个月';
-			case 'sixMonths': return '6个月';
-			case 'oneYear': return '1年';
-			case 'defaultZapAmount': return '默认ZAP金额';
-			case 'oneTapZap': return '启用一个水龙头zap';
-			case 'verify': return '核实';
-			case 'reset': return '重置';
-			case 'appCannotVerified': return '应用无法验证或无效';
-			case 'useValidAppUrl': return '使用有效的应用程序URL';
-			case 'app': return '应用程序';
-			case 'userNotConnected': return '用户未连接';
-			case 'userCannotSignEvent': return '该用户无法签署事件。';
-			case 'invalidEvent': return '无效的事件';
-			case 'eventCannotBeSigned': return '事件无法签署';
-			case 'signEvent': return '标志事件';
-			case 'sign': return '符号';
-			case 'signPublish': return '标志和发布';
-			case 'signEventDes': return '您即将签署以下活动';
-			case 'enableAutomaticSigning': return '启用自动签名';
-			case 'tools': return '工具';
-			case 'searchSmartWidgets': return '搜索智能小部件';
-			case 'noToolsAvailable': return '没有可用的工具';
-			case 'underMaintenance': return '在维护下';
-			case 'smartWidgetMaintenance': return '智能小部件可维护。';
-			case 'mySavedTools': return 'เครื่องมือที่บันทึกไว้ของฉัน';
-			case 'availableTools': return 'เครื่องมือที่มีอยู่';
-			case 'remove': return 'ลบ';
-			case 'youHaveNoTools': return 'คุณไม่มีเครื่องมือ';
-			case 'discoverTools': return 'ค้นพบเครื่องมือที่เผยแพร่เพื่อช่วยคุณในการสร้างเนื้อหาของคุณ';
-			case 'addWidgetTools': return 'เพิ่มเครื่องมือวิดเจ็ต';
-			case 'widgetSearch': return 'การค้นหาวิดเจ็ต';
-			case 'widgetSearchDesc': return 'ค้นหาวิดเจ็ตอัจฉริยะที่เผยแพร่และสิ่งที่ผู้คนทำ';
-			case 'getInspired': return 'รับแรงบันดาลใจ';
-			case 'getInspirtedDesc': return 'ขอให้ AI ของเราช่วยคุณสร้างวิดเจ็ตอัจฉริยะของคุณ';
-			case 'trySearch': return 'ลองใช้วิธีการค้นหาที่แตกต่างกัน';
-			case 'typeForCommands': return 'พิมพ์ / สำหรับคำสั่ง';
-			case 'loadMore': return 'โหลดมากขึ้น';
-			case 'searchingFor': return ({required Object name}) => 'ค้นหา: ${name}';
-			case 'playground': return 'สนามเด็กเล่น';
-			case 'typeKeywords': return 'พิมพ์คำหลัก (เช่น: คำหลัก 1, คำหลัก 2 .. )';
-			case 'enableGossip': return 'รูปแบบซุบซิบ';
-			case 'enableGossipDesc': return 'รูปแบบการนินทาถูกปิดใช้งานโดยค่าเริ่มต้น ';
-			case 'enableExternalBrowser': return 'ใช้เบราว์เซอร์ภายนอก';
-			case 'restartAppTakeEffect': return 'รีสตาร์ทแอพสำหรับการดำเนินการเพื่อให้มีผล';
-			case 'tips': return 'เคล็ดลับ';
-			case 'docs': return 'เอกสาร';
-			case 'tryMiniApp': return 'ลองใช้ MINI-APP ของคุณด้วยการทดสอบแบบโต้ตอบแบบโต้ตอบ';
-			case 'exploreOurRepos': return 'สำรวจ repos ของเราหรือตรวจสอบเอกสารสมาร์ทวิดเจ็ตของเรา';
-			case 'bringAi': return 'เรากำลังนำ AI!';
-			case 'bringAiDesc': return 'เรากำลังสร้างผู้ช่วย AI เพื่อปรับปรุงงานของคุณด้วยวิดเจ็ตที่ตั้งโปรแกรมได้และการพัฒนาขนาดเล็ก-แอป-จับตาดู!';
-			case 'notesCount': return ({required Object number}) => '${number} หมายเหตุ';
-			case 'mixedContentCount': return ({required Object number}) => '${number} เนื้อหา';
-			case 'noApp': return 'ไม่พบแอพที่เหมาะสมในการเปิดไฟล์ที่ส่งออก';
-			case 'andMore': return ({required Object number}) => '- ${number} คนอื่น)';
-			case 'addFilter': return 'เพิ่มตัวกรอง';
-			case 'entitleFilter': return 'สิทธิของตัวกรอง';
-			case 'includedWords': return 'รวมคำพูด';
-			case 'excludedWords': return 'ไม่รวมคำพูด';
-			case 'hideSensitiveContent': return 'ซ่อนเนื้อหาที่ละเอียดอ่อน';
-			case 'mustIncludeThumbnail': return 'ต้องรวมภาพขนาดย่อ';
-			case 'forArticles': return 'สำหรับบทความ';
-			case 'forVideos': return 'สำหรับวิดีโอ';
-			case 'forCurations': return 'สำหรับการดูแล';
-			case 'articleMinWords': return 'เนื้อหาขั้นต่ำจำนวนคำ';
-			case 'showOnlyArticleMedia': return 'แสดงเฉพาะบทความที่มีสื่อ';
-			case 'showOnlyNotesMedia': return 'แสดงโน้ตด้วยสื่อเท่านั้น';
-			case 'curationsType': return 'ประเภทการดูแล';
-			case 'minItemCount': return 'รายการขั้นต่ำนับจำนวน';
-			case 'addWord': return 'เพิ่มคำที่เหมาะสม';
-			case 'wordNotInIncluded': return 'ตรวจสอบให้แน่ใจว่าคำไม่ได้อยู่ในคำที่รวม';
-			case 'wordNotInExcluded': return 'ตรวจสอบให้แน่ใจว่าคำไม่ได้อยู่ในคำที่ยกเว้น';
-			case 'fieldRequired': return 'ต้องการฟิลด์';
-			case 'filterAdded': return 'มีการเพิ่มตัวกรองแล้ว';
-			case 'filterUpdated': return 'ตัวกรองได้รับการอัปเดตแล้ว';
-			case 'filterDeleted': return 'ตัวกรองถูกลบ';
-			case 'filters': return 'ตัวกรอง';
-			case 'contentFeed': return 'ฟีดเนื้อหา';
-			case 'communityFeed': return 'ฟีดชุมชน';
-			case 'relaysFeed': return 'ฟีดรีเลย์';
-			case 'marketplaceFeed': return 'ฟีดตลาด';
-			case 'addYourFeed': return 'เพิ่มฟีดที่คุณต้องการ';
-			case 'myList': return 'รายการของฉัน';
-			case 'allFreeFeeds': return 'ฟีดฟรีทั้งหมด';
-			case 'noRelays': return 'ไม่มีรีเลย์';
-			case 'addRelays': return 'เพิ่มรายการรีเลย์ของคุณเพื่อเพลิดเพลินกับฟีดที่สะอาดและกำหนดเอง';
-			case 'adjustYourFeedList': return 'ปรับรายการฟีดของคุณ';
-			case 'addRelayUrl': return 'เพิ่ม URL รีเลย์';
-			case 'feedOptionEnabled': return 'ควรเปิดใช้งานตัวเลือกฟีดอย่างน้อยหนึ่งตัว';
-			case 'feedSetUpdate': return 'ชุดฟีดได้รับการอัปเดตแล้ว';
-			case 'global': return 'ทั่วโลก';
-			case 'fromNetwork': return 'จากเครือข่าย';
-			case 'top': return 'สูงสุด';
-			case 'showFollowingList': return 'ฟีดปัจจุบันของคุณขึ้นอยู่กับรายการต่อไปนี้ของคนอื่นเริ่มติดตามคนเพื่อปรับฟีดของคุณตามความชอบของคุณ';
-			case 'from': return 'จาก';
-			case 'to': return 'ถึง';
-			case 'dayMonthYear': return 'dd/mm/yyyy';
-			case 'fromDateMessage': return '\'วันที่\' ต้องเร็วกว่า \'ถึง\' วันที่';
-			case 'toDateMessage': return '\'ถึง\' วันที่ต้องช้ากว่า \'วันที่\'';
-			case 'noResults': return 'ไม่มีผลลัพธ์';
-			case 'noResultsFilterMessage': return 'ดูเหมือนว่าคุณกำลังใช้ตัวกรองที่กำหนดเองโปรดปรับพารามิเตอร์และวันที่เพื่อรับข้อมูลเพิ่มเติม';
-			case 'noResultsNoFilterMessage': return 'ไม่พบโปรดเปลี่ยนแหล่งเนื้อหาของคุณหรือใช้พารามิเตอร์ตัวกรองที่แตกต่างกัน';
-			case 'addToNotes': return 'เพิ่มลงในหมายเหตุ';
-			case 'addToDiscover': return 'เพิ่มเพื่อค้นพบ';
-			case 'shareRelayContent': return 'แบ่งปันเนื้อหารีเลย์';
-			case 'shareRelayUrl': return 'แชร์ URL รีเลย์';
-			case 'basic': return 'ขั้นพื้นฐาน';
-			case 'privateMessages': return 'ข้อความส่วนตัว';
-			case 'pushNotifications': return 'การแจ้งเตือน';
-			case 'repliesView': return 'มุมมองตอบกลับ';
-			case 'threadView': return 'ด้าย';
-			case 'boxView': return 'กล่อง';
-			case 'viewAs': return 'มองว่า';
-			case 'feedSettings': return 'การตั้งค่าฟีด';
-			case 'appliedFilterDesc': return 'หมายเหตุนี้ถูกซ่อนอยู่เนื่องจากตัวกรองที่ใช้ปัจจุบัน';
-			case 'showNote': return 'แสดงหมายเหตุ';
-			case 'allMedia': return 'สื่อทั้งหมด';
-			case 'searchInNostr': return 'ค้นหาใน NOSTR';
-			case 'findPeopleContent': return 'ค้นหาผู้คนบันทึกและเนื้อหา';
-			case 'activeService': return 'บริการที่ใช้งานอยู่';
-			case 'regularServers': return 'เซิร์ฟเวอร์ปกติ';
-			case 'blossomServers': return 'เซิร์ฟเวอร์ Blossom';
-			case 'mirrorAllServer': return 'สะท้อนเซิร์ฟเวอร์ทั้งหมด';
-			case 'mainServer': return 'เซิร์ฟเวอร์หลัก';
-			case 'select': return 'เลือก';
-			case 'noServerFound': return 'ไม่พบเซิร์ฟเวอร์';
-			case 'serverExists': return 'เซิร์ฟเวอร์มีอยู่ในรายการของคุณแล้ว';
-			case 'invalidUrl': return 'รูปแบบ URL ที่ไม่ถูกต้อง';
-			case 'serverPath': return 'เส้นทางเซิร์ฟเวอร์';
-			case 'errorAddingBlossom': return 'เกิดข้อผิดพลาดในขณะที่เพิ่ม Blossom Server';
-			case 'errorSelectBlossom': return 'เกิดข้อผิดพลาดในขณะที่เลือก Blossom Server';
-			case 'errorDeleteBlossom': return 'เกิดข้อผิดพลาดในขณะที่ลบเซิร์ฟเวอร์ Blossom';
-			case 'wotConfig': return 'Web of Trust Configuration';
-			case 'wot': return 'Web of Trust';
-			case 'wotThreshold': return 'Web of Trust Threshold';
-			case 'postActions': return 'โพสต์การกระทำ';
-			case 'enabledFor': return 'เปิดใช้งานสำหรับ';
-			case 'dmRelayTitle': return 'รีเลย์ข้อความส่วนตัวไม่ได้รับการกำหนดค่า!';
-			case 'dmRelayDesc': return 'อัปเดตรายการรีเลย์ของคุณตามนั้น ';
-			case 'youFollow': return 'คุณติดตาม';
-			case 'quotaLimit': return 'คุณเกินขีด จำกัด โควต้ารายวันของคุณ';
-			case 'alwaysUseExternal': return 'ใช้ zaps กระเป๋าเงินภายนอกเสมอ';
-			case 'alwaysUseExternalDesc': return 'ใช้แอพ Lightning Wallet ภายนอกแทนกระเป๋าเงินในตัวของ Yakihonne สำหรับการทำธุรกรรม ZAP ทั้งหมด';
-			case 'unreachableExternalWallet': return 'กระเป๋าเงินภายนอกที่ไม่สามารถเข้าถึงได้';
-			case 'secureStorageDesc': return 'กุญแจของคุณถูกเก็บไว้อย่างปลอดภัยบนอุปกรณ์ของคุณและไม่เคยแชร์กับเราหรือใครก็ตาม';
-			case 'pubkeySharedDesc': return 'ปลอดภัยที่จะแบ่งปัน - สิ่งนี้ระบุคุณใน NOSTR';
-			case 'privKeyDesc': return 'ให้ความเป็นส่วนตัว - สำรองข้อมูลอย่างปลอดภัยเพื่อเข้าถึงบัญชีของคุณที่อื่น';
-			case 'settingsKeysDesc': return 'จัดการคีย์ NOSTR ของคุณสำหรับข้อมูลประจำตัวเครือข่ายการลงนามเหตุการณ์และการตรวจสอบความถูกต้องโพสต์';
-			case 'settingsRelaysDesc': return 'กำหนดค่าการเชื่อมต่อรีเลย์ NOSTR สำหรับการจัดเก็บและแจกจ่ายกิจกรรม';
-			case 'settingsCustomizationDesc': return 'ปรับแต่งการแสดงฟีด Yakihonne ของคุณท่าทางท่าทางตัวอย่างและความชอบสำหรับประสบการณ์ NOSTR ที่ดีขึ้น';
-			case 'settingsNotificationsDesc': return 'การควบคุมการแจ้งเตือนสำหรับข้อความการกล่าวถึงปฏิกิริยาและเหตุการณ์ NOSTR อื่น ๆ';
-			case 'settingsContentDesc': return 'การควบคุมการโต้ตอบเนื้อหาการตั้งค่าความเป็นส่วนตัวการจัดการสื่อและการตั้งค่าการส่งข้อความใน NOSTR';
-			case 'settingsLanguageDesc': return 'เลือกภาษาที่คุณต้องการสำหรับอินเทอร์เฟซและการแปลเนื้อหาของ Yakihonne';
-			case 'settingsWalletDesc': return 'เชื่อมต่อและจัดการกระเป๋าเงิน Bitcoin Lightning สำหรับการส่ง/รับ ZAPs ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก';
-			case 'settingsAppearanceDesc': return 'ปรับแต่งลักษณะการมองเห็นของ Yakihonne เพื่อให้ตรงกับความชอบของคุณและดูความสะดวกสบาย';
-			case 'settingsCacheDesc': return 'จัดการการตรวจสอบประสิทธิภาพของแอพการรายงานข้อผิดพลาดและการเพิ่มประสิทธิภาพการจัดเก็บเพื่อการทำงานที่ราบรื่น';
-			case 'addQuickRelayDesc': return 'เพิ่มรีเลย์ใหม่อย่างรวดเร็วโดยป้อน URL';
-			case 'fewerRelays': return 'รีเลย์ที่มีเสถียรภาพน้อยลง = ประสิทธิภาพที่ดีขึ้นและการซิงค์ได้เร็วขึ้น';
-			case 'greenDotsDesc': return 'จุดสีเขียวแสดงการเชื่อมต่อที่ใช้งานอยู่';
-			case 'redDotsDesc': return 'จุดสีแดงแสดงรีเลย์ออฟไลน์';
-			case 'greyDotsDesc': return 'จุดสีเทาแสดงรีเลย์ที่รอดำเนินการ';
-			case 'homeFeedCustomDesc': return 'เลือกการตอบกลับสไตล์การแสดงผล (กล่องหรือเธรด) และจัดการการตั้งค่าข้อเสนอแนะสำหรับผู้คนเนื้อหาและความสนใจ';
-			case 'NewPostDesc': return 'เลือกสิ่งที่จะเกิดขึ้นเมื่อคุณกดยาวในขณะที่สร้างโพสต์ (ตั้งค่าอยู่ที่บันทึกไว้)';
-			case 'profilePreviewDesc': return 'แสดงตัวอย่างโปรไฟล์ผู้ใช้เมื่อแตะชื่อผู้ใช้ในฟีดของคุณ';
-			case 'collapseNoteDesc': return 'ลดโพสต์ยาวโดยอัตโนมัติเพื่อให้ฟีดของคุณสะอาดและอ่านได้';
-			case 'pushNotificationsDesc': return 'รับการแจ้งเตือนทันทีบนอุปกรณ์ของคุณ ';
-			case 'privateMessagesDesc': return 'รับการแจ้งเตือนสำหรับข้อความโดยตรงและการสนทนาส่วนตัว';
-			case 'followingDesc': return 'รับการแจ้งเตือนเมื่อคนที่คุณติดตามโพสต์เนื้อหาใหม่';
-			case 'mentionsDesc': return 'ได้รับการแจ้งเตือนเมื่อมีคนกล่าวถึงคุณหรือตอบกลับโพสต์ของคุณ';
-			case 'repostsDesc': return 'ได้รับการแจ้งเตือนเมื่อมีคนแบ่งปันหรือโพสต์เนื้อหาของคุณใหม่';
-			case 'reactionsDesc': return 'ได้รับการแจ้งเตือนเมื่อบางคนชอบหรือตอบสนองต่อโพสต์ของคุณ';
-			case 'zapDesc': return 'รับการแจ้งเตือนเมื่อคุณได้รับเคล็ดลับ Bitcoin (Zaps) ในโพสต์ของคุณ';
-			case 'muteListDesc': return 'ดูและจัดการผู้ใช้ที่คุณบล็อกไม่ให้ปรากฏในฟีดของคุณ';
-			case 'mediaUploaderDesc': return 'เลือกบริการที่อัปโหลดรูปภาพและไฟล์สื่อของคุณ';
-			case 'autoSignDesc': return 'ลงนามเหตุการณ์ที่ร้องขอโดยแอพขนาดเล็กโดยอัตโนมัติ (แอ็คชั่น/เครื่องมือสมาร์ทเครื่องมือ) โดยไม่ต้องยืนยันด้วยตนเองในแต่ละครั้ง';
-			case 'gossipDesc': return 'การจัดการรีเลย์ที่มีความซับซ้อนซึ่งค้นหาโพสต์ของผู้ติดตามของคุณในรีเลย์ที่แตกต่างกันโดยอัตโนมัติในขณะที่ลดการเชื่อมต่อและปรับให้เข้ากับรีเลย์ออฟไลน์';
-			case 'useExternalBrowsDesc': return 'เปิดลิงก์ในแอพเบราว์เซอร์เริ่มต้นของคุณแทนเบราว์เซอร์ในตัว';
-			case 'secureDmDesc': return 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ';
-			case 'wotConfigDesc': return 'กลไกความไว้วางใจแบบกระจายอำนาจโดยใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล NOSTR';
-			case 'appLangDesc': return 'เลือกภาษาสำหรับอินเทอร์เฟซเมนูและปุ่มของ Yakihonne';
-			case 'contentTransDesc': return 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ';
-			case 'planDesc': return 'ระดับแผนการแปลและการใช้งานปัจจุบันของคุณ';
-			case 'manageWalletsDesc': return 'เพิ่มและจัดระเบียบกระเป๋าสายฟ้าของคุณสำหรับการส่งและรับ bitcoin zaps บน NOSTR';
-			case 'defaultZapDesc': return 'ตั้งค่าจำนวน bitcoin เริ่มต้น (เป็น SAT) เมื่อส่ง Zaps ด่วนไปยังโพสต์';
-			case 'enableZapDesc': return 'Tap หนึ่งส่งจำนวนเริ่มต้นทันที ';
-			case 'externalWalletDesc': return 'ใช้แอพ Lightning Wallet ภายนอกแทนกระเป๋าเงินในตัวของ Yakihonne สำหรับการทำธุรกรรม ZAP ทั้งหมด';
-			case 'fontSizeDesc': return 'ปรับขนาดข้อความทั่วทั้งแอพเพื่อให้สามารถอ่านได้ดีขึ้น - ใช้ตัวเลื่อนเพื่อทำให้ข้อความมีขนาดใหญ่ขึ้นหรือเล็กลง';
-			case 'appThemeDesc': return 'สลับระหว่างโหมดแสงและมืดเพื่อปรับแต่งลักษณะที่ปรากฏของแอป';
-			case 'crashlyticsDesc': return 'การรายงานความผิดพลาดที่ไม่ระบุชื่อและการวิเคราะห์แอพเพื่อช่วยปรับปรุงประสิทธิภาพและแก้ไขข้อบกพร่อง ';
-			case 'showSuggDesc': return 'แสดงคำแนะนำเนื้อหาทั่วไปในฟีดของคุณ';
-			case 'showSuggPeople': return 'แสดงผู้ใช้ที่แนะนำให้ติดตามตามกิจกรรมของคุณ';
-			case 'showSuggContent': return 'แสดงโพสต์และบทความที่แนะนำในฟีดของคุณ';
-			case 'showSuggInterests': return 'แสดงหัวข้อและคำแนะนำที่น่าสนใจสำหรับการค้นพบ';
-			case 'striveToMake': return 'เรามุ่งมั่นที่จะทำให้ดีที่สุดจาก NOSTR สนับสนุนเราด้านล่างหรือส่งฟีดที่มีค่าของคุณมาให้เรา: ZAP, DMS, GitHub';
-			case 'errorAmber': return 'คุณได้ปฏิเสธหรือคุณได้เชื่อมต่อกับ Amber อยู่แล้ว';
-			case 'useOneRelay': return 'คุณควรเชื่อมต่อรีเลย์อย่างน้อยหนึ่งตัวไว้';
-			case 'automaticPurge': return 'ล้างแคชอัตโนมัติ';
-			case 'automaticPurgeDesc': return 'ล้างแคชของแอปอัตโนมัติเมื่อมีขนาดถึง 2GB เพื่อรักษาประสิทธิภาพและป้องกันการใช้พื้นที่เก็บข้อมูลมากเกินไป';
-			case 'customServices': return 'บริการกำหนดเอง';
-			case 'defaultServices': return 'บริการเริ่มต้น';
-			case 'addService': return 'เพิ่มบริการ';
-			case 'customServicesDesc': return 'บริการกำหนดเองที่คุณได้เพิ่มไว้';
-			case 'urlRequired': return 'ต้องการ URL';
-			case 'serviceAdded': return 'เพิ่มบริการเรียบร้อยแล้ว';
-			case 'showRawEvent': return 'แสดงเหตุการณ์ดิบ';
-			case 'rawEventData': return 'ข้อมูลเหตุการณ์ดิบ';
-			case 'copyRawEventData': return 'คัดลอกข้อมูลเหตุการณ์ดิบแล้ว! 👏';
-			case 'kind': return 'ประเภท';
-			case 'shortNote': return 'บันทึกสั้น';
-			case 'postedOnDate': return 'โพสต์เมื่อ';
-			case 'showMore': return '... แสดงเพิ่มเติม';
-			case 'accountDeleted': return 'บัญชีนี้ถูกลบแล้วและไม่สามารถเข้าถึงได้อีก';
-			case 'ok': return 'ตกลง';
-			case 'redeem': return 'แลกรหัส';
-			case 'redeemCode': return 'แลกรหัสโค้ด';
-			case 'redeemAndEarn': return 'แลกรหัสและรับรางวัล';
-			case 'redeemingFailed': return 'การแลกรหัสล้มเหลว';
-			case 'redeemInProgress': return 'กำลังแลกรหัส...';
-			case 'redeemCodeDesc': return 'กรอกรหัสเพื่อแลกรับ';
-			case 'missingCode': return 'ไม่มีรหัส';
-			case 'missingPubkey': return 'ไม่มีคีย์สาธารณะ';
-			case 'invalidPubkey': return 'คีย์สาธารณะไม่ถูกต้อง';
-			case 'missingLightningAddress': return 'ไม่มีที่อยู่ Lightning';
-			case 'codeNotFound': return 'ไม่พบรหัส';
-			case 'redeemCodeRequired': return 'ต้องระบุรหัสแลกรับ';
-			case 'redeemCodeInvalid': return 'รหัสแลกรับไม่ถูกต้อง';
-			case 'codeBeingRedeemed': return 'กำลังแลกรหัส หากไม่สำเร็จ โปรดลองอีกครั้งในภายหลัง';
-			case 'redeemCodeSuccess': return 'แลกรหัสสำเร็จแล้ว';
-			case 'redeemFailed': return 'ไม่สามารถแลกรหัสได้ โปรดลองใหม่ภายหลัง';
-			case 'codeAlreadyRedeemed': return 'รหัสถูกใช้แล้ว';
-			case 'satsEarned': return ({required Object amount}) => '+${amount} sats ได้รับแล้ว.';
-			case 'selectReceivingWallet': return 'เลือกกระเป๋าเงินที่รับ';
-			case 'redeemCodeMessage': return 'รับ sats ฟรีด้วยโค้ด YakiHonne — เพียงกรอกรหัสแล้วเพิ่มยอดคงเหลือทันที';
-			case 'scanCode': return 'สแกนรหัส';
-			case 'enterCode': return 'กรอกรหัส';
-			case 'errorSharingMedia': return 'เกิดข้อผิดพลาดขณะแชร์สื่อ';
-			case 'open': return 'เปิด';
-			case 'openUrl': return 'เปิด URL';
-			case 'openUrlDesc': return ({required Object url}) => 'คุณต้องการเปิด "${url}" หรือไม่?';
-			case 'openUrlPrompt': return 'ยืนยันการเปิด URL';
-			case 'openUrlPromptDesc': return 'การแจ้งเตือนความปลอดภัยที่แสดง URL ทั้งหมดก่อนเปิดในเบราว์เซอร์';
-			case 'whatsNew': return 'มีอะไรใหม่';
-			case 'appCustom': return 'ปรับแต่งแอป';
-			case 'poll': return 'การสำรวจ';
-			case 'pendingEvents': return 'เหตุการณ์ที่รอดำเนินการ';
-			case 'pendingEventsDesc': return 'เหตุการณ์ที่รอดำเนินการถูกสร้างขณะออฟไลน์หรือเมื่อการเชื่อมต่อไม่ดี จะถูกส่งโดยอัตโนมัติเมื่อการเชื่อมต่ออินเทอร์เน็ตกลับมา';
-			case 'singleColumnFeed': return 'ฟีดคอลัมน์เดียว';
-			case 'singleColumnFeedDesc': return 'แสดงฟีดหน้าแรกเป็นคอลัมน์เดียวกว้างเพื่อการอ่านที่ดีขึ้น';
-			case 'waitingPayment': return 'รอการชำระเงิน';
-			case 'copyId': return 'คัดลอก ID';
-			case 'idCopied': return 'คัดลอก ID แล้ว! 👏';
-			case 'republish': return 'เผยแพร่อีกครั้ง';
-			case 'useRelayRepublish': return 'คุณต้องเลือกอย่างน้อยหนึ่งรีเลย์เพื่อเผยแพร่ซ้ำ';
-			case 'republishSucces': return 'เผยแพร่เหตุการณ์เรียบร้อยแล้ว!';
-			case 'errorRepublishEvent': return 'เกิดข้อผิดพลาดขณะเผยแพร่เหตุการณ์';
-			case 'remoteSigner': return 'ผู้ลงนามระยะไกล';
-			case 'amber': return 'Amber';
-			case 'useUrlBunker': return 'ใช้ URL ด้านล่างเพื่อเชื่อมต่อกับบังกเกอร์ของคุณ';
-			case 'or': return 'หรือ';
-			case 'messagesDisabled': return 'ปิดการใช้งานข้อความ';
-			case 'messagesDisabledDesc': return 'คุณเชื่อมต่อกับผู้ลงนามระยะไกล ข้อความตรงอาจมีข้อมูลจำนวนมากและอาจใช้งานไม่ถูกต้อง เพื่อประสบการณ์ที่ดีที่สุด โปรดใช้ผู้ลงนามท้องถิ่นเพื่อเปิดใช้งานข้อความตรง';
-			case 'sharedOn': return ({required Object date}) => 'แชร์เมื่อ ${date}';
-			case 'shareAsImage': return 'แชร์เป็นรูปภาพ';
-			case 'viewOptions': return 'ตัวเลือกการแสดงผล';
-			case 'feedCustomization': return 'ปรับแต่งฟีด';
-			case 'defaultReaction': return 'ปฏิกิริยาที่ตั้งไว้ล่วงหน้า';
-			case 'defaultReactionDesc': return 'ตั้งค่าปฏิกิริยามาตรฐานเพื่อตอบสนองต่อโพสต์';
-			case 'oneTapReaction': return 'เปิดใช้งานปฏิกิริยาด้วยการแตะครั้งเดียว';
-			case 'oneTapReactionDesc': return 'แตะครั้งเดียวเพื่อปฏิกิริยาทันทีด้วยปฏิกิริยามาตรฐาน แตะสองครั้งเพื่อเปิดรายการอีโมจิให้เลือก เมื่อปิดการใช้งาน แตะสองครั้งจะส่งปฏิกิริยามาตรฐาน';
-			case 'sendingTo': return 'กำลังส่งถึง';
-			case 'shareEmptyUsers': return 'รายชื่อผู้ที่คุณติดตามและเพื่อนจะแสดงที่นี่เพื่อประสบการณ์การแชร์ที่รวดเร็วขึ้น';
-			case 'publishOnly': return 'เผยแพร่เฉพาะไปยัง';
-			case 'protectedEvent': return 'เหตุการณ์ที่ป้องกัน';
-			case 'protectedEventDesc': return 'เหตุการณ์ที่ป้องกันเป็นเหตุการณ์ที่ผู้เขียนเท่านั้นที่สามารถเผยแพร่ซ้ำได้ ซึ่งช่วยรักษาความแท้จริงของเนื้อหาและป้องกันไม่ให้ผู้อื่นคัดลอกหรือเผยแพร่ซ้ำ';
-			case 'browseRelay': return 'เรียกดูรีเลย์';
-			case 'addFavorite': return 'เพิ่มในรายการโปรด';
-			case 'removeFavorite': return 'นำออกจากรายการโปรด';
-			case 'collections': return 'คอลเลกชัน';
-			case 'online': return 'ออนไลน์';
-			case 'offline': return 'ออฟไลน์';
-			case 'network': return 'เครือข่าย';
-			case 'followedBy': return ({required Object number}) => 'ตามโดย ${number}';
-			case 'favoredBy': return ({required Object number}) => 'ชื่นชอบโดย ${number}';
-			case 'requiredAuthentication': return 'ต้องมีการรับรองตัวตน';
-			case 'relayOrbits': return 'วงโคจรรีเลย์';
-			case 'relayOrbitsDesc': return 'เรียกดูและสำรวจฟีดของรีเลย์';
-			case 'people': return 'ผู้คน';
-			case 'youNotConnected': return 'คุณยังไม่ได้เชื่อมต่อ';
-			case 'youNotConnectedDesc': return 'เข้าสู่ระบบบัญชีของคุณเพื่อเรียกดูรีเลย์ในเครือข่ายของคุณ';
-			case 'checkingRelayConnectivity': return 'กำลังตรวจสอบการเชื่อมต่อรีเลย์';
-			case 'unreachableRelay': return 'รีเลย์ไม่สามารถเข้าถึงได้';
-			case 'engageWithUsers': return 'มีส่วนร่วมเพื่อขยาย';
-			case 'engageWithUsersDesc': return 'การมีส่วนร่วมกับผู้ใช้มากขึ้นช่วยให้คุณค้นพบรีเลย์ใหม่ ๆ และขยายรายการรีเลย์ของคุณเพื่อประสบการณ์ที่เชื่อมต่อและสมบูรณ์ยิ่งขึ้น';
-			case 'loadingChatHistory': return 'กำลังโหลดประวัติการแชท...';
-			case 'contentActionsOrder': return 'ลำดับการกระทำของเนื้อหา';
-			case 'contentActionsOrderDesc': return 'จัดเรียงการโต้ตอบของโพสต์ใหม่ได้ง่ายตามลำดับที่คุณต้องการ';
-			case 'quotes': return 'คำคม';
-			case 'eventLoading': return 'กำลังโหลดเหตุการณ์...';
-			case 'loadMessages': return 'โหลดข้อความ';
-			case 'messagesNotLoaded': return 'ยังไม่ได้โหลดข้อความ';
-			case 'messagesNotLoadedDesc': return 'ยังไม่ได้โหลดข้อความเนื่องจากใช้ตัวลงนามระยะไกลภายในเครื่อง หากต้องการโหลด กรุณาคลิกปุ่มด้านล่าง';
-			case 'noteLoading': return 'กำลังโหลดบันทึก...';
-			case 'hideNonFollowedMedia': return 'ซ่อนสื่อจากผู้ที่ไม่ได้ติดตาม';
-			case 'hideNonFollowedMediaDesc': return 'ซ่อนรูปภาพและวิดีโอจากผู้ใช้ที่คุณไม่ได้ติดตามโดยอัตโนมัติจนกว่าคุณจะกดเพื่อดู';
-			case 'clickToView': return 'คลิกเพื่อดู';
-			case 'relayFeedListEmpty': return 'รายการฟีดรีเลย์ว่างเปล่า';
-			case 'relayFeedListEmptyDesc': return 'เพิ่มรีเลย์เพิ่มเติมในรายการของคุณเพื่อเพลิดเพลินกับฟีดที่ปรับแต่งได้';
-			case 'addRelay': return 'เพิ่มรีเลย์';
-			case 'hiddenContent': return 'เนื้อหาที่ซ่อนอยู่';
-			case 'hiddenContentDesc': return 'เราได้ซ่อนเนื้อหานี้ไว้เพราะคุณไม่ได้ติดตามบัญชีนี้';
-			case 'enabledActions': return 'การกระทำที่เปิดใช้งาน';
-			case 'enabledActionsDesc': return 'ไม่มีการกระทำที่เปิดใช้งาน';
-			default: return null;
-		}
+		return _flatMapFunction$0(path)
+			?? _flatMapFunction$1(path)
+			?? _flatMapFunction$2(path);
+	}
+
+	dynamic _flatMapFunction$0(String path) {
+		return switch (path) {
+			'userCommentedCurationYouIn' => ({required Object name}) => '\n${name} แสดงความคิดเห็นต่อคิวเรชันที่คุณถูกกล่าวถึง',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นตื่อโน๊ตที่คุณถูกกล่าวถึง',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตโปรโมตที่คุณถูกกล่าวถึง',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อโพลล์ที่คุณถูกกล่าวถึง',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อวิดีโอที่คุณถูกกล่าวถึง',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อบทความที่คุณถูกกล่าวถึง',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อบทความของคุณ',
+			'userCommentedYourCuration' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อคิวเรชันของคุณ',
+			'userCommentedYourNote' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตของคุณ',
+			'userCommentedYourPaidNote' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อโน๊ตโปรโมทของคุณ',
+			'userCommentedYourPoll' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อโพลล์ของคุณ',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} แสดงความคิดเห็นต่อสมาร์ทวิดเจ็ตของคุณ',
+			'userCommentedYourVideo' => ({required Object name}) => '${name} แสดงความคิดเห็นในวิดีโอของคุณ',
+			'userNoArticles' => ({required Object name}) => '${name} ไม่มีบทความใดๆ',
+			'userNoCurations' => ({required Object name}) => '${name} ไม่มีคิวเรชัน',
+			'userNoNotes' => ({required Object name}) => '${name} ไม่มีโน๊ต',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} ไม่มีสมาร์ทวิดเจ็ต',
+			'userNoVideos' => ({required Object name}) => '${name} ไม่มีวิดีโอ',
+			'userSubmittedPaidNote' => ({required Object name}) => '${name} ได้ส่งโน๊ตโปรโมทแล้ว',
+			'userMentionedYouInCuration' => ({required Object name}) => '${name} กล่าวถึงคุณในคิวเรชัน',
+			'userMentionedYouInNote' => ({required Object name}) => '${name} กล่าวถึงคุณในโน๊ต',
+			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} กล่าวถึงคุณในโน๊ตโปรโมท',
+			'userMentionedYouInPoll' => ({required Object name}) => '${name} กล่าวถึงคุณในโพลล์',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} กล่าวถึงคุณในสมาร์ทวิดเจ็ต',
+			'userMentionedYouInVideo' => ({required Object name}) => '${name} กล่าวถึงคุณในวิดีโอ',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} กล่าวถึงคุณในบทความ',
+			'userPublishedCuration' => ({required Object name}) => '${name} เผยแพร่คิวเรชัน',
+			'userPublishedPaidNote' => ({required Object name}) => '${name} เผยแพร่โน๊ตโปรโมท',
+			'userPublishedPoll' => ({required Object name}) => '${name} เผยแพร่โพลล์',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} เผยแพร่สมาร์ทวิดเจ็ต',
+			'userPublishedVideo' => ({required Object name}) => '${name} เผยแพร่วิดีโอ',
+			'userPublishedArticle' => ({required Object name}) => '${name} เผยแพร่บทความ',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} อ้างอิงคิวเรชันที่คุณถูกกล่าวถึง',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} อ้างอิงโน๊ตที่คุณถูกกล่าวถึง',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} อ้างอิงโน๊ตโปรโมทที่คุณถูกกล่าวถึง',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name} อ้างอิงวิดีโอที่คุณถูกกล่าวถึง',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name} อ้างอิงบทความที่คุณถูกกล่าวถึง',
+			'userQuotedYourArticle' => ({required Object name}) => '${name} อ้างอิงบทความของคุณ',
+			'userQuotedYourCuration' => ({required Object name}) => '${name} อ้างอิงคิวเรชันของคุณ',
+			'userQuotedYourNote' => ({required Object name}) => '${name} อ้างอิงโน๊ตของคุณ',
+			'userQuotedYourPaidNote' => ({required Object name}) => '${name} อ้างอิงโน๊ตโปรโมทของคุณ',
+			'userQuotedYourVideo' => ({required Object name}) => '${name} อ้างอิงวิดีโอของคุณ',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคิวเรชันที่คุณถูกกล่าวถึง',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตที่คุณถูกกล่าวถึง',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตโปรโมทที่คุณถูกกล่าวถึง',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโพลล์ที่คุณถูกกล่าวถึง',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อวิดีโอที่คุณถูกกล่าวถึง',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อบทความที่คุณถูกกล่าวถึง',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคุณ',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อบทความของคุณ',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อคิวเรชันของคุณ',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อข้อความของคุณ',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตของคุณ',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโน๊ตโปรโมทของคุณ',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อโพลล์ของคุณ',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อสมาร์ทวิดเจ็ตของคุณ',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อวิดีโอของคุณ',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} ตอบสนองด้วย ${reaction}',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} ได้รับ ${number} Sats จากคุณ',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} ตอบกลับบทความที่คุณถูกกล่าวถึง',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} ตอบกลับคิวเรชันที่คุณถูกกล่าวถึง',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} ตอบกลับโน๊ตที่คุณถูกกล่าวถึง',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} ตอบกลับโน๊ตโปรโมทที่คุณถูกกล่าวถึง',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} ตอบกลับโพลล์ที่คุณถูกกล่าวถึง',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} ตอบกลับสมาร์ทวิดเจ็ตที่คุณถูกกล่าวถึง',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} ตอบกลับวิดีโอที่คุณถูกกล่าวถึง',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} ตอบกลับบทความของคุณ',
+			'userRepliedYourCuration' => ({required Object name}) => '${name} ตอบกลับคิวเรชันของคุณ',
+			'userRepliedYourNote' => ({required Object name}) => '${name} ตอบกลับโน๊ตของคุณ',
+			'userRepliedYourPaidNote' => ({required Object name}) => '${name} ตอบกลับโน๊ตโปรโมทของคุณ',
+			'userRepliedYourPoll' => ({required Object name}) => '${name} ตอบกลับโพลล์ของคุณ',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} ตอบกลับสมาร์ทวิดเจ็ตของคุณ',
+			'userRepliedYourVideo' => ({required Object name}) => '${name} ตอบกลับวิดีโอของคุณ',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name} รีโพสต์โน๊ตที่คุณถูกกล่าวถึง',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} รีโพสต์โน๊ตโปรโมทที่คุณถูกกล่าวถึง',
+			'userRepostedYou' => ({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ',
+			'userRepostedYourNote' => ({required Object name}) => '${name} รีโพสต์โน๊ตของคุณ',
+			'userRepostedYourPaidNote' => ({required Object name}) => '${name} รีโพสต์โน๊ตโปรโมทของคุณ',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} ส่ง ${number} Sats ให้คุณ',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้คุณ',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับบทความของคุณ',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับคิวเรชันของคุณ',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโน๊ตของคุณ',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโน๊ตโปรโมทของคุณ',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับโพลล์ของคุณ',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับสมาร์ทวิดเจ็ตของคุณ',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} ส่ง ${number} sats ให้กับวิดีโอของคุณ',
+			'userNewArticle' => ({required Object name}) => 'บทความใหม่ของ ${name}',
+			'userNewCuration' => ({required Object name}) => 'คิวเรชันใหม่ของ ${name}',
+			'userPaidNote' => ({required Object name}) => 'โน๊ตโปรโมทใหม่ของ ${name}',
+			'userNewSmartWidget' => ({required Object name}) => 'สมาร์ทวิดเจ็ตใหม่ของ ${name}',
+			'userReply' => ({required Object name}) => '${name} ได้ตอบกลับ',
+			'userNewVideo' => ({required Object name}) => 'วิดีโอของ ${name}',
+			'articlesNum' => ({required Object number}) => 'บทความของ ${number}',
+			'availableArticles' => ({required Object number}) => 'บทความที่พร้อมใช้งาน ${number}',
+			'availableVideos' => ({required Object number}) => 'วิดีโอที่พร้อมใช้งาน ${number}',
+			'bookmarksListCount' => ({required Object number}) => 'รายการบุ๊กมาร์ก ${number}',
+			'componentsSMCount' => ({required Object number}) => 'ส่วนประกอบ ${number} ชิ้นในวิดเจ็ตนี้',
+			'followersNum' => ({required Object number}) => 'ผู้ติดตาม ${number} คน',
+			'itemsNumber' => ({required Object number}) => '${number} รายการ',
+			'levelsRequiredNum' => ({required Object number}) => '${number} เลเวลที่ต้องการ',
+			'pointsRemaining' => ({required Object number}) => 'คงเหลือ ${number}',
+			'videosNum' => ({required Object number}) => '${number} วิดีโอ',
+			'viewsNumber' => ({required Object number}) => '${number} การรับชม',
+			'readTime' => ({required Object time}) => 'อ่าน ${time} นาที',
+			'mutualsNum' => ({required Object number}) => 'เพื่อนร่วมกัน ${number} คน',
+			'peopleCountPlus' => ({required Object number}) => '-${number} คน',
+			'supportUs' => '❤︎ สนับสนุนเรา',
+			'consumablePointsPerks1' => '1- ส่งเนื้อหาของคุณเพื่อการรับรอง',
+			'consumablePointsPerks2' => '2- แลกคะแนนเพื่อเผยแพร่โน๊ตโปรโมท',
+			'consumablePointsPerks3' => '3- แลกคะแนนเป็น SATs (จะมีการเลือกเกณฑ์แบบสุ่มและคุณจะได้รับการแจ้งเตือนเมื่อสามารถแลกคะแนนได้)',
+			'highlightedNote' => 'โน๊ตที่ไฮไลต์เพื่อเพิ่มการมองเห็น',
+			'minimumOfOneRequired' => 'ต้องกำหนดจำนวนขั้นต่ำอย่างน้อย 1 ',
+			'useValidTitle' => 'กรุงณาใช้ชื่อที่ถูกต้อง',
+			'aboutYou' => 'เกี่ยวกับคุณ',
+			'actGoodFaith' => 'กระทำการโดยสุจริต',
+			'add' => 'เพิ่ม',
+			'addUrlNevent' => 'เพิ่ม URL/nevent ที่เหมาะสม',
+			'addProperUrlNevent' => 'เพิ่ม URL/nevent ที่เหมาะสม',
+			'addAccount' => 'เพิ่มบัญชี',
+			'addBookmarkList' => 'เพิ่มรายการบุ๊กมาร์ก',
+			'addCuration' => 'เพิ่มคิวเรชัน',
+			'addInterests' => 'เพิ่มความสนใจ',
+			'addNote' => 'เพิ่มโน๊ต',
+			'addToCuration' => 'เพิ่มไปยังคิวเรชัน',
+			'addUser' => 'เพิ่มผู้ใช้',
+			'addWallet' => 'เพิ่มวอลเล็ท',
+			'addYourTopics' => 'เพิ่มหัวข้อของคุณ',
+			'adjustSpeed' => 'ปรับระดับความเร็ว',
+			'adjustVolume' => 'ปรับระดับเสียง',
+			'alby' => 'Alby ',
+			'albyConnect' => 'Alby Connect ',
+			'all' => 'ทั้งหมด',
+			'allRelays' => 'รีเลย์ทั้งหมด',
+			'allUsersZapped' => 'ผู้ใช้ทุกคนได้รับการชำระเงินแล้ว',
+			'amberNotInstalled' => 'ยังไม่ได้ติดตั้งแอป Amber',
+			'amountInSats' => 'จำนวนเงินใน Sats',
+			'errorAddingArticle' => 'เกิดข้อผิดพลาดขณะเพิ่มบทความ',
+			'errorAddingCuration' => 'เกิดข้อผิดพลาดขณะเพิ่มคิวเรชัน',
+			'errorAddingWidget' => 'เกิดข้อผิดพลาดขณะเพิ่มสมาร์ทวิดเจ็ต',
+			'errorAddingVideo' => 'เกิดข้อผิดพลาดขณะเพิ่มวิดีโอ',
+			'errorUpdatingCuration' => 'เกิดข้อผิดพลาดขณะอัปเดตคิวเรชัน',
+			'userInvoiceGenerated' => ({required Object name}) => 'ใบแจ้งหนี้สำหรับ ${name} ได้ถูกสร้างขึ้นแล้ว',
+			'verifiedNoteRateSealed' => 'โน๊ตที่ได้รับการยืนยันที่คุณให้คะแนนแล้วได้ถูกปิดการเข้าถึง',
+			'apiKeyRequired' => 'API Key (จำเป็น)',
+			'appLanguage' => 'ภาษาของแอป',
+			'appTheme' => 'ธีมของแอป',
+			'appearance' => 'การแสดงผล',
+			'article' => 'บทความ',
+			'articleNotFound' => 'ไม่พบบทความ',
+			'articleAddedCuration' => 'เพิ่มบทความในคิวเรชันของคุณแล้ว',
+			'articles' => 'บทความ',
+			'articlesAvailableCuration' => 'บทความที่มีอยู่ในคิวเรชันนี้',
+			'askMeSomething' => 'อยากรู้อะไร ถามมาเลย!',
+			'attemptConnectAmber' => 'การพยายามเชื่อมต่อกับ Amber ถูกปฏิเสธ',
+			'attemptsRemained' => 'จำนวนครั้งที่เหลืออยู่',
+			'autoSavedArticleDeleted' => 'บทความที่บันทึกอัตโนมัติถูกลบแล้ว',
+			'autoSavedSMdeleted' => 'สมาร์ทวิดเจ็ตที่บันทึกอัตโนมัติถูกลบแล้ว',
+			'availableWallets' => 'วอลเล็ทที่พร้อมใช้งาน',
+			'back' => 'กลับ',
+			'backgroundColor' => 'สีพื้นหลัง',
+			'balance' => 'ยอดคงเหลือ',
+			'beHelpful' => 'จงช่วยเหลือ แม้กับคนที่ไม่เห็นด้วยกับคุณ',
+			'beFirstCommentThisVideo' => 'แสดงความคิดเห็นในวิดีโอนี้เป็นคนแรก!',
+			'bio' => ({required Object content}) => 'Bio: ${content}',
+			'blankWidget' => 'วิดเจ็ตเปล่า',
+			'bookmark' => 'บุ๊คมาร์ก',
+			'bookmarkAdded' => 'รายการบุ๊คมาร์กได้ถูกเพิ่มแล้ว',
+			'bookmarkLists' => 'รายการบุ๊คมาร์ก',
+			'bookmarks' => 'บุ๊คมาร์ก',
+			'borderColor' => 'สีขอบ',
+			'button' => 'ปุ่ม',
+			'buttonColor' => 'สีปุ่ม',
+			'buttonCustomization' => 'การปรับแต่งปุ่ม',
+			'buttonText' => 'ข้อความของปุ่ม',
+			'by' => 'โดย',
+			'byPerson' => ({required Object name}) => 'โดย ${name}',
+			'byContinuing' => 'การดำเนินการต่อ หมายความว่าคุณยอมรับเงื่อนไขของเรา\n',
+			'camera' => 'กล้อง',
+			'cancel' => 'ยกเลิก',
+			'checkSmartWidget' => 'ตรวจสอบสมาร์ทวิดเจ็ต',
+			'checkoutArticle' => 'ลองอ่านบทความของฉันดูสิ!',
+			'checkoutCuration' => 'ลองอ่านคิวเรชันของฉันดูสิ!',
+			'checkoutPaidNote' => 'ลองอ่านโน๊ตโปรโมทของฉันดูสิ!',
+			'checkoutSmartWidget' => 'ลองอ่านสมาร์ทวิดเจ็ตของฉันดูสิ!',
+			'checkValidity' => 'ตรวจสอบความถูกต้อง',
+			'checkModelRouter' => 'ตรวจสอบโมเด็มหรือเราเตอร์ของคุณ',
+			'checkoutVideo' => 'ลองดูวิดีโอของฉันสิ!',
+			'claim' => 'เคลม',
+			'claimTime' => ({required Object time}) => 'เคลมเงินคืนภายใน ${time}',
+			'clear' => 'ลบ',
+			'clearAppCache' => 'ลบแคชของแอป',
+			'clearChat' => 'ลบแชท',
+			'clearDate' => 'ลบวันที่',
+			'click' => 'คลิก',
+			'clickBelowToConnect' => 'คลิกด้านล่างเพื่อเชื่อมต่อ',
+			'clone' => 'โคลน',
+			'close' => 'ปิด',
+			'pollClosedAt' => ({required Object date}) => 'ปิดเมื่อวันที่: ${date}',
+			'pollClosesAt' => ({required Object date}) => 'ปิดในวันที่: ${date}',
+			'color' => 'สี',
+			'comment' => 'ความคิดเห็น',
+			'comments' => 'ความคิดเห็น',
+			'communityPolls' => 'คอมมูนิตี้โพลล์',
+			'communityWallet' => 'คอมมูนิตี้วอลเล็ท',
+			'communityWidgets' => 'คอมมูนิตี้วิดเจ็ต',
+			'compose' => 'เขียนเนื้อหา',
+			'confirmPayment' => 'ยืนยันการชำระเงิน',
+			'congratulations' => 'ยินดีด้วย',
+			'connect' => 'เชื่อมต่อ',
+			'connectWithNwc' => 'เชื่อมต่อกับ NWC',
+			'connected' => 'เชื่อมต่อแล้ว',
+			'consumablePoints' => 'คะแนนที่สามารถใช้ได้',
+			'contact' => 'ติดต่อ',
+			'container' => 'คอนเทนเนอร์',
+			'containerCustomization' => 'การปรับแต่งคอนเทนเนอร์',
+			'contentModeration' => 'การควบคุมเนื้อหา',
+			'contentTextColor' => 'สีข้อความในเนื้อหา',
+			'contentTranslation' => 'การแปลเนื้อหา',
+			'contentData' => ({required Object description}) => 'เนื้อหา: ${description}',
+			'continueAsGuest' => 'ดำเนินการต่อโดยไม่ลงทะเบียน',
+			'contributeUnderstanding' => 'มีส่วนร่วมในการสร้างความเข้าใจ',
+			'copy' => 'คัดลอก',
+			'copyInvoice' => 'คัดลอกใบแจ้งหนี้',
+			'copyLn' => 'คัดลอกที่อยู่ Lightning',
+			'copyNaddr' => 'คัดลอก Naddr',
+			'copyNoteId' => 'คัดลอกโน๊ต ID',
+			'copyNpub' => 'คัดลอก npub',
+			'copyNwc' => 'คัดลอก NWC',
+			'userInvoiceNotGenerated' => 'ไม่สามารถสร้างใบแจ้งหนี้สำหรับผู้ใช้รายนี้ได้',
+			'notFindSMwithAddr' => 'ไม่พบสมาร์ทวิดเจ็ตที่มีที่อยู่ดังกล่าว',
+			'couldNotUpdateRelaysList' => 'ไม่สามารถอัปเดตรายการรีเลย์ได้',
+			'coverUrl' => 'URL หน้าปก',
+			'createWalletSendRecSats' => 'สร้างวอลเล็ทเพื่อส่งและรับ Sats',
+			'createAccount' => 'สร้างบัญชี',
+			'createWallet' => 'สร้างวอลเล็ท',
+			'yakiNwcDesc' => 'สร้างวอลเล็ทโดยใช้ช่องทางของ YakiHonne',
+			'createYakiWallet' => 'สร้างวอลเล็ทของ YakiHonne',
+			'createdAt' => 'สร้างเมื่อ',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'สร้างเมื่อ ${date1}, แก้ไขเมื่อ ${date2}',
+			'curation' => 'คิวเรชัน',
+			'curationNotFound' => 'ไม่พบคิวเรชัน',
+			'curationType' => 'ประเภทคิวเรชัน',
+			'curations' => 'คิวเรชัน',
+			'currentlyLinkedMessage' => 'ขณะนี้เชื่อมโยงกับโปรไฟล์ของคุณเพื่อรับ zaps',
+			'customization' => 'การปรับแต่ง',
+			'customizeYourFeed' => 'ปรับแต่งฟีดของคุณ',
+			'dashboard' => 'แดชบอร์ด',
+			'decrMessage' => 'กำลังถอดรหัสข้อความ',
+			'defaultKey' => 'ค่าเริ่มต้น',
+			'delete' => 'ลบ',
+			'deleteContent' => ({required Object type}) => 'ลบ ${type}',
+			'deleteAccount' => 'ลบบัญชี',
+			'deleteBookmarkList' => 'ลบรายการบุ๊กมาร์ก',
+			'deleteCoverPic' => 'ลบภาพปก!',
+			'deleteDraft' => 'ลบฉบับร่าง',
+			'deleteWallet' => 'ลบวอลเล็ท',
+			'description' => 'คำอธิบาย',
+			'descriptionOptional' => 'คำอธิบาย (ไม่บังคับ)',
+			'details' => 'รายละเอียด',
+			'disableSecureDms' => 'ปิดการใช้งาน DM ที่ปลอดภัย',
+			'disconnecting' => 'กำลังยกเลิกการเชื่อมต่อ...',
+			'discordUrl' => 'Discord URL',
+			'discover' => 'ค้นพบ',
+			'dismiss' => 'ปิด',
+			'displayName' => 'ชื่อที่แสดง',
+			'findThisHelpful' => 'คุณพบว่าสิ่งนี้มีประโยชน์หรือไม่?',
+			'findThisNotHelpful' => 'คุณพบว่าสิ่งนี้ไม่มีประโยชน์หรือไม่?',
+			'dontHaveWallet' => 'ไม่มีวอลเล็ทใช่ไหม?',
+			'unTextR3Desc' => 'อย่ากังวลไป ทุกคนจะได้รับสิ่งเหล่านี้! การให้คะแนนเหล่านี้เป็นเรื่องปกติและอาจนำไปสู่การเปลี่ยนแปลงสถานะหากมีคนจำนวนมากเห็นว่าโน๊ตนั้น "เป็นประโยชน์" ไม่เพียงพอที่จะถือว่าเป็นโน๊ตที่มีประโยชน์จริงๆ',
+			'donations' => 'การบริจาค',
+			'downvotes' => 'โหวตลบ',
+			'draft' => 'ฉบับร่าง',
+			'duoLayout' => 'ดูโอเลย์เอาต์',
+			'earnSats' => 'รับ SATs',
+			'edit' => 'แก้ไข',
+			'editCover' => 'แก้ไขปก',
+			'editProfile' => 'แก้ไขโปรไฟล์',
+			'editToAddZapPoll' => 'แก้ไขเพื่อเพิ่มโพลล์ Zap',
+			'editedOn' => ({required Object date}) => 'แก้ไขเมื่อ: ${date}',
+			'emptyVerifiedNote' => 'เนื้อหาของโน๊ตที่ได้รับการยืนยันแล้ว ว่างเปล่า!',
+			'enableSecureDms' => 'เปิดใช้งาน DM ที่ปลอดภัย',
+			'eula' => 'ข้อตกลงสิทธิ์การใช้งานสำหรับผู้ใช้ปลายทาง (EULA)',
+			'engagementChart' => 'แผนภูมิการมีส่วนร่วม',
+			'enjoyExpOwnData' => 'เพลิดเพลินไปกับประสบการณ์การเป็นเจ้าของข้อมูลของคุณ\n',
+			'ensureLnSet' => 'ตรวจสอบให้แน่ใจว่าที่อยู่ Lightning ของคุณตั้งค่าถูกต้อง',
+			'enterSMaddr' => 'กรอกที่อยู่ naddr ของสมาร์ทวิดเจ็ต เพื่อตรวจสอบความถูกต้อง',
+			'enterLn' => 'กรอกที่อยู่ LUD-06 หรือ LUD-16 ของคุณ',
+			'enterCoverUrl' => 'กรอก URL หน้าปกของคุณ',
+			'enterNip05' => 'กรอกที่อยู่ NIP-05 ของคุณ',
+			'enterPictureUrl' => 'กรอก URL รูปภาพของคุณ',
+			'erase' => 'ลบ',
+			'errorAddingBookmark' => 'เกิดข้อผิดพลาดขณะเพิ่มบุ๊กมาร์ก',
+			'errorAddingVerifiedNote' => 'เกิดข้อผิดพลาดขณะเพิ่มโน๊ตที่ได้รับการยืนยันของคุณ',
+			'errorClaimingReward' => 'เกิดข้อผิดพลาดขณะรับรางวัล',
+			'errorConnectingRelay' => 'เกิดข้อผิดพลาดขณะเชื่อมต่อกับรีเลย์',
+			'errorCreatingWallet' => 'เกิดข้อผิดพลาดขณะสร้างวอลเล็ท',
+			'errorDecodingData' => 'เกิดข้อผิดพลาดขณะถอดรหัสข้อมูล',
+			'errorDeletingContent' => 'เกิดข้อผิดพลาดขณะลบเนื้อหา',
+			'errorDeletingRating' => 'เกิดข้อผิดพลาดขณะลบการให้คะแนนของคุณ',
+			'errorGeneratingEvent' => 'เกิดข้อผิดพลาดขณะสร้างกิจกรรม',
+			'errorGeneratingInvoice' => 'เกิดข้อผิดพลาดขณะสร้างใบแจ้งหนี้',
+			'errorLoggingYakiChest' => 'เกิดข้อผิดพลาดขณะเข้าสู่ระบบ Yakihonne\'s Chest',
+			'errorPayingInvoice' => 'เกิดข้อผิดพลาดขณะชำระเงินโดยใช้ใบแจ้งหนี้',
+			'errorSendingSats' => 'เกิดข้อผิดพลาดขณะส่ง sats',
+			'errorSendingEvent' => 'เกิดข้อผิดพลาดขณะส่งกิจกรรม',
+			'errorSendingMessage' => 'เกิดข้อผิดพลาดขณะส่งข้อความ',
+			'errorSettingToken' => 'เกิดข้อผิดพลาดขณะตั้งค่าโทเค็น',
+			'errorSigningEvent' => 'เกิดข้อผิดพลาดขณะลงนามกิจกรรม',
+			'errorSubmittingRating' => 'เกิดข้อผิดพลาดขณะส่งคะแนนของคุณ',
+			'errorTranslating' => 'เกิดข้อผิดพลาดขณะแปลเนื้อหา',
+			'errorUpdatingData' => 'เกิดข้อผิดพลาดขณะอัปเดตข้อมูล',
+			'errorUpdatingRelaysList' => 'เกิดข้อผิดพลาดขณะอัปเดตรายการรีเลย์',
+			'errorUploadingMedia' => 'เกิดข้อผิดพลาดขณะอัปโหลดสื่อ',
+			'errorUploadingVideo' => 'เกิดข้อผิดพลาดขณะอัปโหลดวิดีโอ',
+			'errorUsingWallet' => 'เกิดข้อผิดพลาดขณะใช้วอลเล็ท!',
+			'errorZappingUsers' => 'เกิดข้อผิดพลาดขณะทำการ Zapping ผู้ใช้',
+			'errorUploadingImage' => 'เกิดข้อผิดพลาดขณะอัปโหลดรูปภาพ',
+			'errorLoadingVideo' => 'เกิดข้อผิดพลาดขณะโหลดวิดีโอ',
+			'errorUsingExternalWallet' => 'เกิดข้อผิดพลาดขณะใช้วอลเล็ทอื่น',
+			'eventNotFound' => 'ไม่พบกิจกรรม',
+			'eventNotRecognized' => 'ไม่สามารถรับรู้เหตุการณ์ได้',
+			'exit' => 'ออก',
+			'expandWorld' => 'ขยายขอบเขตด้วยการเพิ่มสิ่งที่ทำให้คุณหลงใหล เลือกความสนใจของคุณและให้การเดินทางเริ่มต้นขึ้น',
+			'explanation' => 'คำอธิบาย',
+			'explore' => 'สำรวจ',
+			'externalWallet' => 'วอลเล็ทอื่น',
+			'feedOptions' => 'ตัวเลือกฟีด',
+			'fetchingArticle' => 'กำลังดึงข้อมูลบทความ',
+			'fetchingCuration' => 'กำลังดึงข้อมูลคิวเรชัน',
+			'fetchingEvent' => 'กำลังดึงข้อมูลกิจกรรม',
+			'fetchingEventUserRelays' => 'กำลังดึงข้อมูลเหตุการณ์จากรีเลย์ของผู้ใช้',
+			'fetchingNote' => 'กำลังดึงข้อมูลโน๊ต',
+			'fetchingProfile' => 'กำลังดึงข้อมูลโปรไฟล์',
+			'fetchingSmartWidget' => 'กำลังดึงข้อมูลสมาร์ทวิดเจ็ต',
+			'fetchingUserInboxRelays' => 'กำลังดึงข้อมูลรีเลย์กล่องจดหมายของผู้ใช้',
+			'fetchingVideo' => 'กำลังดึงข้อมูลวิดีโอ',
+			'fileSharing' => 'การแชร์ไฟล์',
+			'fillColor' => 'เติมสี',
+			'finished' => 'เสร็จสิ้น!',
+			'follow' => 'ติดตาม',
+			'followAll' => 'ติดตามทั้งหมด',
+			'followMeOnNostr' => 'ติดตามฉันที่ Nostr',
+			'followers' => 'ผู้ติดตาม',
+			'following' => 'กำลังติดตาม',
+			'pendingFollowing' => 'กำลังติดตาม...',
+			'followings' => 'กําลังติดตาม',
+			'followsYou' => 'ติดตามคุณ',
+			'fontSize' => 'ขนาดตัวอักษร',
+			'forName' => ({required Object name}) => 'สำหรับ ${name}',
+			'enableSecureDmsMessage' => 'เพื่อความปลอดภัยและความเป็นส่วนตัวมากขึ้น โปรดพิจารณาเปิดใช้งาน DM ที่ปลอดภัย',
+			'zapSplitsMessage' => 'สำหรับการแบ่ง zap ต้องมีอย่างน้อยหนึ่งคน',
+			'free' => 'ฟรี',
+			'fuelYakihonne' => 'สนับสนุนการเติบโตของ YakiHonne! สนับสนุนของคุณช่วยขับเคลื่อนฟีเจอร์ใหม่ๆ และประสบการณ์ที่ดีกว่าสำหรับทุกคน',
+			'gain' => 'ได้รับ',
+			'gallery' => 'แกลเลอรี่',
+			'generateInvoice' => 'สร้างใบแจ้งหนี้',
+			'generateInvoices' => 'สร้างใบแจ้งหนี้',
+			'getApiKey' => 'รับ API Key',
+			'getInvoice' => 'รับใบแจ้งหนี้',
+			'getStartedNow' => 'เริ่มต้นตอนนี้เลย',
+			'gifs' => 'GIFS',
+			'gotIt' => 'เข้าใจแล้ว!',
+			'granted' => 'ได้รับการอนุมัติ',
+			'earnSatsDesc' => 'ช่วยเราให้ข้อมูลเชิงลึกแบบกระจายศูนย์ได้มากขึ้นเพื่อตรวจสอบโน๊ตโปรโมทนี้',
+			'heyWelcomeBack' => 'เฮ้, ยินดีต้อนรับกลับ!\n',
+			'hideSuggestions' => 'ซ่อนข้อเสนอแนะ',
+			'highlights' => 'ไฮไลท์',
+			'home' => 'หน้าหลัก',
+			'hfCustomization' => 'การปรับแต่งฟีดหน้าหลัก',
+			'horizontalVideo' => 'วิดีโอแนวนอน',
+			'wantToShareRevenues' => 'ฉันต้องการแชร์รายได้นี้',
+			'identifier' => 'ตัวระบุ',
+			'image' => 'ภาพ',
+			'imageAspectRatio' => 'อัตราส่วนภาพ',
+			'imageCustomization' => 'การปรับแต่งภาพ',
+			'imageUrl' => 'URL รูปภาพ',
+			'imageUploadHistory' => 'ประวัติการอัพโหลดรูปภาพ',
+			'important' => 'สำคัญ',
+			'inTag' => ({required Object name}) => 'ใน ${name}',
+			'inaccessibleLink' => 'ลิงก์ที่ไม่สามารถเข้าถึงได้',
+			'inbox' => 'กล่องจดหมาย',
+			'initializingAccount' => 'กำลังเริ่มต้นบัญชี...',
+			'insertText' => 'แทรกข้อความ',
+			'instantConntect' => 'เชื่อมต่อกับรีเลย์ทันที',
+			'interestsUpdateMessage' => 'อัปเดตรายการความสนใจสำเร็จแล้ว!',
+			'interested' => 'สนใจ',
+			'interests' => 'ความสนใจ',
+			'invalidHexKey' => 'รหัสเฮกซ์ไม่ถูกต้อง!',
+			'invalidInvoice' => 'ใบแจ้งหนี้ไม่ถูกต้อง',
+			'invalidPairingSecret' => 'ข้อมูลการเชื่อมต่อไม่ถูกต้อง',
+			'invalidPrivateKey' => 'Private key ไม่ถูกต้อง!',
+			'invalidRelayUrl' => 'URL รีเลย์ไม่ถูกต้อง',
+			'invoice' => 'ใบแจ้งหนี้',
+			'invoiceCopied' => 'คัดลอกรหัสใบแจ้งหนี้แล้ว!',
+			'invoicePaid' => 'ใบแจ้งหนี้ได้รับการชำระเรียบร้อยแล้ว',
+			'invoiceOrLN' => 'แจ้งหนี้ หรือ ที่อยู่ Lightning',
+			'issueOccuredSelectingImage' => 'เกิดปัญหาขณะเลือกภาพ',
+			'somethingWentWrongDesc' => 'ดูเหมือนว่ามีบางอย่างเกิดขึ้นขณะโหลดข้อมูล โปรดลองอีกครั้ง!',
+			'invalidInvoiceDesc' => 'ดูเหมือนว่าใบแจ้งหนี้ที่สแกนไม่ถูกต้อง โปรดสแกนใหม่และลองอีกครั้ง',
+			'invoiceNotPayed' => 'ดูเหมือนว่าคุณไม่ได้ชำระตามใบแจ้งหนี้ โปรดตรวจสอบอีกครั้ง',
+			'itsLive' => 'ถ่ายทอดสด!',
+			'noCommunityNotes' => 'ที่นี่เงียบมาก! ยังไม่มีโน๊ตจากคอมมูนิตี้',
+			'joinedOn' => ({required Object date}) => 'เข้าร่วมเมื่อ: ${date}',
+			'keys' => 'รหัส',
+			'known' => 'เป็นที่รู้จัก',
+			'languagePreferences' => 'การตั้งค่าภาษา',
+			'lastGained' => ({required Object date}) => 'ได้รับล่าสุด: ${date}',
+			'lastUpdatedOn' => ({required Object date}) => 'อัปเดตล่าสุดเมื่อ: ${date}',
+			'latest' => 'ล่าสุด',
+			'layout' => 'เค้าโครง',
+			'layoutCustomization' => 'การปรับแต่งเค้าโครง',
+			'less' => 'น้อย',
+			'letsGetStarted' => 'มาเริ่มกันเลย!',
+			'levelNumber' => ({required Object number}) => 'เลเวล ${number}',
+			'lightningAddress' => 'ที่อยู่ Lightning ',
+			'lnCopied' => 'คัดลอกที่อยู่ Lightning แล้ว!',
+			'link' => 'ลิงก์',
+			'linkWallet' => 'ลิงก์วอลเล็ท',
+			'linked' => 'เชื่อมต่อแล้ว',
+			'list' => 'รายการ',
+			'loading' => 'กำลังโหลด',
+			'loadingFollowings' => 'กำลังโหลดผู้ที่ติดตาม',
+			'loadingPreviousPosts' => 'กำลังโหลดโพสต์ก่อนหน้า...',
+			'loadingFollowers' => 'กำลังโหลดผู้ติดตาม',
+			'locked' => 'ถูกล็อก',
+			'loggingIn' => 'กำลังเข้าสู่ระบบ...',
+			'loggingOut' => 'กำลังออกจากระบบ...',
+			'login' => 'เข้าสู่ระบบ',
+			'loginYakiChestPoints' => 'เข้าสู่ระบบของ Yakihonne\'s Chest สะสมคะแนนจากการใช้งานบนแพลตฟอร์มและรับรางวัลล้ำค่า!',
+			'logoutAllAccounts' => 'ออกจากระบบบัญชีทั้งหมด',
+			'validDescriptionCuration' => 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มคำอธิบายที่ถูกต้องสำหรับคิวเรชันนี้',
+			'validImageCuration' => 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มรูปภาพที่ถูกต้องสำหรับคิวเรชันนี้',
+			'validTitleCuration' => 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่มชื่อที่ถูกต้องสำหรับคิวเรชันนี้',
+			'addValidUrl' => 'โปรดตรวจสอบให้แน่ใจว่าได้เพิ่ม URL ที่ถูกต้อง',
+			'submitValidLud' => 'โปรดตรวจสอบให้แน่ใจว่าได้รับ lud16/lud06 ที่ถูกต้อง',
+			'showSecretDesc' => 'โปรดตรวจสอบให้แน่ใจว่าได้เก็บไว้อย่างปลอดภัย เนื่องจากจะทำให้สามารถเข้าถึงบัญชีของคุณได้ทั้งหมด',
+			'invalidInvoiceLnurl' => 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่าใบแจ้งหนี้หรือ LNURL ที่ถูกต้อง',
+			'setAllRequiredContent' => 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่าเนื้อหาที่จำเป็นทั้งหมดแล้ว',
+			'setOutboxRelays' => 'โปรดตรวจสอบให้แน่ใจว่าได้ตั้งค่ารีเลย์กล่องข้อความของคุณ',
+			'submitValidCloseDate' => 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งวันที่ปิดที่ถูกต้อง',
+			'submitMinMaxSats' => 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งจำนวนขั้นต่ำและสูงสุดของ satoshis ที่ถูกต้อง',
+			'submitValidOptions' => 'โปรดตรวจสอบให้แน่ใจว่าได้ส่งตัวเลือกที่ถูกต้อง',
+			'submitValidData' => 'โปรดตรวจสอบให้แน่ใจว่าคุณได้ส่งข้อมูลที่ถูกต้อง',
+			'submitValidInvoice' => 'โปรดตรวจสอบให้แน่ใจว่าคุณได้ส่งใบแจ้งหนี้ที่ถูกต้อง',
+			'manageAccounts' => 'จัดการบัญชี',
+			'manageInterests' => 'จัดการความสนใจ',
+			'maxSats' => 'Sats สูงสุด',
+			'maximumSatoshis' => 'Satoshis สูงสุด',
+			'mediaExceedsMaxSize' => 'สื่อมีขนาดเกินขีดจำกัดสูงสุดที่กำหนดไว้คือ 21 MB',
+			'mediaUploader' => 'เครื่องมืออัปโหลดสื่อ',
+			'mentions' => 'การกล่าวถึง',
+			'messageOptional' => 'ข้อความ (ไม่บังคับ)',
+			'messageCouldNotBeDecrypted' => 'ไม่สามารถถอดรหัสข้อความได้',
+			'messageNotDecrypted' => 'ข้อความยังไม่ได้ถอดรหัส!',
+			'messageCopied' => 'คัดลอกข้อความเรียบร้อยแล้ว!',
+			'metadata' => 'ข้อมูลเมตา',
+			'min' => 'นาที',
+			'minSats' => 'Sats ขั้นต่ำ',
+			'minimumSatoshis' => 'Satoshis ขั้นต่ำ',
+			'errorMissingKey' => 'API Key หายไปหรือการสมัครสมาชิกหมดอายุ โปรดตรวจสอบการตั้งค่า > การตั้งค่าภาษา สำหรับข้อมูลเพิ่มเติม',
+			'monoLayout' => 'MonoLayout',
+			'monolayoutRequired' => 'จำเป็นต้องมีรูปแบบโมโน',
+			'more' => 'เพิ่มเติม',
+			'moreDots' => 'เพิ่มเติม...',
+			'moveDown' => 'เลื่อนลง',
+			'moveUp' => 'เลื่อนขึ้น',
+			'mute' => 'ปิดเสียง',
+			'muteList' => 'ปิดเสียงรายการ',
+			'muteUser' => 'ปิดเสียงผู้ใช้',
+			'mutuals' => 'ร่วมกัน',
+			'myArticles' => 'บทความของฉัน',
+			'myDrafts' => 'ฉบับร่างของฉัน',
+			'myPolls' => 'โพลล์ของฉัน',
+			'myPublicKey' => 'Public Key ของฉัน',
+			'mySecretKey' => 'รหัสลับของฉัน',
+			'myVideos' => 'วิดีโอของฉัน',
+			'myWidgets' => 'วิดเจ็ตของฉัน',
+			'naddr' => 'naddr ',
+			'nostrWalletConnectDesc' => 'การเชื่อมต่อวอลเล็ท nostr แบบพื้นฐาน',
+			'needsMoreRating' => 'ต้องการคะแนนมากกว่านี้',
+			'needsYourHelp' => 'ต้องการความช่วยเหลือของคุณ',
+			'nevent' => 'nevent ',
+			'newKey' => 'ใหม่',
+			'newMessage' => 'ข้อความใหม่',
+			'newPostGesture' => 'กดค้างเพื่อสร้างโพสต์ใหม่',
+			'next' => 'ต่อไป',
+			'noContentBelongToCuration' => ({required Object type}) => 'ไม่มี ${type} ที่เกี่ยวข้องกับคิวเรชันนี้',
+			'noContentCanBeFound' => ({required Object type}) => 'ไม่มี ${type} สามารถพบได้',
+			'noArticlesInCuration' => 'ไม่พบบทความในคิวเรชันนี้',
+			'addNewBookmark' => 'ไม่พบรายการบุ๊กมาร์ก โปรดลองเพิ่มรายการหนึ่ง',
+			'noBookmarksListFound' => 'ไม่พบรายการบุ๊กมาร์ก โปรดลองเพิ่มรายการหนึ่ง',
+			'noCommentsCanBeFound' => 'ไม่พบความคิดเห็น',
+			'noComponentsDisplayed' => 'ไม่สามารถแสดงส่วนประกอบได้',
+			'noCurationsFound' => 'ไม่พบการคิวเรชัน ลองสร้างขึ้นมาเพื่อที่จะสามารถเพิ่มเนื้อหาลงไปได้',
+			'noDescription' => 'ไม่มีคำอธิบาย',
+			'noElementsInBookmarks' => 'ไม่พบองค์ประกอบในรายการบุ๊กมาร์ก',
+			'noEventIdCanBeFound' => 'ไม่พบกิจกรรมที่มีรหัสนี้!',
+			'noImageHistory' => 'ไม่พบประวัติรูปภาพ',
+			'noInternetAccess' => 'ไม่มีการเข้าถึงอินเทอร์เน็ต',
+			'noInvoiceAvailable' => 'ไม่มีใบแจ้งหนี้',
+			'noMessageCanBeFound' => 'ไม่พบข้อความ',
+			'noMessagesToDisplay' => 'ไม่มีข้อความที่จะแสดง',
+			'noMoreData' => 'ไม่มีข้อมูลอีกต่อไป',
+			'noMutedUserFound' => 'ไม่พบผู้ใช้ที่ถูกปิดเสียง',
+			'noNotificationCanBeFound' => 'ไม่พบการแจ้งเตือน',
+			'noPaidNotesCanBeFound' => 'ไม่พบโน๊ตโปรโมท',
+			'noPollsCanBeFound' => 'ไม่พบโพลล์',
+			'noReasonsSpecified' => 'ไม่ได้ระบุเหตุผล!',
+			'noRelaysCanBeFound' => 'ไม่สามารถหารีเลย์ได้',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
+			'noUserRelays' => 'ไม่พบรีเลย์สำหรับผู้ใช้รายนี้',
+			'noRepliesDesc' => 'ไม่พบการตอบกลับสำหรับโน๊ตนี้',
+			'noResKeyword' => 'ไม่พบผลลัพธ์สำหรับคำค้นหานี้',
+			'noResKeywordDesc' => 'ไม่พบผลลัพธ์จากคำค้นหานี้ ลองใช้คำค้นหาอื่นเพื่อผลลัพธ์ที่ดีกว่า',
+			'noSmartWidgetCanBeFound' => 'ไม่พบสมาร์ทวิดเจ็ต',
+			'noSmartWidget' => 'ไม่พบฉบับร่างสมาร์ทวิดเจ็ต',
+			'noTemplatesCanBeFound' => 'ไม่พบเทมเพลตในหมวดหมู่นี้',
+			'noTitle' => 'ไม่มีชื่อเรื่อง',
+			'noTransactionCanBeFound' => 'ไม่พบธุรกรรม',
+			'noUserZapped' => 'ไม่มีผู้ใช้ถูก zapped!',
+			'noUserCanBeFound' => 'ไม่พบผู้ใช้งาน',
+			'noVideosInCuration' => 'ไม่พบวิดีโอในคิวเรชันนี้',
+			'noWalletCanBeFound' => 'ไม่พบวอลเล็ท',
+			'noZappersCanBeFound' => 'ไม่พบ zappers',
+			'noImGood' => 'ไม่ ฉันสบายดี',
+			'noWalletConnectedToYourProfile' => 'ไม่มีวอลเล็ทที่เชื่อมต่อกับโปรไฟล์ของคุณ',
+			'nostrScheme' => 'Nostr Scheme',
+			'nostrWalletConnect' => 'เชื่อมต่อวอลเล็ท Nostr',
+			'nwcInitialized' => 'การเชื่อมต่อวอลเล็ท Nostr ได้เริ่มต้นขึ้น',
+			'notEnoughBalance' => 'ยอดคงเหลือไม่เพียงพอสำหรับการชำระเงินนี้',
+			'notFollowedByAnyoneYouFollow' => 'ไม่ได้รับการติดตามจากคนที่คุณติดตาม',
+			'notHelpful' => 'ไม่เป็นประโยชน์',
+			'notInterested' => 'ไม่สนใจ',
+			'notSealed' => 'ไม่ปิดการเข้าถึง',
+			'notSealedYet' => 'ยังไม่ปิดการเข้าถึง',
+			'note' => 'โน๊ต',
+			'noteNotFound' => 'ไม่พบโน๊ต',
+			'notePublished' => 'โน๊ตถูกเผยแพร่แล้ว!',
+			'noteIdCopied' => 'ID โน๊ตถูกคัดลอกแล้ว!',
+			'walletDataNote' => 'หมายเหตุ: ข้อมูลทั้งหมดที่เกี่ยวข้องกับวอลเล็ทของคุณจะถูกจัดเก็บอย่างปลอดภัยในเครื่องของคุณ และจะไม่ถูกแชร์ออกไปภายนอกแอปพลิเคชัน',
+			'changeRatingNote' => 'หมายเหตุ: การเปลี่ยนคะแนนของคุณจะมีผลเพียง 5 นาที หลังจากนั้นคุณจะไม่สามารถย้อนกลับหรือเปลี่ยนแปลงได้',
+			'payPublishNote' => 'หมายเหตุ: โปรดตรวจสอบให้แน่ใจว่าเนื้อหาทั้งหมดที่คุณให้ไว้ถือเป็นที่สิ้นสุด เนื่องจากหากมีการเผยแพร่แล้วจะไม่สามารถย้อนกลับได้ และ SATS ที่ใช้ไปแล้วไม่สามารถขอคืนเงินได้',
+			'notes' => 'โน๊ต',
+			'notesFromCommunity' => 'โน๊ตจากคอมมูนิตี้',
+			'unTextW3Desc' => 'โน๊ตที่ยังไม่ได้รับสถานะ "เป็นประโยชน์" หรือ "ไม่เป็นประโยชน์"',
+			'unTextW1' => 'โน๊ตที่ได้รับสถานะ “เป็นประโยชน์" ',
+			'unTextW3' => 'โน๊ตที่ต้องการคะแนนเพิ่มเติม',
+			'unTextW2' => 'โน๊ตที่ได้รับสถานะ "ไม่เป็นประโยชน์"',
+			'un2' => 'โน๊ตที่มีการให้คะแนนอย่างต่อเนื่อง',
+			'notifications' => 'การแจ้งเตือน',
+			'npubNsecHex' => 'npub, nsec หรือ hex',
+			'nwcCopied' => 'คัดลอก NWC สำเร็จแล้ว!',
+			'onDate' => ({required Object date}) => 'ในวันที่ ${date}',
+			'onSelectedWalletLinkIt' => 'ในวอลเล็ทที่คุณเลือกและเชื่อมโยง',
+			'oneTimeRewards' => 'รางวัลครั้งเดียว',
+			'ongoing' => 'กำลังดำเนินการอยู่',
+			'nothingToShowHere' => 'โอ๊ะ! ไม่มีอะไรให้แสดงที่นี่',
+			'optionBackgroundColor' => 'สีพื้นหลังตัวเลือก',
+			'optionTextColor' => 'สีข้อความตัวเลือก',
+			'options' => 'ตัวเลือก',
+			'optionsNumber' => ({required Object number}) => 'ตัวเลือก: ${number}',
+			'orUseYourWallet' => 'หรือใช้วอลเล็ทของคุณ',
+			'others' => 'อื่นๆ',
+			'privacyNote' => 'แอปของเรารับประกันความเป็นส่วนตัวสูงสุด โดยการจัดเก็บข้อมูลที่ละเอียดอ่อนอย่างปลอดภัยไว้ในอุปกรณ์ของคุณ พร้อมใช้การเข้ารหัสที่เข้มงวด มั่นใจได้ว่าเรามีนโยบายการไม่แชร์ข้อมูลอย่างเคร่งครัด เพื่อให้ข้อมูลที่ละเอียดอ่อนยังคงเป็นความลับและไม่ออกจากอุปกรณ์ของผู้ใช้ ',
+			'owner' => 'เจ้าของ',
+			'paid' => 'ชำระแล้ว',
+			'paidNote' => 'โน๊ตโปรโมท',
+			'paidNotePublished' => 'โน๊ตโปรโมทถูกเผยแพร่แล้ว!',
+			'paidNoteLoading' => 'กำลังโหลดโน๊ตโปรโมท',
+			'partialUsersZapped' => 'ผู้ใช้บางส่วนถูก zapped!',
+			'pasteNwcAddress' => 'วางที่อยู่ NWC',
+			'pasteYourKey' => 'วางรหัสของคุณ',
+			'pasteKind1063' => 'วาง nevent 1063 ของคุณแล้วส่งไป',
+			'pasteYourLink' => 'วางลิงก์ของคุณแล้วส่งไป',
+			'pay' => 'ชำระเงิน',
+			'payAmount' => ({required Object number}) => 'ชำระเงิน ${number} sats',
+			'payPublish' => 'ชำระและเผยแพร่',
+			'payWithNwc' => 'ชำระเงินกับ NWC ',
+			'paymentFailed' => 'การชำระเงินล้มเหลว',
+			'paymentSucceeded' => 'การชำระเงินสำเร็จ',
+			'paymentSurpassMax' => 'การชำระเงินเกินกว่าจำนวนเงินสูงสุดที่อนุญาต',
+			'peopleToFollow' => 'ผู้คนที่จะติดตาม',
+			'permissionInvoiceNotGranted' => 'ไม่อนุญาตให้ชำระใบแจ้งหนี้',
+			'pickYourComponent' => 'เลือกส่วนประกอบของคุณ',
+			'pickYourImage' => 'เลือกภาพของคุณ',
+			'pickYourMedia' => 'เลือกสื่อของคุณ',
+			'pickYourVideo' => 'เลือกวิดีโอของคุณ',
+			'pictureUrl' => 'URL รูปภาพ',
+			'plan' => 'วางแผน',
+			'submitValidVideoEvent' => 'โปรดส่งกิจกรรมวิดีโอที่ถูกต้อง',
+			'points' => 'คะแนน',
+			'pointsSystem' => 'ระบบคะแนน',
+			'pollCloseDate' => 'วันปิดโพลล์',
+			'pollOptions' => 'ตัวเลือกโพลล์',
+			'pollZapPublished' => 'โพลล์ zap ได้ถูกเผยแพร่แล้ว!',
+			'popularNotes' => 'โน๊ตยอดนิยม',
+			'post' => 'โพสต์',
+			'postArticle' => 'โพสต์บทความ',
+			'postNotFound' => 'ไม่พบโพสต์',
+			'postCuration' => 'โพสต์คิวเรชัน',
+			'postInNote' => 'โพสต์ในโน๊ต',
+			'postNote' => 'โพสต์โน๊ต',
+			'postSmartWidget' => 'โพสต์สมาร์ทวิดเจ็ต',
+			'postVideo' => 'โพสต์วิดีโอ',
+			'postedBy' => 'โพสต์โดย',
+			'postedFrom' => 'โพสต์จาก',
+			'postedOn' => ({required Object date}) => 'โพสต์เมื่อ ${date}',
+			'preview' => 'พรีวิว',
+			'privKeyCopied' => 'คัดลอก Private Key แล้ว!',
+			'pro' => 'โปร',
+			'processCompleted' => 'กระบวนการเสร็จสิ้นแล้ว',
+			'profile' => 'โปรไฟล์',
+			'profileLink' => 'ลิงก์โปรไฟล์',
+			'profileCopied' => 'คัดลอกลิงก์โปรไฟล์แล้ว!',
+			'profilePreview' => 'พรีวิวโปรไฟล์',
+			'profileRelays' => ({required Object number}) => 'โปรไฟล์แนะนำรีเลย์ - ${number}',
+			'publicKey' => 'Pubkey',
+			'publicKeyCopied' => 'คัดลอก Pubkey แล้ว!',
+			'publish' => 'เผยแพร่',
+			'publishRemoveDraft' => 'เผยแพร่และลบฉบับร่าง',
+			'publishedOnText' => 'เผยแพร่เมื่อ',
+			'publishedOn' => ({required Object date}) => 'เผยแพร่เมื่อ: ${date}',
+			'pullToRefresh' => 'ดึงเพื่อรีเฟรช',
+			'qrCode' => 'รหัส QR',
+			'rateHelpful' => 'ให้คะแนนที่เป็นประโยชน์',
+			'rateNotHelpful' => 'ให้คะแนนที่ไม่เป็นประโยชน์',
+			'ratedHelpful' => 'ให้คะแนนที่เป็นประโยชน์',
+			'ratedNotHelpful' => 'ให้คะแนนที่ไม่เป็นประโยชน์',
+			'un1' => 'การให้คะแนน "ไม่เป็นประโยชน์" ในโน๊ต ที่ท้ายสุดแล้วได้รับสถานะ "เป็นประโยชน์"',
+			'unTextR3' => 'การให้คะแนน "ไม่เป็นประโยชน์" ในโน๊ต ที่ท้ายสุดแล้วได้รับสถานะ "เป็นประโยชน์"',
+			'un2Desc' => 'การให้คะแนนในโน๊ตที่ยังไม่มีสถานะ "เป็นประโยชน์" หรือ "ไม่เป็นประโยชน์"',
+			'unTextR1' => 'การให้คะแนนช่วยให้โน้ตมีสถานะ "เป็นประโยชน์"',
+			'unTextR2' => 'การให้คะแนนช่วยให้โน้ตมีสถานะ "ไม่เป็นประโยชน์"',
+			'readAboutVerifyingNotes' => 'อ่านเกี่ยวกับการยืนยันโน๊ต',
+			'readArticle' => 'อ่านบทความ',
+			'readMore' => 'อ่านเพิ่มเติม',
+			'readOnly' => 'อ่านอย่างเดียว',
+			'readWrite' => 'อ่าน/เขียน',
+			'receive' => 'รับ',
+			'receiveSats' => 'รับ sats',
+			'recent' => 'ล่าสุด',
+			'recentTransactions' => 'ธุรกรรมล่าสุด',
+			'recentWithReplies' => 'ตอบกลับล่าสุด',
+			'reconnectWifi' => 'เชื่อมต่อ wifi อีกครั้ง',
+			'refresh' => 'รีเฟรช',
+			'refreshed' => 'รีเฟรชแล้ว',
+			'refreshing' => 'กำลังรีเฟรช',
+			'relayInUse' => 'รีเลย์ถูกใช้งานแล้ว',
+			'relaySettings' => ({required Object number}) => 'การตั้งค่ารีเลย์ ${number}',
+			'relayingStuff' => 'กำลังส่งข้อมูล...',
+			'relays' => 'รีเลย์',
+			'relaysNotReached' => 'ไม่สามารถเข้าถึงรีเลย์ได้',
+			'relaysListUpdated' => 'รายการรีเลย์ได้รับการอัปเดตแล้ว',
+			'releaseToLoad' => 'ปล่อยเพื่อโหลดเพิ่มเติม',
+			'repeatedRewards' => 'รางวัลที่ได้รับซ้ำ',
+			'replies' => 'ตอบกลับ',
+			'reply' => 'ตอบกลับ',
+			'replyingTo' => ({required Object name}) => 'กำลังตอบกลับถึง: ${name}',
+			'reposted' => 'รีโพสต์แล้ว',
+			'requestInProgress' => 'คำขออยู่ระหว่างดำเนินการ',
+			'reveal' => 'เปิดเผย',
+			'rewards' => 'รางวัล',
+			'saveDraft' => 'บันทึกฉบับร่าง',
+			'saved' => 'บันทึกแล้ว',
+			'scanPay' => 'สแกนและชำระเงิน',
+			'scanAgain' => 'สแกนอีกครั้ง',
+			'scanQrCode' => 'สแกนรหัส QR',
+			'sealed' => 'ปิดการใช้งาน',
+			'search' => 'ค้นหา',
+			'searchContentByTitle' => ({required Object type}) => 'ค้นหา ${type} ตามชื่อ',
+			'searchNameNpub' => 'ค้นหาตามชื่อ npub nprofile',
+			'searchByUserName' => 'ค้นหาด้วยชื่อผู้ใช้',
+			'searchRelay' => 'ค้นหารีเลย์',
+			'secureDirectMessaging' => 'การส่งข้อความโดยตรงที่ปลอดภัย',
+			'seeAll' => 'ดูทั้งหมด',
+			'seeAllAttempts' => 'ดูการพยายามทั้งหมด',
+			'seeAlso' => 'ดูเพิ่มเติม',
+			'seeAnything' => 'เห็นสิ่งที่คุณต้องการปรับปรุงหรือไม่?',
+			'seeMore' => 'ดูเพิ่มเติม',
+			'seeOriginal' => 'ดูต้นฉบับ',
+			'seeTranslation' => 'ดูคำแปล',
+			'selectAndUploadLocaleImage' => 'เลือกและอัปโหลดรูปภาพจากเครื่อง',
+			'selectAdate' => 'เลือกวันที่',
+			'selectDefaultWallet' => 'เลือกวอลเล็ทเริ่มต้นในการตั้งค่า',
+			'selectUserToZap' => 'เลือกผู้ใช้ที่จะ zap (ไม่บังคับ)',
+			'selectValidUrlImage' => 'เลือกรูปภาพ URL ที่ถูกต้อง',
+			'selectWalletTransactions' => 'เลือกวอลเล็ทเพื่อดูธุรกรรมล่าสุด',
+			'selectOneReason' => 'เลือกเหตุผลอย่างน้อยหนึ่งข้อ',
+			'selectComponent' => 'เลือกคอมโพเนนต์ตามที่ต้องการและแก้ไข',
+			'send' => 'ส่ง',
+			'sendSats' => 'ส่ง sats',
+			'setProperName' => 'ตั้งชื่อให้เหมาะสม',
+			'setSatsMoreThanZero' => 'ตั้งค่าจำนวน sats ให้มากกว่า 0',
+			'setBookmarkTitleDescription' => 'ตั้งชื่อและคำอธิบายสำหรับรายการบุ๊กมาร์กของคุณ',
+			'setValidKey' => 'ตั้งรหัสที่ถูกต้อง',
+			'setUpYourLink' => 'ตั้งค่าลิงก์ของคุณ',
+			'setUpYourNevent' => 'ตั้งค่าเนเวนต์ของคุณ',
+			'setYourRating' => 'ตั้งคะแนนของคุณ',
+			'settings' => 'การตั้งค่า',
+			'share' => 'แชร์',
+			'shareGlimps' => 'แชร์มุมมองของคุณในคำที่รู้สึกจริงใจ',
+			'shareContent' => 'แชร์เนื้อหา',
+			'shareImage' => 'แชร์รูปภาพ',
+			'shareLink' => 'แชร์ลิงก์',
+			'shareNaddr' => 'แชร์ naddr',
+			'shareNoteId' => 'แชร์ ID โน๊ต',
+			'shareNprofile' => 'แชร์โปรไฟล์',
+			'shareProfile' => 'แชร์โปรไฟล์',
+			'shareProfileDesc' => 'แชร์โปรไฟล์ของคุณเพื่อเข้าถึงผู้คนมากขึ้น เชื่อมต่อกับผู้อื่น และขยายเครือข่ายของคุณ',
+			'show' => 'แสดง',
+			'showArticlesNotesSuggestions' => 'แสดงคำแนะนำบทความ/โน๊ต',
+			'showSecret' => 'แสดงรหัสลับ!',
+			'showStats' => 'แสดงสถิติ',
+			'showSuggestedInterests' => 'แสดงความสนใจที่แนะนำ',
+			'showSuggestedPeople' => 'แสดงรายการแนะนำคนติดตาม',
+			'showSuggestions' => 'แสดงคำแนะนำ',
+			'signIn' => 'เข้าสู่ระบบ',
+			'usingViewModeDesc' => 'ลงชื่อเข้าใช้ด้วยรหัสส่วนตัวของคุณและเข้าร่วมคอมมูนิตี้',
+			'size' => 'ขนาด',
+			'slideToPay' => 'เลื่อนไปชำระเงิน',
+			'smartWidget' => 'สมาร์ทวิดเจ็ต',
+			'smartWidgetBuilder' => 'เครื่องมือสร้างสมาร์ทวิดเจ็ต',
+			'smartWidgetChecker' => 'ตัวตรวจสอบสมาร์ทวิดเจ็ต',
+			'smartWidgetNotFound' => 'ไม่พบสมาร์ทวิดเจ็ต',
+			'smartWidgetPublishedSuccessfuly' => 'เผยแพร่สมาร์ทวิดเจ็ตเรียบร้อยแล้ว',
+			'smartWidgets' => 'สมาร์ทวิดเจ็ต',
+			'smartWidgetsDrafts' => 'ร่างสมาร์ทวิดเจ็ต',
+			'smartWidgetsTemplates' => 'เทมเพลตสมาร์ทวิดเจ็ต',
+			'software' => 'ซอฟต์แวร์',
+			'somethingWentWrong' => 'มีบางอย่างผิดพลาด!',
+			'soonUsers' => 'เร็วๆ นี้ ผู้ใช้จะสามารถใช้คะแนนสะสมในชุดกิจกรรมต่อไปนี้:',
+			'source' => 'แหล่งที่มา',
+			'sourceRecommended' => 'แหล่งที่มา (แนะนำ)',
+			'splitRevenuesWithUsers' => 'แบ่งรายได้กับผู้ใช้',
+			'splitZapsWith' => 'แบ่ง zaps กับ',
+			'spreadWordSharingContent' => 'กระจายข่าวด้วยการแชร์เนื้อหาของคุณไปทั่วทุกที่',
+			'startBuildingSmartWidget' => 'เริ่มสร้างและปรับแต่งสมาร์ทวิดเจ็ตของคุณเพื่อใช้บนเครือข่าย Nostr',
+			'startEarningPoints' => 'เริ่มทำรายได้และใช้คะแนน Yaki ของคุณให้เกิดประโยชน์สูงสุด 🎉',
+			'startSearchContent' => 'เริ่มค้นหาเนื้อหา',
+			'startSearchPeople' => 'เริ่มค้นหาผู้คน',
+			'stickers' => 'สติ๊กเกอร์',
+			'submit' => 'ส่ง',
+			'submitBookmarkList' => 'ส่งรายการบุ๊กมาร์ก',
+			'submitCuration' => 'ส่งคิวเรชัน',
+			'successfulRelays' => 'การรีเลย์ที่สำเร็จ',
+			'suggestedInterests' => 'ความสนใจที่แนะนำ',
+			'suggestions' => 'ข้อเสนอแนะ',
+			'suggestionsBox' => 'กล่องข้อเสนอแนะ',
+			'summaryOptional' => 'สรุป (ไม่บังคับ)',
+			'supportYakihonne' => 'สนับสนุน YakiHonne',
+			'supportedNips' => 'Nips ที่รองรับ',
+			'switchAccounts' => 'สลับบัญชี',
+			'taylorExperienceInterests' => 'ปรับแต่งประสบการณ์ของคุณโดยเลือกความสนใจสูงสุดของคุณ',
+			'telegramUrl' => 'URL โทรเลข',
+			'templates' => 'เทมเพลต',
+			'text' => 'ข้อความ',
+			'textColor' => 'สีข้อความ',
+			'textCustomization' => 'การปรับแต่งข้อความ',
+			'textSuccesfulyCopied' => 'คัดลอกข้อความเรียบร้อยแล้ว!',
+			'theFollowingNote' => 'หมายเหตุต่อไปนี้:',
+			'smHaveTitle' => 'อย่างน้อยสมาร์ทวิดเจ็ตควรมีชื่อ',
+			'smHaveOneWidget' => 'สมาร์ทวิดเจ็ตควรมีอย่างน้อยหนึ่งส่วนประกอบ',
+			'valueBetweenMinMax' => 'ค่าต้องอยู่ระหว่างจำนวนขั้นต่ำและสูงสุดของ Sats',
+			'noDataFromGpt' => 'มีข้อมูลที่จะแสดงจาก GPT',
+			'oneFeedOptionAvailable' => 'ต้องมีตัวเลือกฟีดอย่างน้อยหนึ่งรายการที่สามารถใช้ได้',
+			'unTextW1Desc' => 'โน๊ตเหล่านี้จะแสดงให้ทุกคนเห็น เพื่อเพิ่มบริบทและช่วยให้ผู้คนรับทราบข้อมูลอยู่เสมอ',
+			'unTextW2Desc' => 'โน๊ตเหล่านี้ได้รับการจัดอันดับว่า "ไม่เป็นประโยชน์" จากผู้มีส่วนร่วมจำนวนมาก รวมถึงผู้ที่ไม่เห็นด้วยในคะแนนก่อนหน้านี้',
+			'un1Desc' => 'การให้คะแนนเหล่านี้จะถูกนับสองครั้งเนื่องจากมักบ่งชี้ถึงการสนับสนุนโน๊ตที่ผู้อื่นเห็นว่าเป็นประโยชน์',
+			'unTextR1Desc' => 'การให้คะแนนเหล่านี้ระบุโน๊ตที่เป็นประโยชน์ที่จะแสดงต่อทุกคน โดยเพิ่มบริบทและช่วยให้ผู้คนรับทราบข้อมูล',
+			'unTextR2Desc' => 'การให้คะแนนเหล่านี้ช่วยปรับปรุง Verified Notes โดยการให้ข้อเสนอแนะแก่ผู้เขียนโน๊ต และช่วยให้ผู้มีส่วนร่วมมุ่งเน้นไปที่โน๊ตที่มีแนวโน้มมากที่สุด',
+			'notValidVideoEvent' => 'กิจกรรมนี้ไม่ใช่กิจกรรมวิดีโอที่ถูกต้อง!',
+			'sensitiveContent' => 'นี่คือเนื้อหาที่ละเอียดอ่อน',
+			'emptyVideoUrl' => 'Nevent นี้มี URL ว่างเปล่า',
+			'thisNoteAwaitRating' => 'โน๊ตนี้กำลังรอการให้คะแนนของคอมมูนิตี้',
+			'yourNoteAwaitRating' => 'โน๊ตนี้กำลังรอการให้คะแนนของคอมมูนิตี้',
+			'smartWidgetConvention' => 'สมาร์ทวิดเจ็ตนี้ไม่เป็นไปตามแบบแผนที่ตกลงกันไว้',
+			'useCannotBeZapped' => 'ผู้ใช้รายนี้ไม่สามารถ zapped ได้',
+			'thread' => 'เธรด',
+			'thumbnailPreview' => 'ตัวอย่างภาพขนาดย่อ',
+			'title' => 'ชื่อ',
+			'titleData' => ({required Object description}) => 'ชื่อ: ${description}',
+			'toBeAbleSendSats' => 'เพื่อให้สามารถส่ง zaps ได้ โปรดตรวจสอบให้แน่ใจว่าได้เชื่อมต่อกับ bitcoin lightning wallet ของคุณแล้ว',
+			'topReasonsSelected' => 'เหตุผลหลักที่ผู้ประเมินเลือก:',
+			'totalAmount' => 'จำนวนเงินทั้งหมด',
+			'totalNumber' => ({required Object number}) => 'ทั้งหมด: ${number}',
+			'trending' => 'กำลังเป็นที่นิยม',
+			'tryAgain' => 'ลองอีกครั้ง',
+			'type' => 'พิมพ์',
+			'typeValidZapQuestion' => 'พิมพ์คำถามโพลล์ที่ถูกต้อง!',
+			'unableToOpenUrl' => 'ไม่สามารถเปิด url ได้',
+			'undo' => 'เลิกทำ',
+			'undoRating' => 'ยกเลิกการให้คะแนน',
+			'unfollow' => 'เลิกติดตาม',
+			'unfollowAll' => 'เลิกติดตามทั้งหมด',
+			'pendingUnfollowing' => 'กำลังเลิกติดตาม...',
+			'unknown' => 'ไม่ทราบ',
+			'unknownVerifiedNote' => 'ไม่ทราบยืนยันโน๊ต',
+			'unlocked' => 'ปลดล็อคแล้ว',
+			'unmute' => 'เปิดเสียง',
+			'unmuteUser' => 'เปิดเสียงผู้ใช้',
+			'untitled' => 'ไม่มีชื่อ',
+			'update' => 'อัปเดต',
+			'updateInterests' => 'อัปเดตความสนใจ',
+			'updateProfile' => 'อัพเดตโปรไฟล์',
+			'updatedSuccesfuly' => 'อัปเดตเรียบร้อยแล้ว',
+			'updates' => 'อัพเดท',
+			'updatesNews' => 'อัพเดทข่าว',
+			'uploadAndUse' => 'อัปโหลดและใช้งาน',
+			'uploadImage' => 'อัพโหลดรูปภาพ',
+			'uploadingImage' => 'กำลังอัพโหลดภาพ...',
+			'upvotes' => 'โหวตเห็นด้วย',
+			'url' => 'URL',
+			'useAmber' => 'ใช้ Amber',
+			'useInvoice' => 'ใช้ใบแจ้งหนี้',
+			'useTemplate' => 'ใช้เทมเพลต',
+			'user' => 'ผู้ใช้',
+			'userCannotBeFound' => 'ไม่พบผู้ใช้',
+			'userHasBeenMuted' => 'ผู้ใช้ถูกปิดเสียง',
+			'userHasBeenUnmuted' => 'ผู้ใช้ถูกเปิดเสียงแล้ว',
+			'userName' => 'ชื่อผู้ใช้',
+			'userNameCopied' => 'คัดลอกชื่อผู้ใช้เรียบร้อยแล้ว!',
+			'userZappedSuccesfuly' => 'ผู้ใช้ถูก zapped สำเร็จ',
+			'userImpact' => 'ผลกระทบของผู้ใช้',
+			'userRelays' => 'รีเลย์ของผู้ใช้',
+			'usingExternalSign' => 'การใช้ผู้ลงนามภายนอก',
+			'value' => 'มูลค่า',
+			'verifyNip05' => 'ที่อยู่ Nostr ที่ได้รับการยืนยันแล้ว (NIP 05)',
+			'verifiedNoteNotFound' => 'ไม่พบโน๊ตที่ยืนยันแล้ว',
+			'verifyNotes' => 'ยืนยันโน๊ต',
+			'verifyingNote' => 'กำลังยืนยันโน๊ต',
+			'version' => 'เวอร์ชัน',
+			'video' => 'วิดีโอ',
+			'videoNotFound' => 'ไม่พบวิดีโอ',
+			'videoCustomization' => 'การปรับแต่งวิดีโอ',
+			'videoAddedCuration' => 'เพิ่มวิดีโอในคิวเรชันของคุณแล้ว',
+			'videoUrl' => 'URL ของวิดีโอ',
+			'videos' => 'วิดีโอ',
+			'videosAvailableCuration' => 'วิดีโอที่มีอยู่ในคิวเรชันนี้',
+			'view' => 'ดู',
+			'viewProfile' => 'ดูโปรไฟล์',
+			'viewQrCode' => 'ดูรหัส QR',
+			'views' => 'จำนวนการรับชม',
+			'visitProfile' => 'เยี่ยมชมโปรไฟล์',
+			'voteNotSubmitted' => 'ไม่สามารถส่งคะแนนโหวตได้',
+			'voteRequired' => 'จำเป็นต้องลงโหวตเพื่อแสดงสถิติ',
+			'votesByUsers' => 'โหวตโดยผู้ใช้',
+			'votesByZaps' => 'โหวตโดย zaps',
+			'votesNumber' => ({required Object number}) => 'โหวต: ${number}',
+			'waitingGenerationOfInvoice' => 'กำลังรอการสร้างใบแจ้งหนี้',
+			'wallet' => 'วอลเล็ท',
+			'walletNotLinked' => 'ไม่สามารถเชื่อมกับวอลเล็ทได้ ที่อยู่ Lightning ผิดพลาด',
+			'walletCreated' => 'สร้างวอลเล็ทสำเร็จแล้ว',
+			'walletLinked' => 'เชื่อมกับวอลเล็ทสำเร็จแล้ว',
+			'wallets' => 'วอลเล็ท',
+			'warning' => 'คำเตือน',
+			'watchNow' => 'ดูตอนนี้',
+			'noLnInNwc' => 'เราไม่สามารถเรียกที่อยู่ของคุณจาก NWC Secret ของคุณได้ โปรดตรวจสอบผู้ให้บริการ ที่อยู่Lightning ของคุณ เพื่อคัดลอกที่อยู่ของคุณหรืออัปเดตโปรไฟล์ของคุณตามลำดับ',
+			'readAboutVerifyingNotesDesc' => 'เราได้จัดทำบทความสำหรับคุณเพื่อช่วยให้คุณเข้าใจวัตถุประสงค์ของเรา',
+			'website' => 'เว็บไซต์',
+			'weight' => 'น้ำหนัก',
+			'whatThinkThis' => 'คุณคิดอย่างไรเกี่ยวกับเรื่องนี้?',
+			'whatThinkOfThat' => 'คุณคิดอย่างไรกับสิ่งนั้น?',
+			'whatsOnYourMind' => 'คุณคิดอะไรอยู่?',
+			'whatsThis' => 'นี่อะไรน่ะ?',
+			'whyVerifyingNotes' => 'ทำไมต้องมีการยืนยันโน๊ต?',
+			'widgets' => 'วิดเจ็ต',
+			'writeCommentOptional' => 'เขียนความคิดเห็น (ไม่บังคับ)',
+			'writeYourMessage' => 'เขียนข้อความ',
+			'writeNote' => 'เขียนโน๊ต',
+			'writeSummary' => 'เขียนสรุป',
+			'writeValidNote' => 'เขียนโน๊ตที่ถูกต้อง!',
+			'writeOnly' => 'เขียนเท่านั้น',
+			'writeSomethingAboutYou' => 'เขียนอะไรบางอย่างเกี่ยวกับคุณ!',
+			'writeSomething' => 'เขียนอะไรบางอย่าง...',
+			'writeYourText' => 'เขียนข้อความของคุณ',
+			'xUrl' => 'URL X',
+			'yakiChest' => 'Yaki chest',
+			'yakihonne' => 'Yakihonne',
+			'yakihonneChest' => 'Yakihonne\'s Chest!',
+			'yakihonneConsPoints' => 'คะแนนสะสมของ YakiHonne',
+			'yakihonneImprovements' => 'การปรับปรุงของ YakiHonne',
+			'yakihonneNote' => 'โน๊ตของ YakiHonne',
+			'yakihonneNotification' => 'การแจ้งเตือนของ YakiHonne',
+			'yakiNwc' => 'NWC ของ YakiHonne',
+			'clearAppCacheDesc' => 'คุณกำลังจะล้างแคชของแอป คุณต้องการดำเนินการต่อหรือไม่',
+			'deleteWalletDesc' => 'คุณกำลังจะลบวอลเล็ทนี้ คุณต้องการดำเนินการต่อหรือไม่?',
+			'linkWalletDesc' => 'คุณกำลังจะแทนที่วอลเล็ทเดิมของคุณ และเชื่อมวอลเล็ทใหม่กับโปรไฟล์ของคุณ คุณต้องการดำเนินการต่อหรือไม่?',
+			'undoRatingDesc' => 'คุณกำลังจะยกเลิกการให้คะแนนของคุณ คุณต้องการดำเนินการต่อหรือไม่?',
+			'alreadyLoggedIn' => 'คุณเข้าสู่ระบบแล้ว!',
+			'deleteAccountMessage' => 'คุณกำลังพยายามเข้าสู่ระบบบัญชีที่ถูกลบ',
+			'loggedToYakiChest' => 'คุณได้ลงชื่อเข้าใช้ใน Yakihonne chest',
+			'loggedIn' => 'คุณเข้าสู่ระบบแล้ว!',
+			'notUsingSecureDms' => 'คุณไม่ได้ใช้ Dms ที่มีความปลอดภัยอีกต่อไป',
+			'usingSecureDms' => 'ขณะนี้คุณกำลังใช้งาน Dms ที่ปลอดภัย',
+			'usingExternalSignDesc' => 'คุณกำลังใช้ผู้ลงนามภายนอก',
+			'secKeyWalletDesc' => 'คุณสามารถค้นหารหัสลับบัญชีของคุณ และความลับในการเชื่อมต่อวอลเล็ทได้ในการตั้งค่าของคุณ ',
+			'secKeyDesc' => 'คุณสามารถค้นหารหัสลับบัญชีของคุณได้ในการตั้งค่า รหัสเหล่านี้จำเป็นสำหรับการเข้าถึงบัญชีและวอลเล็ทของคุณอย่างปลอดภัย กรุณาเก็บรักษาไว้อย่างปลอดภัยและเป็นความลับ',
+			'uploadSendMedia' => 'คุณสามารถอัปโหลดและส่งสื่อได้ทันทีหลังจากที่คุณเลือกหรือรับสื่อเหล่านั้น',
+			'uploadPasteUrl' => 'คุณสามารถอัปโหลดหรือวาง URL สำหรับภาพที่คุณต้องการได้',
+			'canUploadPastLink' => 'คุณสามารถอัปโหลด วางลิงก์ หรือเลือกประเภท 1063 ลงในวิดีโอของคุณได้',
+			'findPaidNoteCorrect' => 'คุณพบว่าโน๊ตโปรโมทนี้ถูกต้อง',
+			'findPaidNoteMisleading' => 'คุณพบว่าโน๊ตโปรโมทนี้ทำให้เข้าใจผิด',
+			'alreadyContributed' => 'คุณได้มีส่วนร่วมแล้ว',
+			'alreadyVoted' => 'คุณได้ลงคะแนนในโพลล์นี้แล้ว',
+			'congratsDesc' => ({required Object number}) => 'คุณได้รับรางวัล ${number} xp สำหรับการดำเนินการต่อไปนี้ ใช้งานและรับรางวัล!',
+			'youHaveLeftNote' => 'คุณได้ทิ้งโน๊ตไว้ในโน๊ตโปรโมทนี้:',
+			'noRewards' => 'คุณไม่ได้รับรางวัล โต้ตอบหรือเขียนโน๊ตที่ได้รับการยืนยันเพื่อรับสิ่งเหล่านั้น',
+			'noWalletLinkedMessage' => 'คุณไม่มีวอลเล็ทที่เชื่อมโยงกับโปรไฟล์ของคุณ คุณต้องการเชื่อมโยงวอลเล็ทนี้หรือไม่?',
+			'noWalletLinkedToYouProfile' => 'คุณไม่มีวอลเล็ทที่เชื่อมโยงกับโปรไฟล์ของคุณ',
+			'youHaveRated' => 'คุณได้ให้คะแนนแล้ว',
+			'ratedNoteSealed' => 'คุณได้ให้คะแนนโน๊ตต่อไปนี้ซึ่งได้รับการปิดการเข้าถึงแล้ว:',
+			'youRatedHelpful' => 'คุณให้คะแนนสิ่งนี้ว่าเป็นประโยชน์',
+			'youRatedNotHelpful' => 'คุณให้คะแนนสิ่งนี้ว่าไม่เป็นประโยชน์',
+			'ownReceivedSat' => ({required Object number}) => 'คุณได้รับ ${number} Sats',
+			'ownSentSat' => ({required Object number}) => 'คุณส่ง ${number} Sats',
+			'voteToSeeStats' => 'คุณควรโหวตเพื่อให้สามารถดูสถิติได้',
+			'you' => 'คุณ: ',
+			'confirmDeleteContent' => ({required Object type}) => 'คุณกำลังจะลบสิ่งนี้ ${type}คุณต้องการดำเนินการต่อหรือไม่?',
+			'confirmDeleteBookmarkList' => 'คุณกำลังจะลบรายการบุ๊กมาร์กนี้ คุณต้องการดำเนินการต่อหรือไม่',
+			'confirmDeleteDraft' => 'คุณกำลังจะลบฉบับร่างนี้ คุณต้องการดำเนินการต่อหรือไม่?',
+			'deleteCoverPicDesc' => 'คุณกำลังจะลบภาพหน้าปกของคุณ คุณต้องการดำเนินการต่อหรือไม่?',
+			'youreAllSet' => 'คุณพร้อมแล้ว',
+			'switchToMonolayout' => 'คุณกำลังเปลี่ยนไปใช้เลย์เอาต์แบบโมโนในขณะที่มีองค์ประกอบอยู่ทั้งสองด้าน การดำเนินการนี้จะลบเนื้อหาในคอนเทนเนอร์ คุณต้องการดำเนินการต่อหรือไม่',
+			'usingViewMode' => 'คุณกำลังใช้โหมดมุมมอง',
+			'muteUserDesc' => ({required Object name}) => 'คุณกำลังจะปิดเสียง ${name}คุณต้องการดำเนินการต่อหรือไม่?',
+			'unmuteUserDesc' => ({required Object name}) => 'คุณกำลังจะเปิดเสียง ${name}คุณต้องการดำเนินการต่อหรือไม่?',
+			'articlePublished' => 'บทความของคุณได้รับการเผยแพร่แล้ว!',
+			'yourDisplayName' => 'ชื่อที่แสดงของคุณ',
+			'yourNoteSealed' => 'โน๊ตต่อไปนี้ของคุณเพิ่งถูกปิดการเข้าถึง:',
+			'yourName' => 'ชื่อของคุณ',
+			'ratingDeleted' => 'คะแนนของคุณถูกลบแล้ว',
+			'ratingSubmittedCheckReward' => 'คะแนนของคุณถูกส่งแล้ว กรุณาตรวจสอบหน้ารางวัลของคุณเพื่อรับรางวัลคะแนนของคุณ',
+			'verifiedNoteAdded' => 'โน๊ตที่ได้รับการยืนยันของคุณได้ถูกเพิ่มแล้ว โปรดตรวจสอบหน้ารางวัลของคุณเพื่อรับรางวัลการเขียนของคุณ',
+			'verifiedNoteSealed' => 'โน๊ตที่ได้รับการยืนยันแล้วของคุณถูกปิดการเข้าถึงแล้ว',
+			'yourWebsite' => 'เว็บไซต์ของคุณ',
+			'youtubeUrl' => 'YouTube URL ',
+			'zap' => 'Zap',
+			'zapPoll' => ' Zap โพลล์',
+			'zapPollCustomization' => 'การปรับแต่งโพลล์ Zap',
+			'zapPollNevent' => 'โพลล์ zap nevent',
+			'zapSplits' => 'แบ่ง Zap',
+			'zappers' => 'Zappers',
+			'zaps' => 'Zaps ',
+			'zapReceived' => 'ได้รับ Zaps แล้ว',
+			'zapSent' => 'ส่ง zaps แล้ว',
+			'comingSoon' => 'เร็วๆ นี้',
+			'content' => 'เนื้อหา',
+			'expiresOn' => ({required Object date}) => 'หมดอายุวันที่ ${date}',
+			'reactions' => 'รีโพสต์',
+			'reposts' => 'การตอบสนอง',
+			'collapseNote' => 'ยุบบันทึกย่อ',
+			'notifDisabled' => 'การแจ้งเตือนถูกปิดใช้งาน!',
+			'notifDisabledMessage' => 'การแจ้งเตือนถูกปิดใช้งานสำหรับประเภทนี้ คุณสามารถเปิดใช้งานได้ในการตั้งค่าการแจ้งเตือน',
+			'oneNotifOptionAvailable' => 'ควรมีตัวเลือกการแจ้งเตือนอย่างน้อยหนึ่งตัวเลือก',
+			'readAll' => 'อ่านทั้งหมด',
+			'usernameTaken' => 'ชื่อผู้ใช้ถูกใช้แล้ว',
+			'usernameRequired' => 'ชื่อผู้ใช้ เป็นสิ่งจำเป็น',
+			'deleteWalletConfirmation' => 'โปรดตรวจสอบให้แน่ใจว่าคุณได้บันทึกวลีการเชื่อมต่อ NWC ของคุณอย่างปลอดภัย เนื่องจากเราไม่สามารถช่วยเหลือในการกู้คืนกระเป๋าเงินที่สูญหายได้',
+			'unsupportedKind' => 'ชนิดที่ไม่รองรับ',
+			'analyticsCrashlytics' => 'ความผิดพลาด',
+			'analyticsCache' => 'Crashlytics และแคช',
+			'analyticsCacheOn' => 'Crashlytics เปิดอยู่',
+			'analyticsCacheOff' => 'Crashlytics ถูกปิด',
+			'shareNoUsage' => 'คุณไม่แบ่งปันความผิดพลาดกับเราในขณะนี้',
+			'wantShareAnalytics' => 'ต้องการแบ่งปัน Crashlytics หรือไม่?',
+			'yakihonneAnCr' => 'Crashlytics ของ Yakihonne',
+			'crashlyticsTerms' => 'การรวบรวม Crashlytics ที่ไม่ระบุชื่อเป็นสิ่งสำคัญสำหรับการปรับแต่งคุณสมบัติของแอปและประสบการณ์ผู้ใช้ของเรา ',
+			'collectAnonymised' => 'เรารวบรวม Crashlytics ที่ไม่ระบุชื่อเพื่อปรับปรุงประสบการณ์แอพ',
+			'linkWalletToProfile' => 'ลิงก์กระเป๋าเงินกับโปรไฟล์ของคุณ',
+			'linkWalletToProfileDesc' => 'กระเป๋าเงินที่เชื่อมโยงจะถูกใช้เพื่อรับ SATS',
+			'noWalletLinked' => 'คุณไม่มีกระเป๋าเงินที่เชื่อมโยงกับโปรไฟล์ของคุณให้ลองเชื่อมโยงหนึ่งของคุณในเมนูด้านบน',
+			'addPoll' => 'เพิ่มแบบสำรวจ',
+			'browsePolls' => 'เรียกดูโพล',
+			'maciPolls' => 'โพล MACI',
+			'beta' => 'เบต้า',
+			'choosePollType' => 'เลือกประเภทแบบสำรวจ',
+			'created' => 'สร้าง',
+			'tallying' => 'การนับ',
+			'ended' => 'จบ',
+			'closed' => 'ปิด',
+			'voteResultsBy' => 'โหวตผลลัพธ์โดย',
+			'votes' => 'โหวต',
+			'voiceCredit' => 'เครดิตเสียง',
+			'viewDetails' => 'ดูรายละเอียด',
+			'signup' => 'การลงทะเบียน',
+			'notDownloadProof' => 'ไม่สามารถดาวน์โหลดหลักฐานได้',
+			'name' => 'ชื่อ',
+			'status' => 'สถานะ',
+			'circuit' => 'วงจร',
+			'votingSystem' => 'ระบบลงคะแนนเสียง',
+			'proofSystem' => 'ระบบพิสูจน์',
+			'gasStation' => 'ปั๊มน้ำมัน',
+			'totalFund' => '(กองทุนรวม)',
+			'roundStart' => 'รอบ',
+			'roundEnd' => 'รอบ',
+			'operator' => 'ผู้ดำเนินการ',
+			'contractCreator' => 'ผู้สร้างสัญญา',
+			'contractAddress' => 'ที่อยู่สัญญา',
+			'blockHeight' => 'ความสูงของบล็อก',
+			'atContractCreation' => ({required Object number}) => '${number} (ที่การสร้างสัญญา)',
+			'zkProofs' => 'บทพิสูจน์ ZK',
+			'downloadZkProofs' => 'ดาวน์โหลดหลักฐาน',
+			'walletConnectionString' => 'สตริงการเชื่อมต่อกระเป๋าเงิน',
+			'walletConnectionStringDesc' => 'โปรดตรวจสอบให้แน่ใจว่าได้คัดลอกหรือส่งออกสตริงการเชื่อมต่อกระเป๋าเงินของคุณอย่างปลอดภัย ',
+			'export' => 'ส่งออก',
+			'logout' => 'ออกจากระบบ',
+			'exportAndLogout' => 'ส่งออกและออกจากระบบ',
+			'exportWalletsDesc' => 'ดูเหมือนว่าคุณมีกระเป๋าเงินที่เชื่อมโยงกับบัญชีของคุณ ',
+			'manageWallets' => 'จัดการกระเป๋าเงิน',
+			'roundDuration' => 'ระยะเวลารอบ',
+			'startAt' => ({required Object date}) => 'เริ่มต้นที่: ${date}',
+			'loginAction' => 'เข้าสู่ระบบ',
+			'addPicture' => 'เพิ่มรูปภาพ',
+			'editPicture' => 'แก้ไขรูปภาพ',
+			'exportKeys' => 'กุญแจส่งออก',
+			'mutedUser' => 'ผู้ใช้ที่ปิดเสียง',
+			'unaccessibleContent' => 'เนื้อหาที่ไม่สามารถเข้าถึงได้',
+			'mutedUserDesc' => 'คุณได้ปิดเสียงผู้ใช้รายนี้ลองพิจารณาดูเนื้อหานี้',
+			'commentHidden' => 'ความคิดเห็นนี้ซ่อนอยู่',
+			'upcoming' => 'ที่กำลังจะมาถึง',
+			'exportCredentials' => 'ข้อมูลรับรองการส่งออก',
+			'loginToYakihonne' => 'เข้าสู่ระบบ Yakihonne',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
+			'alreadyUser' => 'ผู้ใช้แล้ว?',
+			'createPoll' => 'สร้างแบบสำรวจ',
+			'gasStationTotal' => 'ปั๊มน้ำมัน (กองทุนรวม)',
+			'gasStationRemaining' => 'ปั๊มน้ำมัน (ดุลที่เหลือ)',
+			'paste' => 'แปะ',
+			'manual' => 'คู่มือ',
+			'contacts' => 'ผู้ติดต่อ',
+			'typeManualDesc' => 'พิมพ์ที่อยู่สายฟ้าใบแจ้งหนี้สายฟ้าหรือ lnurl',
+			'useValidPaymentRequest' => 'โปรดใช้คำขอการชำระเงินที่ถูกต้อง',
+			'save' => 'บันทึก',
+			'saveImageGallery' => 'รูปภาพถูกดาวน์โหลดไปยังแกลเลอรี่ของคุณ',
+			'errorSavingImage' => 'เกิดข้อผิดพลาดขณะดาวน์โหลดภาพ',
+			'copyImageGallery' => 'รูปภาพถูกคัดลอกไปยังคลิปบอร์ดของคุณ',
+			'errorCopyImage' => 'เกิดข้อผิดพลาดในขณะที่คัดลอกภาพ',
+			'scan' => 'สแกน',
+			'invalidLightningAddress' => 'ที่อยู่สายฟ้าที่ไม่ถูกต้อง',
+			'deleteAccountDesc' => 'คุณกำลังจะลบบัญชีของคุณคุณต้องการดำเนินการต่อหรือไม่?',
+			'paymentFailedInvoice' => 'การชำระเงินล้มเหลว: ตรวจสอบความถูกต้องของใบแจ้งหนี้นี้',
+			'validSatsAmount' => 'ตั้งค่าจำนวน SAT ที่ถูกต้อง',
+			'placeholder' => '占位符',
+			'inputFieldCustomization' => '输入字段自定义',
+			'addInputField' => '添加输入字段',
+			'addButton' => '添加按钮',
+			'selectImage' => '选择图像',
+			'moveLeft' => '向左移动',
+			'moveRight' => '向右移动',
+			'buttonRequired' => '至少应该有一个按钮',
+			'missingInputDesc' => '看来您使用的是一个自定义功能，它需要一个需要输入字段组件的情况，而无需嵌入智能小部件中的一个，请添加一个输入字段，以便该函数正常工作。',
+			'countdown' => '倒数',
+			'contentEndsAt' => '内容结束',
+			'countdownTime' => '倒计时时间是强制性的',
+			'contentEndsDate' => '内容结束日期是强制性的',
+			'lnMandatory' => '闪电地址是强制性的',
+			'pubkeysMandatory' => '至少一个配置文件是必须的',
+			'buttonNoUrl' => '按钮URL是强制性的',
+			'shareWidgetImage' => '共享小部件图像',
+			'inputField' => '输入字段',
+			'noReplies' => '没有答复',
+			'message' => '信息',
+			'chat' => '聊天',
+			'onlyLettersNumber' => '只允许的字母和数字',
+			'appCache' => '应用缓存',
+			'cachedData' => '缓存数据',
+			'cachedMedia' => '缓存媒体',
+			'cacheCleared' => '缓存已清除',
+			'closeAppClearingCache' => '最好在清除缓存时重新启动应用程序以确保所有更改生效，并且应用程序顺利运行',
+			'appCacheNotice' => '您的应用程序缓存的尺寸正在增长。',
+			'manageCache' => '管理缓存',
+			'filterByTime' => '按时间过滤',
+			'allTime' => '一直以来',
+			'oneMonth' => '1个月',
+			'threeMonths' => '3个月',
+			'sixMonths' => '6个月',
+			'oneYear' => '1年',
+			'defaultZapAmount' => '默认ZAP金额',
+			'oneTapZap' => '启用一个水龙头zap',
+			'verify' => '核实',
+			'reset' => '重置',
+			'appCannotVerified' => '应用无法验证或无效',
+			'useValidAppUrl' => '使用有效的应用程序URL',
+			'app' => '应用程序',
+			'userNotConnected' => '用户未连接',
+			'userCannotSignEvent' => '该用户无法签署事件。',
+			'invalidEvent' => '无效的事件',
+			'eventCannotBeSigned' => '事件无法签署',
+			'signEvent' => '标志事件',
+			'sign' => '符号',
+			'signPublish' => '标志和发布',
+			'signEventDes' => '您即将签署以下活动',
+			'enableAutomaticSigning' => '启用自动签名',
+			'tools' => '工具',
+			'searchSmartWidgets' => '搜索智能小部件',
+			'noToolsAvailable' => '没有可用的工具',
+			'underMaintenance' => '在维护下',
+			'smartWidgetMaintenance' => '智能小部件可维护。',
+			'mySavedTools' => 'เครื่องมือที่บันทึกไว้ของฉัน',
+			'availableTools' => 'เครื่องมือที่มีอยู่',
+			'remove' => 'ลบ',
+			'youHaveNoTools' => 'คุณไม่มีเครื่องมือ',
+			'discoverTools' => 'ค้นพบเครื่องมือที่เผยแพร่เพื่อช่วยคุณในการสร้างเนื้อหาของคุณ',
+			'addWidgetTools' => 'เพิ่มเครื่องมือวิดเจ็ต',
+			'widgetSearch' => 'การค้นหาวิดเจ็ต',
+			'widgetSearchDesc' => 'ค้นหาวิดเจ็ตอัจฉริยะที่เผยแพร่และสิ่งที่ผู้คนทำ',
+			'getInspired' => 'รับแรงบันดาลใจ',
+			'getInspirtedDesc' => 'ขอให้ AI ของเราช่วยคุณสร้างวิดเจ็ตอัจฉริยะของคุณ',
+			'trySearch' => 'ลองใช้วิธีการค้นหาที่แตกต่างกัน',
+			'typeForCommands' => 'พิมพ์ / สำหรับคำสั่ง',
+			'loadMore' => 'โหลดมากขึ้น',
+			'searchingFor' => ({required Object name}) => 'ค้นหา: ${name}',
+			'playground' => 'สนามเด็กเล่น',
+			'typeKeywords' => 'พิมพ์คำหลัก (เช่น: คำหลัก 1, คำหลัก 2 .. )',
+			'enableGossip' => 'รูปแบบซุบซิบ',
+			'enableGossipDesc' => 'รูปแบบการนินทาถูกปิดใช้งานโดยค่าเริ่มต้น ',
+			'enableExternalBrowser' => 'ใช้เบราว์เซอร์ภายนอก',
+			'restartAppTakeEffect' => 'รีสตาร์ทแอพสำหรับการดำเนินการเพื่อให้มีผล',
+			'tips' => 'เคล็ดลับ',
+			'docs' => 'เอกสาร',
+			'tryMiniApp' => 'ลองใช้ MINI-APP ของคุณด้วยการทดสอบแบบโต้ตอบแบบโต้ตอบ',
+			'exploreOurRepos' => 'สำรวจ repos ของเราหรือตรวจสอบเอกสารสมาร์ทวิดเจ็ตของเรา',
+			'bringAi' => 'เรากำลังนำ AI!',
+			'bringAiDesc' => 'เรากำลังสร้างผู้ช่วย AI เพื่อปรับปรุงงานของคุณด้วยวิดเจ็ตที่ตั้งโปรแกรมได้และการพัฒนาขนาดเล็ก-แอป-จับตาดู!',
+			'notesCount' => ({required Object number}) => '${number} หมายเหตุ',
+			'mixedContentCount' => ({required Object number}) => '${number} เนื้อหา',
+			'noApp' => 'ไม่พบแอพที่เหมาะสมในการเปิดไฟล์ที่ส่งออก',
+			'andMore' => ({required Object number}) => '- ${number} คนอื่น)',
+			'addFilter' => 'เพิ่มตัวกรอง',
+			'entitleFilter' => 'สิทธิของตัวกรอง',
+			'includedWords' => 'รวมคำพูด',
+			'excludedWords' => 'ไม่รวมคำพูด',
+			'hideSensitiveContent' => 'ซ่อนเนื้อหาที่ละเอียดอ่อน',
+			'mustIncludeThumbnail' => 'ต้องรวมภาพขนาดย่อ',
+			'forArticles' => 'สำหรับบทความ',
+			'forVideos' => 'สำหรับวิดีโอ',
+			'forCurations' => 'สำหรับการดูแล',
+			'articleMinWords' => 'เนื้อหาขั้นต่ำจำนวนคำ',
+			'showOnlyArticleMedia' => 'แสดงเฉพาะบทความที่มีสื่อ',
+			'showOnlyNotesMedia' => 'แสดงโน้ตด้วยสื่อเท่านั้น',
+			'curationsType' => 'ประเภทการดูแล',
+			'minItemCount' => 'รายการขั้นต่ำนับจำนวน',
+			'addWord' => 'เพิ่มคำที่เหมาะสม',
+			'wordNotInIncluded' => 'ตรวจสอบให้แน่ใจว่าคำไม่ได้อยู่ในคำที่รวม',
+			'wordNotInExcluded' => 'ตรวจสอบให้แน่ใจว่าคำไม่ได้อยู่ในคำที่ยกเว้น',
+			'fieldRequired' => 'ต้องการฟิลด์',
+			'filterAdded' => 'มีการเพิ่มตัวกรองแล้ว',
+			'filterUpdated' => 'ตัวกรองได้รับการอัปเดตแล้ว',
+			'filterDeleted' => 'ตัวกรองถูกลบ',
+			'filters' => 'ตัวกรอง',
+			'contentFeed' => 'ฟีดเนื้อหา',
+			'communityFeed' => 'ฟีดชุมชน',
+			'relaysFeed' => 'ฟีดรีเลย์',
+			'marketplaceFeed' => 'ฟีดตลาด',
+			'addYourFeed' => 'เพิ่มฟีดที่คุณต้องการ',
+			'myList' => 'รายการของฉัน',
+			'allFreeFeeds' => 'ฟีดฟรีทั้งหมด',
+			'noRelays' => 'ไม่มีรีเลย์',
+			'addRelays' => 'เพิ่มรายการรีเลย์ของคุณเพื่อเพลิดเพลินกับฟีดที่สะอาดและกำหนดเอง',
+			'adjustYourFeedList' => 'ปรับรายการฟีดของคุณ',
+			'addRelayUrl' => 'เพิ่ม URL รีเลย์',
+			'feedOptionEnabled' => 'ควรเปิดใช้งานตัวเลือกฟีดอย่างน้อยหนึ่งตัว',
+			'feedSetUpdate' => 'ชุดฟีดได้รับการอัปเดตแล้ว',
+			'global' => 'ทั่วโลก',
+			'fromNetwork' => 'จากเครือข่าย',
+			'top' => 'สูงสุด',
+			'showFollowingList' => 'ฟีดปัจจุบันของคุณขึ้นอยู่กับรายการต่อไปนี้ของคนอื่นเริ่มติดตามคนเพื่อปรับฟีดของคุณตามความชอบของคุณ',
+			'from' => 'จาก',
+			'to' => 'ถึง',
+			'dayMonthYear' => 'dd/mm/yyyy',
+			'fromDateMessage' => '\'วันที่\' ต้องเร็วกว่า \'ถึง\' วันที่',
+			'toDateMessage' => '\'ถึง\' วันที่ต้องช้ากว่า \'วันที่\'',
+			'noResults' => 'ไม่มีผลลัพธ์',
+			'noResultsFilterMessage' => 'ดูเหมือนว่าคุณกำลังใช้ตัวกรองที่กำหนดเองโปรดปรับพารามิเตอร์และวันที่เพื่อรับข้อมูลเพิ่มเติม',
+			'noResultsNoFilterMessage' => 'ไม่พบโปรดเปลี่ยนแหล่งเนื้อหาของคุณหรือใช้พารามิเตอร์ตัวกรองที่แตกต่างกัน',
+			'addToNotes' => 'เพิ่มลงในหมายเหตุ',
+			'addToDiscover' => 'เพิ่มเพื่อค้นพบ',
+			'shareRelayContent' => 'แบ่งปันเนื้อหารีเลย์',
+			'shareRelayUrl' => 'แชร์ URL รีเลย์',
+			'basic' => 'ขั้นพื้นฐาน',
+			'privateMessages' => 'ข้อความส่วนตัว',
+			'pushNotifications' => 'การแจ้งเตือน',
+			'repliesView' => 'มุมมองตอบกลับ',
+			'threadView' => 'ด้าย',
+			'boxView' => 'กล่อง',
+			'viewAs' => 'มองว่า',
+			'feedSettings' => 'การตั้งค่าฟีด',
+			'appliedFilterDesc' => 'หมายเหตุนี้ถูกซ่อนอยู่เนื่องจากตัวกรองที่ใช้ปัจจุบัน',
+			'showNote' => 'แสดงหมายเหตุ',
+			'allMedia' => 'สื่อทั้งหมด',
+			'searchInNostr' => 'ค้นหาใน NOSTR',
+			'findPeopleContent' => 'ค้นหาผู้คนบันทึกและเนื้อหา',
+			'activeService' => 'บริการที่ใช้งานอยู่',
+			'regularServers' => 'เซิร์ฟเวอร์ปกติ',
+			'blossomServers' => 'เซิร์ฟเวอร์ Blossom',
+			'mirrorAllServer' => 'สะท้อนเซิร์ฟเวอร์ทั้งหมด',
+			'mainServer' => 'เซิร์ฟเวอร์หลัก',
+			'select' => 'เลือก',
+			'noServerFound' => 'ไม่พบเซิร์ฟเวอร์',
+			'serverExists' => 'เซิร์ฟเวอร์มีอยู่ในรายการของคุณแล้ว',
+			'invalidUrl' => 'รูปแบบ URL ที่ไม่ถูกต้อง',
+			'serverPath' => 'เส้นทางเซิร์ฟเวอร์',
+			'errorAddingBlossom' => 'เกิดข้อผิดพลาดในขณะที่เพิ่ม Blossom Server',
+			'errorSelectBlossom' => 'เกิดข้อผิดพลาดในขณะที่เลือก Blossom Server',
+			'errorDeleteBlossom' => 'เกิดข้อผิดพลาดในขณะที่ลบเซิร์ฟเวอร์ Blossom',
+			'wotConfig' => 'Web of Trust Configuration',
+			'wot' => 'Web of Trust',
+			'wotThreshold' => 'Web of Trust Threshold',
+			'postActions' => 'โพสต์การกระทำ',
+			'enabledFor' => 'เปิดใช้งานสำหรับ',
+			'dmRelayTitle' => 'รีเลย์ข้อความส่วนตัวไม่ได้รับการกำหนดค่า!',
+			'dmRelayDesc' => 'อัปเดตรายการรีเลย์ของคุณตามนั้น ',
+			'youFollow' => 'คุณติดตาม',
+			'quotaLimit' => 'คุณเกินขีด จำกัด โควต้ารายวันของคุณ',
+			'alwaysUseExternal' => 'ใช้ zaps กระเป๋าเงินภายนอกเสมอ',
+			'alwaysUseExternalDesc' => 'ใช้แอพ Lightning Wallet ภายนอกแทนกระเป๋าเงินในตัวของ Yakihonne สำหรับการทำธุรกรรม ZAP ทั้งหมด',
+			'unreachableExternalWallet' => 'กระเป๋าเงินภายนอกที่ไม่สามารถเข้าถึงได้',
+			'secureStorageDesc' => 'กุญแจของคุณถูกเก็บไว้อย่างปลอดภัยบนอุปกรณ์ของคุณและไม่เคยแชร์กับเราหรือใครก็ตาม',
+			'pubkeySharedDesc' => 'ปลอดภัยที่จะแบ่งปัน - สิ่งนี้ระบุคุณใน NOSTR',
+			'privKeyDesc' => 'ให้ความเป็นส่วนตัว - สำรองข้อมูลอย่างปลอดภัยเพื่อเข้าถึงบัญชีของคุณที่อื่น',
+			'settingsKeysDesc' => 'จัดการคีย์ NOSTR ของคุณสำหรับข้อมูลประจำตัวเครือข่ายการลงนามเหตุการณ์และการตรวจสอบความถูกต้องโพสต์',
+			'settingsRelaysDesc' => 'กำหนดค่าการเชื่อมต่อรีเลย์ NOSTR สำหรับการจัดเก็บและแจกจ่ายกิจกรรม',
+			'settingsCustomizationDesc' => 'ปรับแต่งการแสดงฟีด Yakihonne ของคุณท่าทางท่าทางตัวอย่างและความชอบสำหรับประสบการณ์ NOSTR ที่ดีขึ้น',
+			'settingsNotificationsDesc' => 'การควบคุมการแจ้งเตือนสำหรับข้อความการกล่าวถึงปฏิกิริยาและเหตุการณ์ NOSTR อื่น ๆ',
+			'settingsContentDesc' => 'การควบคุมการโต้ตอบเนื้อหาการตั้งค่าความเป็นส่วนตัวการจัดการสื่อและการตั้งค่าการส่งข้อความใน NOSTR',
+			'settingsLanguageDesc' => 'เลือกภาษาที่คุณต้องการสำหรับอินเทอร์เฟซและการแปลเนื้อหาของ Yakihonne',
+			'settingsWalletDesc' => 'เชื่อมต่อและจัดการกระเป๋าเงิน Bitcoin Lightning สำหรับการส่ง/รับ ZAPs ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก',
+			'settingsAppearanceDesc' => 'ปรับแต่งลักษณะการมองเห็นของ Yakihonne เพื่อให้ตรงกับความชอบของคุณและดูความสะดวกสบาย',
+			'settingsCacheDesc' => 'จัดการการตรวจสอบประสิทธิภาพของแอพการรายงานข้อผิดพลาดและการเพิ่มประสิทธิภาพการจัดเก็บเพื่อการทำงานที่ราบรื่น',
+			'addQuickRelayDesc' => 'เพิ่มรีเลย์ใหม่อย่างรวดเร็วโดยป้อน URL',
+			'fewerRelays' => 'รีเลย์ที่มีเสถียรภาพน้อยลง = ประสิทธิภาพที่ดีขึ้นและการซิงค์ได้เร็วขึ้น',
+			'greenDotsDesc' => 'จุดสีเขียวแสดงการเชื่อมต่อที่ใช้งานอยู่',
+			'redDotsDesc' => 'จุดสีแดงแสดงรีเลย์ออฟไลน์',
+			'greyDotsDesc' => 'จุดสีเทาแสดงรีเลย์ที่รอดำเนินการ',
+			'homeFeedCustomDesc' => 'เลือกการตอบกลับสไตล์การแสดงผล (กล่องหรือเธรด) และจัดการการตั้งค่าข้อเสนอแนะสำหรับผู้คนเนื้อหาและความสนใจ',
+			'NewPostDesc' => 'เลือกสิ่งที่จะเกิดขึ้นเมื่อคุณกดยาวในขณะที่สร้างโพสต์ (ตั้งค่าอยู่ที่บันทึกไว้)',
+			'profilePreviewDesc' => 'แสดงตัวอย่างโปรไฟล์ผู้ใช้เมื่อแตะชื่อผู้ใช้ในฟีดของคุณ',
+			'collapseNoteDesc' => 'ลดโพสต์ยาวโดยอัตโนมัติเพื่อให้ฟีดของคุณสะอาดและอ่านได้',
+			'pushNotificationsDesc' => 'รับการแจ้งเตือนทันทีบนอุปกรณ์ของคุณ ',
+			'privateMessagesDesc' => 'รับการแจ้งเตือนสำหรับข้อความโดยตรงและการสนทนาส่วนตัว',
+			'followingDesc' => 'รับการแจ้งเตือนเมื่อคนที่คุณติดตามโพสต์เนื้อหาใหม่',
+			'mentionsDesc' => 'ได้รับการแจ้งเตือนเมื่อมีคนกล่าวถึงคุณหรือตอบกลับโพสต์ของคุณ',
+			'repostsDesc' => 'ได้รับการแจ้งเตือนเมื่อมีคนแบ่งปันหรือโพสต์เนื้อหาของคุณใหม่',
+			'reactionsDesc' => 'ได้รับการแจ้งเตือนเมื่อบางคนชอบหรือตอบสนองต่อโพสต์ของคุณ',
+			'zapDesc' => 'รับการแจ้งเตือนเมื่อคุณได้รับเคล็ดลับ Bitcoin (Zaps) ในโพสต์ของคุณ',
+			'muteListDesc' => 'ดูและจัดการผู้ใช้ที่คุณบล็อกไม่ให้ปรากฏในฟีดของคุณ',
+			'mediaUploaderDesc' => 'เลือกบริการที่อัปโหลดรูปภาพและไฟล์สื่อของคุณ',
+			'autoSignDesc' => 'ลงนามเหตุการณ์ที่ร้องขอโดยแอพขนาดเล็กโดยอัตโนมัติ (แอ็คชั่น/เครื่องมือสมาร์ทเครื่องมือ) โดยไม่ต้องยืนยันด้วยตนเองในแต่ละครั้ง',
+			'gossipDesc' => 'การจัดการรีเลย์ที่มีความซับซ้อนซึ่งค้นหาโพสต์ของผู้ติดตามของคุณในรีเลย์ที่แตกต่างกันโดยอัตโนมัติในขณะที่ลดการเชื่อมต่อและปรับให้เข้ากับรีเลย์ออฟไลน์',
+			'useExternalBrowsDesc' => 'เปิดลิงก์ในแอพเบราว์เซอร์เริ่มต้นของคุณแทนเบราว์เซอร์ในตัว',
+			'secureDmDesc' => 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ',
+			'wotConfigDesc' => 'กลไกความไว้วางใจแบบกระจายอำนาจโดยใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล NOSTR',
+			'appLangDesc' => 'เลือกภาษาสำหรับอินเทอร์เฟซเมนูและปุ่มของ Yakihonne',
+			'contentTransDesc' => 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ',
+			'planDesc' => 'ระดับแผนการแปลและการใช้งานปัจจุบันของคุณ',
+			'manageWalletsDesc' => 'เพิ่มและจัดระเบียบกระเป๋าสายฟ้าของคุณสำหรับการส่งและรับ bitcoin zaps บน NOSTR',
+			'defaultZapDesc' => 'ตั้งค่าจำนวน bitcoin เริ่มต้น (เป็น SAT) เมื่อส่ง Zaps ด่วนไปยังโพสต์',
+			'enableZapDesc' => 'Tap หนึ่งส่งจำนวนเริ่มต้นทันที ',
+			'externalWalletDesc' => 'ใช้แอพ Lightning Wallet ภายนอกแทนกระเป๋าเงินในตัวของ Yakihonne สำหรับการทำธุรกรรม ZAP ทั้งหมด',
+			'fontSizeDesc' => 'ปรับขนาดข้อความทั่วทั้งแอพเพื่อให้สามารถอ่านได้ดีขึ้น - ใช้ตัวเลื่อนเพื่อทำให้ข้อความมีขนาดใหญ่ขึ้นหรือเล็กลง',
+			'appThemeDesc' => 'สลับระหว่างโหมดแสงและมืดเพื่อปรับแต่งลักษณะที่ปรากฏของแอป',
+			'crashlyticsDesc' => 'การรายงานความผิดพลาดที่ไม่ระบุชื่อและการวิเคราะห์แอพเพื่อช่วยปรับปรุงประสิทธิภาพและแก้ไขข้อบกพร่อง ',
+			'showSuggDesc' => 'แสดงคำแนะนำเนื้อหาทั่วไปในฟีดของคุณ',
+			'showSuggPeople' => 'แสดงผู้ใช้ที่แนะนำให้ติดตามตามกิจกรรมของคุณ',
+			'showSuggContent' => 'แสดงโพสต์และบทความที่แนะนำในฟีดของคุณ',
+			'showSuggInterests' => 'แสดงหัวข้อและคำแนะนำที่น่าสนใจสำหรับการค้นพบ',
+			'striveToMake' => 'เรามุ่งมั่นที่จะทำให้ดีที่สุดจาก NOSTR สนับสนุนเราด้านล่างหรือส่งฟีดที่มีค่าของคุณมาให้เรา: ZAP, DMS, GitHub',
+			'errorAmber' => 'คุณได้ปฏิเสธหรือคุณได้เชื่อมต่อกับ Amber อยู่แล้ว',
+			'useOneRelay' => 'คุณควรเชื่อมต่อรีเลย์อย่างน้อยหนึ่งตัวไว้',
+			'automaticPurge' => 'ล้างแคชอัตโนมัติ',
+			'automaticPurgeDesc' => 'ล้างแคชของแอปอัตโนมัติเมื่อมีขนาดถึง 2GB เพื่อรักษาประสิทธิภาพและป้องกันการใช้พื้นที่เก็บข้อมูลมากเกินไป',
+			'customServices' => 'บริการกำหนดเอง',
+			'defaultServices' => 'บริการเริ่มต้น',
+			'addService' => 'เพิ่มบริการ',
+			'customServicesDesc' => 'บริการกำหนดเองที่คุณได้เพิ่มไว้',
+			'urlRequired' => 'ต้องการ URL',
+			'serviceAdded' => 'เพิ่มบริการเรียบร้อยแล้ว',
+			'showRawEvent' => 'แสดงเหตุการณ์ดิบ',
+			'rawEventData' => 'ข้อมูลเหตุการณ์ดิบ',
+			'copyRawEventData' => 'คัดลอกข้อมูลเหตุการณ์ดิบแล้ว! 👏',
+			'kind' => 'ประเภท',
+			'shortNote' => 'บันทึกสั้น',
+			'postedOnDate' => 'โพสต์เมื่อ',
+			'showMore' => '... แสดงเพิ่มเติม',
+			'accountDeleted' => 'บัญชีนี้ถูกลบแล้วและไม่สามารถเข้าถึงได้อีก',
+			'ok' => 'ตกลง',
+			'redeem' => 'แลกรหัส',
+			'redeemCode' => 'แลกรหัสโค้ด',
+			'redeemAndEarn' => 'แลกรหัสและรับรางวัล',
+			'redeemingFailed' => 'การแลกรหัสล้มเหลว',
+			'redeemInProgress' => 'กำลังแลกรหัส...',
+			'redeemCodeDesc' => 'กรอกรหัสเพื่อแลกรับ',
+			'missingCode' => 'ไม่มีรหัส',
+			'missingPubkey' => 'ไม่มีคีย์สาธารณะ',
+			'invalidPubkey' => 'คีย์สาธารณะไม่ถูกต้อง',
+			'missingLightningAddress' => 'ไม่มีที่อยู่ Lightning',
+			'codeNotFound' => 'ไม่พบรหัส',
+			'redeemCodeRequired' => 'ต้องระบุรหัสแลกรับ',
+			'redeemCodeInvalid' => 'รหัสแลกรับไม่ถูกต้อง',
+			'codeBeingRedeemed' => 'กำลังแลกรหัส หากไม่สำเร็จ โปรดลองอีกครั้งในภายหลัง',
+			'redeemCodeSuccess' => 'แลกรหัสสำเร็จแล้ว',
+			'redeemFailed' => 'ไม่สามารถแลกรหัสได้ โปรดลองใหม่ภายหลัง',
+			'codeAlreadyRedeemed' => 'รหัสถูกใช้แล้ว',
+			'satsEarned' => ({required Object amount}) => '+${amount} sats ได้รับแล้ว.',
+			'selectReceivingWallet' => 'เลือกกระเป๋าเงินที่รับ',
+			'redeemCodeMessage' => 'รับ sats ฟรีด้วยโค้ด YakiHonne — เพียงกรอกรหัสแล้วเพิ่มยอดคงเหลือทันที',
+			'scanCode' => 'สแกนรหัส',
+			'enterCode' => 'กรอกรหัส',
+			'errorSharingMedia' => 'เกิดข้อผิดพลาดขณะแชร์สื่อ',
+			'open' => 'เปิด',
+			'openUrl' => 'เปิด URL',
+			'openUrlDesc' => ({required Object url}) => 'คุณต้องการเปิด "${url}" หรือไม่?',
+			'openUrlPrompt' => 'ยืนยันการเปิด URL',
+			'openUrlPromptDesc' => 'การแจ้งเตือนความปลอดภัยที่แสดง URL ทั้งหมดก่อนเปิดในเบราว์เซอร์',
+			'whatsNew' => 'มีอะไรใหม่',
+			'appCustom' => 'ปรับแต่งแอป',
+			'poll' => 'การสำรวจ',
+			'pendingEvents' => 'เหตุการณ์ที่รอดำเนินการ',
+			'pendingEventsDesc' => 'เหตุการณ์ที่รอดำเนินการถูกสร้างขณะออฟไลน์หรือเมื่อการเชื่อมต่อไม่ดี จะถูกส่งโดยอัตโนมัติเมื่อการเชื่อมต่ออินเทอร์เน็ตกลับมา',
+			'singleColumnFeed' => 'ฟีดคอลัมน์เดียว',
+			'singleColumnFeedDesc' => 'แสดงฟีดหน้าแรกเป็นคอลัมน์เดียวกว้างเพื่อการอ่านที่ดีขึ้น',
+			'waitingPayment' => 'รอการชำระเงิน',
+			'copyId' => 'คัดลอก ID',
+			'idCopied' => 'คัดลอก ID แล้ว! 👏',
+			'republish' => 'เผยแพร่อีกครั้ง',
+			'useRelayRepublish' => 'คุณต้องเลือกอย่างน้อยหนึ่งรีเลย์เพื่อเผยแพร่ซ้ำ',
+			'republishSucces' => 'เผยแพร่เหตุการณ์เรียบร้อยแล้ว!',
+			'errorRepublishEvent' => 'เกิดข้อผิดพลาดขณะเผยแพร่เหตุการณ์',
+			'remoteSigner' => 'ผู้ลงนามระยะไกล',
+			'amber' => 'Amber',
+			'useUrlBunker' => 'ใช้ URL ด้านล่างเพื่อเชื่อมต่อกับบังกเกอร์ของคุณ',
+			'or' => 'หรือ',
+			'messagesDisabled' => 'ปิดการใช้งานข้อความ',
+			'messagesDisabledDesc' => 'คุณเชื่อมต่อกับผู้ลงนามระยะไกล ข้อความตรงอาจมีข้อมูลจำนวนมากและอาจใช้งานไม่ถูกต้อง เพื่อประสบการณ์ที่ดีที่สุด โปรดใช้ผู้ลงนามท้องถิ่นเพื่อเปิดใช้งานข้อความตรง',
+			'sharedOn' => ({required Object date}) => 'แชร์เมื่อ ${date}',
+			'shareAsImage' => 'แชร์เป็นรูปภาพ',
+			'viewOptions' => 'ตัวเลือกการแสดงผล',
+			'feedCustomization' => 'ปรับแต่งฟีด',
+			'defaultReaction' => 'ปฏิกิริยาที่ตั้งไว้ล่วงหน้า',
+			'defaultReactionDesc' => 'ตั้งค่าปฏิกิริยามาตรฐานเพื่อตอบสนองต่อโพสต์',
+			'oneTapReaction' => 'เปิดใช้งานปฏิกิริยาด้วยการแตะครั้งเดียว',
+			'oneTapReactionDesc' => 'แตะครั้งเดียวเพื่อปฏิกิริยาทันทีด้วยปฏิกิริยามาตรฐาน แตะสองครั้งเพื่อเปิดรายการอีโมจิให้เลือก เมื่อปิดการใช้งาน แตะสองครั้งจะส่งปฏิกิริยามาตรฐาน',
+			'sendingTo' => 'กำลังส่งถึง',
+			'shareEmptyUsers' => 'รายชื่อผู้ที่คุณติดตามและเพื่อนจะแสดงที่นี่เพื่อประสบการณ์การแชร์ที่รวดเร็วขึ้น',
+			'publishOnly' => 'เผยแพร่เฉพาะไปยัง',
+			'protectedEvent' => 'เหตุการณ์ที่ป้องกัน',
+			'protectedEventDesc' => 'เหตุการณ์ที่ป้องกันเป็นเหตุการณ์ที่ผู้เขียนเท่านั้นที่สามารถเผยแพร่ซ้ำได้ ซึ่งช่วยรักษาความแท้จริงของเนื้อหาและป้องกันไม่ให้ผู้อื่นคัดลอกหรือเผยแพร่ซ้ำ',
+			'browseRelay' => 'เรียกดูรีเลย์',
+			'addFavorite' => 'เพิ่มในรายการโปรด',
+			'removeFavorite' => 'นำออกจากรายการโปรด',
+			'collections' => 'คอลเลกชัน',
+			'online' => 'ออนไลน์',
+			'offline' => 'ออฟไลน์',
+			'network' => 'เครือข่าย',
+			'followedBy' => ({required Object number}) => 'ตามโดย ${number}',
+			'favoredBy' => ({required Object number}) => 'ชื่นชอบโดย ${number}',
+			'requiredAuthentication' => 'ต้องมีการรับรองตัวตน',
+			'relayOrbits' => 'วงโคจรรีเลย์',
+			'relayOrbitsDesc' => 'เรียกดูและสำรวจฟีดของรีเลย์',
+			'people' => 'ผู้คน',
+			'youNotConnected' => 'คุณยังไม่ได้เชื่อมต่อ',
+			'youNotConnectedDesc' => 'เข้าสู่ระบบบัญชีของคุณเพื่อเรียกดูรีเลย์ในเครือข่ายของคุณ',
+			'checkingRelayConnectivity' => 'กำลังตรวจสอบการเชื่อมต่อรีเลย์',
+			'unreachableRelay' => 'รีเลย์ไม่สามารถเข้าถึงได้',
+			'engageWithUsers' => 'มีส่วนร่วมเพื่อขยาย',
+			'engageWithUsersDesc' => 'การมีส่วนร่วมกับผู้ใช้มากขึ้นช่วยให้คุณค้นพบรีเลย์ใหม่ ๆ และขยายรายการรีเลย์ของคุณเพื่อประสบการณ์ที่เชื่อมต่อและสมบูรณ์ยิ่งขึ้น',
+			'loadingChatHistory' => 'กำลังโหลดประวัติการแชท...',
+			'contentActionsOrder' => 'ลำดับการกระทำของเนื้อหา',
+			'contentActionsOrderDesc' => 'จัดเรียงการโต้ตอบของโพสต์ใหม่ได้ง่ายตามลำดับที่คุณต้องการ',
+			'quotes' => 'คำคม',
+			'eventLoading' => 'กำลังโหลดเหตุการณ์...',
+			'loadMessages' => 'โหลดข้อความ',
+			'messagesNotLoaded' => 'ยังไม่ได้โหลดข้อความ',
+			'messagesNotLoadedDesc' => 'ยังไม่ได้โหลดข้อความเนื่องจากใช้ตัวลงนามระยะไกลภายในเครื่อง หากต้องการโหลด กรุณาคลิกปุ่มด้านล่าง',
+			'noteLoading' => 'กำลังโหลดบันทึก...',
+			'hideNonFollowedMedia' => 'ซ่อนสื่อจากผู้ที่ไม่ได้ติดตาม',
+			'hideNonFollowedMediaDesc' => 'ซ่อนรูปภาพและวิดีโอจากผู้ใช้ที่คุณไม่ได้ติดตามโดยอัตโนมัติจนกว่าคุณจะกดเพื่อดู',
+			'clickToView' => 'คลิกเพื่อดู',
+			'relayFeedListEmpty' => 'รายการฟีดรีเลย์ว่างเปล่า',
+			'relayFeedListEmptyDesc' => 'เพิ่มรีเลย์เพิ่มเติมในรายการของคุณเพื่อเพลิดเพลินกับฟีดที่ปรับแต่งได้',
+			'addRelay' => 'เพิ่มรีเลย์',
+			'hiddenContent' => 'เนื้อหาที่ซ่อนอยู่',
+			'hiddenContentDesc' => 'เราได้ซ่อนเนื้อหานี้ไว้เพราะคุณไม่ได้ติดตามบัญชีนี้',
+			'enabledActions' => 'การกระทำที่เปิดใช้งาน',
+			'enabledActionsDesc' => 'ไม่มีการกระทำที่เปิดใช้งาน',
+			_ => null,
+		};
 	}
 }
 

@@ -262,7 +262,7 @@ class UnFlashNewsContainer extends StatelessWidget {
                             )
                             .capitalizeFirst(),
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                              color: kMainColor,
+                              color: Theme.of(context).primaryColor,
                             ),
                       ),
                     ],
@@ -301,7 +301,7 @@ class UnFlashNewsContainer extends StatelessWidget {
                       kind: EventKind.TEXT_NOTE,
                       identifier: unNewFlashNews.flashNews.id,
                       eventPubkey: unNewFlashNews.flashNews.pubkey,
-                      image: '',
+                      model: unNewFlashNews.flashNews,
                     );
                   },
                   isScrollControlled: true,

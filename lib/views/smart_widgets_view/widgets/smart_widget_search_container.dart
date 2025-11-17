@@ -259,7 +259,7 @@ class SmartWidgetTypeBox extends StatelessWidget {
               ),
               secondChild: Container(
                 decoration: BoxDecoration(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(
                     kDefaultPadding / 4,
                   ),

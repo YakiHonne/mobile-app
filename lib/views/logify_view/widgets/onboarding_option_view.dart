@@ -161,8 +161,8 @@ class OnboardingOptionsView extends StatelessWidget {
               ),
               TextSpan(
                 text: context.t.eula.capitalizeFirst(),
-                style: const TextStyle(
-                  color: kMainColor,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w600,
                 ),
                 recognizer: TapGestureRecognizer()

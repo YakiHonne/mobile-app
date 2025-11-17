@@ -187,11 +187,11 @@ class InternalWalletsView extends HookWidget {
           height: animation.value,
           alignment: Alignment.center,
           child: isRefreshing.value
-              ? const SizedBox(
+              ?  SizedBox(
                   height: 20,
                   width: 20,
                   child: SpinKitFadingCircle(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     size: 20,
                   ),
                 )

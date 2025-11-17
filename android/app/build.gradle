@@ -71,6 +71,7 @@ android {
         setProperty("archivesBaseName", "$appName-$versionName-$versionCode")
     }
 
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']

@@ -613,7 +613,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                     .textTheme
                                     .titleSmall!
                                     .copyWith(
-                                      color: kMainColor,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                               ),
                               if (nostrRepository
@@ -959,6 +959,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
         refreshController.refreshCompleted();
       },
       child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         slivers: widgets,
       ),
     );

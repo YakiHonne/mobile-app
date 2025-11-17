@@ -25,7 +25,7 @@ class GlassButton extends HookWidget {
           return CustomPaint(
             painter: _BorderPainter(
               rotation: controller.value * 6.28319,
-              color: kMainColor,
+              color: Theme.of(context).primaryColor,
               bgColor: Theme.of(context).scaffoldBackgroundColor,
               context: context,
             ),
@@ -44,7 +44,8 @@ class GlassButton extends HookWidget {
                   shadows: [
                     Shadow(
                       blurRadius: 8,
-                      color: kMainColor.withValues(alpha: 0.8),
+                      color:
+                          Theme.of(context).primaryColor.withValues(alpha: 0.8),
                     ),
                   ],
                 ),

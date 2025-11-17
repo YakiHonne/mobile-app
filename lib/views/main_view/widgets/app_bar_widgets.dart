@@ -206,7 +206,7 @@ class InboxTypes extends HookWidget {
                         counts[i] == 0 ? '' : '${counts[i]}',
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: kMainColor,
+                              color: Theme.of(context).primaryColor,
                             ),
                         textAlign: TextAlign.center,
                         maxLines: 1,
@@ -261,7 +261,7 @@ class InboxTypes extends HookWidget {
                   ' ${counts[state.index] == 0 ? '' : '(${counts[state.index]})'}',
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -434,11 +434,11 @@ class FilterGlobalButton extends StatelessWidget {
           children: [
             _customIcnButton(state, context),
             if (filter != null)
-              const Positioned(
+              Positioned(
                 right: 1,
                 top: 3,
                 child: DotContainer(
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   size: 8,
                   isNotMarging: true,
                 ),

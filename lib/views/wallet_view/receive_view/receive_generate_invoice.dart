@@ -231,9 +231,9 @@ class ReceiveInvoiceQrCode extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: kDefaultPadding / 2,
             children: [
-              const SpinKitCircle(
+              SpinKitCircle(
                 size: 20,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
               Text(
                 context.t.waitingPayment.capitalizeFirst(),
@@ -277,7 +277,7 @@ class ReceiveInvoiceQrCode extends HookWidget {
           style: Theme.of(context).textTheme.displaySmall!.copyWith(
                 fontWeight: FontWeight.w700,
                 height: 1,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
         Text(
@@ -388,9 +388,9 @@ class ReceiveGenInvoice extends HookWidget {
                           fontWeight: FontWeight.w600,
                         ),
                   )
-                : const SpinKitCircle(
-                    key: ValueKey(2),
-                    color: kWhite,
+                : SpinKitCircle(
+                    key: const ValueKey(2),
+                    color: Theme.of(context).primaryColorDark,
                     size: 20,
                   ),
           ),
@@ -552,7 +552,7 @@ class ReceiveGenInvoice extends HookWidget {
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontWeight: FontWeight.w600,
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
           ),
       decoration: InputDecoration(
         hintText: '0',

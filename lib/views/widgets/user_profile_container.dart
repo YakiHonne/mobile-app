@@ -84,7 +84,7 @@ class UserProfileContainer extends HookWidget {
                         ? Theme.of(context).highlightColor
                         : isFollowing
                             ? Theme.of(context).cardColor
-                            : kMainColor,
+                            : Theme.of(context).primaryColor,
                   ),
                   child: Text(
                     isPending
@@ -176,8 +176,8 @@ class UserProfileContainer extends HookWidget {
             FeatureIcons.zapAmount,
             width: 15,
             height: 15,
-            colorFilter: const ColorFilter.mode(
-              kMainColor,
+            colorFilter: ColorFilter.mode(
+              Theme.of(nostrRepository.currentContext()).primaryColor,
               BlendMode.srcIn,
             ),
           ),
@@ -188,7 +188,7 @@ class UserProfileContainer extends HookWidget {
             child: Text(
               zaps.numeral(digits: 0),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w900,
                   ),
             ),
@@ -297,7 +297,7 @@ class UserNoteStatContainer extends HookWidget {
               ? Theme.of(context).highlightColor
               : isFollowing
                   ? Theme.of(context).cardColor
-                  : kMainColor,
+                  : Theme.of(context).primaryColor,
         ),
         child: Text(
           isPending
@@ -376,8 +376,8 @@ class ReactionIcon extends StatelessWidget {
       icon,
       width: 20,
       height: 20,
-      colorFilter: const ColorFilter.mode(
-        kMainColor,
+      colorFilter: ColorFilter.mode(
+        Theme.of(nostrRepository.currentContext()).primaryColor,
         BlendMode.srcIn,
       ),
     );
@@ -424,8 +424,8 @@ class ReactionIcon extends StatelessWidget {
               icon,
               width: 20,
               height: 20,
-              colorFilter: const ColorFilter.mode(
-                kMainColor,
+              colorFilter: ColorFilter.mode(
+                Theme.of(nostrRepository.currentContext()).primaryColor,
                 BlendMode.srcIn,
               ),
             );

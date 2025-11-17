@@ -529,7 +529,7 @@ class XpContainer extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.w800,
                     height: 1,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
             const Spacer(),
@@ -581,7 +581,7 @@ class XpContainer extends StatelessWidget {
               context.t
                   .levelNumber(number: (state.currentLevel + 1).toString()),
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
             ),

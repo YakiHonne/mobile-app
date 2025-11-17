@@ -8,7 +8,6 @@ class AddBookmarkState extends Equatable {
   final String eventId;
   final String eventPubkey;
   final int kind;
-  final String image;
 
   const AddBookmarkState({
     required this.bookmarks,
@@ -17,7 +16,6 @@ class AddBookmarkState extends Equatable {
     required this.eventId,
     required this.eventPubkey,
     required this.kind,
-    required this.image,
   });
 
   @override
@@ -28,7 +26,6 @@ class AddBookmarkState extends Equatable {
         loadingBookmarksList,
         eventId,
         eventPubkey,
-        image,
       ];
 
   AddBookmarkState copyWith({
@@ -38,7 +35,6 @@ class AddBookmarkState extends Equatable {
     String? eventId,
     String? eventPubkey,
     int? kind,
-    String? image,
   }) {
     return AddBookmarkState(
       bookmarks: bookmarks ?? this.bookmarks,
@@ -47,7 +43,6 @@ class AddBookmarkState extends Equatable {
       eventId: eventId ?? this.eventId,
       eventPubkey: eventPubkey ?? this.eventPubkey,
       kind: kind ?? this.kind,
-      image: image ?? this.image,
     );
   }
 }

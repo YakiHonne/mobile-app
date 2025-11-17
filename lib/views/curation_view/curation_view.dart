@@ -231,7 +231,7 @@ class CurationContentView extends StatelessWidget {
         return VideoCommonContainer(
           isBookmarked: false,
           video: video,
-          isMuted: nostrRepository.mutes.contains(video.pubkey),
+          isMuted: isUserMuted(video.pubkey),
           isFollowing: contactListCubit.contacts.contains(video.pubkey),
           onTap: () {
             Navigator.pushNamed(
@@ -263,7 +263,7 @@ class CurationContentView extends StatelessWidget {
         return VideoCommonContainer(
           isBookmarked: false,
           video: video,
-          isMuted: nostrRepository.mutes.contains(video.pubkey),
+          isMuted: isUserMuted(video.pubkey),
           isFollowing: contactListCubit.contacts.contains(video.pubkey),
           onTap: () {
             Navigator.pushNamed(
@@ -421,7 +421,7 @@ class CurationContentView extends StatelessWidget {
                 return Text(
                   curation.client.isEmpty ? 'N/A' : curation.client,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                 );
               } else {
@@ -433,7 +433,7 @@ class CurationContentView extends StatelessWidget {
                       ? 'N/A'
                       : appApplication.name.trim().capitalize(),
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                 );
               }
@@ -592,7 +592,7 @@ class CurationHeader extends HookWidget {
                       ? Theme.of(context).highlightColor
                       : state.isFollowingAuthor
                           ? Theme.of(context).cardColor
-                          : kMainColor,
+                          : Theme.of(context).primaryColor,
                 ),
                 child: Text(
                   state.isFollowingAuthor
@@ -633,7 +633,7 @@ class CurationHeader extends HookWidget {
                 child: Text(
                   metadata.getName(),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -650,8 +650,8 @@ class CurationHeader extends HookWidget {
                       FeatureIcons.verified,
                       width: 15,
                       height: 15,
-                      colorFilter: const ColorFilter.mode(
-                        kMainColor,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).primaryColor,
                         BlendMode.srcIn,
                       ),
                     ),

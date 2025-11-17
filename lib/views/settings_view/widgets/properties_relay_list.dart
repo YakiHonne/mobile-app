@@ -14,9 +14,9 @@ import '../../widgets/empty_list.dart';
 import 'relay_info_view.dart';
 
 class RelaysList extends HookWidget {
-  const RelaysList({required this.isPrivateMessages, super.key});
+  const RelaysList({required this.index, super.key});
 
-  final bool isPrivateMessages;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +84,8 @@ class RelaysList extends HookWidget {
   SliverList _relaysList(
       UpdateRelaysState state, ValueNotifier<String> searchController) {
     return SliverList.builder(
-      itemBuilder: (context, index) {
-        final relay = state.onlineRelays[index];
+      itemBuilder: (context, i) {
+        final relay = state.onlineRelays[i];
         final isDisplayed = (searchController.value.trim().isNotEmpty &&
                 !relay.contains(searchController.value.trim())) ||
             constantRelays.contains(relay);
@@ -93,9 +93,12 @@ class RelaysList extends HookWidget {
         if (isDisplayed) {
           return const SizedBox.shrink();
         } else {
-          final isAvailable = isPrivateMessages
-              ? state.dmRelays.contains(relay)
-              : state.relays.keys.contains(relay);
+          final isAvailable = index == 0
+              ? state.relays.keys.contains(relay) ||
+                  state.pendingRelays.keys.contains(relay)
+              : index == 1
+                  ? state.dmRelays.contains(relay)
+                  : state.searchRelays.contains(relay);
 
           return Padding(
             padding: const EdgeInsets.symmetric(
@@ -107,8 +110,13 @@ class RelaysList extends HookWidget {
               isAvailable: isAvailable,
               canRemove: false,
               setAction: () {
-                if (isPrivateMessages) {
+                if (index == 1) {
                   context.read<UpdateRelaysCubit>().updateDmRelay(
+                        relay: relay,
+                        isAdding: !isAvailable,
+                      );
+                } else if (index == 2) {
+                  context.read<UpdateRelaysCubit>().updateSearchRelay(
                         relay: relay,
                         isAdding: !isAvailable,
                       );
@@ -148,7 +156,7 @@ class AvailableRelaysList extends HookWidget {
     final activeRelays = useState(onlineRelays);
 
     // Use useFuture instead of FutureBuilder
-    final relaysFuture = useMemoized(() => nostrRepository.getOnlineRelays());
+    final relaysFuture = useMemoized(() => nostrRepository.fetchRelays());
     final relaysSnapshot = useFuture(relaysFuture);
 
     return Container(
@@ -400,6 +408,8 @@ class RelayListTile extends HookWidget {
             children: [
               Text(
                 relay.split('wss://').last,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 relay,

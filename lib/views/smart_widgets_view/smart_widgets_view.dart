@@ -135,6 +135,7 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
   ListView _itemsList(SmartWidgetsState state) {
     return ListView.separated(
       itemCount: state.widgets.length,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       separatorBuilder: (context, index) => const SizedBox(
         height: kDefaultPadding / 2,
@@ -153,6 +154,7 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
   MasonryGridView _itemsGrid(SmartWidgetsState state) {
     return MasonryGridView.count(
       crossAxisCount: 2,
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: state.widgets.length,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,

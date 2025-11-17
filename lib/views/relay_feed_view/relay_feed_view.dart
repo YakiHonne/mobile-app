@@ -42,7 +42,7 @@ class RelayFeedView extends StatelessWidget {
             ? Builder(
                 builder: (context) {
                   return FloatingActionButton(
-                    backgroundColor: kMainColor,
+                    backgroundColor: Theme.of(context).primaryColor,
                     shape: const CircleBorder(),
                     heroTag: 'content_creation',
                     child: SvgPicture.asset(
@@ -97,8 +97,9 @@ class RelayFeedView extends StatelessWidget {
           backgroundColor: Theme.of(context).cardColor,
           icon:
               isAvailable ? FeatureIcons.favoriteFilled : FeatureIcons.favorite,
-          iconColor:
-              isAvailable ? kMainColor : Theme.of(context).primaryColorDark,
+          iconColor: isAvailable
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).primaryColorDark,
           size: 18,
           vd: -1,
         );

@@ -19,18 +19,18 @@ class SmartWidgetsCubit extends Cubit<SmartWidgetsState> {
           SmartWidgetsState(
             isLoading: true,
             loadingState: UpdatingState.success,
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             widgets: const [],
           ),
         ) {
     getSmartWidgets(isAdd: false, isSelf: false);
 
     muteListSubscription = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         if (!isClosed) {
           emit(
             state.copyWith(
-              mutes: mutes.toList(),
+              mutes: mm.usersMutes.toList(),
             ),
           );
         }

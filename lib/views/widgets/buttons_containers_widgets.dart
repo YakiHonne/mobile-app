@@ -110,12 +110,12 @@ class NewBorderedIconButton extends StatelessWidget {
                 ),
           style: IconButton.styleFrom(
             backgroundColor: buttonStatus == ButtonStatus.active
-                ? kMainColor
+                ? Theme.of(context).primaryColor
                 : Theme.of(context).scaffoldBackgroundColor,
             side: BorderSide(
               color: buttonStatus == ButtonStatus.loading ||
                       buttonStatus == ButtonStatus.active
-                  ? kMainColor
+                  ? Theme.of(context).primaryColor
                   : Theme.of(context).dividerColor,
             ),
           ),
@@ -142,7 +142,7 @@ class StatusButton extends StatelessWidget {
     return TextButton(
       onPressed: !isDisabled ? onClicked : null,
       style: TextButton.styleFrom(
-        backgroundColor: isDisabled ? kDimGrey : kMainColor,
+        backgroundColor: isDisabled ? kDimGrey : Theme.of(context).primaryColor,
         visualDensity: VisualDensity.comfortable,
       ),
       child: Text(

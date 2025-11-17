@@ -8,8 +8,11 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_cubit.dart';
 import '../../../../models/bookmark_list_model.dart';
+import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/single_image_selector.dart';
 
 class AddBookmarksListView extends HookWidget {
   AddBookmarksListView({
@@ -42,7 +45,7 @@ class AddBookmarksListView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
-
+    final imageUrl = useState(bookmarkListModel?.image ?? '');
     useMemoized(() {
       if (bookmarkListModel != null) {
         bookmarksCubit.setText(text: bookmarkListModel!.title, isTitle: true);
@@ -108,6 +111,50 @@ class AddBookmarksListView extends HookWidget {
                 const SizedBox(
                   height: kDefaultPadding / 4,
                 ),
+                Builder(
+                  builder: (context) {
+                    void addImage() {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) {
+                          return SingleImageSelector(
+                            onUrlProvided: (url) {
+                              YNavigator.pop(context);
+                              imageUrl.value = url;
+                            },
+                          );
+                        },
+                        backgroundColor: kTransparent,
+                        useRootNavigator: true,
+                        elevation: 0,
+                        useSafeArea: true,
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        _imageThumbnail(context, imageUrl),
+                        if (imageUrl.value.isEmpty)
+                          GestureDetector(
+                            onTap: addImage,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Text(
+                                context.t.uploadImage.capitalizeFirst(),
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                            ),
+                          )
+                        else
+                          _actionsRow(addImage, context, imageUrl)
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: TextButton(
@@ -115,6 +162,7 @@ class AddBookmarksListView extends HookWidget {
                       context.read<DashboardBookmarksCubit>().addBookmarkList(
                             context: context,
                             bookmarkListModel: bookmarkListModel,
+                            image: imageUrl.value,
                             onSuccess: () {
                               Navigator.pop(context);
                             },
@@ -131,6 +179,97 @@ class AddBookmarksListView extends HookWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  IntrinsicHeight _actionsRow(
+    Function() addImage,
+    BuildContext context,
+    ValueNotifier<String> url,
+  ) {
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: addImage,
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  context.t.edit.capitalizeFirst(),
+                  style: Theme.of(context).textTheme.labelLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          VerticalDivider(
+            color: Theme.of(context).highlightColor,
+            thickness: 0.5,
+            indent: 5,
+            endIndent: 5,
+            width: 0,
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                url.value = '';
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  context.t.delete.capitalizeFirst(),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        color: kRed,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  AspectRatio _imageThumbnail(BuildContext context, ValueNotifier<String> url) {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(
+            kDefaultPadding / 1.5,
+          ),
+          border: Border.all(
+            width: 0.5,
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
+        child: url.value.isEmpty
+            ? Center(
+                child: SvgPicture.asset(
+                  FeatureIcons.imageAttachment,
+                  width: 25,
+                  height: 25,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              )
+            : LayoutBuilder(
+                builder: (context, constraints) => CommonThumbnail(
+                  image: url.value,
+                  placeholder:
+                      getRandomPlaceholder(input: url.value, isPfp: false),
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  isRound: true,
+                  radius: kDefaultPadding / 1.5,
+                ),
+              ),
       ),
     );
   }

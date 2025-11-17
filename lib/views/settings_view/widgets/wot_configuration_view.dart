@@ -137,7 +137,7 @@ class WotConfigurationView extends StatelessWidget {
               );
             }
           },
-          activeColor: kMainColor,
+          activeColor: Theme.of(context).primaryColor,
           checkColor: kBlack,
         ),
       ],
@@ -161,7 +161,7 @@ class WotConfigurationView extends StatelessWidget {
         Checkbox(
           value: status,
           onChanged: onChanged,
-          activeColor: kMainColor,
+          activeColor: Theme.of(context).primaryColor,
           checkColor: kBlack,
         ),
       ],

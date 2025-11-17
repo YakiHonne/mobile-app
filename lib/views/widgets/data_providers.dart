@@ -91,7 +91,7 @@ class MutedUserProvider extends StatelessWidget {
     return StreamBuilder(
       stream: nostrRepository.mutesStream,
       builder: (context, snapshot) =>
-          child.call(snapshot.data?.contains(pubkey) ?? false),
+          child.call(snapshot.data?.usersMutes.contains(pubkey) ?? false),
     );
   }
 }

@@ -298,7 +298,7 @@ class AppCacheBox extends HookWidget {
             child: Checkbox(
               value: checkedVal,
               visualDensity: VisualDensity.compact,
-              activeColor: kMainColor,
+              activeColor: Theme.of(context).primaryColor,
               checkColor: kWhite,
               onChanged: (value) => onToggle(value ?? false),
             ),

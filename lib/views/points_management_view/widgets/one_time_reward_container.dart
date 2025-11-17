@@ -54,7 +54,7 @@ class OneTimeRewardContainer extends StatelessWidget {
                 '$count',
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       fontWeight: FontWeight.w800,
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                     ),
               ),
               Text(

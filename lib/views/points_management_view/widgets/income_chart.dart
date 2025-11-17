@@ -82,7 +82,7 @@ class IncomeChartState extends State<IncomeChart> {
       barRods: [
         BarChartRodData(
           toY: isTouched ? y + (highestNumber() / 20) : y,
-          color: isTouched ? kMainColor : kRed,
+          color: isTouched ? Theme.of(context).primaryColor : kRed,
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
@@ -155,7 +155,7 @@ class IncomeChartState extends State<IncomeChart> {
                     TextSpan(
                       text: '${chartItem.action?.allTimePoints ?? 0} ',
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                            color: kMainColor,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w500,
                           ),
                     ),

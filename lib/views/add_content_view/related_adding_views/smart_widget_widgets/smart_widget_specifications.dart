@@ -948,7 +948,7 @@ class SMEditableTextButton extends StatelessWidget {
       return Stack(
         children: [
           DottedBorder(
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
             borderType: BorderType.rRect,
             radius: const Radius.circular(kDefaultPadding / 2),
             padding: const EdgeInsets.all(kDefaultPadding / 6),

@@ -254,7 +254,7 @@ class WriteZapPollView extends HookWidget {
         Text(
           dateFormat4.format(closedDate.value!),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
         const SizedBox(
@@ -446,7 +446,7 @@ class WriteZapPollView extends HookWidget {
                   mentionTextStyle: Theme.of(context)
                       .textTheme
                       .bodyMedium!
-                      .copyWith(color: kMainColor),
+                      .copyWith(color: Theme.of(context).primaryColor),
                 ),
                 style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
@@ -538,7 +538,7 @@ class WriteZapPollView extends HookWidget {
                 size: 17,
                 vd: 0,
                 iconColor: kWhite,
-                backgroundColor: kMainColor,
+                backgroundColor: Theme.of(context).primaryColor,
               );
             },
           ),
@@ -643,9 +643,7 @@ class PublishingMediaContainer extends HookWidget {
             .where((Metadata element) => element.pubkey == user.pubkey)
             .isNotEmpty;
 
-        if (!userExists &&
-            !nostrRepository.mutes.contains(user.pubkey) &&
-            user.nip05.isNotEmpty) {
+        if (!userExists && !isUserMuted(user.pubkey) && user.nip05.isNotEmpty) {
           newList.add(user);
           metadataCubit.saveMetadata(user);
         }

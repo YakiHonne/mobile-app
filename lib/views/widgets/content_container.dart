@@ -331,7 +331,7 @@ class ContentContainer extends HookWidget {
           style: Theme.of(context)
               .textTheme
               .labelSmall!
-              .copyWith(color: kMainColor),
+              .copyWith(color: Theme.of(context).primaryColor),
         ),
       ],
     );

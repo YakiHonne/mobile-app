@@ -258,7 +258,7 @@ class ArticleView extends HookWidget {
               borderRadius: BorderRadius.circular(
                 kDefaultPadding / 2,
               ),
-              border: Border.all(color: kMainColor),
+              border: Border.all(color: Theme.of(context).primaryColor),
               boxShadow: [
                 BoxShadow(
                   blurRadius: 5,
@@ -454,7 +454,7 @@ class ArticleView extends HookWidget {
                 return Text(
                   article.client.isEmpty ? 'N/A' : article.client,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                 );
               } else {
@@ -466,7 +466,7 @@ class ArticleView extends HookWidget {
                       ? 'N/A'
                       : appApplication.name.trim().capitalize(),
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                 );
               }

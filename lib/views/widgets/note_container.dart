@@ -168,6 +168,10 @@ class ProfileInfoHeader extends StatelessWidget {
                 FeatureIcons.verified,
                 width: 15,
                 height: 15,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColor,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
             DotContainer(

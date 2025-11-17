@@ -20,6 +20,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.enableShare = false,
     this.enableShareImage = false,
     this.enableMute = false,
+    this.enableMuteEvent = false,
     this.enableBookmark = false,
     this.enableShowRawEvent = false,
     this.enablePostInNote = false,
@@ -35,6 +36,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.enableZap = false,
     this.enableRepublish = false,
     this.muteStatus = false,
+    this.muteEventStatus = false,
     this.bookmarkStatus = false,
     this.secureMessagesStatus = false,
     this.onZap,
@@ -53,6 +55,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.onShowRawEvent,
     this.onBookmark,
     this.onMute,
+    this.onMuteEvent,
     this.onShare,
     this.onCopyNaddr,
     this.onCopyNpub,
@@ -82,6 +85,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final bool enableShare;
   final bool enableShareImage;
   final bool enableMute;
+  final bool enableMuteEvent;
   final bool enableShowRawEvent;
   final bool enableEdit;
   final bool enableClone;
@@ -96,6 +100,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Function()? onShowUserRelays;
   final Function()? onPostInNote;
   final Function()? onMute;
+  final Function()? onMuteEvent;
   final Function()? onShare;
   final Function()? onShareImage;
   final Function()? onCopyNaddr;
@@ -116,6 +121,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Function(String, bool)? onMuteActionSuccess;
 
   final bool muteStatus;
+  final bool muteEventStatus;
   final bool bookmarkStatus;
   final bool secureMessagesStatus;
   final bool? isCloning;
@@ -332,6 +338,25 @@ class PullDownGlobalButton extends StatelessWidget {
             ),
           if (canSign() && (enableMute || enableDelete))
             const PullDownMenuDivider.large(),
+          if (canSign() && enableMuteEvent)
+            _pullDownItem(
+              context: context,
+              title: muteEventStatus
+                  ? context.t.unmuteThread.capitalizeFirst()
+                  : context.t.muteThread.capitalizeFirst(),
+              icon: !muteEventStatus ? FeatureIcons.mute : FeatureIcons.unmute,
+              iconColor:
+                  !muteEventStatus ? kRed : Theme.of(context).primaryColorDark,
+              isDestructive: true,
+              onTap: () => onMuteEvent != null
+                  ? onMuteEvent!.call()
+                  : PdmCommonActions.muteThread(
+                      model.id,
+                      muteEventStatus,
+                      context,
+                      onMuteActionSuccess: onMuteActionSuccess,
+                    ),
+            ),
           if (canSign() && enableMute)
             _pullDownItem(
               context: context,

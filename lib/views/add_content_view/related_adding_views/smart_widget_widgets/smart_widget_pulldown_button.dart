@@ -155,7 +155,7 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
           ];
         },
         buttonBuilder: (context, showMenu) => SmallRectangularButton(
-          backgroundColor: kMainColor.withValues(alpha: 0.8),
+          backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.8),
           onClick: showMenu,
           icon: FeatureIcons.more,
         ),

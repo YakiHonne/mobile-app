@@ -114,7 +114,7 @@ class WallatBalanceContainer extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(size / 6),
           ),
           height: size,
@@ -125,11 +125,17 @@ class WallatBalanceContainer extends StatelessWidget {
               const Icon(
                 Icons.arrow_upward_rounded,
                 size: 45,
+                color: kWhite,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
               ),
-              Text(context.t.send.capitalizeFirst()),
+              Text(
+                context.t.send.capitalizeFirst(),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: kWhite,
+                    ),
+              ),
             ],
           ),
         ),
@@ -209,7 +215,7 @@ class WallatBalanceContainer extends StatelessWidget {
               style: Theme.of(context).textTheme.displayLarge!.copyWith(
                     fontWeight: FontWeight.w700,
                     height: 1,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
           ),
@@ -249,7 +255,7 @@ class WallatBalanceContainer extends StatelessWidget {
                 spacing: kDefaultPadding / 4,
                 children: [
                   Text(
-                    '\$${state.isWalletHidden ? '*****' : state.balanceInFiat == -1 ? 'N/A' : state.balanceInFiat.toStringAsFixed(2)}',
+                    '${currenciesSymbols[state.activeCurrency]}${state.isWalletHidden ? '*****' : state.balanceInFiat == -1 ? 'N/A' : state.balanceInFiat.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(

@@ -37,6 +37,10 @@ class PropertyAppearance extends HookWidget {
           const SizedBox(
             height: kDefaultPadding,
           ),
+          const AppPrimaryColorBox(),
+          const SizedBox(
+            height: kDefaultPadding,
+          ),
           _options(context, textScaleFactor),
         ],
       ),
@@ -77,8 +81,8 @@ class PropertyAppearance extends HookWidget {
         min: 0.8,
         max: 1.25,
         divisions: 8,
-        thumbColor: kMainColor,
-        activeColor: kMainColor,
+        thumbColor: Theme.of(nostrRepository.currentContext()).primaryColor,
+        activeColor: Theme.of(nostrRepository.currentContext()).primaryColor,
         onChanged: (double value) {
           textScaleFactor.value = value;
           themeCubit.setTextScaleFactor(value);
@@ -141,7 +145,8 @@ class AppThemeModeBox extends StatelessWidget {
                   final isSelected = state.mode == mode;
                   final isDark = themeCubit.checkThemeDarkness(mode);
 
-                  return _modeItem(mode, isSelected, context, isDark);
+                  return _modeItem(
+                      mode, state.primaryColor, isSelected, context, isDark);
                 },
                 itemCount: modes.length,
               ),
@@ -153,10 +158,15 @@ class AppThemeModeBox extends StatelessWidget {
   }
 
   GestureDetector _modeItem(
-      AppThemeMode mode, bool isSelected, BuildContext context, bool isDark) {
+    AppThemeMode mode,
+    Color primaryColor,
+    bool isSelected,
+    BuildContext context,
+    bool isDark,
+  ) {
     return GestureDetector(
       onTap: () {
-        themeCubit.setTheme(mode: mode);
+        themeCubit.setTheme(mode: mode, primaryColor: primaryColor);
       },
       behavior: HitTestBehavior.translucent,
       child: Stack(
@@ -169,7 +179,7 @@ class AppThemeModeBox extends StatelessWidget {
               ),
               color: getModeColor(mode),
               border: isSelected
-                  ? Border.all(color: kMainColor)
+                  ? Border.all(color: Theme.of(context).primaryColor)
                   : Border.all(
                       color: Theme.of(context).dividerColor,
                       width: 0.5,
@@ -209,6 +219,7 @@ class AppThemeModeBox extends StatelessWidget {
                   FeatureIcons.verified,
                   width: 20,
                   height: 20,
+                  colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -232,6 +243,108 @@ class AppThemeModeBox extends StatelessWidget {
     }
 
     return color;
+  }
+}
+
+class AppPrimaryColorBox extends StatelessWidget {
+  const AppPrimaryColorBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            TitleDescriptionComponent(
+              title: context.t.primaryColor.capitalizeFirst(),
+              description: context.t.primaryColorDesc,
+            ),
+            const SizedBox(
+              height: kDefaultPadding / 1.5,
+            ),
+            MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6,
+                  crossAxisSpacing: kDefaultPadding / 8,
+                  mainAxisSpacing: kDefaultPadding / 8,
+                  mainAxisExtent: 55,
+                ),
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  final color = mainColorsList[index];
+                  final isSelected = state.primaryColor == color;
+
+                  return _colorItem(state.mode, color, isSelected, context);
+                },
+                itemCount: mainColorsList.length,
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  GestureDetector _colorItem(
+    AppThemeMode mode,
+    Color primaryColor,
+    bool isSelected,
+    BuildContext context,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        themeCubit.setTheme(mode: mode, primaryColor: primaryColor);
+      },
+      behavior: HitTestBehavior.translucent,
+      child: LayoutBuilder(
+        builder: (context, constraints) => Stack(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: constraints.maxWidth,
+              width: constraints.maxWidth,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  kDefaultPadding / 2,
+                ),
+                color: Theme.of(context).cardColor,
+                border: isSelected
+                    ? Border.all(color: Theme.of(context).primaryColor)
+                    : Border.all(
+                        color: Theme.of(context).dividerColor,
+                        width: 0.5,
+                      ),
+              ),
+              alignment: Alignment.center,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(300),
+                ),
+                width: constraints.maxWidth / 4,
+                height: constraints.maxWidth / 4,
+              ),
+            ),
+            // if (isSelected)
+            //   Positioned(
+            //     child: SvgPicture.asset(
+            //       FeatureIcons.verified,
+            //       width: 20,
+            //       height: 20,
+            //       colorFilter: const ColorFilter.mode(
+            //         kWhite,
+            //         BlendMode.srcIn,
+            //       ),
+            //     ),
+            //   ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -296,7 +409,7 @@ class SettingsOptionRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(
                     kDefaultPadding * 2,
                   ),
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),

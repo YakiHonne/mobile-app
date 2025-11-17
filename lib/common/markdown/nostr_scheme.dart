@@ -367,7 +367,7 @@ class NaddrArticleContainer extends HookWidget {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    color: kMainColor,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                             ),
                           ),
@@ -527,7 +527,7 @@ class NaddrArticleContainer extends HookWidget {
                                         .labelSmall!
                                         .copyWith(
                                           fontWeight: FontWeight.w700,
-                                          color: kMainColor,
+                                          color: Theme.of(context).primaryColor,
                                         ),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,

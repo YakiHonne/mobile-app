@@ -80,8 +80,8 @@ class _ProfileRepliesState extends State<ProfileReplies> {
                 controller: refreshController,
                 enablePullDown: false,
                 enablePullUp: true,
-                header: const MaterialClassicHeader(
-                  color: kMainColor,
+                header: MaterialClassicHeader(
+                  color: Theme.of(context).primaryColor,
                 ),
                 footer: const RefresherClassicFooter(),
                 onLoading: () =>

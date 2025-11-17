@@ -153,7 +153,7 @@ class CustomToggleButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(
                     kDefaultPadding * 2,
                   ),
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -212,8 +212,8 @@ class FollowList extends StatelessWidget {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SpinKitCircle(
-                color: kMainColor,
+              SpinKitCircle(
+                color: Theme.of(context).primaryColor,
                 size: 25,
               ),
               const SizedBox(

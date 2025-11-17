@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pasteboard/pasteboard.dart';
@@ -135,6 +138,101 @@ class MediaHandler {
       cancel.call();
       BotToastUtils.showError(t.errorUploadingMedia);
       return [];
+    }
+  }
+
+  static Future<void> saveNetworkImage(String url) async {
+    final response = await Dio().get(
+      url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    final ctx = nostrRepository.mainCubit.context;
+    dynamic res;
+
+    // Detect GIF based on extension or content type
+    final isGif = url.toLowerCase().endsWith('.gif') ||
+        (response.headers.value('content-type')?.contains('gif') ?? false);
+
+    if (isGif) {
+      // 🔹 Save GIF as a file (keeps animation)
+      final tempDir = await getTemporaryDirectory();
+      final filePath =
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.gif';
+      final file = File(filePath);
+      await file.writeAsBytes(response.data);
+
+      // 🔹 This saves the file *into the Gallery*
+      res = await ImageGallerySaverPlus.saveFile(file.path,
+          isReturnPathOfIOS: true);
+    } else {
+      // 🔹 Normal static image (JPG/PNG)
+      res = await ImageGallerySaverPlus.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 60,
+        isReturnImagePathOfIOS: true,
+      );
+    }
+
+    if (ctx.mounted) {
+      if (res != null && res is Map && res['isSuccess']) {
+        BotToastUtils.showSuccess(
+          ctx.t.saveImageGallery.capitalizeFirst(),
+        );
+      } else {
+        BotToastUtils.showSuccess(
+          ctx.t.errorSavingImage.capitalizeFirst(),
+        );
+      }
+    }
+  }
+
+  static Future<void> saveNetworkVideo(
+    String url, {
+    Function(double)? onProgress,
+    bool showSuccessMessage = true,
+  }) async {
+    final ctx = nostrRepository.mainCubit.context;
+
+    try {
+      final uri = Uri.parse(url);
+      final pathSegments = uri.pathSegments;
+      final fileName = pathSegments.isNotEmpty ? pathSegments.last : 'video';
+      final fileExtension =
+          fileName.contains('.') ? '.${fileName.split('.').last}' : '.mp4';
+
+      final appDocDir = await getTemporaryDirectory();
+      final savePath =
+          '${appDocDir.path}/${DateTime.now().millisecondsSinceEpoch}${fileExtension.toLowerCase()}';
+
+      await Dio().download(
+        url,
+        savePath,
+        onReceiveProgress: (count, total) {
+          onProgress?.call(count / total * 100);
+        },
+        // options: Options(responseType: ResponseType.bytes),
+      );
+
+      final res = await ImageGallerySaverPlus.saveFile(savePath);
+
+      if (ctx.mounted) {
+        if (res != null && res is Map && res['isSuccess']) {
+          if (showSuccessMessage) {
+            BotToastUtils.showSuccess(
+              ctx.t.saveVideoGallery.capitalizeFirst(),
+            );
+          }
+        } else {
+          BotToastUtils.showSuccess(
+            ctx.t.errorSavingVideo.capitalizeFirst(),
+          );
+        }
+      }
+    } catch (e) {
+      BotToastUtils.showSuccess(
+        ctx.t.errorSavingVideo.capitalizeFirst(),
+      );
     }
   }
 }

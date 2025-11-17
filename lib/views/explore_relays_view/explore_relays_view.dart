@@ -28,8 +28,8 @@ class ExploreRelaysView extends HookWidget {
       relayInfoCubit.init();
 
       return [
-        context.t.network,
         context.t.following,
+        context.t.network,
         context.t.collections,
         context.t.global,
       ];
@@ -720,7 +720,7 @@ class RelayStatus extends HookWidget {
       if (latVal < 500) {
         return kGreen;
       } else if (latVal < 1000) {
-        return kMainColor;
+        return Theme.of(context).primaryColor;
       } else {
         return kRed;
       }

@@ -230,8 +230,8 @@ class RepublishView extends HookWidget {
                     FeatureIcons.favoriteFilled,
                     width: 20,
                     height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      kMainColor,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -263,7 +263,7 @@ class RepublishView extends HookWidget {
           ),
           Checkbox(
             value: selectedRelays.value.contains(r),
-            activeColor: kMainColor,
+            activeColor: Theme.of(context).primaryColor,
             checkColor: kWhite,
             onChanged: (status) {
               if (status ?? false) {

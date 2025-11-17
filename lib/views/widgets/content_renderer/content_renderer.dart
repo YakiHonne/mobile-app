@@ -711,6 +711,8 @@ class ContentRenderer extends HookWidget {
     }
 
     final last = cu.split('/').last;
+    final linkPreview =
+        nostrRepository.currentAppCustomization?.enableLinkPreview ?? true;
 
     if (nostrSchemeRegex.hasMatch(last) &&
         nostrIndexersUrls.any(
@@ -736,7 +738,8 @@ class ContentRenderer extends HookWidget {
           child: MetadataProvider(
             child: (metadata, n05) => OptimizedMetadataContainer(
               metadata: metadata,
-              onOpen: () => onOpen?.call(element),
+              onOpen: () =>
+                  openProfileFastAccess(context: context, pubkey: pubkey),
             ),
             pubkey: pubkey,
           ),
@@ -762,6 +765,20 @@ class ContentRenderer extends HookWidget {
           supportedEvent = isSupportedEvent(decode['kind']);
         }
 
+        final noModelWidget = linkPreview
+            ? UrlPreviewContainer(
+                key: ValueKey('url_$url'),
+                url: url,
+                inverseContainerColor: inverseNoteColor,
+              )
+            : GestureDetector(
+                onTap: () => onOpen?.call(element),
+                child: Text(
+                  url,
+                  style: linkStyle,
+                ),
+              );
+
         return WidgetSpan(
           child: SingleEventProvider(
             id: id,
@@ -772,11 +789,7 @@ class ContentRenderer extends HookWidget {
                 context: context,
                 event: event,
                 isEventSupported: supportedEvent,
-                noModelWidget: UrlPreviewContainer(
-                  key: ValueKey('url_$url'),
-                  url: url,
-                  inverseContainerColor: inverseNoteColor,
-                ),
+                noModelWidget: noModelWidget,
               );
             },
           ),
@@ -784,13 +797,38 @@ class ContentRenderer extends HookWidget {
       }
     }
 
-    return WidgetSpan(
-      child: UrlPreviewContainer(
-        key: ValueKey('url_$url'),
-        url: url,
-        inverseContainerColor: inverseNoteColor,
-      ),
-    );
+    return _buildOptimizedUrlLastWidget(
+        linkPreview: linkPreview, url: url, element: element);
+  }
+
+  InlineSpan _buildOptimizedUrlLastWidget({
+    required bool linkPreview,
+    required String url,
+    required LinkableElement element,
+  }) {
+    if (youtubeRegExp.hasMatch(url)) {
+      return WidgetSpan(
+        child: YoutubeVideoContainer(
+          key: ValueKey('url_$url'),
+          url: url,
+          inverseContainerColor: inverseNoteColor,
+        ),
+      );
+    } else if (linkPreview) {
+      return WidgetSpan(
+        child: UrlPreviewContainer(
+          key: ValueKey('url_$url'),
+          url: url,
+          inverseContainerColor: inverseNoteColor,
+        ),
+      );
+    } else {
+      return TextSpan(
+        text: url,
+        style: linkStyle,
+        recognizer: _createTapGestureRecognizer(() => onOpen?.call(element)),
+      );
+    }
   }
 
   /// Helper methods with optimizations
@@ -1141,13 +1179,13 @@ class OptimizedMetadataContainer extends StatelessWidget {
           behavior: HitTestBehavior.translucent,
           child: Container(
             decoration: BoxDecoration(
-              color: kMainColor.withValues(alpha: 0.1),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(kDefaultPadding / 3),
               border: Border.all(
                 width: 0.5,
-                color: kMainColor.withValues(
-                  alpha: 0.2,
-                ),
+                color: Theme.of(context).primaryColor.withValues(
+                      alpha: 0.2,
+                    ),
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -1304,6 +1342,10 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
                           FeatureIcons.zapAmount,
                           height: 20,
                           width: 20,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).primaryColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         const SizedBox(width: kDefaultFontSize / 2),
                         Expanded(
@@ -1566,6 +1608,10 @@ class InvoiceContainer extends StatelessWidget {
                           FeatureIcons.zapAmount,
                           height: 20,
                           width: 20,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).primaryColor,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         const SizedBox(width: kDefaultFontSize / 2),
                         Text(
@@ -1694,6 +1740,7 @@ class MediaContainer extends HookWidget {
         : CustomVideoPlayer(
             link: mediaItem.key,
             removePadding: false,
+            autoPlay: true,
           );
   }
 }

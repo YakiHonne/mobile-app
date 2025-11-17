@@ -228,3 +228,5 @@ enum ShareContentUserStatus { idle, sending, success, failure }
 enum AddingRelayOptions { dms, relays, favorite }
 
 enum DmDataState { disabled, enabled, canBeLoaded }
+
+enum ArticleWritingState { edit, preview, editPreview }

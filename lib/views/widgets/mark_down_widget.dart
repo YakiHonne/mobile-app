@@ -135,8 +135,8 @@ class MarkDownWidget extends StatelessWidget {
       const ListConfig(),
       LinkConfig(
         onTap: onLinkClicked,
-        style: const TextStyle(
-          color: kMainColor,
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
         ),
       ),
     ];

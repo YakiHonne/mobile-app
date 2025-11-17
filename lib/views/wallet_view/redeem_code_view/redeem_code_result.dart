@@ -115,7 +115,7 @@ class RedeemCodeResults extends HookWidget {
       context.t.satsEarned(amount: amount),
       style: Theme.of(context).textTheme.labelLarge!.copyWith(
             fontWeight: FontWeight.w700,
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
           ),
       textAlign: TextAlign.center,
     );

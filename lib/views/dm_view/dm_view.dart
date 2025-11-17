@@ -339,7 +339,7 @@ class _FloatingNewDmButton extends StatelessWidget {
             YNavigator.pushPage(context, (context) => DmUserSearch());
           },
           heroTag: 'dms',
-          backgroundColor: kMainColor,
+          backgroundColor: Theme.of(context).primaryColor,
           shape: const CircleBorder(),
           child: SvgPicture.asset(
             FeatureIcons.startDms,
@@ -579,7 +579,7 @@ class _RelayMessageBanner extends StatelessWidget {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () => _onSettingsTapped(context),
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                 ),

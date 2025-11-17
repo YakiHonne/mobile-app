@@ -64,8 +64,9 @@ class AddContentAppbar extends StatelessWidget {
       child: TextButton(
         onPressed: onActionClicked,
         style: TextButton.styleFrom(
-          backgroundColor:
-              isActionButtonEnabled ? kMainColor : Theme.of(context).cardColor,
+          backgroundColor: isActionButtonEnabled
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).cardColor,
           padding: const EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 2,
           ),

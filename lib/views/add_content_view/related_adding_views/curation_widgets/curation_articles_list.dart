@@ -125,8 +125,8 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
             controller: refreshController,
             enablePullUp: true,
             scrollController: scrollController,
-            header: const MaterialClassicHeader(
-              color: kMainColor,
+            header: MaterialClassicHeader(
+              color: Theme.of(context).primaryColor,
             ),
             footer: const RefresherClassicFooter(),
             onLoading: () => context.read<WriteCurationCubit>().getMoreItems(),
@@ -135,6 +135,7 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
             ),
             child: CustomScrollView(
               controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 _searchTextField(context, searchTextField),
                 SliverPadding(

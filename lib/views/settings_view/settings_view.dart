@@ -383,7 +383,6 @@ class _ProfileSection extends StatelessWidget {
   List<Widget> _buildMobileButtons(BuildContext context) {
     return [
       Flexible(child: _buildViewProfileButton(context, isDesktop: false)),
-      const SizedBox(width: kDefaultPadding / 4),
       Flexible(child: _buildEditProfileButton(context, isDesktop: false)),
     ];
   }
@@ -393,7 +392,9 @@ class _ProfileSection extends StatelessWidget {
     return TextButton(
       onPressed: () => _navigateToProfile(context),
       style: TextButton.styleFrom(
-        backgroundColor: isDesktop ? Theme.of(context).cardColor : kMainColor,
+        backgroundColor: isDesktop
+            ? Theme.of(context).cardColor
+            : Theme.of(context).primaryColor,
       ),
       child: Text(
         context.t.viewProfile.capitalizeFirst(),

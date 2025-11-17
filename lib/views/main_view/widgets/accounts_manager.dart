@@ -457,7 +457,9 @@ class AccountManagerItemComponent extends HookWidget {
       height: _AccountManagerConstants.radioButtonSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isCurrent ? kMainColor : Theme.of(context).cardColor,
+        color: isCurrent
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).cardColor,
         border: Border.all(
           color: !isCurrent ? Theme.of(context).dividerColor : kTransparent,
         ),

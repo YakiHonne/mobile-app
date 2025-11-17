@@ -106,6 +106,7 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
   CustomScrollView _itemsList(TextStyle style, DashboardContentState state,
       BuildContext context, String myWidgets, String mySavedTool) {
     return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: BlocBuilder<DashboardContentCubit, DashboardContentState>(
@@ -142,7 +143,7 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
               child: Text(
                 context.t.ongoing.capitalizeFirst(),
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                     ),
               ),
             ),
@@ -315,7 +316,7 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
         onPressed: showMenu,
         padding: EdgeInsets.zero,
         style: IconButton.styleFrom(
-          backgroundColor: kMainColor,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         icon: SvgPicture.asset(
           FeatureIcons.addRaw,
@@ -547,7 +548,7 @@ class DashboardSmartWidgetsList extends StatelessWidget {
           onRefresh: () {},
           borderColor:
               kind == EventKind.LONG_FORM_DRAFT && (item as Article).isDraft
-                  ? kMainColor
+                  ? Theme.of(context).primaryColor
                   : null,
         );
       },
@@ -606,7 +607,7 @@ class DashboardSmartWidgetsList extends StatelessWidget {
           onRefresh: () {},
           borderColor:
               kind == EventKind.LONG_FORM_DRAFT && (item as Article).isDraft
-                  ? kMainColor
+                  ? Theme.of(context).primaryColor
                   : null,
         );
       },

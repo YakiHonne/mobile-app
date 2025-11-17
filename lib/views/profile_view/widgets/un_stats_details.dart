@@ -228,7 +228,7 @@ class UnStatsDetails extends HookWidget {
                     Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: Theme.of(context).highlightColor,
                         ),
-                indicatorColor: kMainColor,
+                indicatorColor: Theme.of(context).primaryColor,
                 dividerColor: Theme.of(context).dividerColor,
                 tabAlignment: TabAlignment.fill,
                 tabs: [

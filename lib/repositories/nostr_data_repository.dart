@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_foreach
 import 'dart:async';
 import 'dart:convert';
 
@@ -20,6 +20,7 @@ import '../models/chat_message.dart';
 import '../models/filter_status.dart';
 import '../models/flash_news_model.dart';
 import '../models/media_manager_data.dart';
+import '../models/mute_model.dart';
 import '../models/smart_widgets_components.dart';
 import '../models/topic.dart';
 import '../models/video_model.dart';
@@ -62,14 +63,13 @@ class NostrDataRepository {
   List<String> trending = [];
   List<String> interests = [];
   List<String> dmRelays = [];
+  List<String> searchRelays = [];
   List<Topic> topics = [];
   List<String> userTopics = [];
   List<ChatMessage> gptMessages = [];
   List<PendingFlashNews> pendingFlashNews = [];
-  List<List<String>> muteListAdditionalData = [];
 
   // Sets
-  Set<String> mutes = {};
   Set<String> unsentEvents = {};
   Set<String> usersMessageNotifications = {};
 
@@ -85,6 +85,7 @@ class NostrDataRepository {
   bool remoteSignerWebViewOpened = false;
 
   // Current state
+  MuteModel muteModel = MuteModel.empty();
   Metadata currentMetadata = Metadata.empty();
   AppCustomization? currentAppCustomization;
   UserDrafts? userDrafts;
@@ -113,7 +114,7 @@ class NostrDataRepository {
       StreamController<Map<String, Set<String>>>.broadcast();
   final bookmarksController =
       StreamController<Map<String, BookmarkListModel>>.broadcast();
-  final mutesController = StreamController<Set<String>>.broadcast();
+  final mutesController = StreamController<MuteModel>.broadcast();
 
   // Getters
   BuildContext currentContext() => mainCubit.context;
@@ -134,20 +135,28 @@ class NostrDataRepository {
       loadingBookmarksController.stream;
   Stream<Map<String, BookmarkListModel>> get bookmarksStream =>
       bookmarksController.stream;
-  Stream<Set<String>> get mutesStream => mutesController.stream;
+  Stream<MuteModel> get mutesStream => mutesController.stream;
 
+  // =============================================================================
+  // search relays
+  // =============================================================================
+
+  List<String> getSearchRelays() {
+    return searchRelays.isNotEmpty ? searchRelays : DEFAULT_SEARCH_RELAYS;
+  }
   // =============================================================================
   // Mute list
   // =============================================================================
 
-  void setMuteList(Set<String> mutes, {bool updateNotifications = true}) {
-    this.mutes = mutes;
-    mutesController.add(this.mutes);
+  void setMuteList(MuteModel mute, {bool updateNotifications = true}) {
+    muteModel = mute;
+    mutesController.add(muteModel);
 
     if (updateNotifications) {
       notificationsCubit.cleanAndSubscribe();
     }
   }
+
   // =============================================================================
   // FILTER STATUS
   // =============================================================================
@@ -283,7 +292,9 @@ class NostrDataRepository {
     enableOneTapReaction = localData[3] as bool? ?? false;
 
     if (!canSign()) {
-      mutes = localDatabaseRepository.getLocalMutes().toSet();
+      muteModel.usersMutes.addAll(
+        localDatabaseRepository.getLocalMutes().toSet(),
+      );
     }
   }
   // =============================================================================
@@ -330,20 +341,14 @@ class NostrDataRepository {
   }
 
   Future<void> loadCurrentSignerMetadata({
-    required bool loadCached,
     bool checkAccountStatus = false,
   }) async {
     if (currentSigner == null) {
       currentMetadata = Metadata.empty();
     } else {
-      if (loadCached) {
-        currentMetadata = await metadataCubit
-            .getAvailableMetadata(currentSigner!.getPublicKey());
-      } else {
-        currentMetadata = await metadataCubit
-                .getFutureMetadata(currentSigner!.getPublicKey()) ??
-            Metadata.empty().copyWith(pubkey: currentSigner!.getPublicKey());
-      }
+      currentMetadata = await metadataCubit
+              .getFutureMetadata(currentSigner!.getPublicKey()) ??
+          Metadata.empty().copyWith(pubkey: currentSigner!.getPublicKey());
 
       await loadCachedMutedList(currentSigner!.getPublicKey());
 
@@ -382,12 +387,7 @@ class NostrDataRepository {
     );
 
     if (event != null) {
-      if (event.pTags.isNotEmpty) {
-        for (final tag in event.pTags) {
-          mutes.add(tag);
-          muteListAdditionalData.add([tag]);
-        }
-      }
+      muteModel = MuteModel.fromEvent(event);
     }
   }
 
@@ -777,10 +777,39 @@ class NostrDataRepository {
   // RELAYS AND NETWORK
   // =============================================================================
 
-  Future<List<String>> getOnlineRelays() async {
+  Future<List<String>> fetchRelays({
+    int? nip,
+  }) async {
     try {
-      final response = await HttpFunctionsRepository.get(relaysUrl);
-      return List<String>.from(response!['data'] ?? []);
+      final response = await HttpFunctionsRepository.get(
+        '$cacheUrl${nip == null ? 'relays' : 'relays/nips/$nip'}',
+      );
+
+      if (response != null) {
+        return List.from(response['data'] ?? []);
+      } else {
+        return [];
+      }
+    } catch (e) {
+      Logger().i(e);
+      return [];
+    }
+  }
+
+  Future<List<Event>> fetchRelaysMetadata(List<String> relays) async {
+    try {
+      final response = await HttpFunctionsRepository.post(
+        '${cacheUrl}relays/metadata',
+        {'urls': relays},
+      );
+
+      if (response != null && response['relays'] != null) {
+        return List.from((response['relays'] as List).map(
+          (e) => Event.fromJson(e),
+        ));
+      } else {
+        return [];
+      }
     } catch (e) {
       Logger().i(e);
       return [];
@@ -833,10 +862,7 @@ class NostrDataRepository {
   Future<void> loadCurrentUserRelatedData({
     bool checkAccountStatus = false,
   }) async {
-    await loadCurrentSignerMetadata(
-      loadCached: false,
-      checkAccountStatus: checkAccountStatus,
-    );
+    await loadCurrentSignerMetadata(checkAccountStatus: checkAccountStatus);
 
     await Future.wait([
       notificationsCubit.initNotifications(),
@@ -848,12 +874,14 @@ class NostrDataRepository {
 
   Future<void> getCurrentUserRelatedData() async {
     final completer = Completer();
+
     bookmarksLists.clear();
-    mutes.clear();
     userTopics.clear();
     dmRelays.clear();
+    searchRelays.clear();
+    Event? muteListEvent;
 
-    int kind10000Date = 0;
+    await loadLocalUserRelatedData();
 
     NostrFunctionsRepository.getCurrentUserRelatedData().listen(
       (event) {
@@ -872,19 +900,9 @@ class NostrDataRepository {
             bookmarksController.add(bookmarksLists);
           }
         } else if (event.kind == EventKind.MUTE_LIST) {
-          if (kind10000Date < event.createdAt) {
-            muteListAdditionalData.clear();
-            kind10000Date = event.createdAt;
-
-            if (event.pTags.isNotEmpty) {
-              for (final tag in event.pTags) {
-                mutes.add(tag);
-                muteListAdditionalData.add([tag]);
-              }
-            }
-
-            mutesController.add(mutes);
-            nc.db.saveEvent(event);
+          if (muteListEvent == null ||
+              muteListEvent!.createdAt < event.createdAt) {
+            muteListEvent = event;
           }
         } else if (event.kind == EventKind.INTEREST_SET) {
           setInterestSet(interestsFromEvent(event).toSet());
@@ -894,9 +912,23 @@ class NostrDataRepository {
               dmRelays.add(t[1]);
             }
           }
+        } else if (event.kind == EventKind.SEARCH_RELAYS) {
+          for (final t in event.tags) {
+            if (t[0] == 'relay' &&
+                t.length > 1 &&
+                !searchRelays.contains(t[1])) {
+              searchRelays.add(t[1]);
+            }
+          }
         }
       },
       onDone: () {
+        if (muteListEvent != null) {
+          muteModel = MuteModel.fromEvent(muteListEvent!);
+          mutesController.add(muteModel);
+          nc.db.saveEvent(muteListEvent!);
+        }
+
         nc.connectRelays(dmRelays);
         dmsCubit.showDmsRelayMessage = dmRelays.isEmpty;
         completer.complete();
@@ -904,6 +936,58 @@ class NostrDataRepository {
     );
 
     return completer.future;
+  }
+
+  Future<void> loadLocalUserRelatedData() async {
+    if (canSign()) {
+      final events = await nc.db.loadEvents(
+        f: Filter(
+          kinds: [
+            EventKind.CATEGORIZED_BOOKMARK,
+            EventKind.DM_RELAYS,
+            EventKind.INTEREST_SET,
+            EventKind.SEARCH_RELAYS,
+          ],
+          authors: [
+            currentSigner!.getPublicKey(),
+          ],
+        ),
+      );
+
+      for (final e in events) {
+        if (e.kind == EventKind.CATEGORIZED_BOOKMARK) {
+          final bookmark = BookmarkListModel.fromEvent(e);
+
+          final canBeAdded = bookmarksLists[bookmark.identifier] == null ||
+              bookmarksLists[bookmark.identifier]!
+                      .createdAt
+                      .toSecondsSinceEpoch()
+                      .compareTo(bookmark.createdAt.toSecondsSinceEpoch()) <
+                  1;
+
+          if (canBeAdded) {
+            bookmarksLists[bookmark.identifier] = bookmark;
+            bookmarksController.add(bookmarksLists);
+          }
+        } else if (e.kind == EventKind.INTEREST_SET) {
+          setInterestSet(interestsFromEvent(e).toSet());
+        } else if (e.kind == EventKind.DM_RELAYS) {
+          for (final t in e.tags) {
+            if (t[0] == 'relay' && t.length > 1 && !dmRelays.contains(t[1])) {
+              dmRelays.add(t[1]);
+            }
+          }
+        } else if (e.kind == EventKind.SEARCH_RELAYS) {
+          for (final t in e.tags) {
+            if (t[0] == 'relay' &&
+                t.length > 1 &&
+                !searchRelays.contains(t[1])) {
+              searchRelays.add(t[1]);
+            }
+          }
+        }
+      }
+    }
   }
 
   // =============================================================================
@@ -920,9 +1004,10 @@ class NostrDataRepository {
     bookmarksLists.clear();
     loadingBookmarks.clear();
     bookmarksController.add({});
-    mutes.clear();
-    mutes = localDatabaseRepository.getLocalMutes().toSet();
-    muteListAdditionalData.clear();
+    muteModel = MuteModel.empty();
+    muteModel.usersMutes.addAll(
+      localDatabaseRepository.getLocalMutes().toSet(),
+    );
     localDatabaseRepository.removeTopicsStatus();
     localDatabaseRepository.clearPendingFlashNews();
     pointsManagementCubit.logout();

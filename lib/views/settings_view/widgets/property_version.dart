@@ -85,10 +85,10 @@ class PropertyVersion extends StatelessWidget {
         const SizedBox(
           width: kDefaultPadding / 2,
         ),
-        const Icon(
+        Icon(
           Icons.arrow_forward_ios_rounded,
           size: 20,
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
         )
       ],
     );

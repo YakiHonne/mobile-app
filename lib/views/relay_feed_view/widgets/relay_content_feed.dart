@@ -232,6 +232,7 @@ class ContentList extends StatelessWidget {
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       child: ListView.separated(
         itemCount: content.length,
+        physics: const AlwaysScrollableScrollPhysics(),
         separatorBuilder: (context, index) => const Divider(
           height: kDefaultPadding,
           thickness: 0.5,
@@ -252,6 +253,7 @@ class ContentList extends StatelessWidget {
       ),
       child: MasonryGridView.count(
         crossAxisCount: 2,
+        physics: const AlwaysScrollableScrollPhysics(),
         itemCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
         mainAxisSpacing: kDefaultPadding / 2,

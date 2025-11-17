@@ -79,14 +79,15 @@ class _TransactionsListState extends State<TransactionsList> {
                 scrollController: scrollController,
                 enablePullDown: false,
                 enablePullUp: true,
-                header: const MaterialClassicHeader(
-                  color: kMainColor,
+                header:  MaterialClassicHeader(
+                  color: Theme.of(context).primaryColor,
                 ),
                 footer: const RefresherClassicFooter(),
                 onLoading: () =>
                     walletManagerCubit.getTransactions(isAdding: true),
                 child: CustomScrollView(
                   controller: scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     _header(context),
                     _content(isTablet),

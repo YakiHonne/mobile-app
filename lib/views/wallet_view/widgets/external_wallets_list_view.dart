@@ -101,7 +101,7 @@ class _WalletListContent extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.useDefaultWallet,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               walletManagerCubit.setUseDefaultWallet(isToggled);
             },
@@ -137,7 +137,7 @@ class _WalletListContent extends StatelessWidget {
                 color: Theme.of(context).cardColor,
                 border: Border.all(
                   color: wallet.key == state.defaultExternalWallet
-                      ? kMainColor
+                      ? Theme.of(context).primaryColor
                       : Theme.of(context).dividerColor,
                   width: wallet.key == state.defaultExternalWallet ? 1 : 0.5,
                 ),

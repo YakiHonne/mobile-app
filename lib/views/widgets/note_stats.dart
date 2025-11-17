@@ -197,6 +197,9 @@ class NoteStats extends HookWidget {
                             ),
                             enableShare: true,
                             enableMute: true,
+                            enableMuteEvent: true,
+                            muteEventStatus:
+                                state.mutesEvents.contains(note.id),
                             iconColor: Theme.of(context).highlightColor,
                             muteStatus: state.mutes.contains(note.pubkey),
                           );
@@ -315,8 +318,12 @@ class NoteStats extends HookWidget {
         );
       },
       value: quotes.length.toString(),
-      iconColor: selfQuote ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfQuote ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfQuote
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfQuote
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: 18,
       fontSize: 15,
     );
@@ -351,8 +358,12 @@ class NoteStats extends HookWidget {
         );
       },
       value: reposts.length.toString(),
-      iconColor: selfRepost ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfRepost ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfRepost
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfRepost
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: 18,
       fontSize: 15,
     );
@@ -402,8 +413,12 @@ class NoteStats extends HookWidget {
           context: context,
         );
       },
-      iconColor: selfReply ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfReply ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfReply
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfReply
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       value: replies.length.toString(),
       size: 18,
       fontSize: 15,
@@ -605,12 +620,16 @@ class ZappersRow extends StatelessWidget {
           child: SvgPicture.asset(
             FeatureIcons.zapAmount,
             fit: BoxFit.scaleDown,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).primaryColor,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         Text(
           amount.numeral(),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.w600,
               ),
         ),
@@ -861,13 +880,12 @@ class ZapButton extends HookWidget {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: isFastZapping.value
-          ? const SizedBox(
-              key: ValueKey('selfZaps'),
+          ? SizedBox(
+              key: const ValueKey('selfZaps'),
               width: 40,
               child: SpinKitThreeBounce(
-                key: ValueKey('isZapping'),
                 size: 10,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
             )
           : _zapButton(context, onDefaultZap, onSetZap),
@@ -912,8 +930,12 @@ class ZapButton extends HookWidget {
         }
       },
       value: zapsData['total'].toString(),
-      iconColor: selfZaps ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfZaps ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfZaps
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfZaps
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: 18,
       fontSize: 15,
     );
@@ -1044,7 +1066,7 @@ class TranslationButton extends HookWidget {
           backgroundColor: kTransparent,
           iconColor: showOriginalContent.value
               ? Theme.of(context).highlightColor
-              : kMainColor,
+              : Theme.of(context).primaryColor,
           vd: -4,
         ),
       ),
@@ -1175,10 +1197,12 @@ class CustomReactionButton extends HookWidget {
         }
       },
       value: reactions.length.toString(),
-      iconColor:
-          event.value != null ? kMainColor : Theme.of(context).highlightColor,
-      textColor:
-          event.value != null ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: event.value != null
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: event.value != null
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: 18,
       fontSize: 15,
     );
@@ -1807,6 +1831,8 @@ class DetailedNoteContainer extends HookWidget {
                 FeatureIcons.verified,
                 width: 15,
                 height: 15,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor, BlendMode.srcIn),
               ),
             ],
           ],
@@ -1933,7 +1959,7 @@ class _ReplyContainerState extends State<ReplyContainer> {
                   child: Text(
                     ' ${context.t.showNote}',
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: kMainColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                   ),
                 ),
@@ -2018,8 +2044,8 @@ class NoteReplyBox extends HookWidget {
         child: Row(
           spacing: kDefaultPadding / 1.5,
           children: [
-            const VerticalDivider(
-              color: kMainColor,
+            VerticalDivider(
+              color: Theme.of(context).primaryColor,
               width: 0,
               thickness: 2,
             ),
@@ -2078,7 +2104,7 @@ class NoteReplyBox extends HookWidget {
           ? Text(
               context.t.mutedUser.capitalizeFirst(),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w600,
                   ),
               maxLines: 1,
@@ -2090,7 +2116,7 @@ class NoteReplyBox extends HookWidget {
                 return Text(
                   '@${metadata.getName()}',
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: kMainColor,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                   maxLines: 1,
@@ -2154,7 +2180,7 @@ class PaidContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(
           kDefaultPadding / 4,
         ),

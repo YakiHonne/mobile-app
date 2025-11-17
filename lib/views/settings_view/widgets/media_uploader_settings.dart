@@ -110,7 +110,7 @@ class MediaUploaderSettings extends HookWidget {
                 scale: 0.8,
                 child: CupertinoSwitch(
                   value: state.enableMirroring,
-                  activeTrackColor: kMainColor,
+                  activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (isToggled) {
                     mediaServersCubit.setMirrorStatus(
                       isToggled,

@@ -330,8 +330,12 @@ class ContentStats extends HookWidget {
         );
       },
       value: quotes.length.toString(),
-      iconColor: selfQuote ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfQuote ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfQuote
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfQuote
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: iconSize,
       fontSize: fontSize,
     );
@@ -382,8 +386,12 @@ class ContentStats extends HookWidget {
           context: context,
         );
       },
-      iconColor: selfReply ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfReply ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfReply
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfReply
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       value: replies.length.toString(),
       size: iconSize,
       fontSize: fontSize,
@@ -563,12 +571,12 @@ class ContentZapButton extends HookWidget {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: isFastZapping.value
-          ? const SizedBox(
+          ? SizedBox(
               width: 40,
               child: SpinKitCircle(
-                key: ValueKey('isZapping'),
+                key: const ValueKey('isZapping'),
                 size: 20,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
             )
           : _zapButton(context, onDefaultZap, onSetZap),
@@ -613,8 +621,12 @@ class ContentZapButton extends HookWidget {
         }
       },
       value: zapsData['total'].toString(),
-      iconColor: selfZaps ? kMainColor : Theme.of(context).highlightColor,
-      textColor: selfZaps ? kMainColor : Theme.of(context).highlightColor,
+      iconColor: selfZaps
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfZaps
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
       size: iconSize,
       fontSize: fontSize,
     );

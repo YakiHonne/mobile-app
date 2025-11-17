@@ -248,12 +248,12 @@ class _HeaderContent extends HookWidget {
         ),
         const SizedBox(width: kDefaultPadding / 3),
         if (isLoading)
-          const SpinKitCircle(color: kMainColor, size: 20)
+          SpinKitCircle(color: Theme.of(context).primaryColor, size: 20)
         else
-          const Icon(
+          Icon(
             Icons.arrow_downward_rounded,
             size: 20,
-            color: kMainColor,
+            color: Theme.of(context).primaryColor,
           ),
       ],
     );
@@ -410,7 +410,9 @@ class NoteRepliesList extends HookWidget {
     return BlocListener<NotesEventsCubit, NotesEventsState>(
       listenWhen: (prev, curr) =>
           prev.eventsStats[selectedNote.value.id] !=
-          curr.eventsStats[selectedNote.value.id],
+              curr.eventsStats[selectedNote.value.id] ||
+          prev.mutes != curr.mutes ||
+          prev.mutesEvents != curr.mutesEvents,
       listener: (_, __) => updateReplies(),
       child: CustomScrollView(
         slivers: replies.value.isEmpty

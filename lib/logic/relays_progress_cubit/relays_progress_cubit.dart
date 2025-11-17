@@ -14,9 +14,7 @@ class RelaysProgressCubit extends Cubit<RelaysProgressState> {
             totalRelays: nc.relays(),
             successfulRelays: const [],
           ),
-        ) {
-    lg.i(state.totalRelays);
-  }
+        );
 
   Map<String, DateTime> requests = {};
 

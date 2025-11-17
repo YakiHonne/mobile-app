@@ -358,7 +358,7 @@ class WidgetCheckerLayout extends StatelessWidget {
         mapKey: context.t.image.capitalizeFirst(),
         mapValue: box.image.url,
         mapStatus: getPropertyStatus(box.image),
-        color: kMainColor,
+        color: Theme.of(context).primaryColor,
       ),
     );
 
@@ -374,7 +374,7 @@ class WidgetCheckerLayout extends StatelessWidget {
           mapKey: context.t.inputField.capitalizeFirst(),
           mapValue: box.inputField!.placeholder,
           mapStatus: getPropertyStatus(box.inputField!),
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
         ),
       );
 
@@ -425,7 +425,7 @@ class WidgetCheckerLayout extends StatelessWidget {
                   mapStatus: button.text.isNotEmpty
                       ? PropertyStatus.valid
                       : PropertyStatus.invalid,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
                 WidgetCheckerRow(
                   mapKey: context.t.type.capitalizeFirst(),
@@ -433,13 +433,13 @@ class WidgetCheckerLayout extends StatelessWidget {
                   mapStatus: SWBType.values.contains(button.type)
                       ? PropertyStatus.valid
                       : PropertyStatus.invalid,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
                 WidgetCheckerRow(
                   mapKey: context.t.url.capitalizeFirst(),
                   mapValue: button.url,
                   mapStatus: getPropertyStatus(button),
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ],
             ),
@@ -615,7 +615,7 @@ class WidgetCheckerRow extends StatelessWidget {
                 isEmpty ? 'N/A' : mapValue,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: isEmpty
-                          ? kMainColor
+                          ? Theme.of(context).primaryColor
                           : Theme.of(context).primaryColorDark,
                     ),
                 maxLines: 1,

@@ -246,6 +246,7 @@ class AppInitializer {
     // Connect to relays
     if (currentSigner != null) {
       currentUserRelayList.pubkey = currentSigner!.getPublicKey();
+
       initRelays();
       _scheduleDelayedDataLoading();
     } else {
@@ -310,7 +311,7 @@ class AppInitializer {
     try {
       // Load metadata for existing users
       if (!newKey) {
-        nostrRepository.loadCurrentSignerMetadata(loadCached: false);
+        nostrRepository.loadCurrentSignerMetadata();
       }
 
       // Connect to relays

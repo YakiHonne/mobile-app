@@ -19,7 +19,11 @@ class ArticleContent extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final toggleArticleContent = useState(true);
+    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+
+    final articleWritingState = useState(
+      isTablet ? ArticleWritingState.editPreview : ArticleWritingState.edit,
+    );
 
     final title = useTextEditingController(
       text: context.read<WriteArticleCubit>().state.title,
@@ -28,8 +32,6 @@ class ArticleContent extends HookWidget {
     final content = useTextEditingController(
       text: context.read<WriteArticleCubit>().state.content,
     );
-
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return BlocConsumer<WriteArticleCubit, WriteArticleState>(
       listenWhen: (previous, current) =>
@@ -40,7 +42,7 @@ class ArticleContent extends HookWidget {
       },
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(isTablet ? 5.w : 0),
+          padding: EdgeInsets.all(isTablet ? kDefaultPadding / 2 : 0),
           child: MarkdownTextInput(
             (content) {
               context.read<WriteArticleCubit>().setContentText(content);
@@ -52,7 +54,7 @@ class ArticleContent extends HookWidget {
             state.content,
             isMenuDismissed,
             label: context.t.whatsOnYourMind,
-            toggleArticleContent: toggleArticleContent,
+            toggleArticleContent: articleWritingState,
             previewWidget: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: kDefaultPadding / 1.5,

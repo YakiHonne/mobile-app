@@ -27,7 +27,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
           DiscoverState(
             bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
             content: const [],
-            mutes: nostrRepository.mutes.toList(),
+            mutes: nostrRepository.muteModel.usersMutes.toList(),
             onAddingData: UpdatingState.success,
             onLoading: true,
             followings: contactListCubit.contacts,
@@ -91,10 +91,10 @@ class DiscoverCubit extends Cubit<DiscoverState> {
 
     // Listen for mutes changes
     mutesStream = nostrRepository.mutesStream.listen(
-      (mutes) {
+      (mm) {
         final newContent = List<BaseEventModel>.from(state.content)
           ..removeWhere(
-            (e) => mutes.contains(e.pubkey),
+            (e) => mm.usersMutes.contains(e.pubkey),
           );
         if (!isClosed) {
           emit(
@@ -327,7 +327,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
         if (canSign()) {
           wot = (await nc.calculateWot(
             pubkey: currentSigner!.getPublicKey(),
-            mutes: nostrRepository.mutes,
+            mutes: nostrRepository.muteModel.usersMutes,
           ))
               .keys
               .toList();
@@ -335,7 +335,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
           if (wot.isEmpty) {
             wot = (await nc.calculateWot(
               pubkey: yakihonneHex,
-              mutes: nostrRepository.mutes,
+              mutes: nostrRepository.muteModel.usersMutes,
             ))
                 .keys
                 .toList();
@@ -345,7 +345,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
         } else {
           wot = (await nc.calculateWot(
             pubkey: yakihonneHex,
-            mutes: nostrRepository.mutes,
+            mutes: nostrRepository.muteModel.usersMutes,
           ))
               .keys
               .toList();

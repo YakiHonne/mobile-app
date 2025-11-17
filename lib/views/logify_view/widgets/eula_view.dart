@@ -63,8 +63,8 @@ class EulaView extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'info@yakihonne.com',
-                          style: const TextStyle(
-                            color: kMainColor,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () => sendEmail(),

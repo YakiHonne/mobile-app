@@ -91,6 +91,7 @@ class HorizontalVideoView extends HookWidget {
                 removeBorders: true,
                 removePadding: true,
                 autoPlay: true,
+                fallbackUrls: video.fallbackUrls,
               ),
             ),
             _videoData(context, state),
@@ -315,7 +316,7 @@ class HorizontalVideoView extends HookWidget {
           '${state.replies.length}',
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
                 fontWeight: FontWeight.w600,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
         ),
       ],
@@ -431,7 +432,7 @@ class HorizontalVideoView extends HookWidget {
                   ? Theme.of(context).highlightColor
                   : state.isFollowingAuthor
                       ? Theme.of(context).cardColor
-                      : kMainColor,
+                      : Theme.of(context).primaryColor,
             ),
             child: Text(
               state.isFollowingAuthor
@@ -457,9 +458,7 @@ class HorizontalVideoView extends HookWidget {
           Flexible(
             child: Text(
               metadata.getName(),
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: kWhite,
-                  ),
+              style: Theme.of(context).textTheme.labelMedium,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -474,8 +473,8 @@ class HorizontalVideoView extends HookWidget {
                   FeatureIcons.verified,
                   width: 15,
                   height: 15,
-                  colorFilter: const ColorFilter.mode(
-                    kMainColor,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor,
                     BlendMode.srcIn,
                   ),
                 ),

@@ -174,7 +174,7 @@ class PropertyCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: state.enableOneTapReaction,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setOneTapReaction(isToggled);
             },
@@ -279,7 +279,7 @@ class PropertyCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: openPromptedUrl.value,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               openPromptedUrl.value = isToggled;
             },
@@ -304,7 +304,7 @@ class PropertyCustomization extends HookWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: profilePreview.value,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               profilePreview.value = isToggled;
             },
@@ -478,7 +478,9 @@ class ReplyOptionContainer extends StatelessWidget {
             kDefaultPadding / 2,
           ),
           border: Border.all(
-            color: isSelected ? kMainColor : Theme.of(context).dividerColor,
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).dividerColor,
             width: isSelected ? 1 : 0.5,
           ),
         ),

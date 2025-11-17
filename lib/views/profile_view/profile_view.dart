@@ -176,7 +176,7 @@ class OptionsHeader extends HookWidget {
                   Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).highlightColor,
                       ),
-              indicatorColor: kMainColor,
+              indicatorColor: Theme.of(context).primaryColor,
               dividerColor: Theme.of(context).dividerColor,
               tabs: [
                 Tab(text: context.t.notes.capitalizeFirst()),
@@ -338,7 +338,7 @@ class ProfileAppBar extends StatelessWidget {
                         ? Theme.of(context).highlightColor
                         : state.isFollowingUser
                             ? Theme.of(context).cardColor
-                            : kMainColor,
+                            : Theme.of(context).primaryColor,
                   ),
                   child: Text(
                     state.isFollowingUser

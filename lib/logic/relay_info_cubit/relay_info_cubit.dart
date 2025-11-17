@@ -132,28 +132,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
   }
 
   Future<void> getRelayInfoEvents(List<String> relaysToProcess) async {
-    final events = await NostrFunctionsRepository.getEventsAsync(
-      dTags: [
-        ...relaysToProcess.map(
-          (e) => '$e/',
-        ),
-        // ...relaysToProcess,
-        // ...relaysToProcess.map(
-        //   (e) => '$e/%7C',
-        // ),
-      ],
-      timeout: 5,
-      source: EventsSource.relays,
-      includeIds: false,
-      relyOnLongestTags: true,
-      kinds: [EventKind.RELAY_DISCOVERY],
-      pubkeys: [
-        '9ba0ce3dcc28c26da0d0d87fa460c78b602a180b61eb70b62aba04505c6331f4',
-        '9bbbb845e5b6c831c29789900769843ab43bb5047abe697870cb50b6fc9bf923',
-        '9bb7cd94d7b688a4070205d9fb5e9cca6bd781fe7cabe780e19fdd23a036e0a1',
-        'abcde937081142db0d50d29bf92792d4ee9b3d79a83c483453171a6004711832',
-      ],
-    );
+    final events = await nostrRepository.fetchRelaysMetadata(relaysToProcess);
 
     final toBeUpdatedRelayInfos = Map<String, RelayInfo>.from(state.relayInfos);
 
@@ -250,8 +229,27 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
     return null;
   }
 
+  Future<void> getSearchRelay() async {
+    await nc.doQuery(
+      [
+        Filter(),
+      ],
+      [],
+    );
+  }
+
+  Future<List<String>> getActiveGlobalRelays() async {
+    if (state.globalRelays.isNotEmpty) {
+      return state.globalRelays;
+    }
+
+    await getGlobalRelays();
+
+    return state.globalRelays;
+  }
+
   Future<void> getGlobalRelays() async {
-    final relays = await nostrRepository.getOnlineRelays();
+    final relays = await nostrRepository.fetchRelays();
 
     emit(
       state.copyWith(

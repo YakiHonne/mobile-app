@@ -101,7 +101,7 @@ class TierView extends StatelessWidget {
                   .levelsRequiredNum(number: levelsToNextTier.toString())
                   .capitalizeFirst(),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
             const SizedBox(

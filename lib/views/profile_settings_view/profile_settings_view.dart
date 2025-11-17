@@ -106,7 +106,7 @@ class ProfileSettingsView extends HookWidget {
                 style: TextButton.styleFrom(
                   backgroundColor: state.isUploading
                       ? Theme.of(context).cardColor
-                      : kMainColor,
+                      : Theme.of(context).primaryColor,
                 ),
                 child: Text(
                   state.isUploading ? 'Uploading image...' : 'Update Profile',
@@ -284,15 +284,15 @@ class ProfileSettingsMetadata extends HookWidget {
                             ? context.t.less.capitalizeFirst()
                             : context.t.more.capitalizeFirst(),
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: kMainColor,
+                              color: Theme.of(context).primaryColor,
                             ),
                       ),
                       label: SvgPicture.asset(
                         isExpanded.value
                             ? FeatureIcons.arrowUp
                             : FeatureIcons.arrowDown,
-                        colorFilter:
-                            const ColorFilter.mode(kMainColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                            Theme.of(context).primaryColor, BlendMode.srcIn),
                         width: 20,
                         height: 20,
                       ),

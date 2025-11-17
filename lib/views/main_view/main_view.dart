@@ -173,7 +173,7 @@ class MainViewContent extends HookWidget {
           );
         },
         child: FloatingActionButton(
-          backgroundColor: kMainColor,
+          backgroundColor: Theme.of(context).primaryColor,
           shape: const CircleBorder(),
           heroTag: 'content_creation',
           child: SvgPicture.asset(

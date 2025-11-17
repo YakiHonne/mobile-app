@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
+import '../../models/app_models/diverse_functions.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -82,8 +83,7 @@ class SearchUserCubit extends Cubit<SearchUserState> {
         }
 
         final searchedUsers = (await metadataCubit.searchCacheMetadatas(search))
-          ..where((author) => !nostrRepository.mutes.contains(author.pubkey))
-              .toList();
+          ..where((author) => !isUserMuted(author.pubkey)).toList();
 
         if (!isClosed) {
           emit(
@@ -102,7 +102,7 @@ class SearchUserCubit extends Cubit<SearchUserState> {
               .where((element) => element.pubkey == user.pubkey)
               .isNotEmpty;
 
-          if (!userExists && !nostrRepository.mutes.contains(user.pubkey)) {
+          if (!userExists && !isUserMuted(user.pubkey)) {
             newList.add(user);
             metadataCubit.saveMetadata(user);
           }

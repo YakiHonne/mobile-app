@@ -222,7 +222,7 @@ class SmartWidgetSearchSuggestionBox extends StatelessWidget {
               text: '$title ',
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                   ),
             ),
           TextSpan(

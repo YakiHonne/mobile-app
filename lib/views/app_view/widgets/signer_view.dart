@@ -165,7 +165,7 @@ class SignerView extends HookWidget {
                 localDatabaseRepository.setAutomaticSigning(val ?? false);
                 automaticSignIn.value = val ?? false;
               },
-              activeColor: kMainColor,
+              activeColor: Theme.of(context).primaryColor,
             ),
             Text(
               context.t.enableAutomaticSigning,
@@ -184,7 +184,7 @@ class SignerView extends HookWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: kMainColor,
+          color: Theme.of(context).primaryColor,
           width: 0.5,
         ),
       ),
@@ -192,11 +192,11 @@ class SignerView extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               '{',
               style: TextStyle(
                 fontSize: 18,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
                 fontFamily: 'Courier New',
               ),
             ),
@@ -240,13 +240,13 @@ class SignerView extends HookWidget {
                 ),
               );
             }),
-            const Padding(
-              padding: EdgeInsets.only(top: kDefaultPadding / 4),
+            Padding(
+              padding: const EdgeInsets.only(top: kDefaultPadding / 4),
               child: Text(
                 '}',
                 style: TextStyle(
                   fontSize: 18,
-                  color: kMainColor,
+                  color: Theme.of(context).primaryColor,
                   fontFamily: 'Courier New',
                 ),
               ),

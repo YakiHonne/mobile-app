@@ -158,7 +158,7 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
                     (state.totalRelays.isEmpty ? 1 : state.totalRelays.length),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 strokeWidth: 2,
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             Positioned.fill(

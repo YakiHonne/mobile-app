@@ -400,20 +400,29 @@ Future<ResultType> exportKeysToUserDirectory({
 }
 
 Future<void> setMuteStatus({
-  required String pubkey,
+  required String muteKey,
   required Function() onSuccess,
+  bool isPubkey = true,
 }) async {
   final cancel = BotToast.showLoading();
-  final result = await NostrFunctionsRepository.setMuteList(pubkey);
+  final result = await NostrFunctionsRepository.setMuteList(
+    muteKey: muteKey,
+    isPubkey: isPubkey,
+  );
   cancel();
 
   if (result) {
-    final bool hasBeenMuted = nostrRepository.mutes.contains(pubkey);
+    final hasBeenMuted =
+        isPubkey ? isUserMuted(muteKey) : isThreadMutedById(muteKey);
 
     BotToastUtils.showSuccess(
       hasBeenMuted
-          ? t.userHasBeenMuted.capitalizeFirst()
-          : t.userHasBeenUnmuted.capitalizeFirst(),
+          ? isPubkey
+              ? t.userHasBeenMuted.capitalizeFirst()
+              : t.threadMuted.capitalizeFirst()
+          : isPubkey
+              ? t.userHasBeenUnmuted.capitalizeFirst()
+              : t.threadUnmuted.capitalizeFirst(),
     );
 
     onSuccess();
@@ -742,9 +751,9 @@ class ParsedText extends HookWidget {
                 Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: color,
                     ),
-            linkStyle: style?.copyWith(color: kMainColor) ??
+            linkStyle: style?.copyWith(color: Theme.of(context).primaryColor) ??
                 Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                     ),
             linkifiers: const [
               CustomUrlLinkifier(),
@@ -760,7 +769,7 @@ class ParsedText extends HookWidget {
             Text.rich(
               TextSpan(
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: kMainColor,
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
                 children: [
@@ -1010,7 +1019,7 @@ Color getPercentageColor(double percentage) {
   if (percentage >= 0 && percentage <= 25) {
     return kRed;
   } else if (percentage >= 26 && percentage <= 50) {
-    return kMainColor;
+    return Theme.of(nostrRepository.currentContext()).primaryColor;
   } else if (percentage >= 51 && percentage <= 75) {
     return kYellow;
   } else {

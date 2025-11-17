@@ -207,7 +207,7 @@ class NoRelaysAvailable extends StatelessWidget {
         Text(
           context.t.relaysFeed,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: kMainColor,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.w700,
               ),
         ),
@@ -300,7 +300,7 @@ class RelaysDiscoverList extends StatelessWidget {
             Text(
               context.t.relaysFeed,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w700,
                   ),
             ),
@@ -400,7 +400,7 @@ class CommunityDiscoverList extends StatelessWidget {
             Text(
               context.t.communityFeed,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: kMainColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w700,
                   ),
             ),

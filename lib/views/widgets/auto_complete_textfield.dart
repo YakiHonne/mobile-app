@@ -194,8 +194,8 @@ class AutoCompleteTextFieldState<T> extends State<AutoCompleteTextField> {
           triggerSubmitted(submittedText: submittedText),
     );
 
-    if (this.controller != null) {
-      currentText = this.controller!.text;
+    if (controller != null) {
+      currentText = controller!.text;
     }
 
     textField!.focusNode!.addListener(() {

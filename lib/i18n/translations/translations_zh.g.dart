@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -1426,1399 +1427,1420 @@ class TranslationsZh extends Translations {
 	@override String get enabledActionsDesc => '没有可用的已启用操作。';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <zh>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsZh {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'userCommentedCurationYouIn': return ({required Object name}) => '${name} 评论了@你的策展';
-			case 'userCommentedNoteYouIn': return ({required Object name}) => '${name} 评论了@你的帖子';
-			case 'userCommentedPaidNoteYouIn': return ({required Object name}) => '${name} 评论了@你的付费帖子';
-			case 'userCommentedPollYouIn': return ({required Object name}) => '${name} 评论了@你的投票';
-			case 'userCommentedSmartWidgetYouIn': return ({required Object name}) => '${name} 评论了@你的智能组件';
-			case 'userCommentedVideoYouIn': return ({required Object name}) => '${name} 评论了@你的视频';
-			case 'userCommentedArticleYouIn': return ({required Object name}) => '${name} 评论了@你的文章';
-			case 'userCommentedYourArticle': return ({required Object name}) => '${name} 你的文章有新评论';
-			case 'userCommentedYourCuration': return ({required Object name}) => '${name} 评论了你的策展';
-			case 'userCommentedYourNote': return ({required Object name}) => '${name} 评论了你的帖子';
-			case 'userCommentedYourPaidNote': return ({required Object name}) => '${name} 评论了你的付费帖子';
-			case 'userCommentedYourPoll': return ({required Object name}) => '${name} 评论了你的投票';
-			case 'userCommentedYourSmartWidget': return ({required Object name}) => '${name} 评论了你的智能组件';
-			case 'userCommentedYourVideo': return ({required Object name}) => '${name} 评论了你的视频';
-			case 'userNoArticles': return ({required Object name}) => '${name} 还没有发布文章哦';
-			case 'userNoCurations': return ({required Object name}) => '${name} 还没创建策展呢';
-			case 'userNoNotes': return ({required Object name}) => '${name} 还没发过帖子哦';
-			case 'userNoSmartWidgets': return ({required Object name}) => '${name} 还没创建智能组件呢';
-			case 'userNoVideos': return ({required Object name}) => '${name} 还没上传过视频哦';
-			case 'userSubmittedPaidNote': return ({required Object name}) => '${name} 发了一篇付费帖子！';
-			case 'userMentionedYouInCuration': return ({required Object name}) => '${name} 在策展中@了你';
-			case 'userMentionedYouInNote': return ({required Object name}) => '${name} 在帖子中@了你';
-			case 'userMentionedYouInPaidNote': return ({required Object name}) => '${name} 在付费帖子中@了你';
-			case 'userMentionedYouInPoll': return ({required Object name}) => '${name} 在投票中@了你';
-			case 'userMentionedYouInSmartWidget': return ({required Object name}) => '${name} 在智能组件中@了你';
-			case 'userMentionedYouInVideo': return ({required Object name}) => '${name} 在视频中@了你';
-			case 'userMentionedYouInArticle': return ({required Object name}) => '${name} 在文章中@了你';
-			case 'userPublishedCuration': return ({required Object name}) => '${name} 发布了一个策展集';
-			case 'userPublishedPaidNote': return ({required Object name}) => '${name} 发布了一个付费帖子';
-			case 'userPublishedPoll': return ({required Object name}) => '${name} 发起了一个投票';
-			case 'userPublishedSmartWidget': return ({required Object name}) => '${name} 创建了一个智能组件';
-			case 'userPublishedVideo': return ({required Object name}) => '${name} 发布了一个视频';
-			case 'userPublishedArticle': return ({required Object name}) => '${name} 发布了一篇文章';
-			case 'userQuotedCurationYouIn': return ({required Object name}) => '${name} 引用了@你的策展';
-			case 'userQuotedNoteYouIn': return ({required Object name}) => '${name} 引用了@你的帖子';
-			case 'userQuotedPaidNoteYouIn': return ({required Object name}) => '${name}引用了@你的付费帖子';
-			case 'userQuotedVideoYouIn': return ({required Object name}) => '${name}引用了@你的视频';
-			case 'userQuotedArticleYouIn': return ({required Object name}) => '${name}引用了@你的文章';
-			case 'userQuotedYourArticle': return ({required Object name}) => '${name}引用了你的文章';
-			case 'userQuotedYourCuration': return ({required Object name}) => '${name}引用了你的策展';
-			case 'userQuotedYourNote': return ({required Object name}) => '${name}引用了你的帖子';
-			case 'userQuotedYourPaidNote': return ({required Object name}) => '${name}引用了你的付费帖子';
-			case 'userQuotedYourVideo': return ({required Object name}) => '${name}引用了你的视频';
-			case 'userReactedCurationYouIn': return ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的策展';
-			case 'userReactedNoteYouIn': return ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的帖子';
-			case 'userReactedPaidNoteYouIn': return ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的付费帖子';
-			case 'userReactedPollYouIn': return ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的投票';
-			case 'userReactedSmartWidgetYouIn': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的智能组件';
-			case 'userReactedVideoYouIn': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的视频';
-			case 'userReactedArticleYouIn': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的文章';
-			case 'userReactedYou': return ({required Object name, required Object reaction}) => '哇！${name} 回应${reaction}了你';
-			case 'userReactedYourArticle': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的文章';
-			case 'userReactedYourCuration': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的策展';
-			case 'userReactedYourMessage': return ({required Object name, required Object reaction}) => '${name} 回应 ${reaction} 了你的留言';
-			case 'userReactedYourNote': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的帖子';
-			case 'userReactedYourPaidNote': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的付费帖子';
-			case 'userReactedYourPoll': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的投票';
-			case 'userReactedYourSmartWidget': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的智能组件';
-			case 'userReactedYourVideo': return ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的视频';
-			case 'reactedWith': return ({required Object name, required Object reaction}) => '${name} 回应了 ${reaction}';
-			case 'userReceivedSat': return ({required Object name, required Object number}) => '${name} 收到了你转的 ${number} Sats';
-			case 'userRepliedArticleYouIn': return ({required Object name}) => '${name} 回复了@你的文章';
-			case 'userRepliedCurationYouIn': return ({required Object name}) => '${name} 回复了@你的策展';
-			case 'userRepliedNoteYouIn': return ({required Object name}) => '${name} 回复了@你的帖子';
-			case 'userRepliedPaidNoteYouIn': return ({required Object name}) => '${name} 回复了@你的付费帖子';
-			case 'userRepliedPollYouIn': return ({required Object name}) => '${name} 回复了@你的投票';
-			case 'userRepliedSmartWidgetYouIn': return ({required Object name}) => '${name} 回复了@你的智能组件';
-			case 'userRepliedVideoYouIn': return ({required Object name}) => '${name} 回复了@你的视频';
-			case 'userRepliedYourArticle': return ({required Object name}) => '${name} 回复了你的文章';
-			case 'userRepliedYourCuration': return ({required Object name}) => '${name} 回复了你的策展';
-			case 'userRepliedYourNote': return ({required Object name}) => '${name} 回复了你的帖子';
-			case 'userRepliedYourPaidNote': return ({required Object name}) => '${name} 回复了你的付费帖子';
-			case 'userRepliedYourPoll': return ({required Object name}) => '${name} 回复了你的投票';
-			case 'userRepliedYourSmartWidget': return ({required Object name}) => '${name} 回复了你的智能组件';
-			case 'userRepliedYourVideo': return ({required Object name}) => '${name} 回复了您的视频';
-			case 'userRepostedNoteYouIn': return ({required Object name}) => '${name}转发了@你的帖子';
-			case 'userRepostedPaidNoteYouIn': return ({required Object name}) => '${name}转发了@你的付费帖子';
-			case 'userRepostedYou': return ({required Object name}) => '${name}转发了你的文章';
-			case 'userRepostedYourNote': return ({required Object name}) => '${name}转发了你的帖子';
-			case 'userRepostedYourPaidNote': return ({required Object name}) => '${name}转发了你的付费帖子';
-			case 'userSentSat': return ({required Object name, required Object number}) => '${name} 转了 ${number} Sats 给你！';
-			case 'userZappedYou': return ({required Object name, required Object number}) => '${name} 给你 zap了${number} Sats';
-			case 'userZappedYourArticle': return ({required Object name, required Object number}) => '${name} 给你的文章zap了${number} Sats';
-			case 'userZappedYourCuration': return ({required Object name, required Object number}) => '${name}给你的策展zap了${number} Sats';
-			case 'userZappedYourNote': return ({required Object name, required Object number}) => '${name}给你的帖子zap了${number} Sats';
-			case 'userZappedYourPaidNote': return ({required Object name, required Object number}) => '${name}给你的付费帖子zap了${number} Sats';
-			case 'userZappedYourPoll': return ({required Object name, required Object number}) => '${name}给你的投票zap了${number} Sats';
-			case 'userZappedYourSmartWidget': return ({required Object name, required Object number}) => '${name}给你的智能组件zap了${number} Sats';
-			case 'userZappedYourVideo': return ({required Object name, required Object number}) => '${name}给你的视频zap了${number} Sats';
-			case 'userNewArticle': return ({required Object name}) => '${name}的最新文章';
-			case 'userNewCuration': return ({required Object name}) => '${name}的最新策展';
-			case 'userPaidNote': return ({required Object name}) => '${name}的最新付费帖子';
-			case 'userNewSmartWidget': return ({required Object name}) => '${name}的最新智能组件';
-			case 'userReply': return ({required Object name}) => '${name}的最新回复';
-			case 'userNewVideo': return ({required Object name}) => '${name}的最新视频';
-			case 'articlesNum': return ({required Object number}) => '${number} 篇文章';
-			case 'availableArticles': return ({required Object number}) => '${number} 篇文章可查看';
-			case 'availableVideos': return ({required Object number}) => '${number}个视频可查看';
-			case 'bookmarksListCount': return ({required Object number}) => '${number} 个书签列表';
-			case 'componentsSMCount': return ({required Object number}) => '这个智能组件里有 ${number} 个内容';
-			case 'followersNum': return ({required Object number}) => '${number} 关注者';
-			case 'itemsNumber': return ({required Object number}) => '${number}项内容';
-			case 'levelsRequiredNum': return ({required Object number}) => '${number} 所需级别';
-			case 'pointsRemaining': return ({required Object number}) => '还剩${number}';
-			case 'videosNum': return ({required Object number}) => '${number}视频';
-			case 'viewsNumber': return ({required Object number}) => '${number} 浏览';
-			case 'readTime': return ({required Object time}) => '约${time}分钟';
-			case 'mutualsNum': return ({required Object number}) => '+ ${number}共同好友';
-			case 'peopleCountPlus': return ({required Object number}) => '+${number} 人';
-			case 'supportUs': return '❤︎ 支持我们';
-			case 'consumablePointsPerks1': return '1- 提交你的内容以进行验证';
-			case 'consumablePointsPerks2': return '2- 使用积分发布付费帖子';
-			case 'consumablePointsPerks3': return '3- 使用积分兑换 Sats（当兑换可用时会通知你）';
-			case 'highlightedNote': return '让更多人看到你的帖子';
-			case 'minimumOfOneRequired': return '最低需要 1 Sats';
-			case 'useValidTitle': return '需要一个标题哦';
-			case 'aboutYou': return '关于您';
-			case 'actGoodFaith': return '心怀善意核实';
-			case 'add': return '添加';
-			case 'addUrlNevent': return '添加正确的 url/nevent';
-			case 'addProperUrlNevent': return '添加正确的 url/nevent';
-			case 'addAccount': return '添加帐户';
-			case 'addBookmarkList': return '添加书签列表';
-			case 'addCover': return '添加封面';
-			case 'addCuration': return '添加策展';
-			case 'addInterests': return '添加你的兴趣';
-			case 'addNote': return '创建帖子';
-			case 'addToCuration': return '添加到策展';
-			case 'addUser': return '添加受益人';
-			case 'addWallet': return '添加钱包';
-			case 'addYourTopics': return '添加你的主题';
-			case 'adjustSpeed': return '调整速度';
-			case 'adjustVolume': return '调节音量';
-			case 'alby': return 'Alby';
-			case 'albyConnect': return '连接 Alby';
-			case 'all': return '全部的';
-			case 'allRelays': return '所有服务器';
-			case 'allUsersZapped': return '所有用户都被zap了';
-			case 'amberNotInstalled': return '未安装 Amber 应用程序';
-			case 'amountInSats': return '金额（单位：Sats）';
-			case 'errorAddingArticle': return '添加文章时出错了，请重试！';
-			case 'errorAddingCuration': return '添加策展时出错了，请重试！';
-			case 'errorAddingWidget': return '添加智能组件时出错了，请重试！';
-			case 'errorAddingVideo': return '添加视频时出错了，请重试！';
-			case 'errorUpdatingCuration': return '更新策展时发生错误';
-			case 'userInvoiceGenerated': return ({required Object name}) => '${name} 的Invoice已生成';
-			case 'verifiedNoteRateSealed': return '你评分的验证笔记已被社区采纳。';
-			case 'apiKeyRequired': return 'Api key（必填）';
-			case 'appLanguage': return '系统语言';
-			case 'appTheme': return '应用主题';
-			case 'appearance': return '应用主题';
-			case 'article': return '文章';
-			case 'articleNotFound': return '文章未找到';
-			case 'articleAddedCuration': return '文章已添加到​​您的策展中';
-			case 'articles': return '文章';
-			case 'articlesAvailableCuration': return '此策展中的文章';
-			case 'askMeSomething': return '有什么可以帮您？';
-			case 'attemptConnectAmber': return '连接 Amber 的请求已被拒绝。';
-			case 'attemptsRemained': return '剩余尝试次数 ';
-			case 'autoSavedArticleDeleted': return '自动保存的文章已删除';
-			case 'autoSavedSMdeleted': return '自动保存的智能组件已删除';
-			case 'availableWallets': return '支持的钱包';
-			case 'back': return '返回';
-			case 'backgroundColor': return '背景颜色';
-			case 'balance': return '余额';
-			case 'beHelpful': return '帮助他人，即便观点不同';
-			case 'beFirstCommentThisVideo': return '成为第一个评论这个视频的人！';
-			case 'bio': return ({required Object content}) => '个人简介： ${content}';
-			case 'blankWidget': return '空白组件';
-			case 'bookmark': return '收藏';
-			case 'bookmarkAdded': return '已添加收藏列表';
-			case 'bookmarkLists': return '收藏列表';
-			case 'bookmarks': return '收藏夹';
-			case 'borderColor': return '边框颜色';
-			case 'button': return '按钮';
-			case 'buttonColor': return '按钮颜色';
-			case 'buttonCustomization': return '自定义按钮';
-			case 'buttonText': return '按钮文字';
-			case 'by': return '作者';
-			case 'byPerson': return ({required Object name}) => '作者 ${name}';
-			case 'byContinuing': return '继续操作即视为您同意\n';
-			case 'camera': return '相机';
-			case 'cancel': return '取消';
-			case 'checkSmartWidget': return '浏览智能组件';
-			case 'checkoutArticle': return '查看我的文章';
-			case 'checkoutCuration': return '查看我的策展';
-			case 'checkoutPaidNote': return '查看我的付费帖子';
-			case 'checkoutSmartWidget': return '查看我的智能组件';
-			case 'checkValidity': return '检查有效性';
-			case 'checkModelRouter': return '检查你的网络设备';
-			case 'checkoutVideo': return '查看我的视频';
-			case 'claim': return '领取';
-			case 'claimTime': return ({required Object time}) => '${time} 后可领取';
-			case 'clear': return '清除';
-			case 'clearAppCache': return '清除缓存';
-			case 'clearChat': return '清除聊天内容';
-			case 'clearDate': return '清除日期';
-			case 'click': return '点击';
-			case 'clickBelowToConnect': return '点击下方连接';
-			case 'clone': return '创建副本';
-			case 'close': return '关闭';
-			case 'pollClosedAt': return ({required Object date}) => '${date} 截止';
-			case 'pollClosesAt': return ({required Object date}) => '${date} 截止';
-			case 'color': return '颜色';
-			case 'comment': return '评论';
-			case 'comments': return '评论';
-			case 'communityPolls': return '社区投票';
-			case 'communityWallet': return '社区钱包';
-			case 'communityWidgets': return '社区的组件';
-			case 'compose': return '创作';
-			case 'confirmPayment': return '确认付款';
-			case 'congratulations': return '恭喜！';
-			case 'connect': return '连接';
-			case 'connectWithNwc': return '使用 NWC 连接';
-			case 'connected': return '已连接';
-			case 'consumablePoints': return '可用积分';
-			case 'contact': return '联系方式';
-			case 'container': return '内容框';
-			case 'containerCustomization': return '自定义内容框';
-			case 'contentModeration': return '内容审核';
-			case 'contentTextColor': return '内容文字颜色';
-			case 'contentTranslation': return '内容翻译';
-			case 'contentData': return ({required Object description}) => '内容： ${description}';
-			case 'continueAsGuest': return '继续以访客身份';
-			case 'contributeUnderstanding': return '为构建共识贡献力量';
-			case 'copy': return '复制';
-			case 'copyInvoice': return '复制 Invoice';
-			case 'copyLn': return '复制LN地址';
-			case 'copyNaddr': return '复制 naddr';
-			case 'copyNoteId': return '复制帖子 ID';
-			case 'copyNpub': return '复制 npub';
-			case 'copyNwc': return '复制 NWC';
-			case 'userInvoiceNotGenerated': return '无法为此用户生成 Invoice';
-			case 'notFindSMwithAddr': return '未检索到该地址的智能组件';
-			case 'couldNotUpdateRelaysList': return '无法更新Relay列表';
-			case 'coverUrl': return '封面地址';
-			case 'createWalletSendRecSats': return '创建一个钱包以轻松收发Sats';
-			case 'createAccount': return '创建账户';
-			case 'createWallet': return '创建钱包';
-			case 'yakiNwcDesc': return '使用 YakiHonne 的通道创建钱包';
-			case 'createYakiWallet': return '创建YakiHonne的钱包';
-			case 'createdAt': return '创建于';
-			case 'createdAtEditedAt': return ({required Object date1, required Object date2}) => '创建于 ${date1}，编辑于 ${date2}';
-			case 'curation': return '策展';
-			case 'curationNotFound': return '未找到相关策展';
-			case 'curationType': return '策展类型';
-			case 'curations': return '策展';
-			case 'currentlyLinkedMessage': return '已连接到你的账户，支持接收 Zaps';
-			case 'customization': return '自定义';
-			case 'customizeYourFeed': return '自定义信息流';
-			case 'dashboard': return '控制面板';
-			case 'decrMessage': return '正在解密消息';
-			case 'defaultKey': return '默认值';
-			case 'delete': return '删除';
-			case 'deleteContent': return ({required Object type}) => '删除 ${type}';
-			case 'deleteAccount': return '删除帐户';
-			case 'deleteBookmarkList': return '删除收藏列表';
-			case 'deleteCoverPic': return '删除封面图片！';
-			case 'deleteDraft': return '删除草稿';
-			case 'deleteWallet': return '删除钱包';
-			case 'description': return '描述';
-			case 'descriptionOptional': return '描述（可选）';
-			case 'details': return '详情';
-			case 'disableSecureDms': return '关闭安全私信';
-			case 'disconnecting': return '正在断开连接...';
-			case 'discordUrl': return 'Discord 网址';
-			case 'discover': return '发现';
-			case 'dismiss': return '取消';
-			case 'displayName': return '昵称';
-			case 'findThisHelpful': return '这对你有帮助吗？';
-			case 'findThisNotHelpful': return '这对你没有帮助？';
-			case 'dontHaveWallet': return '还没有钱包？';
-			case 'unTextR3Desc': return '别担心，每个人都会收到这些！这些评定很常见，如果足够多的人认为某条‘有帮助’的笔记实际上并没有提供足够的帮助，它可能会导致状态发生变化。';
-			case 'donations': return '捐款';
-			case 'downvotes': return '不喜欢';
-			case 'draft': return '草稿';
-			case 'duoLayout': return '双布局';
-			case 'earnSats': return '赚取 SATs';
-			case 'edit': return '编辑';
-			case 'editCover': return '编辑封面';
-			case 'editProfile': return '编辑个人资料';
-			case 'editToAddZapPoll': return '编辑以添加支持Zap的投票';
-			case 'editedOn': return ({required Object date}) => '编辑于： ${date}';
-			case 'emptyVerifiedNote': return '验证笔记内容为空！';
-			case 'enableSecureDms': return '启用安全 DM';
-			case 'eula': return '用户许可协议 (EULA)';
-			case 'engagementChart': return '互动图表';
-			case 'enjoyExpOwnData': return '享受掌控自己数据的体验！\n';
-			case 'ensureLnSet': return '请确认你的LN地址设置正确';
-			case 'enterSMaddr': return '输入智能组件 naddr 地址以检查其有效性';
-			case 'enterLn': return '输入你的地址 LUD-06 或 LUD-16';
-			case 'enterCoverUrl': return '输入你的封面链接';
-			case 'enterNip05': return '输入你的 NIP-05 地址';
-			case 'enterPictureUrl': return '输入你的图片链接';
-			case 'erase': return '移除';
-			case 'errorAddingBookmark': return '添加收藏时出错';
-			case 'errorAddingVerifiedNote': return '添加已验证的笔记时发生错误';
-			case 'errorClaimingReward': return '领取奖励时发生错误';
-			case 'errorConnectingRelay': return '连接Relay时发生错误';
-			case 'errorCreatingWallet': return '创建钱包时出错';
-			case 'errorDecodingData': return '解码数据时发生错误';
-			case 'errorDeletingContent': return '删除内容时出错';
-			case 'errorDeletingRating': return '删除评分时发生错误';
-			case 'errorGeneratingEvent': return '生成事件时发生错误';
-			case 'errorGeneratingInvoice': return '生成 invoice 时发生错误';
-			case 'errorLoggingYakiChest': return '登录 Yakihonne 百宝箱时发生错误';
-			case 'errorPayingInvoice': return '使用 invoice 付款时发生错误';
-			case 'errorSendingSats': return '发送 Sats 时发生错误';
-			case 'errorSendingEvent': return '发送事件时发生错误';
-			case 'errorSendingMessage': return '发送消息时发生错误';
-			case 'errorSettingToken': return '设置 Token 时发​​生错误';
-			case 'errorSigningEvent': return '签署事件时发生错误';
-			case 'errorSubmittingRating': return '提交评分时发生错误';
-			case 'errorTranslating': return '翻译内容时发生错误';
-			case 'errorUpdatingData': return '更新数据时发生错误';
-			case 'errorUpdatingRelaysList': return '更新Relay列表时发生错误';
-			case 'errorUploadingMedia': return '上传内容时发生错误';
-			case 'errorUploadingVideo': return '上传视频时发生错误';
-			case 'errorUsingWallet': return '使用钱包时出现错误';
-			case 'errorZappingUsers': return 'Zap用户时发生错误';
-			case 'errorUploadingImage': return '上传图片时发生错误';
-			case 'errorLoadingVideo': return '加载视频时出错';
-			case 'errorUsingExternalWallet': return '使用外部钱包时出错';
-			case 'eventNotFound': return '找不到该事件';
-			case 'eventNotRecognized': return '无法识别的事件';
-			case 'exit': return '退出';
-			case 'expandWorld': return '添加你喜欢的内容，探索更广阔的世界，开启全新旅程！';
-			case 'explanation': return '解释';
-			case 'explore': return '探索';
-			case 'externalWallet': return '外部钱包';
-			case 'feedOptions': return '信息流设置';
-			case 'fetchingArticle': return '正在获取文章';
-			case 'fetchingCuration': return '正在获取策展';
-			case 'fetchingEvent': return '正在获取事件';
-			case 'fetchingEventUserRelays': return '从用户的Relay中获取事件';
-			case 'fetchingNote': return '正在获取帖子';
-			case 'fetchingProfile': return '正在获取个人资料';
-			case 'fetchingSmartWidget': return '正在获取智能组件';
-			case 'fetchingUserInboxRelays': return '正在获取用户的inbox relays';
-			case 'fetchingVideo': return '正在获取视频';
-			case 'fileSharing': return '文件共享';
-			case 'fillColor': return '填充颜​​色';
-			case 'finished': return '完成！';
-			case 'follow': return '关注';
-			case 'followAll': return '关注所有';
-			case 'followMeOnNostr': return '在 Nostr 上关注我';
-			case 'followers': return '关注者';
-			case 'following': return '已关注';
-			case 'pendingFollowing': return '已关注..';
-			case 'followings': return '关注者';
-			case 'followsYou': return '关注你';
-			case 'fontSize': return '字体大小';
-			case 'forName': return ({required Object name}) => '用于 ${name}';
-			case 'enableSecureDmsMessage': return '为了更好的安全性和隐私，建议启用安全DM。';
-			case 'zapSplitsMessage': return 'Zap 分账至少需要一个人参与';
-			case 'free': return '免费';
-			case 'fuelYakihonne': return '助力 YakiHonne 成长！你的支持推动了新功能的开发和更好的用户体验。';
-			case 'gain': return '获得';
-			case 'gallery': return '图库';
-			case 'generateInvoice': return '生成 invoice';
-			case 'generateInvoices': return '生成 invoice';
-			case 'getApiKey': return '获取API密钥';
-			case 'getInvoice': return '获取 invoice';
-			case 'getStartedNow': return '立即开始';
-			case 'gifs': return '动图';
-			case 'gotIt': return '明白了！';
-			case 'granted': return '已授权';
-			case 'earnSatsDesc': return '帮助我们提供更多去中心化的见解来审核这条付费笔记';
-			case 'heyWelcomeBack': return '您好，欢迎回来!';
-			case 'hideSuggestions': return '隐藏建议';
-			case 'highlights': return '突出显示';
-			case 'home': return '首页';
-			case 'hfCustomization': return '自定义首页信息流';
-			case 'horizontalVideo': return '横向视频';
-			case 'wantToShareRevenues': return '我愿分享这笔收入';
-			case 'identifier': return '标识符';
-			case 'image': return '图片';
-			case 'imageAspectRatio': return '图片比例';
-			case 'imageCustomization': return '自定义图片';
-			case 'imageUrl': return '图片链接';
-			case 'imageUploadHistory': return '图片上传历史';
-			case 'important': return '重要的';
-			case 'inTag': return ({required Object name}) => '在 ${name}中';
-			case 'inaccessibleLink': return '无法访问的链接';
-			case 'inbox': return '收件箱';
-			case 'initializingAccount': return '正在初始化帐户...';
-			case 'insertText': return '插入文字';
-			case 'instantConntect': return '立即连接到服务器';
-			case 'interestsUpdateMessage': return '兴趣列表已更新成功！';
-			case 'interested': return '感兴趣的';
-			case 'interests': return '兴趣';
-			case 'invalidHexKey': return '无效的 hex key！';
-			case 'invalidInvoice': return '无效 invoice';
-			case 'invalidPairingSecret': return '配对密码无效';
-			case 'invalidPrivateKey': return '私钥无效！';
-			case 'invalidRelayUrl': return 'Relay 地址无效';
-			case 'invoice': return 'Invoice';
-			case 'invoiceCopied': return '已复制Invoice！';
-			case 'invoicePaid': return 'Invoice 已支付成功';
-			case 'invoiceOrLN': return 'Invoice或LN地址';
-			case 'issueOccuredSelectingImage': return '选择图片时出现问题。';
-			case 'somethingWentWrongDesc': return '加载数据时似乎发生了问题，请重试！';
-			case 'invalidInvoiceDesc': return '扫描的Invoice无法识别，请重新扫描';
-			case 'invoiceNotPayed': return 'Invoice似乎未支付，请检查并重试';
-			case 'itsLive': return '上线了！';
-			case 'noCommunityNotes': return '这里很安静，欢迎评论。';
-			case 'joinedOn': return ({required Object date}) => '加入时间： ${date}';
-			case 'keys': return '密钥';
-			case 'known': return '已知';
-			case 'languagePreferences': return '语言偏好';
-			case 'lastGained': return ({required Object date}) => '上次获得： ${date}';
-			case 'lastUpdatedOn': return ({required Object date}) => '最后更新： ${date}';
-			case 'latest': return '最新的';
-			case 'layout': return '布局';
-			case 'layoutCustomization': return '自定义布局';
-			case 'less': return '减少';
-			case 'letsGetStarted': return '让我们开始吧！';
-			case 'levelNumber': return ({required Object number}) => '等级 ${number}';
-			case 'lightningAddress': return 'LN地址';
-			case 'lnCopied': return 'LN地址复制成功！👏 ';
-			case 'link': return '关联';
-			case 'linkWallet': return '链接钱包';
-			case 'linkWalletDesc': return '你即将覆盖之前的钱包并将一个新的钱包链接到你的个人资料，你是否确认继续操作？';
-			case 'linked': return '链接';
-			case 'list': return '列表';
-			case 'loading': return '加载中';
-			case 'loadingFollowings': return '关注者加载中';
-			case 'loadingPreviousPosts': return '加载之前的帖子中…';
-			case 'loadingFollowers': return '关注者加载中';
-			case 'locked': return '锁定';
-			case 'loggingIn': return '正在登录...';
-			case 'loggingOut': return '正在退出...';
-			case 'login': return '登录';
-			case 'loginYakiChestPoints': return '连接 Yaki 百宝箱，获取积分，赢得奖励！';
-			case 'logoutAllAccounts': return '注销所有帐户';
-			case 'validDescriptionCuration': return '为此策展添加有效的描述';
-			case 'validImageCuration': return '为此策展添加有效的图片';
-			case 'validTitleCuration': return '为此策展添加有效的标题';
-			case 'addValidUrl': return '添加有效的连接';
-			case 'submitValidLud': return '确保获得有效的 lud16/lud06';
-			case 'showSecretDesc': return '请确保安全保存，因为它可以完全访问您的账户';
-			case 'invalidInvoiceLnurl': return '设置有效的 invoice 或 lnurl';
-			case 'setAllRequiredContent': return '确保设置所有必填内容';
-			case 'setOutboxRelays': return '确保配置好你的outbox relay。';
-			case 'submitValidCloseDate': return '输入有效的截止日期';
-			case 'submitMinMaxSats': return '输入有效的最小和最大 Sats 值';
-			case 'submitValidOptions': return '提交有效的选项';
-			case 'submitValidData': return '确保提交的数据有效';
-			case 'submitValidInvoice': return '确保提交有效的 invoice';
-			case 'manageAccounts': return '账户管理';
-			case 'manageInterests': return '偏好管理';
-			case 'maxSats': return '最大 Sats';
-			case 'maximumSatoshis': return '最大 Sats';
-			case 'mediaExceedsMaxSize': return '媒体文件超过最大限制（21MB）';
-			case 'mediaUploader': return '媒体上传器';
-			case 'mentions': return '提及';
-			case 'messageOptional': return '留言（可选）';
-			case 'messageCouldNotBeDecrypted': return '消息无法解密';
-			case 'messageNotDecrypted': return '消息尚未解密！';
-			case 'messageCopied': return '消息复制成功！';
-			case 'metadata': return '元数据';
-			case 'min': return '最小';
-			case 'minSats': return '最小Sats';
-			case 'minimumSatoshis': return '最小Sats';
-			case 'errorMissingKey': return '缺少 API 密钥或订阅已过期。';
-			case 'monoLayout': return '单列布局';
-			case 'monolayoutRequired': return '需要单列布局';
-			case 'more': return '更多的';
-			case 'moreDots': return '更多的...';
-			case 'moveDown': return '下移';
-			case 'moveUp': return '上移';
-			case 'mute': return '静音';
-			case 'muteList': return '静音列表';
-			case 'muteUser': return '将用户静音';
-			case 'mutuals': return '共同的';
-			case 'myArticles': return '我的文章';
-			case 'myDrafts': return '我的草稿';
-			case 'myPolls': return '我的投票';
-			case 'myPublicKey': return '我的公钥';
-			case 'mySecretKey': return '我的私钥';
-			case 'myVideos': return '我的视频';
-			case 'myWidgets': return '我的智能组件';
-			case 'naddr': return 'naddr';
-			case 'nostrWalletConnectDesc': return '连接原生 nostr 钱包';
-			case 'needsMoreRating': return '需要更多评定';
-			case 'needsYourHelp': return '需要您的帮助';
-			case 'nevent': return 'nevent';
-			case 'newKey': return '新的';
-			case 'newMessage': return '新消息';
-			case 'newPostGesture': return '长按以发布新帖子';
-			case 'next': return '下一个';
-			case 'noContentBelongToCuration': return ({required Object type}) => '此策展没有包含 ${type}';
-			case 'noContentCanBeFound': return ({required Object type}) => '未找到 ${type}';
-			case 'noArticlesInCuration': return '未找到此策展中的任何文章';
-			case 'addNewBookmark': return '找不到收藏列表，试试创建一个！';
-			case 'noBookmarksListFound': return '找不到收藏列表，试试创建一个！';
-			case 'noCommentsCanBeFound': return '暂无评论';
-			case 'noComponentsDisplayed': return '无法显示任何组件';
-			case 'noCurationsFound': return '未找到策展，试着创建一个来添加内容';
-			case 'noDescription': return '暂无描述';
-			case 'noElementsInBookmarks': return '收藏列表中未找到任何内容';
-			case 'noEventIdCanBeFound': return '找不到具有该 id 的事件！';
-			case 'noImageHistory': return '未找到图片历史';
-			case 'noInternetAccess': return '无网络连接';
-			case 'noInvoiceAvailable': return '没有可用的 invoices';
-			case 'noMessageCanBeFound': return '未找到任何消息';
-			case 'noMessagesToDisplay': return '没有消息可显示';
-			case 'noMoreData': return '无更多数据';
-			case 'noMutedUserFound': return '无静音用户';
-			case 'noNotificationCanBeFound': return '未找到任何通知';
-			case 'noPaidNotesCanBeFound': return '未找到任何付费帖子';
-			case 'noPollsCanBeFound': return '未找到任何投票';
-			case 'noReasonsSpecified': return '未指明原因！';
-			case 'noRelaysCanBeFound': return '未找到任何服务器';
-			case 'noUserRelays': return '未找到此用户的服务器';
-			case 'noRepliesDesc': return '未不到此帖子的回复';
-			case 'noResKeyword': return '未找到匹配的结果';
-			case 'noResKeywordDesc': return '未找到匹配的结果，请尝试使用其他关键词。';
-			case 'noSmartWidgetCanBeFound': return '未找到智能组件';
-			case 'noSmartWidget': return '未不到智能组件的草稿';
-			case 'noTemplatesCanBeFound': return '该类别下没有可用模板';
-			case 'noTitle': return '无标题';
-			case 'noTransactionCanBeFound': return '未找到交易记录';
-			case 'noUserZapped': return '没有用户被 zap！';
-			case 'noUserCanBeFound': return '未找到用户';
-			case 'noVideosInCuration': return '未找到有关此策展的视频';
-			case 'noWalletCanBeFound': return '未找到钱包';
-			case 'noZappersCanBeFound': return '未找到 zappers';
-			case 'noImGood': return '不，我很好';
-			case 'noWalletConnectedToYourProfile': return '目前连接的钱包都未与您的个人资料关联';
-			case 'nostrScheme': return 'Nostr 标准';
-			case 'nostrWalletConnect': return 'Nostr 钱包连接';
-			case 'nwcInitialized': return 'NWC已初始化';
-			case 'notEnoughBalance': return '没有足够余额来支付这笔款项';
-			case 'notFollowedByAnyoneYouFollow': return '没有人关注你关注的人';
-			case 'notHelpful': return '没有帮助';
-			case 'notInterested': return '不感兴趣';
-			case 'notSealed': return '未锁定';
-			case 'notSealedYet': return '未锁定';
-			case 'note': return '帖子';
-			case 'noteNotFound': return '未找到帖子';
-			case 'notePublished': return '帖子已发布！';
-			case 'noteIdCopied': return '帖子ID 已复制！👏';
-			case 'walletDataNote': return '注意：与您的钱包相关的所有数据将安全地本地存储，并且永远不会在应用范围外共享。';
-			case 'changeRatingNote': return '注意：更改您的评定仅在 5 分钟内有效，之后您将无法修改。';
-			case 'payPublishNote': return '注意：请确认您提供的内容为最终版，发布后不可更改，且所花费的 SATS 不可退还。';
-			case 'notes': return '帖子';
-			case 'notesFromCommunity': return '来自社区的帖子';
-			case 'unTextW3Desc': return '尚未标记“有帮助”或“无帮助”的帖子';
-			case 'unTextW1': return '标记为“有帮助”的帖子';
-			case 'unTextW3': return '需要更多评定的帖子';
-			case 'unTextW2': return '标记为“无帮助”的帖子';
-			case 'un2': return '正在评定中的帖子';
-			case 'notifications': return '通知';
-			case 'npubNsecHex': return '公钥，私钥或十六进制';
-			case 'nwcCopied': return 'NWC已复制成功！';
-			case 'onDate': return ({required Object date}) => '在 ${date}';
-			case 'onSelectedWalletLinkIt': return '选择你的钱包并连接它';
-			case 'oneTimeRewards': return '一次性奖励';
-			case 'ongoing': return '进行中';
-			case 'nothingToShowHere': return '哎呀！这里没有内容可显示！';
-			case 'optionBackgroundColor': return '选择背景颜色';
-			case 'optionTextColor': return '选择文字颜色';
-			case 'options': return '选项';
-			case 'optionsNumber': return ({required Object number}) => '选项： ${number}';
-			case 'orUseYourWallet': return '或者使用你的钱包';
-			case 'others': return '其他的';
-			case 'privacyNote': return '我们的应用通过将敏感数据安全地存储在用户设备上，并采用严格的加密措施，确保隐私得到最大保障。我们严格遵守不共享政策，确保敏感信息始终保密，绝不会离开用户设备。';
-			case 'owner': return '所有者';
-			case 'paid': return '已付款';
-			case 'paidNote': return '付费帖子';
-			case 'paidNotePublished': return '付费帖子已发布！';
-			case 'paidNoteLoading': return '付费帖子加载中';
-			case 'partialUsersZapped': return '部分用户已收到 Zap！';
-			case 'pasteNwcAddress': return '粘贴 NWC 地址';
-			case 'pasteYourKey': return '粘贴你的密钥';
-			case 'pasteKind1063': return '粘贴您的 1063 nevent 并提交';
-			case 'pasteYourLink': return '粘贴你的链接并提交';
-			case 'pay': return '支付';
-			case 'payAmount': return ({required Object number}) => '支付 ${number} Sats';
-			case 'payPublish': return '支付并发布';
-			case 'payWithNwc': return '使用 NWC 支付';
-			case 'paymentFailed': return '付款失败';
-			case 'paymentSucceeded': return '付款成功';
-			case 'paymentSurpassMax': return '付款金额超过允许的最大金额';
-			case 'peopleToFollow': return '关注的人';
-			case 'permissionInvoiceNotGranted': return '未授予支付invoices的许可。';
-			case 'pickYourComponent': return '选择你的组件';
-			case 'pickYourImage': return '选择你的图片';
-			case 'pickYourMedia': return '选择你的内容';
-			case 'pickYourVideo': return '选择你的视频';
-			case 'pictureUrl': return '图片链接';
-			case 'plan': return '计划';
-			case 'submitValidVideoEvent': return '请提交有效的视频事件';
-			case 'points': return '积分';
-			case 'pointsSystem': return '积分系统';
-			case 'pollCloseDate': return '投票截止日期';
-			case 'pollOptions': return '投票选项';
-			case 'pollZapPublished': return '支持zap的投票已发布！';
-			case 'popularNotes': return '热门帖子';
-			case 'post': return '帖子';
-			case 'postArticle': return '发布文章';
-			case 'postNotFound': return '未找到帖子';
-			case 'postCuration': return '发布策展';
-			case 'postInNote': return '发布为帖子';
-			case 'postNote': return '发布帖子';
-			case 'postSmartWidget': return '发布智能组件';
-			case 'postVideo': return '发布视频';
-			case 'postedBy': return '发帖者';
-			case 'postedFrom': return '来自';
-			case 'postedOn': return ({required Object date}) => '发布于 ${date}';
-			case 'preview': return '预览';
-			case 'privKeyCopied': return '私钥被复制！ ';
-			case 'pro': return '专业版';
-			case 'processCompleted': return '处理已完成';
-			case 'profile': return '个人资料';
-			case 'profileLink': return '个人资料链接';
-			case 'profileCopied': return '个人资料链接已复制！ ';
-			case 'profilePreview': return '个人资料预览';
-			case 'profileRelays': return ({required Object number}) => '推荐的Relay - ${number}';
-			case 'publicKey': return '公钥';
-			case 'publicKeyCopied': return '公钥已复制！👏 ';
-			case 'publish': return '发布';
-			case 'publishRemoveDraft': return '发布并删除草稿';
-			case 'publishedOnText': return '发布于';
-			case 'publishedOn': return ({required Object date}) => '发表于： ${date}';
-			case 'pullToRefresh': return '下拉刷新';
-			case 'qrCode': return '二维码';
-			case 'rateHelpful': return '评定为“有帮助”';
-			case 'rateNotHelpful': return '评定为“没有帮助”';
-			case 'ratedHelpful': return '已评定为“有帮助”';
-			case 'ratedNotHelpful': return '评定为“没有帮助”';
-			case 'un1': return '最终被评为“有帮助”的笔记所收到的“没有帮助”评定统计';
-			case 'unTextR3': return '最终被评为“有帮助”的笔记收到的“没有帮助”评定统计';
-			case 'un2Desc': return '尚未标记为“有帮助”或“无帮助”的笔记评定';
-			case 'unTextR1': return '使笔记获得“有帮助”状态的评定';
-			case 'unTextR2': return '使笔记获得“无帮助”状态的评定';
-			case 'readAboutVerifyingNotes': return '阅读有关验证笔记的信息';
-			case 'readArticle': return '阅读文章';
-			case 'readMore': return '阅读更多';
-			case 'readOnly': return '只读';
-			case 'readWrite': return '读/写';
-			case 'receive': return '收到';
-			case 'receiveSats': return '收到 Sats';
-			case 'recent': return '最近的';
-			case 'recentTransactions': return '最近交易';
-			case 'recentWithReplies': return '最近回复';
-			case 'reconnectWifi': return '重新连接到 Wi-Fi';
-			case 'refresh': return '刷新';
-			case 'refreshed': return '已刷新';
-			case 'refreshing': return '刷新中';
-			case 'relayInUse': return 'Relay已经在使用';
-			case 'relaySettings': return ({required Object number}) => 'Relay设置 ${number}';
-			case 'relayingStuff': return '服务器正在重置';
-			case 'relays': return 'Relays';
-			case 'relaysNotReached': return '无法连接到服务器';
-			case 'relaysListUpdated': return '服务器列表已更新';
-			case 'releaseToLoad': return '滑动以加载更多';
-			case 'repeatedRewards': return '重复的奖励';
-			case 'replies': return '回复';
-			case 'reply': return '回复';
-			case 'replyingTo': return ({required Object name}) => '回复: ${name}';
-			case 'reposted': return '已转发';
-			case 'requestInProgress': return '请求正在进行中';
-			case 'reveal': return '展示';
-			case 'rewards': return '奖励';
-			case 'saveDraft': return '保存草稿';
-			case 'saved': return '已保存';
-			case 'scanPay': return '扫描并支付';
-			case 'scanAgain': return '重新扫描';
-			case 'scanQrCode': return '扫描二维码';
-			case 'sealed': return '采纳';
-			case 'search': return '搜索';
-			case 'searchContentByTitle': return ({required Object type}) => '按标题搜索${type} ';
-			case 'searchNameNpub': return '按用户名、npub 或 nprofile 搜索';
-			case 'searchByUserName': return '按用户名搜索';
-			case 'searchRelay': return '搜索服务器';
-			case 'secureDirectMessaging': return '安全私信';
-			case 'seeAll': return '查看全部';
-			case 'seeAllAttempts': return '查看所有尝试';
-			case 'seeAlso': return '参见';
-			case 'seeAnything': return '发现什么需要改进的吗？';
-			case 'seeMore': return '更多';
-			case 'seeOriginal': return '查看原文';
-			case 'seeTranslation': return '查看翻译';
-			case 'selectAndUploadLocaleImage': return '选择并上传本地图片';
-			case 'selectAdate': return '选择日期';
-			case 'selectDefaultWallet': return '在设置中选择默认钱包';
-			case 'selectUserToZap': return '选择要发送 Zap 的用户（可选）';
-			case 'selectValidUrlImage': return '选择一个有效的图片链接';
-			case 'selectWalletTransactions': return '选择钱包查看最新交易';
-			case 'selectOneReason': return '至少选择一个理由';
-			case 'selectComponent': return '选择组件并编辑';
-			case 'send': return '发送';
-			case 'sendSats': return '发送 Sats';
-			case 'setProperName': return '设置正确的名称';
-			case 'setSatsMoreThanZero': return '设置大于0的sat金额';
-			case 'setBookmarkTitleDescription': return '设置收藏列表的标题和描述';
-			case 'setValidKey': return '设置一个有效的密钥';
-			case 'setUpYourLink': return '设置您的链接';
-			case 'setUpYourNevent': return '设置您的事件';
-			case 'setYourRating': return '设置您的评级';
-			case 'settings': return '设置';
-			case 'share': return '分享';
-			case 'shareGlimps': return '用真实的语言，分享您的独到见解。';
-			case 'shareContent': return '分享内容';
-			case 'shareImage': return '分享图片';
-			case 'shareLink': return '分享链接';
-			case 'shareNaddr': return '分享地址';
-			case 'shareNoteId': return '分享帖子ID';
-			case 'shareNprofile': return '分享账号信息';
-			case 'shareProfile': return '分享个人资料';
-			case 'shareProfileDesc': return '分享个人资料，扩展网络，建立联系。';
-			case 'show': return '显示';
-			case 'showArticlesNotesSuggestions': return '显示文章/帖子推荐';
-			case 'showSecret': return '显示密钥！';
-			case 'showStats': return '显示 Sats';
-			case 'showSuggestedInterests': return '显示推荐兴趣';
-			case 'showSuggestedPeople': return '显示推荐关注的人';
-			case 'showSuggestions': return '显示推荐';
-			case 'signIn': return '登录';
-			case 'usingViewModeDesc': return '使用你的私钥登录并加入YakiHonne';
-			case 'size': return '大小';
-			case 'slideToPay': return '滑动以进行支付';
-			case 'smartWidget': return '智能组件';
-			case 'smartWidgetBuilder': return '智能组件构建器';
-			case 'smartWidgetChecker': return '智能组件检查器';
-			case 'smartWidgetNotFound': return '未找到智能组件';
-			case 'smartWidgetPublishedSuccessfuly': return '智能组件已发布成功';
-			case 'smartWidgets': return '智能组件';
-			case 'smartWidgetsDrafts': return '智能组件草稿';
-			case 'smartWidgetsTemplates': return '智能组件模板';
-			case 'software': return '软件设置';
-			case 'somethingWentWrong': return '出错了！';
-			case 'soonUsers': return '很快用户将能够在以下活动中使用积分：';
-			case 'source': return '来源';
-			case 'sourceRecommended': return '来源（推荐）';
-			case 'splitRevenuesWithUsers': return '与用户分享收益';
-			case 'splitZapsWith': return '分享zaps 给';
-			case 'spreadWordSharingContent': return '请传播到世界各个角落';
-			case 'startBuildingSmartWidget': return '开始构建和自定义您的智能组件以在 Nostr 网络上使用';
-			case 'startEarningPoints': return '开始赚取并充分利用您的 Yaki 积分！ ';
-			case 'startSearchContent': return '开始搜索内容';
-			case 'startSearchPeople': return '开始搜索用户';
-			case 'stickers': return '贴图';
-			case 'submit': return '提交';
-			case 'submitBookmarkList': return '提交收藏列表';
-			case 'submitCuration': return '提交策展';
-			case 'successfulRelays': return '链接服务器成功';
-			case 'suggestedInterests': return '兴趣推荐';
-			case 'suggestions': return '推荐';
-			case 'suggestionsBox': return '反馈框';
-			case 'summaryOptional': return '摘要（可选）';
-			case 'supportYakihonne': return '支持 YakiHonne';
-			case 'supportedNips': return '已支持的Nips';
-			case 'switchAccounts': return '切换账户';
-			case 'taylorExperienceInterests': return '通过选择你的主要兴趣来定制您的体验';
-			case 'telegramUrl': return 'Telegram 链接';
-			case 'templates': return '模板';
-			case 'text': return '文本';
-			case 'textColor': return '文本颜色';
-			case 'textCustomization': return '文本自定义';
-			case 'textSuccesfulyCopied': return '文本复制成功！';
-			case 'theFollowingNote': return '以下注释：';
-			case 'smHaveTitle': return '智能组件至少需要一个标题';
-			case 'smHaveOneWidget': return '智能组件至少有一个组件';
-			case 'valueBetweenMinMax': return '该值应介于最小和最大 sat 之间';
-			case 'noDataFromGpt': return '有来自 GPT 的数据显示。';
-			case 'oneFeedOptionAvailable': return '至少需要一个信息流选项';
-			case 'unTextW1Desc': return '这些笔记现在会展示给查看帖子的人，增加背景信息并帮助大家了解更多内容。';
-			case 'unTextW2Desc': return '这些笔记已经被足够多的贡献者判定为“没有帮助”，包括那些在过去持不同意见的贡献者。';
-			case 'un1Desc': return '这些评定会被双重计算，因为它们通常表示对其他人认为有帮助的笔记的支持。';
-			case 'unTextR1Desc': return '这些被标识了“有帮助”的笔记会作为上下文显示在帖子中，帮助用户了解信息。';
-			case 'unTextR2Desc': return '这些评定通过向笔记作者提供反馈，改进了验证笔记，并使贡献者能够专注于最有潜力的笔记。';
-			case 'notValidVideoEvent': return '此事件不是有效的视频事件！';
-			case 'sensitiveContent': return '涉及敏感内容';
-			case 'emptyVideoUrl': return '此 nevent 的地址为空';
-			case 'thisNoteAwaitRating': return '此笔记正在等待社区评定';
-			case 'yourNoteAwaitRating': return '此笔记正在等待社区评定';
-			case 'smartWidgetConvention': return '此智能组件没有遵循约定的协议';
-			case 'useCannotBeZapped': return '该用户无法被zap';
-			case 'thread': return '帖子';
-			case 'thumbnailPreview': return '缩略图预览';
-			case 'title': return '标题';
-			case 'titleData': return ({required Object description}) => '标题： ${description}';
-			case 'toBeAbleSendSats': return '为了确保成功zap，请连接您的闪电网络钱包';
-			case 'topReasonsSelected': return '评定者选择的主要原因：';
-			case 'totalAmount': return '总额';
-			case 'totalNumber': return ({required Object number}) => '全部的： ${number}';
-			case 'trending': return '热搜';
-			case 'tryAgain': return '请重试';
-			case 'type': return '类型';
-			case 'typeValidZapQuestion': return '请输入有效的投票问题！';
-			case 'unableToOpenUrl': return '无法打开网址';
-			case 'undo': return '撤消';
-			case 'undoRating': return '撤消评定';
-			case 'unfollow': return '取消关注';
-			case 'unfollowAll': return '取消全部关注';
-			case 'pendingUnfollowing': return '正在取消关注...';
-			case 'unknown': return '未知';
-			case 'unknownVerifiedNote': return '未知的验证笔记';
-			case 'unlocked': return '解锁';
-			case 'unmute': return '解除静音';
-			case 'unmuteUser': return '解除静音用户';
-			case 'untitled': return '无标题';
-			case 'update': return '更新';
-			case 'updateInterests': return '更新兴趣';
-			case 'updateProfile': return '更新个人资料';
-			case 'updatedSuccesfuly': return '更新成功';
-			case 'updates': return '更新';
-			case 'updatesNews': return '更新消息';
-			case 'uploadAndUse': return '上传及使用';
-			case 'uploadImage': return '上传图片';
-			case 'uploadingImage': return '正在上传图片...';
-			case 'upvotes': return '点赞';
-			case 'url': return '链接';
-			case 'useAmber': return '使用Amber';
-			case 'useInvoice': return '使用  invoice';
-			case 'useTemplate': return '使用模板';
-			case 'user': return '用户';
-			case 'userCannotBeFound': return '未找到用户';
-			case 'userHasBeenMuted': return '用户已被静音';
-			case 'userHasBeenUnmuted': return '用户已解除静音';
-			case 'userName': return '用户名';
-			case 'userNameCopied': return '用户名复制成功！';
-			case 'userZappedSuccesfuly': return '用户已成功收到 Zap';
-			case 'userImpact': return '用户的影响力';
-			case 'userRelays': return '用户的服务器';
-			case 'usingExternalSign': return '通过外部签名进行操作';
-			case 'value': return '数值';
-			case 'verifyNip05': return '已验证的 Nostr 地址 (NIP 05)';
-			case 'verifiedNoteNotFound': return '未找到验证笔记';
-			case 'verifyNotes': return '验证笔记';
-			case 'verifyingNote': return '正在验证的笔记';
-			case 'version': return '版本';
-			case 'video': return '视频';
-			case 'videoNotFound': return '未找到视频';
-			case 'videoCustomization': return '自定义视频';
-			case 'videoAddedCuration': return '视频已添加到你的策展中';
-			case 'videoUrl': return '视频链接';
-			case 'videos': return '视频';
-			case 'videosAvailableCuration': return '此策展中可用的视频';
-			case 'view': return '查看';
-			case 'viewProfile': return '查看个人资料';
-			case 'viewQrCode': return '查看二维码';
-			case 'views': return '查看';
-			case 'visitProfile': return '访问个人资料';
-			case 'voteNotSubmitted': return '无法提交投票';
-			case 'voteRequired': return '需要先投票才能显示统计结果';
-			case 'votesByUsers': return '用户投票';
-			case 'votesByZaps': return '支持 zap的投票';
-			case 'votesNumber': return ({required Object number}) => '投票数： ${number}';
-			case 'waitingGenerationOfInvoice': return '等待生成 invoices';
-			case 'wallet': return '钱包';
-			case 'walletNotLinked': return '无法链接，错误的钱包地址';
-			case 'walletCreated': return '钱包创建成功';
-			case 'walletLinked': return '钱包链接成功';
-			case 'wallets': return '钱包';
-			case 'warning': return '提醒';
-			case 'watchNow': return '立即观看';
-			case 'noLnInNwc': return '\n无法从您的 NWC 密钥中提取地址，请检查您的闪电地址服务提供商，以复制地址或更新个人资料';
-			case 'readAboutVerifyingNotesDesc': return '我们为您准备了一篇文章，帮助您更好了解我们的使命。';
-			case 'website': return '网站';
-			case 'weight': return '权重';
-			case 'whatThinkThis': return '您对此有何看法？';
-			case 'whatThinkOfThat': return '您对此有何看法？';
-			case 'whatsOnYourMind': return '您在想什么？';
-			case 'whatsThis': return '这是什么？';
-			case 'whyVerifyingNotes': return '为什么需要验证笔记？';
-			case 'widgets': return '智能组件';
-			case 'writeCommentOptional': return '写评论（可选）';
-			case 'writeYourMessage': return '写留言';
-			case 'writeNote': return '写一个帖子';
-			case 'writeSummary': return '写一个摘要';
-			case 'writeValidNote': return '写一个有效的帖子！';
-			case 'writeOnly': return '只能写入';
-			case 'writeSomethingAboutYou': return '写一些关于您的事情！';
-			case 'writeSomething': return '写点东西...';
-			case 'writeYourText': return '留下你的文字';
-			case 'xUrl': return 'X 链接';
-			case 'yakiChest': return 'Yaki百宝箱';
-			case 'yakihonne': return 'YakiHonne';
-			case 'yakihonneChest': return 'Yaki百宝箱！';
-			case 'yakihonneConsPoints': return '可用积分';
-			case 'yakihonneImprovements': return '改进YakiHonne';
-			case 'yakihonneNote': return 'YakiHonne的帖子';
-			case 'yakihonneNotification': return 'YakiHonne的通知';
-			case 'yakiNwc': return 'YakiHonne 的 NWC';
-			case 'clearAppCacheDesc': return '您即将清除应用程序缓存，是否要继续？';
-			case 'deleteWalletDesc': return '您即将删除此钱包，是否继续？';
-			case 'undoRatingDesc': return '即将撤销您的评定，是否要继续？';
-			case 'alreadyLoggedIn': return '已登录！';
-			case 'deleteAccountMessage': return '正在尝试登录已删除的帐户。';
-			case 'loggedToYakiChest': return '已登录 Yaki百宝箱';
-			case 'loggedIn': return '已登录！';
-			case 'notUsingSecureDms': return '不再使用安全DM';
-			case 'usingSecureDms': return '正在使用安全DM';
-			case 'usingExternalSignDesc': return '正在使用外部签名';
-			case 'secKeyWalletDesc': return '账户密钥和钱包连接密钥可在您的设置中找到，确保它们的安全性非常重要，请妥善保管。';
-			case 'secKeyDesc': return '请在设置中查找您的账户密钥，确保它们的安全性对账户和钱包至关重要，务必保密。';
-			case 'uploadSendMedia': return '你可以在选择或获取媒体文件后立即上传和发送';
-			case 'uploadPasteUrl': return '你可以上传或粘贴您喜欢的图片链接';
-			case 'canUploadPastLink': return '您可以上传视频、粘贴链接或选择一种1063事件类型来创建视频中。';
-			case 'findPaidNoteCorrect': return '这个付费帖子是正确的';
-			case 'findPaidNoteMisleading': return '这个付费帖子是有误导性的';
-			case 'alreadyContributed': return '感谢您的贡献!';
-			case 'alreadyVoted': return '已投票';
-			case 'congratsDesc': return ({required Object number}) => '因以下行动您获得${number} xp奖励，保持活跃并赚取奖励！';
-			case 'youHaveLeftNote': return '你已对这个付费帖子验证';
-			case 'noRewards': return '你当前没有奖励，互动或撰写验证笔记来获取奖励';
-			case 'noWalletLinkedMessage': return '个人资料中没有绑定钱包，你想绑定吗？';
-			case 'noWalletLinkedToYouProfile': return '个人资料中没有绑定钱包';
-			case 'youHaveRated': return '你已评定';
-			case 'ratedNoteSealed': return '你已评定的笔记已被社区采纳';
-			case 'youRatedHelpful': return '你评定为“有帮助”';
-			case 'youRatedNotHelpful': return '你评定为“没有帮助”';
-			case 'ownReceivedSat': return ({required Object number}) => '你已收到 ${number} Sats';
-			case 'ownSentSat': return ({required Object number}) => '你已发送 ${number} Sats';
-			case 'voteToSeeStats': return '需要先投票才能看到统计';
-			case 'you': return '您： ';
-			case 'confirmDeleteContent': return ({required Object type}) => '确定要删除这个 ${type}？';
-			case 'confirmDeleteBookmarkList': return '确定要删除这个收藏列表吗？';
-			case 'confirmDeleteDraft': return '确定要删除此草稿么？';
-			case 'deleteCoverPicDesc': return '确定删除封面图片么？';
-			case 'youreAllSet': return '已设置!';
-			case 'switchToMonolayout': return '切换到单栏布局会清空模块中的内容，两侧已有内容，确定继续吗？';
-			case 'usingViewMode': return '你正在使用视图模式';
-			case 'muteUserDesc': return ({required Object name}) => '即将静音 ${name}，确认继续吗？';
-			case 'unmuteUserDesc': return ({required Object name}) => '即将解除 ${name}静音，确认继续吗？';
-			case 'articlePublished': return '文章已发布！';
-			case 'yourDisplayName': return '用户名';
-			case 'yourNoteSealed': return '你关注的笔记已被社区采纳：';
-			case 'yourName': return '用户名';
-			case 'ratingDeleted': return '你的评定已删除';
-			case 'ratingSubmittedCheckReward': return '评定已提交，请在奖励页面领取你的评定奖励';
-			case 'verifiedNoteAdded': return '验证笔记已添加，请前往奖励页面领取你的奖励';
-			case 'verifiedNoteSealed': return '你的验证笔记已被社区采纳';
-			case 'yourWebsite': return '你的网站';
-			case 'youtubeUrl': return 'Youtube 链接';
-			case 'zap': return 'zap';
-			case 'zapPoll': return 'zap 投票';
-			case 'zapPollCustomization': return '自定义 zap 投票';
-			case 'zapPollNevent': return 'zap 投票nevent';
-			case 'zapSplits': return '分割 zap';
-			case 'zappers': return 'Zappers';
-			case 'zaps': return 'zaps';
-			case 'zapReceived': return 'Zaps 已收到';
-			case 'zapSent': return 'Zaps 已发送';
-			case 'comingSoon': return '即将推出';
-			case 'content': return '内容';
-			case 'expiresOn': return ({required Object date}) => '到期日 ${date}';
-			case 'reactions': return '转发“';
-			case 'reposts': return '回应';
-			case 'notifDisabled': return '通知已关闭';
-			case 'notifDisabledMessage': return '您可前往通知设置重新开启此类提醒';
-			case 'collapseNote': return '长帖子自动折叠';
-			case 'oneNotifOptionAvailable': return '至少启用一项通知选项';
-			case 'readAll': return '全标已读';
-			case 'usernameTaken': return '用户名已被注册';
-			case 'usernameRequired': return '请填写用户名';
-			case 'deleteWalletConfirmation': return '请确保 NWC 连接短语已安全备份，丢失后将无法恢复。';
-			case 'unsupportedKind': return '暂不支持此类型';
-			case 'analyticsCrashlytics': return '崩溃日志';
-			case 'analyticsCache': return '崩溃日志和缓存';
-			case 'analyticsCacheOn': return '崩溃日志已打开。';
-			case 'analyticsCacheOff': return '崩溃日志已关闭。';
-			case 'shareNoUsage': return '您当前没有与我们分享任何崩溃日志';
-			case 'wantShareAnalytics': return '想要分享崩溃日志吗？';
-			case 'yakihonneAnCr': return 'YakiHonne 的崩溃日志';
-			case 'crashlyticsTerms': return '收集匿名崩溃对于完善我们应用程序的功能和用户体验至关重要。它使我们能够识别用户偏好、增强流行功能并进行明智的优化，确保为用户提供更加个性化和高效的应用程序。';
-			case 'collectAnonymised': return '我们收集匿名崩溃日志以改善应用程序体验。';
-			case 'linkWalletToProfile': return '将钱包与您的个人资料关联';
-			case 'linkWalletToProfileDesc': return '关联的钱包将用于接收比特币（sats）';
-			case 'addPoll': return '添加投票';
-			case 'browsePolls': return '浏览民意调查';
-			case 'maciPolls': return '基于MACI的投票';
-			case 'beta': return '测试版';
-			case 'choosePollType': return '选择投票类型';
-			case 'created': return '已创建';
-			case 'tallying': return '计票中';
-			case 'ended': return '已结束';
-			case 'closed': return '已关闭';
-			case 'voteResultsBy': return '按…显示投票结果';
-			case 'votes': return 'votes';
-			case 'voiceCredit': return '信用积分';
-			case 'viewDetails': return '查看详情';
-			case 'signup': return 'Signup';
-			case 'notDownloadProof': return '无法下载证明';
-			case 'name': return '名称';
-			case 'status': return '状态';
-			case 'circuit': return '电路';
-			case 'votingSystem': return '投票系统';
-			case 'proofSystem': return '证明系统';
-			case 'gasStation': return '手续费';
-			case 'totalFund': return '（总资金）';
-			case 'roundStart': return '轮次开始';
-			case 'roundEnd': return '轮次结束';
-			case 'operator': return '操作员';
-			case 'contractCreator': return '合约创建者';
-			case 'contractAddress': return '合约地址';
-			case 'blockHeight': return '区块高度';
-			case 'atContractCreation': return ({required Object number}) => '${number}（合约创建时）';
-			case 'zkProofs': return '零知识证明';
-			case 'downloadZkProofs': return '下载证明';
-			case 'noWalletLinked': return '您的个人资料尚未绑定钱包，请在上方菜单中绑定一个钱包。';
-			case 'walletConnectionString': return '钱包连接字符串';
-			case 'walletConnectionStringDesc': return '请确保安全地复制或导出您的钱包连接字符串。我们不会存储此信息，若丢失将无法恢复。';
-			case 'export': return '导出';
-			case 'logout': return '登出';
-			case 'exportAndLogout': return '导出并登出';
-			case 'exportWalletsDesc': return '您的账户似乎已关联钱包。请在退出登录前下载您的钱包密钥。';
-			case 'manageWallets': return '管理钱包';
-			case 'roundDuration': return '轮次时长';
-			case 'startAt': return ({required Object date}) => '开始时间：${date}';
-			case 'loginAction': return '登录';
-			case 'addPicture': return '添加图片';
-			case 'editPicture': return '编辑图片';
-			case 'exportKeys': return '导出密钥';
-			case 'mutedUser': return '已静音用户';
-			case 'unaccessibleContent': return '无法访问的内容';
-			case 'mutedUserDesc': return '你已将该用户静音，取消静音后可查看此内容';
-			case 'commentHidden': return '该评论已隐藏';
-			case 'upcoming': return '即将到来';
-			case 'exportCredentials': return '导出凭证';
-			case 'loginToYakihonne': return '登录 Yakihonne';
-			case 'alreadyUser': return '已有账户？';
-			case 'createPoll': return '创建投票';
-			case 'gasStationTotal': return '手续费中心（总资助金额）';
-			case 'gasStationRemaining': return '手续费中心（剩余余额）';
-			case 'paste': return '粘贴';
-			case 'manual': return '手输入';
-			case 'contacts': return '联系人';
-			case 'typeManualDesc': return '输入闪电地址、闪电发票或 LNURL';
-			case 'useValidPaymentRequest': return '请使用有效的支付请求';
-			case 'save': return '保存';
-			case 'saveImageGallery': return '图片已下载到您的相册';
-			case 'errorSavingImage': return '下载图片时发生错误';
-			case 'copyImageGallery': return '图片已复制到您的剪贴板';
-			case 'errorCopyImage': return '复制图片时发生错误';
-			case 'scan': return '扫描';
-			case 'invalidLightningAddress': return '无效的闪电地址';
-			case 'deleteAccountDesc': return '您即将删除您的账户，是否继续？';
-			case 'paymentFailedInvoice': return '支付失败：请检查此发票的有效性';
-			case 'validSatsAmount': return '设置一个有效的sats金额';
-			case 'placeholder': return '占位提示';
-			case 'inputFieldCustomization': return '输入框自定义';
-			case 'addInputField': return '添加输入框';
-			case 'addButton': return '添加按钮';
-			case 'selectImage': return '选择图片';
-			case 'moveLeft': return '向左移动';
-			case 'moveRight': return '向右移动';
-			case 'buttonRequired': return '至少需要保留一个按钮';
-			case 'missingInputDesc': return '当前自定义功能需要输入框组件，但你的智能组件中未嵌入输入框，请添加输入框以确保功能正常运行。';
-			case 'countdown': return '倒计时';
-			case 'contentEndsAt': return '内容截止时间';
-			case 'countdownTime': return '请填写倒计时时长';
-			case 'contentEndsDate': return '请填写内容截止日期';
-			case 'lnMandatory': return '必须填写 Lightning 地址';
-			case 'pubkeysMandatory': return '至少选择一个用户';
-			case 'buttonNoUrl': return '按钮链接不能为空';
-			case 'shareWidgetImage': return '分享组件图片';
-			case 'inputField': return '输入框';
-			case 'noReplies': return '暂无回复';
-			case 'message': return '消息';
-			case 'chat': return '聊天';
-			case 'onlyLettersNumber': return '仅限输入字母和数字';
-			case 'appCache': return '应用缓存';
-			case 'cachedData': return '已缓存数据';
-			case 'cachedMedia': return '已缓存媒体';
-			case 'cacheCleared': return '缓存已清除';
-			case 'closeAppClearingCache': return '清除缓存后建议重启应用，以确保所有更改生效并保持流畅运行';
-			case 'appCacheNotice': return '应用缓存正在变大，为保持流畅体验，建议清理旧数据';
-			case 'manageCache': return '管理缓存';
-			case 'filterByTime': return '按时间筛选';
-			case 'allTime': return '全部时间';
-			case 'oneMonth': return '1个月';
-			case 'threeMonths': return '3个月';
-			case 'sixMonths': return '6个月';
-			case 'oneYear': return '1年';
-			case 'defaultZapAmount': return '默认打赏金额';
-			case 'oneTapZap': return '启用一键打赏';
-			case 'verify': return '验证';
-			case 'reset': return '重置';
-			case 'appCannotVerified': return '应用无法验证或无效';
-			case 'useValidAppUrl': return '请输入有效的应用链接';
-			case 'app': return '应用';
-			case 'userNotConnected': return '用户未连接';
-			case 'userCannotSignEvent': return '该用户无法签名事件';
-			case 'invalidEvent': return '无效事件';
-			case 'eventCannotBeSigned': return '该事件无法签名';
-			case 'signEvent': return '签名事件';
-			case 'sign': return '签名';
-			case 'signPublish': return '签名并发布';
-			case 'signEventDes': return '你即将签名以下事件';
-			case 'enableAutomaticSigning': return '启用自动签名';
-			case 'tools': return '工具';
-			case 'searchSmartWidgets': return '搜索智能组件';
-			case 'noToolsAvailable': return '暂无可用工具';
-			case 'underMaintenance': return '维护中';
-			case 'smartWidgetMaintenance': return '智能组件维护中，我们正在修复，很快回来！';
-			case 'mySavedTools': return '已保存的应用';
-			case 'availableTools': return '可用的应用';
-			case 'remove': return '移除';
-			case 'youHaveNoTools': return '你还没有应用';
-			case 'discoverTools': return '发现应用';
-			case 'addWidgetTools': return '添加应用';
-			case 'widgetSearch': return '应用搜索';
-			case 'widgetSearchDesc': return '搜索已发布的智能组件与用户创建内容';
-			case 'getInspired': return '获取灵感';
-			case 'getInspirtedDesc': return '向我们的 AI 提问，帮助你构建智能组件';
-			case 'trySearch': return '尝试不同搜索方式';
-			case 'typeForCommands': return '输入 / 查看命令';
-			case 'loadMore': return '加载更多';
-			case 'searchingFor': return ({required Object name}) => '搜索：${name}';
-			case 'playground': return '测试环境';
-			case 'typeKeywords': return '输入关键词（如：关键词1，关键词2...）';
-			case 'enableGossip': return '启用 Gossip 模型';
-			case 'enableExternalBrowser': return '启用外部浏览器访问';
-			case 'restartAppTakeEffect': return '重启应用以生效';
-			case 'tips': return '提示';
-			case 'docs': return '文档';
-			case 'tryMiniApp': return '动手测试你的 Mini App';
-			case 'exploreOurRepos': return '查看我们的代码库或智能组件文档';
-			case 'bringAi': return 'AI 助手即将上线';
-			case 'bringAiDesc': return '我们正在打造 AI 助手，助你高效创建智能组件与 Mini App，敬请期待！';
-			case 'notesCount': return ({required Object number}) => '共 ${number} 条笔记';
-			case 'mixedContentCount': return ({required Object number}) => '${number} 条内容';
-			case 'noApp': return '无法找到合适的应用打开导出文件';
-			case 'andMore': return ({required Object number}) => '及其他 ${number} 项';
-			case 'addFilter': return '添加筛选条件';
-			case 'entitleFilter': return '筛选标题包含';
-			case 'includedWords': return '包含关键词';
-			case 'excludedWords': return '排除关键词';
-			case 'hideSensitiveContent': return '隐藏敏感内容';
-			case 'mustIncludeThumbnail': return '必须包含封面图';
-			case 'forArticles': return '用于文章';
-			case 'forVideos': return '用于视频';
-			case 'forCurations': return '用于内容推荐';
-			case 'articleMinWords': return '文章最少字数';
-			case 'showOnlyArticleMedia': return '仅显示带多媒体的文章';
-			case 'showOnlyNotesMedia': return '仅显示带多媒体的笔记';
-			case 'curationsType': return '推荐内容类型';
-			case 'minItemCount': return '最少包含项目数';
-			case 'addWord': return '添加关键词';
-			case 'wordNotInIncluded': return '请确保该词未在“包含关键词”中';
-			case 'wordNotInExcluded': return '请确保该词未在“排除关键词”中';
-			case 'fieldRequired': return '该字段为必填项';
-			case 'filterAdded': return '筛选条件已添加';
-			case 'filterUpdated': return '筛选条件已更新';
-			case 'filterDeleted': return '筛选条件已删除';
-			case 'filters': return '筛选条件';
-			case 'contentFeed': return '内容流';
-			case 'communityFeed': return '社区流';
-			case 'relaysFeed': return '中继流';
-			case 'marketplaceFeed': return '市场流';
-			case 'addYourFeed': return '添加你的内容源';
-			case 'myList': return '我的列表';
-			case 'allFreeFeeds': return '所有免费内容源';
-			case 'noRelays': return '暂无中继';
-			case 'addRelays': return '添加你的中继列表，获取个性化内容流';
-			case 'adjustYourFeedList': return '调整你的内容流列表';
-			case 'addRelayUrl': return '添加中继 URL';
-			case 'feedOptionEnabled': return '至少需启用一个内容源选项';
-			case 'feedSetUpdate': return '内容源设置已更新';
-			case 'global': return '全站';
-			case 'fromNetwork': return '来自网络';
-			case 'top': return '热门';
-			case 'showFollowingList': return '你当前的内容流基于他人的关注列表，开始关注用户以定制属于你的内容流';
-			case 'from': return '起始时间';
-			case 'to': return '结束时间';
-			case 'dayMonthYear': return 'yyyy年MM月dd日';
-			case 'fromDateMessage': return '“起始时间”必须早于“结束时间”';
-			case 'toDateMessage': return '“结束时间”必须晚于“起始时间”';
-			case 'noResults': return '暂无结果';
-			case 'noResultsFilterMessage': return '你当前应用了自定义筛选条件，请调整参数和时间以获取更多数据';
-			case 'noResultsNoFilterMessage': return '未找到相关内容，请更换内容源或调整筛选条件';
-			case 'addToNotes': return '添加到笔记';
-			case 'addToDiscover': return '添加到发现页';
-			case 'shareRelayContent': return '分享中继内容';
-			case 'shareRelayUrl': return '分享中继地址';
-			case 'basic': return '基础';
-			case 'privateMessages': return '私信通知';
-			case 'pushNotifications': return '推送通知';
-			case 'repliesView': return '回复视图';
-			case 'threadView': return '对话串视图';
-			case 'boxView': return '卡片视图';
-			case 'viewAs': return '切换视图方式';
-			case 'feedSettings': return '内容流设置';
-			case 'appliedFilterDesc': return '该笔记因当前筛选条件被隐藏';
-			case 'showNote': return '显示笔记';
-			case 'allMedia': return '全部媒体内容';
-			case 'searchInNostr': return '在 Nostr 中搜索';
-			case 'findPeopleContent': return '搜索用户、笔记和内容';
-			case 'activeService': return '活跃中继服务';
-			case 'regularServers': return '常规中继服务器';
-			case 'blossomServers': return 'BLOSSOM 中继服务器';
-			case 'mirrorAllServer': return '同步镜像全部服务器';
-			case 'mainServer': return '主服务器';
-			case 'select': return '选择';
-			case 'noServerFound': return '未找到服务器';
-			case 'serverExists': return '该服务器已存在于我的列表中';
-			case 'invalidUrl': return '无效的链接格式';
-			case 'serverPath': return '服务器路径';
-			case 'errorAddingBlossom': return '添加 BLOSSOM 服务器时出错';
-			case 'errorSelectBlossom': return '选择 BLOSSOM 服务器时出错';
-			case 'errorDeleteBlossom': return '删除 BLOSSOM 服务器时出错';
-			case 'wotConfig': return '信任网络配置';
-			case 'wot': return '信任网络';
-			case 'wotThreshold': return '信任门槛值';
-			case 'postActions': return '帖子操作';
-			case 'enabledFor': return '启用于';
-			case 'dmRelayTitle': return '尚未配置私信中继！';
-			case 'dmRelayDesc': return '请更新我的中继列表以支持私信功能';
-			case 'youFollow': return '我关注的人';
-			case 'quotaLimit': return '你已超出今日配额限制';
-			case 'alwaysUseExternal': return '始终使用外部钱包打赏';
-			case 'alwaysUseExternalDesc': return '为所有 zap 操作使用外部 Lightning 钱包，而非内置钱包';
-			case 'unreachableExternalWallet': return '外部钱包无法连接';
-			case 'secureStorageDesc': return '我的密钥仅存储在本地设备中，绝不会上传或共享';
-			case 'pubkeySharedDesc': return '可安全分享 —— 这是我在 Nostr 上的身份标识';
-			case 'privKeyDesc': return '需妥善保管 —— 用于备份账户访问权限';
-			case 'settingsKeysDesc': return '管理我的 Nostr 密钥，用于身份验证与签名操作';
-			case 'settingsRelaysDesc': return '配置我的 Nostr 中继连接，用于事件存储与分发';
-			case 'settingsCustomizationDesc': return '自定义我的动态展示、手势、预览和偏好，提升使用体验';
-			case 'settingsNotificationsDesc': return '管理我在 Nostr 上的消息、提及、反应等通知设置';
-			case 'settingsContentDesc': return '控制我在 Nostr 上的内容互动、隐私、媒体处理与消息偏好';
-			case 'settingsLanguageDesc': return '选择 YakiHonne 界面和内容翻译的首选语言';
-			case 'settingsWalletDesc': return '连接并管理我的比特币闪电钱包，支持自定义金额打赏与外部集成';
-			case 'settingsAppearanceDesc': return '自定义 YakiHonne 的外观风格，匹配我的视觉偏好';
-			case 'settingsCacheDesc': return '管理应用性能监控、错误上报与存储优化，保障流畅运行';
-			case 'addQuickRelayDesc': return '通过输入链接快速添加新中继';
-			case 'fewerRelays': return '更少但稳定的中继 = 更快更稳的体验';
-			case 'greenDotsDesc': return '绿色点表示连接正常';
-			case 'redDotsDesc': return '红色点表示中继已离线';
-			case 'greyDotsDesc': return '灰色点表示等待连接中';
-			case 'homeFeedCustomDesc': return '选择我的回复显示风格（方框或串联）并管理内容推荐偏好';
-			case 'NewPostDesc': return '设置长按发布按钮时的默认操作（当前为：笔记）';
-			case 'profilePreviewDesc': return '在动态中点击用户名时显示用户资料预览';
-			case 'collapseNoteDesc': return '自动收起长帖，让动态更清爽可读';
-			case 'pushNotificationsDesc': return '开启推送通知，使用安全隐私协议（FCM/APNS）';
-			case 'privateMessagesDesc': return '收到新私信或对话时提醒我';
-			case 'followingDesc': return '我关注的人发布新内容时提醒我';
-			case 'mentionsDesc': return '有人提及我或回复我的帖子时提醒我';
-			case 'repostsDesc': return '有人分享或转发我的内容时提醒我';
-			case 'reactionsDesc': return '有人点赞或回应我的帖子时提醒我';
-			case 'zapDesc': return '我的帖子收到比特币打赏（zap）时提醒我';
-			case 'muteListDesc': return '查看并管理我屏蔽的用户，阻止其内容出现在动态中';
-			case 'mediaUploaderDesc': return '选择用于上传我图片和媒体文件的服务提供方';
-			case 'autoSignDesc': return '自动签署 Mini App（工具类智能组件）发起的事件请求，无需每次手动确认';
-			case 'gossipDesc': return '智能中继管理：自动发现我关注的用户在哪些中继发帖，减少连接数量并适应离线中继';
-			case 'useExternalBrowsDesc': return '使用默认浏览器打开链接，而非内置浏览器';
-			case 'secureDmDesc': return '使用最新私信标准（NIP-17）进行加密通讯。如需兼容旧客户端，可切换为 NIP-4';
-			case 'wotConfigDesc': return '基于社交背书的去中心化信任机制，在 Nostr 协议中建立声誉体系';
-			case 'appLangDesc': return '选择 YakiHonne 的界面语言（菜单、按钮等）';
-			case 'contentTransDesc': return '为外语帖子选择翻译服务';
-			case 'planDesc': return '我当前的翻译服务等级与使用配额';
-			case 'manageWalletsDesc': return '添加并管理我的 Lightning 钱包，用于收发比特币打赏';
-			case 'defaultZapDesc': return '设置快捷 zap 默认金额（单位：sats）';
-			case 'enableZapDesc': return '单击自动发送默认 zap 金额；双击打开金额/钱包/消息选项。关闭后双击即发送默认金额';
-			case 'externalWalletDesc': return '所有 zap 操作都使用外部 Lightning 钱包，而非 YakiHonne 内置钱包';
-			case 'fontSizeDesc': return '调整应用内文字大小，让阅读更舒适。可通过滑块设置';
-			case 'appThemeDesc': return '切换浅色/深色模式，自定义应用外观风格';
-			case 'crashlyticsDesc': return '启用匿名崩溃报告和性能分析，帮助我们修复问题并优化体验（使用 Umami 分析，可随时关闭）';
-			case 'showSuggDesc': return '在我的动态中展示通用内容推荐';
-			case 'showSuggPeople': return '根据我的行为推荐关注用户';
-			case 'showSuggContent': return '在我的动态中推荐帖子和文章';
-			case 'showSuggInterests': return '推荐我可能感兴趣的话题与内容';
-			case 'striveToMake': return '我们致力于打造最好的 Nostr 体验。如果你愿意支持我们，可通过 zap、私信或 GitHub 提建议';
-			case 'errorAmber': return '您已拒绝或已连接到 Amber';
-			case 'useOneRelay': return '您至少应保持一个中继连接';
-			case 'automaticPurge': return '自动清理缓存';
-			case 'automaticPurgeDesc': return '当应用缓存达到 2GB 时自动清理。保持性能并防止过度占用存储空间。';
-			case 'customServices': return '自定义服务';
-			case 'defaultServices': return '默认服务';
-			case 'addService': return '添加服务';
-			case 'customServicesDesc': return '您添加的可用自定义服务。';
-			case 'urlRequired': return '需要 URL';
-			case 'serviceAdded': return '服务已添加';
-			case 'showRawEvent': return '显示原始事件';
-			case 'rawEventData': return '原始事件数据';
-			case 'copyRawEventData': return '原始事件数据已复制！👏';
-			case 'kind': return '类型';
-			case 'shortNote': return '简短备注';
-			case 'postedOnDate': return '发表于';
-			case 'showMore': return '... 显示更多';
-			case 'accountDeleted': return '此账户已被删除，无法再访问。';
-			case 'ok': return '确定';
-			case 'redeem': return '兑换';
-			case 'redeemCode': return '兑换码';
-			case 'redeemAndEarn': return '兑换并获得';
-			case 'redeemingFailed': return '兑换失败';
-			case 'redeemInProgress': return '正在兑换代码...';
-			case 'redeemCodeDesc': return '输入您的代码以兑换';
-			case 'missingCode': return '缺少代码';
-			case 'missingPubkey': return '缺少公钥';
-			case 'invalidPubkey': return '无效的公钥';
-			case 'missingLightningAddress': return '缺少闪电地址';
-			case 'codeNotFound': return '未找到代码';
-			case 'redeemCodeRequired': return '兑换码为必填项';
-			case 'redeemCodeInvalid': return '兑换码无效';
-			case 'codeBeingRedeemed': return '您的代码正在兑换中。如果未成功完成，请稍后再试。';
-			case 'redeemCodeSuccess': return '兑换成功';
-			case 'redeemFailed': return '无法兑换代码，请稍后再试。';
-			case 'codeAlreadyRedeemed': return '代码已被兑换';
-			case 'satsEarned': return ({required Object amount}) => '+${amount} sats 已获得。';
-			case 'selectReceivingWallet': return '选择接收钱包';
-			case 'redeemCodeMessage': return '使用 YakiHonne 的兑换码领取免费 sats — 只需输入代码即可立即增加余额。';
-			case 'scanCode': return '扫描代码';
-			case 'enterCode': return '输入代码';
-			case 'errorSharingMedia': return '分享媒体时出错';
-			case 'open': return '打开';
-			case 'openUrl': return '打开链接';
-			case 'openUrlDesc': return ({required Object url}) => '要打开 "${url}" 吗？';
-			case 'openUrlPrompt': return '打开链接提示';
-			case 'openUrlPromptDesc': return '在浏览器中打开前显示完整 URL 的安全提示。';
-			case 'whatsNew': return '新功能';
-			case 'appCustom': return '应用自定义';
-			case 'poll': return '投票';
-			case 'pendingEvents': return '待处理事件';
-			case 'pendingEventsDesc': return '待处理事件在离线或网络不佳时创建。网络连接恢复后将自动发送。';
-			case 'singleColumnFeed': return '单列信息流';
-			case 'singleColumnFeedDesc': return '将主页信息流显示为单个宽列以提高可读性。';
-			case 'waitingPayment': return '等待付款';
-			case 'copyId': return '复制 ID';
-			case 'idCopied': return '已复制 ID！ 👏';
-			case 'republish': return '重新发布';
-			case 'useRelayRepublish': return '你至少应选择一个中继进行重新发布。';
-			case 'republishSucces': return '事件已成功重新发布！';
-			case 'errorRepublishEvent': return '重新发布事件时发生错误';
-			case 'remoteSigner': return '远程签名者';
-			case 'amber': return 'Amber';
-			case 'useUrlBunker': return '使用下面的 URL 连接到你的 bunker';
-			case 'or': return '或';
-			case 'messagesDisabled': return '消息已停用';
-			case 'messagesDisabledDesc': return '你已连接远程签名者。直接消息可能包含大量数据，可能无法正常工作。为获得最佳体验，请使用本地签名者以启用直接消息。';
-			case 'sharedOn': return ({required Object date}) => '分享于 ${date}';
-			case 'shareAsImage': return '作为图片分享';
-			case 'viewOptions': return '查看选项';
-			case 'feedCustomization': return '信息流自定义';
-			case 'defaultReaction': return '默认反应';
-			case 'defaultReactionDesc': return '设置默认反应以对帖子作出反应。';
-			case 'oneTapReaction': return '启用单击反应';
-			case 'oneTapReactionDesc': return '单击一次即可使用默认反应立即回复。双击打开表情列表供选择。禁用时，双击将发送默认反应。';
-			case 'sendingTo': return '发送至';
-			case 'shareEmptyUsers': return '你关注的人和朋友将显示在此处，以便更快速地分享';
-			case 'publishOnly': return '仅发布到';
-			case 'protectedEvent': return '受保护的事件';
-			case 'protectedEventDesc': return '受保护的事件仅其作者可以重新发布。这可保持内容真实性，并防止他人复制或重新发布。';
-			case 'browseRelay': return '浏览中继';
-			case 'addFavorite': return '添加到收藏';
-			case 'removeFavorite': return '从收藏中移除';
-			case 'collections': return '收藏集';
-			case 'online': return '在线';
-			case 'offline': return '离线';
-			case 'network': return '网络';
-			case 'followedBy': return ({required Object number}) => '被 ${number} 关注';
-			case 'favoredBy': return ({required Object number}) => '被 ${number} 收藏';
-			case 'requiredAuthentication': return '需要身份验证';
-			case 'relayOrbits': return '中继轨道';
-			case 'relayOrbitsDesc': return '浏览并探索中继的订阅流';
-			case 'people': return '用户';
-			case 'youNotConnected': return '您尚未连接';
-			case 'youNotConnectedDesc': return '登录您的帐户以浏览网络中的中继';
-			case 'checkingRelayConnectivity': return '正在检查中继连接性';
-			case 'unreachableRelay': return '中继无法访问';
-			case 'engageWithUsers': return '与用户互动以扩展';
-			case 'engageWithUsersDesc': return '与更多用户互动可帮助您发现新的中继并扩展您的中继列表，以获得更丰富、更互联的体验。';
-			case 'loadingChatHistory': return '正在加载聊天记录...';
-			case 'contentActionsOrder': return '内容操作顺序';
-			case 'contentActionsOrderDesc': return '轻松重新排列帖子互动，以匹配您偏好的顺序。';
-			case 'quotes': return '引用';
-			case 'eventLoading': return '正在加载事件...';
-			case 'loadMessages': return '加载消息';
-			case 'messagesNotLoaded': return '消息未加载';
-			case 'messagesNotLoadedDesc': return '由于使用本地远程签名器，消息未被加载。如需加载，请点击下方按钮。';
-			case 'noteLoading': return '正在加载笔记...';
-			case 'hideNonFollowedMedia': return '隐藏未关注用户的媒体';
-			case 'hideNonFollowedMediaDesc': return '自动隐藏来自未关注用户的图片和视频，直到您点击显示。';
-			case 'clickToView': return '点击查看';
-			case 'relayFeedListEmpty': return '中继源列表为空';
-			case 'relayFeedListEmptyDesc': return '添加更多中继以享受个性化的内容流。';
-			case 'addRelay': return '添加中继';
-			case 'hiddenContent': return '隐藏的内容';
-			case 'hiddenContentDesc': return '我们隐藏了此内容，因为您未关注该账户。';
-			case 'enabledActions': return '已启用的操作';
-			case 'enabledActionsDesc': return '没有可用的已启用操作。';
-			default: return null;
-		}
+		return _flatMapFunction$0(path)
+			?? _flatMapFunction$1(path)
+			?? _flatMapFunction$2(path);
+	}
+
+	dynamic _flatMapFunction$0(String path) {
+		return switch (path) {
+			'userCommentedCurationYouIn' => ({required Object name}) => '${name} 评论了@你的策展',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} 评论了@你的帖子',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} 评论了@你的付费帖子',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} 评论了@你的投票',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} 评论了@你的智能组件',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} 评论了@你的视频',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} 评论了@你的文章',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} 你的文章有新评论',
+			'userCommentedYourCuration' => ({required Object name}) => '${name} 评论了你的策展',
+			'userCommentedYourNote' => ({required Object name}) => '${name} 评论了你的帖子',
+			'userCommentedYourPaidNote' => ({required Object name}) => '${name} 评论了你的付费帖子',
+			'userCommentedYourPoll' => ({required Object name}) => '${name} 评论了你的投票',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} 评论了你的智能组件',
+			'userCommentedYourVideo' => ({required Object name}) => '${name} 评论了你的视频',
+			'userNoArticles' => ({required Object name}) => '${name} 还没有发布文章哦',
+			'userNoCurations' => ({required Object name}) => '${name} 还没创建策展呢',
+			'userNoNotes' => ({required Object name}) => '${name} 还没发过帖子哦',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} 还没创建智能组件呢',
+			'userNoVideos' => ({required Object name}) => '${name} 还没上传过视频哦',
+			'userSubmittedPaidNote' => ({required Object name}) => '${name} 发了一篇付费帖子！',
+			'userMentionedYouInCuration' => ({required Object name}) => '${name} 在策展中@了你',
+			'userMentionedYouInNote' => ({required Object name}) => '${name} 在帖子中@了你',
+			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} 在付费帖子中@了你',
+			'userMentionedYouInPoll' => ({required Object name}) => '${name} 在投票中@了你',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} 在智能组件中@了你',
+			'userMentionedYouInVideo' => ({required Object name}) => '${name} 在视频中@了你',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} 在文章中@了你',
+			'userPublishedCuration' => ({required Object name}) => '${name} 发布了一个策展集',
+			'userPublishedPaidNote' => ({required Object name}) => '${name} 发布了一个付费帖子',
+			'userPublishedPoll' => ({required Object name}) => '${name} 发起了一个投票',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} 创建了一个智能组件',
+			'userPublishedVideo' => ({required Object name}) => '${name} 发布了一个视频',
+			'userPublishedArticle' => ({required Object name}) => '${name} 发布了一篇文章',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} 引用了@你的策展',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} 引用了@你的帖子',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name}引用了@你的付费帖子',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name}引用了@你的视频',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name}引用了@你的文章',
+			'userQuotedYourArticle' => ({required Object name}) => '${name}引用了你的文章',
+			'userQuotedYourCuration' => ({required Object name}) => '${name}引用了你的策展',
+			'userQuotedYourNote' => ({required Object name}) => '${name}引用了你的帖子',
+			'userQuotedYourPaidNote' => ({required Object name}) => '${name}引用了你的付费帖子',
+			'userQuotedYourVideo' => ({required Object name}) => '${name}引用了你的视频',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的策展',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的帖子',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的付费帖子',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name}回应${reaction}了@你的投票',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的智能组件',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的视频',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了@你的文章',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '哇！${name} 回应${reaction}了你',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的文章',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的策展',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} 回应 ${reaction} 了你的留言',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的帖子',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的付费帖子',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的投票',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的智能组件',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} 回应${reaction}了你的视频',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} 回应了 ${reaction}',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} 收到了你转的 ${number} Sats',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} 回复了@你的文章',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} 回复了@你的策展',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} 回复了@你的帖子',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} 回复了@你的付费帖子',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} 回复了@你的投票',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} 回复了@你的智能组件',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} 回复了@你的视频',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} 回复了你的文章',
+			'userRepliedYourCuration' => ({required Object name}) => '${name} 回复了你的策展',
+			'userRepliedYourNote' => ({required Object name}) => '${name} 回复了你的帖子',
+			'userRepliedYourPaidNote' => ({required Object name}) => '${name} 回复了你的付费帖子',
+			'userRepliedYourPoll' => ({required Object name}) => '${name} 回复了你的投票',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} 回复了你的智能组件',
+			'userRepliedYourVideo' => ({required Object name}) => '${name} 回复了您的视频',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name}转发了@你的帖子',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name}转发了@你的付费帖子',
+			'userRepostedYou' => ({required Object name}) => '${name}转发了你的文章',
+			'userRepostedYourNote' => ({required Object name}) => '${name}转发了你的帖子',
+			'userRepostedYourPaidNote' => ({required Object name}) => '${name}转发了你的付费帖子',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} 转了 ${number} Sats 给你！',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} 给你 zap了${number} Sats',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} 给你的文章zap了${number} Sats',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name}给你的策展zap了${number} Sats',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name}给你的帖子zap了${number} Sats',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name}给你的付费帖子zap了${number} Sats',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name}给你的投票zap了${number} Sats',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name}给你的智能组件zap了${number} Sats',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name}给你的视频zap了${number} Sats',
+			'userNewArticle' => ({required Object name}) => '${name}的最新文章',
+			'userNewCuration' => ({required Object name}) => '${name}的最新策展',
+			'userPaidNote' => ({required Object name}) => '${name}的最新付费帖子',
+			'userNewSmartWidget' => ({required Object name}) => '${name}的最新智能组件',
+			'userReply' => ({required Object name}) => '${name}的最新回复',
+			'userNewVideo' => ({required Object name}) => '${name}的最新视频',
+			'articlesNum' => ({required Object number}) => '${number} 篇文章',
+			'availableArticles' => ({required Object number}) => '${number} 篇文章可查看',
+			'availableVideos' => ({required Object number}) => '${number}个视频可查看',
+			'bookmarksListCount' => ({required Object number}) => '${number} 个书签列表',
+			'componentsSMCount' => ({required Object number}) => '这个智能组件里有 ${number} 个内容',
+			'followersNum' => ({required Object number}) => '${number} 关注者',
+			'itemsNumber' => ({required Object number}) => '${number}项内容',
+			'levelsRequiredNum' => ({required Object number}) => '${number} 所需级别',
+			'pointsRemaining' => ({required Object number}) => '还剩${number}',
+			'videosNum' => ({required Object number}) => '${number}视频',
+			'viewsNumber' => ({required Object number}) => '${number} 浏览',
+			'readTime' => ({required Object time}) => '约${time}分钟',
+			'mutualsNum' => ({required Object number}) => '+ ${number}共同好友',
+			'peopleCountPlus' => ({required Object number}) => '+${number} 人',
+			'supportUs' => '❤︎ 支持我们',
+			'consumablePointsPerks1' => '1- 提交你的内容以进行验证',
+			'consumablePointsPerks2' => '2- 使用积分发布付费帖子',
+			'consumablePointsPerks3' => '3- 使用积分兑换 Sats（当兑换可用时会通知你）',
+			'highlightedNote' => '让更多人看到你的帖子',
+			'minimumOfOneRequired' => '最低需要 1 Sats',
+			'useValidTitle' => '需要一个标题哦',
+			'aboutYou' => '关于您',
+			'actGoodFaith' => '心怀善意核实',
+			'add' => '添加',
+			'addUrlNevent' => '添加正确的 url/nevent',
+			'addProperUrlNevent' => '添加正确的 url/nevent',
+			'addAccount' => '添加帐户',
+			'addBookmarkList' => '添加书签列表',
+			'addCover' => '添加封面',
+			'addCuration' => '添加策展',
+			'addInterests' => '添加你的兴趣',
+			'addNote' => '创建帖子',
+			'addToCuration' => '添加到策展',
+			'addUser' => '添加受益人',
+			'addWallet' => '添加钱包',
+			'addYourTopics' => '添加你的主题',
+			'adjustSpeed' => '调整速度',
+			'adjustVolume' => '调节音量',
+			'alby' => 'Alby',
+			'albyConnect' => '连接 Alby',
+			'all' => '全部的',
+			'allRelays' => '所有服务器',
+			'allUsersZapped' => '所有用户都被zap了',
+			'amberNotInstalled' => '未安装 Amber 应用程序',
+			'amountInSats' => '金额（单位：Sats）',
+			'errorAddingArticle' => '添加文章时出错了，请重试！',
+			'errorAddingCuration' => '添加策展时出错了，请重试！',
+			'errorAddingWidget' => '添加智能组件时出错了，请重试！',
+			'errorAddingVideo' => '添加视频时出错了，请重试！',
+			'errorUpdatingCuration' => '更新策展时发生错误',
+			'userInvoiceGenerated' => ({required Object name}) => '${name} 的Invoice已生成',
+			'verifiedNoteRateSealed' => '你评分的验证笔记已被社区采纳。',
+			'apiKeyRequired' => 'Api key（必填）',
+			'appLanguage' => '系统语言',
+			'appTheme' => '应用主题',
+			'appearance' => '应用主题',
+			'article' => '文章',
+			'articleNotFound' => '文章未找到',
+			'articleAddedCuration' => '文章已添加到​​您的策展中',
+			'articles' => '文章',
+			'articlesAvailableCuration' => '此策展中的文章',
+			'askMeSomething' => '有什么可以帮您？',
+			'attemptConnectAmber' => '连接 Amber 的请求已被拒绝。',
+			'attemptsRemained' => '剩余尝试次数 ',
+			'autoSavedArticleDeleted' => '自动保存的文章已删除',
+			'autoSavedSMdeleted' => '自动保存的智能组件已删除',
+			'availableWallets' => '支持的钱包',
+			'back' => '返回',
+			'backgroundColor' => '背景颜色',
+			'balance' => '余额',
+			'beHelpful' => '帮助他人，即便观点不同',
+			'beFirstCommentThisVideo' => '成为第一个评论这个视频的人！',
+			'bio' => ({required Object content}) => '个人简介： ${content}',
+			'blankWidget' => '空白组件',
+			'bookmark' => '收藏',
+			'bookmarkAdded' => '已添加收藏列表',
+			'bookmarkLists' => '收藏列表',
+			'bookmarks' => '收藏夹',
+			'borderColor' => '边框颜色',
+			'button' => '按钮',
+			'buttonColor' => '按钮颜色',
+			'buttonCustomization' => '自定义按钮',
+			'buttonText' => '按钮文字',
+			'by' => '作者',
+			'byPerson' => ({required Object name}) => '作者 ${name}',
+			'byContinuing' => '继续操作即视为您同意\n',
+			'camera' => '相机',
+			'cancel' => '取消',
+			'checkSmartWidget' => '浏览智能组件',
+			'checkoutArticle' => '查看我的文章',
+			'checkoutCuration' => '查看我的策展',
+			'checkoutPaidNote' => '查看我的付费帖子',
+			'checkoutSmartWidget' => '查看我的智能组件',
+			'checkValidity' => '检查有效性',
+			'checkModelRouter' => '检查你的网络设备',
+			'checkoutVideo' => '查看我的视频',
+			'claim' => '领取',
+			'claimTime' => ({required Object time}) => '${time} 后可领取',
+			'clear' => '清除',
+			'clearAppCache' => '清除缓存',
+			'clearChat' => '清除聊天内容',
+			'clearDate' => '清除日期',
+			'click' => '点击',
+			'clickBelowToConnect' => '点击下方连接',
+			'clone' => '创建副本',
+			'close' => '关闭',
+			'pollClosedAt' => ({required Object date}) => '${date} 截止',
+			'pollClosesAt' => ({required Object date}) => '${date} 截止',
+			'color' => '颜色',
+			'comment' => '评论',
+			'comments' => '评论',
+			'communityPolls' => '社区投票',
+			'communityWallet' => '社区钱包',
+			'communityWidgets' => '社区的组件',
+			'compose' => '创作',
+			'confirmPayment' => '确认付款',
+			'congratulations' => '恭喜！',
+			'connect' => '连接',
+			'connectWithNwc' => '使用 NWC 连接',
+			'connected' => '已连接',
+			'consumablePoints' => '可用积分',
+			'contact' => '联系方式',
+			'container' => '内容框',
+			'containerCustomization' => '自定义内容框',
+			'contentModeration' => '内容审核',
+			'contentTextColor' => '内容文字颜色',
+			'contentTranslation' => '内容翻译',
+			'contentData' => ({required Object description}) => '内容： ${description}',
+			'continueAsGuest' => '继续以访客身份',
+			'contributeUnderstanding' => '为构建共识贡献力量',
+			'copy' => '复制',
+			'copyInvoice' => '复制 Invoice',
+			'copyLn' => '复制LN地址',
+			'copyNaddr' => '复制 naddr',
+			'copyNoteId' => '复制帖子 ID',
+			'copyNpub' => '复制 npub',
+			'copyNwc' => '复制 NWC',
+			'userInvoiceNotGenerated' => '无法为此用户生成 Invoice',
+			'notFindSMwithAddr' => '未检索到该地址的智能组件',
+			'couldNotUpdateRelaysList' => '无法更新Relay列表',
+			'coverUrl' => '封面地址',
+			'createWalletSendRecSats' => '创建一个钱包以轻松收发Sats',
+			'createAccount' => '创建账户',
+			'createWallet' => '创建钱包',
+			'yakiNwcDesc' => '使用 YakiHonne 的通道创建钱包',
+			'createYakiWallet' => '创建YakiHonne的钱包',
+			'createdAt' => '创建于',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => '创建于 ${date1}，编辑于 ${date2}',
+			'curation' => '策展',
+			'curationNotFound' => '未找到相关策展',
+			'curationType' => '策展类型',
+			'curations' => '策展',
+			'currentlyLinkedMessage' => '已连接到你的账户，支持接收 Zaps',
+			'customization' => '自定义',
+			'customizeYourFeed' => '自定义信息流',
+			'dashboard' => '控制面板',
+			'decrMessage' => '正在解密消息',
+			'defaultKey' => '默认值',
+			'delete' => '删除',
+			'deleteContent' => ({required Object type}) => '删除 ${type}',
+			'deleteAccount' => '删除帐户',
+			'deleteBookmarkList' => '删除收藏列表',
+			'deleteCoverPic' => '删除封面图片！',
+			'deleteDraft' => '删除草稿',
+			'deleteWallet' => '删除钱包',
+			'description' => '描述',
+			'descriptionOptional' => '描述（可选）',
+			'details' => '详情',
+			'disableSecureDms' => '关闭安全私信',
+			'disconnecting' => '正在断开连接...',
+			'discordUrl' => 'Discord 网址',
+			'discover' => '发现',
+			'dismiss' => '取消',
+			'displayName' => '昵称',
+			'findThisHelpful' => '这对你有帮助吗？',
+			'findThisNotHelpful' => '这对你没有帮助？',
+			'dontHaveWallet' => '还没有钱包？',
+			'unTextR3Desc' => '别担心，每个人都会收到这些！这些评定很常见，如果足够多的人认为某条‘有帮助’的笔记实际上并没有提供足够的帮助，它可能会导致状态发生变化。',
+			'donations' => '捐款',
+			'downvotes' => '不喜欢',
+			'draft' => '草稿',
+			'duoLayout' => '双布局',
+			'earnSats' => '赚取 SATs',
+			'edit' => '编辑',
+			'editCover' => '编辑封面',
+			'editProfile' => '编辑个人资料',
+			'editToAddZapPoll' => '编辑以添加支持Zap的投票',
+			'editedOn' => ({required Object date}) => '编辑于： ${date}',
+			'emptyVerifiedNote' => '验证笔记内容为空！',
+			'enableSecureDms' => '启用安全 DM',
+			'eula' => '用户许可协议 (EULA)',
+			'engagementChart' => '互动图表',
+			'enjoyExpOwnData' => '享受掌控自己数据的体验！\n',
+			'ensureLnSet' => '请确认你的LN地址设置正确',
+			'enterSMaddr' => '输入智能组件 naddr 地址以检查其有效性',
+			'enterLn' => '输入你的地址 LUD-06 或 LUD-16',
+			'enterCoverUrl' => '输入你的封面链接',
+			'enterNip05' => '输入你的 NIP-05 地址',
+			'enterPictureUrl' => '输入你的图片链接',
+			'erase' => '移除',
+			'errorAddingBookmark' => '添加收藏时出错',
+			'errorAddingVerifiedNote' => '添加已验证的笔记时发生错误',
+			'errorClaimingReward' => '领取奖励时发生错误',
+			'errorConnectingRelay' => '连接Relay时发生错误',
+			'errorCreatingWallet' => '创建钱包时出错',
+			'errorDecodingData' => '解码数据时发生错误',
+			'errorDeletingContent' => '删除内容时出错',
+			'errorDeletingRating' => '删除评分时发生错误',
+			'errorGeneratingEvent' => '生成事件时发生错误',
+			'errorGeneratingInvoice' => '生成 invoice 时发生错误',
+			'errorLoggingYakiChest' => '登录 Yakihonne 百宝箱时发生错误',
+			'errorPayingInvoice' => '使用 invoice 付款时发生错误',
+			'errorSendingSats' => '发送 Sats 时发生错误',
+			'errorSendingEvent' => '发送事件时发生错误',
+			'errorSendingMessage' => '发送消息时发生错误',
+			'errorSettingToken' => '设置 Token 时发​​生错误',
+			'errorSigningEvent' => '签署事件时发生错误',
+			'errorSubmittingRating' => '提交评分时发生错误',
+			'errorTranslating' => '翻译内容时发生错误',
+			'errorUpdatingData' => '更新数据时发生错误',
+			'errorUpdatingRelaysList' => '更新Relay列表时发生错误',
+			'errorUploadingMedia' => '上传内容时发生错误',
+			'errorUploadingVideo' => '上传视频时发生错误',
+			'errorUsingWallet' => '使用钱包时出现错误',
+			'errorZappingUsers' => 'Zap用户时发生错误',
+			'errorUploadingImage' => '上传图片时发生错误',
+			'errorLoadingVideo' => '加载视频时出错',
+			'errorUsingExternalWallet' => '使用外部钱包时出错',
+			'eventNotFound' => '找不到该事件',
+			'eventNotRecognized' => '无法识别的事件',
+			'exit' => '退出',
+			'expandWorld' => '添加你喜欢的内容，探索更广阔的世界，开启全新旅程！',
+			'explanation' => '解释',
+			'explore' => '探索',
+			'externalWallet' => '外部钱包',
+			'feedOptions' => '信息流设置',
+			'fetchingArticle' => '正在获取文章',
+			'fetchingCuration' => '正在获取策展',
+			'fetchingEvent' => '正在获取事件',
+			'fetchingEventUserRelays' => '从用户的Relay中获取事件',
+			'fetchingNote' => '正在获取帖子',
+			'fetchingProfile' => '正在获取个人资料',
+			'fetchingSmartWidget' => '正在获取智能组件',
+			'fetchingUserInboxRelays' => '正在获取用户的inbox relays',
+			'fetchingVideo' => '正在获取视频',
+			'fileSharing' => '文件共享',
+			'fillColor' => '填充颜​​色',
+			'finished' => '完成！',
+			'follow' => '关注',
+			'followAll' => '关注所有',
+			'followMeOnNostr' => '在 Nostr 上关注我',
+			'followers' => '关注者',
+			'following' => '已关注',
+			'pendingFollowing' => '已关注..',
+			'followings' => '关注者',
+			'followsYou' => '关注你',
+			'fontSize' => '字体大小',
+			'forName' => ({required Object name}) => '用于 ${name}',
+			'enableSecureDmsMessage' => '为了更好的安全性和隐私，建议启用安全DM。',
+			'zapSplitsMessage' => 'Zap 分账至少需要一个人参与',
+			'free' => '免费',
+			'fuelYakihonne' => '助力 YakiHonne 成长！你的支持推动了新功能的开发和更好的用户体验。',
+			'gain' => '获得',
+			'gallery' => '图库',
+			'generateInvoice' => '生成 invoice',
+			'generateInvoices' => '生成 invoice',
+			'getApiKey' => '获取API密钥',
+			'getInvoice' => '获取 invoice',
+			'getStartedNow' => '立即开始',
+			'gifs' => '动图',
+			'gotIt' => '明白了！',
+			'granted' => '已授权',
+			'earnSatsDesc' => '帮助我们提供更多去中心化的见解来审核这条付费笔记',
+			'heyWelcomeBack' => '您好，欢迎回来!',
+			'hideSuggestions' => '隐藏建议',
+			'highlights' => '突出显示',
+			'home' => '首页',
+			'hfCustomization' => '自定义首页信息流',
+			'horizontalVideo' => '横向视频',
+			'wantToShareRevenues' => '我愿分享这笔收入',
+			'identifier' => '标识符',
+			'image' => '图片',
+			'imageAspectRatio' => '图片比例',
+			'imageCustomization' => '自定义图片',
+			'imageUrl' => '图片链接',
+			'imageUploadHistory' => '图片上传历史',
+			'important' => '重要的',
+			'inTag' => ({required Object name}) => '在 ${name}中',
+			'inaccessibleLink' => '无法访问的链接',
+			'inbox' => '收件箱',
+			'initializingAccount' => '正在初始化帐户...',
+			'insertText' => '插入文字',
+			'instantConntect' => '立即连接到服务器',
+			'interestsUpdateMessage' => '兴趣列表已更新成功！',
+			'interested' => '感兴趣的',
+			'interests' => '兴趣',
+			'invalidHexKey' => '无效的 hex key！',
+			'invalidInvoice' => '无效 invoice',
+			'invalidPairingSecret' => '配对密码无效',
+			'invalidPrivateKey' => '私钥无效！',
+			'invalidRelayUrl' => 'Relay 地址无效',
+			'invoice' => 'Invoice',
+			'invoiceCopied' => '已复制Invoice！',
+			'invoicePaid' => 'Invoice 已支付成功',
+			'invoiceOrLN' => 'Invoice或LN地址',
+			'issueOccuredSelectingImage' => '选择图片时出现问题。',
+			'somethingWentWrongDesc' => '加载数据时似乎发生了问题，请重试！',
+			'invalidInvoiceDesc' => '扫描的Invoice无法识别，请重新扫描',
+			'invoiceNotPayed' => 'Invoice似乎未支付，请检查并重试',
+			'itsLive' => '上线了！',
+			'noCommunityNotes' => '这里很安静，欢迎评论。',
+			'joinedOn' => ({required Object date}) => '加入时间： ${date}',
+			'keys' => '密钥',
+			'known' => '已知',
+			'languagePreferences' => '语言偏好',
+			'lastGained' => ({required Object date}) => '上次获得： ${date}',
+			'lastUpdatedOn' => ({required Object date}) => '最后更新： ${date}',
+			'latest' => '最新的',
+			'layout' => '布局',
+			'layoutCustomization' => '自定义布局',
+			'less' => '减少',
+			'letsGetStarted' => '让我们开始吧！',
+			'levelNumber' => ({required Object number}) => '等级 ${number}',
+			'lightningAddress' => 'LN地址',
+			'lnCopied' => 'LN地址复制成功！👏 ',
+			'link' => '关联',
+			'linkWallet' => '链接钱包',
+			'linkWalletDesc' => '你即将覆盖之前的钱包并将一个新的钱包链接到你的个人资料，你是否确认继续操作？',
+			'linked' => '链接',
+			'list' => '列表',
+			'loading' => '加载中',
+			'loadingFollowings' => '关注者加载中',
+			'loadingPreviousPosts' => '加载之前的帖子中…',
+			'loadingFollowers' => '关注者加载中',
+			'locked' => '锁定',
+			'loggingIn' => '正在登录...',
+			'loggingOut' => '正在退出...',
+			'login' => '登录',
+			'loginYakiChestPoints' => '连接 Yaki 百宝箱，获取积分，赢得奖励！',
+			'logoutAllAccounts' => '注销所有帐户',
+			'validDescriptionCuration' => '为此策展添加有效的描述',
+			'validImageCuration' => '为此策展添加有效的图片',
+			'validTitleCuration' => '为此策展添加有效的标题',
+			'addValidUrl' => '添加有效的连接',
+			'submitValidLud' => '确保获得有效的 lud16/lud06',
+			'showSecretDesc' => '请确保安全保存，因为它可以完全访问您的账户',
+			'invalidInvoiceLnurl' => '设置有效的 invoice 或 lnurl',
+			'setAllRequiredContent' => '确保设置所有必填内容',
+			'setOutboxRelays' => '确保配置好你的outbox relay。',
+			'submitValidCloseDate' => '输入有效的截止日期',
+			'submitMinMaxSats' => '输入有效的最小和最大 Sats 值',
+			'submitValidOptions' => '提交有效的选项',
+			'submitValidData' => '确保提交的数据有效',
+			'submitValidInvoice' => '确保提交有效的 invoice',
+			'manageAccounts' => '账户管理',
+			'manageInterests' => '偏好管理',
+			'maxSats' => '最大 Sats',
+			'maximumSatoshis' => '最大 Sats',
+			'mediaExceedsMaxSize' => '媒体文件超过最大限制（21MB）',
+			'mediaUploader' => '媒体上传器',
+			'mentions' => '提及',
+			'messageOptional' => '留言（可选）',
+			'messageCouldNotBeDecrypted' => '消息无法解密',
+			'messageNotDecrypted' => '消息尚未解密！',
+			'messageCopied' => '消息复制成功！',
+			'metadata' => '元数据',
+			'min' => '最小',
+			'minSats' => '最小Sats',
+			'minimumSatoshis' => '最小Sats',
+			'errorMissingKey' => '缺少 API 密钥或订阅已过期。',
+			'monoLayout' => '单列布局',
+			'monolayoutRequired' => '需要单列布局',
+			'more' => '更多的',
+			'moreDots' => '更多的...',
+			'moveDown' => '下移',
+			'moveUp' => '上移',
+			'mute' => '静音',
+			'muteList' => '静音列表',
+			'muteUser' => '将用户静音',
+			'mutuals' => '共同的',
+			'myArticles' => '我的文章',
+			'myDrafts' => '我的草稿',
+			'myPolls' => '我的投票',
+			'myPublicKey' => '我的公钥',
+			'mySecretKey' => '我的私钥',
+			'myVideos' => '我的视频',
+			'myWidgets' => '我的智能组件',
+			'naddr' => 'naddr',
+			'nostrWalletConnectDesc' => '连接原生 nostr 钱包',
+			'needsMoreRating' => '需要更多评定',
+			'needsYourHelp' => '需要您的帮助',
+			'nevent' => 'nevent',
+			'newKey' => '新的',
+			'newMessage' => '新消息',
+			'newPostGesture' => '长按以发布新帖子',
+			'next' => '下一个',
+			'noContentBelongToCuration' => ({required Object type}) => '此策展没有包含 ${type}',
+			'noContentCanBeFound' => ({required Object type}) => '未找到 ${type}',
+			'noArticlesInCuration' => '未找到此策展中的任何文章',
+			'addNewBookmark' => '找不到收藏列表，试试创建一个！',
+			'noBookmarksListFound' => '找不到收藏列表，试试创建一个！',
+			'noCommentsCanBeFound' => '暂无评论',
+			'noComponentsDisplayed' => '无法显示任何组件',
+			'noCurationsFound' => '未找到策展，试着创建一个来添加内容',
+			'noDescription' => '暂无描述',
+			'noElementsInBookmarks' => '收藏列表中未找到任何内容',
+			'noEventIdCanBeFound' => '找不到具有该 id 的事件！',
+			'noImageHistory' => '未找到图片历史',
+			'noInternetAccess' => '无网络连接',
+			'noInvoiceAvailable' => '没有可用的 invoices',
+			'noMessageCanBeFound' => '未找到任何消息',
+			'noMessagesToDisplay' => '没有消息可显示',
+			'noMoreData' => '无更多数据',
+			'noMutedUserFound' => '无静音用户',
+			'noNotificationCanBeFound' => '未找到任何通知',
+			'noPaidNotesCanBeFound' => '未找到任何付费帖子',
+			'noPollsCanBeFound' => '未找到任何投票',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
+			'noReasonsSpecified' => '未指明原因！',
+			'noRelaysCanBeFound' => '未找到任何服务器',
+			'noUserRelays' => '未找到此用户的服务器',
+			'noRepliesDesc' => '未不到此帖子的回复',
+			'noResKeyword' => '未找到匹配的结果',
+			'noResKeywordDesc' => '未找到匹配的结果，请尝试使用其他关键词。',
+			'noSmartWidgetCanBeFound' => '未找到智能组件',
+			'noSmartWidget' => '未不到智能组件的草稿',
+			'noTemplatesCanBeFound' => '该类别下没有可用模板',
+			'noTitle' => '无标题',
+			'noTransactionCanBeFound' => '未找到交易记录',
+			'noUserZapped' => '没有用户被 zap！',
+			'noUserCanBeFound' => '未找到用户',
+			'noVideosInCuration' => '未找到有关此策展的视频',
+			'noWalletCanBeFound' => '未找到钱包',
+			'noZappersCanBeFound' => '未找到 zappers',
+			'noImGood' => '不，我很好',
+			'noWalletConnectedToYourProfile' => '目前连接的钱包都未与您的个人资料关联',
+			'nostrScheme' => 'Nostr 标准',
+			'nostrWalletConnect' => 'Nostr 钱包连接',
+			'nwcInitialized' => 'NWC已初始化',
+			'notEnoughBalance' => '没有足够余额来支付这笔款项',
+			'notFollowedByAnyoneYouFollow' => '没有人关注你关注的人',
+			'notHelpful' => '没有帮助',
+			'notInterested' => '不感兴趣',
+			'notSealed' => '未锁定',
+			'notSealedYet' => '未锁定',
+			'note' => '帖子',
+			'noteNotFound' => '未找到帖子',
+			'notePublished' => '帖子已发布！',
+			'noteIdCopied' => '帖子ID 已复制！👏',
+			'walletDataNote' => '注意：与您的钱包相关的所有数据将安全地本地存储，并且永远不会在应用范围外共享。',
+			'changeRatingNote' => '注意：更改您的评定仅在 5 分钟内有效，之后您将无法修改。',
+			'payPublishNote' => '注意：请确认您提供的内容为最终版，发布后不可更改，且所花费的 SATS 不可退还。',
+			'notes' => '帖子',
+			'notesFromCommunity' => '来自社区的帖子',
+			'unTextW3Desc' => '尚未标记“有帮助”或“无帮助”的帖子',
+			'unTextW1' => '标记为“有帮助”的帖子',
+			'unTextW3' => '需要更多评定的帖子',
+			'unTextW2' => '标记为“无帮助”的帖子',
+			'un2' => '正在评定中的帖子',
+			'notifications' => '通知',
+			'npubNsecHex' => '公钥，私钥或十六进制',
+			'nwcCopied' => 'NWC已复制成功！',
+			'onDate' => ({required Object date}) => '在 ${date}',
+			'onSelectedWalletLinkIt' => '选择你的钱包并连接它',
+			'oneTimeRewards' => '一次性奖励',
+			'ongoing' => '进行中',
+			'nothingToShowHere' => '哎呀！这里没有内容可显示！',
+			'optionBackgroundColor' => '选择背景颜色',
+			'optionTextColor' => '选择文字颜色',
+			'options' => '选项',
+			'optionsNumber' => ({required Object number}) => '选项： ${number}',
+			'orUseYourWallet' => '或者使用你的钱包',
+			'others' => '其他的',
+			'privacyNote' => '我们的应用通过将敏感数据安全地存储在用户设备上，并采用严格的加密措施，确保隐私得到最大保障。我们严格遵守不共享政策，确保敏感信息始终保密，绝不会离开用户设备。',
+			'owner' => '所有者',
+			'paid' => '已付款',
+			'paidNote' => '付费帖子',
+			'paidNotePublished' => '付费帖子已发布！',
+			'paidNoteLoading' => '付费帖子加载中',
+			'partialUsersZapped' => '部分用户已收到 Zap！',
+			'pasteNwcAddress' => '粘贴 NWC 地址',
+			'pasteYourKey' => '粘贴你的密钥',
+			'pasteKind1063' => '粘贴您的 1063 nevent 并提交',
+			'pasteYourLink' => '粘贴你的链接并提交',
+			'pay' => '支付',
+			'payAmount' => ({required Object number}) => '支付 ${number} Sats',
+			'payPublish' => '支付并发布',
+			'payWithNwc' => '使用 NWC 支付',
+			'paymentFailed' => '付款失败',
+			'paymentSucceeded' => '付款成功',
+			'paymentSurpassMax' => '付款金额超过允许的最大金额',
+			'peopleToFollow' => '关注的人',
+			'permissionInvoiceNotGranted' => '未授予支付invoices的许可。',
+			'pickYourComponent' => '选择你的组件',
+			'pickYourImage' => '选择你的图片',
+			'pickYourMedia' => '选择你的内容',
+			'pickYourVideo' => '选择你的视频',
+			'pictureUrl' => '图片链接',
+			'plan' => '计划',
+			'submitValidVideoEvent' => '请提交有效的视频事件',
+			'points' => '积分',
+			'pointsSystem' => '积分系统',
+			'pollCloseDate' => '投票截止日期',
+			'pollOptions' => '投票选项',
+			'pollZapPublished' => '支持zap的投票已发布！',
+			'popularNotes' => '热门帖子',
+			'post' => '帖子',
+			'postArticle' => '发布文章',
+			'postNotFound' => '未找到帖子',
+			'postCuration' => '发布策展',
+			'postInNote' => '发布为帖子',
+			'postNote' => '发布帖子',
+			'postSmartWidget' => '发布智能组件',
+			'postVideo' => '发布视频',
+			'postedBy' => '发帖者',
+			'postedFrom' => '来自',
+			'postedOn' => ({required Object date}) => '发布于 ${date}',
+			'preview' => '预览',
+			'privKeyCopied' => '私钥被复制！ ',
+			'pro' => '专业版',
+			'processCompleted' => '处理已完成',
+			'profile' => '个人资料',
+			'profileLink' => '个人资料链接',
+			'profileCopied' => '个人资料链接已复制！ ',
+			'profilePreview' => '个人资料预览',
+			'profileRelays' => ({required Object number}) => '推荐的Relay - ${number}',
+			'publicKey' => '公钥',
+			'publicKeyCopied' => '公钥已复制！👏 ',
+			'publish' => '发布',
+			'publishRemoveDraft' => '发布并删除草稿',
+			'publishedOnText' => '发布于',
+			'publishedOn' => ({required Object date}) => '发表于： ${date}',
+			'pullToRefresh' => '下拉刷新',
+			'qrCode' => '二维码',
+			'rateHelpful' => '评定为“有帮助”',
+			'rateNotHelpful' => '评定为“没有帮助”',
+			'ratedHelpful' => '已评定为“有帮助”',
+			'ratedNotHelpful' => '评定为“没有帮助”',
+			'un1' => '最终被评为“有帮助”的笔记所收到的“没有帮助”评定统计',
+			'unTextR3' => '最终被评为“有帮助”的笔记收到的“没有帮助”评定统计',
+			'un2Desc' => '尚未标记为“有帮助”或“无帮助”的笔记评定',
+			'unTextR1' => '使笔记获得“有帮助”状态的评定',
+			'unTextR2' => '使笔记获得“无帮助”状态的评定',
+			'readAboutVerifyingNotes' => '阅读有关验证笔记的信息',
+			'readArticle' => '阅读文章',
+			'readMore' => '阅读更多',
+			'readOnly' => '只读',
+			'readWrite' => '读/写',
+			'receive' => '收到',
+			'receiveSats' => '收到 Sats',
+			'recent' => '最近的',
+			'recentTransactions' => '最近交易',
+			'recentWithReplies' => '最近回复',
+			'reconnectWifi' => '重新连接到 Wi-Fi',
+			'refresh' => '刷新',
+			'refreshed' => '已刷新',
+			'refreshing' => '刷新中',
+			'relayInUse' => 'Relay已经在使用',
+			'relaySettings' => ({required Object number}) => 'Relay设置 ${number}',
+			'relayingStuff' => '服务器正在重置',
+			'relays' => 'Relays',
+			'relaysNotReached' => '无法连接到服务器',
+			'relaysListUpdated' => '服务器列表已更新',
+			'releaseToLoad' => '滑动以加载更多',
+			'repeatedRewards' => '重复的奖励',
+			'replies' => '回复',
+			'reply' => '回复',
+			'replyingTo' => ({required Object name}) => '回复: ${name}',
+			'reposted' => '已转发',
+			'requestInProgress' => '请求正在进行中',
+			'reveal' => '展示',
+			'rewards' => '奖励',
+			'saveDraft' => '保存草稿',
+			'saved' => '已保存',
+			'scanPay' => '扫描并支付',
+			'scanAgain' => '重新扫描',
+			'scanQrCode' => '扫描二维码',
+			'sealed' => '采纳',
+			'search' => '搜索',
+			'searchContentByTitle' => ({required Object type}) => '按标题搜索${type} ',
+			'searchNameNpub' => '按用户名、npub 或 nprofile 搜索',
+			'searchByUserName' => '按用户名搜索',
+			'searchRelay' => '搜索服务器',
+			'secureDirectMessaging' => '安全私信',
+			'seeAll' => '查看全部',
+			'seeAllAttempts' => '查看所有尝试',
+			'seeAlso' => '参见',
+			'seeAnything' => '发现什么需要改进的吗？',
+			'seeMore' => '更多',
+			'seeOriginal' => '查看原文',
+			'seeTranslation' => '查看翻译',
+			'selectAndUploadLocaleImage' => '选择并上传本地图片',
+			'selectAdate' => '选择日期',
+			'selectDefaultWallet' => '在设置中选择默认钱包',
+			'selectUserToZap' => '选择要发送 Zap 的用户（可选）',
+			'selectValidUrlImage' => '选择一个有效的图片链接',
+			'selectWalletTransactions' => '选择钱包查看最新交易',
+			'selectOneReason' => '至少选择一个理由',
+			'selectComponent' => '选择组件并编辑',
+			'send' => '发送',
+			'sendSats' => '发送 Sats',
+			'setProperName' => '设置正确的名称',
+			'setSatsMoreThanZero' => '设置大于0的sat金额',
+			'setBookmarkTitleDescription' => '设置收藏列表的标题和描述',
+			'setValidKey' => '设置一个有效的密钥',
+			'setUpYourLink' => '设置您的链接',
+			'setUpYourNevent' => '设置您的事件',
+			'setYourRating' => '设置您的评级',
+			'settings' => '设置',
+			'share' => '分享',
+			'shareGlimps' => '用真实的语言，分享您的独到见解。',
+			'shareContent' => '分享内容',
+			'shareImage' => '分享图片',
+			'shareLink' => '分享链接',
+			'shareNaddr' => '分享地址',
+			'shareNoteId' => '分享帖子ID',
+			'shareNprofile' => '分享账号信息',
+			'shareProfile' => '分享个人资料',
+			'shareProfileDesc' => '分享个人资料，扩展网络，建立联系。',
+			'show' => '显示',
+			'showArticlesNotesSuggestions' => '显示文章/帖子推荐',
+			'showSecret' => '显示密钥！',
+			'showStats' => '显示 Sats',
+			'showSuggestedInterests' => '显示推荐兴趣',
+			'showSuggestedPeople' => '显示推荐关注的人',
+			'showSuggestions' => '显示推荐',
+			'signIn' => '登录',
+			'usingViewModeDesc' => '使用你的私钥登录并加入YakiHonne',
+			'size' => '大小',
+			'slideToPay' => '滑动以进行支付',
+			'smartWidget' => '智能组件',
+			'smartWidgetBuilder' => '智能组件构建器',
+			'smartWidgetChecker' => '智能组件检查器',
+			'smartWidgetNotFound' => '未找到智能组件',
+			'smartWidgetPublishedSuccessfuly' => '智能组件已发布成功',
+			'smartWidgets' => '智能组件',
+			'smartWidgetsDrafts' => '智能组件草稿',
+			'smartWidgetsTemplates' => '智能组件模板',
+			'software' => '软件设置',
+			'somethingWentWrong' => '出错了！',
+			'soonUsers' => '很快用户将能够在以下活动中使用积分：',
+			'source' => '来源',
+			'sourceRecommended' => '来源（推荐）',
+			'splitRevenuesWithUsers' => '与用户分享收益',
+			'splitZapsWith' => '分享zaps 给',
+			'spreadWordSharingContent' => '请传播到世界各个角落',
+			'startBuildingSmartWidget' => '开始构建和自定义您的智能组件以在 Nostr 网络上使用',
+			'startEarningPoints' => '开始赚取并充分利用您的 Yaki 积分！ ',
+			'startSearchContent' => '开始搜索内容',
+			'startSearchPeople' => '开始搜索用户',
+			'stickers' => '贴图',
+			'submit' => '提交',
+			'submitBookmarkList' => '提交收藏列表',
+			'submitCuration' => '提交策展',
+			'successfulRelays' => '链接服务器成功',
+			'suggestedInterests' => '兴趣推荐',
+			'suggestions' => '推荐',
+			'suggestionsBox' => '反馈框',
+			'summaryOptional' => '摘要（可选）',
+			'supportYakihonne' => '支持 YakiHonne',
+			'supportedNips' => '已支持的Nips',
+			'switchAccounts' => '切换账户',
+			'taylorExperienceInterests' => '通过选择你的主要兴趣来定制您的体验',
+			'telegramUrl' => 'Telegram 链接',
+			'templates' => '模板',
+			'text' => '文本',
+			'textColor' => '文本颜色',
+			'textCustomization' => '文本自定义',
+			'textSuccesfulyCopied' => '文本复制成功！',
+			'theFollowingNote' => '以下注释：',
+			'smHaveTitle' => '智能组件至少需要一个标题',
+			'smHaveOneWidget' => '智能组件至少有一个组件',
+			'valueBetweenMinMax' => '该值应介于最小和最大 sat 之间',
+			'noDataFromGpt' => '有来自 GPT 的数据显示。',
+			'oneFeedOptionAvailable' => '至少需要一个信息流选项',
+			'unTextW1Desc' => '这些笔记现在会展示给查看帖子的人，增加背景信息并帮助大家了解更多内容。',
+			'unTextW2Desc' => '这些笔记已经被足够多的贡献者判定为“没有帮助”，包括那些在过去持不同意见的贡献者。',
+			'un1Desc' => '这些评定会被双重计算，因为它们通常表示对其他人认为有帮助的笔记的支持。',
+			'unTextR1Desc' => '这些被标识了“有帮助”的笔记会作为上下文显示在帖子中，帮助用户了解信息。',
+			'unTextR2Desc' => '这些评定通过向笔记作者提供反馈，改进了验证笔记，并使贡献者能够专注于最有潜力的笔记。',
+			'notValidVideoEvent' => '此事件不是有效的视频事件！',
+			'sensitiveContent' => '涉及敏感内容',
+			'emptyVideoUrl' => '此 nevent 的地址为空',
+			'thisNoteAwaitRating' => '此笔记正在等待社区评定',
+			'yourNoteAwaitRating' => '此笔记正在等待社区评定',
+			'smartWidgetConvention' => '此智能组件没有遵循约定的协议',
+			'useCannotBeZapped' => '该用户无法被zap',
+			'thread' => '帖子',
+			'thumbnailPreview' => '缩略图预览',
+			'title' => '标题',
+			'titleData' => ({required Object description}) => '标题： ${description}',
+			'toBeAbleSendSats' => '为了确保成功zap，请连接您的闪电网络钱包',
+			'topReasonsSelected' => '评定者选择的主要原因：',
+			'totalAmount' => '总额',
+			'totalNumber' => ({required Object number}) => '全部的： ${number}',
+			'trending' => '热搜',
+			'tryAgain' => '请重试',
+			'type' => '类型',
+			'typeValidZapQuestion' => '请输入有效的投票问题！',
+			'unableToOpenUrl' => '无法打开网址',
+			'undo' => '撤消',
+			'undoRating' => '撤消评定',
+			'unfollow' => '取消关注',
+			'unfollowAll' => '取消全部关注',
+			'pendingUnfollowing' => '正在取消关注...',
+			'unknown' => '未知',
+			'unknownVerifiedNote' => '未知的验证笔记',
+			'unlocked' => '解锁',
+			'unmute' => '解除静音',
+			'unmuteUser' => '解除静音用户',
+			'untitled' => '无标题',
+			'update' => '更新',
+			'updateInterests' => '更新兴趣',
+			'updateProfile' => '更新个人资料',
+			'updatedSuccesfuly' => '更新成功',
+			'updates' => '更新',
+			'updatesNews' => '更新消息',
+			'uploadAndUse' => '上传及使用',
+			'uploadImage' => '上传图片',
+			'uploadingImage' => '正在上传图片...',
+			'upvotes' => '点赞',
+			'url' => '链接',
+			'useAmber' => '使用Amber',
+			'useInvoice' => '使用  invoice',
+			'useTemplate' => '使用模板',
+			'user' => '用户',
+			'userCannotBeFound' => '未找到用户',
+			'userHasBeenMuted' => '用户已被静音',
+			'userHasBeenUnmuted' => '用户已解除静音',
+			'userName' => '用户名',
+			'userNameCopied' => '用户名复制成功！',
+			'userZappedSuccesfuly' => '用户已成功收到 Zap',
+			'userImpact' => '用户的影响力',
+			'userRelays' => '用户的服务器',
+			'usingExternalSign' => '通过外部签名进行操作',
+			'value' => '数值',
+			'verifyNip05' => '已验证的 Nostr 地址 (NIP 05)',
+			'verifiedNoteNotFound' => '未找到验证笔记',
+			'verifyNotes' => '验证笔记',
+			'verifyingNote' => '正在验证的笔记',
+			'version' => '版本',
+			'video' => '视频',
+			'videoNotFound' => '未找到视频',
+			'videoCustomization' => '自定义视频',
+			'videoAddedCuration' => '视频已添加到你的策展中',
+			'videoUrl' => '视频链接',
+			'videos' => '视频',
+			'videosAvailableCuration' => '此策展中可用的视频',
+			'view' => '查看',
+			'viewProfile' => '查看个人资料',
+			'viewQrCode' => '查看二维码',
+			'views' => '查看',
+			'visitProfile' => '访问个人资料',
+			'voteNotSubmitted' => '无法提交投票',
+			'voteRequired' => '需要先投票才能显示统计结果',
+			'votesByUsers' => '用户投票',
+			'votesByZaps' => '支持 zap的投票',
+			'votesNumber' => ({required Object number}) => '投票数： ${number}',
+			'waitingGenerationOfInvoice' => '等待生成 invoices',
+			'wallet' => '钱包',
+			'walletNotLinked' => '无法链接，错误的钱包地址',
+			'walletCreated' => '钱包创建成功',
+			'walletLinked' => '钱包链接成功',
+			'wallets' => '钱包',
+			'warning' => '提醒',
+			'watchNow' => '立即观看',
+			'noLnInNwc' => '\n无法从您的 NWC 密钥中提取地址，请检查您的闪电地址服务提供商，以复制地址或更新个人资料',
+			'readAboutVerifyingNotesDesc' => '我们为您准备了一篇文章，帮助您更好了解我们的使命。',
+			'website' => '网站',
+			'weight' => '权重',
+			'whatThinkThis' => '您对此有何看法？',
+			'whatThinkOfThat' => '您对此有何看法？',
+			'whatsOnYourMind' => '您在想什么？',
+			'whatsThis' => '这是什么？',
+			'whyVerifyingNotes' => '为什么需要验证笔记？',
+			'widgets' => '智能组件',
+			'writeCommentOptional' => '写评论（可选）',
+			'writeYourMessage' => '写留言',
+			'writeNote' => '写一个帖子',
+			'writeSummary' => '写一个摘要',
+			'writeValidNote' => '写一个有效的帖子！',
+			'writeOnly' => '只能写入',
+			'writeSomethingAboutYou' => '写一些关于您的事情！',
+			'writeSomething' => '写点东西...',
+			'writeYourText' => '留下你的文字',
+			'xUrl' => 'X 链接',
+			'yakiChest' => 'Yaki百宝箱',
+			'yakihonne' => 'YakiHonne',
+			'yakihonneChest' => 'Yaki百宝箱！',
+			'yakihonneConsPoints' => '可用积分',
+			'yakihonneImprovements' => '改进YakiHonne',
+			'yakihonneNote' => 'YakiHonne的帖子',
+			'yakihonneNotification' => 'YakiHonne的通知',
+			'yakiNwc' => 'YakiHonne 的 NWC',
+			'clearAppCacheDesc' => '您即将清除应用程序缓存，是否要继续？',
+			'deleteWalletDesc' => '您即将删除此钱包，是否继续？',
+			'undoRatingDesc' => '即将撤销您的评定，是否要继续？',
+			'alreadyLoggedIn' => '已登录！',
+			'deleteAccountMessage' => '正在尝试登录已删除的帐户。',
+			'loggedToYakiChest' => '已登录 Yaki百宝箱',
+			'loggedIn' => '已登录！',
+			'notUsingSecureDms' => '不再使用安全DM',
+			'usingSecureDms' => '正在使用安全DM',
+			'usingExternalSignDesc' => '正在使用外部签名',
+			'secKeyWalletDesc' => '账户密钥和钱包连接密钥可在您的设置中找到，确保它们的安全性非常重要，请妥善保管。',
+			'secKeyDesc' => '请在设置中查找您的账户密钥，确保它们的安全性对账户和钱包至关重要，务必保密。',
+			'uploadSendMedia' => '你可以在选择或获取媒体文件后立即上传和发送',
+			'uploadPasteUrl' => '你可以上传或粘贴您喜欢的图片链接',
+			'canUploadPastLink' => '您可以上传视频、粘贴链接或选择一种1063事件类型来创建视频中。',
+			'findPaidNoteCorrect' => '这个付费帖子是正确的',
+			'findPaidNoteMisleading' => '这个付费帖子是有误导性的',
+			'alreadyContributed' => '感谢您的贡献!',
+			'alreadyVoted' => '已投票',
+			'congratsDesc' => ({required Object number}) => '因以下行动您获得${number} xp奖励，保持活跃并赚取奖励！',
+			'youHaveLeftNote' => '你已对这个付费帖子验证',
+			'noRewards' => '你当前没有奖励，互动或撰写验证笔记来获取奖励',
+			'noWalletLinkedMessage' => '个人资料中没有绑定钱包，你想绑定吗？',
+			'noWalletLinkedToYouProfile' => '个人资料中没有绑定钱包',
+			'youHaveRated' => '你已评定',
+			'ratedNoteSealed' => '你已评定的笔记已被社区采纳',
+			'youRatedHelpful' => '你评定为“有帮助”',
+			'youRatedNotHelpful' => '你评定为“没有帮助”',
+			'ownReceivedSat' => ({required Object number}) => '你已收到 ${number} Sats',
+			'ownSentSat' => ({required Object number}) => '你已发送 ${number} Sats',
+			'voteToSeeStats' => '需要先投票才能看到统计',
+			'you' => '您： ',
+			'confirmDeleteContent' => ({required Object type}) => '确定要删除这个 ${type}？',
+			'confirmDeleteBookmarkList' => '确定要删除这个收藏列表吗？',
+			'confirmDeleteDraft' => '确定要删除此草稿么？',
+			'deleteCoverPicDesc' => '确定删除封面图片么？',
+			'youreAllSet' => '已设置!',
+			'switchToMonolayout' => '切换到单栏布局会清空模块中的内容，两侧已有内容，确定继续吗？',
+			'usingViewMode' => '你正在使用视图模式',
+			'muteUserDesc' => ({required Object name}) => '即将静音 ${name}，确认继续吗？',
+			'unmuteUserDesc' => ({required Object name}) => '即将解除 ${name}静音，确认继续吗？',
+			'articlePublished' => '文章已发布！',
+			'yourDisplayName' => '用户名',
+			'yourNoteSealed' => '你关注的笔记已被社区采纳：',
+			'yourName' => '用户名',
+			'ratingDeleted' => '你的评定已删除',
+			'ratingSubmittedCheckReward' => '评定已提交，请在奖励页面领取你的评定奖励',
+			'verifiedNoteAdded' => '验证笔记已添加，请前往奖励页面领取你的奖励',
+			'verifiedNoteSealed' => '你的验证笔记已被社区采纳',
+			'yourWebsite' => '你的网站',
+			'youtubeUrl' => 'Youtube 链接',
+			'zap' => 'zap',
+			'zapPoll' => 'zap 投票',
+			'zapPollCustomization' => '自定义 zap 投票',
+			'zapPollNevent' => 'zap 投票nevent',
+			'zapSplits' => '分割 zap',
+			'zappers' => 'Zappers',
+			'zaps' => 'zaps',
+			'zapReceived' => 'Zaps 已收到',
+			'zapSent' => 'Zaps 已发送',
+			'comingSoon' => '即将推出',
+			'content' => '内容',
+			'expiresOn' => ({required Object date}) => '到期日 ${date}',
+			'reactions' => '转发“',
+			'reposts' => '回应',
+			'notifDisabled' => '通知已关闭',
+			'notifDisabledMessage' => '您可前往通知设置重新开启此类提醒',
+			'collapseNote' => '长帖子自动折叠',
+			'oneNotifOptionAvailable' => '至少启用一项通知选项',
+			'readAll' => '全标已读',
+			'usernameTaken' => '用户名已被注册',
+			'usernameRequired' => '请填写用户名',
+			'deleteWalletConfirmation' => '请确保 NWC 连接短语已安全备份，丢失后将无法恢复。',
+			'unsupportedKind' => '暂不支持此类型',
+			'analyticsCrashlytics' => '崩溃日志',
+			'analyticsCache' => '崩溃日志和缓存',
+			'analyticsCacheOn' => '崩溃日志已打开。',
+			'analyticsCacheOff' => '崩溃日志已关闭。',
+			'shareNoUsage' => '您当前没有与我们分享任何崩溃日志',
+			'wantShareAnalytics' => '想要分享崩溃日志吗？',
+			'yakihonneAnCr' => 'YakiHonne 的崩溃日志',
+			'crashlyticsTerms' => '收集匿名崩溃对于完善我们应用程序的功能和用户体验至关重要。它使我们能够识别用户偏好、增强流行功能并进行明智的优化，确保为用户提供更加个性化和高效的应用程序。',
+			'collectAnonymised' => '我们收集匿名崩溃日志以改善应用程序体验。',
+			'linkWalletToProfile' => '将钱包与您的个人资料关联',
+			'linkWalletToProfileDesc' => '关联的钱包将用于接收比特币（sats）',
+			'addPoll' => '添加投票',
+			'browsePolls' => '浏览民意调查',
+			'maciPolls' => '基于MACI的投票',
+			'beta' => '测试版',
+			'choosePollType' => '选择投票类型',
+			'created' => '已创建',
+			'tallying' => '计票中',
+			'ended' => '已结束',
+			'closed' => '已关闭',
+			'voteResultsBy' => '按…显示投票结果',
+			'votes' => 'votes',
+			'voiceCredit' => '信用积分',
+			'viewDetails' => '查看详情',
+			'signup' => 'Signup',
+			'notDownloadProof' => '无法下载证明',
+			'name' => '名称',
+			'status' => '状态',
+			'circuit' => '电路',
+			'votingSystem' => '投票系统',
+			'proofSystem' => '证明系统',
+			'gasStation' => '手续费',
+			'totalFund' => '（总资金）',
+			'roundStart' => '轮次开始',
+			'roundEnd' => '轮次结束',
+			'operator' => '操作员',
+			'contractCreator' => '合约创建者',
+			'contractAddress' => '合约地址',
+			'blockHeight' => '区块高度',
+			'atContractCreation' => ({required Object number}) => '${number}（合约创建时）',
+			'zkProofs' => '零知识证明',
+			'downloadZkProofs' => '下载证明',
+			'noWalletLinked' => '您的个人资料尚未绑定钱包，请在上方菜单中绑定一个钱包。',
+			'walletConnectionString' => '钱包连接字符串',
+			'walletConnectionStringDesc' => '请确保安全地复制或导出您的钱包连接字符串。我们不会存储此信息，若丢失将无法恢复。',
+			'export' => '导出',
+			'logout' => '登出',
+			'exportAndLogout' => '导出并登出',
+			'exportWalletsDesc' => '您的账户似乎已关联钱包。请在退出登录前下载您的钱包密钥。',
+			'manageWallets' => '管理钱包',
+			'roundDuration' => '轮次时长',
+			'startAt' => ({required Object date}) => '开始时间：${date}',
+			'loginAction' => '登录',
+			'addPicture' => '添加图片',
+			'editPicture' => '编辑图片',
+			'exportKeys' => '导出密钥',
+			'mutedUser' => '已静音用户',
+			'unaccessibleContent' => '无法访问的内容',
+			'mutedUserDesc' => '你已将该用户静音，取消静音后可查看此内容',
+			'commentHidden' => '该评论已隐藏',
+			'upcoming' => '即将到来',
+			'exportCredentials' => '导出凭证',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
+			'loginToYakihonne' => '登录 Yakihonne',
+			'alreadyUser' => '已有账户？',
+			'createPoll' => '创建投票',
+			'gasStationTotal' => '手续费中心（总资助金额）',
+			'gasStationRemaining' => '手续费中心（剩余余额）',
+			'paste' => '粘贴',
+			'manual' => '手输入',
+			'contacts' => '联系人',
+			'typeManualDesc' => '输入闪电地址、闪电发票或 LNURL',
+			'useValidPaymentRequest' => '请使用有效的支付请求',
+			'save' => '保存',
+			'saveImageGallery' => '图片已下载到您的相册',
+			'errorSavingImage' => '下载图片时发生错误',
+			'copyImageGallery' => '图片已复制到您的剪贴板',
+			'errorCopyImage' => '复制图片时发生错误',
+			'scan' => '扫描',
+			'invalidLightningAddress' => '无效的闪电地址',
+			'deleteAccountDesc' => '您即将删除您的账户，是否继续？',
+			'paymentFailedInvoice' => '支付失败：请检查此发票的有效性',
+			'validSatsAmount' => '设置一个有效的sats金额',
+			'placeholder' => '占位提示',
+			'inputFieldCustomization' => '输入框自定义',
+			'addInputField' => '添加输入框',
+			'addButton' => '添加按钮',
+			'selectImage' => '选择图片',
+			'moveLeft' => '向左移动',
+			'moveRight' => '向右移动',
+			'buttonRequired' => '至少需要保留一个按钮',
+			'missingInputDesc' => '当前自定义功能需要输入框组件，但你的智能组件中未嵌入输入框，请添加输入框以确保功能正常运行。',
+			'countdown' => '倒计时',
+			'contentEndsAt' => '内容截止时间',
+			'countdownTime' => '请填写倒计时时长',
+			'contentEndsDate' => '请填写内容截止日期',
+			'lnMandatory' => '必须填写 Lightning 地址',
+			'pubkeysMandatory' => '至少选择一个用户',
+			'buttonNoUrl' => '按钮链接不能为空',
+			'shareWidgetImage' => '分享组件图片',
+			'inputField' => '输入框',
+			'noReplies' => '暂无回复',
+			'message' => '消息',
+			'chat' => '聊天',
+			'onlyLettersNumber' => '仅限输入字母和数字',
+			'appCache' => '应用缓存',
+			'cachedData' => '已缓存数据',
+			'cachedMedia' => '已缓存媒体',
+			'cacheCleared' => '缓存已清除',
+			'closeAppClearingCache' => '清除缓存后建议重启应用，以确保所有更改生效并保持流畅运行',
+			'appCacheNotice' => '应用缓存正在变大，为保持流畅体验，建议清理旧数据',
+			'manageCache' => '管理缓存',
+			'filterByTime' => '按时间筛选',
+			'allTime' => '全部时间',
+			'oneMonth' => '1个月',
+			'threeMonths' => '3个月',
+			'sixMonths' => '6个月',
+			'oneYear' => '1年',
+			'defaultZapAmount' => '默认打赏金额',
+			'oneTapZap' => '启用一键打赏',
+			'verify' => '验证',
+			'reset' => '重置',
+			'appCannotVerified' => '应用无法验证或无效',
+			'useValidAppUrl' => '请输入有效的应用链接',
+			'app' => '应用',
+			'userNotConnected' => '用户未连接',
+			'userCannotSignEvent' => '该用户无法签名事件',
+			'invalidEvent' => '无效事件',
+			'eventCannotBeSigned' => '该事件无法签名',
+			'signEvent' => '签名事件',
+			'sign' => '签名',
+			'signPublish' => '签名并发布',
+			'signEventDes' => '你即将签名以下事件',
+			'enableAutomaticSigning' => '启用自动签名',
+			'tools' => '工具',
+			'searchSmartWidgets' => '搜索智能组件',
+			'noToolsAvailable' => '暂无可用工具',
+			'underMaintenance' => '维护中',
+			'smartWidgetMaintenance' => '智能组件维护中，我们正在修复，很快回来！',
+			'mySavedTools' => '已保存的应用',
+			'availableTools' => '可用的应用',
+			'remove' => '移除',
+			'youHaveNoTools' => '你还没有应用',
+			'discoverTools' => '发现应用',
+			'addWidgetTools' => '添加应用',
+			'widgetSearch' => '应用搜索',
+			'widgetSearchDesc' => '搜索已发布的智能组件与用户创建内容',
+			'getInspired' => '获取灵感',
+			'getInspirtedDesc' => '向我们的 AI 提问，帮助你构建智能组件',
+			'trySearch' => '尝试不同搜索方式',
+			'typeForCommands' => '输入 / 查看命令',
+			'loadMore' => '加载更多',
+			'searchingFor' => ({required Object name}) => '搜索：${name}',
+			'playground' => '测试环境',
+			'typeKeywords' => '输入关键词（如：关键词1，关键词2...）',
+			'enableGossip' => '启用 Gossip 模型',
+			'enableExternalBrowser' => '启用外部浏览器访问',
+			'restartAppTakeEffect' => '重启应用以生效',
+			'tips' => '提示',
+			'docs' => '文档',
+			'tryMiniApp' => '动手测试你的 Mini App',
+			'exploreOurRepos' => '查看我们的代码库或智能组件文档',
+			'bringAi' => 'AI 助手即将上线',
+			'bringAiDesc' => '我们正在打造 AI 助手，助你高效创建智能组件与 Mini App，敬请期待！',
+			'notesCount' => ({required Object number}) => '共 ${number} 条笔记',
+			'mixedContentCount' => ({required Object number}) => '${number} 条内容',
+			'noApp' => '无法找到合适的应用打开导出文件',
+			'andMore' => ({required Object number}) => '及其他 ${number} 项',
+			'addFilter' => '添加筛选条件',
+			'entitleFilter' => '筛选标题包含',
+			'includedWords' => '包含关键词',
+			'excludedWords' => '排除关键词',
+			'hideSensitiveContent' => '隐藏敏感内容',
+			'mustIncludeThumbnail' => '必须包含封面图',
+			'forArticles' => '用于文章',
+			'forVideos' => '用于视频',
+			'forCurations' => '用于内容推荐',
+			'articleMinWords' => '文章最少字数',
+			'showOnlyArticleMedia' => '仅显示带多媒体的文章',
+			'showOnlyNotesMedia' => '仅显示带多媒体的笔记',
+			'curationsType' => '推荐内容类型',
+			'minItemCount' => '最少包含项目数',
+			'addWord' => '添加关键词',
+			'wordNotInIncluded' => '请确保该词未在“包含关键词”中',
+			'wordNotInExcluded' => '请确保该词未在“排除关键词”中',
+			'fieldRequired' => '该字段为必填项',
+			'filterAdded' => '筛选条件已添加',
+			'filterUpdated' => '筛选条件已更新',
+			'filterDeleted' => '筛选条件已删除',
+			'filters' => '筛选条件',
+			'contentFeed' => '内容流',
+			'communityFeed' => '社区流',
+			'relaysFeed' => '中继流',
+			'marketplaceFeed' => '市场流',
+			'addYourFeed' => '添加你的内容源',
+			'myList' => '我的列表',
+			'allFreeFeeds' => '所有免费内容源',
+			'noRelays' => '暂无中继',
+			'addRelays' => '添加你的中继列表，获取个性化内容流',
+			'adjustYourFeedList' => '调整你的内容流列表',
+			'addRelayUrl' => '添加中继 URL',
+			'feedOptionEnabled' => '至少需启用一个内容源选项',
+			'feedSetUpdate' => '内容源设置已更新',
+			'global' => '全站',
+			'fromNetwork' => '来自网络',
+			'top' => '热门',
+			'showFollowingList' => '你当前的内容流基于他人的关注列表，开始关注用户以定制属于你的内容流',
+			'from' => '起始时间',
+			'to' => '结束时间',
+			'dayMonthYear' => 'yyyy年MM月dd日',
+			'fromDateMessage' => '“起始时间”必须早于“结束时间”',
+			'toDateMessage' => '“结束时间”必须晚于“起始时间”',
+			'noResults' => '暂无结果',
+			'noResultsFilterMessage' => '你当前应用了自定义筛选条件，请调整参数和时间以获取更多数据',
+			'noResultsNoFilterMessage' => '未找到相关内容，请更换内容源或调整筛选条件',
+			'addToNotes' => '添加到笔记',
+			'addToDiscover' => '添加到发现页',
+			'shareRelayContent' => '分享中继内容',
+			'shareRelayUrl' => '分享中继地址',
+			'basic' => '基础',
+			'privateMessages' => '私信通知',
+			'pushNotifications' => '推送通知',
+			'repliesView' => '回复视图',
+			'threadView' => '对话串视图',
+			'boxView' => '卡片视图',
+			'viewAs' => '切换视图方式',
+			'feedSettings' => '内容流设置',
+			'appliedFilterDesc' => '该笔记因当前筛选条件被隐藏',
+			'showNote' => '显示笔记',
+			'allMedia' => '全部媒体内容',
+			'searchInNostr' => '在 Nostr 中搜索',
+			'findPeopleContent' => '搜索用户、笔记和内容',
+			'activeService' => '活跃中继服务',
+			'regularServers' => '常规中继服务器',
+			'blossomServers' => 'BLOSSOM 中继服务器',
+			'mirrorAllServer' => '同步镜像全部服务器',
+			'mainServer' => '主服务器',
+			'select' => '选择',
+			'noServerFound' => '未找到服务器',
+			'serverExists' => '该服务器已存在于我的列表中',
+			'invalidUrl' => '无效的链接格式',
+			'serverPath' => '服务器路径',
+			'errorAddingBlossom' => '添加 BLOSSOM 服务器时出错',
+			'errorSelectBlossom' => '选择 BLOSSOM 服务器时出错',
+			'errorDeleteBlossom' => '删除 BLOSSOM 服务器时出错',
+			'wotConfig' => '信任网络配置',
+			'wot' => '信任网络',
+			'wotThreshold' => '信任门槛值',
+			'postActions' => '帖子操作',
+			'enabledFor' => '启用于',
+			'dmRelayTitle' => '尚未配置私信中继！',
+			'dmRelayDesc' => '请更新我的中继列表以支持私信功能',
+			'youFollow' => '我关注的人',
+			'quotaLimit' => '你已超出今日配额限制',
+			'alwaysUseExternal' => '始终使用外部钱包打赏',
+			'alwaysUseExternalDesc' => '为所有 zap 操作使用外部 Lightning 钱包，而非内置钱包',
+			'unreachableExternalWallet' => '外部钱包无法连接',
+			'secureStorageDesc' => '我的密钥仅存储在本地设备中，绝不会上传或共享',
+			'pubkeySharedDesc' => '可安全分享 —— 这是我在 Nostr 上的身份标识',
+			'privKeyDesc' => '需妥善保管 —— 用于备份账户访问权限',
+			'settingsKeysDesc' => '管理我的 Nostr 密钥，用于身份验证与签名操作',
+			'settingsRelaysDesc' => '配置我的 Nostr 中继连接，用于事件存储与分发',
+			'settingsCustomizationDesc' => '自定义我的动态展示、手势、预览和偏好，提升使用体验',
+			'settingsNotificationsDesc' => '管理我在 Nostr 上的消息、提及、反应等通知设置',
+			'settingsContentDesc' => '控制我在 Nostr 上的内容互动、隐私、媒体处理与消息偏好',
+			'settingsLanguageDesc' => '选择 YakiHonne 界面和内容翻译的首选语言',
+			'settingsWalletDesc' => '连接并管理我的比特币闪电钱包，支持自定义金额打赏与外部集成',
+			'settingsAppearanceDesc' => '自定义 YakiHonne 的外观风格，匹配我的视觉偏好',
+			'settingsCacheDesc' => '管理应用性能监控、错误上报与存储优化，保障流畅运行',
+			'addQuickRelayDesc' => '通过输入链接快速添加新中继',
+			'fewerRelays' => '更少但稳定的中继 = 更快更稳的体验',
+			'greenDotsDesc' => '绿色点表示连接正常',
+			'redDotsDesc' => '红色点表示中继已离线',
+			'greyDotsDesc' => '灰色点表示等待连接中',
+			'homeFeedCustomDesc' => '选择我的回复显示风格（方框或串联）并管理内容推荐偏好',
+			'NewPostDesc' => '设置长按发布按钮时的默认操作（当前为：笔记）',
+			'profilePreviewDesc' => '在动态中点击用户名时显示用户资料预览',
+			'collapseNoteDesc' => '自动收起长帖，让动态更清爽可读',
+			'pushNotificationsDesc' => '开启推送通知，使用安全隐私协议（FCM/APNS）',
+			'privateMessagesDesc' => '收到新私信或对话时提醒我',
+			'followingDesc' => '我关注的人发布新内容时提醒我',
+			'mentionsDesc' => '有人提及我或回复我的帖子时提醒我',
+			'repostsDesc' => '有人分享或转发我的内容时提醒我',
+			'reactionsDesc' => '有人点赞或回应我的帖子时提醒我',
+			'zapDesc' => '我的帖子收到比特币打赏（zap）时提醒我',
+			'muteListDesc' => '查看并管理我屏蔽的用户，阻止其内容出现在动态中',
+			'mediaUploaderDesc' => '选择用于上传我图片和媒体文件的服务提供方',
+			'autoSignDesc' => '自动签署 Mini App（工具类智能组件）发起的事件请求，无需每次手动确认',
+			'gossipDesc' => '智能中继管理：自动发现我关注的用户在哪些中继发帖，减少连接数量并适应离线中继',
+			'useExternalBrowsDesc' => '使用默认浏览器打开链接，而非内置浏览器',
+			'secureDmDesc' => '使用最新私信标准（NIP-17）进行加密通讯。如需兼容旧客户端，可切换为 NIP-4',
+			'wotConfigDesc' => '基于社交背书的去中心化信任机制，在 Nostr 协议中建立声誉体系',
+			'appLangDesc' => '选择 YakiHonne 的界面语言（菜单、按钮等）',
+			'contentTransDesc' => '为外语帖子选择翻译服务',
+			'planDesc' => '我当前的翻译服务等级与使用配额',
+			'manageWalletsDesc' => '添加并管理我的 Lightning 钱包，用于收发比特币打赏',
+			'defaultZapDesc' => '设置快捷 zap 默认金额（单位：sats）',
+			'enableZapDesc' => '单击自动发送默认 zap 金额；双击打开金额/钱包/消息选项。关闭后双击即发送默认金额',
+			'externalWalletDesc' => '所有 zap 操作都使用外部 Lightning 钱包，而非 YakiHonne 内置钱包',
+			'fontSizeDesc' => '调整应用内文字大小，让阅读更舒适。可通过滑块设置',
+			'appThemeDesc' => '切换浅色/深色模式，自定义应用外观风格',
+			'crashlyticsDesc' => '启用匿名崩溃报告和性能分析，帮助我们修复问题并优化体验（使用 Umami 分析，可随时关闭）',
+			'showSuggDesc' => '在我的动态中展示通用内容推荐',
+			'showSuggPeople' => '根据我的行为推荐关注用户',
+			'showSuggContent' => '在我的动态中推荐帖子和文章',
+			'showSuggInterests' => '推荐我可能感兴趣的话题与内容',
+			'striveToMake' => '我们致力于打造最好的 Nostr 体验。如果你愿意支持我们，可通过 zap、私信或 GitHub 提建议',
+			'errorAmber' => '您已拒绝或已连接到 Amber',
+			'useOneRelay' => '您至少应保持一个中继连接',
+			'automaticPurge' => '自动清理缓存',
+			'automaticPurgeDesc' => '当应用缓存达到 2GB 时自动清理。保持性能并防止过度占用存储空间。',
+			'customServices' => '自定义服务',
+			'defaultServices' => '默认服务',
+			'addService' => '添加服务',
+			'customServicesDesc' => '您添加的可用自定义服务。',
+			'urlRequired' => '需要 URL',
+			'serviceAdded' => '服务已添加',
+			'showRawEvent' => '显示原始事件',
+			'rawEventData' => '原始事件数据',
+			'copyRawEventData' => '原始事件数据已复制！👏',
+			'kind' => '类型',
+			'shortNote' => '简短备注',
+			'postedOnDate' => '发表于',
+			'showMore' => '... 显示更多',
+			'accountDeleted' => '此账户已被删除，无法再访问。',
+			'ok' => '确定',
+			'redeem' => '兑换',
+			'redeemCode' => '兑换码',
+			'redeemAndEarn' => '兑换并获得',
+			'redeemingFailed' => '兑换失败',
+			'redeemInProgress' => '正在兑换代码...',
+			'redeemCodeDesc' => '输入您的代码以兑换',
+			'missingCode' => '缺少代码',
+			'missingPubkey' => '缺少公钥',
+			'invalidPubkey' => '无效的公钥',
+			'missingLightningAddress' => '缺少闪电地址',
+			'codeNotFound' => '未找到代码',
+			'redeemCodeRequired' => '兑换码为必填项',
+			'redeemCodeInvalid' => '兑换码无效',
+			'codeBeingRedeemed' => '您的代码正在兑换中。如果未成功完成，请稍后再试。',
+			'redeemCodeSuccess' => '兑换成功',
+			'redeemFailed' => '无法兑换代码，请稍后再试。',
+			'codeAlreadyRedeemed' => '代码已被兑换',
+			'satsEarned' => ({required Object amount}) => '+${amount} sats 已获得。',
+			'selectReceivingWallet' => '选择接收钱包',
+			'redeemCodeMessage' => '使用 YakiHonne 的兑换码领取免费 sats — 只需输入代码即可立即增加余额。',
+			'scanCode' => '扫描代码',
+			'enterCode' => '输入代码',
+			'errorSharingMedia' => '分享媒体时出错',
+			'open' => '打开',
+			'openUrl' => '打开链接',
+			'openUrlDesc' => ({required Object url}) => '要打开 "${url}" 吗？',
+			'openUrlPrompt' => '打开链接提示',
+			'openUrlPromptDesc' => '在浏览器中打开前显示完整 URL 的安全提示。',
+			'whatsNew' => '新功能',
+			'appCustom' => '应用自定义',
+			'poll' => '投票',
+			'pendingEvents' => '待处理事件',
+			'pendingEventsDesc' => '待处理事件在离线或网络不佳时创建。网络连接恢复后将自动发送。',
+			'singleColumnFeed' => '单列信息流',
+			'singleColumnFeedDesc' => '将主页信息流显示为单个宽列以提高可读性。',
+			'waitingPayment' => '等待付款',
+			'copyId' => '复制 ID',
+			'idCopied' => '已复制 ID！ 👏',
+			'republish' => '重新发布',
+			'useRelayRepublish' => '你至少应选择一个中继进行重新发布。',
+			'republishSucces' => '事件已成功重新发布！',
+			'errorRepublishEvent' => '重新发布事件时发生错误',
+			'remoteSigner' => '远程签名者',
+			'amber' => 'Amber',
+			'useUrlBunker' => '使用下面的 URL 连接到你的 bunker',
+			'or' => '或',
+			'messagesDisabled' => '消息已停用',
+			'messagesDisabledDesc' => '你已连接远程签名者。直接消息可能包含大量数据，可能无法正常工作。为获得最佳体验，请使用本地签名者以启用直接消息。',
+			'sharedOn' => ({required Object date}) => '分享于 ${date}',
+			'shareAsImage' => '作为图片分享',
+			'viewOptions' => '查看选项',
+			'feedCustomization' => '信息流自定义',
+			'defaultReaction' => '默认反应',
+			'defaultReactionDesc' => '设置默认反应以对帖子作出反应。',
+			'oneTapReaction' => '启用单击反应',
+			'oneTapReactionDesc' => '单击一次即可使用默认反应立即回复。双击打开表情列表供选择。禁用时，双击将发送默认反应。',
+			'sendingTo' => '发送至',
+			'shareEmptyUsers' => '你关注的人和朋友将显示在此处，以便更快速地分享',
+			'publishOnly' => '仅发布到',
+			'protectedEvent' => '受保护的事件',
+			'protectedEventDesc' => '受保护的事件仅其作者可以重新发布。这可保持内容真实性，并防止他人复制或重新发布。',
+			'browseRelay' => '浏览中继',
+			'addFavorite' => '添加到收藏',
+			'removeFavorite' => '从收藏中移除',
+			'collections' => '收藏集',
+			'online' => '在线',
+			'offline' => '离线',
+			'network' => '网络',
+			'followedBy' => ({required Object number}) => '被 ${number} 关注',
+			'favoredBy' => ({required Object number}) => '被 ${number} 收藏',
+			'requiredAuthentication' => '需要身份验证',
+			'relayOrbits' => '中继轨道',
+			'relayOrbitsDesc' => '浏览并探索中继的订阅流',
+			'people' => '用户',
+			'youNotConnected' => '您尚未连接',
+			'youNotConnectedDesc' => '登录您的帐户以浏览网络中的中继',
+			'checkingRelayConnectivity' => '正在检查中继连接性',
+			'unreachableRelay' => '中继无法访问',
+			'engageWithUsers' => '与用户互动以扩展',
+			'engageWithUsersDesc' => '与更多用户互动可帮助您发现新的中继并扩展您的中继列表，以获得更丰富、更互联的体验。',
+			'loadingChatHistory' => '正在加载聊天记录...',
+			'contentActionsOrder' => '内容操作顺序',
+			'contentActionsOrderDesc' => '轻松重新排列帖子互动，以匹配您偏好的顺序。',
+			'quotes' => '引用',
+			'eventLoading' => '正在加载事件...',
+			'loadMessages' => '加载消息',
+			'messagesNotLoaded' => '消息未加载',
+			'messagesNotLoadedDesc' => '由于使用本地远程签名器，消息未被加载。如需加载，请点击下方按钮。',
+			'noteLoading' => '正在加载笔记...',
+			'hideNonFollowedMedia' => '隐藏未关注用户的媒体',
+			'hideNonFollowedMediaDesc' => '自动隐藏来自未关注用户的图片和视频，直到您点击显示。',
+			'clickToView' => '点击查看',
+			'relayFeedListEmpty' => '中继源列表为空',
+			'relayFeedListEmptyDesc' => '添加更多中继以享受个性化的内容流。',
+			'addRelay' => '添加中继',
+			'hiddenContent' => '隐藏的内容',
+			'hiddenContentDesc' => '我们隐藏了此内容，因为您未关注该账户。',
+			'enabledActions' => '已启用的操作',
+			'enabledActionsDesc' => '没有可用的已启用操作。',
+			_ => null,
+		};
 	}
 }
 

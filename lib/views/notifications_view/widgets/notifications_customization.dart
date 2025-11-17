@@ -154,7 +154,7 @@ class SwitchRow extends StatelessWidget {
           scale: 0.8,
           child: CupertinoSwitch(
             value: val,
-            activeTrackColor: kMainColor,
+            activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onSwitched,
           ),
         ),
