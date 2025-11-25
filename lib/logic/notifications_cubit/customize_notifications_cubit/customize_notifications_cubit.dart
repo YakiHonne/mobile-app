@@ -20,6 +20,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
             refresh: true,
             enablePushNotification: true,
             notifPrivateMessage: true,
+            notifMaxMentions: true,
           ),
         ) {
     init();
@@ -39,6 +40,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
           notifZaps: c.notifZaps,
           enablePushNotification: c.enablePushNotification,
           notifPrivateMessage: c.notifPrivateMessage,
+          notifMaxMentions: c.notifMaxMentions,
         ),
       );
     }
@@ -68,6 +70,18 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
       emit(
         state.copyWith(
           enablePushNotification: !state.enablePushNotification,
+        ),
+      );
+    }
+  }
+
+  void setMaxMentions() {
+    isUpdated = true;
+
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          notifMaxMentions: !state.notifMaxMentions,
         ),
       );
     }
@@ -186,6 +200,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
       c.notifZaps = state.notifZaps;
       c.enablePushNotification = state.enablePushNotification;
       c.notifPrivateMessage = state.notifPrivateMessage;
+      c.notifMaxMentions = state.notifMaxMentions;
 
       nostrRepository.appCustomizations[c.pubkey] = c;
 

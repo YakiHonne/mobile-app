@@ -1,10 +1,11 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 
 import '../../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import '../../../../routes/navigator.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../add_discover_filter.dart';
@@ -13,19 +14,21 @@ import '../discover_sources_list.dart';
 class ReorderSettingsView extends HookWidget {
   const ReorderSettingsView({
     super.key,
-    required this.currentAppSettings,
     required this.controller,
     required this.isDiscover,
-    required this.favoriteRelays,
   });
 
-  final ValueNotifier<AppSharedSettings> currentAppSettings;
   final ScrollController controller;
   final bool isDiscover;
-  final ValueNotifier<List<String>> favoriteRelays;
 
   @override
   Widget build(BuildContext context) {
+    useAutomaticKeepAlive();
+    final currentAppSettings = useState(
+      appSettingsManagerCubit.getAppSharedSettingsCopy(),
+    );
+    final isLoading = useState(false);
+
     final dSources = currentAppSettings.value.contentSources.discoverSources;
     final nSources = currentAppSettings.value.contentSources.notesSources;
 
@@ -312,19 +315,60 @@ class ReorderSettingsView extends HookWidget {
 
         return Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: kDefaultPadding,
             horizontal: kDefaultPadding / 2,
           ),
-          child: CustomScrollView(
-            controller: controller,
-            slivers: [
-              SliverToBoxAdapter(
-                child: widget,
-              )
+          child: Column(
+            children: [
+              const SizedBox(height: kDefaultPadding),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: widget,
+                ),
+              ),
+              _update(context, isLoading, currentAppSettings),
             ],
           ),
         );
       },
+    );
+  }
+
+  Container _update(
+    BuildContext context,
+    ValueNotifier<bool> isLoading,
+    ValueNotifier<AppSharedSettings> currentAppSettings,
+  ) {
+    return Container(
+      height:
+          kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
+      width: double.infinity,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).padding.bottom / 2,
+        left: kDefaultPadding / 2,
+        right: kDefaultPadding / 2,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: RegularLoadingButton(
+              title: context.t.update.capitalizeFirst(),
+              isLoading: isLoading.value,
+              onClicked: () async {
+                isLoading.value = true;
+
+                await appSettingsManagerCubit.updateSources(
+                  settings: currentAppSettings.value,
+                  isDiscover: isDiscover,
+                );
+
+                isLoading.value = false;
+
+                YNavigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1009,6 +1009,12 @@ class NostrFunctionsRepository {
     String pubkey,
     AppCustomization? c,
   ) {
+    final hideEvent = (c?.notifMaxMentions ?? true) && event.pTags.length > 10;
+
+    if (hideEvent) {
+      return false;
+    }
+
     final allowed = (event.kind == EventKind.ZAP &&
             !isUserMuted(getZapPubkey(event.tags).first)) ||
         (event.kind != EventKind.ZAP &&
@@ -1346,7 +1352,7 @@ class NostrFunctionsRepository {
     List<String>? lTags,
     List<int>? kinds,
     int? limit,
-    String? relay,
+    List<String>? relays,
     int? until,
     int? since,
     bool compareById = true,
@@ -1357,13 +1363,12 @@ class NostrFunctionsRepository {
     int? timeout,
   }) async {
     final events = <String, Event>{};
-    final relays = relay != null
-        ? [relay]
-        : core != null
+    final selectedRelays = relays ??
+        (core != null
             ? core.relays()
             : settingsCubit.gossip ?? false
                 ? <String>[]
-                : currentUserRelayList.urls.toList();
+                : currentUserRelayList.urls.toList());
 
     Filter? f1;
     Filter? f2;
@@ -1402,7 +1407,7 @@ class NostrFunctionsRepository {
         if (f1 != null) f1,
         if (includeIds) f2,
       ],
-      relays,
+      selectedRelays,
       timeOut: timeout ?? 1,
       source: source ?? EventsSource.cacheFirst,
       eventCallBack: (event, relay) {
@@ -3158,6 +3163,7 @@ class NostrFunctionsRepository {
     final Map<String, Article> articlesToBeEmitted = {};
     final Map<String, VideoModel> videosToBeEmitted = {};
     final Map<String, Curation> curationsToBeEmitted = {};
+    final Map<String, Event> eventsToBeEmitted = {};
 
     Filter? f1;
     Filter? f2;
@@ -3213,6 +3219,8 @@ class NostrFunctionsRepository {
 
     void setEvent(Event event, String? relay) {
       if (!isUserMuted(event.pubkey)) {
+        eventsToBeEmitted[event.id] = event;
+
         if (event.kind == EventKind.LONG_FORM) {
           final article = Article.fromEvent(
             event,
@@ -3258,8 +3266,6 @@ class NostrFunctionsRepository {
             }
           }
         }
-
-        nc.db.saveEvent(event);
       }
     }
 
@@ -3330,6 +3336,10 @@ class NostrFunctionsRepository {
       for (final event in events) {
         setEvent(event, null);
       }
+    }
+
+    if (eventsToBeEmitted.isNotEmpty) {
+      nc.db.saveEvents(eventsToBeEmitted.values.toList());
     }
 
     final articles = orderedList(articlesToBeEmitted.values.toList());
@@ -3517,14 +3527,12 @@ class NostrFunctionsRepository {
   }
 
   static Future<List<BaseEventModel>> getDiscoverAlgoData({
-    required String url,
+    required List<String> relays,
     int? until,
     int? since,
     int? limit,
     List<int>? kinds,
   }) async {
-    await nc.connect(url);
-
     final list = <BaseEventModel>[];
 
     final events = await getEventsAsync(
@@ -3532,7 +3540,7 @@ class NostrFunctionsRepository {
       until: until,
       since: since,
       limit: limit,
-      relay: url,
+      relays: relays,
       core: nc,
     );
 
@@ -3555,20 +3563,18 @@ class NostrFunctionsRepository {
     return list;
   }
 
-  static Future<List<Event>> getLeadingAlgoData({
-    required String url,
+  static Future<List<Event>> getLeadingRelayData({
+    required List<String> relays,
     int? until,
     int? since,
     int? limit,
   }) async {
-    await nc.connectNonConnectedRelays({url});
-
     return getEventsAsync(
       kinds: [EventKind.TEXT_NOTE],
       until: until,
       since: since,
       limit: limit,
-      relay: url,
+      relays: relays,
       core: nc,
       source: EventsSource.all,
     );
@@ -4138,6 +4144,7 @@ class NostrFunctionsRepository {
     String? author,
     List<int>? kinds,
     List<String>? relays,
+    EventsSource? source,
   }) async {
     Event? event;
 
@@ -4160,6 +4167,7 @@ class NostrFunctionsRepository {
         nc.closeSubscription(requestId, relay);
       },
       timeOut: 2,
+      source: source ?? EventsSource.cacheFirst,
     );
 
     return event;
@@ -4618,7 +4626,10 @@ class NostrFunctionsRepository {
     String? destinationPubkey,
   }) async {
     final id = uuid.generate();
-    final targetRelays = relays ?? DEFAULT_BOOTSTRAP_RELAYS;
+    final ur = currentUserRelayList.urls.toList();
+
+    final targetRelays =
+        relays ?? (ur.isNotEmpty ? ur : DEFAULT_BOOTSTRAP_RELAYS);
     final actualTimeout = timeout ?? timerTicks;
 
     if (setProgress) {
@@ -4739,6 +4750,7 @@ class NostrFunctionsRepository {
   /// - relays: Optional list of relays to send the deletion to
   static Future<bool> deleteEvent({
     required String eventId,
+    String? aTag,
     String? lable,
     String? type,
     List<String>? relays,
@@ -4747,8 +4759,9 @@ class NostrFunctionsRepository {
     final event = await Event.genEvent(
       kind: EventKind.EVENT_DELETION,
       tags: [
-        ['e', eventId],
-        if (lable != null) ['l', lable, type!],
+        if (eventId.isNotEmpty) ['e', eventId],
+        if (aTag != null && aTag.isNotEmpty) ['a', aTag],
+        if (lable != null && lable.isNotEmpty) ['l', lable, type!],
       ],
       content: 'this event is to be deleted',
       signer: currentSigner,

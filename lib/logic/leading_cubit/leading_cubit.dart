@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
 
@@ -203,7 +204,7 @@ class LeadingCubit extends Cubit<LeadingState> {
               f: f,
               isExtra: true,
             );
-          } else if (currentSelectedSource.key == AppContentSource.algo) {
+          } else {
             content = await getLeadingFeedRelayEvents(
               since: since,
               limit: 20,
@@ -295,12 +296,10 @@ class LeadingCubit extends Cubit<LeadingState> {
       await buildLeadingFeedFromCommunity(
         isAdding: isAdding,
       );
-    } else if (currentSelectedSource.key == AppContentSource.algo) {
+    } else {
       await buildLeadingFeedFromRelays(
         isAdding: isAdding,
       );
-    } else if (currentSelectedSource.key == AppContentSource.dvm) {
-      await buildLeadingFeedFromDvm();
     }
 
     getExtra();
@@ -444,8 +443,10 @@ class LeadingCubit extends Cubit<LeadingState> {
     int? since,
     int? limit,
   }) async {
-    final content = await NostrFunctionsRepository.getLeadingAlgoData(
-      url: appSettingsManagerCubit.state.selectedNotesSource.value,
+    final val = appSettingsManagerCubit.state.selectedNotesSource.value;
+
+    final content = await NostrFunctionsRepository.getLeadingRelayData(
+      relays: val is String ? [val] : (val as UserRelaySet).relays,
       until: until,
       limit: 50,
       since: since,

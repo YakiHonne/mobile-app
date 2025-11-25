@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/utils/relay.dart';
 
-import '../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import '../../logic/relay_feed_cubit/relay_feed_cubit.dart';
+import '../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
@@ -80,17 +80,18 @@ class RelayFeedView extends StatelessWidget {
   }
 
   Widget _buildPullDown(BuildContext context) {
-    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+    return BlocBuilder<RelayInfoCubit, RelayInfoState>(
       buildWhen: (previous, current) =>
-          previous.favoriteRelays != current.favoriteRelays,
+          previous.relayFeeds.favoriteRelays !=
+          current.relayFeeds.favoriteRelays,
       builder: (context, state) {
-        final isAvailable = state.favoriteRelays.contains(
+        final isAvailable = state.relayFeeds.favoriteRelays.contains(
           relay,
         );
 
         return CustomIconButton(
           onClicked: () {
-            appSettingsManagerCubit.setAndUpdateFavoriteRelay(
+            relayInfoCubit.setAndUpdateFavoriteRelay(
               relay,
             );
           },

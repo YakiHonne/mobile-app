@@ -411,7 +411,7 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
 
   /// Check if relay is already active
   bool _isRelayAlreadyActive(String relay) {
-    return state.activeRelays.contains(relay);
+    return state.relays.keys.contains(relay);
   }
 
   /// Validate relay URL format

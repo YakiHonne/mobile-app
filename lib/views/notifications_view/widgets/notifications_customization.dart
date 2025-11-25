@@ -49,6 +49,20 @@ class NotificationsCustomization extends StatelessWidget {
                   thickness: 0.5,
                 ),
                 SwitchRow(
+                  title: context.t.maxMentions.capitalizeFirst(),
+                  desc: context.t.maxMentionsDesc,
+                  val: state.notifMaxMentions,
+                  onSwitched: (isToggled) {
+                    context
+                        .read<CustomizeNotificationsCubit>()
+                        .setMaxMentions();
+                  },
+                ),
+                const Divider(
+                  height: kDefaultPadding * 1.5,
+                  thickness: 0.5,
+                ),
+                SwitchRow(
                   title: context.t.following.capitalizeFirst(),
                   desc: context.t.followingDesc,
                   val: state.notifFollowings,
@@ -115,6 +129,9 @@ class NotificationsCustomization extends StatelessWidget {
                         .read<CustomizeNotificationsCubit>()
                         .setPrivateMessages();
                   },
+                ),
+                const SizedBox(
+                  height: kBottomNavigationBarHeight,
                 ),
               ],
             );

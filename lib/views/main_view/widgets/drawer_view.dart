@@ -190,19 +190,20 @@ class MainViewDrawer extends HookWidget {
             height: kDefaultPadding / 8,
           ),
           Row(
+            spacing: kDefaultPadding / 4,
             children: [
               Text(
-                '~ \$${lightningState.isWalletHidden ? '*****' : lightningState.balanceInFiat == -1 ? 'N/A' : lightningState.balanceInFiat.toStringAsFixed(2)}',
+                '${currenciesSymbols[lightningState.activeCurrency]}${lightningState.isWalletHidden ? '*****' : lightningState.balanceInFiat == -1 ? 'N/A' : lightningState.balanceInFiat.toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               Text(
-                ' USD',
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                lightningState.activeCurrency.toUpperCase(),
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: Theme.of(context).highlightColor,
                     ),
               ),
             ],
-          ),
+          )
         ],
       ),
     );

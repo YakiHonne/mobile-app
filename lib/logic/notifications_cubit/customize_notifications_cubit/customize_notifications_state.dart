@@ -9,6 +9,7 @@ class CustomizeNotificationsState extends Equatable {
   final bool notifZaps;
   final bool notifFollowings;
   final bool notifPrivateMessage;
+  final bool notifMaxMentions;
   final bool refresh;
 
   const CustomizeNotificationsState({
@@ -19,6 +20,7 @@ class CustomizeNotificationsState extends Equatable {
     required this.notifZaps,
     required this.notifFollowings,
     required this.notifPrivateMessage,
+    required this.notifMaxMentions,
     required this.refresh,
   });
 
@@ -31,6 +33,7 @@ class CustomizeNotificationsState extends Equatable {
         notifZaps,
         notifFollowings,
         notifPrivateMessage,
+        notifMaxMentions,
         refresh,
       ];
 
@@ -42,6 +45,7 @@ class CustomizeNotificationsState extends Equatable {
     bool? notifZaps,
     bool? notifFollowings,
     bool? notifPrivateMessage,
+    bool? notifMaxMentions,
     bool? refresh,
   }) {
     return CustomizeNotificationsState(
@@ -53,6 +57,7 @@ class CustomizeNotificationsState extends Equatable {
       notifZaps: notifZaps ?? this.notifZaps,
       notifFollowings: notifFollowings ?? this.notifFollowings,
       notifPrivateMessage: notifPrivateMessage ?? this.notifPrivateMessage,
+      notifMaxMentions: notifMaxMentions ?? this.notifMaxMentions,
       refresh: refresh ?? this.refresh,
     );
   }

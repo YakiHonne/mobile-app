@@ -47,6 +47,7 @@ class _NotificationGlobalContainerState
   @override
   void initState() {
     super.initState();
+
     metadataCubit.requestMetadata(getPubkey(widget.mainEvent));
   }
 

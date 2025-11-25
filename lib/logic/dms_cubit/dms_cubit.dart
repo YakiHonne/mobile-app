@@ -489,8 +489,11 @@ class DmsCubit extends Cubit<DmsState>
         oldestUntil != null) {
       _currentBatchUntil = oldestUntil ?? _currentBatchUntil;
 
-      final since =
-          _currentBatchUntil - _batchIntervals[_currentBatchIndex].inSeconds;
+      final since = _currentBatchUntil -
+          _batchIntervals[_currentBatchIndex < _batchIntervals.length
+                  ? _currentBatchIndex
+                  : _batchIntervals.length - 1]
+              .inSeconds;
 
       _emit(
         state.copyWith(
@@ -563,8 +566,11 @@ class DmsCubit extends Cubit<DmsState>
 
     // Calculate next time range
     _currentBatchUntil = since - 1;
-    final newSince =
-        _currentBatchUntil - _batchIntervals[_currentBatchIndex].inSeconds;
+    final newSince = _currentBatchUntil -
+        _batchIntervals[_currentBatchIndex < _batchIntervals.length
+                ? _currentBatchIndex
+                : _batchIntervals.length - 1]
+            .inSeconds;
 
     // Update database with current progress
     localDatabaseRepository.setDmsHistoryOlderUntil(

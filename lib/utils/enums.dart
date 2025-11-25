@@ -170,8 +170,8 @@ enum AppContentType { note, article, smartWidget, video, curation }
 
 enum AppContentSource {
   community,
-  dvm,
-  algo,
+  relay,
+  relaySet,
 }
 
 enum TranslationsServices {

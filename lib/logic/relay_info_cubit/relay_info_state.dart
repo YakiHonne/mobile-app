@@ -11,6 +11,10 @@ class RelayInfoState extends Equatable {
   final Map<String, List<String>> relayContacts;
   final Map<String, List<String>> relayFavored;
 
+  final RelayFeeds relayFeeds;
+  final List<EventCoordinates> favoriteUserRelaySets;
+  final Map<String, UserRelaySet> userRelaySets;
+
   const RelayInfoState({
     required this.relayInfos,
     required this.collections,
@@ -20,6 +24,9 @@ class RelayInfoState extends Equatable {
     required this.networkRelays,
     required this.relayContacts,
     required this.relayFavored,
+    required this.relayFeeds,
+    required this.favoriteUserRelaySets,
+    required this.userRelaySets,
   });
 
   @override
@@ -32,6 +39,9 @@ class RelayInfoState extends Equatable {
         globalRelays,
         relayContacts,
         relayFavored,
+        relayFeeds,
+        favoriteUserRelaySets,
+        userRelaySets,
       ];
 
   RelayInfoState copyWith({
@@ -44,6 +54,9 @@ class RelayInfoState extends Equatable {
     Map<String, List<String>>? relayContacts,
     Map<String, List<String>>? relayFavored,
     Map<String, List<String>>? relayFollowings,
+    RelayFeeds? relayFeeds,
+    List<EventCoordinates>? favoriteUserRelaySets,
+    Map<String, UserRelaySet>? userRelaySets,
   }) {
     return RelayInfoState(
       relayInfos: relayInfos ?? this.relayInfos,
@@ -54,6 +67,10 @@ class RelayInfoState extends Equatable {
       networkRelays: networkRelays ?? this.networkRelays,
       relayContacts: relayContacts ?? this.relayContacts,
       relayFavored: relayFavored ?? this.relayFavored,
+      relayFeeds: relayFeeds ?? this.relayFeeds,
+      favoriteUserRelaySets:
+          favoriteUserRelaySets ?? this.favoriteUserRelaySets,
+      userRelaySets: userRelaySets ?? this.userRelaySets,
     );
   }
 }

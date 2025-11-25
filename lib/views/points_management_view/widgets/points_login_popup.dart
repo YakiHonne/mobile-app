@@ -275,7 +275,9 @@ class YakiLoginChest extends StatelessWidget {
               if (currentSigner?.canSign() ?? false) {
                 pointsManagementCubit.login(
                   onSuccess: () {
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 );
               }

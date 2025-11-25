@@ -1050,7 +1050,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
   /// Produce a full signed URL.
   String makeSignedUrl({
     required String sourceUrl, // The original image URL
-    String options = 'bl:30/q:50', // Processing options
+    String options = 'bl:50/q:50', // Processing options
     String? outExt, // Optional output extension
     bool useEncoded = false, // Whether to use encoded or plain URL
   }) {

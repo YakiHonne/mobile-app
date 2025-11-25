@@ -4282,6 +4282,72 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Pick the accent color that shapes the app's overall mood and highlights key elements.'
 	String get primaryColorDesc => 'Pick the accent color that shapes the app\'s overall mood and highlights key elements.';
+
+	/// en: 'Single'
+	String get single => 'Single';
+
+	/// en: 'Sets'
+	String get sets => 'Sets';
+
+	/// en: 'Select from your relay sets'
+	String get selectFromRelaySets => 'Select from your relay sets';
+
+	/// en: 'Favorite relays'
+	String get favoriteRelays => 'Favorite relays';
+
+	/// en: 'Favorite relay sets'
+	String get favoriteRelaySets => 'Favorite relay sets';
+
+	/// en: 'Add relay set'
+	String get addRelaySet => 'Add relay set';
+
+	/// en: 'Update relay set'
+	String get updateRelaySet => 'Update relay set';
+
+	/// en: 'Relay set created'
+	String get relaySetCreated => 'Relay set created';
+
+	/// en: 'Error occured while creating relay set'
+	String get errorOnCreatingRelaySet => 'Error occured while creating relay set';
+
+	/// en: 'Error occured while updating relay set'
+	String get errorOnUpdatingRelaySet => 'Error occured while updating relay set';
+
+	/// en: 'Relay set deleted'
+	String get relaySetDeleted => 'Relay set deleted';
+
+	/// en: 'Error occured while deleting relay set'
+	String get errorDeletingRelaySet => 'Error occured while deleting relay set';
+
+	/// en: '{{number}} relays'
+	String relaysNumber({required Object number}) => '${number} relays';
+
+	/// en: 'Relay set not found'
+	String get relaySetNotFound => 'Relay set not found';
+
+	/// en: 'Relay set is missing or has been deleted.'
+	String get relaySetNotFoundDesc => 'Relay set is missing or has been deleted.';
+
+	/// en: 'Saved relay sets'
+	String get savedRelaySets => 'Saved relay sets';
+
+	/// en: 'Relay sets'
+	String get relaysets => 'Relay sets';
+
+	/// en: 'Relay set list is empty'
+	String get relaySetListEmpty => 'Relay set list is empty';
+
+	/// en: 'Create relay sets to organize your relays for different purposes and scenarios.'
+	String get relaySetListEmptyDesc => 'Create relay sets to organize your relays for different purposes and scenarios.';
+
+	/// en: 'Favorite relays feed'
+	String get favoriteRelaysFeed => 'Favorite relays feed';
+
+	/// en: 'Max mentions'
+	String get maxMentions => 'Max mentions';
+
+	/// en: 'Hide notifications from notes with more than 10 user mentions.'
+	String get maxMentionsDesc => 'Hide notifications from notes with more than 10 user mentions.';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5724,6 +5790,28 @@ extension on Translations {
 			'downloadingVideo' => 'Downloading video',
 			'primaryColor' => 'Primary color',
 			'primaryColorDesc' => 'Pick the accent color that shapes the app\'s overall mood and highlights key elements.',
+			'single' => 'Single',
+			'sets' => 'Sets',
+			'selectFromRelaySets' => 'Select from your relay sets',
+			'favoriteRelays' => 'Favorite relays',
+			'favoriteRelaySets' => 'Favorite relay sets',
+			'addRelaySet' => 'Add relay set',
+			'updateRelaySet' => 'Update relay set',
+			'relaySetCreated' => 'Relay set created',
+			'errorOnCreatingRelaySet' => 'Error occured while creating relay set',
+			'errorOnUpdatingRelaySet' => 'Error occured while updating relay set',
+			'relaySetDeleted' => 'Relay set deleted',
+			'errorDeletingRelaySet' => 'Error occured while deleting relay set',
+			'relaysNumber' => ({required Object number}) => '${number} relays',
+			'relaySetNotFound' => 'Relay set not found',
+			'relaySetNotFoundDesc' => 'Relay set is missing or has been deleted.',
+			'savedRelaySets' => 'Saved relay sets',
+			'relaysets' => 'Relay sets',
+			'relaySetListEmpty' => 'Relay set list is empty',
+			'relaySetListEmptyDesc' => 'Create relay sets to organize your relays for different purposes and scenarios.',
+			'favoriteRelaysFeed' => 'Favorite relays feed',
+			'maxMentions' => 'Max mentions',
+			'maxMentionsDesc' => 'Hide notifications from notes with more than 10 user mentions.',
 			_ => null,
 		};
 	}

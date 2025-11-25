@@ -242,6 +242,7 @@ class AppInitializer {
     nostrRepository.loadMediaManager();
     await nostrRepository.routingInitData();
     await appSettingsManagerCubit.loadAppSharedSettings();
+    await relayInfoCubit.initRelays();
 
     // Connect to relays
     if (currentSigner != null) {

@@ -257,26 +257,17 @@ class _VersionNewsState extends State<VersionNews> {
 
 final List<String> releaseNotes = [
   // Features
-  'Add mute thread option',
-  'Optimized search with dedicated search relays for faster and more accurate results',
-  'Ability to change app primary color',
+  'Add relays sets.',
+  'Add russian language.',
 
   // Improvements
-  'Nostr scheme render for yakihonne and other nostr clients inside the app',
-  'Add option to enable/disable url previews',
-  'Add youtube preview',
-  'Add split screen tab in writing article on tablets',
-  'Make following in relay orbits as default',
-  'Add smart widget render in feed',
-  'Add cover, "t" and "r" for bookmarks',
-  'Add video fallback urls',
-  'Add video download',
-  'Add blitz wallet',
+  'Fetch events from the relays encoded in the nostr scheme in search.',
+  'Optimise note view.',
+  'Add option to mute notifications with more than 10 mentions.',
 
   // Bug fixes
-  'Fix currencies symbols',
-  'Fixed various bugs across the app',
-  'Remove "App" from basic smart widget',
+  'Fix click on tag issue in search page.',
+  'Fix search relays update overrides user regular relay list.',
 ];
 
 const content = [

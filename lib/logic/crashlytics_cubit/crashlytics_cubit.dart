@@ -27,7 +27,7 @@ class CrashlyticsCubit extends Cubit<CrashlyticsState> {
   }
 
   Future<void> init() async {
-    Future.delayed(const Duration(seconds: 2)).then(
+    Future.delayed(const Duration(seconds: 5)).then(
       (value) async {
         final res = await Future.wait([
           nc.db.getDatabaseSizeInMB(),

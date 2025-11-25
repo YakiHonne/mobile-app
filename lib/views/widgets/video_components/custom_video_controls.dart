@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, implementation_imports
+// ignore_for_file: depend_on_referenced_packages, implementation_imports, unnecessary_statements
 
 import 'dart:async';
 import 'dart:math' as math;
@@ -855,7 +855,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
   }
 
   void _updateState() {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     // display the progress bar indicator only after the buffering delay if it has been set
     if (chewieController.progressIndicatorDelay != null) {

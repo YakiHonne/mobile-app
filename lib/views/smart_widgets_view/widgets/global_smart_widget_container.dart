@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../logic/smart_widgets_cubit/smart_widgets_cubit.dart';
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/app_models/popup_menu_common_item.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../repositories/nostr_functions_repository.dart';
@@ -144,10 +145,12 @@ class GlobalSmartWidgetHeader extends StatelessWidget {
       widgetImage: currentSw.value.smartWidgetBox.image.url,
       enableCopyNaddr: isOriginal,
       enableClone: true,
-      enableEdit: currentSigner!.getPublicKey() == smartWidgetModel.pubkey &&
+      enableEdit: canSign() &&
+          currentSigner!.getPublicKey() == smartWidgetModel.pubkey &&
           canPerformOwnerActions != null,
       enableCheckValidity: true,
-      enableDelete: currentSigner!.getPublicKey() == smartWidgetModel.pubkey &&
+      enableDelete: canSign() &&
+          currentSigner!.getPublicKey() == smartWidgetModel.pubkey &&
           canPerformOwnerActions != null,
       onDelete: () {
         showCupertinoDeletionDialogue(

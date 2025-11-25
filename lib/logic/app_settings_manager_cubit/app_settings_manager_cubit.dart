@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
@@ -42,7 +41,6 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
     notesDvms: {},
     notesSources: [],
     selectedNotesSource: MapEntry('', ''),
-    favoriteRelays: [],
   );
 
   // ==================================================
@@ -90,15 +88,6 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
     final settings = await nc.db.loadUserAppSettings(
       currentSigner!.getPublicKey(),
     );
-
-    final relaysEvent = await nc.db.loadEvent(
-      pubkey: currentSigner!.getPublicKey(),
-      kind: EventKind.FAVORITE_RELAYS,
-    );
-
-    if (relaysEvent != null) {
-      setFavoriteRelayFromEvent(relaysEvent);
-    }
 
     if (settings == null) {
       appSharedSettings = AppSharedSettings.defaultEmptySettings(
@@ -154,8 +143,6 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
         notesSources: ns.getFeedsByOrder(),
       ),
     );
-
-    setFavoriteRelaysConnection();
   }
 
   AppSharedSettings getAppSharedSettingsCopy() {
@@ -198,12 +185,6 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
     completer.complete(isConnected);
   }
 
-  Future<void> setFavoriteRelaysConnection() async {
-    final relays = state.favoriteRelays;
-
-    await nc.connectNonConnectedRelays(relays.toSet());
-  }
-
   // ==================================================
   // SYNCHRONIZATION & PERSISTENCE
   // ==================================================
@@ -220,24 +201,12 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
   Future<void> syncAppSettings({bool override = false}) async {
     await Future.delayed(const Duration(seconds: 2));
 
-    final ev = await Future.wait(
-      [
-        NostrFunctionsRepository.getEventById(
-          eventId: yakiAppSettingsTag,
-          isIdentifier: true,
-          author: currentSigner!.getPublicKey(),
-          kinds: [EventKind.APP_CUSTOM],
-        ),
-        NostrFunctionsRepository.getEventById(
-          isIdentifier: false,
-          author: currentSigner!.getPublicKey(),
-          kinds: [EventKind.FAVORITE_RELAYS],
-        ),
-      ],
+    final ase = await NostrFunctionsRepository.getEventById(
+      eventId: yakiAppSettingsTag,
+      isIdentifier: true,
+      author: currentSigner!.getPublicKey(),
+      kinds: [EventKind.APP_CUSTOM],
     );
-
-    final ase = ev[0];
-    final fr = ev[1];
 
     if (ase != null) {
       final as = AppSharedSettings.fromEvent(ase);
@@ -248,21 +217,10 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
         saveAppSettingsInCache();
       }
     }
-
-    if (fr != null) {
-      await Future.delayed(const Duration(milliseconds: 500)).then(
-        (_) {
-          setFavoriteRelayFromEvent(fr);
-        },
-      );
-    }
   }
 
   Future<void> setAndSave(bool isDiscover) async {
-    await Future.wait([
-      setAppSettings(isDiscover),
-      setFavoriteRelays(),
-    ]);
+    await setAppSettings(isDiscover);
 
     saveAppSettingsInCache();
   }
@@ -288,90 +246,8 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
     );
   }
 
-  Future<bool> setFavoriteRelays() async {
-    final event = await Event.genEvent(
-      kind: EventKind.FAVORITE_RELAYS,
-      tags: [
-        for (final relay in state.favoriteRelays) ['relay', relay],
-      ],
-      content: '',
-      signer: currentSigner,
-    );
-
-    if (event == null) {
-      return false;
-    }
-
-    nc.db.saveEvent(event);
-
-    return NostrFunctionsRepository.sendEvent(
-      event: event,
-      setProgress: false,
-    );
-  }
-
   void saveAppSettingsInCache() {
     nc.db.saveUserAppSettings(appSharedSettings);
-  }
-
-  // ==================================================
-  // FAVORITE RELAYS MANAGEMENT
-  // ==================================================
-
-  void setFavoriteRelayFromEvent(Event event) {
-    final relays = event.tags
-        .where(
-          (r) => r.length > 1 && r.first == 'relay',
-        )
-        .toList();
-
-    if (relays.isNotEmpty) {
-      final cleanRelays = <String>[];
-
-      for (final r in relays) {
-        final cr = Relay.clean(r[1]);
-        if (cr != null) {
-          cleanRelays.add(cr);
-        }
-      }
-
-      nc.connectRelays(cleanRelays);
-
-      _safeEmit(
-        state.copyWith(
-          favoriteRelays: cleanRelays,
-        ),
-      );
-    }
-  }
-
-  void updateFavoriteRelays(String relay) {
-    final relays = List<String>.from(state.favoriteRelays);
-
-    _safeEmit(state.copyWith(
-      favoriteRelays: relays.contains(relay)
-          ? (relays..remove(relay))
-          : (relays..add(relay)),
-    ));
-  }
-
-  Future<void> setAndUpdateFavoriteRelay(String relay) async {
-    final cancel = BotToast.showLoading();
-
-    updateFavoriteRelays(relay);
-    final isSuccessful = await setFavoriteRelays();
-
-    if (isSuccessful) {
-      BotToastUtils.showSuccess(t.relaysListUpdated);
-    } else {
-      BotToastUtils.showSuccess(t.errorUpdatingRelaysList);
-    }
-
-    cancel.call();
-  }
-
-  void setUpdatedFavoriteRelays(List<String> relays) {
-    _safeEmit(state.copyWith(favoriteRelays: relays));
   }
 
   // ==================================================
@@ -379,7 +255,7 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
   // ==================================================
 
   void setSource({
-    required MapEntry<String, String> source,
+    required MapEntry<String, dynamic> source,
     required bool isDiscover,
   }) {
     _safeEmit(state.copyWith(
@@ -391,10 +267,8 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
   Future<void> updateSources({
     required AppSharedSettings settings,
     required bool isDiscover,
-    required List<String> favoriteRelays,
   }) async {
     appSharedSettings = settings;
-    setUpdatedFavoriteRelays(favoriteRelays);
     await setAndSave(isDiscover);
 
     final ds = appSharedSettings.contentSources.discoverSources;
@@ -404,23 +278,25 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       state.copyWith(
         discoverCommunity: ds.communityFeed.getMappedContent(),
         selectedDiscoverSource: ds.getCurrentSelectedDiscoverSource(
-          state.selectedDiscoverSource,
+          state.selectedDiscoverSource is MapEntry<String, String>
+              ? state.selectedDiscoverSource as MapEntry<String, String>
+              : const MapEntry('', ''),
         ),
         discoverSources: ds.getFeedsByOrder(),
         notesCommunity: ns.communityFeed.getMappedContent(),
         selectedNotesSource: ns.getCurrentSelectedNoteSource(
-          state.selectedNotesSource,
+          state.selectedNotesSource is MapEntry<String, String>
+              ? state.selectedNotesSource as MapEntry<String, String>
+              : const MapEntry('', ''),
         ),
         notesSources: ns.getFeedsByOrder(),
       ),
     );
 
-    setFavoriteRelaysConnection();
-
     BotToastUtils.showSuccess(gc.t.feedSetUpdate);
   }
 
-  MapEntry<AppContentSource, MapEntry<String, String>>
+  MapEntry<AppContentSource, MapEntry<String, dynamic>>
       getDiscoverSelectedSource() {
     final selectedSource = state.selectedDiscoverSource;
     final sources = appSharedSettings.contentSources.discoverSources;
@@ -431,10 +307,14 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return MapEntry(AppContentSource.community, selectedSource);
     }
 
-    return MapEntry(AppContentSource.algo, selectedSource);
+    if (selectedSource.value is String) {
+      return MapEntry(AppContentSource.relay, selectedSource);
+    } else {
+      return MapEntry(AppContentSource.relaySet, selectedSource);
+    }
   }
 
-  MapEntry<AppContentSource, MapEntry<String, String>>
+  MapEntry<AppContentSource, MapEntry<String, dynamic>>
       getNotesSelectedSource() {
     final selectedSource = state.selectedNotesSource;
     final sources = appSharedSettings.contentSources.notesSources;
@@ -445,7 +325,11 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return MapEntry(AppContentSource.community, selectedSource);
     }
 
-    return MapEntry(AppContentSource.algo, selectedSource);
+    if (selectedSource.value is String) {
+      return MapEntry(AppContentSource.relay, selectedSource);
+    } else {
+      return MapEntry(AppContentSource.relaySet, selectedSource);
+    }
   }
 
   // ==================================================

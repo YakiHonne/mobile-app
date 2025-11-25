@@ -81,7 +81,7 @@ class SearchView extends HookWidget {
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               searchTextEdittingController.text = searchText.value!;
-              searchCubit.getItemsBySearch(searchText.value!);
+              searchCubit.getItemsBySearch(searchText.value);
             },
           );
         }
@@ -231,11 +231,13 @@ class SearchView extends HookWidget {
           label: Icon(
             isActive ? Icons.close : Icons.add,
             size: 15,
-            color: Theme.of(context).primaryColorDark,
+            color: isActive ? kWhite : Theme.of(context).primaryColorDark,
           ),
           icon: Text(
             isActive ? context.t.remove : context.t.interested,
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: isActive ? kWhite : Theme.of(context).primaryColorDark,
+                ),
           ),
           style: TextButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
@@ -406,11 +408,8 @@ class SearchView extends HookWidget {
       toolbarHeight: kToolbarHeight - 10,
       leadingWidth: 40,
       pinned: true,
-      title: Hero(
-        tag: 'searchField',
-        child: _cupertinoTextfield(
-            focusNode, searchTextEdittingController, searchText),
-      ),
+      title: _cupertinoTextfield(
+          focusNode, searchTextEdittingController, searchText),
       titleSpacing: 0,
       actions: [
         CustomIconButton(

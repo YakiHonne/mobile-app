@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
+import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
 
 import '../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import '../../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
@@ -32,84 +34,34 @@ class AppSourcesList extends HookWidget {
           } else if (feed is NotesCommunityFeed && !feed.isDisabled()) {
             return CommunityDiscoverList(isDiscover: isDiscover);
           }
+
           return null;
         }
 
         final sources = isDiscover ? state.discoverSources : state.notesSources;
         final hasFavorite =
-            appSettingsManagerCubit.state.favoriteRelays.isNotEmpty;
-
-        bool relayInserted = false;
+            relayInfoCubit.state.relayFeeds.favoriteRelays.isNotEmpty ||
+                relayInfoCubit.state.relayFeeds.events.isNotEmpty;
 
         for (int i = 0; i < sources.length; i++) {
           final source = sources[i];
           final sourceWidget = getWidget(source);
 
-          if (i != 0 && sourceWidget != null) {
-            widgets.add(
-              const Divider(
-                height: kDefaultPadding * 2,
-                thickness: 0.5,
-              ),
-            );
-          }
-
           if (sourceWidget != null) {
             widgets.add(sourceWidget);
-            final canBeAdded = !relayInserted &&
-                (source is DiscoverCommunityFeed ||
-                    source is NotesCommunityFeed);
-            // Insert RelayDiscoverList right after first Discover/Notes feed
-            if (canBeAdded && hasFavorite) {
-              widgets.add(
-                const Divider(
-                  height: kDefaultPadding * 2,
-                  thickness: 0.5,
-                ),
-              );
-
-              widgets.add(
-                RelaysDiscoverList(isDiscover: isDiscover),
-              );
-
-              relayInserted = true;
-            } else if (canBeAdded) {
-              widgets.add(
-                const Divider(
-                  height: kDefaultPadding * 2,
-                  thickness: 0.5,
-                ),
-              );
-
-              widgets.add(
-                const NoRelaysAvailable(),
-              );
-              relayInserted = true;
-            }
           }
         }
 
-        // If no Discover/Notes feed, put RelayDiscoverList at the top
-        if (!relayInserted && hasFavorite) {
-          widgets.insertAll(0, [
-            RelaysDiscoverList(isDiscover: isDiscover),
-            const Divider(
-              height: kDefaultPadding * 2,
-              thickness: 0.5,
-            ),
-          ]);
-        } else if (!relayInserted) {
-          widgets.add(
-            const Divider(
-              height: kDefaultPadding * 2,
-              thickness: 0.5,
-            ),
-          );
-
-          widgets.add(
+        widgets.addAll([
+          const Divider(
+            height: kDefaultPadding * 2,
+            thickness: 0.5,
+          ),
+          if (hasFavorite)
+            RelaysDiscoverList(isDiscover: isDiscover)
+          else
             const NoRelaysAvailable(),
-          );
-        }
+        ]);
 
         return Padding(
           padding: EdgeInsets.only(
@@ -285,29 +237,97 @@ class RelaysDiscoverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+    return BlocBuilder<RelayInfoCubit, RelayInfoState>(
       builder: (context, state) {
-        final relays = state.favoriteRelays;
+        return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+          builder: (context, aState) {
+            final relays = state.relayFeeds.favoriteRelays;
+            final relaySets = state.relayFeeds.events;
 
-        final selectedKey = isDiscover
-            ? state.selectedDiscoverSource.key
-            : state.selectedNotesSource.key;
+            final selectedKey = isDiscover
+                ? aState.selectedDiscoverSource.key
+                : aState.selectedNotesSource.key;
 
-        return Column(
-          spacing: kDefaultPadding / 3,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.t.relaysFeed,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w700,
+            return Column(
+              spacing: kDefaultPadding / 3,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.t.favoriteRelaysFeed,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                if (relaySets.isNotEmpty) ...[
+                  Text(
+                    context.t.sets,
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
-            ),
-            _relaysList(relays, selectedKey),
-          ],
+                  _relaySetList(relaySets, selectedKey, context),
+                  const SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                ],
+                if (relays.isNotEmpty) ...[
+                  Text(
+                    context.t.single,
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  _relaysList(relays, selectedKey),
+                ],
+              ],
+            );
+          },
         );
       },
+    );
+  }
+
+  Widget _relaySetList(
+    List<EventCoordinates> favoriteRelaySets,
+    String selectedKey,
+    BuildContext context,
+  ) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      child: ListView.separated(
+        shrinkWrap: true,
+        primary: false,
+        separatorBuilder: (_, __) => const SizedBox(
+          height: kDefaultPadding / 2,
+        ),
+        itemBuilder: (context, index) {
+          final event = favoriteRelaySets[index];
+          final relaySet =
+              relayInfoCubit.getUpdatedFavoriteRelaySet(event.identifier);
+
+          return RelaySetContainer(
+            key: ValueKey(event.identifier + index.toString()),
+            relaySet: relaySet,
+            isSelected: selectedKey == event.identifier,
+            onClick: () {
+              appSettingsManagerCubit.setSource(
+                source: MapEntry(
+                  event.identifier,
+                  relaySet,
+                ),
+                isDiscover: isDiscover,
+              );
+
+              YNavigator.pop(context);
+            },
+          );
+        },
+        itemCount: favoriteRelaySets.length,
+      ),
     );
   }
 

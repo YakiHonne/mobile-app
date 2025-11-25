@@ -23,7 +23,7 @@ class RepublishView extends HookWidget {
     final isLoading = useState(false);
 
     final favoriteRelays = useMemoized(
-      () => appSettingsManagerCubit.state.favoriteRelays,
+      () => relayInfoCubit.state.relayFeeds.favoriteRelays,
     );
 
     final allRelays = useMemoized(

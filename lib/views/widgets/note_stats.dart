@@ -892,52 +892,63 @@ class ZapButton extends HookWidget {
     );
   }
 
-  CustomIconButton _zapButton(
+  Widget _zapButton(
       BuildContext context, Function() onDefaultZap, Function() onSetZap) {
-    return CustomIconButton(
-      key: ValueKey(selfZaps),
-      backgroundColor: kTransparent,
-      icon: selfZaps ? FeatureIcons.zapAmount : FeatureIcons.zap,
-      onLongPress: () {
-        if (zappers.isNotEmpty) {
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
-            builder: (_) {
-              return ZappersView(
-                zappers: zappers,
-              );
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          );
-        }
-      },
-      onDoubleTap: () {
-        if (!nostrRepository.enableOneTapZap) {
-          onDefaultZap();
-        } else {
-          onSetZap();
-        }
-      },
-      onClicked: () {
-        if (nostrRepository.enableOneTapZap) {
-          onDefaultZap();
-        } else {
-          onSetZap();
-        }
-      },
-      value: zapsData['total'].toString(),
-      iconColor: selfZaps
-          ? Theme.of(context).primaryColor
-          : Theme.of(context).highlightColor,
-      textColor: selfZaps
-          ? Theme.of(context).primaryColor
-          : Theme.of(context).highlightColor,
-      size: 18,
-      fontSize: 15,
+    return Opacity(
+      opacity: pubkey == note.pubkey ? 0.5 : 1,
+      child: CustomIconButton(
+        key: ValueKey(selfZaps),
+        backgroundColor: kTransparent,
+        icon: selfZaps ? FeatureIcons.zapAmount : FeatureIcons.zap,
+        onLongPress: () {
+          if (zappers.isNotEmpty) {
+            showModalBottomSheet(
+              context: context,
+              elevation: 0,
+              builder: (_) {
+                return ZappersView(
+                  zappers: zappers,
+                );
+              },
+              isScrollControlled: true,
+              useRootNavigator: true,
+              useSafeArea: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            );
+          }
+        },
+        onDoubleTap: () {
+          if (pubkey == note.pubkey) {
+            return;
+          }
+
+          if (!nostrRepository.enableOneTapZap) {
+            onDefaultZap();
+          } else {
+            onSetZap();
+          }
+        },
+        onClicked: () {
+          if (pubkey == note.pubkey) {
+            return;
+          }
+
+          if (nostrRepository.enableOneTapZap) {
+            onDefaultZap();
+          } else {
+            onSetZap();
+          }
+        },
+        value: zapsData['total'].toString(),
+        iconColor: selfZaps
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        textColor: selfZaps
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        size: 18,
+        fontSize: 15,
+      ),
     );
   }
 }

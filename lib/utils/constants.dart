@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.4+168';
+const String appVersion = 'v1.9.5+171';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -213,6 +213,10 @@ const availableLocales = {
   'hi': {
     'name': 'हिन्दी',
     'icon': FeatureIcons.flagInd,
+  },
+  'ru': {
+    'name': 'Русский',
+    'icon': FeatureIcons.flagRu,
   },
 };
 

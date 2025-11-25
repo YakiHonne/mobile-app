@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/relay_info.dart';
@@ -7,8 +10,10 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../common/mixins/later_function.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/relays_collection.dart';
+import '../../models/relays_feed.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'relay_info_state.dart';
@@ -25,6 +30,12 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
             relayContacts: {},
             networkRelays: [],
             relayFavored: {},
+            relayFeeds: RelayFeeds(
+              favoriteRelays: [],
+              events: [],
+            ),
+            favoriteUserRelaySets: [],
+            userRelaySets: {},
           ),
         );
 
@@ -127,6 +138,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
 
       toBeUpdatedRelayInfos[r] = submittedRelayInfo;
     }
+
     nc.db.saveRelayInfoList(toBeUpdatedRelayInfos.values.toList());
     updateRelayInfos(toBeUpdatedRelayInfos);
   }
@@ -205,7 +217,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
         relayInfos,
       );
 
-    emit(
+    _safeEmit(
       state.copyWith(
         relayInfos: oldRelayInfos,
         refresh: !state.refresh,
@@ -251,7 +263,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
   Future<void> getGlobalRelays() async {
     final relays = await nostrRepository.fetchRelays();
 
-    emit(
+    _safeEmit(
       state.copyWith(
         globalRelays: relays,
       ),
@@ -266,7 +278,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
     if (collectionsList != null && collectionsList is List) {
       final collections = relaysCollectionsFromList(collectionsList);
 
-      emit(
+      _safeEmit(
         state.copyWith(
           collections: collections,
         ),
@@ -283,7 +295,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
       networkRelays.addAll([...ur.writes, ...ur.reads]);
     }
 
-    emit(state.copyWith(
+    _safeEmit(state.copyWith(
       networkRelays: networkRelays.toList(),
     ));
   }
@@ -304,7 +316,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
 
       map[relay] = contacts;
 
-      emit(state.copyWith(
+      _safeEmit(state.copyWith(
         relayContacts: map,
       ));
 
@@ -352,19 +364,288 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
           }
         }
 
-        emit(state.copyWith(
+        _safeEmit(state.copyWith(
           relayFavored: relays,
         ));
       }
     }
   }
 
+  // ==================================================
+  // FAVORITE RELAYS MANAGEMENT
+  // ==================================================
+
+  Future<void> initRelays() async {
+    if (canSign()) {
+      await loadLocalRelaysData();
+      syncFavoriteRelays();
+    }
+  }
+
+  Future<void> setRelaySet({
+    required List<String> relays,
+    required String title,
+    required String description,
+    required String image,
+    required String? identifier,
+    required Function() onSuccess,
+  }) async {
+    final event = await Event.genEvent(
+      kind: EventKind.RELAY_SET,
+      tags: [
+        ['d', identifier ?? randomHexString(16)],
+        if (title.isNotEmpty) ['title', title],
+        if (description.isNotEmpty) ['description', description],
+        if (image.isNotEmpty) ['image', image],
+        ...relays.map((e) => ['relay', e]),
+      ],
+      content: '',
+      signer: currentSigner,
+    );
+
+    if (event != null) {
+      final isSuccessful = await NostrFunctionsRepository.sendEvent(
+        event: event,
+        setProgress: false,
+      );
+
+      if (isSuccessful) {
+        await nc.db.saveEvent(event);
+        BotToastUtils.showSuccess(t.relaySetCreated);
+        addRelaySet(UserRelaySet.fromEvent(event));
+        onSuccess.call();
+      } else {
+        BotToastUtils.showError(
+          identifier != null
+              ? t.errorOnUpdatingRelaySet
+              : t.errorOnCreatingRelaySet,
+        );
+      }
+    } else {
+      BotToastUtils.showError(t.errorGeneratingEvent);
+    }
+  }
+
+  Future<void> deleteRelaySet(UserRelaySet relaySet) async {
+    final isSuccessful = await NostrFunctionsRepository.deleteEvent(
+      eventId: relaySet.id,
+    );
+
+    if (isSuccessful) {
+      removeRelaySet(relaySet.identifier);
+      BotToastUtils.showSuccess(t.relaySetDeleted);
+    } else {
+      BotToastUtils.showError(t.errorDeletingRelaySet);
+    }
+  }
+
+  void addRelaySet(UserRelaySet relaySet) {
+    final oldMap = Map<String, UserRelaySet>.from(state.userRelaySets);
+
+    oldMap[relaySet.identifier] = relaySet;
+
+    _safeEmit(state.copyWith(
+      userRelaySets: oldMap,
+    ));
+  }
+
+  void removeRelaySet(String identifier) {
+    final oldMap = Map<String, UserRelaySet>.from(state.userRelaySets);
+
+    oldMap.remove(identifier);
+
+    _safeEmit(state.copyWith(
+      userRelaySets: oldMap,
+    ));
+  }
+
+  Future<void> updateFavouriteRelays({
+    required List<String> relays,
+    required List<EventCoordinates> userRelaySets,
+  }) async {
+    setUpdatedFavoriteRelays(relays: relays, userRelaySets: userRelaySets);
+
+    final isSuccessful = await setFavoriteRelays();
+
+    if (isSuccessful) {
+      BotToastUtils.showSuccess(t.relaysListUpdated);
+    } else {
+      BotToastUtils.showSuccess(t.errorUpdatingRelaysList);
+    }
+  }
+
+  Future<void> loadLocalRelaysData() async {
+    final relaysEvent = await nc.db.loadEvent(
+      pubkey: currentSigner!.getPublicKey(),
+      kind: EventKind.FAVORITE_RELAYS,
+    );
+
+    final relaySets = await nc.db.loadEvents(
+      f: Filter(
+        kinds: [EventKind.RELAY_SET],
+        authors: [currentSigner!.getPublicKey()],
+      ),
+    );
+
+    setFavoriteRelayFromEvent(
+      favouriteRelaysEvent: relaysEvent,
+      relaySetEvents: relaySets,
+    );
+  }
+
+  Future<void> syncFavoriteRelays({bool override = false}) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final events = await NostrFunctionsRepository.getEventsAsync(
+      kinds: [EventKind.FAVORITE_RELAYS, EventKind.RELAY_SET],
+      pubkeys: [currentSigner!.getPublicKey()],
+      source: EventsSource.relays,
+    );
+
+    if (events.isNotEmpty) {
+      final favouriteRelaysEvent = events.firstWhere(
+        (e) => e.kind == EventKind.FAVORITE_RELAYS,
+      );
+
+      final relaySetEvents = events
+          .where(
+            (e) => e.kind == EventKind.RELAY_SET,
+          )
+          .toList();
+
+      await Future.delayed(const Duration(milliseconds: 500)).then(
+        (_) {
+          setFavoriteRelayFromEvent(
+            favouriteRelaysEvent: favouriteRelaysEvent,
+            relaySetEvents: relaySetEvents,
+          );
+        },
+      );
+    }
+  }
+
+  void setFavoriteRelayFromEvent({
+    Event? favouriteRelaysEvent,
+    List<Event>? relaySetEvents,
+  }) {
+    RelayFeeds? relayFeeds;
+    List<EventCoordinates> favoriteUserRelaySets = [];
+    final userRelaySets = <String, UserRelaySet>{};
+
+    if (favouriteRelaysEvent != null) {
+      relayFeeds = RelayFeeds.fromEvent(favouriteRelaysEvent);
+
+      if (relayFeeds.favoriteRelays.isNotEmpty) {
+        final cleanRelays = <String>[];
+
+        for (final r in relayFeeds.favoriteRelays) {
+          final cr = Relay.clean(r[1]);
+          if (cr != null) {
+            cleanRelays.add(cr);
+          }
+        }
+
+        nc.connectRelays(cleanRelays);
+      }
+
+      if (relayFeeds.events.isNotEmpty) {
+        favoriteUserRelaySets = state.favoriteUserRelaySets
+            .where(
+              (element) => relayFeeds!.events
+                  .any((e) => e.identifier == element.identifier),
+            )
+            .toList();
+      }
+    }
+
+    if (relaySetEvents != null) {
+      for (final e in relaySetEvents) {
+        userRelaySets[e.dTag ?? e.id] = UserRelaySet.fromEvent(e);
+      }
+    }
+
+    _safeEmit(
+      state.copyWith(
+        relayFeeds: relayFeeds,
+        userRelaySets: userRelaySets,
+        favoriteUserRelaySets: favoriteUserRelaySets,
+      ),
+    );
+  }
+
+  Future<bool> setFavoriteRelays() async {
+    final event = await state.relayFeeds.toEvent();
+
+    if (event == null) {
+      return false;
+    }
+
+    nc.db.saveEvent(event);
+
+    return NostrFunctionsRepository.sendEvent(
+      event: event,
+      setProgress: false,
+    );
+  }
+
   List<String> getFavoredRelayUsers(String relay) {
     return state.relayFavored[relay] ?? [];
   }
 
+  void updateFavoriteRelays(String relay) {
+    final relays = List<String>.from(state.relayFeeds.favoriteRelays);
+
+    _safeEmit(state.copyWith(
+      relayFeeds: state.relayFeeds.copyWith(
+        favoriteRelays: relays.contains(relay)
+            ? (relays..remove(relay))
+            : (relays..add(relay)),
+      ),
+    ));
+  }
+
+  Future<void> setFavoriteRelaysConnection() async {
+    final relays = state.relayFeeds.favoriteRelays;
+
+    await nc.connectNonConnectedRelays(relays.toSet());
+  }
+
+  Future<void> setAndUpdateFavoriteRelay(String relay) async {
+    final cancel = BotToast.showLoading();
+
+    updateFavoriteRelays(relay);
+    final isSuccessful = await setFavoriteRelays();
+
+    if (isSuccessful) {
+      BotToastUtils.showSuccess(t.relaysListUpdated);
+    } else {
+      BotToastUtils.showSuccess(t.errorUpdatingRelaysList);
+    }
+
+    cancel.call();
+  }
+
+  UserRelaySet? getUpdatedFavoriteRelaySet(String identifier) {
+    return state.userRelaySets[identifier];
+  }
+
+  void setUpdatedFavoriteRelays({
+    required List<String> relays,
+    required List<EventCoordinates> userRelaySets,
+  }) {
+    _safeEmit(
+      state.copyWith(
+        relayFeeds: state.relayFeeds.copyWith(
+          favoriteRelays: relays,
+          events: userRelaySets,
+        ),
+        favoriteUserRelaySets: userRelaySets,
+      ),
+    );
+  }
+
   void clear() {
-    emit(state.copyWith(
+    _safeEmit(state.copyWith(
       refresh: !state.refresh,
       relayInfos: {},
       collections: [],
@@ -378,6 +659,17 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
     _pendingRelays.clear();
     isFavoredRelaysLoaded = false;
     isRelaysCollectionsLoaded = false;
+  }
+
+  // ==================================================
+  // SAFE EMIT FUNCTION
+  // ==================================================
+
+  /// Safe emit function that checks if cubit is closed before emitting
+  void _safeEmit(RelayInfoState newState) {
+    if (!isClosed) {
+      emit(newState);
+    }
   }
 
   @override

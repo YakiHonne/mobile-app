@@ -231,6 +231,8 @@ class NotificationEventMain extends StatelessWidget {
                   text: ev.content,
                   scrollPhysics: const NeverScrollableScrollPhysics(),
                   disableNoteParsing: false,
+                  enableHidingMedia: true,
+                  pubkey: ev.pubkey,
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: Theme.of(context).highlightColor,
                       ),
@@ -314,6 +316,8 @@ class NotificationEventMain extends StatelessWidget {
             text: getEventContent(mainEvent.origin),
             scrollPhysics: const NeverScrollableScrollPhysics(),
             disableNoteParsing: false,
+            enableHidingMedia: true,
+            pubkey: mainEvent.pubkey,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   color: Theme.of(context).highlightColor,
                 ),
@@ -490,6 +494,10 @@ class NotificationEventMain extends StatelessWidget {
           WidgetSpan(
             child: ParsedText(
               text: attachedText,
+              enableHidingMedia: true,
+              pubkey: mainEvent.kind == EventKind.TEXT_NOTE
+                  ? mainEvent.pubkey
+                  : ev.pubkey,
               scrollPhysics: const NeverScrollableScrollPhysics(),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: Theme.of(context).highlightColor,

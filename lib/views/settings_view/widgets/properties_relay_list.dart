@@ -86,9 +86,8 @@ class RelaysList extends HookWidget {
     return SliverList.builder(
       itemBuilder: (context, i) {
         final relay = state.onlineRelays[i];
-        final isDisplayed = (searchController.value.trim().isNotEmpty &&
-                !relay.contains(searchController.value.trim())) ||
-            constantRelays.contains(relay);
+        final isDisplayed = searchController.value.trim().isNotEmpty &&
+            !relay.contains(searchController.value.trim());
 
         if (isDisplayed) {
           return const SizedBox.shrink();
@@ -141,13 +140,13 @@ class AvailableRelaysList extends HookWidget {
     super.key,
     required this.onlineRelays,
     required this.setRelay,
-    required this.remoteRelay,
+    required this.removeRelay,
     this.excludeContantRelays = true,
   });
 
   final List<String> onlineRelays;
   final Function(String) setRelay;
-  final Function(String) remoteRelay;
+  final Function(String) removeRelay;
   final bool excludeContantRelays;
 
   @override
@@ -256,6 +255,7 @@ class AvailableRelaysList extends HookWidget {
                         activeRelays.value,
                       )..add(relay);
                     } else {
+                      removeRelay(relay);
                       activeRelays.value = List<String>.from(
                         activeRelays.value,
                       )..remove(relay);
