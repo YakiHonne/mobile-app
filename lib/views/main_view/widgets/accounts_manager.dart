@@ -262,7 +262,11 @@ class AccountManager extends HookWidget {
   void _handleAccountDisconnect(BuildContext context, int selectedIndex) {
     settingsCubit.onLogoutTap(
       selectedIndex,
-      onPop: () => _navigateToMain(context),
+      onPop: () {
+        if (context.mounted) {
+          _navigateToMain(context);
+        }
+      },
     );
   }
 

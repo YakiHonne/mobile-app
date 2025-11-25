@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.9.5] - 2025-11-25
+
+### Added
+
+- Add relays sets.
+- Add russian language.
+
+### Changed
+
+- Fetch events from the relays encoded in the nostr scheme in search.
+- Optimise note view.
+- Add option to mute notifications with more than 10 mentions.
+
+### Fixed
+
+- Fix click on tag issue in search page.
+- Fix search relays update overrides user regular relay list.
+
+## [1.9.4] - 2025-11-17
+
+### Added
+
+- Add mute thread option
+- Optimized search with dedicated search relays for faster and more accurate results
+- Ability to change app primary color
+
+### Changed
+
+- Nostr scheme render for yakihonne and other nostr clients inside the app
+- Add option to enable/disable url previews
+- Add youtube preview
+- Add split screen tab in writing article on tablets
+- Make following in relay orbits as default
+- Add smart widget render in feed
+- Add cover, "t" and "r" for bookmarks
+- Add video fallback urls
+- Add video download
+- Add blitz wallet
+
+### Fixed
+
+- Fix currencies symbols
+- Fixed various bugs across the app
+- Remove "App" from basic smart widget
+
 ## [1.9.3] - 2025-11-03
 
 ### Added

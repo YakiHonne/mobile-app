@@ -196,7 +196,9 @@ Future<void> showCupertinoCustomDialogue({
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: kTransparent,

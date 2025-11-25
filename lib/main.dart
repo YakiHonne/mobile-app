@@ -28,6 +28,7 @@ class AppConstants {
     Breakpoint(start: 1440, end: 1919, name: 'DESKTOP_LARGE'),
     Breakpoint(start: 1920, end: double.infinity, name: '4K'),
   ];
+
   // Pre-defined localization delegates to avoid recreation
   static const List<LocalizationsDelegate> localizationDelegates = [
     GlobalMaterialLocalizations.delegate,

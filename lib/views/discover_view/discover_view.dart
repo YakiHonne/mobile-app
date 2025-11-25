@@ -8,11 +8,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import '../../logic/discover_cubit/discover_cubit.dart';
-import '../../logic/dvm_metadata_cubit/dvm_metadata_cubit.dart';
 import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/relays_feed.dart';
 import '../../utils/utils.dart';
 import '../leading_view/leading_view.dart';
 import '../widgets/classic_footer.dart';
@@ -272,14 +272,16 @@ class SourceButton extends HookWidget {
                     ? appSettingsManagerCubit.getDiscoverSelectedSource()
                     : appSettingsManagerCubit.getNotesSelectedSource();
 
-                final title = source.key == AppContentSource.algo
+                final title = source.key == AppContentSource.relay
                     ? Relay.removeSocket(source.value.value) ??
                         source.value.value
-                    : getSourceName(
-                        name: isDiscover
-                            ? state.selectedDiscoverSource.value
-                            : state.selectedNotesSource.value,
-                      ).capitalizeFirst();
+                    : source.key == AppContentSource.relaySet
+                        ? (source.value.value as UserRelaySet).getTitle()
+                        : getSourceName(
+                            name: isDiscover
+                                ? state.selectedDiscoverSource.value
+                                : state.selectedNotesSource.value,
+                          ).capitalizeFirst();
 
                 return Text(
                   title,
@@ -334,12 +336,12 @@ class SourceImage extends StatelessWidget {
               alignment: Alignment.center,
               child: source.key == AppContentSource.community
                   ? getCommunityImage(context: context, url: source.value.value)
-                  : source.key == AppContentSource.dvm
-                      ? getDvmImage(
+                  : source.key == AppContentSource.relaySet
+                      ? getRelaySetImage(
                           context: context,
-                          url: source.value.key,
+                          url: (source.value.value as UserRelaySet).image,
                         )
-                      : getAlgoImage(
+                      : getRelayImage(
                           context: context,
                           url: source.value.value,
                         ),
@@ -350,23 +352,18 @@ class SourceImage extends StatelessWidget {
     );
   }
 
-  Widget getDvmImage({required BuildContext context, required String url}) {
-    return BlocBuilder<DvmMetadataCubit, DvmMetadataState>(
-      builder: (context, state) {
-        final dvmMetadata = state.dvmsMetadata[url];
-
-        return CommonThumbnail(
-          image: dvmMetadata?.thumbnail ?? '',
-          placeholder: getRandomPlaceholder(
-            input: url,
-            isPfp: false,
-          ),
-          width: 26,
-          height: 26,
-          isRound: true,
-          radius: kDefaultPadding / 4,
-        );
-      },
+  Widget getRelaySetImage(
+      {required BuildContext context, required String url}) {
+    return CommonThumbnail(
+      image: url,
+      placeholder: getRandomPlaceholder(
+        input: url,
+        isPfp: false,
+      ),
+      width: 26,
+      height: 26,
+      isRound: true,
+      radius: kDefaultPadding / 4,
     );
   }
 
@@ -387,7 +384,7 @@ class SourceImage extends StatelessWidget {
     );
   }
 
-  Widget getAlgoImage({required BuildContext context, required String url}) {
+  Widget getRelayImage({required BuildContext context, required String url}) {
     return BlocBuilder<RelayInfoCubit, RelayInfoState>(
       builder: (context, state) {
         final relayInfo = state.relayInfos[url];

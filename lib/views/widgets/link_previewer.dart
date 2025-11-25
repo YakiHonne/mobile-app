@@ -75,10 +75,18 @@ class LinkPreviewer extends HookWidget {
         } else if (urlType == UrlType.video) {
           return CustomVideoPlayer(link: url);
         } else if (urlType == UrlType.audio) {
-          return AudioDisplayer(
-            url: url,
-            inverseNoteColor: inverseNoteColor,
-          );
+          try {
+            return AudioDisplayer(
+              url: url,
+              inverseNoteColor: inverseNoteColor,
+            );
+          } catch (e) {
+            return UrlDisplayer(
+              url: url,
+              onOpen: onOpen,
+              textStyle: textStyle,
+            );
+          }
         } else {
           return UrlDisplayer(
             url: url,
@@ -100,10 +108,18 @@ class LinkPreviewer extends HookWidget {
             isScreenshot: isScreenshot,
           );
         } else if (urlType == UrlType.audio) {
-          return AudioDisplayer(
-            url: url,
-            inverseNoteColor: inverseNoteColor,
-          );
+          try {
+            return AudioDisplayer(
+              url: url,
+              inverseNoteColor: inverseNoteColor,
+            );
+          } catch (e) {
+            return UrlDisplayer(
+              url: url,
+              onOpen: onOpen,
+              textStyle: textStyle,
+            );
+          }
         } else if (snapshot.hasData && snapshot.data == UrlType.video) {
           return CustomVideoPlayer(link: url);
         } else {

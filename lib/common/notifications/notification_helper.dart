@@ -160,12 +160,15 @@ class NotificationHelper {
       return false;
     }
 
+    final c = nostrRepository.currentAppCustomization;
+
     final map = {
       'online': deviceId.isEmpty ? 0 : 1,
       'kinds': kinds,
       'deviceId': deviceId,
       if (Platform.isAndroid || Platform.isIOS)
-        'deviceOs': Platform.isAndroid ? 'android' : 'ios'
+        'deviceOs': Platform.isAndroid ? 'android' : 'ios',
+      'enableMaxMentions': c?.notifMaxMentions ?? true,
     };
 
     final event = await _encode(serverPubkey, jsonEncode(map));

@@ -7,16 +7,14 @@ class AppSettingsManagerState extends Equatable {
   final List<BaseFeed> discoverSources;
   final Map<String, CommunityFeedOption> discoverCommunity;
   final Map<String, DvmModel> discoverDvms;
-  final MapEntry<String, String> selectedDiscoverSource;
+  final MapEntry<String, dynamic> selectedDiscoverSource;
 
   final Map<String, NotesFilter> notesFilters;
   final String selectedNotesFilter;
   final List<BaseFeed> notesSources;
   final Map<String, CommunityFeedOption> notesCommunity;
   final Map<String, DvmModel> notesDvms;
-  final MapEntry<String, String> selectedNotesSource;
-
-  final List<String> favoriteRelays;
+  final MapEntry<String, dynamic> selectedNotesSource;
 
   const AppSettingsManagerState({
     required this.discoverFilters,
@@ -31,7 +29,6 @@ class AppSettingsManagerState extends Equatable {
     required this.notesCommunity,
     required this.notesDvms,
     required this.selectedNotesSource,
-    required this.favoriteRelays,
   });
 
   @override
@@ -48,7 +45,6 @@ class AppSettingsManagerState extends Equatable {
         notesCommunity,
         notesDvms,
         selectedNotesSource,
-        favoriteRelays,
       ];
 
   AppSettingsManagerState copyWith({
@@ -57,14 +53,13 @@ class AppSettingsManagerState extends Equatable {
     List<BaseFeed>? discoverSources,
     Map<String, CommunityFeedOption>? discoverCommunity,
     Map<String, DvmModel>? discoverDvms,
-    MapEntry<String, String>? selectedDiscoverSource,
+    MapEntry<String, dynamic>? selectedDiscoverSource,
     Map<String, NotesFilter>? notesFilters,
     String? selectedNotesFilter,
     List<BaseFeed>? notesSources,
     Map<String, CommunityFeedOption>? notesCommunity,
     Map<String, DvmModel>? notesDvms,
-    MapEntry<String, String>? selectedNotesSource,
-    List<String>? favoriteRelays,
+    MapEntry<String, dynamic>? selectedNotesSource,
   }) {
     return AppSettingsManagerState(
       discoverFilters: discoverFilters ?? this.discoverFilters,
@@ -81,7 +76,6 @@ class AppSettingsManagerState extends Equatable {
       notesCommunity: notesCommunity ?? this.notesCommunity,
       notesDvms: notesDvms ?? this.notesDvms,
       selectedNotesSource: selectedNotesSource ?? this.selectedNotesSource,
-      favoriteRelays: favoriteRelays ?? this.favoriteRelays,
     );
   }
 }

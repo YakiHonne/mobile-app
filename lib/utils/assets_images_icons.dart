@@ -281,6 +281,7 @@ class FeatureIcons {
   static const String flagIt = 'assets/icons/features/flag-it.svg';
   static const String flagFr = 'assets/icons/features/flag-fr.svg';
   static const String flagInd = 'assets/icons/features/flag-ind.svg';
+  static const String flagRu = 'assets/icons/features/flag-ru.svg';
   static const String download = 'assets/icons/features/download.svg';
   static const String export = 'assets/icons/features/export.svg';
   static const String github = 'assets/icons/features/github-logo.svg';

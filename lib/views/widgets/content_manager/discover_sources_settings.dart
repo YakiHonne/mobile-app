@@ -1,12 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 
-import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../dotted_container.dart';
-import 'add_discover_filter.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
 import 'dicover_settings_views/reorder_settings_view.dart';
 
@@ -20,19 +17,8 @@ class DiscoverSourcesSettings extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = useState(false);
-
     final tabController = useTabController(
       initialLength: 2,
-      initialIndex: dmsCubit.state.index,
-    );
-
-    final currentAppSettings = useState(
-      appSettingsManagerCubit.getAppSharedSettingsCopy(),
-    );
-
-    final favoriteRelays = useState(
-      appSettingsManagerCubit.state.favoriteRelays,
     );
 
     return Padding(
@@ -55,17 +41,16 @@ class DiscoverSourcesSettings extends HookWidget {
             ),
           ),
           child: _content(
-              tabController, favoriteRelays, currentAppSettings, isLoading),
+            tabController,
+          ),
         ),
       ),
     );
   }
 
   DraggableScrollableSheet _content(
-      TabController tabController,
-      ValueNotifier<List<String>> favoriteRelays,
-      ValueNotifier<AppSharedSettings> currentAppSettings,
-      ValueNotifier<bool> isLoading) {
+    TabController tabController,
+  ) {
     return DraggableScrollableSheet(
       initialChildSize: 0.95,
       minChildSize: 0.60,
@@ -83,48 +68,9 @@ class DiscoverSourcesSettings extends HookWidget {
             ),
           ),
           _tabBar(tabController, context),
-          _views(tabController, scrollController, favoriteRelays,
-              currentAppSettings),
-          _update(context, isLoading, currentAppSettings, favoriteRelays),
-        ],
-      ),
-    );
-  }
-
-  Container _update(
-      BuildContext context,
-      ValueNotifier<bool> isLoading,
-      ValueNotifier<AppSharedSettings> currentAppSettings,
-      ValueNotifier<List<String>> favoriteRelays) {
-    return Container(
-      height:
-          kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
-      width: double.infinity,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom / 2,
-        left: kDefaultPadding / 2,
-        right: kDefaultPadding / 2,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: RegularLoadingButton(
-              title: context.t.update.capitalizeFirst(),
-              isLoading: isLoading.value,
-              onClicked: () async {
-                isLoading.value = true;
-
-                await appSettingsManagerCubit.updateSources(
-                  settings: currentAppSettings.value,
-                  isDiscover: isDiscover,
-                  favoriteRelays: favoriteRelays.value,
-                );
-
-                isLoading.value = false;
-
-                YNavigator.pop(context);
-              },
-            ),
+          _views(
+            tabController,
+            scrollController,
           ),
         ],
       ),
@@ -132,24 +78,19 @@ class DiscoverSourcesSettings extends HookWidget {
   }
 
   Expanded _views(
-      TabController tabController,
-      ScrollController scrollController,
-      ValueNotifier<List<String>> favoriteRelays,
-      ValueNotifier<AppSharedSettings> currentAppSettings) {
+    TabController tabController,
+    ScrollController scrollController,
+  ) {
     return Expanded(
       child: TabBarView(
         controller: tabController,
         children: [
           RelaySettingsView(
             controller: scrollController,
-            isDiscover: isDiscover,
-            favoriteRelays: favoriteRelays,
           ),
           ReorderSettingsView(
-            currentAppSettings: currentAppSettings,
             controller: scrollController,
             isDiscover: isDiscover,
-            favoriteRelays: favoriteRelays,
           ),
         ],
       ),

@@ -162,7 +162,6 @@ class GiphyCubit extends Cubit<GiphyState> {
     required GiphyType giphyType,
     required String text,
   }) async {
-    lg.i('message');
     try {
       if (!isClosed) {
         emit(

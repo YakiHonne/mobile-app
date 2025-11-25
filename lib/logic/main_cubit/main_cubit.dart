@@ -158,12 +158,10 @@ class MainCubit extends Cubit<MainState> {
     final media = await handler.getInitialSharedMedia();
 
     if (_shareIntentSub == null && media != null) {
-      lg.i('message2');
       openReceivedShareIntent(media);
     }
 
     _shareIntentSub = handler.sharedMediaStream.listen((SharedMedia media) {
-      lg.i('message3');
       openReceivedShareIntent(media);
     });
   }
@@ -190,11 +188,15 @@ class MainCubit extends Cubit<MainState> {
     if (_deepLinksSub == null && initial != null) {
       if (!initial.startsWith('nostr+walletconnect') &&
           !initial.contains('yakihonne.com/wallet/alby')) {
-        forwardView(
-          uriString: initial,
-          isNostrScheme: initial.startsWith('nostr:'),
-          skipDelay: false,
-        );
+        if (initial.contains('njump.me')) {
+          handleNostrEntity(initial.split('/').last, '');
+        } else {
+          forwardView(
+            uriString: initial,
+            isNostrScheme: initial.startsWith('nostr:'),
+            skipDelay: false,
+          );
+        }
       }
     }
 
@@ -273,7 +275,7 @@ class MainCubit extends Cubit<MainState> {
         );
       }
     } else {
-      await _handleNostrEntity(nostrUri, uriString);
+      await handleNostrEntity(nostrUri, uriString);
     }
   }
 
@@ -478,7 +480,7 @@ class MainCubit extends Cubit<MainState> {
     }
   }
 
-  Future<void> _handleNostrEntity(String nostrUri, String uriString) async {
+  Future<void> handleNostrEntity(String nostrUri, String uriString) async {
     if (nostrUri.startsWith('nprofile') || nostrUri.startsWith('npub1')) {
       await _handleProfile(nostrUri);
     } else if (nostrUri.startsWith('note1')) {
@@ -556,6 +558,7 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleEvent(String nostrUri, String uriString) async {
     final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
+
     final ev = await getForwardedEvent(
       kinds: nostrDecode['kind'] != null ? <int>[nostrDecode['kind']] : null,
       identifier: nostrDecode['special'],
@@ -629,6 +632,7 @@ class MainCubit extends Cubit<MainState> {
     final List<int> hexCode = hex.decode(nostrDecode['special']);
     final String special = String.fromCharCodes(hexCode);
     final List<String> relays = List<String>.from(nostrDecode['relays']);
+
     final event = await getForwardedEvent(
       kinds: nostrDecode['kind'] != null ? <int>[nostrDecode['kind']] : null,
       identifier: special,
@@ -733,21 +737,16 @@ class MainCubit extends Cubit<MainState> {
             : relayList.reads.toSet();
 
         if (set.isNotEmpty) {
-          final connectedRelays = nc.relays().toSet();
-          final differedRelays = set.difference(connectedRelays);
+          BotToastUtils.showInformation(
+            context.t.fetchingEventUserRelays.capitalizeFirst(),
+          );
 
-          if (differedRelays.isNotEmpty) {
-            BotToastUtils.showInformation(
-                context.t.fetchingEventUserRelays.capitalizeFirst());
-            await nc.connectNonConnectedRelays(differedRelays);
-            await Future.delayed(const Duration(seconds: 2));
-            return getForwardEvent(
-              author: pubkey,
-              identifier: identifier,
-              kinds: kinds,
-              relays: set.toList(),
-            );
-          }
+          return getForwardEvent(
+            author: pubkey,
+            identifier: identifier,
+            kinds: kinds,
+            relays: set.toList(),
+          );
         }
       }
     }

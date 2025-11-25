@@ -442,48 +442,30 @@ class RelayUpdateView extends HookWidget {
     );
   }
 
-  Container _searchButton(BuildContext context, ValueNotifier<int> index) {
-    return Container(
-      height: 48,
-      width: 48,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          kDefaultPadding / 1.5,
-        ),
-        color: Theme.of(context).cardColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      child: CustomIconButton(
-        icon: FeatureIcons.search,
-        size: 18,
-        backgroundColor: Theme.of(context).cardColor,
-        vd: -2,
-        onClicked: () {
-          context
-              .read<UpdateRelaysCubit>()
-              .setOnlineRelays(isSearch: index.value == 2);
+  Widget _searchButton(BuildContext context, ValueNotifier<int> index) {
+    return SquareIconButton(
+      onClicked: () {
+        context
+            .read<UpdateRelaysCubit>()
+            .setOnlineRelays(isSearch: index.value == 2);
 
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
-            builder: (_) {
-              return BlocProvider.value(
-                value: context.read<UpdateRelaysCubit>(),
-                child: RelaysList(
-                  index: index.value,
-                ),
-              );
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          );
-        },
-      ),
+        showModalBottomSheet(
+          context: context,
+          elevation: 0,
+          builder: (_) {
+            return BlocProvider.value(
+              value: context.read<UpdateRelaysCubit>(),
+              child: RelaysList(
+                index: index.value,
+              ),
+            );
+          },
+          isScrollControlled: true,
+          useRootNavigator: true,
+          useSafeArea: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        );
+      },
     );
   }
 
@@ -505,6 +487,45 @@ class RelayUpdateView extends HookWidget {
               ),
         ),
       ],
+    );
+  }
+}
+
+class SquareIconButton extends StatelessWidget {
+  const SquareIconButton({
+    super.key,
+    required this.onClicked,
+    this.icon = FeatureIcons.search,
+  });
+
+  final Function() onClicked;
+  final String icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onClicked,
+      child: Container(
+        height: 48,
+        width: 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            kDefaultPadding / 1.5,
+          ),
+          color: Theme.of(context).cardColor,
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: CustomIconButton(
+          icon: icon,
+          size: 18,
+          backgroundColor: Theme.of(context).cardColor,
+          vd: -2,
+          onClicked: onClicked,
+        ),
+      ),
     );
   }
 }

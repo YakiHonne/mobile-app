@@ -712,9 +712,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     );
 
     if (isSuccessful) {
-      nc.db.saveEvent(event);
       final ns = eventStats.addEvent(event);
       stats[note.id] = ns;
+      nc.db.saveEvent(event);
       nc.db.saveEventStats(ns);
     }
   }
@@ -800,7 +800,6 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
 
     final relays = await broadcastRelays(pubkey);
-
     final isSuccessful = await NostrFunctionsRepository.sendEvent(
       event: event,
       relays: relays,

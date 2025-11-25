@@ -39,61 +39,61 @@ class TranslationsAr extends Translations {
 	TranslationsAr $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsAr(meta: meta ?? this.$meta);
 
 	// Translations
-	@override String get addNewBookmark => 'لم يتم العثور على قائمة مفضلة، جرب إضافة واحدة!';
-	@override String get setBookmarkTitleDescription => 'تعيين عنوان ووصف لقائمة المفضلة الخاصة بك.';
+	@override String get addNewBookmark => 'لم يتم العثور على قائمة إشارات مرجعية، حاول إضافة واحدة!';
+	@override String get setBookmarkTitleDescription => 'حدد عنوانًا ووصفًا لقائمة الإشارات المرجعية الخاصة بك.';
 	@override String get title => 'العنوان';
 	@override String get description => 'الوصف';
 	@override String get descriptionOptional => 'الوصف (اختياري)';
-	@override String get bookmarkLists => 'قوائم المفضلة';
+	@override String get bookmarkLists => 'قوائم الإشارات المرجعية';
 	@override String get submit => 'إرسال';
-	@override String get addBookmarkList => 'إضافة قائمة مفضلة';
-	@override String get submitBookmarkList => 'إرسال قائمة المفضلة';
+	@override String get addBookmarkList => 'إضافة قائمة إشارات مرجعية';
+	@override String get submitBookmarkList => 'إرسال قائمة الإشارات المرجعية';
 	@override String get next => 'التالي';
 	@override String get saveDraft => 'حفظ المسودة';
 	@override String get deleteDraft => 'حذف المسودة';
 	@override String get publish => 'نشر';
-	@override String get smHaveOneWidget => 'يجب أن يحتوي الويدجت الذكي على مكون واحد على الأقل.';
-	@override String get smHaveTitle => 'يجب أن يحتوي الويدجت الذكي على عنوان على الأقل';
-	@override String get whatsOnYourMind => 'ما الذي تفكر فيه؟';
+	@override String get smHaveOneWidget => 'يجب أن يحتوي الودجيت الذكي على مكون واحد على الأقل.';
+	@override String get smHaveTitle => 'يجب أن يحتوي الودجيت الذكي على عنوان على الأقل';
+	@override String get whatsOnYourMind => 'ما الذي يدور في ذهنك؟';
 	@override String get sensitiveContent => 'هذا محتوى حساس';
 	@override String get addYourTopics => 'أضف مواضيعك';
-	@override String get article => 'مقال';
+	@override String get article => 'مقالة';
 	@override String get articles => 'مقالات';
 	@override String get video => 'فيديو';
 	@override String get videos => 'فيديوهات';
 	@override String get curation => 'تنسيق';
 	@override String get curations => 'تنسيقات';
 	@override String get thumbnailPreview => 'معاينة الصورة المصغرة';
-	@override String get selectAndUploadLocaleImage => 'اختر وارفع صورة محلية';
-	@override String get issueOccuredSelectingImage => 'حدثت مشكلة أثناء اختيار الصورة.';
+	@override String get selectAndUploadLocaleImage => 'اختر ورفع صورة محلية';
+	@override String get issueOccuredSelectingImage => 'حدث خطأ أثناء اختيار الصورة.';
 	@override String get imageUploadHistory => 'تاريخ رفع الصور';
-	@override String get noImageHistory => 'لم يتم العثور على تاريخ صور';
+	@override String get noImageHistory => 'لم يتم العثور على تاريخ للصور';
 	@override String get cancel => 'إلغاء';
 	@override String get uploadAndUse => 'رفع واستخدام';
-	@override String get publishRemoveDraft => 'نشر وحذف المسودة';
-	@override String get clearChat => 'مسح المحادثة';
+	@override String get publishRemoveDraft => 'نشر وإزالة المسودة';
+	@override String get clearChat => 'مسح الدردشة';
 	@override String get noDataFromGpt => 'لا توجد بيانات لعرضها من GPT.';
-	@override String get askMeSomething => 'اسألني شيئاً!';
+	@override String get askMeSomething => 'اسألني شيئًا!';
 	@override String get copy => 'نسخ';
 	@override String get textSuccesfulyCopied => 'تم نسخ النص بنجاح!';
-	@override String get insertText => 'إدراج النص';
-	@override String searchContentByTitle({required Object type}) => 'البحث عن ${type} بالعنوان';
-	@override String noContentCanBeFound({required Object type}) => 'لم يتم العثور على ${type}';
-	@override String noContentBelongToCuration({required Object type}) => 'لا يوجد ${type} ينتمي لهذا التنسيق';
+	@override String get insertText => 'إدراج نص';
+	@override String searchContentByTitle({required Object type}) => 'البحث عن ${type} حسب العنوان';
+	@override String noContentCanBeFound({required Object type}) => 'لا يمكن العثور على ${type}';
+	@override String noContentBelongToCuration({required Object type}) => 'لا ينتمي أي ${type} إلى هذا التنسيق';
 	@override String byPerson({required Object name}) => 'بواسطة ${name}';
-	@override String get allRelays => 'جميع المرحلات';
+	@override String get allRelays => 'جميع الترحيلات';
 	@override String get myArticles => 'مقالاتي';
 	@override String get myVideos => 'فيديوهاتي';
 	@override String get curationType => 'نوع التنسيق';
 	@override String get update => 'تحديث';
-	@override String get invalidInvoiceLnurl => 'تأكد من تعيين فاتورة أو lnurl صحيحة';
-	@override String get addValidUrl => 'تأكد من إضافة رابط صحيح';
+	@override String get invalidInvoiceLnurl => 'تأكد من تعيين فاتورة صالحة أو lnurl';
+	@override String get addValidUrl => 'تأكد من إضافة رابط صالح';
 	@override String get layoutCustomization => 'تخصيص التخطيط';
 	@override String get duoLayout => 'تخطيط مزدوج';
-	@override String get monoLayout => 'تخطيط مفرد';
+	@override String get monoLayout => 'تخطيط أحادي';
 	@override String get warning => 'تحذير';
-	@override String get switchToMonolayout => 'أنت تنتقل إلى تخطيط مفرد بينما لديك عناصر على كلا الجانبين، هذا سيمحو محتوى الحاوية، هل تريد المتابعة؟';
-	@override String get erase => 'محو';
+	@override String get switchToMonolayout => 'أنت تقوم بالتبديل إلى تخطيط أحادي بينما لديك عناصر على كلا الجانبين، سيؤدي هذا إلى مسح محتوى الحاوية، هل ترغب في المتابعة؟';
+	@override String get erase => 'مسح';
 	@override String get textCustomization => 'تخصيص النص';
 	@override String get writeYourText => 'اكتب نصك';
 	@override String get size => 'الحجم';
@@ -101,11 +101,11 @@ class TranslationsAr extends Translations {
 	@override String get color => 'اللون';
 	@override String get videoCustomization => 'تخصيص الفيديو';
 	@override String get videoUrl => 'رابط الفيديو';
-	@override String get zapPollCustomization => 'تخصيص استطلاع الزاب';
+	@override String get zapPollCustomization => 'تخصيص استطلاع زاب';
 	@override String get contentTextColor => 'لون نص المحتوى';
 	@override String get optionTextColor => 'لون نص الخيار';
 	@override String get optionBackgroundColor => 'لون خلفية الخيار';
-	@override String get fillColor => 'لون التعبئة';
+	@override String get fillColor => 'لون الملء';
 	@override String get imageCustomization => 'تخصيص الصورة';
 	@override String get imageUrl => 'رابط الصورة';
 	@override String get imageAspectRatio => 'نسبة أبعاد الصورة';
@@ -114,231 +114,231 @@ class TranslationsAr extends Translations {
 	@override String get type => 'النوع';
 	@override String get useInvoice => 'استخدام الفاتورة';
 	@override String get invoice => 'فاتورة';
-	@override String get lightningAddress => 'عنوان Lightning';
-	@override String get selectUserToZap => 'اختر مستخدماً لزابه (اختياري)';
-	@override String get zapPollNevent => 'Nevent استطلاع الزاب';
+	@override String get lightningAddress => 'عنوان البرق';
+	@override String get selectUserToZap => 'اختر مستخدمًا للزاب (اختياري)';
+	@override String get zapPollNevent => 'استطلاع زاب nevent';
 	@override String get textColor => 'لون النص';
 	@override String get buttonColor => 'لون الزر';
-	@override String get url => 'الرابط';
-	@override String get invoiceOrLN => 'فاتورة أو عنوان Lightning';
+	@override String get url => 'رابط';
+	@override String get invoiceOrLN => 'فاتورة أو عنوان البرق';
 	@override String get youtubeUrl => 'رابط يوتيوب';
 	@override String get telegramUrl => 'رابط تليجرام';
 	@override String get xUrl => 'رابط X';
 	@override String get discordUrl => 'رابط ديسكورد';
-	@override String get nostrScheme => 'مخطط نوستر';
+	@override String get nostrScheme => 'مخطط Nostr';
 	@override String get containerCustomization => 'تخصيص الحاوية';
 	@override String get backgroundColor => 'لون الخلفية';
 	@override String get borderColor => 'لون الحدود';
 	@override String get value => 'القيمة';
 	@override String get pickYourComponent => 'اختر مكونك';
-	@override String get selectComponent => 'اختر المكون المناسب وعدله.';
+	@override String get selectComponent => 'اختر المكون المناسب وقم بتحريره.';
 	@override String get text => 'نص';
 	@override String get image => 'صورة';
 	@override String get button => 'زر';
 	@override String get summaryOptional => 'ملخص (اختياري)';
-	@override String get smartWidgetsDrafts => 'مسودات الويدجت الذكية';
-	@override String get noSmartWidget => 'لم يتم العثور على مسودات ويدجت ذكية';
-	@override String get noSmartWidgetCanBeFound => 'لم يتم العثور على ويدجت ذكية';
-	@override String get smartWidgetConvention => 'هذا الويدجت الذكي لا يتبع الاتفاقية المتفق عليها.';
-	@override String get monolayoutRequired => 'التخطيط المفرد مطلوب';
+	@override String get smartWidgetsDrafts => 'مسودات الودجيتات الذكية';
+	@override String get noSmartWidget => 'لا يمكن العثور على مسودات ودجيتات ذكية';
+	@override String get noSmartWidgetCanBeFound => 'لا يمكن العثور على ودجيتات ذكية';
+	@override String get smartWidgetConvention => 'هذا الودجيت الذكي لا يتبع الاتفاقية المتفق عليها.';
+	@override String get monolayoutRequired => 'التخطيط الأحادي مطلوب';
 	@override String get zapPoll => 'استطلاع زاب';
 	@override String get layout => 'التخطيط';
-	@override String get container => 'حاوية';
-	@override String get edit => 'تعديل';
-	@override String get moveUp => 'نقل للأعلى';
-	@override String get moveDown => 'نقل للأسفل';
+	@override String get container => 'الحاوية';
+	@override String get edit => 'تحرير';
+	@override String get moveUp => 'تحريك لأعلى';
+	@override String get moveDown => 'تحريك لأسفل';
 	@override String get delete => 'حذف';
-	@override String get editToAddZapPoll => 'تعديل لإضافة استطلاع زاب';
-	@override String get options => 'خيارات';
-	@override String get smartWidgetBuilder => 'منشئ الويدجت الذكية';
-	@override String get startBuildingSmartWidget => 'ابدأ في البناء وتخصيص ويدجتك الذكية للاستخدام على شبكة نوستر';
-	@override String get blankWidget => 'ويدجت فارغة';
+	@override String get editToAddZapPoll => 'تحرير لإضافة استطلاع زاب';
+	@override String get options => 'الخيارات';
+	@override String get smartWidgetBuilder => 'منشئ الودجيت الذكي';
+	@override String get startBuildingSmartWidget => 'ابدأ في بناء وتخصيص ودجيتك الذكي لاستخدامه على شبكة Nostr';
+	@override String get blankWidget => 'ودجيت فارغ';
 	@override String get myDrafts => 'مسوداتي';
-	@override String get templates => 'قوالب';
+	@override String get templates => 'القوالب';
 	@override String get communityPolls => 'استطلاعات المجتمع';
 	@override String get myPolls => 'استطلاعاتي';
-	@override String get noPollsCanBeFound => 'لم يتم العثور على استطلاعات';
-	@override String totalNumber({required Object number}) => 'المجموع: ${number}';
-	@override String get smartWidgetsTemplates => 'قوالب الويدجت الذكية';
-	@override String get noTemplatesCanBeFound => 'لم يتم العثور على قوالب في هذه الفئة.';
+	@override String get noPollsCanBeFound => 'لا يمكن العثور على استطلاعات';
+	@override String totalNumber({required Object number}) => 'الإجمالي: ${number}';
+	@override String get smartWidgetsTemplates => 'قوالب الودجيتات الذكية';
+	@override String get noTemplatesCanBeFound => 'لا يمكن العثور على قوالب في هذه الفئة.';
 	@override String get useTemplate => 'استخدام القالب';
 	@override String get pickYourVideo => 'اختر فيديوك';
-	@override String get canUploadPastLink => 'يمكنك الرفع أو لصق رابط أو اختيار nevent نوع 1063 لفيديوك.';
+	@override String get canUploadPastLink => 'يمكنك رفع ملف، لصق رابط أو اختيار nevent من نوع 1063 لفيديوك.';
 	@override String get gallery => 'المعرض';
 	@override String get link => 'رابط';
 	@override String get fileSharing => 'مشاركة الملفات';
 	@override String get setUpYourLink => 'إعداد رابطك';
 	@override String get setUpYourNevent => 'إعداد nevent الخاص بك';
-	@override String get pasteYourLink => 'الصق رابطك وأرسله';
-	@override String get pasteKind1063 => 'الصق nevent نوع 1063 وأرسله';
+	@override String get pasteYourLink => 'لصق رابطك وإرساله';
+	@override String get pasteKind1063 => 'لصق nevent من نوع 1063 وإرساله';
 	@override String get addUrlNevent => 'أضف رابط/nevent مناسب';
 	@override String get nevent => 'nevent';
 	@override String get addProperUrlNevent => 'أضف رابط/nevent مناسب';
 	@override String get horizontalVideo => 'فيديو أفقي';
 	@override String get preview => 'معاينة';
-	@override String get writeSummary => 'اكتب ملخصاً';
+	@override String get writeSummary => 'اكتب ملخصًا';
 	@override String get uploadImage => 'رفع صورة';
-	@override String get addToCuration => 'إضافة للتنسيق';
+	@override String get addToCuration => 'إضافة إلى التنسيق';
 	@override String get submitCuration => 'إرسال التنسيق';
-	@override String get selectValidUrlImage => 'اختر رابط صورة صحيح.';
-	@override String get noCurationsFound => 'لم يتم العثور على تنسيقات. جرب إنشاء واحد لتتمكن من إضافة محتوى إليه.';
-	@override String availableArticles({required Object number}) => '${number} مقال(ات) متاح(ة)';
-	@override String availableVideos({required Object number}) => '${number} فيديو(هات) متاح(ة)';
+	@override String get selectValidUrlImage => 'اختر صورة رابط صالحة.';
+	@override String get noCurationsFound => 'لم يتم العثور على تنسيقات. حاول إنشاء واحدة لتتمكن من إضافة محتوى إليها.';
+	@override String availableArticles({required Object number}) => '${number} مقال(ات) متاحة';
+	@override String availableVideos({required Object number}) => '${number} فيديو(ات) متاحة';
 	@override String articlesNum({required Object number}) => '${number} مقال(ات)';
-	@override String videosNum({required Object number}) => '${number} فيديو(هات)';
+	@override String videosNum({required Object number}) => '${number} فيديو(ات)';
 	@override String get articlesAvailableCuration => 'المقالات المتاحة في هذا التنسيق';
 	@override String get videosAvailableCuration => 'الفيديوهات المتاحة في هذا التنسيق';
-	@override String get articleAddedCuration => 'تم إضافة المقال إلى تنسيقك.';
+	@override String get articleAddedCuration => 'تم إضافة المقالة إلى تنسيقك.';
 	@override String get videoAddedCuration => 'تم إضافة الفيديو إلى تنسيقك.';
-	@override String get validTitleCuration => 'تأكد من إضافة عنوان صحيح لهذا التنسيق';
-	@override String get validDescriptionCuration => 'تأكد من إضافة وصف صحيح لهذا التنسيق';
-	@override String get validImageCuration => 'تأكد من إضافة صورة صحيحة لهذا التنسيق';
+	@override String get validTitleCuration => 'تأكد من إضافة عنوان صالح لهذا التنسيق';
+	@override String get validDescriptionCuration => 'تأكد من إضافة وصف صالح لهذا التنسيق';
+	@override String get validImageCuration => 'تأكد من إضافة صورة صالحة لهذا التنسيق';
 	@override String get addCuration => 'إضافة تنسيق';
-	@override String get postedBy => 'نُشر بواسطة';
+	@override String get postedBy => 'نشر بواسطة';
 	@override String get follow => 'متابعة';
 	@override String get unfollow => 'إلغاء المتابعة';
-	@override String get postedFrom => 'نُشر من';
-	@override String get noTitle => 'لا يوجد عنوان';
-	@override String itemsNumber({required Object number}) => '${number} عنصر(عناصر)';
+	@override String get postedFrom => 'نشر من';
+	@override String get noTitle => 'لا عنوان';
+	@override String itemsNumber({required Object number}) => '${number} عنصر(ات)';
 	@override String get noArticlesInCuration => 'لم يتم العثور على مقالات في هذا التنسيق';
 	@override String get noVideosInCuration => 'لم يتم العثور على فيديوهات في هذا التنسيق';
 	@override String get add => 'إضافة';
-	@override String get noBookmarksListFound => 'لم يتم العثور على قوائم مفضلة، جرب إضافة واحدة!';
-	@override String get deleteBookmarkList => 'حذف قائمة المفضلة';
-	@override String get confirmDeleteBookmarkList => 'أنت على وشك حذف قائمة المفضلة هذه، هل تريد المتابعة؟';
-	@override String get bookmarks => 'المفضلة';
-	@override String bookmarksListCount({required Object number}) => '${number} قوائم مفضلة';
-	@override String get noDescription => 'لا يوجد وصف';
+	@override String get noBookmarksListFound => 'لم يتم العثور على قوائم إشارات مرجعية، حاول إضافة واحدة!';
+	@override String get deleteBookmarkList => 'حذف قائمة الإشارات المرجعية';
+	@override String get confirmDeleteBookmarkList => 'أنت على وشك حذف قائمة الإشارات المرجعية هذه، هل ترغب في المتابعة؟';
+	@override String get bookmarks => 'الإشارات المرجعية';
+	@override String bookmarksListCount({required Object number}) => '${number} قوائم إشارات مرجعية';
+	@override String get noDescription => 'لا وصف';
 	@override String editedOn({required Object date}) => 'تم التعديل في: ${date}';
-	@override String publishedOn({required Object date}) => 'تم النشر في: ${date}';
-	@override String get publishedOnText => 'تم النشر في';
+	@override String publishedOn({required Object date}) => 'نشر في: ${date}';
+	@override String get publishedOnText => 'نشر في';
 	@override String lastUpdatedOn({required Object date}) => 'آخر تحديث في: ${date}';
 	@override String joinedOn({required Object date}) => 'انضم في: ${date}';
 	@override String get list => 'قائمة';
-	@override String get noElementsInBookmarks => 'لم يتم العثور على عناصر في قائمة المفضلة';
+	@override String get noElementsInBookmarks => 'لا يمكن العثور على عناصر في قائمة الإشارات المرجعية';
 	@override String get draft => 'مسودة';
 	@override String get note => 'ملاحظة';
 	@override String get notes => 'ملاحظات';
-	@override String get smartWidget => 'ويدجت ذكية';
-	@override String get widgets => 'ويدجت';
+	@override String get smartWidget => 'ودجيت ذكي';
+	@override String get widgets => 'ودجيتات';
 	@override String get postNote => 'نشر ملاحظة';
-	@override String get postArticle => 'نشر مقال';
+	@override String get postArticle => 'نشر مقالة';
 	@override String get postCuration => 'نشر تنسيق';
 	@override String get postVideo => 'نشر فيديو';
-	@override String get postSmartWidget => 'نشر ويدجت ذكية';
+	@override String get postSmartWidget => 'نشر ودجيت ذكي';
 	@override String get ongoing => 'جاري';
-	@override String componentsSMCount({required Object number}) => '${number} مكونات في هذه الويدجت';
+	@override String componentsSMCount({required Object number}) => '${number} مكونات في هذا الودجيت';
 	@override String get share => 'مشاركة';
 	@override String get copyNoteId => 'نسخ معرف الملاحظة';
 	@override String get noteIdCopied => 'تم نسخ معرف الملاحظة! 👏';
-	@override String get confirmDeleteDraft => 'أنت على وشك حذف هذه المسودة، هل تريد المتابعة؟';
-	@override String get reposted => 'أعيد نشره';
+	@override String get confirmDeleteDraft => 'أنت على وشك حذف هذه المسودة، هل ترغب في المتابعة؟';
+	@override String get reposted => 'تم إعادة النشر';
 	@override String get postInNote => 'نشر في ملاحظة';
-	@override String get clone => 'نسخ';
-	@override String get checkValidity => 'فحص الصحة';
+	@override String get clone => 'استنساخ';
+	@override String get checkValidity => 'التحقق من الصحة';
 	@override String get copyNaddr => 'نسخ naddr';
 	@override String deleteContent({required Object type}) => 'حذف ${type}';
-	@override String confirmDeleteContent({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل تريد المتابعة؟';
+	@override String confirmDeleteContent({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل ترغب في المتابعة؟';
 	@override String get home => 'الرئيسية';
-	@override String get followings => 'المتابَعون';
-	@override String get followers => 'المتابِعون';
+	@override String get followings => 'المتابعون';
+	@override String get followers => 'المتابعين';
 	@override String get replies => 'الردود';
-	@override String get zapReceived => 'الزابس المستلمة';
+	@override String get zapReceived => 'الزابات المستلمة';
 	@override String get totalAmount => 'المبلغ الإجمالي';
-	@override String get zapSent => 'الزابس المرسلة';
+	@override String get zapSent => 'الزابات المرسلة';
 	@override String get latest => 'الأحدث';
 	@override String get saved => 'محفوظ';
-	@override String get seeAll => 'رؤية الكل';
+	@override String get seeAll => 'عرض الكل';
 	@override String get popularNotes => 'الملاحظات الشائعة';
 	@override String get getStartedNow => 'ابدأ الآن';
-	@override String get expandWorld => 'وسع العالم بإضافة ما يذهلك. اختر اهتماماتك ودع الرحلة تبدأ';
+	@override String get expandWorld => 'وسع العالم بإضافة ما يثير إعجابك. اختر اهتماماتك ودع الرحلة تبدأ';
 	@override String get addInterests => 'إضافة اهتمامات';
 	@override String get manageInterests => 'إدارة الاهتمامات';
-	@override String get interests => 'اهتمامات';
+	@override String get interests => 'الاهتمامات';
 	@override String get yakihonneImprovements => 'تحسينات YakiHonne';
 	@override String get yakihonneNote => 'ملاحظة YakiHonne';
-	@override String get privacyNote => 'تطبيقنا يضمن أقصى درجات الخصوصية عبر تخزين البيانات الحساسة محلياً وبشكل آمن على أجهزة المستخدمين، باستخدام تشفير صارم. كن مطمئناً، نحن نلتزم بسياسة عدم المشاركة الصارمة، مما يضمن بقاء المعلومات الحساسة سرية ولا تغادر جهاز المستخدم أبداً.';
+	@override String get privacyNote => 'يضمن تطبيقنا أقصى درجة من الخصوصية من خلال تخزين البيانات الحساسة محليًا على أجهزة المستخدمين، مع استخدام تشفير صارم. كن مطمئنًا، نحن نلتزم بسياسة عدم مشاركة صارمة، مما يضمن بقاء المعلومات السرية سرية ولا تترك جهاز المستخدم أبدًا.';
 	@override String get pickYourMedia => 'اختر وسائطك';
-	@override String get uploadSendMedia => 'يمكنك رفع وإرسال الوسائط مباشرة بعد اختيارها أو التقاطها.';
-	@override String get noMessagesToDisplay => 'لا توجد رسائل للعرض.';
-	@override String get enableSecureDmsMessage => 'للمزيد من الأمان والخصوصية، فكر في تفعيل الرسائل المباشرة الآمنة.';
+	@override String get uploadSendMedia => 'يمكنك رفع وإرسال الوسائط فور اختيارها أو التقاطها.';
+	@override String get noMessagesToDisplay => 'لا رسائل لعرضها.';
+	@override String get enableSecureDmsMessage => 'لزيادة الأمان والخصوصية، فكر في تمكين الرسائل المباشرة الآمنة.';
 	@override String replyingTo({required Object name}) => 'الرد على: ${name}';
 	@override String get writeYourMessage => 'اكتب رسالة';
 	@override String get zap => 'زاب';
 	@override String get disableSecureDms => 'تعطيل الرسائل المباشرة الآمنة';
-	@override String get enableSecureDms => 'تفعيل الرسائل المباشرة الآمنة';
-	@override String get notUsingSecureDms => 'لم تعد تستخدم الرسائل المباشرة الآمنة';
-	@override String get usingSecureDms => 'أصبحت الآن تستخدم الرسائل المباشرة الآمنة';
+	@override String get enableSecureDms => 'تمكين الرسائل المباشرة الآمنة';
+	@override String get notUsingSecureDms => 'أنت لم تعد تستخدم الرسائل المباشرة الآمنة';
+	@override String get usingSecureDms => 'أنت الآن تستخدم الرسائل المباشرة الآمنة';
 	@override String get mute => 'كتم';
 	@override String get unmute => 'إلغاء الكتم';
 	@override String get muteUser => 'كتم المستخدم';
 	@override String get unmuteUser => 'إلغاء كتم المستخدم';
-	@override String muteUserDesc({required Object name}) => 'أنت على وشك كتم ${name}، هل تريد المتابعة؟';
-	@override String unmuteUserDesc({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل تريد المتابعة؟';
+	@override String muteUserDesc({required Object name}) => 'أنت على وشك كتم ${name}، هل ترغب في المتابعة؟';
+	@override String unmuteUserDesc({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل ترغب في المتابعة؟';
 	@override String get messageCopied => 'تم نسخ الرسالة بنجاح!';
 	@override String get messageNotDecrypted => 'لم يتم فك تشفير الرسالة بعد!';
 	@override String get reply => 'رد';
 	@override String get newMessage => 'رسالة جديدة';
-	@override String get searchNameNpub => 'البحث بالاسم أو npub أو nprofile';
-	@override String get searchByUserName => 'البحث باسم المستخدم';
+	@override String get searchNameNpub => 'البحث حسب الاسم، npub، nprofile';
+	@override String get searchByUserName => 'البحث حسب اسم المستخدم';
 	@override String get known => 'معروف';
 	@override String get unknown => 'غير معروف';
-	@override String get noMessageCanBeFound => 'لم يتم العثور على رسائل';
+	@override String get noMessageCanBeFound => 'لا يمكن العثور على رسائل';
 	@override String get you => 'أنت: ';
 	@override String get decrMessage => 'فك تشفير الرسالة';
-	@override String get gifs => 'صور متحركة';
+	@override String get gifs => 'جيفات';
 	@override String get stickers => 'ملصقات';
-	@override String get customizeYourFeed => 'خصص تدفقك';
-	@override String get feedOptions => 'خيارات التدفق';
+	@override String get customizeYourFeed => 'تخصيص تغذيتك';
+	@override String get feedOptions => 'خيارات التغذية';
 	@override String get recent => 'حديث';
 	@override String get recentWithReplies => 'حديث مع الردود';
-	@override String get explore => 'استكشف';
-	@override String get following => 'المتابَعون';
-	@override String get trending => 'الرائج';
-	@override String get highlights => 'النقاط البارزة';
+	@override String get explore => 'استكشاف';
+	@override String get following => 'المتابعة';
+	@override String get trending => 'شائع';
+	@override String get highlights => 'البارزات';
 	@override String get paid => 'مدفوع';
 	@override String get others => 'آخرون';
 	@override String get suggestionsBox => 'صندوق الاقتراحات';
-	@override String get showSuggestions => 'إظهار الاقتراحات';
-	@override String get showSuggestedPeople => 'إظهار الأشخاص المقترحين للمتابعة';
-	@override String get showArticlesNotesSuggestions => 'إظهار اقتراحات المقالات/الملاحظات';
-	@override String get showSuggestedInterests => 'إظهار الاهتمامات المقترحة';
+	@override String get showSuggestions => 'عرض الاقتراحات';
+	@override String get showSuggestedPeople => 'عرض الأشخاص المقترحين للمتابعة';
+	@override String get showArticlesNotesSuggestions => 'عرض اقتراحات المقالات/الملاحظات';
+	@override String get showSuggestedInterests => 'عرض الاهتمامات المقترحة';
 	@override String readTime({required Object time}) => '${time} دقيقة قراءة';
 	@override String get watchNow => 'شاهد الآن';
-	@override String get bookmark => 'مفضلة';
-	@override String get suggestions => 'اقتراحات';
+	@override String get bookmark => 'إشارة مرجعية';
+	@override String get suggestions => 'الاقتراحات';
 	@override String get hideSuggestions => 'إخفاء الاقتراحات';
 	@override String get enjoyExpOwnData => 'استمتع بتجربة امتلاك\nبياناتك الخاصة!';
 	@override String get signIn => 'تسجيل الدخول';
 	@override String get createAccount => 'إنشاء حساب';
-	@override String get byContinuing => 'بالمتابعة أنت توافق على\n';
+	@override String get byContinuing => 'بالاستمرار، أنت توافق على\n';
 	@override String get eula => 'اتفاقية ترخيص المستخدم النهائي (EULA)';
-	@override String get continueAsGuest => 'متابعة كضيف';
-	@override String get heyWelcomeBack => 'مرحباً،\nأهلاً\nبعودتك';
-	@override String get npubNsecHex => 'npub أو nsec أو hex';
+	@override String get continueAsGuest => 'الاستمرار كضيف';
+	@override String get heyWelcomeBack => 'مرحبًا،\nمرحبًا\nمرة أخرى';
+	@override String get npubNsecHex => 'npub، nsec أو hex';
 	@override String get useAmber => 'استخدام Amber';
-	@override String get setValidKey => 'تعيين مفتاح صحيح';
-	@override String get pasteYourKey => 'الصق مفتاحك';
-	@override String get taylorExperienceInterests => 'خصص تجربتك باختيار اهتماماتك الرئيسية';
-	@override String peopleCountPlus({required Object number}) => '+${number} شخص';
+	@override String get setValidKey => 'حدد مفتاحًا صالحًا';
+	@override String get pasteYourKey => 'لصق مفتاحك';
+	@override String get taylorExperienceInterests => 'خصص تجربتك باختيار أبرز اهتماماتك';
+	@override String peopleCountPlus({required Object number}) => '+${number} أشخاص';
 	@override String get followAll => 'متابعة الكل';
 	@override String get unfollowAll => 'إلغاء متابعة الكل';
 	@override String get details => 'التفاصيل';
 	@override String get shareGlimps => 'شارك لمحة عنك، بكلمات تبدو حقيقية.';
-	@override String get addCover => 'إضافة غلاف';
-	@override String get editCover => 'تعديل الغلاف';
+	@override String get addCover => 'إضافة غطاء';
+	@override String get editCover => 'تحرير الغطاء';
 	@override String get yourName => 'اسمك';
-	@override String get setProperName => 'تعيين اسم مناسب';
+	@override String get setProperName => 'حدد اسمًا مناسبًا';
 	@override String get aboutYou => 'عنك';
-	@override String get secKeyDesc => 'يمكنك العثور على المفتاح السري لحسابك في الإعدادات. هذا المفتاح ضروري لتأمين الوصول إلى حسابك. يرجى الاحتفاظ به آمناً وخاصاً.';
-	@override String get secKeyWalletDesc => 'يمكنك العثور على المفتاح السري لحسابك وسر الاتصال بالمحفظة في الإعدادات. هذه المفاتيح ضرورية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الاحتفاظ بها آمنة وخاصة.';
+	@override String get secKeyDesc => 'يمكنك العثور على مفتاح سر حسابك في إعداداتك. هذا المفتاح أساسي لتأمين الوصول إلى حسابك. يرجى الحفاظ عليه آمنًا وخاصًا.';
+	@override String get secKeyWalletDesc => 'يمكنك العثور على مفتاح سر حسابك وسر اتصال المحفظة في إعداداتك. هذه المفاتيح أساسية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الحفاظ عليها آمنة وخاصة.';
 	@override String get initializingAccount => 'تهيئة الحساب...';
-	@override String get letsGetStarted => 'لنبدأ!';
+	@override String get letsGetStarted => 'دعنا نبدأ!';
 	@override String get dontHaveWallet => 'ليس لديك محفظة؟';
-	@override String get createWalletSendRecSats => 'إنشاء محفظة لإرسال واستقبال الساتس';
+	@override String get createWalletSendRecSats => 'أنشئ محفظة لإرسال واستلام الساتوشي';
 	@override String get createWallet => 'إنشاء محفظة';
-	@override String get youreAllSet => 'أنت جاهز';
-	@override String get dashboard => 'لوحة القيادة';
+	@override String get youreAllSet => 'أنت جاهز تمامًا';
+	@override String get dashboard => 'لوحة التحكم';
 	@override String get verifyNotes => 'التحقق من الملاحظات';
 	@override String get settings => 'الإعدادات';
 	@override String get manageAccounts => 'إدارة الحسابات';
@@ -346,42 +346,42 @@ class TranslationsAr extends Translations {
 	@override String get switchAccounts => 'تبديل الحسابات';
 	@override String get addAccount => 'إضافة حساب';
 	@override String get logoutAllAccounts => 'تسجيل الخروج من جميع الحسابات';
-	@override String get search => 'البحث';
-	@override String get smartWidgets => 'الويدجت الذكية';
+	@override String get search => 'بحث';
+	@override String get smartWidgets => 'ودجيتات ذكية';
 	@override String get notifications => 'الإشعارات';
-	@override String get inbox => 'صندوق الوارد';
-	@override String get discover => 'اكتشف';
+	@override String get inbox => 'الصندوق الوارد';
+	@override String get discover => 'اكتشاف';
 	@override String get wallet => 'محفظة';
 	@override String get publicKey => 'المفتاح العام';
 	@override String get profileLink => 'رابط الملف الشخصي';
 	@override String get profileCopied => 'تم نسخ رابط الملف الشخصي! 👏';
 	@override String get publicKeyCopied => 'تم نسخ المفتاح العام! 👏';
-	@override String get lnCopied => 'تم نسخ عنوان lightning! 👏';
+	@override String get lnCopied => 'تم نسخ عنوان البرق! 👏';
 	@override String get scanQrCode => 'مسح رمز QR';
 	@override String get viewQrCode => 'عرض رمز QR';
-	@override String get copyNpub => 'نسخ npub';
+	@override String get copyNpub => 'نسخ المفتاح العام';
 	@override String get visitProfile => 'زيارة الملف الشخصي';
-	@override String get followMeOnNostr => 'تابعني على نوستر';
+	@override String get followMeOnNostr => 'تابعني على Nostr';
 	@override String get close => 'إغلاق';
 	@override String get loadingPreviousPosts => 'تحميل المنشورات السابقة...';
 	@override String get noRepliesDesc => 'لم يتم العثور على ردود لهذه الملاحظة';
-	@override String get thread => 'خيط';
+	@override String get thread => 'الخيط';
 	@override String get all => 'الكل';
 	@override String get mentions => 'الإشارات';
-	@override String get zaps => 'زابس';
-	@override String get noNotificationCanBeFound => 'لم يتم العثور على إشعارات';
-	@override String get consumablePointsPerks1 => '1- تقديم محتواك للتصديق';
+	@override String get zaps => 'الزابات';
+	@override String get noNotificationCanBeFound => 'لا يمكن العثور على إشعارات';
+	@override String get consumablePointsPerks1 => '1- إرسال محتواك للتصديق';
 	@override String get consumablePointsPerks2 => '2- استبدال النقاط لنشر ملاحظات مدفوعة';
-	@override String get consumablePointsPerks3 => '3- استبدال النقاط بـ SATs (يتم اختيار عتبات عشوائية وستُخطر كلما أصبح الاستبدال متاحاً)';
-	@override String get yakihonneConsPoints => 'نقاط YakiHonne القابلة للاستهلاك';
-	@override String get soonUsers => 'قريباً سيتمكن المستخدمون من استخدام النقاط القابلة للاستهلاك في مجموعة الأنشطة التالية:';
-	@override String get startEarningPoints => 'ابدأ في الكسب واستفد من نقاط Yaki الخاصة بك! 🎉';
+	@override String get consumablePointsPerks3 => '3- استبدال النقاط بالساتوشي (يتم اختيار عتبات عشوائية وستتم إخطارك عندما يكون الاستبدال متاحًا)';
+	@override String get yakihonneConsPoints => 'نقاط YakiHonne الاستهلاكية';
+	@override String get soonUsers => 'قريبًا سيتمكن المستخدمون من استخدام النقاط الاستهلاكية في مجموعة الأنشطة التالية:';
+	@override String get startEarningPoints => 'ابدأ في الكسب واستفد إلى أقصى حد من نقاط Yaki الخاصة بك! 🎉';
 	@override String get gotIt => 'فهمت!';
-	@override String get engagementChart => 'مخطط المشاركة';
+	@override String get engagementChart => 'رسم بياني للتفاعل';
 	@override String lastGained({required Object date}) => 'آخر كسب: ${date}';
 	@override String get attemptsRemained => 'المحاولات المتبقية ';
 	@override String get congratulations => 'تهانينا';
-	@override String congratsDesc({required Object number}) => 'تم مكافأتك بـ ${number} xp للإجراءات التالية، كن نشطاً واكسب المكافآت!';
+	@override String congratsDesc({required Object number}) => 'تم مكافأتك ${number} xp للإجراءات التالية، كن نشيطًا واكسب المكافآت!';
 	@override String get yakihonneChest => 'صندوق YakiHonne!';
 	@override String get noImGood => 'لا، أنا بخير';
 	@override String get points => 'النقاط';
@@ -390,324 +390,324 @@ class TranslationsAr extends Translations {
 	@override String get whatsThis => 'ما هذا؟';
 	@override String levelNumber({required Object number}) => 'المستوى ${number}';
 	@override String get pointsSystem => 'نظام النقاط';
-	@override String get oneTimeRewards => 'مكافآت لمرة واحدة';
+	@override String get oneTimeRewards => 'مكافآت مرة واحدة';
 	@override String get repeatedRewards => 'مكافآت متكررة';
-	@override String get consumablePoints => 'نقاط قابلة للاستهلاك';
-	@override String pointsRemaining({required Object number}) => '${number} متبقي';
+	@override String get consumablePoints => 'نقاط استهلاكية';
+	@override String pointsRemaining({required Object number}) => '${number} متبقية';
 	@override String get gain => 'كسب';
 	@override String forName({required Object name}) => 'لـ ${name}';
 	@override String get min => 'دقيقة';
 	@override String levelsRequiredNum({required Object number}) => '${number} مستويات مطلوبة';
-	@override String get seeMore => 'رؤية المزيد';
-	@override String get deleteCoverPic => 'حذف صورة الغلاف!';
-	@override String get deleteCoverPicDesc => 'أنت على وشك حذف صورة الغلاف، هل تريد المتابعة؟';
-	@override String get editProfile => 'تعديل الملف الشخصي';
+	@override String get seeMore => 'عرض المزيد';
+	@override String get deleteCoverPic => 'حذف صورة الغطاء!';
+	@override String get deleteCoverPicDesc => 'أنت على وشك حذف صورة غطاءك، هل ترغب في المتابعة؟';
+	@override String get editProfile => 'تحرير الملف الشخصي';
 	@override String get uploadingImage => 'رفع الصورة...';
 	@override String get updateProfile => 'تحديث الملف الشخصي';
 	@override String get userName => 'اسم المستخدم';
-	@override String get displayName => 'الاسم المعروض';
-	@override String get yourDisplayName => 'اسمك المعروض';
-	@override String get writeSomethingAboutYou => 'اكتب شيئاً عنك!';
-	@override String get website => 'موقع ويب';
-	@override String get yourWebsite => 'موقعك الإلكتروني';
-	@override String get verifyNip05 => 'عنوان نوستر المُتحقق منه (NIP 05)';
+	@override String get displayName => 'اسم العرض';
+	@override String get yourDisplayName => 'اسم عرضك';
+	@override String get writeSomethingAboutYou => 'اكتب شيئًا عنك!';
+	@override String get website => 'الموقع';
+	@override String get yourWebsite => 'موقعك';
+	@override String get verifyNip05 => 'عنوان Nostr الموثق (NIP 05)';
 	@override String get enterNip05 => 'أدخل عنوان NIP-05 الخاص بك';
 	@override String get enterLn => 'أدخل عنوان LUD-06 أو LUD-16 الخاص بك';
 	@override String get less => 'أقل';
 	@override String get more => 'أكثر';
 	@override String get pictureUrl => 'رابط الصورة';
-	@override String get coverUrl => 'رابط الغلاف';
-	@override String get enterPictureUrl => 'أدخل رابط صورتك';
-	@override String get enterCoverUrl => 'أدخل رابط غلافك';
+	@override String get coverUrl => 'رابط الغطاء';
+	@override String get enterPictureUrl => 'أدخل رابط صورك';
+	@override String get enterCoverUrl => 'أدخل رابط غطائك';
 	@override String userNoArticles({required Object name}) => '${name} ليس لديه مقالات';
 	@override String userNoCurations({required Object name}) => '${name} ليس لديه تنسيقات';
 	@override String userNoNotes({required Object name}) => '${name} ليس لديه ملاحظات';
 	@override String userNoVideos({required Object name}) => '${name} ليس لديه فيديوهات';
-	@override String get loadingFollowings => 'تحميل المتابَعين';
-	@override String get loadingFollowers => 'تحميل المتابِعين';
-	@override String followersNum({required Object number}) => '${number} متابع';
-	@override String get notFollowedByAnyoneYouFollow => 'غير متابَع من قِبل أي شخص تتابعه.';
+	@override String get loadingFollowings => 'تحميل المتابعين';
+	@override String get loadingFollowers => 'تحميل المتابعين';
+	@override String followersNum({required Object number}) => '${number} متابعين';
+	@override String get notFollowedByAnyoneYouFollow => 'غير متابع من قبل أي شخص تتابعه.';
 	@override String get mutuals => 'مشترك(ون)';
 	@override String mutualsNum({required Object number}) => '+ ${number} مشترك(ون)';
 	@override String get followsYou => 'يتابعك';
 	@override String get userNameCopied => 'تم نسخ اسم المستخدم بنجاح!';
-	@override String profileRelays({required Object number}) => 'مرحلات الملف الشخصي الموصى بها - ${number}';
-	@override String get noUserRelays => 'لم يتم العثور على مرحلات لهذا المستخدم.';
-	@override String userNoSmartWidgets({required Object name}) => '${name} ليس لديه ويدجت ذكية';
-	@override String get un1 => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد';
-	@override String get un1Desc => 'هذه التقييمات تُحسب مرتين لأنها غالباً ما تشير إلى الدعم للملاحظات التي اعتبرها آخرون مفيدة.';
-	@override String get un2 => 'ملاحظات بتقييمات جارية';
-	@override String get un2Desc => 'تقييمات على ملاحظات لا تحمل حالياً حالة مفيد أو غير مفيد';
-	@override String get unTextW1 => 'ملاحظات حصلت على حالة مفيد';
-	@override String get unTextW1Desc => 'هذه الملاحظات تُعرض الآن لكل من يرى المنشور، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.';
-	@override String get unTextR1 => 'تقييمات ساعدت ملاحظة في الحصول على حالة مفيد';
-	@override String get unTextR1Desc => 'هذه التقييمات حددت ملاحظات مفيدة تُعرض للجميع، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.';
-	@override String get unTextW2 => 'ملاحظات وصلت إلى حالة غير مفيد';
-	@override String get unTextW2Desc => 'هذه الملاحظات تم تقييمها كغير مفيدة من قِبل مساهمين كافيين، بما في ذلك أولئك الذين أحياناً لا يتفقون في تقييماتهم السابقة.';
-	@override String get unTextR2 => 'تقييمات ساعدت ملاحظة في الحصول على حالة غير مفيد';
-	@override String get unTextR2Desc => 'هذه التقييمات تحسن الملاحظات المُتحقق منها بإعطاء تغذية راجعة لمؤلفي الملاحظات، وتسمح للمساهمين بالتركيز على الملاحظات الأكثر واعدية';
-	@override String get unTextW3 => 'ملاحظات تحتاج لمزيد من التقييمات';
-	@override String get unTextW3Desc => 'ملاحظات لا تحمل بعد حالة مفيد أو غير مفيد.';
-	@override String get unTextR3 => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد';
-	@override String get unTextR3Desc => 'لا تقلق، الجميع لديه بعض منها! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيدة\' ليست مفيدة بما فيه الكفاية.';
+	@override String profileRelays({required Object number}) => 'الترحيلات الموصى بها للملف الشخصي - ${number}';
+	@override String get noUserRelays => 'لم يتم العثور على ترحيلات لهذا المستخدم.';
+	@override String userNoSmartWidgets({required Object name}) => '${name} ليس لديه ودجيتات ذكية';
+	@override String get un1 => 'تقييمات \'غير مفيد\' على ملاحظات انتهت بحالة \'مفيد\'';
+	@override String get un1Desc => 'يتم احتساب هذه التقييمات مرتين لأنها غالبًا ما تشير إلى دعم ملاحظات اعتبرها الآخرون مفيدة.';
+	@override String get un2 => 'ملاحظات مع تقييمات جارية';
+	@override String get un2Desc => 'تقييمات على ملاحظات لا تمتلك حاليًا حالة \'مفيد\' أو \'غير مفيد\'';
+	@override String get unTextW1 => 'ملاحظات حصلت على حالة \'مفيد\'';
+	@override String get unTextW1Desc => 'هذه الملاحظات تظهر الآن لكل من يرى المنشور، مضيفة سياقًا ومساعدة في الحفاظ على اطلاع الناس.';
+	@override String get unTextR1 => 'تقييمات ساعدت ملاحظة على الحصول على حالة \'مفيد\'';
+	@override String get unTextR1Desc => 'هذه التقييمات حددت ملاحظات مفيدة تظهر للجميع، مضيفة سياقًا ومساعدة في الحفاظ على اطلاع الناس.';
+	@override String get unTextW2 => 'ملاحظات وصلت إلى حالة \'غير مفيد\'';
+	@override String get unTextW2Desc => 'تم تقييم هذه الملاحظات \'غير مفيد\' من قبل عدد كافٍ من المساهمين، بما في ذلك الذين يختلفون أحيانًا في تقييماتهم السابقة.';
+	@override String get unTextR2 => 'تقييمات ساعدت ملاحظة على الحصول على حالة \'غير مفيد\'';
+	@override String get unTextR2Desc => 'هذه التقييمات تحسن الملاحظات الموثقة من خلال تقديم ردود فعل لكتاب الملاحظات، وتمكين المساهمين من التركيز على الملاحظات الأكثر وعدًا';
+	@override String get unTextW3 => 'ملاحظات تحتاج إلى تقييمات أكثر';
+	@override String get unTextW3Desc => 'ملاحظات ليس لديها بعد حالة \'مفيد\' أو \'غير مفيد\'.';
+	@override String get unTextR3 => 'تقييمات \'غير مفيد\' على ملاحظات انتهت بحالة \'مفيد\'';
+	@override String get unTextR3Desc => 'لا تقلق، الجميع يحصل على بعض هذه! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيد\' ليست مفيدة بما فيه الكفاية.';
 	@override String get refresh => 'تحديث';
 	@override String get userImpact => 'تأثير المستخدم';
-	@override String get userRelays => 'مرحلات المستخدم';
+	@override String get userRelays => 'ترحيلات المستخدم';
 	@override String get rewards => 'المكافآت';
-	@override String get noRewards => 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات مُتحقق منها للحصول عليها.';
+	@override String get noRewards => 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات موثقة للحصول عليها.';
 	@override String onDate({required Object date}) => 'في ${date}';
-	@override String get youHaveRated => 'لقد قيّمت';
+	@override String get youHaveRated => 'لقد قيمت';
 	@override String get theFollowingNote => 'الملاحظة التالية:';
 	@override String get youHaveLeftNote => 'لقد تركت ملاحظة على هذه الملاحظة المدفوعة:';
 	@override String get paidNoteLoading => 'تحميل الملاحظة المدفوعة';
 	@override String get yourNoteSealed => 'ملاحظتك التالية تم ختمها للتو:';
-	@override String get ratedNoteSealed => 'لقد قيّمت الملاحظة التالية التي تم ختمها:';
-	@override String claimTime({required Object time}) => 'المطالبة خلال ${time}';
-	@override String get claim => 'مطالبة';
-	@override String get requestInProgress => 'طلب قيد التقدم';
-	@override String get granted => 'ممنوح';
+	@override String get ratedNoteSealed => 'لقد قيمت الملاحظة التالية التي تم ختمها:';
+	@override String claimTime({required Object time}) => 'المطالبة في ${time}';
+	@override String get claim => 'المطالبة';
+	@override String get requestInProgress => 'الطلب جاري';
+	@override String get granted => 'تم منحها';
 	@override String get interested => 'مهتم';
 	@override String get notInterested => 'غير مهتم';
-	@override String get noResKeyword => 'لا توجد نتائج لهذه الكلمة المفتاحية';
-	@override String get noResKeywordDesc => 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، جرب استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.';
-	@override String get startSearchPeople => 'ابدأ في البحث عن الأشخاص';
-	@override String get startSearchContent => 'ابدأ في البحث عن المحتوى';
+	@override String get noResKeyword => 'لا نتيجة لهذا الكلمة المفتاحية';
+	@override String get noResKeywordDesc => 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، حاول استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.';
+	@override String get startSearchPeople => 'ابدأ البحث عن الأشخاص';
+	@override String get startSearchContent => 'ابدأ البحث عن المحتوى';
 	@override String get keys => 'المفاتيح';
 	@override String get myPublicKey => 'مفتاحي العام';
 	@override String get mySecretKey => 'مفتاحي السري';
-	@override String get show => 'إظهار';
-	@override String get showSecret => 'إظهار المفتاح السري!';
-	@override String get showSecretDesc => 'تأكد من الاحتفاظ به آمناً لأنه يعطي وصولاً كاملاً لحسابك.';
-	@override String get usingExternalSign => 'استخدام موقع خارجي';
-	@override String get usingExternalSignDesc => 'أنت تستخدم موقعاً خارجياً';
+	@override String get show => 'عرض';
+	@override String get showSecret => 'عرض المفتاح السري!';
+	@override String get showSecretDesc => 'تأكد من الحفاظ عليه آمنًا حيث يمنح الوصول الكامل إلى حسابك.';
+	@override String get usingExternalSign => 'استخدام توقيع خارجي';
+	@override String get usingExternalSignDesc => 'أنت تستخدم توقيعًا خارجيًا';
 	@override String get privKeyCopied => 'تم نسخ المفتاح الخاص! 👏';
 	@override String get muteList => 'قائمة الكتم';
-	@override String get noMutedUserFound => 'لم يتم العثور على مستخدمين مكتومين.';
-	@override String get searchRelay => 'البحث عن مرحل';
+	@override String get noMutedUserFound => 'لم يتم العثور على مستخدمين مكتمين.';
+	@override String get searchRelay => 'بحث عن ترحيل';
 	@override String get deleteAccount => 'حذف الحساب';
-	@override String get clearAppCache => 'مسح ذاكرة التطبيق المؤقتة';
-	@override String get clearAppCacheDesc => 'أنت على وشك مسح ذاكرة التطبيق المؤقتة، هل تريد المتابعة؟';
+	@override String get clearAppCache => 'مسح كاش التطبيق';
+	@override String get clearAppCacheDesc => 'أنت على وشك مسح كاش التطبيق، هل ترغب في المتابعة؟';
 	@override String get clear => 'مسح';
 	@override String get fontSize => 'حجم الخط';
-	@override String get appTheme => 'سمة التطبيق';
-	@override String get contentModeration => 'إشراف المحتوى';
-	@override String get mediaUploader => 'رافع الوسائط';
+	@override String get appTheme => 'ثيم التطبيق';
+	@override String get contentModeration => 'الإشراف على المحتوى';
+	@override String get mediaUploader => 'رفع الوسائط';
 	@override String get secureDirectMessaging => 'الرسائل المباشرة الآمنة';
 	@override String get customization => 'التخصيص';
-	@override String get hfCustomization => 'تخصيص تدفق الصفحة الرئيسية';
-	@override String get newPostGesture => 'إيماءة الضغط المطول للمنشور الجديد';
+	@override String get hfCustomization => 'تخصيص تغذية الرئيسية';
+	@override String get newPostGesture => 'إيماءة الضغط الطويل للمنشور الجديد';
 	@override String get profilePreview => 'معاينة الملف الشخصي';
-	@override String relaySettings({required Object number}) => 'إعدادات المرحل ${number}';
+	@override String relaySettings({required Object number}) => 'إعدادات الترحيل ${number}';
 	@override String get yakihonne => 'YakiHonne';
-	@override String get wallets => 'محافظ';
+	@override String get wallets => 'المحافظ';
 	@override String get addWallet => 'إضافة محفظة';
 	@override String get externalWallet => 'محفظة خارجية';
 	@override String get yakiChest => 'صندوق Yaki';
 	@override String get connected => 'متصل';
 	@override String get connect => 'اتصال';
 	@override String get owner => 'المالك';
-	@override String get contact => 'جهة الاتصال';
-	@override String get software => 'البرنامج';
-	@override String get version => 'النسخة';
-	@override String get supportedNips => 'Nips المدعومة';
-	@override String get instantConntect => 'اتصال فوري بالمرحل';
-	@override String get invalidRelayUrl => 'رابط مرحل غير صحيح';
-	@override String get relays => 'المرحلات';
+	@override String get contact => 'الاتصال';
+	@override String get software => 'البرمجيات';
+	@override String get version => 'الإصدار';
+	@override String get supportedNips => 'NIPs المدعومة';
+	@override String get instantConntect => 'اتصال فوري بالترحيل';
+	@override String get invalidRelayUrl => 'رابط ترحيل غير صالح';
+	@override String get relays => 'الترحيلات';
 	@override String get readOnly => 'قراءة فقط';
 	@override String get writeOnly => 'كتابة فقط';
 	@override String get readWrite => 'قراءة/كتابة';
 	@override String get defaultKey => 'افتراضي';
 	@override String get viewProfile => 'عرض الملف الشخصي';
 	@override String get appearance => 'المظهر';
-	@override String get untitled => 'بدون عنوان';
-	@override String get smartWidgetChecker => 'فاحص الويدجت الذكية';
+	@override String get untitled => 'غير معنون';
+	@override String get smartWidgetChecker => 'مدقق الودجيت الذكي';
 	@override String get naddr => 'naddr';
-	@override String get noComponentsDisplayed => 'لا يمكن عرض مكونات';
+	@override String get noComponentsDisplayed => 'لا يمكن عرض المكونات';
 	@override String get metadata => 'البيانات الوصفية';
 	@override String get createdAt => 'تم الإنشاء في';
 	@override String get identifier => 'المعرف';
-	@override String get enterSMaddr => 'أدخل naddr ويدجت ذكية للتحقق من صحتها.';
-	@override String get notFindSMwithAddr => 'لا يمكن العثور على ويدجت ذكية بهذا العنوان';
-	@override String get unableToOpenUrl => 'غير قادر على فتح الرابط';
+	@override String get enterSMaddr => 'أدخل naddr ودجيت ذكي للتحقق من صلاحيته.';
+	@override String get notFindSMwithAddr => 'تعذر العثور على ودجيت ذكي بهذا العنوان';
+	@override String get unableToOpenUrl => 'تعذر فتح الرابط';
 	@override String get voteToSeeStats => 'يجب أن تصوت لتتمكن من رؤية الإحصائيات';
-	@override String get votesByZaps => 'الأصوات بالزابس';
-	@override String get votesByUsers => 'الأصوات بالمستخدمين';
+	@override String get votesByZaps => 'الأصوات عبر الزابات';
+	@override String get votesByUsers => 'الأصوات من المستخدمين';
 	@override String get alreadyVoted => 'لقد صوتت بالفعل في هذا الاستطلاع';
-	@override String get userCannotBeFound => 'لا يمكن العثور على المستخدم';
+	@override String get userCannotBeFound => 'تعذر العثور على المستخدم';
 	@override String votesNumber({required Object number}) => 'الأصوات: ${number}';
 	@override String get voteRequired => 'التصويت مطلوب لعرض الإحصائيات.';
-	@override String get showStats => 'إظهار الإحصائيات';
-	@override String pollClosesAt({required Object date}) => 'يُغلق في: ${date}';
-	@override String pollClosedAt({required Object date}) => 'أُغلق في: ${date}';
-	@override String get checkSmartWidget => 'فحص ويدجت ذكية';
-	@override String get emptyVerifiedNote => 'محتوى ملاحظة مُتحقق منها فارغ!';
+	@override String get showStats => 'عرض الإحصائيات';
+	@override String pollClosesAt({required Object date}) => 'يغلق في: ${date}';
+	@override String pollClosedAt({required Object date}) => 'أغلق في: ${date}';
+	@override String get checkSmartWidget => 'التحقق من ودجيت ذكي';
+	@override String get emptyVerifiedNote => 'محتوى ملاحظة موثقة فارغ!';
 	@override String get post => 'نشر';
 	@override String get seeAnything => 'ترى أي شيء تريد تحسينه؟';
-	@override String get writeNote => 'كتابة ملاحظة';
+	@override String get writeNote => 'اكتب ملاحظة';
 	@override String get whatThinkThis => 'ما رأيك في هذا؟';
 	@override String get sourceRecommended => 'المصدر (موصى به)';
-	@override String get findPaidNoteCorrect => 'تجد هذه الملاحظة المدفوعة صحيحة.';
-	@override String get findPaidNoteMisleading => 'تجد هذه الملاحظة المدفوعة مضللة.';
-	@override String get selectOneReason => 'اختر سبباً واحداً على الأقل';
-	@override String get rateHelpful => 'تقييم كمفيد';
-	@override String get rateNotHelpful => 'تقييم كغير مفيد';
-	@override String get ratedHelpful => 'مُقيم كمفيد';
-	@override String get ratedNotHelpful => 'مُقيم كغير مفيد';
-	@override String get youRatedHelpful => 'قيّمت هذا كمفيد';
-	@override String get youRatedNotHelpful => 'قيّمت هذا كغير مفيد';
-	@override String get findThisHelpful => 'هل تجد هذا مفيداً؟';
-	@override String get findThisNotHelpful => 'هل تجد هذا غير مفيد؟';
-	@override String get setYourRating => 'تعيين تقييمك';
+	@override String get findPaidNoteCorrect => 'ترى هذه الملاحظة المدفوعة صحيحة.';
+	@override String get findPaidNoteMisleading => 'ترى هذه الملاحظة المدفوعة مضللة.';
+	@override String get selectOneReason => 'اختر سببًا واحدًا على الأقل';
+	@override String get rateHelpful => 'تقييم مفيد';
+	@override String get rateNotHelpful => 'تقييم غير مفيد';
+	@override String get ratedHelpful => 'تم التقييم مفيد';
+	@override String get ratedNotHelpful => 'تم التقييم غير مفيد';
+	@override String get youRatedHelpful => 'قيمت هذا كمفيد';
+	@override String get youRatedNotHelpful => 'قيمت هذا كغير مفيد';
+	@override String get findThisHelpful => 'هل ترى هذا مفيدًا؟';
+	@override String get findThisNotHelpful => 'هل ترى هذا غير مفيد؟';
+	@override String get setYourRating => 'حدد تقييمك';
 	@override String get whatThinkOfThat => 'ما رأيك في ذلك؟';
-	@override String get changeRatingNote => 'ملاحظة: تغيير تقييمك سيكون صالحاً لمدة 5 دقائق فقط، بعد ذلك لن تعود لديك خيار التراجع أو التغيير.';
+	@override String get changeRatingNote => 'ملاحظة: تغيير تقييمك سيكون صالحًا لمدة 5 دقائق فقط، بعد ذلك لن تتمكن من التراجع أو تغييره.';
 	@override String get paidNote => 'ملاحظة مدفوعة';
 	@override String get undo => 'تراجع';
 	@override String get undoRating => 'تراجع عن التقييم';
-	@override String get undoRatingDesc => 'أنت على وشك التراجع عن تقييمك، هل تريد المتابعة؟';
-	@override String get seeAllAttempts => 'رؤية جميع المحاولات';
+	@override String get undoRatingDesc => 'أنت على وشك التراجع عن تقييمك، هل ترغب في المتابعة؟';
+	@override String get seeAllAttempts => 'عرض جميع المحاولات';
 	@override String get addNote => 'إضافة ملاحظة';
 	@override String get alreadyContributed => 'لقد ساهمت بالفعل';
 	@override String get notesFromCommunity => 'ملاحظات من المجتمع';
-	@override String get noCommunityNotes => 'هادئ هنا! لا توجد ملاحظات مجتمعية بعد.';
+	@override String get noCommunityNotes => 'هادئ هنا! لا ملاحظات من المجتمع بعد.';
 	@override String get notHelpful => 'غير مفيد';
 	@override String get sealed => 'مختوم';
 	@override String get notSealed => 'غير مختوم';
-	@override String get notSealedYet => 'لم يُختم بعد';
-	@override String get needsMoreRating => 'يحتاج لمزيد من التقييمات';
+	@override String get notSealedYet => 'غير مختوم بعد';
+	@override String get needsMoreRating => 'يحتاج إلى تقييمات أكثر';
 	@override String get source => 'المصدر';
 	@override String get thisNoteAwaitRating => 'هذه الملاحظة تنتظر تقييم المجتمع.';
 	@override String get yourNoteAwaitRating => 'هذه الملاحظة تنتظر تقييم المجتمع.';
-	@override String get topReasonsSelected => 'الأسباب الرئيسية المختارة من قِبل المقيمين:';
+	@override String get topReasonsSelected => 'الأسباب الرئيسية المختارة من قبل المقيمين:';
 	@override String get noReasonsSpecified => 'لم يتم تحديد أسباب!';
-	@override String postedOn({required Object date}) => 'نُشر في ${date}';
+	@override String postedOn({required Object date}) => 'نشر في ${date}';
 	@override String get explanation => 'التفسير';
 	@override String get readAboutVerifyingNotes => 'اقرأ عن التحقق من الملاحظات';
-	@override String get readAboutVerifyingNotesDesc => 'لقد كتبنا مقالاً لمساعدتك في فهم هدفنا';
-	@override String get readArticle => 'قراءة المقال';
-	@override String get whyVerifyingNotes => 'لماذا التحقق من الملاحظات؟';
-	@override String get contributeUnderstanding => 'المساهمة في بناء الفهم';
-	@override String get actGoodFaith => 'التصرف بنية حسنة';
-	@override String get beHelpful => 'كن مفيداً، حتى لأولئك الذين يختلفون';
-	@override String get readMore => 'قراءة المزيد';
+	@override String get readAboutVerifyingNotesDesc => 'كتبنا مقالة لمساعدتك على فهم هدفنا';
+	@override String get readArticle => 'قراءة المقالة';
+	@override String get whyVerifyingNotes => 'لماذا نتحقق من الملاحظات؟';
+	@override String get contributeUnderstanding => 'ساهم في بناء الفهم';
+	@override String get actGoodFaith => 'تصرف بحسن نية';
+	@override String get beHelpful => 'كن مفيدًا، حتى لمن لا يوافقون';
+	@override String get readMore => 'اقرأ المزيد';
 	@override String get newKey => 'جديد';
 	@override String get needsYourHelp => 'يحتاج مساعدتك';
 	@override String get communityWallet => 'محفظة المجتمع';
 	@override String get noPaidNotesCanBeFound => 'لم يتم العثور على ملاحظات مدفوعة.';
 	@override String get updatesNews => 'أخبار التحديثات';
 	@override String get updates => 'التحديثات';
-	@override String get toBeAbleSendSats => 'لتتمكن من إرسال الزابس، يرجى التأكد من ربط محفظة bitcoin lightning الخاصة بك.';
-	@override String get receiveSats => 'استقبال الساتس';
-	@override String get messageOptional => 'رسالة (اختيارية)';
-	@override String get amountInSats => 'المبلغ بالساتس';
+	@override String get toBeAbleSendSats => 'لإرسال زابات، قم بتوصيل محفظة Bitcoin Lightning الخاصة بك.';
+	@override String get receiveSats => 'استلام الساتوشي';
+	@override String get messageOptional => 'رسالة (اختياري)';
+	@override String get amountInSats => 'المبلغ في ساتوشي';
 	@override String get invoiceCopied => 'تم نسخ كود الفاتورة!';
 	@override String get copyInvoice => 'نسخ الفاتورة';
-	@override String get ensureLnSet => 'تأكد من تعيين عنوان lightning بشكل صحيح';
-	@override String get errorGeneratingInvoice => 'حدث خطأ أثناء توليد الفاتورة';
-	@override String get generateInvoice => 'توليد فاتورة';
+	@override String get ensureLnSet => 'تأكد من أن عنوان Lightning الخاص بك مضبوط بشكل صحيح';
+	@override String get errorGeneratingInvoice => 'خطأ في إنشاء الفاتورة';
+	@override String get generateInvoice => 'إنشاء فاتورة';
 	@override String get qrCode => 'رمز QR';
 	@override String get scanPay => 'مسح ودفع';
 	@override String get slideToPay => 'اسحب للدفع';
-	@override String get invalidInvoice => 'فاتورة غير صحيحة';
-	@override String get invalidInvoiceDesc => 'يبدو أن الفاتورة الممسوحة غير صحيحة، أعد المسح وحاول مرة أخرى.';
+	@override String get invalidInvoice => 'فاتورة غير صالحة';
+	@override String get invalidInvoiceDesc => 'يبدو أن الفاتورة الممسوحة غير صالحة، حاول مرة أخرى.';
 	@override String get scanAgain => 'مسح مرة أخرى';
-	@override String get sendSats => 'إرسال ساتس';
+	@override String get sendSats => 'إرسال ساتوشي';
 	@override String get send => 'إرسال';
-	@override String get recentTransactions => 'المعاملات الحديثة';
+	@override String get recentTransactions => 'المعاملات الأخيرة';
 	@override String get noTransactionCanBeFound => 'لم يتم العثور على معاملات';
-	@override String get selectWalletTransactions => 'اختر محفظة للحصول على آخر المعاملات.';
+	@override String get selectWalletTransactions => 'اختر محفظة لعرض المعاملات الأخيرة.';
 	@override String get noUserCanBeFound => 'لم يتم العثور على مستخدمين.';
 	@override String get balance => 'الرصيد';
-	@override String get noLnInNwc => 'لم نتمكن من الحصول على عنوانك من سر NWC الخاص بك، يرجى التحقق من مزود خدمة عنوان lightning لنسخ عنوانك أو لتحديث ملفك الشخصي وفقاً لذلك.';
-	@override String get copyLn => 'نسخ عنوان lightning';
-	@override String get receive => 'استقبال';
+	@override String get noLnInNwc => 'تعذر الحصول على عنوانك من سر NWC، تحقق من مزود عنوان Lightning الخاص بك، انسخ العنوان أو قم بتحديث الملف الشخصي وفقًا لذلك.';
+	@override String get copyLn => 'نسخ عنوان Lightning';
+	@override String get receive => 'استلام';
 	@override String get clickBelowToConnect => 'انقر أدناه للاتصال';
-	@override String get connectWithNwc => 'الاتصال بـ NWC';
+	@override String get connectWithNwc => 'الاتصال عبر NWC';
 	@override String get pasteNwcAddress => 'لصق عنوان NWC';
 	@override String get createYakiWallet => 'إنشاء محفظة YakiHonne';
-	@override String get yakiNwc => 'NWC الخاص بـ YakiHonne';
-	@override String get yakiNwcDesc => 'إنشاء محفظة باستخدام قناة YakiHonne';
-	@override String get orUseYourWallet => 'أو استخدم محفظتك';
-	@override String get nostrWalletConnect => 'اتصال محفظة نوستر';
-	@override String get nostrWalletConnectDesc => 'اتصال محفظة نوستر الأصلية';
+	@override String get yakiNwc => 'NWC YakiHonne';
+	@override String get yakiNwcDesc => 'إنشاء محفظة عبر قناة YakiHonne';
+	@override String get orUseYourWallet => 'أو استخدم محفظتك الخاصة';
+	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
+	@override String get nostrWalletConnectDesc => 'اتصال محفظة Nostr الأصلي';
 	@override String get alby => 'Alby';
 	@override String get albyConnect => 'اتصال Alby';
-	@override String get walletDataNote => 'ملاحظة: جميع البيانات المتعلقة بمحفظتك ستُخزن بأمان وحماية محلياً ولن تُشارك خارج حدود التطبيق أبداً.';
+	@override String get walletDataNote => 'ملاحظة: جميع البيانات المتعلقة بمحفظتك مخزنة بشكل آمن محليًا ولا تترك التطبيق أبدًا.';
 	@override String get availableWallets => 'المحافظ المتاحة';
-	@override String get noWalletLinkedToYouProfile => 'ليس لديك محفظة مربوطة بملفك الشخصي.';
-	@override String get noWalletConnectedToYourProfile => 'لا توجد محافظ متصلة مربوطة بملفك الشخصي.';
+	@override String get noWalletLinkedToYouProfile => 'ليس لديك محفظة مرتبطة بملفك الشخصي.';
+	@override String get noWalletConnectedToYourProfile => 'لا توجد محافظ متصلة مرتبطة بملفك الشخصي.';
 	@override String get click => 'انقر';
-	@override String get onSelectedWalletLinkIt => 'على محفظتك المختارة واربطها.';
+	@override String get onSelectedWalletLinkIt => 'على المحفظة المختارة وربطها.';
 	@override String get noWalletCanBeFound => 'لم يتم العثور على محفظة';
-	@override String get currentlyLinkedMessage => 'مربوطة حالياً بملفك الشخصي لاستقبال الزابس';
-	@override String get linked => 'مربوط';
+	@override String get currentlyLinkedMessage => 'مرتبط حاليًا بملفك الشخصي لاستلام الزابات';
+	@override String get linked => 'مرتبط';
 	@override String get linkWallet => 'ربط المحفظة';
-	@override String get linkWalletDesc => 'أنت على وشك استبدال محفظتك السابقة وربط محفظة جديدة بملفك الشخصي، هل تريد المتابعة؟';
+	@override String get linkWalletDesc => 'أنت على وشك استبدال المحفظة السابقة وربط محفظة جديدة بملفك الشخصي، هل ترغب في المتابعة؟';
 	@override String get copyNwc => 'نسخ NWC';
 	@override String get nwcCopied => 'تم نسخ NWC بنجاح!';
 	@override String get deleteWallet => 'حذف المحفظة';
-	@override String get deleteWalletDesc => 'أنت على وشك حذف هذه المحفظة، هل تريد المتابعة؟';
-	@override String userSentSat({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتس';
-	@override String userReceivedSat({required Object name, required Object number}) => '${name} استقبل منك ${number} ساتس';
-	@override String ownSentSat({required Object number}) => 'أرسلت ${number} ساتس';
-	@override String ownReceivedSat({required Object number}) => 'استقبلت ${number} ساتس';
+	@override String get deleteWalletDesc => 'أنت على وشك حذف هذه المحفظة، هل ترغب في المتابعة؟';
+	@override String userSentSat({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتوشي';
+	@override String userReceivedSat({required Object name, required Object number}) => '${name} استلم منك ${number} ساتوشي';
+	@override String ownSentSat({required Object number}) => 'أرسلت ${number} ساتوشي';
+	@override String ownReceivedSat({required Object number}) => 'استلمت ${number} ساتوشي';
 	@override String get comment => 'تعليق';
 	@override String get supportYakihonne => 'دعم YakiHonne';
-	@override String get fuelYakihonne => 'ادعم نمو YakiHonne! دعمك يدفع المزايا الجديدة وتجربة أفضل للجميع.';
-	@override String get supportUs => '❤︎ ادعمنا';
-	@override String get peopleToFollow => 'أشخاص للمتابعة';
+	@override String get fuelYakihonne => 'دعم نمو YakiHonne! دعمك يفتح ميزات جديدة ويحسن التجربة للجميع.';
+	@override String get supportUs => '❤︎ دعمنا';
+	@override String get peopleToFollow => 'من يتابع';
 	@override String get donations => 'التبرعات';
 	@override String inTag({required Object name}) => 'في ${name}';
 	@override String get shareProfile => 'مشاركة الملف الشخصي';
-	@override String get shareProfileDesc => 'شارك ملفك الشخصي للوصول لمزيد من الناس والتواصل مع آخرين وتنمية شبكتك';
+	@override String get shareProfileDesc => 'شارك ملفك الشخصي للوصول إلى المزيد من الناس، العثور على أشخاص متشابهين وتوسيع الشبكة';
 	@override String get moreDots => 'المزيد...';
 	@override String get comments => 'التعليقات';
 	@override String get noCommentsCanBeFound => 'لم يتم العثور على تعليقات';
 	@override String get beFirstCommentThisVideo => 'كن أول من يعلق على هذا الفيديو!';
-	@override String get errorLoadingVideo => 'خطأ أثناء تحميل الفيديو';
-	@override String get seeAlso => 'انظر أيضاً';
-	@override String viewsNumber({required Object number}) => '${number} مشاهدة';
-	@override String get upvotes => 'أصوات إيجابية';
-	@override String get downvotes => 'أصوات سلبية';
+	@override String get errorLoadingVideo => 'خطأ في تحميل الفيديو';
+	@override String get seeAlso => 'انظر أيضًا';
+	@override String viewsNumber({required Object number}) => '${number} عرض';
+	@override String get upvotes => 'إعجابات';
+	@override String get downvotes => 'عدم إعجاب';
 	@override String get views => 'المشاهدات';
-	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'تم الإنشاء في ${date1}، تم التعديل في ${date2}';
+	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'تم الإنشاء ${date1}، تم التعديل ${date2}';
 	@override String get loading => 'تحميل';
-	@override String get releaseToLoad => 'اتركه لتحميل المزيد';
+	@override String get releaseToLoad => 'أطلق للتحميل';
 	@override String get finished => 'انتهى!';
-	@override String get noMoreData => 'لا توجد بيانات أخرى';
+	@override String get noMoreData => 'لا مزيد من البيانات';
 	@override String get refreshed => 'تم التحديث';
-	@override String get refreshing => 'جاري التحديث';
+	@override String get refreshing => 'التحديث';
 	@override String get pullToRefresh => 'اسحب للتحديث';
-	@override String get suggestedInterests => 'اهتمامات مقترحة';
+	@override String get suggestedInterests => 'الاهتمامات المقترحة';
 	@override String get reveal => 'كشف';
-	@override String get wantToShareRevenues => 'أريد مشاركة هذه الإيرادات';
+	@override String get wantToShareRevenues => 'أريد مشاركة الإيرادات';
 	@override String get splitRevenuesWithUsers => 'تقسيم الإيرادات مع المستخدمين';
 	@override String get addUser => 'إضافة مستخدم';
-	@override String get selectAdate => 'اختيار تاريخ';
+	@override String get selectAdate => 'اختر تاريخًا';
 	@override String get clearDate => 'مسح التاريخ';
-	@override String get nothingToShowHere => 'أوبس! لا شيء للعرض هنا!';
+	@override String get nothingToShowHere => 'عفوًا! لا شيء هنا!';
 	@override String get confirmPayment => 'تأكيد الدفع';
-	@override String get payWithNwc => 'الدفع بـ NWC';
+	@override String get payWithNwc => 'الدفع عبر NWC';
 	@override String get important => 'مهم';
 	@override String get adjustVolume => 'ضبط الصوت';
 	@override String get adjustSpeed => 'ضبط السرعة';
 	@override String get updateInterests => 'تحديث الاهتمامات';
-	@override String get usingViewMode => 'أنت تستخدم وضع العرض';
-	@override String get usingViewModeDesc => 'سجل الدخول بمفتاحك الخاص وانضم للمجتمع.';
-	@override String get noInternetAccess => 'لا يوجد وصول للإنترنت';
+	@override String get usingViewMode => 'أنت في وضع العرض';
+	@override String get usingViewModeDesc => 'سجل الدخول بمفتاح خاص وانضم إلى المجتمع.';
+	@override String get noInternetAccess => 'لا يوجد وصول إلى الإنترنت';
 	@override String get checkModelRouter => 'تحقق من المودم أو الراوتر';
 	@override String get reconnectWifi => 'إعادة الاتصال بالواي فاي';
 	@override String get somethingWentWrong => 'حدث خطأ ما!';
-	@override String get somethingWentWrongDesc => 'يبدو أن شيئاً حدث أثناء تحميل البيانات، حاول مرة أخرى!';
+	@override String get somethingWentWrongDesc => 'يبدو أن خطأ حدث أثناء تحميل البيانات، حاول مرة أخرى!';
 	@override String get tryAgain => 'حاول مرة أخرى';
-	@override String get postNotFound => 'لم يتم العثور على المنشور';
+	@override String get postNotFound => 'المنشور غير موجود';
 	@override String get user => 'مستخدم';
 	@override String get view => 'عرض';
-	@override String get itsLive => 'إنه مباشر!';
-	@override String get spreadWordSharingContent => 'انشر الكلمة بمشاركة محتواك في كل مكان.';
-	@override String get successfulRelays => 'المرحلات الناجحة';
-	@override String get noRelaysCanBeFound => 'لم يتم العثور على مرحلات';
-	@override String get dismiss => 'تجاهل';
-	@override String get deleteAccountMessage => 'أنت تحاول تسجيل الدخول إلى حساب محذوف.';
+	@override String get itsLive => 'هو مباشر!';
+	@override String get spreadWordSharingContent => 'نشر الكلمة من خلال مشاركة المحتوى في كل مكان.';
+	@override String get successfulRelays => 'الترحيلات الناجحة';
+	@override String get noRelaysCanBeFound => 'لم يتم العثور على ترحيلات';
+	@override String get dismiss => 'رفض';
+	@override String get deleteAccountMessage => 'أنت تحاول الدخول إلى حساب محذوف.';
 	@override String get exit => 'خروج';
 	@override String get shareContent => 'مشاركة المحتوى';
 	@override String get profile => 'الملف الشخصي';
@@ -717,417 +717,418 @@ class TranslationsAr extends Translations {
 	@override String get shareNoteId => 'مشاركة معرف الملاحظة';
 	@override String get shareNprofile => 'مشاركة nprofile';
 	@override String get shareNaddr => 'مشاركة naddr';
-	@override String bio({required Object content}) => 'النبذة: ${content}';
-	@override String get earnSats => 'كسب SATs';
-	@override String get earnSatsDesc => 'ساعدنا في توفير رؤى لامركزية أكثر لمراجعة هذه الملاحظة المدفوعة.';
+	@override String bio({required Object content}) => 'السيرة: ${content}';
+	@override String get earnSats => 'كسب ساتوشي';
+	@override String get earnSatsDesc => 'ساعدنا في تقديم المزيد من البيانات اللامركزية للتحقق من هذه الملاحظة المدفوعة.';
 	@override String get verifyingNote => 'التحقق من الملاحظة';
-	@override String get pickYourImage => 'اختر صورتك';
-	@override String get uploadPasteUrl => 'يمكنك الرفع أو لصق رابط لصورتك المفضلة';
-	@override String get back => 'رجوع';
+	@override String get pickYourImage => 'اختر صورك';
+	@override String get uploadPasteUrl => 'يمكنك رفع أو لصق URL للصورة المفضلة';
+	@override String get back => 'عودة';
 	@override String get camera => 'الكاميرا';
-	@override String get communityWidgets => 'ويدجت المجتمع';
-	@override String get myWidgets => 'ويدجتي';
+	@override String get communityWidgets => 'ودجيتات المجتمع';
+	@override String get myWidgets => 'ودجيتاتي';
 	@override String get pendingUnfollowing => 'إلغاء المتابعة...';
-	@override String get pendingFollowing => 'المتابعة...';
-	@override String get zappers => 'الزابرز';
-	@override String get noZappersCanBeFound => 'لم يتم العثور على زابرز.';
+	@override String get pendingFollowing => 'متابعة...';
+	@override String get zappers => 'الزابون';
+	@override String get noZappersCanBeFound => 'لم يتم العثور على زابون.';
 	@override String get payPublish => 'دفع ونشر';
-	@override String get payPublishNote => 'ملاحظة: تأكد من أن جميع المحتوى الذي قدمته نهائي لأن النشر يُعتبر غير قابل للإرجاع والساتس المُنفقة غير قابلة للاسترداد.';
+	@override String get payPublishNote => 'ملاحظة: تأكد من أن جميع المحتويات المقدمة نهائية، حيث أن النشر غير قابل للعكس، والساتوشي المصروفة غير مستردة.';
 	@override String userSubmittedPaidNote({required Object name}) => '${name} قدم ملاحظة مدفوعة';
 	@override String get getInvoice => 'الحصول على فاتورة';
 	@override String get pay => 'دفع';
 	@override String get compose => 'تأليف';
-	@override String get writeSomething => 'اكتب شيئاً...';
-	@override String get highlightedNote => 'ملاحظة مُبرزة للمزيد من التعرض.';
-	@override String get typeValidZapQuestion => 'اكتب سؤال استطلاع صحيح!';
+	@override String get writeSomething => 'اكتب شيئًا...';
+	@override String get highlightedNote => 'ملاحظة مميزة لزيادة الرؤية.';
+	@override String get typeValidZapQuestion => 'أدخل سؤال استطلاع زاب صالح!';
 	@override String get pollOptions => 'خيارات الاستطلاع';
-	@override String get minimumSatoshis => 'الحد الأدنى من الساتوشيس';
-	@override String get minSats => 'أقل ساتس';
-	@override String get maxSats => 'أكثر ساتس';
-	@override String get maximumSatoshis => 'الحد الأقصى من الساتوشيس';
+	@override String get minimumSatoshis => 'الحد الأدنى للساتوشي';
+	@override String get minSats => 'حد أدنى ساتوشي';
+	@override String get maxSats => 'حد أقصى ساتوشي';
+	@override String get maximumSatoshis => 'الحد الأقصى للساتوشي';
 	@override String get pollCloseDate => 'تاريخ إغلاق الاستطلاع';
 	@override String optionsNumber({required Object number}) => 'الخيارات: ${number}';
-	@override String get zapSplits => 'تقسيمات الزاب';
-	@override String get minimumOfOneRequired => 'مطلوب حد أدنى 1';
-	@override String get valueBetweenMinMax => 'يجب أن تكون القيمة بين الحد الأدنى والأقصى لمبلغ الساتس';
-	@override String get writeCommentOptional => 'اكتب تعليقاً (اختياري)';
-	@override String get splitZapsWith => 'تقسيم الزابس مع';
-	@override String get useCannotBeZapped => 'هذا المستخدم لا يمكن زابه';
-	@override String get waitingGenerationOfInvoice => 'انتظار توليد الفواتير.';
-	@override String userInvoiceGenerated({required Object name}) => 'تم توليد فاتورة لـ ${name}';
-	@override String get userInvoiceNotGenerated => 'لا يمكن إنشاء فاتورة لهذا المستخدم.';
-	@override String payAmount({required Object number}) => 'دفع ${number} ساتس';
-	@override String get generateInvoices => 'توليد الفواتير';
+	@override String get zapSplits => 'تقسيم الزابات';
+	@override String get minimumOfOneRequired => 'مطلوب واحد على الأقل';
+	@override String get valueBetweenMinMax => 'يجب أن تكون القيمة بين الحد الأدنى والأقصى للساتوشي';
+	@override String get writeCommentOptional => 'اكتب تعليقًا (اختياري)';
+	@override String get splitZapsWith => 'تقسيم الزابات مع';
+	@override String get useCannotBeZapped => 'لا يمكن زاب هذا المستخدم';
+	@override String get waitingGenerationOfInvoice => 'انتظار إنشاء الفواتير.';
+	@override String userInvoiceGenerated({required Object name}) => 'تم إنشاء فاتورة لـ ${name}';
+	@override String get userInvoiceNotGenerated => 'تعذر إنشاء فاتورة لهذا المستخدم.';
+	@override String payAmount({required Object number}) => 'دفع ${number} ساتوشي';
+	@override String get generateInvoices => 'إنشاء فواتير';
 	@override String get userZappedSuccesfuly => 'تم زاب المستخدم بنجاح';
-	@override String get useValidTitle => 'يجب استخدام عنوان صحيح';
-	@override String get errorAddingBookmark => 'حدث خطأ عند إضافة المفضلة';
-	@override String get bookmarkAdded => 'تم إضافة قائمة المفضلة';
-	@override String get voteNotSubmitted => 'لا يمكن إرسال التصويت';
-	@override String get zapSplitsMessage => 'لتقسيمات الزاب، يجب أن يكون هناك شخص واحد على الأقل';
+	@override String get useValidTitle => 'يجب استخدام عنوان صالح';
+	@override String get errorAddingBookmark => 'خطأ في إضافة الإشارة المرجعية';
+	@override String get bookmarkAdded => 'تم إضافة قائمة الإشارات المرجعية';
+	@override String get voteNotSubmitted => 'لم يتم إرسال الصوت';
+	@override String get zapSplitsMessage => 'يجب أن يكون هناك شخص واحد على الأقل لتقسيم الزابات';
 	@override String get errorUpdatingCuration => 'حدث خطأ أثناء تحديث التنسيق';
 	@override String get errorAddingCuration => 'حدث خطأ أثناء إضافة التنسيق';
-	@override String get errorDeletingContent => 'حدث خطأ أثناء حذف المحتوى';
-	@override String get errorSigningEvent => 'حدث خطأ أثناء توقيع الحدث';
-	@override String get errorSendingEvent => 'حدث خطأ أثناء إرسال الحدث';
-	@override String get errorSendingMessage => 'حدث خطأ أثناء إرسال الرسالة';
+	@override String get errorDeletingContent => 'خطأ في حذف المحتوى';
+	@override String get errorSigningEvent => 'خطأ في توقيع الحدث';
+	@override String get errorSendingEvent => 'خطأ في إرسال الحدث';
+	@override String get errorSendingMessage => 'خطأ في إرسال الرسالة';
 	@override String get userHasBeenMuted => 'تم كتم المستخدم';
 	@override String get userHasBeenUnmuted => 'تم إلغاء كتم المستخدم';
-	@override String get messageCouldNotBeDecrypted => 'لا يمكن فك تشفير الرسالة';
+	@override String get messageCouldNotBeDecrypted => 'تعذر فك تشفير الرسالة';
 	@override String get interestsUpdateMessage => 'تم تحديث قائمة الاهتمامات بنجاح!';
-	@override String get errorGeneratingEvent => 'حدث خطأ أثناء توليد الحدث';
-	@override String get oneFeedOptionAvailable => 'يجب أن يكون هناك خيار تدفق واحد متاح على الأقل.';
+	@override String get errorGeneratingEvent => 'خطأ في إنشاء الحدث';
+	@override String get oneFeedOptionAvailable => 'يجب أن يكون خيار تغذية واحد متاحًا على الأقل.';
 	@override String get walletCreated => 'تم إنشاء المحفظة بنجاح';
 	@override String get walletLinked => 'تم ربط المحفظة بنجاح';
-	@override String get errorCreatingWallet => 'حدث خطأ أثناء إنشاء المحفظة';
-	@override String get walletNotLinked => 'لا يمكن ربط المحفظة. عنوان lightning خاطئ';
-	@override String get invalidPairingSecret => 'سر الإقران غير صحيح';
-	@override String get errorSettingToken => 'حدث خطأ أثناء إعداد الرمز المميز';
-	@override String get nwcInitialized => 'تم تهيئة اتصال محفظة نوستر';
-	@override String get noWalletLinkedMessage => 'ليس لديك محفظة مربوطة بملفك الشخصي، هل تريد ربط هذه المحفظة؟';
-	@override String get errorUsingWallet => 'حدث خطأ أثناء استخدام المحفظة!';
-	@override String get submitValidData => 'تأكد من إرسال بيانات صحيحة';
-	@override String get submitValidInvoice => 'تأكد من إرسال فاتورة صحيحة';
-	@override String get paymentSucceeded => 'نجح الدفع';
+	@override String get errorCreatingWallet => 'خطأ في إنشاء المحفظة';
+	@override String get walletNotLinked => 'لا يمكن ربط المحفظة. عنوان Lightning غير صالح';
+	@override String get invalidPairingSecret => 'سر الاقتران غير صالح';
+	@override String get errorSettingToken => 'خطأ في تعيين الرمز';
+	@override String get nwcInitialized => 'تم تهيئة Nostr Wallet Connect';
+	@override String get noWalletLinkedMessage => 'ليس لديك محفظة مرتبطة، هل تريد ربط هذه؟';
+	@override String get errorUsingWallet => 'خطأ في استخدام المحفظة!';
+	@override String get submitValidData => 'تأكد من إرسال بيانات صالحة';
+	@override String get submitValidInvoice => 'تأكد من إرسال فاتورة صالحة';
+	@override String get paymentSucceeded => 'تم الدفع بنجاح';
 	@override String get paymentFailed => 'فشل الدفع';
-	@override String get notEnoughBalance => 'رصيد غير كافٍ لإجراء هذا الدفع.';
-	@override String get permissionInvoiceNotGranted => 'لم يتم منح إذن دفع الفواتير.';
+	@override String get notEnoughBalance => 'رصيد غير كافٍ للدفع.';
+	@override String get permissionInvoiceNotGranted => 'لم يتم منح إذن لدفع الفواتير.';
 	@override String get allUsersZapped => 'تم زاب جميع المستخدمين!';
-	@override String get partialUsersZapped => 'تم زاب مستخدمين جزئياً!';
+	@override String get partialUsersZapped => 'تم زاب جزء من المستخدمين!';
 	@override String get noUserZapped => 'لم يتم زاب أي مستخدم!';
-	@override String get errorZappingUsers => 'حدث خطأ أثناء زاب المستخدمين';
+	@override String get errorZappingUsers => 'خطأ في زاب المستخدمين';
 	@override String get selectDefaultWallet => 'اختر محفظة افتراضية في الإعدادات.';
-	@override String get noInvoiceAvailable => 'لا توجد فواتير متاحة';
+	@override String get noInvoiceAvailable => 'لا فواتير متاحة';
 	@override String get invoicePaid => 'تم دفع الفاتورة بنجاح';
-	@override String get errorPayingInvoice => 'حدث خطأ أثناء الدفع باستخدام الفاتورة';
-	@override String get errorUsingExternalWallet => 'خطأ أثناء استخدام المحفظة الخارجية.';
-	@override String get paymentSurpassMax => 'الدفع يتجاوز الحد الأقصى المسموح.';
-	@override String get errorSendingSats => 'حدث خطأ أثناء إرسال الساتس';
-	@override String get setSatsMoreThanZero => 'تعيين مبلغ ساتس أكبر من 0';
-	@override String get processCompleted => 'تم إكمال العملية';
-	@override String get relayingStuff => 'جاري الترحيل...';
+	@override String get errorPayingInvoice => 'خطأ في دفع الفاتورة';
+	@override String get errorUsingExternalWallet => 'خطأ في استخدام المحفظة الخارجية.';
+	@override String get paymentSurpassMax => 'الدفع يتجاوز الحد الأقصى المسموح به.';
+	@override String get errorSendingSats => 'خطأ في إرسال الساتوشي';
+	@override String get setSatsMoreThanZero => 'حدد مبلغ ساتوشي أكبر من 0';
+	@override String get processCompleted => 'تم الانتهاء من العملية';
+	@override String get relayingStuff => 'نقل الأشياء...';
 	@override String get amberNotInstalled => 'تطبيق Amber غير مثبت';
-	@override String get alreadyLoggedIn => 'أنت مسجل دخول بالفعل!';
-	@override String get loggedIn => 'أنت مسجل دخول!';
+	@override String get alreadyLoggedIn => 'أنت مسجل الدخول بالفعل!';
+	@override String get loggedIn => 'تم تسجيل الدخول!';
 	@override String get attemptConnectAmber => 'تم رفض محاولة الاتصال بـ Amber.';
-	@override String get errorUploadingImage => 'حدث خطأ أثناء رفع الصورة';
-	@override String get invalidPrivateKey => 'مفتاح خاص غير صحيح!';
-	@override String get invalidHexKey => 'مفتاح hex غير صحيح!';
-	@override String get fetchingArticle => 'جلب المقال';
-	@override String get articleNotFound => 'لم يتم العثور على المقال';
+	@override String get errorUploadingImage => 'خطأ في رفع الصورة';
+	@override String get invalidPrivateKey => 'مفتاح خاص غير صالح!';
+	@override String get invalidHexKey => 'مفتاح hex غير صالح!';
+	@override String get fetchingArticle => 'جلب المقالة';
+	@override String get articleNotFound => 'المقالة غير موجودة';
 	@override String get fetchingCuration => 'جلب التنسيق';
-	@override String get curationNotFound => 'لم يتم العثور على التنسيق';
-	@override String get fetchingSmartWidget => 'جلب الويدجت الذكية';
-	@override String get smartWidgetNotFound => 'لم يتم العثور على الويدجت الذكية';
+	@override String get curationNotFound => 'التنسيق غير موجود';
+	@override String get fetchingSmartWidget => 'جلب الودجيت الذكي';
+	@override String get smartWidgetNotFound => 'الودجيت الذكي غير موجود';
 	@override String get fetchingVideo => 'جلب الفيديو';
-	@override String get videoNotFound => 'لم يتم العثور على الفيديو';
+	@override String get videoNotFound => 'الفيديو غير موجود';
 	@override String get fetchingNote => 'جلب الملاحظة';
-	@override String get noteNotFound => 'لم يتم العثور على الملاحظة';
-	@override String get eventNotFound => 'لم يتم العثور على الحدث';
-	@override String get verifiedNoteNotFound => 'لم يتم العثور على الملاحظة المُتحقق منها';
-	@override String get eventNotRecognized => 'لا يمكن التعرف على الحدث';
-	@override String get fetchingEventUserRelays => 'جلب الحدث من مرحلات المستخدم';
+	@override String get noteNotFound => 'الملاحظة غير موجودة';
+	@override String get eventNotFound => 'الحدث غير موجود';
+	@override String get verifiedNoteNotFound => 'الملاحظة الموثقة غير موجودة';
+	@override String get eventNotRecognized => 'الحدث غير معترف به';
+	@override String get fetchingEventUserRelays => 'جلب الحدث من ترحيلات المستخدم';
 	@override String get fetchingProfile => 'جلب الملف الشخصي';
 	@override String get fetchingEvent => 'جلب الحدث';
-	@override String get loggedToYakiChest => 'أنت مسجل دخول في صندوق Yakihonne';
-	@override String get errorLoggingYakiChest => 'حدث خطأ أثناء تسجيل الدخول في صندوق Yakihonne';
-	@override String get relayInUse => 'المرحل قيد الاستخدام بالفعل';
-	@override String get errorConnectingRelay => 'حدث خطأ أثناء الاتصال بالمرحل';
-	@override String get submitValidLud => 'تأكد من الحصول على lud16/lud06 صحيح.';
-	@override String get errorUpdatingData => 'حدث خطأ أثناء تحديث البيانات';
+	@override String get loggedToYakiChest => 'تم تسجيل الدخول إلى صندوق YakiHonne';
+	@override String get errorLoggingYakiChest => 'خطأ في تسجيل الدخول إلى صندوق YakiHonne';
+	@override String get relayInUse => 'الترحيل مستخدم بالفعل';
+	@override String get errorConnectingRelay => 'خطأ في الاتصال بالترحيل';
+	@override String get submitValidLud => 'تأكد من أنك حددت lud16/lud06 صالح.';
+	@override String get errorUpdatingData => 'خطأ في تحديث البيانات';
 	@override String get updatedSuccesfuly => 'تم التحديث بنجاح';
-	@override String get relaysListUpdated => 'تم تحديث قائمة المرحلات';
-	@override String get couldNotUpdateRelaysList => 'لا يمكن تحديث قائمة المرحلات';
-	@override String get errorUpdatingRelaysList => 'حدث خطأ أثناء تحديث قائمة المرحلات';
-	@override String get errorClaimingReward => 'حدث خطأ أثناء المطالبة بالمكافأة';
-	@override String get errorDecodingData => 'حدث خطأ أثناء فك تشفير البيانات';
+	@override String get relaysListUpdated => 'تم تحديث قائمة الترحيلات';
+	@override String get couldNotUpdateRelaysList => 'تعذر تحديث قائمة الترحيلات';
+	@override String get errorUpdatingRelaysList => 'خطأ في تحديث قائمة الترحيلات';
+	@override String get errorClaimingReward => 'خطأ في المطالبة بالمكافأة';
+	@override String get errorDecodingData => 'خطأ في فك تشفير البيانات';
 	@override String get loggingIn => 'تسجيل الدخول...';
 	@override String get loggingOut => 'تسجيل الخروج...';
 	@override String get disconnecting => 'قطع الاتصال...';
-	@override String get ratingSubmittedCheckReward => 'تم إرسال تقييمك، تحقق من صفحة المكافآت لتطالب بمكافأة التقييم';
-	@override String get errorSubmittingRating => 'حدث خطأ أثناء إرسال تقييمك';
-	@override String get verifiedNoteAdded => 'تم إضافة ملاحظتك المُتحقق منها، تحقق من صفحة المكافآت لتطالب بمكافأة الكتابة';
-	@override String get errorAddingVerifiedNote => 'حدث خطأ أثناء إضافة ملاحظتك المُتحقق منها';
+	@override String get ratingSubmittedCheckReward => 'تم إرسال تقييمك، تحقق من صفحة المكافآت للحصول على مكافأة التقييم';
+	@override String get errorSubmittingRating => 'خطأ في إرسال التقييم';
+	@override String get verifiedNoteAdded => 'تم إضافة ملاحظتك الموثقة، تحقق من صفحة المكافآت للحصول على مكافأة الكتابة';
+	@override String get errorAddingVerifiedNote => 'خطأ في إضافة الملاحظة الموثقة';
 	@override String get ratingDeleted => 'تم حذف تقييمك';
-	@override String get errorDeletingRating => 'حدث خطأ أثناء حذف تقييمك';
-	@override String get autoSavedArticleDeleted => 'تم حذف المقال المحفوظ تلقائياً';
-	@override String get articlePublished => 'تم نشر مقالك!';
-	@override String get errorAddingArticle => 'حدث خطأ أثناء إضافة المقال';
-	@override String get writeValidNote => 'اكتب ملاحظة صحيحة!';
-	@override String get setOutboxRelays => 'تأكد من إعداد مرحلات صندوق الصادر';
+	@override String get errorDeletingRating => 'خطأ في حذف التقييم';
+	@override String get autoSavedArticleDeleted => 'تم حذف المقالة المحفوظة تلقائيًا';
+	@override String get articlePublished => 'تم نشر مقالتك!';
+	@override String get errorAddingArticle => 'حدث خطأ أثناء إضافة المقالة';
+	@override String get writeValidNote => 'اكتب ملاحظة صالحة!';
+	@override String get setOutboxRelays => 'تأكد من إعداد جميع الترحيلات الخارجية';
 	@override String get notePublished => 'تم نشر الملاحظة!';
 	@override String get paidNotePublished => 'تم نشر الملاحظة المدفوعة!';
 	@override String get invoiceNotPayed => 'يبدو أنك لم تدفع الفاتورة، تحقق مرة أخرى';
-	@override String get autoSavedSMdeleted => 'تم حذف الويدجت الذكية المحفوظة تلقائياً';
-	@override String get errorUploadingMedia => 'حدث خطأ أثناء رفع الوسائط';
-	@override String get smartWidgetPublishedSuccessfuly => 'تم نشر الويدجت الذكية بنجاح';
-	@override String get errorAddingWidget => 'حدث خطأ أثناء إضافة الويدجت الذكية';
-	@override String get setAllRequiredContent => 'تأكد من تعيين جميع المحتوى المطلوب.';
-	@override String get noEventIdCanBeFound => 'لم يتم العثور على حدث بهذا المعرف!';
-	@override String get notValidVideoEvent => 'هذا الحدث ليس حدث فيديو صحيح!';
-	@override String get emptyVideoUrl => 'هذا nevent له رابط فارغ';
-	@override String get submitValidVideoEvent => 'يرجى إرسال حدث فيديو صحيح';
-	@override String get errorUploadingVideo => 'حدث خطأ أثناء رفع الفيديو';
+	@override String get autoSavedSMdeleted => 'تم حذف الودجيت الذكي المحفوظ تلقائيًا';
+	@override String get errorUploadingMedia => 'خطأ في رفع الوسائط';
+	@override String get smartWidgetPublishedSuccessfuly => 'تم نشر الودجيت الذكي بنجاح';
+	@override String get errorAddingWidget => 'حدث خطأ أثناء إضافة الودجيت الذكي';
+	@override String get setAllRequiredContent => 'تأكد من تعيين جميع المحتويات المطلوبة.';
+	@override String get noEventIdCanBeFound => 'لا يمكن العثور على حدث بهذا المعرف!';
+	@override String get notValidVideoEvent => 'هذا الحدث ليس حدث فيديو صالح!';
+	@override String get emptyVideoUrl => 'هذا nevent لديه رابط فارغ';
+	@override String get submitValidVideoEvent => 'إرسال حدث فيديو صالح';
+	@override String get errorUploadingVideo => 'خطأ في رفع الفيديو';
 	@override String get errorAddingVideo => 'حدث خطأ أثناء إضافة الفيديو';
-	@override String get submitMinMaxSats => 'تأكد من إرسال ساتوشيس صحيحة للحد الأدنى والأقصى';
-	@override String get submitValidCloseDate => 'تأكد من إرسال تاريخ إغلاق صحيح.';
-	@override String get submitValidOptions => 'تأكد من إرسال خيارات صحيحة.';
-	@override String get pollZapPublished => 'تم نشر استطلاع الزاب!';
-	@override String get relaysNotReached => 'لا يمكن الوصول للمرحلات';
-	@override String get loginYakiChestPoints => 'سجل دخول في صندوق Yakihonne، اجمع النقاط بكونك نشطاً على المنصة واربح جوائز ثمينة!';
+	@override String get submitMinMaxSats => 'تأكد من تعيين الحد الأدنى والأقصى للساتوشي بشكل صحيح';
+	@override String get submitValidCloseDate => 'تأكد من تعيين تاريخ إغلاق صالح.';
+	@override String get submitValidOptions => 'تأكد من تعيين خيارات صالحة.';
+	@override String get pollZapPublished => 'تم نشر استطلاع زاب!';
+	@override String get relaysNotReached => 'الترحيلات غير قابلة للوصول';
+	@override String get loginYakiChestPoints => 'سجل الدخول إلى صندوق YakiHonne، اكسب نقاط من خلال النشاط على المنصة واكسب جوائز قيمة!';
 	@override String get inaccessibleLink => 'رابط غير قابل للوصول';
-	@override String get mediaExceedsMaxSize => 'الوسائط تتجاوز الحد الأقصى للحجم وهو 21 ميجابايت';
-	@override String get fetchingUserInboxRelays => 'جلب مرحلات صندوق وارد المستخدم';
-	@override String userZappedYou({required Object name, required Object number}) => '${name} زابك ${number} ساتس';
-	@override String userReactedYou({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} معك';
-	@override String userRepostedYou({required Object name}) => '${name} أعاد نشر محتواك';
+	@override String get mediaExceedsMaxSize => 'الوسائط تتجاوز الحجم الأقصى 21 ميجابايت';
+	@override String get fetchingUserInboxRelays => 'جلب ترحيلات الصندوق الوارد للمستخدم';
+	@override String userZappedYou({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي';
+	@override String userReactedYou({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك';
+	@override String userRepostedYou({required Object name}) => 'قام ${name} بإعادة نشر محتواك';
+	@override String userMentionedYouInComment({required Object name}) => '${name} ذكرك في تعليق';
 	@override String userMentionedYouInNote({required Object name}) => '${name} ذكرك في ملاحظة';
 	@override String userMentionedYouInPaidNote({required Object name}) => '${name} ذكرك في ملاحظة مدفوعة';
-	@override String userMentionedYouInArticle({required Object name}) => '${name} ذكرك في مقال';
+	@override String userMentionedYouInArticle({required Object name}) => '${name} ذكرك في مقالة';
 	@override String userMentionedYouInVideo({required Object name}) => '${name} ذكرك في فيديو';
 	@override String userMentionedYouInCuration({required Object name}) => '${name} ذكرك في تنسيق';
-	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} ذكرك في ويدجت ذكية';
+	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} ذكرك في ودجيت ذكي';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} ذكرك في استطلاع';
 	@override String userPublishedPaidNote({required Object name}) => '${name} نشر ملاحظة مدفوعة';
-	@override String userPublishedArticle({required Object name}) => '${name} نشر مقال';
+	@override String userPublishedArticle({required Object name}) => '${name} نشر مقالة';
 	@override String userPublishedVideo({required Object name}) => '${name} نشر فيديو';
 	@override String userPublishedCuration({required Object name}) => '${name} نشر تنسيق';
-	@override String userPublishedSmartWidget({required Object name}) => '${name} نشر ويدجت ذكية';
+	@override String userPublishedSmartWidget({required Object name}) => '${name} نشر ودجيت ذكي';
 	@override String userPublishedPoll({required Object name}) => '${name} نشر استطلاع';
-	@override String userZappedYourArticle({required Object name, required Object number}) => '${name} زاب مقالك ${number} ساتس';
-	@override String userZappedYourCuration({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتس';
-	@override String userZappedYourVideo({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتس';
-	@override String userZappedYourSmartWidget({required Object name, required Object number}) => '${name} زاب ويدجتك الذكية ${number} ساتس';
-	@override String userZappedYourPoll({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتس';
-	@override String userZappedYourNote({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتس';
-	@override String userZappedYourPaidNote({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتس';
-	@override String userReactedYourArticle({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقالك';
-	@override String userReactedYourCuration({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيقك';
-	@override String userReactedYourVideo({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديوك';
-	@override String userReactedYourSmartWidget({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجتك الذكية';
-	@override String userReactedYourPoll({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاعك';
-	@override String userReactedYourNote({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك';
-	@override String userReactedYourPaidNote({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك المدفوعة';
-	@override String userReactedYourMessage({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع رسالتك';
+	@override String userZappedYourArticle({required Object name, required Object number}) => '${name} زاب مقالتك ${number} ساتوشي';
+	@override String userZappedYourCuration({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتوشي';
+	@override String userZappedYourVideo({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتوشي';
+	@override String userZappedYourSmartWidget({required Object name, required Object number}) => '${name} زاب ودجيتك الذكي ${number} ساتوشي';
+	@override String userZappedYourPoll({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتوشي';
+	@override String userZappedYourNote({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتوشي';
+	@override String userZappedYourPaidNote({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتوشي';
+	@override String userReactedYourArticle({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على مقالتك';
+	@override String userReactedYourCuration({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على تنسيقك';
+	@override String userReactedYourVideo({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على فيديوك';
+	@override String userReactedYourSmartWidget({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ودجيتك الذكي';
+	@override String userReactedYourPoll({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على استطلاعك';
+	@override String userReactedYourNote({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظتك';
+	@override String userReactedYourPaidNote({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظتك المدفوعة';
+	@override String userReactedYourMessage({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على رسالتك';
 	@override String userRepostedYourNote({required Object name}) => '${name} أعاد نشر ملاحظتك';
 	@override String userRepostedYourPaidNote({required Object name}) => '${name} أعاد نشر ملاحظتك المدفوعة';
-	@override String userRepliedYourArticle({required Object name}) => '${name} رد على مقالك';
+	@override String userRepliedYourArticle({required Object name}) => '${name} رد على مقالتك';
 	@override String userRepliedYourCuration({required Object name}) => '${name} رد على تنسيقك';
 	@override String userRepliedYourVideo({required Object name}) => '${name} رد على فيديوك';
-	@override String userRepliedYourSmartWidget({required Object name}) => '${name} رد على ويدجتك الذكية';
+	@override String userRepliedYourSmartWidget({required Object name}) => '${name} رد على ودجيتك الذكي';
 	@override String userRepliedYourPoll({required Object name}) => '${name} رد على استطلاعك';
 	@override String userRepliedYourNote({required Object name}) => '${name} رد على ملاحظتك';
 	@override String userRepliedYourPaidNote({required Object name}) => '${name} رد على ملاحظتك المدفوعة';
-	@override String userCommentedYourArticle({required Object name}) => '${name} علق على مقالك';
+	@override String userCommentedYourArticle({required Object name}) => '${name} علق على مقالتك';
 	@override String userCommentedYourCuration({required Object name}) => '${name} علق على تنسيقك';
 	@override String userCommentedYourVideo({required Object name}) => '${name} علق على فيديوك';
-	@override String userCommentedYourSmartWidget({required Object name}) => '${name} علق على ويدجتك الذكية';
+	@override String userCommentedYourSmartWidget({required Object name}) => '${name} علق على ودجيتك الذكي';
 	@override String userCommentedYourPoll({required Object name}) => '${name} علق على استطلاعك';
 	@override String userCommentedYourNote({required Object name}) => '${name} علق على ملاحظتك';
 	@override String userCommentedYourPaidNote({required Object name}) => '${name} علق على ملاحظتك المدفوعة';
-	@override String userQuotedYourArticle({required Object name}) => '${name} اقتبس مقالك';
+	@override String userQuotedYourArticle({required Object name}) => '${name} اقتبس مقالتك';
 	@override String userQuotedYourCuration({required Object name}) => '${name} اقتبس تنسيقك';
 	@override String userQuotedYourVideo({required Object name}) => '${name} اقتبس فيديوك';
 	@override String userQuotedYourNote({required Object name}) => '${name} اقتبس ملاحظتك';
 	@override String userQuotedYourPaidNote({required Object name}) => '${name} اقتبس ملاحظتك المدفوعة';
-	@override String userReactedArticleYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقال ذُكرت فيه';
-	@override String userReactedCurationYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيق ذُكرت فيه';
-	@override String userReactedVideoYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديو ذُكرت فيه';
-	@override String userReactedSmartWidgetYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجت ذكية ذُكرت فيها';
-	@override String userReactedPollYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاع ذُكرت فيه';
-	@override String userReactedNoteYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة ذُكرت فيها';
-	@override String userReactedPaidNoteYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة مدفوعة ذُكرت فيها';
-	@override String userRepostedNoteYouIn({required Object name}) => '${name} أعاد نشر ملاحظة ذُكرت فيها';
-	@override String userRepostedPaidNoteYouIn({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذُكرت فيها';
-	@override String userRepliedArticleYouIn({required Object name}) => '${name} رد على مقال ذُكرت فيه';
-	@override String userRepliedCurationYouIn({required Object name}) => '${name} رد على تنسيق ذُكرت فيه';
-	@override String userRepliedVideoYouIn({required Object name}) => '${name} رد على فيديو ذُكرت فيه';
-	@override String userRepliedSmartWidgetYouIn({required Object name}) => '${name} رد على ويدجت ذكية ذُكرت فيها';
-	@override String userRepliedPollYouIn({required Object name}) => '${name} رد على استطلاع ذُكرت فيه';
-	@override String userRepliedNoteYouIn({required Object name}) => '${name} رد على ملاحظة ذُكرت فيها';
-	@override String userRepliedPaidNoteYouIn({required Object name}) => '${name} رد على ملاحظة مدفوعة ذُكرت فيها';
-	@override String userCommentedArticleYouIn({required Object name}) => '${name} علق على مقال ذُكرت فيه';
-	@override String userCommentedCurationYouIn({required Object name}) => '${name} علق على تنسيق ذُكرت فيه';
-	@override String userCommentedVideoYouIn({required Object name}) => '${name} علق على فيديو ذُكرت فيه';
-	@override String userCommentedSmartWidgetYouIn({required Object name}) => '${name} علق على ويدجت ذكية ذُكرت فيها';
-	@override String userCommentedPollYouIn({required Object name}) => '${name} علق على استطلاع ذُكرت فيه';
-	@override String userCommentedNoteYouIn({required Object name}) => '${name} علق على ملاحظة ذُكرت فيها';
-	@override String userCommentedPaidNoteYouIn({required Object name}) => '${name} علق على ملاحظة مدفوعة ذُكرت فيها';
-	@override String userQuotedArticleYouIn({required Object name}) => '${name} اقتبس مقال ذُكرت فيه';
-	@override String userQuotedCurationYouIn({required Object name}) => '${name} اقتبس تنسيق ذُكرت فيه';
-	@override String userQuotedVideoYouIn({required Object name}) => '${name} اقتبس فيديو ذُكرت فيه';
-	@override String userQuotedNoteYouIn({required Object name}) => '${name} اقتبس ملاحظة ذُكرت فيها';
-	@override String userQuotedPaidNoteYouIn({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذُكرت فيها';
-	@override String reactedWith({required Object name, required Object reaction}) => '${name} تفاعل بـ ${reaction}';
-	@override String get verifiedNoteSealed => 'تم ختم ملاحظتك المُتحقق منها.';
-	@override String get verifiedNoteRateSealed => 'تم ختم ملاحظة مُتحقق منها قيّمتها.';
+	@override String userReactedArticleYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على مقالة ذكرتك';
+	@override String userReactedCurationYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على تنسيق ذكرتك';
+	@override String userReactedVideoYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على فيديو ذكرتك';
+	@override String userReactedSmartWidgetYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ودجيت ذكي ذكرتك';
+	@override String userReactedPollYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على استطلاع ذكرتك';
+	@override String userReactedNoteYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظة ذكرتك';
+	@override String userReactedPaidNoteYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظة مدفوعة ذكرتك';
+	@override String userRepostedNoteYouIn({required Object name}) => '${name} أعاد نشر ملاحظة ذكرتك';
+	@override String userRepostedPaidNoteYouIn({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذكرتك';
+	@override String userRepliedArticleYouIn({required Object name}) => '${name} رد على مقالة ذكرتك';
+	@override String userRepliedCurationYouIn({required Object name}) => '${name} رد على تنسيق ذكرتك';
+	@override String userRepliedVideoYouIn({required Object name}) => '${name} رد على فيديو ذكرتك';
+	@override String userRepliedSmartWidgetYouIn({required Object name}) => '${name} رد على ودجيت ذكي ذكرتك';
+	@override String userRepliedPollYouIn({required Object name}) => '${name} رد على استطلاع ذكرتك';
+	@override String userRepliedNoteYouIn({required Object name}) => '${name} رد على ملاحظة ذكرتك';
+	@override String userRepliedPaidNoteYouIn({required Object name}) => '${name} رد على ملاحظة مدفوعة ذكرتك';
+	@override String userCommentedArticleYouIn({required Object name}) => '${name} علق على مقالة ذكرتك';
+	@override String userCommentedCurationYouIn({required Object name}) => '${name} علق على تنسيق ذكرتك';
+	@override String userCommentedVideoYouIn({required Object name}) => '${name} علق على فيديو ذكرتك';
+	@override String userCommentedSmartWidgetYouIn({required Object name}) => '${name} علق على ودجيت ذكي ذكرتك';
+	@override String userCommentedPollYouIn({required Object name}) => '${name} علق على استطلاع ذكرتك';
+	@override String userCommentedNoteYouIn({required Object name}) => '${name} علق على ملاحظة ذكرتك';
+	@override String userCommentedPaidNoteYouIn({required Object name}) => '${name} علق على ملاحظة مدفوعة ذكرتك';
+	@override String userQuotedArticleYouIn({required Object name}) => '${name} اقتبس مقالة ذكرتك';
+	@override String userQuotedCurationYouIn({required Object name}) => '${name} اقتبس تنسيق ذكرتك';
+	@override String userQuotedVideoYouIn({required Object name}) => '${name} اقتبس فيديو ذكرتك';
+	@override String userQuotedNoteYouIn({required Object name}) => '${name} اقتبس ملاحظة ذكرتك';
+	@override String userQuotedPaidNoteYouIn({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذكرتك';
+	@override String reactedWith({required Object name, required Object reaction}) => '${name} تفاعل مع ${reaction}';
+	@override String get verifiedNoteSealed => 'ملاحظتك الموثقة تم ختمها.';
+	@override String get verifiedNoteRateSealed => 'الملاحظة الموثقة التي قيمتها تم ختمها.';
 	@override String userNewVideo({required Object name}) => 'فيديو ${name}';
 	@override String titleData({required Object description}) => 'العنوان: ${description}';
-	@override String get checkoutVideo => 'تحقق من فيديوي';
+	@override String get checkoutVideo => 'شاهد فيديوي';
 	@override String get yakihonneNotification => 'إشعار YakiHonne';
-	@override String get unknownVerifiedNote => 'ملاحظة مُتحقق منها مجهولة';
-	@override String userReply({required Object name}) => 'رد ${name}';
-	@override String userPaidNote({required Object name}) => 'ملاحظة ${name} المدفوعة الجديدة';
+	@override String get unknownVerifiedNote => 'ملاحظة موثقة من غير معروف';
+	@override String userReply({required Object name}) => 'رد من ${name}';
+	@override String userPaidNote({required Object name}) => 'ملاحظة مدفوعة جديدة من ${name}';
 	@override String contentData({required Object description}) => 'المحتوى: ${description}';
-	@override String get checkoutPaidNote => 'تحقق من ملاحظتي المدفوعة';
-	@override String userNewCuration({required Object name}) => 'تنسيق ${name} الجديد';
-	@override String userNewArticle({required Object name}) => 'مقال ${name} الجديد';
-	@override String userNewSmartWidget({required Object name}) => 'ويدجت ${name} الذكية الجديدة';
-	@override String get checkoutArticle => 'تحقق من مقالي';
-	@override String get checkoutCuration => 'تحقق من تنسيقي';
-	@override String get checkoutSmartWidget => 'تحقق من ويدجتي الذكية';
+	@override String get checkoutPaidNote => 'شاهد ملاحظتي المدفوعة';
+	@override String userNewCuration({required Object name}) => 'تنسيق جديد من ${name}';
+	@override String userNewArticle({required Object name}) => 'مقالة جديدة من ${name}';
+	@override String userNewSmartWidget({required Object name}) => 'ودجيت ذكي جديد من ${name}';
+	@override String get checkoutArticle => 'شاهد مقالتي';
+	@override String get checkoutCuration => 'شاهد تنسيقي';
+	@override String get checkoutSmartWidget => 'شاهد ودجيتي الذكي';
 	@override String get languagePreferences => 'تفضيلات اللغة';
 	@override String get contentTranslation => 'ترجمة المحتوى';
 	@override String get appLanguage => 'لغة التطبيق';
 	@override String get apiKeyRequired => 'مفتاح API (مطلوب)';
 	@override String get getApiKey => 'الحصول على مفتاح API';
-	@override String get seeTranslation => 'رؤية الترجمة';
-	@override String get seeOriginal => 'رؤية الأصل';
+	@override String get seeTranslation => 'عرض الترجمة';
+	@override String get seeOriginal => 'عرض الأصلي';
 	@override String get plan => 'الخطة';
 	@override String get free => 'مجاني';
-	@override String get pro => 'احترافي';
-	@override String get errorTranslating => 'حدث خطأ أثناء ترجمة المحتوى.';
-	@override String get errorMissingKey => 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات -> تفضيلات اللغة للمزيد.';
-	@override String get comingSoon => 'قريباً';
+	@override String get pro => 'محترف';
+	@override String get errorTranslating => 'خطأ في ترجمة المحتوى.';
+	@override String get errorMissingKey => 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات → تفضيلات اللغة.';
+	@override String get comingSoon => 'قريبًا';
 	@override String get content => 'المحتوى';
 	@override String expiresOn({required Object date}) => 'ينتهي في: ${date}';
 	@override String get collapseNote => 'طي الملاحظة';
 	@override String get reactions => 'التفاعلات';
 	@override String get reposts => 'إعادة النشر';
 	@override String get notifDisabled => 'الإشعارات معطلة!';
-	@override String get notifDisabledMessage => 'الإشعارات معطلة لهذا النوع، يمكنك تفعيلها في إعدادات الإشعارات.';
-	@override String get oneNotifOptionAvailable => 'يجب أن يكون هناك خيار إشعار واحد متاح على الأقل.';
+	@override String get notifDisabledMessage => 'الإشعارات معطلة لهذا النوع، قم بتمكينها في إعدادات الإشعارات.';
+	@override String get oneNotifOptionAvailable => 'يجب أن يكون خيار إشعار واحد متاحًا على الأقل.';
 	@override String get readAll => 'قراءة الكل';
-	@override String get usernameTaken => 'اسم المستخدم مأخوذ';
+	@override String get usernameTaken => 'اسم المستخدم محجوز';
 	@override String get usernameRequired => 'اسم المستخدم مطلوب';
-	@override String get deleteWalletConfirmation => 'يرجى التأكد من حفظ عبارة اتصال NWC الخاصة بك بأمان، لأننا لا نستطيع المساعدة في استرداد المحافظ المفقودة.';
+	@override String get deleteWalletConfirmation => 'تأكد من حفظ عبارة اتصال NWC الخاصة بك في مكان آمن — لا يمكننا المساعدة في استعادة المحافظ المفقودة.';
 	@override String get unsupportedKind => 'نوع غير مدعوم';
 	@override String get analyticsCrashlytics => 'Crashlytics';
-	@override String get analyticsCache => 'Crashlytics والذاكرة المؤقتة';
-	@override String get analyticsCacheOn => 'تم تشغيل Crashlytics.';
-	@override String get analyticsCacheOff => 'تم إيقاف Crashlytics.';
-	@override String get shareNoUsage => 'أنت لا تشارك أي crashlytics معنا في الوقت الحالي.';
+	@override String get analyticsCache => 'Crashlytics وكاش';
+	@override String get analyticsCacheOn => 'تم تمكين Crashlytics.';
+	@override String get analyticsCacheOff => 'تم تعطيل Crashlytics.';
+	@override String get shareNoUsage => 'أنت لا تشارك حاليًا معنا بيانات crashlytics.';
 	@override String get wantShareAnalytics => 'تريد مشاركة crashlytics؟';
-	@override String get yakihonneAnCr => 'Crashlytics الخاصة بـ YakiHonne';
-	@override String get crashlyticsTerms => 'جمع crashlytics مجهولة الهوية أمر حيوي لتحسين مزايا تطبيقنا وتجربة المستخدم. يمكننا من تحديد تفضيلات المستخدمين وتحسين المزايا الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقاً أكثر تخصيصاً وكفاءة لمستخدمينا.';
-	@override String get collectAnonymised => 'نجمع crashlytics مجهولة الهوية لتحسين تجربة التطبيق.';
-	@override String get linkWalletToProfile => 'ربط المحفظة بملفك الشخصي';
-	@override String get linkWalletToProfileDesc => 'المحفظة المربوطة ستُستخدم لاستقبال الساتس';
-	@override String get noWalletLinked => 'ليس لديك محفظة مربوطة بملفك الشخصي فكر في ربط إحدى محافظك في القائمة أعلاه';
+	@override String get yakihonneAnCr => 'Crashlytics YakiHonne';
+	@override String get crashlyticsTerms => 'جمع crashlytics المجهول أمر حاسم لتحسين الميزات وتجربة المستخدم في التطبيق. يساعدنا في فهم تفضيلات المستخدمين، تحسين الميزات الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقًا أكثر تخصيصًا وكفاءة.';
+	@override String get collectAnonymised => 'نحن نجمع crashlytics المجهولة لتحسين التطبيق.';
+	@override String get linkWalletToProfile => 'ربط المحفظة بالملف الشخصي';
+	@override String get linkWalletToProfileDesc => 'سيتم استخدام المحفظة المرتبطة لاستلام الساتوشي';
+	@override String get noWalletLinked => 'ليس لديك محفظة مرتبطة، فكر في ربط واحدة من محافظك في القائمة أعلاه';
 	@override String get addPoll => 'إضافة استطلاع';
 	@override String get browsePolls => 'تصفح الاستطلاعات';
-	@override String get maciPolls => 'استطلاع MACI';
-	@override String get beta => 'تجريبي';
+	@override String get maciPolls => 'استطلاعات MACI';
+	@override String get beta => 'بيتا';
 	@override String get choosePollType => 'اختر نوع الاستطلاع';
 	@override String get created => 'تم الإنشاء';
 	@override String get tallying => 'العد';
 	@override String get ended => 'انتهى';
-	@override String get closed => 'مُغلق';
-	@override String get voteResultsBy => 'نتائج التصويت بواسطة';
+	@override String get closed => 'مغلق';
+	@override String get voteResultsBy => 'نتائج التصويت حسب';
 	@override String get votes => 'الأصوات';
-	@override String get voiceCredit => 'رصيد الصوت';
+	@override String get voiceCredit => 'ائتمان الصوت';
 	@override String get viewDetails => 'عرض التفاصيل';
 	@override String get signup => 'التسجيل';
-	@override String get notDownloadProof => 'لا يمكن تحميل الأدلة';
+	@override String get notDownloadProof => 'تعذر تنزيل الإثباتات';
 	@override String get name => 'الاسم';
 	@override String get status => 'الحالة';
 	@override String get circuit => 'الدائرة';
 	@override String get votingSystem => 'نظام التصويت';
 	@override String get proofSystem => 'نظام الإثبات';
 	@override String get gasStation => 'محطة الغاز';
-	@override String get totalFund => '(إجمالي التمويل)';
-	@override String get roundStart => 'بداية الجولة';
+	@override String get totalFund => '(الصندوق الإجمالي)';
+	@override String get roundStart => 'بدء الجولة';
 	@override String get roundEnd => 'نهاية الجولة';
 	@override String get operator => 'المشغل';
 	@override String get contractCreator => 'منشئ العقد';
 	@override String get contractAddress => 'عنوان العقد';
 	@override String get blockHeight => 'ارتفاع الكتلة';
 	@override String atContractCreation({required Object number}) => '${number} (عند إنشاء العقد)';
-	@override String get zkProofs => 'أدلة ZK';
-	@override String get downloadZkProofs => 'تحميل الأدلة';
-	@override String get walletConnectionString => 'نص اتصال المحفظة';
-	@override String get walletConnectionStringDesc => 'يرجى التأكد من نسخ أو تصدير نص اتصال محفظتك بأمان. نحن لا نخزن هذه المعلومات، وإذا فُقدت، لا يمكن استردادها.';
+	@override String get zkProofs => 'إثباتات ZK';
+	@override String get downloadZkProofs => 'تنزيل الإثباتات';
+	@override String get walletConnectionString => 'سلسلة اتصال المحفظة';
+	@override String get walletConnectionStringDesc => 'تأكد من نسخ أو تصدير سلسلة اتصال المحفظة بشكل آمن. نحن لا نخزن هذه المعلومات، وإذا فقدت، لا يمكن استرجاعها.';
 	@override String get export => 'تصدير';
 	@override String get logout => 'تسجيل الخروج';
 	@override String get exportAndLogout => 'تصدير وتسجيل الخروج';
-	@override String get exportWalletsDesc => 'يبدو أن لديك محافظ مربوطة بحسابك. يرجى تحميل أسرار محفظتك قبل تسجيل الخروج.';
+	@override String get exportWalletsDesc => 'يبدو أن لديك محافظ مرتبطة بحسابك. قم بتنزيل أسرار المحافظ قبل الخروج.';
 	@override String get manageWallets => 'إدارة المحافظ';
 	@override String get roundDuration => 'مدة الجولة';
-	@override String startAt({required Object date}) => 'يبدأ في: ${date}';
+	@override String startAt({required Object date}) => 'البدء في: ${date}';
 	@override String get loginAction => 'تسجيل الدخول';
 	@override String get addPicture => 'إضافة صورة';
-	@override String get editPicture => 'تعديل الصورة';
+	@override String get editPicture => 'تحرير الصورة';
 	@override String get exportKeys => 'تصدير المفاتيح';
-	@override String get mutedUser => 'مستخدم مكتوم';
+	@override String get mutedUser => 'مستخدم مكتم';
 	@override String get unaccessibleContent => 'محتوى غير قابل للوصول';
-	@override String get mutedUserDesc => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لرؤية هذا المحتوى';
+	@override String get mutedUserDesc => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لعرض المحتوى';
 	@override String get commentHidden => 'هذا التعليق مخفي';
 	@override String get upcoming => 'قادم';
-	@override String get exportCredentials => 'تصدير بيانات الاعتماد';
-	@override String get loginToYakihonne => 'تسجيل الدخول إلى Yakihonne';
-	@override String get alreadyUser => 'مستخدم بالفعل؟';
+	@override String get exportCredentials => 'تصدير البيانات الاعتمادية';
+	@override String get loginToYakihonne => 'تسجيل الدخول إلى YakiHonne';
+	@override String get alreadyUser => 'هل أنت مستخدم بالفعل؟';
 	@override String get createPoll => 'إنشاء استطلاع';
-	@override String get gasStationTotal => 'محطة الغاز (إجمالي الممول)';
+	@override String get gasStationTotal => 'محطة الغاز (الممول الإجمالي)';
 	@override String get gasStationRemaining => 'محطة الغاز (الرصيد المتبقي)';
 	@override String get paste => 'لصق';
 	@override String get manual => 'يدوي';
-	@override String get contacts => 'جهات الاتصال';
-	@override String get typeManualDesc => 'اكتب عنوان Lightning أو فاتورة Lightning أو LNURL';
-	@override String get useValidPaymentRequest => 'يرجى استخدام طلب دفع صحيح';
+	@override String get contacts => 'الاتصالات';
+	@override String get typeManualDesc => 'اكتب عنوان Lightning، فاتورة Lightning أو LNURL';
+	@override String get useValidPaymentRequest => 'يرجى استخدام طلب دفع صالح';
 	@override String get save => 'حفظ';
-	@override String get saveImageGallery => 'تم تحميل الصورة إلى معرضك';
-	@override String get errorSavingImage => 'حدث خطأ أثناء تحميل الصورة';
-	@override String get copyImageGallery => 'تم نسخ الصورة إلى الحافظة';
+	@override String get saveImageGallery => 'تم تنزيل الصورة إلى معرضك';
+	@override String get errorSavingImage => 'حدث خطأ أثناء تنزيل الصورة';
+	@override String get copyImageGallery => 'تم نسخ الصورة إلى حافظتك';
 	@override String get errorCopyImage => 'حدث خطأ أثناء نسخ الصورة';
 	@override String get scan => 'مسح';
-	@override String get invalidLightningAddress => 'عنوان lightning غير صحيح';
-	@override String get deleteAccountDesc => 'أنت على وشك حذف حسابك، هل تريد المتابعة؟';
-	@override String get paymentFailedInvoice => 'فشل الدفع: تحقق من صحة هذه الفاتورة';
-	@override String get validSatsAmount => 'تعيين مبلغ ساتس صحيح';
-	@override String get placeholder => 'نائب';
+	@override String get invalidLightningAddress => 'عنوان Lightning غير صالح';
+	@override String get deleteAccountDesc => 'أنت على وشك حذف حسابك، هل ترغب في المتابعة؟';
+	@override String get paymentFailedInvoice => 'فشل الدفع: تحقق من صلاحية هذه الفاتورة';
+	@override String get validSatsAmount => 'حدد مبلغ ساتوشي صالح';
+	@override String get placeholder => 'عنصر نائب';
 	@override String get inputFieldCustomization => 'تخصيص حقل الإدخال';
 	@override String get addInputField => 'إضافة حقل إدخال';
 	@override String get addButton => 'إضافة زر';
-	@override String get selectImage => 'اختيار صورة';
-	@override String get moveLeft => 'نقل يساراً';
-	@override String get moveRight => 'نقل يميناً';
-	@override String get buttonRequired => 'يجب أن يكون هناك زر واحد متاح على الأقل';
-	@override String get missingInputDesc => 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ويدجتك الذكية، يرجى إضافة حقل إدخال لتعمل الوظيفة بشكل صحيح.';
-	@override String get countdown => 'العد التنازلي';
-	@override String get contentEndsAt => 'المحتوى ينتهي في';
-	@override String get countdownTime => 'وقت العد التنازلي إجباري';
-	@override String get contentEndsDate => 'تاريخ انتهاء المحتوى إجباري';
-	@override String get lnMandatory => 'عنوان lightning إجباري';
-	@override String get pubkeysMandatory => 'ملف شخصي واحد على الأقل إجباري';
-	@override String get buttonNoUrl => 'روابط الأزرار إجبارية';
-	@override String get shareWidgetImage => 'مشاركة صورة الويدجت';
-	@override String get inputField => 'حقل الإدخال';
-	@override String get noReplies => 'لا توجد ردود';
+	@override String get selectImage => 'اختر صورة';
+	@override String get moveLeft => 'تحريك يسارًا';
+	@override String get moveRight => 'تحريك يمينًا';
+	@override String get buttonRequired => 'يجب أن تكون هناك زر واحد على الأقل متاح';
+	@override String get missingInputDesc => 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ودجيتك الذكي، يرجى إضافة حقل إدخال حتى تعمل الوظيفة بشكل صحيح.';
+	@override String get countdown => 'عد تنازلي';
+	@override String get contentEndsAt => 'ينتهي المحتوى في';
+	@override String get countdownTime => 'وقت العد التنازلي إلزامي';
+	@override String get contentEndsDate => 'تاريخ انتهاء المحتوى إلزامي';
+	@override String get lnMandatory => 'عنوان Lightning إلزامي';
+	@override String get pubkeysMandatory => 'ملف شخصي واحد على الأقل إلزامي';
+	@override String get buttonNoUrl => 'روابط الأزرار إلزامية';
+	@override String get shareWidgetImage => 'مشاركة صورة الودجيت';
+	@override String get inputField => 'حقل إدخال';
+	@override String get noReplies => 'لا ردود';
 	@override String get message => 'رسالة';
 	@override String get chat => 'دردشة';
-	@override String get onlyLettersNumber => 'الحروف والأرقام فقط مسموحة';
-	@override String get appCache => 'ذاكرة التطبيق المؤقتة';
-	@override String get cachedData => 'البيانات المخزنة مؤقتاً';
-	@override String get cachedMedia => 'الوسائط المخزنة مؤقتاً';
-	@override String get cacheCleared => 'تم مسح الذاكرة المؤقتة';
-	@override String get closeAppClearingCache => 'من الأفضل إعادة تشغيل التطبيق عند مسح الذاكرة المؤقتة لضمان سريان جميع التغييرات وتشغيل التطبيق بسلاسة';
-	@override String get appCacheNotice => 'ذاكرة التطبيق المؤقتة تزداد في الحجم. لضمان الأداء السلس، يُنصح بمسح البيانات القديمة.';
-	@override String get manageCache => 'إدارة الذاكرة المؤقتة';
-	@override String get filterByTime => 'التصفية حسب الوقت';
-	@override String get allTime => 'كل الأوقات';
+	@override String get onlyLettersNumber => 'مسموح بالحروف والأرقام فقط';
+	@override String get appCache => 'كاش التطبيق';
+	@override String get cachedData => 'البيانات المخزنة';
+	@override String get cachedMedia => 'الوسائط المخزنة';
+	@override String get cacheCleared => 'تم مسح الكاش';
+	@override String get closeAppClearingCache => 'من الأفضل إعادة تشغيل التطبيق بعد مسح الكاش لضمان تطبيق جميع التغييرات وتشغيل التطبيق بسلاسة';
+	@override String get appCacheNotice => 'كاش تطبيقك يزداد حجما. لضمان أداء سلس، يُوصى بمسح البيانات القديمة.';
+	@override String get manageCache => 'إدارة الكاش';
+	@override String get filterByTime => 'تصفية حسب الوقت';
+	@override String get allTime => 'كل الوقت';
 	@override String get oneMonth => 'شهر واحد';
 	@override String get threeMonths => '3 أشهر';
 	@override String get sixMonths => '6 أشهر';
 	@override String get oneYear => 'سنة واحدة';
 	@override String get defaultZapAmount => 'مبلغ الزاب الافتراضي';
-	@override String get oneTapZap => 'تفعيل زاب بنقرة واحدة';
+	@override String get oneTapZap => 'تمكين زاب بنقرة واحدة';
 	@override String get verify => 'التحقق';
 	@override String get reset => 'إعادة تعيين';
-	@override String get appCannotVerified => 'لا يمكن التحقق من التطبيق أو أنه غير صحيح';
-	@override String get useValidAppUrl => 'استخدم رابط تطبيق صحيح';
+	@override String get appCannotVerified => 'لا يمكن التحقق من التطبيق أو غير صالح';
+	@override String get useValidAppUrl => 'استخدم رابط تطبيق صالح';
 	@override String get app => 'التطبيق';
 	@override String get userNotConnected => 'المستخدم غير متصل';
-	@override String get userCannotSignEvent => 'هذا المستخدم لا يستطيع توقيع الأحداث.';
-	@override String get invalidEvent => 'حدث غير صحيح';
+	@override String get userCannotSignEvent => 'لا يمكن لهذا المستخدم توقيع الأحداث.';
+	@override String get invalidEvent => 'حدث غير صالح';
 	@override String get eventCannotBeSigned => 'لا يمكن توقيع الحدث';
 	@override String get signEvent => 'توقيع الحدث';
 	@override String get sign => 'توقيع';
@@ -1135,297 +1136,345 @@ class TranslationsAr extends Translations {
 	@override String get signEventDes => 'أنت على وشك توقيع الحدث التالي';
 	@override String get enableAutomaticSigning => 'التوقيع التلقائي';
 	@override String get tools => 'الأدوات';
-	@override String get searchSmartWidgets => 'البحث عن ويدجت ذكية';
-	@override String get noToolsAvailable => 'لا توجد أدوات متاحة';
+	@override String get searchSmartWidgets => 'البحث عن ودجيتات ذكية';
+	@override String get noToolsAvailable => 'لا أدوات متاحة';
 	@override String get underMaintenance => 'تحت الصيانة';
-	@override String get smartWidgetMaintenance => 'الويدجت الذكية معطلة للصيانة. نحن نصلحها وستعود قريباً!';
+	@override String get smartWidgetMaintenance => 'الودجيت الذكي متوقف للصيانة. نحن نصلحه وسيعود قريبًا!';
 	@override String get mySavedTools => 'أدواتي المحفوظة';
 	@override String get availableTools => 'الأدوات المتاحة';
 	@override String get remove => 'إزالة';
 	@override String get youHaveNoTools => 'ليس لديك أدوات';
 	@override String get discoverTools => 'اكتشف الأدوات المنشورة لمساعدتك في إنشاء المحتوى';
-	@override String get addWidgetTools => 'إضافة أدوات ويدجت';
-	@override String get widgetSearch => 'البحث عن ويدجت';
-	@override String get widgetSearchDesc => 'البحث عن ويدجت ذكية منشورة وما صنعه الناس';
-	@override String get getInspired => 'احصل على الإلهام';
-	@override String get getInspirtedDesc => 'اطلب من الذكاء الاصطناعي مساعدتك في بناء ويدجتك الذكية';
+	@override String get addWidgetTools => 'إضافة أدوات الودجيت';
+	@override String get widgetSearch => 'بحث الودجيت';
+	@override String get widgetSearchDesc => 'البحث عن ودجيتات ذكية منشورة وما صنعه الناس';
+	@override String get getInspired => 'احصل على إلهام';
+	@override String get getInspirtedDesc => 'اطلب من إي آي الخاص بنا مساعدتك في بناء ودجيتك الذكي';
 	@override String get trySearch => 'جرب طرق بحث مختلفة';
 	@override String get typeForCommands => 'اكتب / للأوامر';
 	@override String get loadMore => 'تحميل المزيد';
 	@override String searchingFor({required Object name}) => 'البحث عن: ${name}';
-	@override String get playground => 'ساحة اللعب';
-	@override String get typeKeywords => 'اكتب كلمات مفتاحية (مثال: كلمة1، كلمة2..)';
+	@override String get playground => 'ملعب';
+	@override String get typeKeywords => 'اكتب كلمات مفتاحية (مثل: Keyword1, Keyword2..)';
 	@override String get enableGossip => 'نموذج Gossip';
-	@override String get enableGossipDesc => 'نموذج Gossip معطل افتراضياً. يمكنك تفعيله في الإعدادات تحت إشراف المحتوى.';
+	@override String get enableGossipDesc => 'نموذج Gossip معطل افتراضيًا. يمكنك تمكينه في الإعدادات، تحت الإشراف على المحتوى.';
 	@override String get enableExternalBrowser => 'استخدام متصفح خارجي';
-	@override String get restartAppTakeEffect => 'أعد تشغيل التطبيق لتسري العملية';
+	@override String get restartAppTakeEffect => 'أعد تشغيل التطبيق ليصبح الإجراء ساري المفعول';
 	@override String get tips => 'نصائح';
-	@override String get docs => 'المستندات';
-	@override String get tryMiniApp => 'جرب تطبيقك المصغر بالاختبار العملي والتفاعلي.';
-	@override String get exploreOurRepos => 'استكشف مستودعاتنا أو تحقق من مستندات الويدجت الذكية.';
-	@override String get bringAi => 'نحن نجلب الذكاء الاصطناعي!';
-	@override String get bringAiDesc => 'نحن نصنع مساعد ذكاء اصطناعي لتبسيط عملك مع الويدجت القابلة للبرمجة وتطوير التطبيقات المصغرة—ترقبوا!';
+	@override String get docs => 'الوثائق';
+	@override String get tryMiniApp => 'جرب تطبيقك الصغير مع اختبار عملي تفاعلي.';
+	@override String get exploreOurRepos => 'استكشف مستودعاتنا أو تحقق من وثائق ودجيتاتنا الذكية.';
+	@override String get bringAi => 'نحن نأتي بالإي آي!';
+	@override String get bringAiDesc => 'نحن نصنع مساعد إي آي لتبسيط عملك مع الودجيتات القابلة للبرمجة وتطوير التطبيقات الصغيرة — راقب!';
 	@override String notesCount({required Object number}) => '${number} ملاحظة(ات)';
 	@override String mixedContentCount({required Object number}) => '${number} محتوى';
-	@override String get noApp => 'لم يتم العثور على تطبيق مناسب لفتح الملف المُصدَّر';
-	@override String andMore({required Object number}) => 'و ${number} آخر(ين)';
-	@override String get addFilter => 'إضافة مرشح';
-	@override String get entitleFilter => 'عنوان المرشح';
-	@override String get includedWords => 'الكلمات المُضمنة';
-	@override String get excludedWords => 'الكلمات المُستبعدة';
+	@override String get noApp => 'لم يتم العثور على تطبيق مناسب لفتح الملف المصدر';
+	@override String andMore({required Object number}) => 'و ${number} آخر(ون)';
+	@override String get addFilter => 'إضافة فلتر';
+	@override String get entitleFilter => 'عنوان الفلتر';
+	@override String get includedWords => 'الكلمات المضمنة';
+	@override String get excludedWords => 'الكلمات المستبعدة';
 	@override String get hideSensitiveContent => 'إخفاء المحتوى الحساس';
-	@override String get mustIncludeThumbnail => 'يجب تضمين صورة مصغرة';
+	@override String get mustIncludeThumbnail => 'يجب تضمين الصورة المصغرة';
 	@override String get forArticles => 'للمقالات';
 	@override String get forVideos => 'للفيديوهات';
 	@override String get forCurations => 'للتنسيقات';
-	@override String get articleMinWords => 'الحد الأدنى لعدد كلمات المحتوى';
-	@override String get showOnlyArticleMedia => 'إظهار المقالات التي تحتوي على وسائط فقط';
-	@override String get showOnlyNotesMedia => 'إظهار الملاحظات التي تحتوي على وسائط فقط';
+	@override String get articleMinWords => 'عدد كلمات المحتوى الأدنى';
+	@override String get showOnlyArticleMedia => 'عرض المقالات ذات الوسائط فقط';
+	@override String get showOnlyNotesMedia => 'عرض الملاحظات ذات الوسائط فقط';
 	@override String get curationsType => 'نوع التنسيقات';
-	@override String get minItemCount => 'الحد الأدنى لعدد العناصر';
-	@override String get addWord => 'إضافة كلمة مناسبة';
-	@override String get wordNotInIncluded => 'تأكد من أن الكلمة ليست في الكلمات المُضمنة';
-	@override String get wordNotInExcluded => 'تأكد من أن الكلمة ليست في الكلمات المُستبعدة';
+	@override String get minItemCount => 'عدد العناصر الأدنى';
+	@override String get addWord => 'أضف كلمة مناسبة';
+	@override String get wordNotInIncluded => 'تأكد من أن الكلمة غير موجودة في الكلمات المضمنة';
+	@override String get wordNotInExcluded => 'تأكد من أن الكلمة غير موجودة في الكلمات المستبعدة';
 	@override String get fieldRequired => 'الحقل مطلوب';
-	@override String get filterAdded => 'تم إضافة المرشح';
-	@override String get filterUpdated => 'تم تحديث المرشح';
-	@override String get filterDeleted => 'تم حذف المرشح';
-	@override String get filters => 'المرشحات';
-	@override String get contentFeed => 'تدفق المحتوى';
-	@override String get communityFeed => 'تدفق المجتمع';
-	@override String get relaysFeed => 'تدفق المرحلات';
-	@override String get marketplaceFeed => 'تدفق السوق';
-	@override String get addYourFeed => 'أضف تدفقك المفضل';
+	@override String get filterAdded => 'تم إضافة الفلتر';
+	@override String get filterUpdated => 'تم تحديث الفلتر';
+	@override String get filterDeleted => 'تم حذف الفلتر';
+	@override String get filters => 'الفلاتر';
+	@override String get contentFeed => 'تغذية المحتوى';
+	@override String get communityFeed => 'تغذية المجتمع';
+	@override String get relaysFeed => 'تغذية الترحيلات';
+	@override String get marketplaceFeed => 'تغذية السوق';
+	@override String get addYourFeed => 'أضف تغذيتك المفضلة';
 	@override String get myList => 'قائمتي';
-	@override String get allFreeFeeds => 'جميع التدفقات المجانية';
-	@override String get noRelays => 'لا توجد مرحلات';
-	@override String get addRelays => 'أضف قائمة مرحلاتك للاستمتاع بتدفق نظيف ومخصص';
-	@override String get adjustYourFeedList => 'اضبط قائمة تدفقك';
-	@override String get addRelayUrl => 'إضافة رابط المرحل';
-	@override String get feedOptionEnabled => 'يجب تفعيل خيار تدفق واحد على الأقل';
-	@override String get feedSetUpdate => 'تم تحديث مجموعة التدفق';
+	@override String get allFreeFeeds => 'جميع التغذيات المجانية';
+	@override String get noRelays => 'لا توجد ترحيلات';
+	@override String get addRelays => 'أضف قائمة ترحيلاتك للاستمتاع بتغذية نظيفة ومخصصة';
+	@override String get adjustYourFeedList => 'ضبط قائمة تغذيتك';
+	@override String get addRelayUrl => 'إضافة رابط الترحيل';
+	@override String get feedOptionEnabled => 'يجب تمكين خيار تغذية واحد على الأقل';
+	@override String get feedSetUpdate => 'تم تحديث مجموعة التغذية';
 	@override String get global => 'عالمي';
 	@override String get fromNetwork => 'من الشبكة';
 	@override String get top => 'الأعلى';
-	@override String get showFollowingList => 'تدفقك الحالي مبني على قائمة متابعة شخص آخر، ابدأ في متابعة أشخاص لتخصيص تدفقك حسب تفضيلك';
+	@override String get showFollowingList => 'تغذيتك الحالية مبنية على قائمة متابعة شخص آخر، ابدأ في متابعة الناس لتخصيص تغذيتك حسب تفضيلاتك';
 	@override String get from => 'من';
 	@override String get to => 'إلى';
 	@override String get dayMonthYear => 'يوم/شهر/سنة';
-	@override String get fromDateMessage => 'تاريخ \'من\' يجب أن يكون سابقاً لتاريخ \'إلى\'';
-	@override String get toDateMessage => 'تاريخ \'إلى\' يجب أن يكون لاحقاً لتاريخ \'من\'';
-	@override String get noResults => 'لا توجد نتائج';
-	@override String get noResultsFilterMessage => 'يبدو أنك تطبق مرشحاً مخصصاً، يرجى ضبط المعاملات والتواريخ للحصول على المزيد من البيانات';
-	@override String get noResultsNoFilterMessage => 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معاملات مرشح مختلفة';
-	@override String get addToNotes => 'إضافة للملاحظات';
-	@override String get addToDiscover => 'إضافة للاكتشاف';
-	@override String get shareRelayContent => 'مشاركة محتوى المرحل';
-	@override String get shareRelayUrl => 'مشاركة رابط المرحل';
+	@override String get fromDateMessage => 'تاريخ \'من\' يجب أن يكون أقدم من تاريخ \'إلى\'';
+	@override String get toDateMessage => 'تاريخ \'إلى\' يجب أن يكون أحدث من تاريخ \'من\'';
+	@override String get noResults => 'لا نتائج';
+	@override String get noResultsFilterMessage => 'يبدو أنك تستخدم فلتر مخصص، يرجى ضبط المعلمات والتواريخ للحصول على مزيد من البيانات';
+	@override String get noResultsNoFilterMessage => 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معلمات فلتر مختلفة';
+	@override String get addToNotes => 'إضافة إلى الملاحظات';
+	@override String get addToDiscover => 'إضافة إلى الاكتشاف';
+	@override String get shareRelayContent => 'مشاركة محتوى الترحيل';
+	@override String get shareRelayUrl => 'مشاركة رابط الترحيل';
 	@override String get basic => 'أساسي';
 	@override String get privateMessages => 'الرسائل الخاصة';
-	@override String get pushNotifications => 'الإشعارات الفورية';
+	@override String get pushNotifications => 'إشعارات الدفع';
 	@override String get repliesView => 'عرض الردود';
-	@override String get threadView => 'خيط';
-	@override String get boxView => 'صندوق';
+	@override String get threadView => 'الخيط';
+	@override String get boxView => 'الصناديق';
 	@override String get viewAs => 'عرض كـ';
-	@override String get feedSettings => 'إعدادات التدفق';
-	@override String get appliedFilterDesc => 'هذه الملاحظة مخفية بسبب المرشح المطبق حالياً.';
-	@override String get showNote => 'إظهار الملاحظة';
+	@override String get feedSettings => 'إعدادات التغذية';
+	@override String get appliedFilterDesc => 'هذه الملاحظة مخفية بسبب الفلتر المطبق حاليًا.';
+	@override String get showNote => 'عرض الملاحظة';
 	@override String get allMedia => 'جميع الوسائط';
-	@override String get searchInNostr => 'البحث في نوستر';
-	@override String get findPeopleContent => 'البحث عن أشخاص وملاحظات ومحتوى';
+	@override String get searchInNostr => 'البحث في Nostr';
+	@override String get findPeopleContent => 'ابحث عن الناس والملاحظات والمحتوى';
 	@override String get activeService => 'الخدمة النشطة';
 	@override String get regularServers => 'الخوادم العادية';
 	@override String get blossomServers => 'خوادم BLOSSOM';
 	@override String get mirrorAllServer => 'مرآة جميع الخوادم';
 	@override String get mainServer => 'الخادم الرئيسي';
-	@override String get select => 'اختيار';
+	@override String get select => 'اختر';
 	@override String get noServerFound => 'لم يتم العثور على خادم';
 	@override String get serverExists => 'الخادم موجود بالفعل في قائمتك';
-	@override String get invalidUrl => 'تنسيق رابط غير صحيح';
+	@override String get invalidUrl => 'تنسيق رابط غير صالح';
 	@override String get serverPath => 'مسار الخادم';
-	@override String get errorAddingBlossom => 'حدث خطأ أثناء إضافة خادم blossom';
-	@override String get errorSelectBlossom => 'حدث خطأ أثناء اختيار خادم blossom';
-	@override String get errorDeleteBlossom => 'حدث خطأ أثناء حذف خادم blossom';
-	@override String get wotConfig => 'إعداد شبكة الثقة';
-	@override String get wot => 'شبكة الثقة';
-	@override String get wotThreshold => 'عتبة شبكة الثقة';
+	@override String get errorAddingBlossom => 'حدث خطأ أثناء إضافة خادم Blossom';
+	@override String get errorSelectBlossom => 'حدث خطأ أثناء اختيار خادم Blossom';
+	@override String get errorDeleteBlossom => 'حدث خطأ أثناء حذف خادم Blossom';
+	@override String get wotConfig => 'تكوين Web of Trust';
+	@override String get wot => 'Web of Trust';
+	@override String get wotThreshold => 'عتبة Web of Trust';
 	@override String get postActions => 'إجراءات المنشور';
-	@override String get enabledFor => 'مُفعل لـ';
-	@override String get dmRelayTitle => 'مرحلات الرسائل الخاصة غير مُعدة!';
-	@override String get dmRelayDesc => 'حدث قائمة مرحلاتك وفقاً لذلك. ';
+	@override String get enabledFor => 'ممكن لـ';
+	@override String get dmRelayTitle => 'ترحيلات الرسائل الخاصة غير مهيأة!';
+	@override String get dmRelayDesc => 'قم بتحديث قائمة الترحيلات وفقًا لذلك.';
 	@override String get youFollow => 'أنت تتابع';
-	@override String get quotaLimit => 'لقد تجاوزت حد الحصة اليومي';
-	@override String get alwaysUseExternal => 'استخدم دائماً زابس المحفظة الخارجية';
-	@override String get alwaysUseExternalDesc => 'استخدم تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
+	@override String get quotaLimit => 'لقد تجاوزت حد الكمية اليومي';
+	@override String get alwaysUseExternal => 'استخدم دائمًا زابات المحفظة الخارجية';
+	@override String get alwaysUseExternalDesc => 'استخدم تطبيق محفظة Lightning خارجي بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
 	@override String get unreachableExternalWallet => 'محفظة خارجية غير قابلة للوصول';
-	@override String get secureStorageDesc => 'مفاتيحك مُخزنة بأمان على جهازك ولا تُشارك معنا أو مع أي شخص آخر أبداً.';
-	@override String get pubkeySharedDesc => 'آمن للمشاركة - هذا يُعرفك على نوستر.';
-	@override String get privKeyDesc => 'احتفظ به خاصاً - احفظه بأمان للوصول لحسابك في مكان آخر.';
-	@override String get settingsKeysDesc => 'إدارة مفاتيح نوستر لهوية الشبكة وتوقيع الأحداث ومصادقة المنشورات.';
-	@override String get settingsRelaysDesc => 'إعداد اتصالات مرحل نوستر لتخزين وتوزيع الأحداث.';
-	@override String get settingsCustomizationDesc => 'تخصيص عرض تدفق YakiHonne والإيماءات والمعاينات والتفضيلات لتجربة نوستر أفضل.';
-	@override String get settingsNotificationsDesc => 'التحكم في الإشعارات للرسائل والإشارات والتفاعلات وأحداث نوستر الأخرى.';
-	@override String get settingsContentDesc => 'التحكم في تفاعلات المحتوى وإعدادات الخصوصية ومعالجة الوسائط وتفضيلات الرسائل على نوستر.';
-	@override String get settingsLanguageDesc => 'اختر لغتك المفضلة لواجهة YakiHonne وترجمة المحتوى.';
-	@override String get settingsWalletDesc => 'ربط وإدارة محافظ Bitcoin Lightning لإرسال/استقبال الزابس بمبالغ قابلة للتخصيص وتكامل خارجي.';
-	@override String get settingsAppearanceDesc => 'تخصيص المظهر البصري لـ YakiHonne ليطابق تفضيلاتك وراحة المشاهدة.';
-	@override String get settingsCacheDesc => 'إدارة مراقبة أداء التطبيق وتقارير الأخطاء وتحسين التخزين للتشغيل السلس.';
-	@override String get addQuickRelayDesc => 'إضافة مرحل جديد بسرعة عبر إدخال رابطه.';
-	@override String get fewerRelays => 'مرحلات مستقرة أقل = أداء أفضل ومزامنة أسرع.';
-	@override String get greenDotsDesc => 'النقاط الخضراء تُظهر الاتصالات النشطة.';
-	@override String get redDotsDesc => 'النقاط الحمراء تُظهر المرحلات غير المتصلة.';
-	@override String get greyDotsDesc => 'النقاط الرمادية تُظهر المرحلات المعلقة.';
-	@override String get homeFeedCustomDesc => 'اختر نمط عرض الردود (صندوق أو خيط) وإدارة تفضيلات الاقتراحات للأشخاص والمحتوى والاهتمامات.';
-	@override String get NewPostDesc => 'اختر ما يحدث عند الضغط المطول أثناء إنشاء المنشورات (مُعين حالياً على ملاحظة).';
-	@override String get profilePreviewDesc => 'إظهار معاينات الملف الشخصي للمستخدم عند النقر على أسماء المستخدمين في تدفقك.';
-	@override String get collapseNoteDesc => 'تصغير المنشورات الطويلة تلقائياً للحفاظ على تدفقك نظيفاً وقابلاً للقراءة.';
-	@override String get pushNotificationsDesc => 'احصل على تنبيهات فورية على جهازك. يركز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة';
-	@override String get privateMessagesDesc => 'احصل على تنبيه للرسائل المباشرة الجديدة والمحادثات الخاصة.';
-	@override String get followingDesc => 'احصل على إشعار عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.';
-	@override String get mentionsDesc => 'احصل على تنبيه عندما يذكرك شخص أو يرد على منشوراتك.';
-	@override String get repostsDesc => 'احصل على تنبيه عندما يشارك أو يعيد نشر شخص محتواك.';
-	@override String get reactionsDesc => 'احصل على إشعار عندما يعجب أو يتفاعل شخص مع منشوراتك.';
-	@override String get zapDesc => 'احصل على إشعار عندما تستقبل إكراميات Bitcoin (زابس) على منشوراتك.';
-	@override String get muteListDesc => 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تدفقك.';
-	@override String get mediaUploaderDesc => 'اختر أي خدمة ترفع صورك وملفات الوسائط.';
-	@override String get autoSignDesc => 'توقيع الأحداث المطلوبة من التطبيقات المصغرة (ويدجت ذكية للإجراء/الأداة) تلقائياً دون تأكيد يدوي في كل مرة.';
-	@override String get gossipDesc => 'إدارة مرحل متطورة تجد منشورات متابعيك تلقائياً عبر مرحلات مختلفة مع تقليل الاتصالات والتكيف مع المرحلات غير المتصلة.';
+	@override String get secureStorageDesc => 'مفاتيحك مخزنة بشكل آمن على جهازك ولا تتم مشاركتها معنا أو مع أي شخص آخر.';
+	@override String get pubkeySharedDesc => 'آمن للمشاركة - يحددك هذا على Nostr.';
+	@override String get privKeyDesc => 'احتفظ به خاصًا - قم بعمل نسخة احتياطية آمنة للوصول إلى حسابك في مكان آخر.';
+	@override String get settingsKeysDesc => 'إدارة مفاتيح Nostr الخاصة بك للهوية الشبكية، توقيع الأحداث، ومصادقة المنشورات.';
+	@override String get settingsRelaysDesc => 'تكوين اتصالات ترحيل Nostr لتخزين وتوزيع الأحداث.';
+	@override String get settingsCustomizationDesc => 'خصص عرض تغذية YakiHonne، الإيماءات، المعاينات، والتفضيلات لتجربة Nostr أفضل.';
+	@override String get settingsNotificationsDesc => 'تحكم في الإشعارات للرسائل، الإشارات، التفاعلات، وأحداث Nostr الأخرى.';
+	@override String get settingsContentDesc => 'تحكم في التفاعلات مع المحتوى، إعدادات الخصوصية، معالجة الوسائط، وتفضيلات الرسائل على Nostr.';
+	@override String get settingsLanguageDesc => 'اختر اللغة المفضلة لواجهة YakiHonne وترجمة المحتوى.';
+	@override String get settingsWalletDesc => 'اتصل وأدر محافظ Bitcoin Lightning لإرسال/استلام الزابات مع مبالغ قابلة للتخصيص وتكامل خارجي.';
+	@override String get settingsAppearanceDesc => 'خصص مظهر YakiHonne ليتناسب مع تفضيلاتك وراحة العرض.';
+	@override String get settingsCacheDesc => 'إدارة مراقبة أداء التطبيق، تقارير الأخطاء، وتحسين التخزين لعمل سلس.';
+	@override String get addQuickRelayDesc => 'أضف ترحيلًا جديدًا بسرعة بإدخال URL الخاص به.';
+	@override String get fewerRelays => 'ترحيلات أقل مستقرة = أداء أفضل ومزامنة أسرع.';
+	@override String get greenDotsDesc => 'النقاط الخضراء تظهر الاتصالات النشطة.';
+	@override String get redDotsDesc => 'النقاط الحمراء تظهر الترحيلات غير المتصلة.';
+	@override String get greyDotsDesc => 'النقاط الرمادية تظهر الترحيلات المعلقة.';
+	@override String get homeFeedCustomDesc => 'اختر أسلوب عرض الردود (صناديق أو خيط) وأدر تفضيلات الاقتراحات للأشخاص، المحتوى، والاهتمامات.';
+	@override String get NewPostDesc => 'اختر ما يحدث عند الضغط الطويل أثناء إنشاء المنشورات (مضبوط حاليًا على ملاحظة).';
+	@override String get profilePreviewDesc => 'عرض معاينات الملف الشخصي عند النقر على أسماء المستخدمين في تغذيتك.';
+	@override String get collapseNoteDesc => 'تصغير المنشورات الطويلة تلقائيًا للحفاظ على تغذيتك نظيفة وقابلة للقراءة.';
+	@override String get pushNotificationsDesc => 'احصل على تنبيهات فورية على جهازك. تركيز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة';
+	@override String get privateMessagesDesc => 'احصل على تنبيهات للرسائل المباشرة الجديدة والمحادثات الخاصة.';
+	@override String get followingDesc => 'احصل على إشعارات عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.';
+	@override String get mentionsDesc => 'احصل على تنبيهات عندما يذكرك شخص أو يرد على منشوراتك.';
+	@override String get repostsDesc => 'احصل على تنبيهات عندما يشارك شخص أو يعاد نشر محتواك.';
+	@override String get reactionsDesc => 'احصل على إشعارات عندما يعجب شخص أو يتفاعل مع منشوراتك.';
+	@override String get zapDesc => 'احصل على إشعارات عندما تستلم نصائح Bitcoin (زابات) على منشوراتك.';
+	@override String get muteListDesc => 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تغذيتك.';
+	@override String get mediaUploaderDesc => 'اختر الخدمة التي ترفع صورك وملفات الوسائط.';
+	@override String get autoSignDesc => 'توقيع الأحداث تلقائيًا المطلوبة من التطبيقات الصغيرة (ودجيتات الإجراء/الأداة) دون تأكيد يدوي كل مرة.';
+	@override String get gossipDesc => 'إدارة ترحيلات متطورة تجد تلقائيًا منشورات متابعيك عبر ترحيلات مختلفة مع تقليل الاتصالات والتكيف مع الترحيلات غير المتصلة.';
 	@override String get useExternalBrowsDesc => 'فتح الروابط في تطبيق المتصفح الافتراضي بدلاً من المتصفح المدمج.';
-	@override String get secureDmDesc => 'استخدام أحدث معيار رسائل خاصة (NIP-17) مع تشفير متقدم. عطل لاستخدام تنسيق NIP-4 القديم للتوافق.';
-	@override String get wotConfigDesc => 'آلية ثقة لامركزية تستخدم شهادات اجتماعية لإنشاء سمعة ضمن بروتوكول نوستر.';
-	@override String get appLangDesc => 'اختر اللغة لواجهة YakiHonne والقوائم والأزرار.';
-	@override String get contentTransDesc => 'اختر خدمة الترجمة للمنشورات بلغات أجنبية.';
-	@override String get planDesc => 'مستوى خطة الترجمة الحالية وحدود الاستخدام.';
-	@override String get manageWalletsDesc => 'إضافة وتنظيم محافظ Lightning لإرسال واستقبال زابس Bitcoin على نوستر.';
-	@override String get defaultZapDesc => 'تعيين مبلغ Bitcoin الافتراضي (بالساتس) عند إرسال زابس سريعة للمنشورات.';
-	@override String get enableZapDesc => 'نقرة واحدة ترسل المبلغ الافتراضي فوراً. النقر المزدوج يفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، النقر المزدوج يرسل المبلغ الافتراضي.';
-	@override String get externalWalletDesc => 'استخدام تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
-	@override String get fontSizeDesc => 'ضبط حجم النص في جميع أنحاء التطبيق لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.';
-	@override String get appThemeDesc => 'التبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.';
-	@override String get crashlyticsDesc => 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة تحسين الأداء وإصلاح الأخطاء. نستخدم تحليلات Umami لتحسين تجربتك. اختر عدم المشاركة في أي وقت.';
-	@override String get showSuggDesc => 'عرض توصيات المحتوى العامة في تدفقك.';
-	@override String get showSuggPeople => 'إظهار المستخدمين الموصى بهم للمتابعة بناءً على نشاطك.';
-	@override String get showSuggContent => 'عرض المنشورات والمقالات الموصى بها في تدفقك.';
-	@override String get showSuggInterests => 'إظهار توصيات الموضوعات والاهتمامات للاكتشاف.';
-	@override String get striveToMake => 'نسعى لتحقيق أفضل ما في نوستر، ادعمنا أدناه أو أرسل لنا تعليقاتك القيمة: زاب، رسائل مباشرة، github.';
-	@override String get errorAmber => 'لقد رفضت أو أنك متصل بالفعل بـ Amber';
-	@override String get useOneRelay => 'يجب أن تبقي على الأقل وسيط واحد متصل';
-	@override String get automaticPurge => 'تنظيف تلقائي للذاكرة المؤقتة';
-	@override String get automaticPurgeDesc => 'مسح ذاكرة التطبيق المؤقتة تلقائيًا عند وصولها إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام المفرط للتخزين.';
-	@override String get customServices => 'خدمات مخصصة';
+	@override String get secureDmDesc => 'استخدم أحدث معيار للرسائل الخاصة (NIP-17) مع تشفير متقدم. تعطيل لاستخدام تنسيق NIP-4 القديم للتوافق.';
+	@override String get wotConfigDesc => 'آلية ثقة لامركزية تستخدم الشهادات الاجتماعية لإنشاء سمعة داخل بروتوكول Nostr.';
+	@override String get appLangDesc => 'اختر اللغة لواجهة YakiHonne، القوائم، والأزرار.';
+	@override String get contentTransDesc => 'اختر خدمة الترجمة للمنشورات باللغات الأجنبية.';
+	@override String get planDesc => 'مستوى خطة الترجمة الحالي وحدود الاستخدام.';
+	@override String get manageWalletsDesc => 'أضف ونظم محافظ Lightning الخاصة بك لإرسال واستلام زابات Bitcoin على Nostr.';
+	@override String get defaultZapDesc => 'حدد مبلغ Bitcoin الافتراضي (بالساتوشي) عند إرسال زابات سريعة للمنشورات.';
+	@override String get enableZapDesc => 'نقرة واحدة ترسل المبلغ الافتراضي فورًا. نقرتان تفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، نقرتان ترسل المبلغ الافتراضي.';
+	@override String get externalWalletDesc => 'استخدم تطبيق محفظة Lightning خارجي بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.';
+	@override String get fontSizeDesc => 'ضبط حجم النص في التطبيق بأكمله لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.';
+	@override String get appThemeDesc => 'تبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.';
+	@override String get crashlyticsDesc => 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة في تحسين الأداء وإصلاح الأخطاء. نستخدم Umami لتحسين تجربتك. الانسحاب في أي وقت.';
+	@override String get showSuggDesc => 'عرض توصيات المحتوى العامة في تغذيتك.';
+	@override String get showSuggPeople => 'عرض مستخدمين موصى بهم للمتابعة بناءً على نشاطك.';
+	@override String get showSuggContent => 'عرض منشورات ومقالات موصى بها في تغذيتك.';
+	@override String get showSuggInterests => 'عرض توصيات المواضيع والاهتمامات للاكتشاف.';
+	@override String get striveToMake => 'نسعى لجعل Nostr الأفضل، دعمنا أدناه أو أرسل لنا تغذيتك القيمة: زاب، رسائل مباشرة، جيتهاب.';
+	@override String get errorAmber => 'إما رفضت أو أنت متصل بالفعل مع amber';
+	@override String get useOneRelay => 'يجب أن تترك ترحيل واحد متصل على الأقل';
+	@override String get automaticPurge => 'مسح الكاش تلقائيًا';
+	@override String get automaticPurgeDesc => 'مسح كاش التطبيق تلقائيًا عند الوصول إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام الزائد للتخزين.';
+	@override String get customServices => 'الخدمات المخصصة';
 	@override String get defaultServices => 'الخدمات الافتراضية';
 	@override String get addService => 'إضافة خدمة';
-	@override String get customServicesDesc => 'الخدمات المخصصة المتوفرة التي أضفتها.';
-	@override String get urlRequired => 'عنوان URL مطلوب';
-	@override String get serviceAdded => 'تمت إضافة الخدمة';
+	@override String get customServicesDesc => 'الخدمات المخصصة المتاحة المضافة بواسطتك.';
+	@override String get urlRequired => 'الرابط مطلوب';
+	@override String get serviceAdded => 'تم إضافة الخدمة';
 	@override String get showRawEvent => 'عرض الحدث الخام';
 	@override String get rawEventData => 'بيانات الحدث الخام';
 	@override String get copyRawEventData => 'تم نسخ بيانات الحدث الخام! 👏';
 	@override String get kind => 'النوع';
 	@override String get shortNote => 'ملاحظة قصيرة';
-	@override String get postedOnDate => 'نُشر في';
+	@override String get postedOnDate => 'نشر في';
 	@override String get showMore => '... عرض المزيد';
-	@override String get accountDeleted => 'تم حذف هذا الحساب ولم يعد من الممكن الوصول إليه.';
-	@override String get ok => 'حسناً';
+	@override String get accountDeleted => 'تم حذف هذا الحساب ولا يمكن الوصول إليه بعد الآن.';
+	@override String get ok => 'حسنًا';
 	@override String get redeem => 'استبدال';
-	@override String get redeemCode => 'استبدال الرمز';
-	@override String get redeemAndEarn => 'استبدال واربح';
+	@override String get redeemCode => 'كود الاستبدال';
+	@override String get redeemAndEarn => 'استبدال وكسب';
 	@override String get redeemingFailed => 'فشل الاستبدال';
-	@override String get redeemInProgress => 'جارٍ استبدال الرمز...';
-	@override String get redeemCodeDesc => 'أدخل الرمز لاستبداله';
-	@override String get missingCode => 'الرمز مفقود';
-	@override String get missingPubkey => 'المفتاح العام مفقود';
-	@override String get invalidPubkey => 'المفتاح العام غير صالح';
-	@override String get missingLightningAddress => 'عنوان لايتنينغ مفقود';
-	@override String get codeNotFound => 'الرمز غير موجود';
-	@override String get redeemCodeRequired => 'رمز الاستبدال مطلوب';
-	@override String get redeemCodeInvalid => 'رمز الاستبدال غير صالح';
-	@override String get codeBeingRedeemed => 'يتم الآن استبدال الرمز. إذا لم يكتمل بنجاح، يرجى المحاولة مرة أخرى قريبًا.';
-	@override String get redeemCodeSuccess => 'تم استبدال الرمز بنجاح';
-	@override String get redeemFailed => 'تعذر استبدال الرمز، يرجى المحاولة لاحقًا.';
-	@override String get codeAlreadyRedeemed => 'تم استبدال الرمز بالفعل';
-	@override String satsEarned({required Object amount}) => '+${amount} ساتوشي مكتسبة.';
-	@override String get selectReceivingWallet => 'اختر المحفظة المستلمة';
-	@override String get redeemCodeMessage => 'احصل على ساتوشي مجانية باستخدام رموز YakiHonne — فقط أدخل الرمز وزد رصيدك فورًا.';
-	@override String get scanCode => 'مسح الرمز';
-	@override String get enterCode => 'أدخل الرمز';
+	@override String get redeemInProgress => 'جاري استبدال الكود...';
+	@override String get redeemCodeDesc => 'أدخل كودك لاستبداله';
+	@override String get missingCode => 'كود مفقود';
+	@override String get missingPubkey => 'pubkey مفقود';
+	@override String get invalidPubkey => 'pubkey غير صالح';
+	@override String get missingLightningAddress => 'عنوان Lightning مفقود';
+	@override String get codeNotFound => 'الكود غير موجود';
+	@override String get redeemCodeRequired => 'كود الاستبدال مطلوب';
+	@override String get redeemCodeInvalid => 'كود الاستبدال غير صالح';
+	@override String get codeBeingRedeemed => 'كودك يتم استبداله. إذا لم يتم بنجاح، يرجى المحاولة مرة أخرى قريبًا.';
+	@override String get redeemCodeSuccess => 'تم استبدال الكود بنجاح';
+	@override String get redeemFailed => 'تعذر استبدال الكود، يرجى المحاولة لاحقًا.';
+	@override String get codeAlreadyRedeemed => 'تم استبدال الكود بالفعل';
+	@override String satsEarned({required Object amount}) => '+${amount} ساتوشي مكسب.';
+	@override String get selectReceivingWallet => 'اختر محفظة الاستلام';
+	@override String get redeemCodeMessage => 'ادعي ساتوشي مجاني بكودات YakiHonne القابلة للاستبدال — أدخل كودك فقط وزد رصيدك فورًا.';
+	@override String get scanCode => 'مسح الكود';
+	@override String get enterCode => 'أدخل الكود';
 	@override String get errorSharingMedia => 'حدث خطأ أثناء مشاركة الوسائط';
 	@override String get open => 'فتح';
-	@override String get openUrl => 'فتح الرابط';
+	@override String get openUrl => 'فتح URL';
 	@override String openUrlDesc({required Object url}) => 'هل تريد فتح "${url}"؟';
-	@override String get openUrlPrompt => 'تأكيد فتح الرابط';
-	@override String get openUrlPromptDesc => 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.';
+	@override String get openUrlPrompt => 'تأكيد فتح URL';
+	@override String get openUrlPromptDesc => 'تأكيد أمان يعرض URL الكامل قبل فتحه في المتصفح.';
+	@override String get waitingForNetwork => 'انتظار الشبكة...';
 	@override String get whatsNew => 'ما الجديد';
 	@override String get appCustom => 'تخصيص التطبيق';
 	@override String get poll => 'استطلاع';
-	@override String get pendingEvents => 'الأحداث المعلقة';
-	@override String get pendingEventsDesc => 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.';
-	@override String get singleColumnFeed => 'عرض بعمود واحد';
-	@override String get singleColumnFeedDesc => 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.';
-	@override String get waitingPayment => 'في انتظار الدفع';
+	@override String get pendingEvents => 'أحداث معلقة';
+	@override String get pendingEventsDesc => 'تم إنشاء الأحداث المعلقة أثناء الغير متصل أو الاتصال الضعيف. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.';
+	@override String get singleColumnFeed => 'تغذية عمود واحد';
+	@override String get singleColumnFeedDesc => 'عرض تغذية الرئيسية كعمود واحد واسع لقراءة أفضل.';
+	@override String get waitingPayment => 'انتظار الدفع';
 	@override String get copyId => 'نسخ المعرف';
 	@override String get idCopied => 'تم نسخ المعرف! 👏';
-	@override String get republish => 'إعادة النشر';
-	@override String get useRelayRepublish => 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.';
-	@override String get republishSucces => 'تمت إعادة نشر الحدث بنجاح!';
+	@override String get republish => 'إعادة نشر';
+	@override String get useRelayRepublish => 'يجب اختيار ترحيل واحد على الأقل لإعادة النشر إليه.';
+	@override String get republishSucces => 'تم إعادة نشر الحدث بنجاح!';
 	@override String get errorRepublishEvent => 'حدث خطأ أثناء إعادة نشر الحدث';
-	@override String get remoteSigner => 'موقّع عن بُعد';
+	@override String get remoteSigner => 'توقيع عن بعد';
 	@override String get amber => 'Amber';
-	@override String get useUrlBunker => 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك';
+	@override String get useUrlBunker => 'استخدم URL أدناه للاتصال ببونكرك';
 	@override String get or => 'أو';
 	@override String get messagesDisabled => 'الرسائل معطلة';
-	@override String get messagesDisabledDesc => 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.';
-	@override String sharedOn({required Object date}) => 'تمت المشاركة في ${date}';
+	@override String get messagesDisabledDesc => 'أنت متصل بتوقيع عن بعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. لأفضل تجربة، استخدم توقيعًا محليًا لتمكين الرسائل المباشرة.';
+	@override String sharedOn({required Object date}) => 'مشارك في ${date}';
 	@override String get shareAsImage => 'مشاركة كصورة';
 	@override String get viewOptions => 'خيارات العرض';
-	@override String get feedCustomization => 'تخصيص الخلاصة';
+	@override String get feedCustomization => 'تخصيص التغذية';
 	@override String get defaultReaction => 'التفاعل الافتراضي';
-	@override String get defaultReactionDesc => 'حدد تفاعلًا افتراضيًا للرد على المنشورات.';
-	@override String get oneTapReaction => 'تفعيل التفاعل بنقرة واحدة';
-	@override String get oneTapReactionDesc => 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.';
-	@override String get sendingTo => 'يتم الإرسال إلى';
-	@override String get shareEmptyUsers => 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع';
-	@override String get publishOnly => 'النشر فقط إلى';
+	@override String get defaultReactionDesc => 'حدد تفاعلًا افتراضيًا للتفاعل مع المنشورات.';
+	@override String get oneTapReaction => 'تمكين تفاعل بنقرة واحدة';
+	@override String get oneTapReactionDesc => 'نقرة واحدة تفاعل بالتفاعل الافتراضي فورًا. نقرتان تفتح قائمة الإيموجي للاختيار. عند التعطيل، نقرتان ترسل التفاعل الافتراضي';
+	@override String get sendingTo => 'إرسال إلى';
+	@override String get shareEmptyUsers => 'قائمة متابعيك وأصدقائك ستظهر هنا لتجربة مشاركة أسرع';
+	@override String get publishOnly => 'نشر فقط إلى';
 	@override String get protectedEvent => 'حدث محمي';
-	@override String get protectedEventDesc => 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.';
-	@override String get browseRelay => 'تصفح المرسل';
+	@override String get protectedEventDesc => 'حدث محمي هو حدث يمكن إعادة نشره فقط من قبل مؤلفه. هذا يحافظ على أصالة المحتوى ويمنع الآخرين من نسخه أو إعادة إصداره.';
+	@override String get browseRelay => 'تصفح الترحيل';
 	@override String get addFavorite => 'إضافة إلى المفضلة';
 	@override String get removeFavorite => 'إزالة من المفضلة';
 	@override String get collections => 'المجموعات';
 	@override String get online => 'متصل';
 	@override String get offline => 'غير متصل';
 	@override String get network => 'الشبكة';
-	@override String followedBy({required Object number}) => 'يتابعك ${number}';
-	@override String favoredBy({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}';
-	@override String get requiredAuthentication => 'يتطلب المصادقة';
-	@override String get relayOrbits => 'دوائر المرسل';
-	@override String get relayOrbitsDesc => 'تصفح واستكشف خلاصات المرسلين';
-	@override String get people => 'الأشخاص';
+	@override String followedBy({required Object number}) => 'يتبعه ${number}';
+	@override String favoredBy({required Object number}) => 'مفضل لدى ${number}';
+	@override String get requiredAuthentication => 'مطلوب المصادقة';
+	@override String get relayOrbits => 'مدارات الترحيل';
+	@override String get relayOrbitsDesc => 'تصفح واستكشاف تغذيات الترحيل';
+	@override String get people => 'الناس';
 	@override String get youNotConnected => 'أنت غير متصل';
-	@override String get youNotConnectedDesc => 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك';
-	@override String get checkingRelayConnectivity => 'جاري التحقق من اتصال المرسل';
-	@override String get unreachableRelay => 'مرسل غير قابل للوصول';
-	@override String get engageWithUsers => 'تفاعل للتوسّع';
-	@override String get engageWithUsersDesc => 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.';
-	@override String get loadingChatHistory => 'جاري تحميل سجل المحادثة...';
+	@override String get youNotConnectedDesc => 'سجل الدخول إلى حسابك لتصفح ترحيلات شبكتك';
+	@override String get checkingRelayConnectivity => 'التحقق من اتصال الترحيل';
+	@override String get unreachableRelay => 'ترحيل غير قابل للوصول';
+	@override String get engageWithUsers => 'تفاعل للتوسع';
+	@override String get engageWithUsersDesc => 'التفاعل مع المزيد من المستخدمين يساعدك على اكتشاف ترحيلات جديدة ونمو قائمتك لتجربة أكثر ثراءً واتصالًا.';
+	@override String get loadingChatHistory => 'تحميل تاريخ الدردشة...';
 	@override String get contentActionsOrder => 'ترتيب إجراءات المحتوى';
-	@override String get contentActionsOrderDesc => 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.';
-	@override String get quotes => 'اقتباسات';
-	@override String get eventLoading => 'جارٍ تحميل الحدث...';
+	@override String get contentActionsOrderDesc => 'أعد ترتيب تفاعلات منشوراتك بسهولة لتناسب ترتيبك المفضل.';
+	@override String get quotes => 'الاقتباسات';
+	@override String get eventLoading => 'تحميل الحدث...';
 	@override String get loadMessages => 'تحميل الرسائل';
-	@override String get messagesNotLoaded => 'لم يتم تحميل الرسائل';
-	@override String get messagesNotLoadedDesc => 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.';
-	@override String get noteLoading => 'جارٍ تحميل الملاحظة...';
-	@override String get hideNonFollowedMedia => 'إخفاء الوسائط من غير المتابعين';
-	@override String get hideNonFollowedMediaDesc => 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.';
-	@override String get clickToView => 'اضغط للعرض';
-	@override String get relayFeedListEmpty => 'قائمة موجز المبدلات فارغة';
-	@override String get relayFeedListEmptyDesc => 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.';
-	@override String get addRelay => 'أضف مبدلات';
+	@override String get messagesNotLoaded => 'الرسائل غير محملة';
+	@override String get messagesNotLoadedDesc => 'الرسائل غير محملة بسبب استخدام توقيع عن بعد محلي، إذا كنت ترغب في تحميلها، انقر الزر أدناه.';
+	@override String get noteLoading => 'تحميل الملاحظة...';
+	@override String get hideNonFollowedMedia => 'إخفاء وسائط غير المتابعين';
+	@override String get hideNonFollowedMediaDesc => 'إخفاء الصور والفيديوهات تلقائيًا من المستخدمين غير المتابعين حتى النقر للكشف.';
+	@override String get clickToView => 'انقر للعرض';
+	@override String get relayFeedListEmpty => 'قائمة تغذيات الترحيلات فارغة';
+	@override String get relayFeedListEmptyDesc => 'أضف المزيد من الترحيلات إلى قائمتك للاستمتاع بتغذية مخصصة.';
+	@override String get addRelay => 'إضافة ترحيلات';
 	@override String get hiddenContent => 'محتوى مخفي';
-	@override String get hiddenContentDesc => 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.';
-	@override String get enabledActions => 'الإجراءات المفعّلة';
-	@override String get enabledActionsDesc => 'لا توجد إجراءات مفعّلة متاحة.';
+	@override String get hiddenContentDesc => 'لقد أخفينا هذا المحتوى لأنك لا تتابع هذا الحساب.';
+	@override String get enabledActions => 'الإجراءات الممكنة';
+	@override String get enabledActionsDesc => 'لا إجراءات ممكنة متاحة.';
+	@override String get fetchingNotificationEvent => 'جلب حدث الإشعار';
+	@override String get notificationEventNotFound => 'حدث الإشعار غير موجود';
+	@override String get fiatCurrency => 'العملة الورقية';
+	@override String get fiatCurrencyDesc => 'تحويل الساتوشي إلى العملة الورقية المختارة لفهم قيمتها بشكل أفضل';
+	@override String get linkPreview => 'معاينة الرابط';
+	@override String get linkPreviewDesc => 'تبديل لعرض أو إخفاء معاينات الروابط المشتركة في المنشورات.';
+	@override String get muteThread => 'كتم الخيط';
+	@override String get muteThreadDesc => 'أنت على وشك كتم الخيط، هل ترغب في المتابعة؟';
+	@override String get unmuteThread => 'إلغاء كتم الخيط';
+	@override String get unmuteThreadDesc => 'أنت على وشك إلغاء كتم الخيط، هل ترغب في المتابعة؟';
+	@override String get threadMuted => 'تم كتم الخيط';
+	@override String get threadUnmuted => 'تم إلغاء كتم الخيط';
+	@override String get noMutedEventsFound => 'لم يتم العثور على أحداث مكتمة.';
+	@override String get editCode => 'تحرير الكود';
+	@override String get previewCode => 'معاينة الكود';
+	@override String get liveCode => 'كود حي';
+	@override String get tag => 'وسم';
+	@override String get quickConnectRelay => 'اتصال سريع بالترحيل';
+	@override String get exploreSearchRelays => 'استكشاف ترحيلات البحث';
+	@override String get navigateToSearch => 'التنقل وإضافة ترحيلات بحث نشطة';
+	@override String get errorSavingVideo => 'حدث خطأ أثناء تنزيل الفيديو';
+	@override String get saveVideoGallery => 'تم تنزيل الفيديو إلى معرضك';
+	@override String get downloadingVideo => 'تنزيل الفيديو';
+	@override String get primaryColor => 'اللون الأساسي';
+	@override String get primaryColorDesc => 'اختر اللون البارز الذي يشكل مزاج التطبيق ويبرز العناصر الرئيسية.';
+	@override String get single => 'مفرد';
+	@override String get sets => 'مجموعات';
+	@override String get selectFromRelaySets => 'اختر من مجموعات الترحيل الخاصة بك';
+	@override String get favoriteRelays => 'الترحيلات المفضلة';
+	@override String get favoriteRelaySets => 'مجموعات الترحيل المفضلة';
+	@override String get addRelaySet => 'إضافة مجموعة ترحيل';
+	@override String get updateRelaySet => 'تحديث مجموعة الترحيل';
+	@override String get relaySetCreated => 'تم إنشاء مجموعة الترحيل';
+	@override String get errorOnCreatingRelaySet => 'حدث خطأ أثناء إنشاء مجموعة الترحيل';
+	@override String get errorOnUpdatingRelaySet => 'حدث خطأ أثناء تحديث مجموعة الترحيل';
+	@override String get relaySetDeleted => 'تم حذف مجموعة الترحيل';
+	@override String get errorDeletingRelaySet => 'حدث خطأ أثناء حذف مجموعة الترحيل';
+	@override String relaysNumber({required Object number}) => '${number} ترحيلات';
+	@override String get relaySetNotFound => 'لم يتم العثور على مجموعة الترحيل';
+	@override String get relaySetNotFoundDesc => 'مجموعة الترحيل مفقودة أو تم حذفها.';
+	@override String get savedRelaySets => 'مجموعات الترحيل المحفوظة';
+	@override String get relaysets => 'مجموعات الترحيل';
+	@override String get relaySetListEmpty => 'قائمة مجموعات الترحيل فارغة';
+	@override String get relaySetListEmptyDesc => 'قم بإنشاء مجموعات ترحيل لتنظيم الترحيلات الخاصة بك لأغراض وسيناريوهات مختلفة.';
+	@override String get favoriteRelaysFeed => 'تغذية الترحيلات المفضلة';
+	@override String get maxMentions => 'الحد الأقصى للإشارات';
+	@override String get maxMentionsDesc => 'إخفاء الإشعارات من الملاحظات التي تحتوي على أكثر من 10 إشارات لمستخدمين.';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -1442,61 +1491,61 @@ extension on TranslationsAr {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
-			'addNewBookmark' => 'لم يتم العثور على قائمة مفضلة، جرب إضافة واحدة!',
-			'setBookmarkTitleDescription' => 'تعيين عنوان ووصف لقائمة المفضلة الخاصة بك.',
+			'addNewBookmark' => 'لم يتم العثور على قائمة إشارات مرجعية، حاول إضافة واحدة!',
+			'setBookmarkTitleDescription' => 'حدد عنوانًا ووصفًا لقائمة الإشارات المرجعية الخاصة بك.',
 			'title' => 'العنوان',
 			'description' => 'الوصف',
 			'descriptionOptional' => 'الوصف (اختياري)',
-			'bookmarkLists' => 'قوائم المفضلة',
+			'bookmarkLists' => 'قوائم الإشارات المرجعية',
 			'submit' => 'إرسال',
-			'addBookmarkList' => 'إضافة قائمة مفضلة',
-			'submitBookmarkList' => 'إرسال قائمة المفضلة',
+			'addBookmarkList' => 'إضافة قائمة إشارات مرجعية',
+			'submitBookmarkList' => 'إرسال قائمة الإشارات المرجعية',
 			'next' => 'التالي',
 			'saveDraft' => 'حفظ المسودة',
 			'deleteDraft' => 'حذف المسودة',
 			'publish' => 'نشر',
-			'smHaveOneWidget' => 'يجب أن يحتوي الويدجت الذكي على مكون واحد على الأقل.',
-			'smHaveTitle' => 'يجب أن يحتوي الويدجت الذكي على عنوان على الأقل',
-			'whatsOnYourMind' => 'ما الذي تفكر فيه؟',
+			'smHaveOneWidget' => 'يجب أن يحتوي الودجيت الذكي على مكون واحد على الأقل.',
+			'smHaveTitle' => 'يجب أن يحتوي الودجيت الذكي على عنوان على الأقل',
+			'whatsOnYourMind' => 'ما الذي يدور في ذهنك؟',
 			'sensitiveContent' => 'هذا محتوى حساس',
 			'addYourTopics' => 'أضف مواضيعك',
-			'article' => 'مقال',
+			'article' => 'مقالة',
 			'articles' => 'مقالات',
 			'video' => 'فيديو',
 			'videos' => 'فيديوهات',
 			'curation' => 'تنسيق',
 			'curations' => 'تنسيقات',
 			'thumbnailPreview' => 'معاينة الصورة المصغرة',
-			'selectAndUploadLocaleImage' => 'اختر وارفع صورة محلية',
-			'issueOccuredSelectingImage' => 'حدثت مشكلة أثناء اختيار الصورة.',
+			'selectAndUploadLocaleImage' => 'اختر ورفع صورة محلية',
+			'issueOccuredSelectingImage' => 'حدث خطأ أثناء اختيار الصورة.',
 			'imageUploadHistory' => 'تاريخ رفع الصور',
-			'noImageHistory' => 'لم يتم العثور على تاريخ صور',
+			'noImageHistory' => 'لم يتم العثور على تاريخ للصور',
 			'cancel' => 'إلغاء',
 			'uploadAndUse' => 'رفع واستخدام',
-			'publishRemoveDraft' => 'نشر وحذف المسودة',
-			'clearChat' => 'مسح المحادثة',
+			'publishRemoveDraft' => 'نشر وإزالة المسودة',
+			'clearChat' => 'مسح الدردشة',
 			'noDataFromGpt' => 'لا توجد بيانات لعرضها من GPT.',
-			'askMeSomething' => 'اسألني شيئاً!',
+			'askMeSomething' => 'اسألني شيئًا!',
 			'copy' => 'نسخ',
 			'textSuccesfulyCopied' => 'تم نسخ النص بنجاح!',
-			'insertText' => 'إدراج النص',
-			'searchContentByTitle' => ({required Object type}) => 'البحث عن ${type} بالعنوان',
-			'noContentCanBeFound' => ({required Object type}) => 'لم يتم العثور على ${type}',
-			'noContentBelongToCuration' => ({required Object type}) => 'لا يوجد ${type} ينتمي لهذا التنسيق',
+			'insertText' => 'إدراج نص',
+			'searchContentByTitle' => ({required Object type}) => 'البحث عن ${type} حسب العنوان',
+			'noContentCanBeFound' => ({required Object type}) => 'لا يمكن العثور على ${type}',
+			'noContentBelongToCuration' => ({required Object type}) => 'لا ينتمي أي ${type} إلى هذا التنسيق',
 			'byPerson' => ({required Object name}) => 'بواسطة ${name}',
-			'allRelays' => 'جميع المرحلات',
+			'allRelays' => 'جميع الترحيلات',
 			'myArticles' => 'مقالاتي',
 			'myVideos' => 'فيديوهاتي',
 			'curationType' => 'نوع التنسيق',
 			'update' => 'تحديث',
-			'invalidInvoiceLnurl' => 'تأكد من تعيين فاتورة أو lnurl صحيحة',
-			'addValidUrl' => 'تأكد من إضافة رابط صحيح',
+			'invalidInvoiceLnurl' => 'تأكد من تعيين فاتورة صالحة أو lnurl',
+			'addValidUrl' => 'تأكد من إضافة رابط صالح',
 			'layoutCustomization' => 'تخصيص التخطيط',
 			'duoLayout' => 'تخطيط مزدوج',
-			'monoLayout' => 'تخطيط مفرد',
+			'monoLayout' => 'تخطيط أحادي',
 			'warning' => 'تحذير',
-			'switchToMonolayout' => 'أنت تنتقل إلى تخطيط مفرد بينما لديك عناصر على كلا الجانبين، هذا سيمحو محتوى الحاوية، هل تريد المتابعة؟',
-			'erase' => 'محو',
+			'switchToMonolayout' => 'أنت تقوم بالتبديل إلى تخطيط أحادي بينما لديك عناصر على كلا الجانبين، سيؤدي هذا إلى مسح محتوى الحاوية، هل ترغب في المتابعة؟',
+			'erase' => 'مسح',
 			'textCustomization' => 'تخصيص النص',
 			'writeYourText' => 'اكتب نصك',
 			'size' => 'الحجم',
@@ -1504,11 +1553,11 @@ extension on TranslationsAr {
 			'color' => 'اللون',
 			'videoCustomization' => 'تخصيص الفيديو',
 			'videoUrl' => 'رابط الفيديو',
-			'zapPollCustomization' => 'تخصيص استطلاع الزاب',
+			'zapPollCustomization' => 'تخصيص استطلاع زاب',
 			'contentTextColor' => 'لون نص المحتوى',
 			'optionTextColor' => 'لون نص الخيار',
 			'optionBackgroundColor' => 'لون خلفية الخيار',
-			'fillColor' => 'لون التعبئة',
+			'fillColor' => 'لون الملء',
 			'imageCustomization' => 'تخصيص الصورة',
 			'imageUrl' => 'رابط الصورة',
 			'imageAspectRatio' => 'نسبة أبعاد الصورة',
@@ -1517,231 +1566,231 @@ extension on TranslationsAr {
 			'type' => 'النوع',
 			'useInvoice' => 'استخدام الفاتورة',
 			'invoice' => 'فاتورة',
-			'lightningAddress' => 'عنوان Lightning',
-			'selectUserToZap' => 'اختر مستخدماً لزابه (اختياري)',
-			'zapPollNevent' => 'Nevent استطلاع الزاب',
+			'lightningAddress' => 'عنوان البرق',
+			'selectUserToZap' => 'اختر مستخدمًا للزاب (اختياري)',
+			'zapPollNevent' => 'استطلاع زاب nevent',
 			'textColor' => 'لون النص',
 			'buttonColor' => 'لون الزر',
-			'url' => 'الرابط',
-			'invoiceOrLN' => 'فاتورة أو عنوان Lightning',
+			'url' => 'رابط',
+			'invoiceOrLN' => 'فاتورة أو عنوان البرق',
 			'youtubeUrl' => 'رابط يوتيوب',
 			'telegramUrl' => 'رابط تليجرام',
 			'xUrl' => 'رابط X',
 			'discordUrl' => 'رابط ديسكورد',
-			'nostrScheme' => 'مخطط نوستر',
+			'nostrScheme' => 'مخطط Nostr',
 			'containerCustomization' => 'تخصيص الحاوية',
 			'backgroundColor' => 'لون الخلفية',
 			'borderColor' => 'لون الحدود',
 			'value' => 'القيمة',
 			'pickYourComponent' => 'اختر مكونك',
-			'selectComponent' => 'اختر المكون المناسب وعدله.',
+			'selectComponent' => 'اختر المكون المناسب وقم بتحريره.',
 			'text' => 'نص',
 			'image' => 'صورة',
 			'button' => 'زر',
 			'summaryOptional' => 'ملخص (اختياري)',
-			'smartWidgetsDrafts' => 'مسودات الويدجت الذكية',
-			'noSmartWidget' => 'لم يتم العثور على مسودات ويدجت ذكية',
-			'noSmartWidgetCanBeFound' => 'لم يتم العثور على ويدجت ذكية',
-			'smartWidgetConvention' => 'هذا الويدجت الذكي لا يتبع الاتفاقية المتفق عليها.',
-			'monolayoutRequired' => 'التخطيط المفرد مطلوب',
+			'smartWidgetsDrafts' => 'مسودات الودجيتات الذكية',
+			'noSmartWidget' => 'لا يمكن العثور على مسودات ودجيتات ذكية',
+			'noSmartWidgetCanBeFound' => 'لا يمكن العثور على ودجيتات ذكية',
+			'smartWidgetConvention' => 'هذا الودجيت الذكي لا يتبع الاتفاقية المتفق عليها.',
+			'monolayoutRequired' => 'التخطيط الأحادي مطلوب',
 			'zapPoll' => 'استطلاع زاب',
 			'layout' => 'التخطيط',
-			'container' => 'حاوية',
-			'edit' => 'تعديل',
-			'moveUp' => 'نقل للأعلى',
-			'moveDown' => 'نقل للأسفل',
+			'container' => 'الحاوية',
+			'edit' => 'تحرير',
+			'moveUp' => 'تحريك لأعلى',
+			'moveDown' => 'تحريك لأسفل',
 			'delete' => 'حذف',
-			'editToAddZapPoll' => 'تعديل لإضافة استطلاع زاب',
-			'options' => 'خيارات',
-			'smartWidgetBuilder' => 'منشئ الويدجت الذكية',
-			'startBuildingSmartWidget' => 'ابدأ في البناء وتخصيص ويدجتك الذكية للاستخدام على شبكة نوستر',
-			'blankWidget' => 'ويدجت فارغة',
+			'editToAddZapPoll' => 'تحرير لإضافة استطلاع زاب',
+			'options' => 'الخيارات',
+			'smartWidgetBuilder' => 'منشئ الودجيت الذكي',
+			'startBuildingSmartWidget' => 'ابدأ في بناء وتخصيص ودجيتك الذكي لاستخدامه على شبكة Nostr',
+			'blankWidget' => 'ودجيت فارغ',
 			'myDrafts' => 'مسوداتي',
-			'templates' => 'قوالب',
+			'templates' => 'القوالب',
 			'communityPolls' => 'استطلاعات المجتمع',
 			'myPolls' => 'استطلاعاتي',
-			'noPollsCanBeFound' => 'لم يتم العثور على استطلاعات',
-			'totalNumber' => ({required Object number}) => 'المجموع: ${number}',
-			'smartWidgetsTemplates' => 'قوالب الويدجت الذكية',
-			'noTemplatesCanBeFound' => 'لم يتم العثور على قوالب في هذه الفئة.',
+			'noPollsCanBeFound' => 'لا يمكن العثور على استطلاعات',
+			'totalNumber' => ({required Object number}) => 'الإجمالي: ${number}',
+			'smartWidgetsTemplates' => 'قوالب الودجيتات الذكية',
+			'noTemplatesCanBeFound' => 'لا يمكن العثور على قوالب في هذه الفئة.',
 			'useTemplate' => 'استخدام القالب',
 			'pickYourVideo' => 'اختر فيديوك',
-			'canUploadPastLink' => 'يمكنك الرفع أو لصق رابط أو اختيار nevent نوع 1063 لفيديوك.',
+			'canUploadPastLink' => 'يمكنك رفع ملف، لصق رابط أو اختيار nevent من نوع 1063 لفيديوك.',
 			'gallery' => 'المعرض',
 			'link' => 'رابط',
 			'fileSharing' => 'مشاركة الملفات',
 			'setUpYourLink' => 'إعداد رابطك',
 			'setUpYourNevent' => 'إعداد nevent الخاص بك',
-			'pasteYourLink' => 'الصق رابطك وأرسله',
-			'pasteKind1063' => 'الصق nevent نوع 1063 وأرسله',
+			'pasteYourLink' => 'لصق رابطك وإرساله',
+			'pasteKind1063' => 'لصق nevent من نوع 1063 وإرساله',
 			'addUrlNevent' => 'أضف رابط/nevent مناسب',
 			'nevent' => 'nevent',
 			'addProperUrlNevent' => 'أضف رابط/nevent مناسب',
 			'horizontalVideo' => 'فيديو أفقي',
 			'preview' => 'معاينة',
-			'writeSummary' => 'اكتب ملخصاً',
+			'writeSummary' => 'اكتب ملخصًا',
 			'uploadImage' => 'رفع صورة',
-			'addToCuration' => 'إضافة للتنسيق',
+			'addToCuration' => 'إضافة إلى التنسيق',
 			'submitCuration' => 'إرسال التنسيق',
-			'selectValidUrlImage' => 'اختر رابط صورة صحيح.',
-			'noCurationsFound' => 'لم يتم العثور على تنسيقات. جرب إنشاء واحد لتتمكن من إضافة محتوى إليه.',
-			'availableArticles' => ({required Object number}) => '${number} مقال(ات) متاح(ة)',
-			'availableVideos' => ({required Object number}) => '${number} فيديو(هات) متاح(ة)',
+			'selectValidUrlImage' => 'اختر صورة رابط صالحة.',
+			'noCurationsFound' => 'لم يتم العثور على تنسيقات. حاول إنشاء واحدة لتتمكن من إضافة محتوى إليها.',
+			'availableArticles' => ({required Object number}) => '${number} مقال(ات) متاحة',
+			'availableVideos' => ({required Object number}) => '${number} فيديو(ات) متاحة',
 			'articlesNum' => ({required Object number}) => '${number} مقال(ات)',
-			'videosNum' => ({required Object number}) => '${number} فيديو(هات)',
+			'videosNum' => ({required Object number}) => '${number} فيديو(ات)',
 			'articlesAvailableCuration' => 'المقالات المتاحة في هذا التنسيق',
 			'videosAvailableCuration' => 'الفيديوهات المتاحة في هذا التنسيق',
-			'articleAddedCuration' => 'تم إضافة المقال إلى تنسيقك.',
+			'articleAddedCuration' => 'تم إضافة المقالة إلى تنسيقك.',
 			'videoAddedCuration' => 'تم إضافة الفيديو إلى تنسيقك.',
-			'validTitleCuration' => 'تأكد من إضافة عنوان صحيح لهذا التنسيق',
-			'validDescriptionCuration' => 'تأكد من إضافة وصف صحيح لهذا التنسيق',
-			'validImageCuration' => 'تأكد من إضافة صورة صحيحة لهذا التنسيق',
+			'validTitleCuration' => 'تأكد من إضافة عنوان صالح لهذا التنسيق',
+			'validDescriptionCuration' => 'تأكد من إضافة وصف صالح لهذا التنسيق',
+			'validImageCuration' => 'تأكد من إضافة صورة صالحة لهذا التنسيق',
 			'addCuration' => 'إضافة تنسيق',
-			'postedBy' => 'نُشر بواسطة',
+			'postedBy' => 'نشر بواسطة',
 			'follow' => 'متابعة',
 			'unfollow' => 'إلغاء المتابعة',
-			'postedFrom' => 'نُشر من',
-			'noTitle' => 'لا يوجد عنوان',
-			'itemsNumber' => ({required Object number}) => '${number} عنصر(عناصر)',
+			'postedFrom' => 'نشر من',
+			'noTitle' => 'لا عنوان',
+			'itemsNumber' => ({required Object number}) => '${number} عنصر(ات)',
 			'noArticlesInCuration' => 'لم يتم العثور على مقالات في هذا التنسيق',
 			'noVideosInCuration' => 'لم يتم العثور على فيديوهات في هذا التنسيق',
 			'add' => 'إضافة',
-			'noBookmarksListFound' => 'لم يتم العثور على قوائم مفضلة، جرب إضافة واحدة!',
-			'deleteBookmarkList' => 'حذف قائمة المفضلة',
-			'confirmDeleteBookmarkList' => 'أنت على وشك حذف قائمة المفضلة هذه، هل تريد المتابعة؟',
-			'bookmarks' => 'المفضلة',
-			'bookmarksListCount' => ({required Object number}) => '${number} قوائم مفضلة',
-			'noDescription' => 'لا يوجد وصف',
+			'noBookmarksListFound' => 'لم يتم العثور على قوائم إشارات مرجعية، حاول إضافة واحدة!',
+			'deleteBookmarkList' => 'حذف قائمة الإشارات المرجعية',
+			'confirmDeleteBookmarkList' => 'أنت على وشك حذف قائمة الإشارات المرجعية هذه، هل ترغب في المتابعة؟',
+			'bookmarks' => 'الإشارات المرجعية',
+			'bookmarksListCount' => ({required Object number}) => '${number} قوائم إشارات مرجعية',
+			'noDescription' => 'لا وصف',
 			'editedOn' => ({required Object date}) => 'تم التعديل في: ${date}',
-			'publishedOn' => ({required Object date}) => 'تم النشر في: ${date}',
-			'publishedOnText' => 'تم النشر في',
+			'publishedOn' => ({required Object date}) => 'نشر في: ${date}',
+			'publishedOnText' => 'نشر في',
 			'lastUpdatedOn' => ({required Object date}) => 'آخر تحديث في: ${date}',
 			'joinedOn' => ({required Object date}) => 'انضم في: ${date}',
 			'list' => 'قائمة',
-			'noElementsInBookmarks' => 'لم يتم العثور على عناصر في قائمة المفضلة',
+			'noElementsInBookmarks' => 'لا يمكن العثور على عناصر في قائمة الإشارات المرجعية',
 			'draft' => 'مسودة',
 			'note' => 'ملاحظة',
 			'notes' => 'ملاحظات',
-			'smartWidget' => 'ويدجت ذكية',
-			'widgets' => 'ويدجت',
+			'smartWidget' => 'ودجيت ذكي',
+			'widgets' => 'ودجيتات',
 			'postNote' => 'نشر ملاحظة',
-			'postArticle' => 'نشر مقال',
+			'postArticle' => 'نشر مقالة',
 			'postCuration' => 'نشر تنسيق',
 			'postVideo' => 'نشر فيديو',
-			'postSmartWidget' => 'نشر ويدجت ذكية',
+			'postSmartWidget' => 'نشر ودجيت ذكي',
 			'ongoing' => 'جاري',
-			'componentsSMCount' => ({required Object number}) => '${number} مكونات في هذه الويدجت',
+			'componentsSMCount' => ({required Object number}) => '${number} مكونات في هذا الودجيت',
 			'share' => 'مشاركة',
 			'copyNoteId' => 'نسخ معرف الملاحظة',
 			'noteIdCopied' => 'تم نسخ معرف الملاحظة! 👏',
-			'confirmDeleteDraft' => 'أنت على وشك حذف هذه المسودة، هل تريد المتابعة؟',
-			'reposted' => 'أعيد نشره',
+			'confirmDeleteDraft' => 'أنت على وشك حذف هذه المسودة، هل ترغب في المتابعة؟',
+			'reposted' => 'تم إعادة النشر',
 			'postInNote' => 'نشر في ملاحظة',
-			'clone' => 'نسخ',
-			'checkValidity' => 'فحص الصحة',
+			'clone' => 'استنساخ',
+			'checkValidity' => 'التحقق من الصحة',
 			'copyNaddr' => 'نسخ naddr',
 			'deleteContent' => ({required Object type}) => 'حذف ${type}',
-			'confirmDeleteContent' => ({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل تريد المتابعة؟',
+			'confirmDeleteContent' => ({required Object type}) => 'أنت على وشك حذف هذا ${type}، هل ترغب في المتابعة؟',
 			'home' => 'الرئيسية',
-			'followings' => 'المتابَعون',
-			'followers' => 'المتابِعون',
+			'followings' => 'المتابعون',
+			'followers' => 'المتابعين',
 			'replies' => 'الردود',
-			'zapReceived' => 'الزابس المستلمة',
+			'zapReceived' => 'الزابات المستلمة',
 			'totalAmount' => 'المبلغ الإجمالي',
-			'zapSent' => 'الزابس المرسلة',
+			'zapSent' => 'الزابات المرسلة',
 			'latest' => 'الأحدث',
 			'saved' => 'محفوظ',
-			'seeAll' => 'رؤية الكل',
+			'seeAll' => 'عرض الكل',
 			'popularNotes' => 'الملاحظات الشائعة',
 			'getStartedNow' => 'ابدأ الآن',
-			'expandWorld' => 'وسع العالم بإضافة ما يذهلك. اختر اهتماماتك ودع الرحلة تبدأ',
+			'expandWorld' => 'وسع العالم بإضافة ما يثير إعجابك. اختر اهتماماتك ودع الرحلة تبدأ',
 			'addInterests' => 'إضافة اهتمامات',
 			'manageInterests' => 'إدارة الاهتمامات',
-			'interests' => 'اهتمامات',
+			'interests' => 'الاهتمامات',
 			'yakihonneImprovements' => 'تحسينات YakiHonne',
 			'yakihonneNote' => 'ملاحظة YakiHonne',
-			'privacyNote' => 'تطبيقنا يضمن أقصى درجات الخصوصية عبر تخزين البيانات الحساسة محلياً وبشكل آمن على أجهزة المستخدمين، باستخدام تشفير صارم. كن مطمئناً، نحن نلتزم بسياسة عدم المشاركة الصارمة، مما يضمن بقاء المعلومات الحساسة سرية ولا تغادر جهاز المستخدم أبداً.',
+			'privacyNote' => 'يضمن تطبيقنا أقصى درجة من الخصوصية من خلال تخزين البيانات الحساسة محليًا على أجهزة المستخدمين، مع استخدام تشفير صارم. كن مطمئنًا، نحن نلتزم بسياسة عدم مشاركة صارمة، مما يضمن بقاء المعلومات السرية سرية ولا تترك جهاز المستخدم أبدًا.',
 			'pickYourMedia' => 'اختر وسائطك',
-			'uploadSendMedia' => 'يمكنك رفع وإرسال الوسائط مباشرة بعد اختيارها أو التقاطها.',
-			'noMessagesToDisplay' => 'لا توجد رسائل للعرض.',
-			'enableSecureDmsMessage' => 'للمزيد من الأمان والخصوصية، فكر في تفعيل الرسائل المباشرة الآمنة.',
+			'uploadSendMedia' => 'يمكنك رفع وإرسال الوسائط فور اختيارها أو التقاطها.',
+			'noMessagesToDisplay' => 'لا رسائل لعرضها.',
+			'enableSecureDmsMessage' => 'لزيادة الأمان والخصوصية، فكر في تمكين الرسائل المباشرة الآمنة.',
 			'replyingTo' => ({required Object name}) => 'الرد على: ${name}',
 			'writeYourMessage' => 'اكتب رسالة',
 			'zap' => 'زاب',
 			'disableSecureDms' => 'تعطيل الرسائل المباشرة الآمنة',
-			'enableSecureDms' => 'تفعيل الرسائل المباشرة الآمنة',
-			'notUsingSecureDms' => 'لم تعد تستخدم الرسائل المباشرة الآمنة',
-			'usingSecureDms' => 'أصبحت الآن تستخدم الرسائل المباشرة الآمنة',
+			'enableSecureDms' => 'تمكين الرسائل المباشرة الآمنة',
+			'notUsingSecureDms' => 'أنت لم تعد تستخدم الرسائل المباشرة الآمنة',
+			'usingSecureDms' => 'أنت الآن تستخدم الرسائل المباشرة الآمنة',
 			'mute' => 'كتم',
 			'unmute' => 'إلغاء الكتم',
 			'muteUser' => 'كتم المستخدم',
 			'unmuteUser' => 'إلغاء كتم المستخدم',
-			'muteUserDesc' => ({required Object name}) => 'أنت على وشك كتم ${name}، هل تريد المتابعة؟',
-			'unmuteUserDesc' => ({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل تريد المتابعة؟',
+			'muteUserDesc' => ({required Object name}) => 'أنت على وشك كتم ${name}، هل ترغب في المتابعة؟',
+			'unmuteUserDesc' => ({required Object name}) => 'أنت على وشك إلغاء كتم ${name}، هل ترغب في المتابعة؟',
 			'messageCopied' => 'تم نسخ الرسالة بنجاح!',
 			'messageNotDecrypted' => 'لم يتم فك تشفير الرسالة بعد!',
 			'reply' => 'رد',
 			'newMessage' => 'رسالة جديدة',
-			'searchNameNpub' => 'البحث بالاسم أو npub أو nprofile',
-			'searchByUserName' => 'البحث باسم المستخدم',
+			'searchNameNpub' => 'البحث حسب الاسم، npub، nprofile',
+			'searchByUserName' => 'البحث حسب اسم المستخدم',
 			'known' => 'معروف',
 			'unknown' => 'غير معروف',
-			'noMessageCanBeFound' => 'لم يتم العثور على رسائل',
+			'noMessageCanBeFound' => 'لا يمكن العثور على رسائل',
 			'you' => 'أنت: ',
 			'decrMessage' => 'فك تشفير الرسالة',
-			'gifs' => 'صور متحركة',
+			'gifs' => 'جيفات',
 			'stickers' => 'ملصقات',
-			'customizeYourFeed' => 'خصص تدفقك',
-			'feedOptions' => 'خيارات التدفق',
+			'customizeYourFeed' => 'تخصيص تغذيتك',
+			'feedOptions' => 'خيارات التغذية',
 			'recent' => 'حديث',
 			'recentWithReplies' => 'حديث مع الردود',
-			'explore' => 'استكشف',
-			'following' => 'المتابَعون',
-			'trending' => 'الرائج',
-			'highlights' => 'النقاط البارزة',
+			'explore' => 'استكشاف',
+			'following' => 'المتابعة',
+			'trending' => 'شائع',
+			'highlights' => 'البارزات',
 			'paid' => 'مدفوع',
 			'others' => 'آخرون',
 			'suggestionsBox' => 'صندوق الاقتراحات',
-			'showSuggestions' => 'إظهار الاقتراحات',
-			'showSuggestedPeople' => 'إظهار الأشخاص المقترحين للمتابعة',
-			'showArticlesNotesSuggestions' => 'إظهار اقتراحات المقالات/الملاحظات',
-			'showSuggestedInterests' => 'إظهار الاهتمامات المقترحة',
+			'showSuggestions' => 'عرض الاقتراحات',
+			'showSuggestedPeople' => 'عرض الأشخاص المقترحين للمتابعة',
+			'showArticlesNotesSuggestions' => 'عرض اقتراحات المقالات/الملاحظات',
+			'showSuggestedInterests' => 'عرض الاهتمامات المقترحة',
 			'readTime' => ({required Object time}) => '${time} دقيقة قراءة',
 			'watchNow' => 'شاهد الآن',
-			'bookmark' => 'مفضلة',
-			'suggestions' => 'اقتراحات',
+			'bookmark' => 'إشارة مرجعية',
+			'suggestions' => 'الاقتراحات',
 			'hideSuggestions' => 'إخفاء الاقتراحات',
 			'enjoyExpOwnData' => 'استمتع بتجربة امتلاك\nبياناتك الخاصة!',
 			'signIn' => 'تسجيل الدخول',
 			'createAccount' => 'إنشاء حساب',
-			'byContinuing' => 'بالمتابعة أنت توافق على\n',
+			'byContinuing' => 'بالاستمرار، أنت توافق على\n',
 			'eula' => 'اتفاقية ترخيص المستخدم النهائي (EULA)',
-			'continueAsGuest' => 'متابعة كضيف',
-			'heyWelcomeBack' => 'مرحباً،\nأهلاً\nبعودتك',
-			'npubNsecHex' => 'npub أو nsec أو hex',
+			'continueAsGuest' => 'الاستمرار كضيف',
+			'heyWelcomeBack' => 'مرحبًا،\nمرحبًا\nمرة أخرى',
+			'npubNsecHex' => 'npub، nsec أو hex',
 			'useAmber' => 'استخدام Amber',
-			'setValidKey' => 'تعيين مفتاح صحيح',
-			'pasteYourKey' => 'الصق مفتاحك',
-			'taylorExperienceInterests' => 'خصص تجربتك باختيار اهتماماتك الرئيسية',
-			'peopleCountPlus' => ({required Object number}) => '+${number} شخص',
+			'setValidKey' => 'حدد مفتاحًا صالحًا',
+			'pasteYourKey' => 'لصق مفتاحك',
+			'taylorExperienceInterests' => 'خصص تجربتك باختيار أبرز اهتماماتك',
+			'peopleCountPlus' => ({required Object number}) => '+${number} أشخاص',
 			'followAll' => 'متابعة الكل',
 			'unfollowAll' => 'إلغاء متابعة الكل',
 			'details' => 'التفاصيل',
 			'shareGlimps' => 'شارك لمحة عنك، بكلمات تبدو حقيقية.',
-			'addCover' => 'إضافة غلاف',
-			'editCover' => 'تعديل الغلاف',
+			'addCover' => 'إضافة غطاء',
+			'editCover' => 'تحرير الغطاء',
 			'yourName' => 'اسمك',
-			'setProperName' => 'تعيين اسم مناسب',
+			'setProperName' => 'حدد اسمًا مناسبًا',
 			'aboutYou' => 'عنك',
-			'secKeyDesc' => 'يمكنك العثور على المفتاح السري لحسابك في الإعدادات. هذا المفتاح ضروري لتأمين الوصول إلى حسابك. يرجى الاحتفاظ به آمناً وخاصاً.',
-			'secKeyWalletDesc' => 'يمكنك العثور على المفتاح السري لحسابك وسر الاتصال بالمحفظة في الإعدادات. هذه المفاتيح ضرورية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الاحتفاظ بها آمنة وخاصة.',
+			'secKeyDesc' => 'يمكنك العثور على مفتاح سر حسابك في إعداداتك. هذا المفتاح أساسي لتأمين الوصول إلى حسابك. يرجى الحفاظ عليه آمنًا وخاصًا.',
+			'secKeyWalletDesc' => 'يمكنك العثور على مفتاح سر حسابك وسر اتصال المحفظة في إعداداتك. هذه المفاتيح أساسية لتأمين الوصول إلى حسابك ومحفظتك. يرجى الحفاظ عليها آمنة وخاصة.',
 			'initializingAccount' => 'تهيئة الحساب...',
-			'letsGetStarted' => 'لنبدأ!',
+			'letsGetStarted' => 'دعنا نبدأ!',
 			'dontHaveWallet' => 'ليس لديك محفظة؟',
-			'createWalletSendRecSats' => 'إنشاء محفظة لإرسال واستقبال الساتس',
+			'createWalletSendRecSats' => 'أنشئ محفظة لإرسال واستلام الساتوشي',
 			'createWallet' => 'إنشاء محفظة',
-			'youreAllSet' => 'أنت جاهز',
-			'dashboard' => 'لوحة القيادة',
+			'youreAllSet' => 'أنت جاهز تمامًا',
+			'dashboard' => 'لوحة التحكم',
 			'verifyNotes' => 'التحقق من الملاحظات',
 			'settings' => 'الإعدادات',
 			'manageAccounts' => 'إدارة الحسابات',
@@ -1749,42 +1798,42 @@ extension on TranslationsAr {
 			'switchAccounts' => 'تبديل الحسابات',
 			'addAccount' => 'إضافة حساب',
 			'logoutAllAccounts' => 'تسجيل الخروج من جميع الحسابات',
-			'search' => 'البحث',
-			'smartWidgets' => 'الويدجت الذكية',
+			'search' => 'بحث',
+			'smartWidgets' => 'ودجيتات ذكية',
 			'notifications' => 'الإشعارات',
-			'inbox' => 'صندوق الوارد',
-			'discover' => 'اكتشف',
+			'inbox' => 'الصندوق الوارد',
+			'discover' => 'اكتشاف',
 			'wallet' => 'محفظة',
 			'publicKey' => 'المفتاح العام',
 			'profileLink' => 'رابط الملف الشخصي',
 			'profileCopied' => 'تم نسخ رابط الملف الشخصي! 👏',
 			'publicKeyCopied' => 'تم نسخ المفتاح العام! 👏',
-			'lnCopied' => 'تم نسخ عنوان lightning! 👏',
+			'lnCopied' => 'تم نسخ عنوان البرق! 👏',
 			'scanQrCode' => 'مسح رمز QR',
 			'viewQrCode' => 'عرض رمز QR',
-			'copyNpub' => 'نسخ npub',
+			'copyNpub' => 'نسخ المفتاح العام',
 			'visitProfile' => 'زيارة الملف الشخصي',
-			'followMeOnNostr' => 'تابعني على نوستر',
+			'followMeOnNostr' => 'تابعني على Nostr',
 			'close' => 'إغلاق',
 			'loadingPreviousPosts' => 'تحميل المنشورات السابقة...',
 			'noRepliesDesc' => 'لم يتم العثور على ردود لهذه الملاحظة',
-			'thread' => 'خيط',
+			'thread' => 'الخيط',
 			'all' => 'الكل',
 			'mentions' => 'الإشارات',
-			'zaps' => 'زابس',
-			'noNotificationCanBeFound' => 'لم يتم العثور على إشعارات',
-			'consumablePointsPerks1' => '1- تقديم محتواك للتصديق',
+			'zaps' => 'الزابات',
+			'noNotificationCanBeFound' => 'لا يمكن العثور على إشعارات',
+			'consumablePointsPerks1' => '1- إرسال محتواك للتصديق',
 			'consumablePointsPerks2' => '2- استبدال النقاط لنشر ملاحظات مدفوعة',
-			'consumablePointsPerks3' => '3- استبدال النقاط بـ SATs (يتم اختيار عتبات عشوائية وستُخطر كلما أصبح الاستبدال متاحاً)',
-			'yakihonneConsPoints' => 'نقاط YakiHonne القابلة للاستهلاك',
-			'soonUsers' => 'قريباً سيتمكن المستخدمون من استخدام النقاط القابلة للاستهلاك في مجموعة الأنشطة التالية:',
-			'startEarningPoints' => 'ابدأ في الكسب واستفد من نقاط Yaki الخاصة بك! 🎉',
+			'consumablePointsPerks3' => '3- استبدال النقاط بالساتوشي (يتم اختيار عتبات عشوائية وستتم إخطارك عندما يكون الاستبدال متاحًا)',
+			'yakihonneConsPoints' => 'نقاط YakiHonne الاستهلاكية',
+			'soonUsers' => 'قريبًا سيتمكن المستخدمون من استخدام النقاط الاستهلاكية في مجموعة الأنشطة التالية:',
+			'startEarningPoints' => 'ابدأ في الكسب واستفد إلى أقصى حد من نقاط Yaki الخاصة بك! 🎉',
 			'gotIt' => 'فهمت!',
-			'engagementChart' => 'مخطط المشاركة',
+			'engagementChart' => 'رسم بياني للتفاعل',
 			'lastGained' => ({required Object date}) => 'آخر كسب: ${date}',
 			'attemptsRemained' => 'المحاولات المتبقية ',
 			'congratulations' => 'تهانينا',
-			'congratsDesc' => ({required Object number}) => 'تم مكافأتك بـ ${number} xp للإجراءات التالية، كن نشطاً واكسب المكافآت!',
+			'congratsDesc' => ({required Object number}) => 'تم مكافأتك ${number} xp للإجراءات التالية، كن نشيطًا واكسب المكافآت!',
 			'yakihonneChest' => 'صندوق YakiHonne!',
 			'noImGood' => 'لا، أنا بخير',
 			'points' => 'النقاط',
@@ -1793,330 +1842,330 @@ extension on TranslationsAr {
 			'whatsThis' => 'ما هذا؟',
 			'levelNumber' => ({required Object number}) => 'المستوى ${number}',
 			'pointsSystem' => 'نظام النقاط',
-			'oneTimeRewards' => 'مكافآت لمرة واحدة',
+			'oneTimeRewards' => 'مكافآت مرة واحدة',
 			'repeatedRewards' => 'مكافآت متكررة',
-			'consumablePoints' => 'نقاط قابلة للاستهلاك',
-			'pointsRemaining' => ({required Object number}) => '${number} متبقي',
+			'consumablePoints' => 'نقاط استهلاكية',
+			'pointsRemaining' => ({required Object number}) => '${number} متبقية',
 			'gain' => 'كسب',
 			'forName' => ({required Object name}) => 'لـ ${name}',
 			'min' => 'دقيقة',
 			'levelsRequiredNum' => ({required Object number}) => '${number} مستويات مطلوبة',
-			'seeMore' => 'رؤية المزيد',
-			'deleteCoverPic' => 'حذف صورة الغلاف!',
-			'deleteCoverPicDesc' => 'أنت على وشك حذف صورة الغلاف، هل تريد المتابعة؟',
-			'editProfile' => 'تعديل الملف الشخصي',
+			'seeMore' => 'عرض المزيد',
+			'deleteCoverPic' => 'حذف صورة الغطاء!',
+			'deleteCoverPicDesc' => 'أنت على وشك حذف صورة غطاءك، هل ترغب في المتابعة؟',
+			'editProfile' => 'تحرير الملف الشخصي',
 			'uploadingImage' => 'رفع الصورة...',
 			'updateProfile' => 'تحديث الملف الشخصي',
 			'userName' => 'اسم المستخدم',
-			'displayName' => 'الاسم المعروض',
-			'yourDisplayName' => 'اسمك المعروض',
-			'writeSomethingAboutYou' => 'اكتب شيئاً عنك!',
-			'website' => 'موقع ويب',
-			'yourWebsite' => 'موقعك الإلكتروني',
-			'verifyNip05' => 'عنوان نوستر المُتحقق منه (NIP 05)',
+			'displayName' => 'اسم العرض',
+			'yourDisplayName' => 'اسم عرضك',
+			'writeSomethingAboutYou' => 'اكتب شيئًا عنك!',
+			'website' => 'الموقع',
+			'yourWebsite' => 'موقعك',
+			'verifyNip05' => 'عنوان Nostr الموثق (NIP 05)',
 			'enterNip05' => 'أدخل عنوان NIP-05 الخاص بك',
 			'enterLn' => 'أدخل عنوان LUD-06 أو LUD-16 الخاص بك',
 			'less' => 'أقل',
 			'more' => 'أكثر',
 			'pictureUrl' => 'رابط الصورة',
-			'coverUrl' => 'رابط الغلاف',
-			'enterPictureUrl' => 'أدخل رابط صورتك',
-			'enterCoverUrl' => 'أدخل رابط غلافك',
+			'coverUrl' => 'رابط الغطاء',
+			'enterPictureUrl' => 'أدخل رابط صورك',
+			'enterCoverUrl' => 'أدخل رابط غطائك',
 			'userNoArticles' => ({required Object name}) => '${name} ليس لديه مقالات',
 			'userNoCurations' => ({required Object name}) => '${name} ليس لديه تنسيقات',
 			'userNoNotes' => ({required Object name}) => '${name} ليس لديه ملاحظات',
 			'userNoVideos' => ({required Object name}) => '${name} ليس لديه فيديوهات',
-			'loadingFollowings' => 'تحميل المتابَعين',
-			'loadingFollowers' => 'تحميل المتابِعين',
-			'followersNum' => ({required Object number}) => '${number} متابع',
-			'notFollowedByAnyoneYouFollow' => 'غير متابَع من قِبل أي شخص تتابعه.',
+			'loadingFollowings' => 'تحميل المتابعين',
+			'loadingFollowers' => 'تحميل المتابعين',
+			'followersNum' => ({required Object number}) => '${number} متابعين',
+			'notFollowedByAnyoneYouFollow' => 'غير متابع من قبل أي شخص تتابعه.',
 			'mutuals' => 'مشترك(ون)',
 			'mutualsNum' => ({required Object number}) => '+ ${number} مشترك(ون)',
 			'followsYou' => 'يتابعك',
 			'userNameCopied' => 'تم نسخ اسم المستخدم بنجاح!',
-			'profileRelays' => ({required Object number}) => 'مرحلات الملف الشخصي الموصى بها - ${number}',
-			'noUserRelays' => 'لم يتم العثور على مرحلات لهذا المستخدم.',
-			'userNoSmartWidgets' => ({required Object name}) => '${name} ليس لديه ويدجت ذكية',
-			'un1' => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد',
-			'un1Desc' => 'هذه التقييمات تُحسب مرتين لأنها غالباً ما تشير إلى الدعم للملاحظات التي اعتبرها آخرون مفيدة.',
-			'un2' => 'ملاحظات بتقييمات جارية',
-			'un2Desc' => 'تقييمات على ملاحظات لا تحمل حالياً حالة مفيد أو غير مفيد',
-			'unTextW1' => 'ملاحظات حصلت على حالة مفيد',
-			'unTextW1Desc' => 'هذه الملاحظات تُعرض الآن لكل من يرى المنشور، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.',
-			'unTextR1' => 'تقييمات ساعدت ملاحظة في الحصول على حالة مفيد',
-			'unTextR1Desc' => 'هذه التقييمات حددت ملاحظات مفيدة تُعرض للجميع، مضيفة سياقاً ومساعدة في إبقاء الناس مطلعين.',
-			'unTextW2' => 'ملاحظات وصلت إلى حالة غير مفيد',
-			'unTextW2Desc' => 'هذه الملاحظات تم تقييمها كغير مفيدة من قِبل مساهمين كافيين، بما في ذلك أولئك الذين أحياناً لا يتفقون في تقييماتهم السابقة.',
-			'unTextR2' => 'تقييمات ساعدت ملاحظة في الحصول على حالة غير مفيد',
-			'unTextR2Desc' => 'هذه التقييمات تحسن الملاحظات المُتحقق منها بإعطاء تغذية راجعة لمؤلفي الملاحظات، وتسمح للمساهمين بالتركيز على الملاحظات الأكثر واعدية',
-			'unTextW3' => 'ملاحظات تحتاج لمزيد من التقييمات',
-			'unTextW3Desc' => 'ملاحظات لا تحمل بعد حالة مفيد أو غير مفيد.',
-			'unTextR3' => 'تقييمات غير مفيد على ملاحظات انتهت بحالة مفيد',
-			'unTextR3Desc' => 'لا تقلق، الجميع لديه بعض منها! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيدة\' ليست مفيدة بما فيه الكفاية.',
+			'profileRelays' => ({required Object number}) => 'الترحيلات الموصى بها للملف الشخصي - ${number}',
+			'noUserRelays' => 'لم يتم العثور على ترحيلات لهذا المستخدم.',
+			'userNoSmartWidgets' => ({required Object name}) => '${name} ليس لديه ودجيتات ذكية',
+			'un1' => 'تقييمات \'غير مفيد\' على ملاحظات انتهت بحالة \'مفيد\'',
+			'un1Desc' => 'يتم احتساب هذه التقييمات مرتين لأنها غالبًا ما تشير إلى دعم ملاحظات اعتبرها الآخرون مفيدة.',
+			'un2' => 'ملاحظات مع تقييمات جارية',
+			'un2Desc' => 'تقييمات على ملاحظات لا تمتلك حاليًا حالة \'مفيد\' أو \'غير مفيد\'',
+			'unTextW1' => 'ملاحظات حصلت على حالة \'مفيد\'',
+			'unTextW1Desc' => 'هذه الملاحظات تظهر الآن لكل من يرى المنشور، مضيفة سياقًا ومساعدة في الحفاظ على اطلاع الناس.',
+			'unTextR1' => 'تقييمات ساعدت ملاحظة على الحصول على حالة \'مفيد\'',
+			'unTextR1Desc' => 'هذه التقييمات حددت ملاحظات مفيدة تظهر للجميع، مضيفة سياقًا ومساعدة في الحفاظ على اطلاع الناس.',
+			'unTextW2' => 'ملاحظات وصلت إلى حالة \'غير مفيد\'',
+			'unTextW2Desc' => 'تم تقييم هذه الملاحظات \'غير مفيد\' من قبل عدد كافٍ من المساهمين، بما في ذلك الذين يختلفون أحيانًا في تقييماتهم السابقة.',
+			'unTextR2' => 'تقييمات ساعدت ملاحظة على الحصول على حالة \'غير مفيد\'',
+			'unTextR2Desc' => 'هذه التقييمات تحسن الملاحظات الموثقة من خلال تقديم ردود فعل لكتاب الملاحظات، وتمكين المساهمين من التركيز على الملاحظات الأكثر وعدًا',
+			'unTextW3' => 'ملاحظات تحتاج إلى تقييمات أكثر',
+			'unTextW3Desc' => 'ملاحظات ليس لديها بعد حالة \'مفيد\' أو \'غير مفيد\'.',
+			'unTextR3' => 'تقييمات \'غير مفيد\' على ملاحظات انتهت بحالة \'مفيد\'',
+			'unTextR3Desc' => 'لا تقلق، الجميع يحصل على بعض هذه! هذه التقييمات شائعة ويمكن أن تؤدي إلى تغييرات في الحالة إذا اتفق عدد كافٍ من الناس على أن ملاحظة \'مفيد\' ليست مفيدة بما فيه الكفاية.',
 			'refresh' => 'تحديث',
 			'userImpact' => 'تأثير المستخدم',
-			'userRelays' => 'مرحلات المستخدم',
+			'userRelays' => 'ترحيلات المستخدم',
 			'rewards' => 'المكافآت',
-			'noRewards' => 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات مُتحقق منها للحصول عليها.',
+			'noRewards' => 'ليس لديك مكافآت، تفاعل مع أو اكتب ملاحظات موثقة للحصول عليها.',
 			'onDate' => ({required Object date}) => 'في ${date}',
-			'youHaveRated' => 'لقد قيّمت',
+			'youHaveRated' => 'لقد قيمت',
 			'theFollowingNote' => 'الملاحظة التالية:',
 			'youHaveLeftNote' => 'لقد تركت ملاحظة على هذه الملاحظة المدفوعة:',
 			'paidNoteLoading' => 'تحميل الملاحظة المدفوعة',
 			'yourNoteSealed' => 'ملاحظتك التالية تم ختمها للتو:',
-			'ratedNoteSealed' => 'لقد قيّمت الملاحظة التالية التي تم ختمها:',
-			'claimTime' => ({required Object time}) => 'المطالبة خلال ${time}',
-			'claim' => 'مطالبة',
-			'requestInProgress' => 'طلب قيد التقدم',
-			'granted' => 'ممنوح',
+			'ratedNoteSealed' => 'لقد قيمت الملاحظة التالية التي تم ختمها:',
+			'claimTime' => ({required Object time}) => 'المطالبة في ${time}',
+			'claim' => 'المطالبة',
+			'requestInProgress' => 'الطلب جاري',
+			'granted' => 'تم منحها',
 			'interested' => 'مهتم',
 			'notInterested' => 'غير مهتم',
-			'noResKeyword' => 'لا توجد نتائج لهذه الكلمة المفتاحية',
-			'noResKeywordDesc' => 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، جرب استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.',
-			'startSearchPeople' => 'ابدأ في البحث عن الأشخاص',
-			'startSearchContent' => 'ابدأ في البحث عن المحتوى',
+			'noResKeyword' => 'لا نتيجة لهذا الكلمة المفتاحية',
+			'noResKeywordDesc' => 'لم يتم العثور على نتائج باستخدام هذه الكلمة المفتاحية، حاول استخدام كلمات مفتاحية أخرى للحصول على نتائج أفضل.',
+			'startSearchPeople' => 'ابدأ البحث عن الأشخاص',
+			'startSearchContent' => 'ابدأ البحث عن المحتوى',
 			'keys' => 'المفاتيح',
 			'myPublicKey' => 'مفتاحي العام',
 			'mySecretKey' => 'مفتاحي السري',
-			'show' => 'إظهار',
-			'showSecret' => 'إظهار المفتاح السري!',
-			'showSecretDesc' => 'تأكد من الاحتفاظ به آمناً لأنه يعطي وصولاً كاملاً لحسابك.',
-			'usingExternalSign' => 'استخدام موقع خارجي',
-			'usingExternalSignDesc' => 'أنت تستخدم موقعاً خارجياً',
+			'show' => 'عرض',
+			'showSecret' => 'عرض المفتاح السري!',
+			'showSecretDesc' => 'تأكد من الحفاظ عليه آمنًا حيث يمنح الوصول الكامل إلى حسابك.',
+			'usingExternalSign' => 'استخدام توقيع خارجي',
+			'usingExternalSignDesc' => 'أنت تستخدم توقيعًا خارجيًا',
 			'privKeyCopied' => 'تم نسخ المفتاح الخاص! 👏',
 			'muteList' => 'قائمة الكتم',
-			'noMutedUserFound' => 'لم يتم العثور على مستخدمين مكتومين.',
-			'searchRelay' => 'البحث عن مرحل',
+			'noMutedUserFound' => 'لم يتم العثور على مستخدمين مكتمين.',
+			'searchRelay' => 'بحث عن ترحيل',
 			'deleteAccount' => 'حذف الحساب',
-			'clearAppCache' => 'مسح ذاكرة التطبيق المؤقتة',
-			'clearAppCacheDesc' => 'أنت على وشك مسح ذاكرة التطبيق المؤقتة، هل تريد المتابعة؟',
+			'clearAppCache' => 'مسح كاش التطبيق',
+			'clearAppCacheDesc' => 'أنت على وشك مسح كاش التطبيق، هل ترغب في المتابعة؟',
 			'clear' => 'مسح',
 			'fontSize' => 'حجم الخط',
-			'appTheme' => 'سمة التطبيق',
-			'contentModeration' => 'إشراف المحتوى',
-			'mediaUploader' => 'رافع الوسائط',
+			'appTheme' => 'ثيم التطبيق',
+			'contentModeration' => 'الإشراف على المحتوى',
+			'mediaUploader' => 'رفع الوسائط',
 			'secureDirectMessaging' => 'الرسائل المباشرة الآمنة',
 			'customization' => 'التخصيص',
-			'hfCustomization' => 'تخصيص تدفق الصفحة الرئيسية',
-			'newPostGesture' => 'إيماءة الضغط المطول للمنشور الجديد',
+			'hfCustomization' => 'تخصيص تغذية الرئيسية',
+			'newPostGesture' => 'إيماءة الضغط الطويل للمنشور الجديد',
 			'profilePreview' => 'معاينة الملف الشخصي',
-			'relaySettings' => ({required Object number}) => 'إعدادات المرحل ${number}',
+			'relaySettings' => ({required Object number}) => 'إعدادات الترحيل ${number}',
 			'yakihonne' => 'YakiHonne',
-			'wallets' => 'محافظ',
+			'wallets' => 'المحافظ',
 			'addWallet' => 'إضافة محفظة',
 			'externalWallet' => 'محفظة خارجية',
 			'yakiChest' => 'صندوق Yaki',
 			'connected' => 'متصل',
 			'connect' => 'اتصال',
 			'owner' => 'المالك',
-			'contact' => 'جهة الاتصال',
-			'software' => 'البرنامج',
-			'version' => 'النسخة',
-			'supportedNips' => 'Nips المدعومة',
-			'instantConntect' => 'اتصال فوري بالمرحل',
-			'invalidRelayUrl' => 'رابط مرحل غير صحيح',
-			'relays' => 'المرحلات',
+			'contact' => 'الاتصال',
+			'software' => 'البرمجيات',
+			'version' => 'الإصدار',
+			'supportedNips' => 'NIPs المدعومة',
+			'instantConntect' => 'اتصال فوري بالترحيل',
+			'invalidRelayUrl' => 'رابط ترحيل غير صالح',
+			'relays' => 'الترحيلات',
 			'readOnly' => 'قراءة فقط',
 			'writeOnly' => 'كتابة فقط',
 			'readWrite' => 'قراءة/كتابة',
 			'defaultKey' => 'افتراضي',
 			'viewProfile' => 'عرض الملف الشخصي',
 			'appearance' => 'المظهر',
-			'untitled' => 'بدون عنوان',
-			'smartWidgetChecker' => 'فاحص الويدجت الذكية',
+			'untitled' => 'غير معنون',
+			'smartWidgetChecker' => 'مدقق الودجيت الذكي',
 			'naddr' => 'naddr',
-			'noComponentsDisplayed' => 'لا يمكن عرض مكونات',
+			'noComponentsDisplayed' => 'لا يمكن عرض المكونات',
 			'metadata' => 'البيانات الوصفية',
 			'createdAt' => 'تم الإنشاء في',
 			'identifier' => 'المعرف',
-			'enterSMaddr' => 'أدخل naddr ويدجت ذكية للتحقق من صحتها.',
-			'notFindSMwithAddr' => 'لا يمكن العثور على ويدجت ذكية بهذا العنوان',
-			'unableToOpenUrl' => 'غير قادر على فتح الرابط',
+			'enterSMaddr' => 'أدخل naddr ودجيت ذكي للتحقق من صلاحيته.',
+			'notFindSMwithAddr' => 'تعذر العثور على ودجيت ذكي بهذا العنوان',
+			'unableToOpenUrl' => 'تعذر فتح الرابط',
 			'voteToSeeStats' => 'يجب أن تصوت لتتمكن من رؤية الإحصائيات',
-			'votesByZaps' => 'الأصوات بالزابس',
-			'votesByUsers' => 'الأصوات بالمستخدمين',
+			'votesByZaps' => 'الأصوات عبر الزابات',
+			'votesByUsers' => 'الأصوات من المستخدمين',
 			'alreadyVoted' => 'لقد صوتت بالفعل في هذا الاستطلاع',
-			'userCannotBeFound' => 'لا يمكن العثور على المستخدم',
+			'userCannotBeFound' => 'تعذر العثور على المستخدم',
 			'votesNumber' => ({required Object number}) => 'الأصوات: ${number}',
 			'voteRequired' => 'التصويت مطلوب لعرض الإحصائيات.',
-			'showStats' => 'إظهار الإحصائيات',
-			'pollClosesAt' => ({required Object date}) => 'يُغلق في: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'أُغلق في: ${date}',
-			'checkSmartWidget' => 'فحص ويدجت ذكية',
-			'emptyVerifiedNote' => 'محتوى ملاحظة مُتحقق منها فارغ!',
+			'showStats' => 'عرض الإحصائيات',
+			'pollClosesAt' => ({required Object date}) => 'يغلق في: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'أغلق في: ${date}',
+			'checkSmartWidget' => 'التحقق من ودجيت ذكي',
+			'emptyVerifiedNote' => 'محتوى ملاحظة موثقة فارغ!',
 			'post' => 'نشر',
 			'seeAnything' => 'ترى أي شيء تريد تحسينه؟',
-			'writeNote' => 'كتابة ملاحظة',
+			'writeNote' => 'اكتب ملاحظة',
 			'whatThinkThis' => 'ما رأيك في هذا؟',
 			'sourceRecommended' => 'المصدر (موصى به)',
-			'findPaidNoteCorrect' => 'تجد هذه الملاحظة المدفوعة صحيحة.',
-			'findPaidNoteMisleading' => 'تجد هذه الملاحظة المدفوعة مضللة.',
-			'selectOneReason' => 'اختر سبباً واحداً على الأقل',
-			'rateHelpful' => 'تقييم كمفيد',
-			'rateNotHelpful' => 'تقييم كغير مفيد',
+			'findPaidNoteCorrect' => 'ترى هذه الملاحظة المدفوعة صحيحة.',
+			'findPaidNoteMisleading' => 'ترى هذه الملاحظة المدفوعة مضللة.',
+			'selectOneReason' => 'اختر سببًا واحدًا على الأقل',
+			'rateHelpful' => 'تقييم مفيد',
+			'rateNotHelpful' => 'تقييم غير مفيد',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
-			'ratedHelpful' => 'مُقيم كمفيد',
-			'ratedNotHelpful' => 'مُقيم كغير مفيد',
-			'youRatedHelpful' => 'قيّمت هذا كمفيد',
-			'youRatedNotHelpful' => 'قيّمت هذا كغير مفيد',
-			'findThisHelpful' => 'هل تجد هذا مفيداً؟',
-			'findThisNotHelpful' => 'هل تجد هذا غير مفيد؟',
-			'setYourRating' => 'تعيين تقييمك',
+			'ratedHelpful' => 'تم التقييم مفيد',
+			'ratedNotHelpful' => 'تم التقييم غير مفيد',
+			'youRatedHelpful' => 'قيمت هذا كمفيد',
+			'youRatedNotHelpful' => 'قيمت هذا كغير مفيد',
+			'findThisHelpful' => 'هل ترى هذا مفيدًا؟',
+			'findThisNotHelpful' => 'هل ترى هذا غير مفيد؟',
+			'setYourRating' => 'حدد تقييمك',
 			'whatThinkOfThat' => 'ما رأيك في ذلك؟',
-			'changeRatingNote' => 'ملاحظة: تغيير تقييمك سيكون صالحاً لمدة 5 دقائق فقط، بعد ذلك لن تعود لديك خيار التراجع أو التغيير.',
+			'changeRatingNote' => 'ملاحظة: تغيير تقييمك سيكون صالحًا لمدة 5 دقائق فقط، بعد ذلك لن تتمكن من التراجع أو تغييره.',
 			'paidNote' => 'ملاحظة مدفوعة',
 			'undo' => 'تراجع',
 			'undoRating' => 'تراجع عن التقييم',
-			'undoRatingDesc' => 'أنت على وشك التراجع عن تقييمك، هل تريد المتابعة؟',
-			'seeAllAttempts' => 'رؤية جميع المحاولات',
+			'undoRatingDesc' => 'أنت على وشك التراجع عن تقييمك، هل ترغب في المتابعة؟',
+			'seeAllAttempts' => 'عرض جميع المحاولات',
 			'addNote' => 'إضافة ملاحظة',
 			'alreadyContributed' => 'لقد ساهمت بالفعل',
 			'notesFromCommunity' => 'ملاحظات من المجتمع',
-			'noCommunityNotes' => 'هادئ هنا! لا توجد ملاحظات مجتمعية بعد.',
+			'noCommunityNotes' => 'هادئ هنا! لا ملاحظات من المجتمع بعد.',
 			'notHelpful' => 'غير مفيد',
 			'sealed' => 'مختوم',
 			'notSealed' => 'غير مختوم',
-			'notSealedYet' => 'لم يُختم بعد',
-			'needsMoreRating' => 'يحتاج لمزيد من التقييمات',
+			'notSealedYet' => 'غير مختوم بعد',
+			'needsMoreRating' => 'يحتاج إلى تقييمات أكثر',
 			'source' => 'المصدر',
 			'thisNoteAwaitRating' => 'هذه الملاحظة تنتظر تقييم المجتمع.',
 			'yourNoteAwaitRating' => 'هذه الملاحظة تنتظر تقييم المجتمع.',
-			'topReasonsSelected' => 'الأسباب الرئيسية المختارة من قِبل المقيمين:',
+			'topReasonsSelected' => 'الأسباب الرئيسية المختارة من قبل المقيمين:',
 			'noReasonsSpecified' => 'لم يتم تحديد أسباب!',
-			'postedOn' => ({required Object date}) => 'نُشر في ${date}',
+			'postedOn' => ({required Object date}) => 'نشر في ${date}',
 			'explanation' => 'التفسير',
 			'readAboutVerifyingNotes' => 'اقرأ عن التحقق من الملاحظات',
-			'readAboutVerifyingNotesDesc' => 'لقد كتبنا مقالاً لمساعدتك في فهم هدفنا',
-			'readArticle' => 'قراءة المقال',
-			'whyVerifyingNotes' => 'لماذا التحقق من الملاحظات؟',
-			'contributeUnderstanding' => 'المساهمة في بناء الفهم',
-			'actGoodFaith' => 'التصرف بنية حسنة',
-			'beHelpful' => 'كن مفيداً، حتى لأولئك الذين يختلفون',
-			'readMore' => 'قراءة المزيد',
+			'readAboutVerifyingNotesDesc' => 'كتبنا مقالة لمساعدتك على فهم هدفنا',
+			'readArticle' => 'قراءة المقالة',
+			'whyVerifyingNotes' => 'لماذا نتحقق من الملاحظات؟',
+			'contributeUnderstanding' => 'ساهم في بناء الفهم',
+			'actGoodFaith' => 'تصرف بحسن نية',
+			'beHelpful' => 'كن مفيدًا، حتى لمن لا يوافقون',
+			'readMore' => 'اقرأ المزيد',
 			'newKey' => 'جديد',
 			'needsYourHelp' => 'يحتاج مساعدتك',
 			'communityWallet' => 'محفظة المجتمع',
 			'noPaidNotesCanBeFound' => 'لم يتم العثور على ملاحظات مدفوعة.',
 			'updatesNews' => 'أخبار التحديثات',
 			'updates' => 'التحديثات',
-			'toBeAbleSendSats' => 'لتتمكن من إرسال الزابس، يرجى التأكد من ربط محفظة bitcoin lightning الخاصة بك.',
-			'receiveSats' => 'استقبال الساتس',
-			'messageOptional' => 'رسالة (اختيارية)',
-			'amountInSats' => 'المبلغ بالساتس',
+			'toBeAbleSendSats' => 'لإرسال زابات، قم بتوصيل محفظة Bitcoin Lightning الخاصة بك.',
+			'receiveSats' => 'استلام الساتوشي',
+			'messageOptional' => 'رسالة (اختياري)',
+			'amountInSats' => 'المبلغ في ساتوشي',
 			'invoiceCopied' => 'تم نسخ كود الفاتورة!',
 			'copyInvoice' => 'نسخ الفاتورة',
-			'ensureLnSet' => 'تأكد من تعيين عنوان lightning بشكل صحيح',
-			'errorGeneratingInvoice' => 'حدث خطأ أثناء توليد الفاتورة',
-			'generateInvoice' => 'توليد فاتورة',
+			'ensureLnSet' => 'تأكد من أن عنوان Lightning الخاص بك مضبوط بشكل صحيح',
+			'errorGeneratingInvoice' => 'خطأ في إنشاء الفاتورة',
+			'generateInvoice' => 'إنشاء فاتورة',
 			'qrCode' => 'رمز QR',
 			'scanPay' => 'مسح ودفع',
 			'slideToPay' => 'اسحب للدفع',
-			'invalidInvoice' => 'فاتورة غير صحيحة',
-			'invalidInvoiceDesc' => 'يبدو أن الفاتورة الممسوحة غير صحيحة، أعد المسح وحاول مرة أخرى.',
+			'invalidInvoice' => 'فاتورة غير صالحة',
+			'invalidInvoiceDesc' => 'يبدو أن الفاتورة الممسوحة غير صالحة، حاول مرة أخرى.',
 			'scanAgain' => 'مسح مرة أخرى',
-			'sendSats' => 'إرسال ساتس',
+			'sendSats' => 'إرسال ساتوشي',
 			'send' => 'إرسال',
-			'recentTransactions' => 'المعاملات الحديثة',
+			'recentTransactions' => 'المعاملات الأخيرة',
 			'noTransactionCanBeFound' => 'لم يتم العثور على معاملات',
-			'selectWalletTransactions' => 'اختر محفظة للحصول على آخر المعاملات.',
+			'selectWalletTransactions' => 'اختر محفظة لعرض المعاملات الأخيرة.',
 			'noUserCanBeFound' => 'لم يتم العثور على مستخدمين.',
 			'balance' => 'الرصيد',
-			'noLnInNwc' => 'لم نتمكن من الحصول على عنوانك من سر NWC الخاص بك، يرجى التحقق من مزود خدمة عنوان lightning لنسخ عنوانك أو لتحديث ملفك الشخصي وفقاً لذلك.',
-			'copyLn' => 'نسخ عنوان lightning',
-			'receive' => 'استقبال',
+			'noLnInNwc' => 'تعذر الحصول على عنوانك من سر NWC، تحقق من مزود عنوان Lightning الخاص بك، انسخ العنوان أو قم بتحديث الملف الشخصي وفقًا لذلك.',
+			'copyLn' => 'نسخ عنوان Lightning',
+			'receive' => 'استلام',
 			'clickBelowToConnect' => 'انقر أدناه للاتصال',
-			'connectWithNwc' => 'الاتصال بـ NWC',
+			'connectWithNwc' => 'الاتصال عبر NWC',
 			'pasteNwcAddress' => 'لصق عنوان NWC',
 			'createYakiWallet' => 'إنشاء محفظة YakiHonne',
-			'yakiNwc' => 'NWC الخاص بـ YakiHonne',
-			'yakiNwcDesc' => 'إنشاء محفظة باستخدام قناة YakiHonne',
-			'orUseYourWallet' => 'أو استخدم محفظتك',
-			'nostrWalletConnect' => 'اتصال محفظة نوستر',
-			'nostrWalletConnectDesc' => 'اتصال محفظة نوستر الأصلية',
+			'yakiNwc' => 'NWC YakiHonne',
+			'yakiNwcDesc' => 'إنشاء محفظة عبر قناة YakiHonne',
+			'orUseYourWallet' => 'أو استخدم محفظتك الخاصة',
+			'nostrWalletConnect' => 'Nostr Wallet Connect',
+			'nostrWalletConnectDesc' => 'اتصال محفظة Nostr الأصلي',
 			'alby' => 'Alby',
 			'albyConnect' => 'اتصال Alby',
-			'walletDataNote' => 'ملاحظة: جميع البيانات المتعلقة بمحفظتك ستُخزن بأمان وحماية محلياً ولن تُشارك خارج حدود التطبيق أبداً.',
+			'walletDataNote' => 'ملاحظة: جميع البيانات المتعلقة بمحفظتك مخزنة بشكل آمن محليًا ولا تترك التطبيق أبدًا.',
 			'availableWallets' => 'المحافظ المتاحة',
-			'noWalletLinkedToYouProfile' => 'ليس لديك محفظة مربوطة بملفك الشخصي.',
-			'noWalletConnectedToYourProfile' => 'لا توجد محافظ متصلة مربوطة بملفك الشخصي.',
+			'noWalletLinkedToYouProfile' => 'ليس لديك محفظة مرتبطة بملفك الشخصي.',
+			'noWalletConnectedToYourProfile' => 'لا توجد محافظ متصلة مرتبطة بملفك الشخصي.',
 			'click' => 'انقر',
-			'onSelectedWalletLinkIt' => 'على محفظتك المختارة واربطها.',
+			'onSelectedWalletLinkIt' => 'على المحفظة المختارة وربطها.',
 			'noWalletCanBeFound' => 'لم يتم العثور على محفظة',
-			'currentlyLinkedMessage' => 'مربوطة حالياً بملفك الشخصي لاستقبال الزابس',
-			'linked' => 'مربوط',
+			'currentlyLinkedMessage' => 'مرتبط حاليًا بملفك الشخصي لاستلام الزابات',
+			'linked' => 'مرتبط',
 			'linkWallet' => 'ربط المحفظة',
-			'linkWalletDesc' => 'أنت على وشك استبدال محفظتك السابقة وربط محفظة جديدة بملفك الشخصي، هل تريد المتابعة؟',
+			'linkWalletDesc' => 'أنت على وشك استبدال المحفظة السابقة وربط محفظة جديدة بملفك الشخصي، هل ترغب في المتابعة؟',
 			'copyNwc' => 'نسخ NWC',
 			'nwcCopied' => 'تم نسخ NWC بنجاح!',
 			'deleteWallet' => 'حذف المحفظة',
-			'deleteWalletDesc' => 'أنت على وشك حذف هذه المحفظة، هل تريد المتابعة؟',
-			'userSentSat' => ({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتس',
-			'userReceivedSat' => ({required Object name, required Object number}) => '${name} استقبل منك ${number} ساتس',
-			'ownSentSat' => ({required Object number}) => 'أرسلت ${number} ساتس',
-			'ownReceivedSat' => ({required Object number}) => 'استقبلت ${number} ساتس',
+			'deleteWalletDesc' => 'أنت على وشك حذف هذه المحفظة، هل ترغب في المتابعة؟',
+			'userSentSat' => ({required Object name, required Object number}) => '${name} أرسل لك ${number} ساتوشي',
+			'userReceivedSat' => ({required Object name, required Object number}) => '${name} استلم منك ${number} ساتوشي',
+			'ownSentSat' => ({required Object number}) => 'أرسلت ${number} ساتوشي',
+			'ownReceivedSat' => ({required Object number}) => 'استلمت ${number} ساتوشي',
 			'comment' => 'تعليق',
 			'supportYakihonne' => 'دعم YakiHonne',
-			'fuelYakihonne' => 'ادعم نمو YakiHonne! دعمك يدفع المزايا الجديدة وتجربة أفضل للجميع.',
-			'supportUs' => '❤︎ ادعمنا',
-			'peopleToFollow' => 'أشخاص للمتابعة',
+			'fuelYakihonne' => 'دعم نمو YakiHonne! دعمك يفتح ميزات جديدة ويحسن التجربة للجميع.',
+			'supportUs' => '❤︎ دعمنا',
+			'peopleToFollow' => 'من يتابع',
 			'donations' => 'التبرعات',
 			'inTag' => ({required Object name}) => 'في ${name}',
 			'shareProfile' => 'مشاركة الملف الشخصي',
-			'shareProfileDesc' => 'شارك ملفك الشخصي للوصول لمزيد من الناس والتواصل مع آخرين وتنمية شبكتك',
+			'shareProfileDesc' => 'شارك ملفك الشخصي للوصول إلى المزيد من الناس، العثور على أشخاص متشابهين وتوسيع الشبكة',
 			'moreDots' => 'المزيد...',
 			'comments' => 'التعليقات',
 			'noCommentsCanBeFound' => 'لم يتم العثور على تعليقات',
 			'beFirstCommentThisVideo' => 'كن أول من يعلق على هذا الفيديو!',
-			'errorLoadingVideo' => 'خطأ أثناء تحميل الفيديو',
-			'seeAlso' => 'انظر أيضاً',
-			'viewsNumber' => ({required Object number}) => '${number} مشاهدة',
-			'upvotes' => 'أصوات إيجابية',
-			'downvotes' => 'أصوات سلبية',
+			'errorLoadingVideo' => 'خطأ في تحميل الفيديو',
+			'seeAlso' => 'انظر أيضًا',
+			'viewsNumber' => ({required Object number}) => '${number} عرض',
+			'upvotes' => 'إعجابات',
+			'downvotes' => 'عدم إعجاب',
 			'views' => 'المشاهدات',
-			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'تم الإنشاء في ${date1}، تم التعديل في ${date2}',
+			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'تم الإنشاء ${date1}، تم التعديل ${date2}',
 			'loading' => 'تحميل',
-			'releaseToLoad' => 'اتركه لتحميل المزيد',
+			'releaseToLoad' => 'أطلق للتحميل',
 			'finished' => 'انتهى!',
-			'noMoreData' => 'لا توجد بيانات أخرى',
+			'noMoreData' => 'لا مزيد من البيانات',
 			'refreshed' => 'تم التحديث',
-			'refreshing' => 'جاري التحديث',
+			'refreshing' => 'التحديث',
 			'pullToRefresh' => 'اسحب للتحديث',
-			'suggestedInterests' => 'اهتمامات مقترحة',
+			'suggestedInterests' => 'الاهتمامات المقترحة',
 			'reveal' => 'كشف',
-			'wantToShareRevenues' => 'أريد مشاركة هذه الإيرادات',
+			'wantToShareRevenues' => 'أريد مشاركة الإيرادات',
 			'splitRevenuesWithUsers' => 'تقسيم الإيرادات مع المستخدمين',
 			'addUser' => 'إضافة مستخدم',
-			'selectAdate' => 'اختيار تاريخ',
+			'selectAdate' => 'اختر تاريخًا',
 			'clearDate' => 'مسح التاريخ',
-			'nothingToShowHere' => 'أوبس! لا شيء للعرض هنا!',
+			'nothingToShowHere' => 'عفوًا! لا شيء هنا!',
 			'confirmPayment' => 'تأكيد الدفع',
-			'payWithNwc' => 'الدفع بـ NWC',
+			'payWithNwc' => 'الدفع عبر NWC',
 			'important' => 'مهم',
 			'adjustVolume' => 'ضبط الصوت',
 			'adjustSpeed' => 'ضبط السرعة',
 			'updateInterests' => 'تحديث الاهتمامات',
-			'usingViewMode' => 'أنت تستخدم وضع العرض',
-			'usingViewModeDesc' => 'سجل الدخول بمفتاحك الخاص وانضم للمجتمع.',
-			'noInternetAccess' => 'لا يوجد وصول للإنترنت',
+			'usingViewMode' => 'أنت في وضع العرض',
+			'usingViewModeDesc' => 'سجل الدخول بمفتاح خاص وانضم إلى المجتمع.',
+			'noInternetAccess' => 'لا يوجد وصول إلى الإنترنت',
 			'checkModelRouter' => 'تحقق من المودم أو الراوتر',
 			'reconnectWifi' => 'إعادة الاتصال بالواي فاي',
 			'somethingWentWrong' => 'حدث خطأ ما!',
-			'somethingWentWrongDesc' => 'يبدو أن شيئاً حدث أثناء تحميل البيانات، حاول مرة أخرى!',
+			'somethingWentWrongDesc' => 'يبدو أن خطأ حدث أثناء تحميل البيانات، حاول مرة أخرى!',
 			'tryAgain' => 'حاول مرة أخرى',
-			'postNotFound' => 'لم يتم العثور على المنشور',
+			'postNotFound' => 'المنشور غير موجود',
 			'user' => 'مستخدم',
 			'view' => 'عرض',
-			'itsLive' => 'إنه مباشر!',
-			'spreadWordSharingContent' => 'انشر الكلمة بمشاركة محتواك في كل مكان.',
-			'successfulRelays' => 'المرحلات الناجحة',
-			'noRelaysCanBeFound' => 'لم يتم العثور على مرحلات',
-			'dismiss' => 'تجاهل',
-			'deleteAccountMessage' => 'أنت تحاول تسجيل الدخول إلى حساب محذوف.',
+			'itsLive' => 'هو مباشر!',
+			'spreadWordSharingContent' => 'نشر الكلمة من خلال مشاركة المحتوى في كل مكان.',
+			'successfulRelays' => 'الترحيلات الناجحة',
+			'noRelaysCanBeFound' => 'لم يتم العثور على ترحيلات',
+			'dismiss' => 'رفض',
+			'deleteAccountMessage' => 'أنت تحاول الدخول إلى حساب محذوف.',
 			'exit' => 'خروج',
 			'shareContent' => 'مشاركة المحتوى',
 			'profile' => 'الملف الشخصي',
@@ -2126,423 +2175,424 @@ extension on TranslationsAr {
 			'shareNoteId' => 'مشاركة معرف الملاحظة',
 			'shareNprofile' => 'مشاركة nprofile',
 			'shareNaddr' => 'مشاركة naddr',
-			'bio' => ({required Object content}) => 'النبذة: ${content}',
-			'earnSats' => 'كسب SATs',
-			'earnSatsDesc' => 'ساعدنا في توفير رؤى لامركزية أكثر لمراجعة هذه الملاحظة المدفوعة.',
+			'bio' => ({required Object content}) => 'السيرة: ${content}',
+			'earnSats' => 'كسب ساتوشي',
+			'earnSatsDesc' => 'ساعدنا في تقديم المزيد من البيانات اللامركزية للتحقق من هذه الملاحظة المدفوعة.',
 			'verifyingNote' => 'التحقق من الملاحظة',
-			'pickYourImage' => 'اختر صورتك',
-			'uploadPasteUrl' => 'يمكنك الرفع أو لصق رابط لصورتك المفضلة',
-			'back' => 'رجوع',
+			'pickYourImage' => 'اختر صورك',
+			'uploadPasteUrl' => 'يمكنك رفع أو لصق URL للصورة المفضلة',
+			'back' => 'عودة',
 			'camera' => 'الكاميرا',
-			'communityWidgets' => 'ويدجت المجتمع',
-			'myWidgets' => 'ويدجتي',
+			'communityWidgets' => 'ودجيتات المجتمع',
+			'myWidgets' => 'ودجيتاتي',
 			'pendingUnfollowing' => 'إلغاء المتابعة...',
-			'pendingFollowing' => 'المتابعة...',
-			'zappers' => 'الزابرز',
-			'noZappersCanBeFound' => 'لم يتم العثور على زابرز.',
+			'pendingFollowing' => 'متابعة...',
+			'zappers' => 'الزابون',
+			'noZappersCanBeFound' => 'لم يتم العثور على زابون.',
 			'payPublish' => 'دفع ونشر',
-			'payPublishNote' => 'ملاحظة: تأكد من أن جميع المحتوى الذي قدمته نهائي لأن النشر يُعتبر غير قابل للإرجاع والساتس المُنفقة غير قابلة للاسترداد.',
+			'payPublishNote' => 'ملاحظة: تأكد من أن جميع المحتويات المقدمة نهائية، حيث أن النشر غير قابل للعكس، والساتوشي المصروفة غير مستردة.',
 			'userSubmittedPaidNote' => ({required Object name}) => '${name} قدم ملاحظة مدفوعة',
 			'getInvoice' => 'الحصول على فاتورة',
 			'pay' => 'دفع',
 			'compose' => 'تأليف',
-			'writeSomething' => 'اكتب شيئاً...',
-			'highlightedNote' => 'ملاحظة مُبرزة للمزيد من التعرض.',
-			'typeValidZapQuestion' => 'اكتب سؤال استطلاع صحيح!',
+			'writeSomething' => 'اكتب شيئًا...',
+			'highlightedNote' => 'ملاحظة مميزة لزيادة الرؤية.',
+			'typeValidZapQuestion' => 'أدخل سؤال استطلاع زاب صالح!',
 			'pollOptions' => 'خيارات الاستطلاع',
-			'minimumSatoshis' => 'الحد الأدنى من الساتوشيس',
-			'minSats' => 'أقل ساتس',
-			'maxSats' => 'أكثر ساتس',
-			'maximumSatoshis' => 'الحد الأقصى من الساتوشيس',
+			'minimumSatoshis' => 'الحد الأدنى للساتوشي',
+			'minSats' => 'حد أدنى ساتوشي',
+			'maxSats' => 'حد أقصى ساتوشي',
+			'maximumSatoshis' => 'الحد الأقصى للساتوشي',
 			'pollCloseDate' => 'تاريخ إغلاق الاستطلاع',
 			'optionsNumber' => ({required Object number}) => 'الخيارات: ${number}',
-			'zapSplits' => 'تقسيمات الزاب',
-			'minimumOfOneRequired' => 'مطلوب حد أدنى 1',
-			'valueBetweenMinMax' => 'يجب أن تكون القيمة بين الحد الأدنى والأقصى لمبلغ الساتس',
-			'writeCommentOptional' => 'اكتب تعليقاً (اختياري)',
-			'splitZapsWith' => 'تقسيم الزابس مع',
-			'useCannotBeZapped' => 'هذا المستخدم لا يمكن زابه',
-			'waitingGenerationOfInvoice' => 'انتظار توليد الفواتير.',
-			'userInvoiceGenerated' => ({required Object name}) => 'تم توليد فاتورة لـ ${name}',
-			'userInvoiceNotGenerated' => 'لا يمكن إنشاء فاتورة لهذا المستخدم.',
-			'payAmount' => ({required Object number}) => 'دفع ${number} ساتس',
-			'generateInvoices' => 'توليد الفواتير',
+			'zapSplits' => 'تقسيم الزابات',
+			'minimumOfOneRequired' => 'مطلوب واحد على الأقل',
+			'valueBetweenMinMax' => 'يجب أن تكون القيمة بين الحد الأدنى والأقصى للساتوشي',
+			'writeCommentOptional' => 'اكتب تعليقًا (اختياري)',
+			'splitZapsWith' => 'تقسيم الزابات مع',
+			'useCannotBeZapped' => 'لا يمكن زاب هذا المستخدم',
+			'waitingGenerationOfInvoice' => 'انتظار إنشاء الفواتير.',
+			'userInvoiceGenerated' => ({required Object name}) => 'تم إنشاء فاتورة لـ ${name}',
+			'userInvoiceNotGenerated' => 'تعذر إنشاء فاتورة لهذا المستخدم.',
+			'payAmount' => ({required Object number}) => 'دفع ${number} ساتوشي',
+			'generateInvoices' => 'إنشاء فواتير',
 			'userZappedSuccesfuly' => 'تم زاب المستخدم بنجاح',
-			'useValidTitle' => 'يجب استخدام عنوان صحيح',
-			'errorAddingBookmark' => 'حدث خطأ عند إضافة المفضلة',
-			'bookmarkAdded' => 'تم إضافة قائمة المفضلة',
-			'voteNotSubmitted' => 'لا يمكن إرسال التصويت',
-			'zapSplitsMessage' => 'لتقسيمات الزاب، يجب أن يكون هناك شخص واحد على الأقل',
+			'useValidTitle' => 'يجب استخدام عنوان صالح',
+			'errorAddingBookmark' => 'خطأ في إضافة الإشارة المرجعية',
+			'bookmarkAdded' => 'تم إضافة قائمة الإشارات المرجعية',
+			'voteNotSubmitted' => 'لم يتم إرسال الصوت',
+			'zapSplitsMessage' => 'يجب أن يكون هناك شخص واحد على الأقل لتقسيم الزابات',
 			'errorUpdatingCuration' => 'حدث خطأ أثناء تحديث التنسيق',
 			'errorAddingCuration' => 'حدث خطأ أثناء إضافة التنسيق',
-			'errorDeletingContent' => 'حدث خطأ أثناء حذف المحتوى',
-			'errorSigningEvent' => 'حدث خطأ أثناء توقيع الحدث',
-			'errorSendingEvent' => 'حدث خطأ أثناء إرسال الحدث',
-			'errorSendingMessage' => 'حدث خطأ أثناء إرسال الرسالة',
+			'errorDeletingContent' => 'خطأ في حذف المحتوى',
+			'errorSigningEvent' => 'خطأ في توقيع الحدث',
+			'errorSendingEvent' => 'خطأ في إرسال الحدث',
+			'errorSendingMessage' => 'خطأ في إرسال الرسالة',
 			'userHasBeenMuted' => 'تم كتم المستخدم',
 			'userHasBeenUnmuted' => 'تم إلغاء كتم المستخدم',
-			'messageCouldNotBeDecrypted' => 'لا يمكن فك تشفير الرسالة',
+			'messageCouldNotBeDecrypted' => 'تعذر فك تشفير الرسالة',
 			'interestsUpdateMessage' => 'تم تحديث قائمة الاهتمامات بنجاح!',
-			'errorGeneratingEvent' => 'حدث خطأ أثناء توليد الحدث',
-			'oneFeedOptionAvailable' => 'يجب أن يكون هناك خيار تدفق واحد متاح على الأقل.',
+			'errorGeneratingEvent' => 'خطأ في إنشاء الحدث',
+			'oneFeedOptionAvailable' => 'يجب أن يكون خيار تغذية واحد متاحًا على الأقل.',
 			'walletCreated' => 'تم إنشاء المحفظة بنجاح',
 			'walletLinked' => 'تم ربط المحفظة بنجاح',
-			'errorCreatingWallet' => 'حدث خطأ أثناء إنشاء المحفظة',
-			'walletNotLinked' => 'لا يمكن ربط المحفظة. عنوان lightning خاطئ',
-			'invalidPairingSecret' => 'سر الإقران غير صحيح',
-			'errorSettingToken' => 'حدث خطأ أثناء إعداد الرمز المميز',
-			'nwcInitialized' => 'تم تهيئة اتصال محفظة نوستر',
-			'noWalletLinkedMessage' => 'ليس لديك محفظة مربوطة بملفك الشخصي، هل تريد ربط هذه المحفظة؟',
-			'errorUsingWallet' => 'حدث خطأ أثناء استخدام المحفظة!',
-			'submitValidData' => 'تأكد من إرسال بيانات صحيحة',
-			'submitValidInvoice' => 'تأكد من إرسال فاتورة صحيحة',
-			'paymentSucceeded' => 'نجح الدفع',
+			'errorCreatingWallet' => 'خطأ في إنشاء المحفظة',
+			'walletNotLinked' => 'لا يمكن ربط المحفظة. عنوان Lightning غير صالح',
+			'invalidPairingSecret' => 'سر الاقتران غير صالح',
+			'errorSettingToken' => 'خطأ في تعيين الرمز',
+			'nwcInitialized' => 'تم تهيئة Nostr Wallet Connect',
+			'noWalletLinkedMessage' => 'ليس لديك محفظة مرتبطة، هل تريد ربط هذه؟',
+			'errorUsingWallet' => 'خطأ في استخدام المحفظة!',
+			'submitValidData' => 'تأكد من إرسال بيانات صالحة',
+			'submitValidInvoice' => 'تأكد من إرسال فاتورة صالحة',
+			'paymentSucceeded' => 'تم الدفع بنجاح',
 			'paymentFailed' => 'فشل الدفع',
-			'notEnoughBalance' => 'رصيد غير كافٍ لإجراء هذا الدفع.',
-			'permissionInvoiceNotGranted' => 'لم يتم منح إذن دفع الفواتير.',
+			'notEnoughBalance' => 'رصيد غير كافٍ للدفع.',
+			'permissionInvoiceNotGranted' => 'لم يتم منح إذن لدفع الفواتير.',
 			'allUsersZapped' => 'تم زاب جميع المستخدمين!',
-			'partialUsersZapped' => 'تم زاب مستخدمين جزئياً!',
+			'partialUsersZapped' => 'تم زاب جزء من المستخدمين!',
 			'noUserZapped' => 'لم يتم زاب أي مستخدم!',
-			'errorZappingUsers' => 'حدث خطأ أثناء زاب المستخدمين',
+			'errorZappingUsers' => 'خطأ في زاب المستخدمين',
 			'selectDefaultWallet' => 'اختر محفظة افتراضية في الإعدادات.',
-			'noInvoiceAvailable' => 'لا توجد فواتير متاحة',
+			'noInvoiceAvailable' => 'لا فواتير متاحة',
 			'invoicePaid' => 'تم دفع الفاتورة بنجاح',
-			'errorPayingInvoice' => 'حدث خطأ أثناء الدفع باستخدام الفاتورة',
-			'errorUsingExternalWallet' => 'خطأ أثناء استخدام المحفظة الخارجية.',
-			'paymentSurpassMax' => 'الدفع يتجاوز الحد الأقصى المسموح.',
-			'errorSendingSats' => 'حدث خطأ أثناء إرسال الساتس',
-			'setSatsMoreThanZero' => 'تعيين مبلغ ساتس أكبر من 0',
-			'processCompleted' => 'تم إكمال العملية',
-			'relayingStuff' => 'جاري الترحيل...',
+			'errorPayingInvoice' => 'خطأ في دفع الفاتورة',
+			'errorUsingExternalWallet' => 'خطأ في استخدام المحفظة الخارجية.',
+			'paymentSurpassMax' => 'الدفع يتجاوز الحد الأقصى المسموح به.',
+			'errorSendingSats' => 'خطأ في إرسال الساتوشي',
+			'setSatsMoreThanZero' => 'حدد مبلغ ساتوشي أكبر من 0',
+			'processCompleted' => 'تم الانتهاء من العملية',
+			'relayingStuff' => 'نقل الأشياء...',
 			'amberNotInstalled' => 'تطبيق Amber غير مثبت',
-			'alreadyLoggedIn' => 'أنت مسجل دخول بالفعل!',
-			'loggedIn' => 'أنت مسجل دخول!',
+			'alreadyLoggedIn' => 'أنت مسجل الدخول بالفعل!',
+			'loggedIn' => 'تم تسجيل الدخول!',
 			'attemptConnectAmber' => 'تم رفض محاولة الاتصال بـ Amber.',
-			'errorUploadingImage' => 'حدث خطأ أثناء رفع الصورة',
-			'invalidPrivateKey' => 'مفتاح خاص غير صحيح!',
-			'invalidHexKey' => 'مفتاح hex غير صحيح!',
-			'fetchingArticle' => 'جلب المقال',
-			'articleNotFound' => 'لم يتم العثور على المقال',
+			'errorUploadingImage' => 'خطأ في رفع الصورة',
+			'invalidPrivateKey' => 'مفتاح خاص غير صالح!',
+			'invalidHexKey' => 'مفتاح hex غير صالح!',
+			'fetchingArticle' => 'جلب المقالة',
+			'articleNotFound' => 'المقالة غير موجودة',
 			'fetchingCuration' => 'جلب التنسيق',
-			'curationNotFound' => 'لم يتم العثور على التنسيق',
-			'fetchingSmartWidget' => 'جلب الويدجت الذكية',
-			'smartWidgetNotFound' => 'لم يتم العثور على الويدجت الذكية',
+			'curationNotFound' => 'التنسيق غير موجود',
+			'fetchingSmartWidget' => 'جلب الودجيت الذكي',
+			'smartWidgetNotFound' => 'الودجيت الذكي غير موجود',
 			'fetchingVideo' => 'جلب الفيديو',
-			'videoNotFound' => 'لم يتم العثور على الفيديو',
+			'videoNotFound' => 'الفيديو غير موجود',
 			'fetchingNote' => 'جلب الملاحظة',
-			'noteNotFound' => 'لم يتم العثور على الملاحظة',
-			'eventNotFound' => 'لم يتم العثور على الحدث',
-			'verifiedNoteNotFound' => 'لم يتم العثور على الملاحظة المُتحقق منها',
-			'eventNotRecognized' => 'لا يمكن التعرف على الحدث',
-			'fetchingEventUserRelays' => 'جلب الحدث من مرحلات المستخدم',
+			'noteNotFound' => 'الملاحظة غير موجودة',
+			'eventNotFound' => 'الحدث غير موجود',
+			'verifiedNoteNotFound' => 'الملاحظة الموثقة غير موجودة',
+			'eventNotRecognized' => 'الحدث غير معترف به',
+			'fetchingEventUserRelays' => 'جلب الحدث من ترحيلات المستخدم',
 			'fetchingProfile' => 'جلب الملف الشخصي',
 			'fetchingEvent' => 'جلب الحدث',
-			'loggedToYakiChest' => 'أنت مسجل دخول في صندوق Yakihonne',
-			'errorLoggingYakiChest' => 'حدث خطأ أثناء تسجيل الدخول في صندوق Yakihonne',
-			'relayInUse' => 'المرحل قيد الاستخدام بالفعل',
-			'errorConnectingRelay' => 'حدث خطأ أثناء الاتصال بالمرحل',
-			'submitValidLud' => 'تأكد من الحصول على lud16/lud06 صحيح.',
-			'errorUpdatingData' => 'حدث خطأ أثناء تحديث البيانات',
+			'loggedToYakiChest' => 'تم تسجيل الدخول إلى صندوق YakiHonne',
+			'errorLoggingYakiChest' => 'خطأ في تسجيل الدخول إلى صندوق YakiHonne',
+			'relayInUse' => 'الترحيل مستخدم بالفعل',
+			'errorConnectingRelay' => 'خطأ في الاتصال بالترحيل',
+			'submitValidLud' => 'تأكد من أنك حددت lud16/lud06 صالح.',
+			'errorUpdatingData' => 'خطأ في تحديث البيانات',
 			'updatedSuccesfuly' => 'تم التحديث بنجاح',
-			'relaysListUpdated' => 'تم تحديث قائمة المرحلات',
-			'couldNotUpdateRelaysList' => 'لا يمكن تحديث قائمة المرحلات',
-			'errorUpdatingRelaysList' => 'حدث خطأ أثناء تحديث قائمة المرحلات',
-			'errorClaimingReward' => 'حدث خطأ أثناء المطالبة بالمكافأة',
-			'errorDecodingData' => 'حدث خطأ أثناء فك تشفير البيانات',
+			'relaysListUpdated' => 'تم تحديث قائمة الترحيلات',
+			'couldNotUpdateRelaysList' => 'تعذر تحديث قائمة الترحيلات',
+			'errorUpdatingRelaysList' => 'خطأ في تحديث قائمة الترحيلات',
+			'errorClaimingReward' => 'خطأ في المطالبة بالمكافأة',
+			'errorDecodingData' => 'خطأ في فك تشفير البيانات',
 			'loggingIn' => 'تسجيل الدخول...',
 			'loggingOut' => 'تسجيل الخروج...',
 			'disconnecting' => 'قطع الاتصال...',
-			'ratingSubmittedCheckReward' => 'تم إرسال تقييمك، تحقق من صفحة المكافآت لتطالب بمكافأة التقييم',
-			'errorSubmittingRating' => 'حدث خطأ أثناء إرسال تقييمك',
-			'verifiedNoteAdded' => 'تم إضافة ملاحظتك المُتحقق منها، تحقق من صفحة المكافآت لتطالب بمكافأة الكتابة',
-			'errorAddingVerifiedNote' => 'حدث خطأ أثناء إضافة ملاحظتك المُتحقق منها',
+			'ratingSubmittedCheckReward' => 'تم إرسال تقييمك، تحقق من صفحة المكافآت للحصول على مكافأة التقييم',
+			'errorSubmittingRating' => 'خطأ في إرسال التقييم',
+			'verifiedNoteAdded' => 'تم إضافة ملاحظتك الموثقة، تحقق من صفحة المكافآت للحصول على مكافأة الكتابة',
+			'errorAddingVerifiedNote' => 'خطأ في إضافة الملاحظة الموثقة',
 			'ratingDeleted' => 'تم حذف تقييمك',
-			'errorDeletingRating' => 'حدث خطأ أثناء حذف تقييمك',
-			'autoSavedArticleDeleted' => 'تم حذف المقال المحفوظ تلقائياً',
-			'articlePublished' => 'تم نشر مقالك!',
-			'errorAddingArticle' => 'حدث خطأ أثناء إضافة المقال',
-			'writeValidNote' => 'اكتب ملاحظة صحيحة!',
-			'setOutboxRelays' => 'تأكد من إعداد مرحلات صندوق الصادر',
+			'errorDeletingRating' => 'خطأ في حذف التقييم',
+			'autoSavedArticleDeleted' => 'تم حذف المقالة المحفوظة تلقائيًا',
+			'articlePublished' => 'تم نشر مقالتك!',
+			'errorAddingArticle' => 'حدث خطأ أثناء إضافة المقالة',
+			'writeValidNote' => 'اكتب ملاحظة صالحة!',
+			'setOutboxRelays' => 'تأكد من إعداد جميع الترحيلات الخارجية',
 			'notePublished' => 'تم نشر الملاحظة!',
 			'paidNotePublished' => 'تم نشر الملاحظة المدفوعة!',
 			'invoiceNotPayed' => 'يبدو أنك لم تدفع الفاتورة، تحقق مرة أخرى',
-			'autoSavedSMdeleted' => 'تم حذف الويدجت الذكية المحفوظة تلقائياً',
-			'errorUploadingMedia' => 'حدث خطأ أثناء رفع الوسائط',
-			'smartWidgetPublishedSuccessfuly' => 'تم نشر الويدجت الذكية بنجاح',
-			'errorAddingWidget' => 'حدث خطأ أثناء إضافة الويدجت الذكية',
-			'setAllRequiredContent' => 'تأكد من تعيين جميع المحتوى المطلوب.',
-			'noEventIdCanBeFound' => 'لم يتم العثور على حدث بهذا المعرف!',
-			'notValidVideoEvent' => 'هذا الحدث ليس حدث فيديو صحيح!',
-			'emptyVideoUrl' => 'هذا nevent له رابط فارغ',
-			'submitValidVideoEvent' => 'يرجى إرسال حدث فيديو صحيح',
-			'errorUploadingVideo' => 'حدث خطأ أثناء رفع الفيديو',
+			'autoSavedSMdeleted' => 'تم حذف الودجيت الذكي المحفوظ تلقائيًا',
+			'errorUploadingMedia' => 'خطأ في رفع الوسائط',
+			'smartWidgetPublishedSuccessfuly' => 'تم نشر الودجيت الذكي بنجاح',
+			'errorAddingWidget' => 'حدث خطأ أثناء إضافة الودجيت الذكي',
+			'setAllRequiredContent' => 'تأكد من تعيين جميع المحتويات المطلوبة.',
+			'noEventIdCanBeFound' => 'لا يمكن العثور على حدث بهذا المعرف!',
+			'notValidVideoEvent' => 'هذا الحدث ليس حدث فيديو صالح!',
+			'emptyVideoUrl' => 'هذا nevent لديه رابط فارغ',
+			'submitValidVideoEvent' => 'إرسال حدث فيديو صالح',
+			'errorUploadingVideo' => 'خطأ في رفع الفيديو',
 			'errorAddingVideo' => 'حدث خطأ أثناء إضافة الفيديو',
-			'submitMinMaxSats' => 'تأكد من إرسال ساتوشيس صحيحة للحد الأدنى والأقصى',
-			'submitValidCloseDate' => 'تأكد من إرسال تاريخ إغلاق صحيح.',
-			'submitValidOptions' => 'تأكد من إرسال خيارات صحيحة.',
-			'pollZapPublished' => 'تم نشر استطلاع الزاب!',
-			'relaysNotReached' => 'لا يمكن الوصول للمرحلات',
-			'loginYakiChestPoints' => 'سجل دخول في صندوق Yakihonne، اجمع النقاط بكونك نشطاً على المنصة واربح جوائز ثمينة!',
+			'submitMinMaxSats' => 'تأكد من تعيين الحد الأدنى والأقصى للساتوشي بشكل صحيح',
+			'submitValidCloseDate' => 'تأكد من تعيين تاريخ إغلاق صالح.',
+			'submitValidOptions' => 'تأكد من تعيين خيارات صالحة.',
+			'pollZapPublished' => 'تم نشر استطلاع زاب!',
+			'relaysNotReached' => 'الترحيلات غير قابلة للوصول',
+			'loginYakiChestPoints' => 'سجل الدخول إلى صندوق YakiHonne، اكسب نقاط من خلال النشاط على المنصة واكسب جوائز قيمة!',
 			'inaccessibleLink' => 'رابط غير قابل للوصول',
-			'mediaExceedsMaxSize' => 'الوسائط تتجاوز الحد الأقصى للحجم وهو 21 ميجابايت',
-			'fetchingUserInboxRelays' => 'جلب مرحلات صندوق وارد المستخدم',
-			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتس',
-			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} معك',
-			'userRepostedYou' => ({required Object name}) => '${name} أعاد نشر محتواك',
+			'mediaExceedsMaxSize' => 'الوسائط تتجاوز الحجم الأقصى 21 ميجابايت',
+			'fetchingUserInboxRelays' => 'جلب ترحيلات الصندوق الوارد للمستخدم',
+			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي',
+			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك',
+			'userRepostedYou' => ({required Object name}) => 'قام ${name} بإعادة نشر محتواك',
+			'userMentionedYouInComment' => ({required Object name}) => '${name} ذكرك في تعليق',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} ذكرك في ملاحظة',
 			'userMentionedYouInPaidNote' => ({required Object name}) => '${name} ذكرك في ملاحظة مدفوعة',
-			'userMentionedYouInArticle' => ({required Object name}) => '${name} ذكرك في مقال',
+			'userMentionedYouInArticle' => ({required Object name}) => '${name} ذكرك في مقالة',
 			'userMentionedYouInVideo' => ({required Object name}) => '${name} ذكرك في فيديو',
 			'userMentionedYouInCuration' => ({required Object name}) => '${name} ذكرك في تنسيق',
-			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} ذكرك في ويدجت ذكية',
+			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} ذكرك في ودجيت ذكي',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} ذكرك في استطلاع',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} نشر ملاحظة مدفوعة',
-			'userPublishedArticle' => ({required Object name}) => '${name} نشر مقال',
+			'userPublishedArticle' => ({required Object name}) => '${name} نشر مقالة',
 			'userPublishedVideo' => ({required Object name}) => '${name} نشر فيديو',
 			'userPublishedCuration' => ({required Object name}) => '${name} نشر تنسيق',
-			'userPublishedSmartWidget' => ({required Object name}) => '${name} نشر ويدجت ذكية',
+			'userPublishedSmartWidget' => ({required Object name}) => '${name} نشر ودجيت ذكي',
 			'userPublishedPoll' => ({required Object name}) => '${name} نشر استطلاع',
-			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} زاب مقالك ${number} ساتس',
-			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتس',
-			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتس',
-			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} زاب ويدجتك الذكية ${number} ساتس',
-			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتس',
-			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتس',
-			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتس',
-			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقالك',
-			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيقك',
-			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديوك',
-			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجتك الذكية',
-			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاعك',
-			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك',
-			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظتك المدفوعة',
-			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع رسالتك',
+			'userZappedYourArticle' => ({required Object name, required Object number}) => '${name} زاب مقالتك ${number} ساتوشي',
+			'userZappedYourCuration' => ({required Object name, required Object number}) => '${name} زاب تنسيقك ${number} ساتوشي',
+			'userZappedYourVideo' => ({required Object name, required Object number}) => '${name} زاب فيديوك ${number} ساتوشي',
+			'userZappedYourSmartWidget' => ({required Object name, required Object number}) => '${name} زاب ودجيتك الذكي ${number} ساتوشي',
+			'userZappedYourPoll' => ({required Object name, required Object number}) => '${name} زاب استطلاعك ${number} ساتوشي',
+			'userZappedYourNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك ${number} ساتوشي',
+			'userZappedYourPaidNote' => ({required Object name, required Object number}) => '${name} زاب ملاحظتك المدفوعة ${number} ساتوشي',
+			'userReactedYourArticle' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على مقالتك',
+			'userReactedYourCuration' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على تنسيقك',
+			'userReactedYourVideo' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على فيديوك',
+			'userReactedYourSmartWidget' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ودجيتك الذكي',
+			'userReactedYourPoll' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على استطلاعك',
+			'userReactedYourNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظتك',
+			'userReactedYourPaidNote' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظتك المدفوعة',
+			'userReactedYourMessage' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على رسالتك',
 			'userRepostedYourNote' => ({required Object name}) => '${name} أعاد نشر ملاحظتك',
 			'userRepostedYourPaidNote' => ({required Object name}) => '${name} أعاد نشر ملاحظتك المدفوعة',
-			'userRepliedYourArticle' => ({required Object name}) => '${name} رد على مقالك',
+			'userRepliedYourArticle' => ({required Object name}) => '${name} رد على مقالتك',
 			'userRepliedYourCuration' => ({required Object name}) => '${name} رد على تنسيقك',
 			'userRepliedYourVideo' => ({required Object name}) => '${name} رد على فيديوك',
-			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} رد على ويدجتك الذكية',
+			'userRepliedYourSmartWidget' => ({required Object name}) => '${name} رد على ودجيتك الذكي',
 			'userRepliedYourPoll' => ({required Object name}) => '${name} رد على استطلاعك',
 			'userRepliedYourNote' => ({required Object name}) => '${name} رد على ملاحظتك',
 			'userRepliedYourPaidNote' => ({required Object name}) => '${name} رد على ملاحظتك المدفوعة',
-			'userCommentedYourArticle' => ({required Object name}) => '${name} علق على مقالك',
+			'userCommentedYourArticle' => ({required Object name}) => '${name} علق على مقالتك',
 			'userCommentedYourCuration' => ({required Object name}) => '${name} علق على تنسيقك',
 			'userCommentedYourVideo' => ({required Object name}) => '${name} علق على فيديوك',
-			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} علق على ويدجتك الذكية',
+			'userCommentedYourSmartWidget' => ({required Object name}) => '${name} علق على ودجيتك الذكي',
 			'userCommentedYourPoll' => ({required Object name}) => '${name} علق على استطلاعك',
 			'userCommentedYourNote' => ({required Object name}) => '${name} علق على ملاحظتك',
 			'userCommentedYourPaidNote' => ({required Object name}) => '${name} علق على ملاحظتك المدفوعة',
-			'userQuotedYourArticle' => ({required Object name}) => '${name} اقتبس مقالك',
+			'userQuotedYourArticle' => ({required Object name}) => '${name} اقتبس مقالتك',
 			'userQuotedYourCuration' => ({required Object name}) => '${name} اقتبس تنسيقك',
 			'userQuotedYourVideo' => ({required Object name}) => '${name} اقتبس فيديوك',
 			'userQuotedYourNote' => ({required Object name}) => '${name} اقتبس ملاحظتك',
 			'userQuotedYourPaidNote' => ({required Object name}) => '${name} اقتبس ملاحظتك المدفوعة',
-			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع مقال ذُكرت فيه',
-			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع تنسيق ذُكرت فيه',
-			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع فيديو ذُكرت فيه',
-			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ويدجت ذكية ذُكرت فيها',
-			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع استطلاع ذُكرت فيه',
-			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة ذُكرت فيها',
-			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع ملاحظة مدفوعة ذُكرت فيها',
-			'userRepostedNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة ذُكرت فيها',
-			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذُكرت فيها',
-			'userRepliedArticleYouIn' => ({required Object name}) => '${name} رد على مقال ذُكرت فيه',
-			'userRepliedCurationYouIn' => ({required Object name}) => '${name} رد على تنسيق ذُكرت فيه',
-			'userRepliedVideoYouIn' => ({required Object name}) => '${name} رد على فيديو ذُكرت فيه',
-			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} رد على ويدجت ذكية ذُكرت فيها',
-			'userRepliedPollYouIn' => ({required Object name}) => '${name} رد على استطلاع ذُكرت فيه',
-			'userRepliedNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة ذُكرت فيها',
-			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة مدفوعة ذُكرت فيها',
-			'userCommentedArticleYouIn' => ({required Object name}) => '${name} علق على مقال ذُكرت فيه',
-			'userCommentedCurationYouIn' => ({required Object name}) => '${name} علق على تنسيق ذُكرت فيه',
-			'userCommentedVideoYouIn' => ({required Object name}) => '${name} علق على فيديو ذُكرت فيه',
-			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} علق على ويدجت ذكية ذُكرت فيها',
-			'userCommentedPollYouIn' => ({required Object name}) => '${name} علق على استطلاع ذُكرت فيه',
-			'userCommentedNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة ذُكرت فيها',
-			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة مدفوعة ذُكرت فيها',
-			'userQuotedArticleYouIn' => ({required Object name}) => '${name} اقتبس مقال ذُكرت فيه',
-			'userQuotedCurationYouIn' => ({required Object name}) => '${name} اقتبس تنسيق ذُكرت فيه',
-			'userQuotedVideoYouIn' => ({required Object name}) => '${name} اقتبس فيديو ذُكرت فيه',
-			'userQuotedNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة ذُكرت فيها',
-			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذُكرت فيها',
-			'reactedWith' => ({required Object name, required Object reaction}) => '${name} تفاعل بـ ${reaction}',
-			'verifiedNoteSealed' => 'تم ختم ملاحظتك المُتحقق منها.',
-			'verifiedNoteRateSealed' => 'تم ختم ملاحظة مُتحقق منها قيّمتها.',
+			'userReactedArticleYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على مقالة ذكرتك',
+			'userReactedCurationYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على تنسيق ذكرتك',
+			'userReactedVideoYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على فيديو ذكرتك',
+			'userReactedSmartWidgetYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ودجيت ذكي ذكرتك',
+			'userReactedPollYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على استطلاع ذكرتك',
+			'userReactedNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظة ذكرتك',
+			'userReactedPaidNoteYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} على ملاحظة مدفوعة ذكرتك',
+			'userRepostedNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة ذكرتك',
+			'userRepostedPaidNoteYouIn' => ({required Object name}) => '${name} أعاد نشر ملاحظة مدفوعة ذكرتك',
+			'userRepliedArticleYouIn' => ({required Object name}) => '${name} رد على مقالة ذكرتك',
+			'userRepliedCurationYouIn' => ({required Object name}) => '${name} رد على تنسيق ذكرتك',
+			'userRepliedVideoYouIn' => ({required Object name}) => '${name} رد على فيديو ذكرتك',
+			'userRepliedSmartWidgetYouIn' => ({required Object name}) => '${name} رد على ودجيت ذكي ذكرتك',
+			'userRepliedPollYouIn' => ({required Object name}) => '${name} رد على استطلاع ذكرتك',
+			'userRepliedNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة ذكرتك',
+			'userRepliedPaidNoteYouIn' => ({required Object name}) => '${name} رد على ملاحظة مدفوعة ذكرتك',
+			'userCommentedArticleYouIn' => ({required Object name}) => '${name} علق على مقالة ذكرتك',
+			'userCommentedCurationYouIn' => ({required Object name}) => '${name} علق على تنسيق ذكرتك',
+			'userCommentedVideoYouIn' => ({required Object name}) => '${name} علق على فيديو ذكرتك',
+			'userCommentedSmartWidgetYouIn' => ({required Object name}) => '${name} علق على ودجيت ذكي ذكرتك',
+			'userCommentedPollYouIn' => ({required Object name}) => '${name} علق على استطلاع ذكرتك',
+			'userCommentedNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة ذكرتك',
+			'userCommentedPaidNoteYouIn' => ({required Object name}) => '${name} علق على ملاحظة مدفوعة ذكرتك',
+			'userQuotedArticleYouIn' => ({required Object name}) => '${name} اقتبس مقالة ذكرتك',
+			'userQuotedCurationYouIn' => ({required Object name}) => '${name} اقتبس تنسيق ذكرتك',
+			'userQuotedVideoYouIn' => ({required Object name}) => '${name} اقتبس فيديو ذكرتك',
+			'userQuotedNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة ذكرتك',
+			'userQuotedPaidNoteYouIn' => ({required Object name}) => '${name} اقتبس ملاحظة مدفوعة ذكرتك',
+			'reactedWith' => ({required Object name, required Object reaction}) => '${name} تفاعل مع ${reaction}',
+			'verifiedNoteSealed' => 'ملاحظتك الموثقة تم ختمها.',
+			'verifiedNoteRateSealed' => 'الملاحظة الموثقة التي قيمتها تم ختمها.',
 			'userNewVideo' => ({required Object name}) => 'فيديو ${name}',
 			'titleData' => ({required Object description}) => 'العنوان: ${description}',
-			'checkoutVideo' => 'تحقق من فيديوي',
+			'checkoutVideo' => 'شاهد فيديوي',
 			'yakihonneNotification' => 'إشعار YakiHonne',
-			'unknownVerifiedNote' => 'ملاحظة مُتحقق منها مجهولة',
-			'userReply' => ({required Object name}) => 'رد ${name}',
-			'userPaidNote' => ({required Object name}) => 'ملاحظة ${name} المدفوعة الجديدة',
+			'unknownVerifiedNote' => 'ملاحظة موثقة من غير معروف',
+			'userReply' => ({required Object name}) => 'رد من ${name}',
+			'userPaidNote' => ({required Object name}) => 'ملاحظة مدفوعة جديدة من ${name}',
 			'contentData' => ({required Object description}) => 'المحتوى: ${description}',
-			'checkoutPaidNote' => 'تحقق من ملاحظتي المدفوعة',
-			'userNewCuration' => ({required Object name}) => 'تنسيق ${name} الجديد',
-			'userNewArticle' => ({required Object name}) => 'مقال ${name} الجديد',
-			'userNewSmartWidget' => ({required Object name}) => 'ويدجت ${name} الذكية الجديدة',
-			'checkoutArticle' => 'تحقق من مقالي',
-			'checkoutCuration' => 'تحقق من تنسيقي',
-			'checkoutSmartWidget' => 'تحقق من ويدجتي الذكية',
+			'checkoutPaidNote' => 'شاهد ملاحظتي المدفوعة',
+			'userNewCuration' => ({required Object name}) => 'تنسيق جديد من ${name}',
+			'userNewArticle' => ({required Object name}) => 'مقالة جديدة من ${name}',
+			'userNewSmartWidget' => ({required Object name}) => 'ودجيت ذكي جديد من ${name}',
+			'checkoutArticle' => 'شاهد مقالتي',
+			'checkoutCuration' => 'شاهد تنسيقي',
+			'checkoutSmartWidget' => 'شاهد ودجيتي الذكي',
 			'languagePreferences' => 'تفضيلات اللغة',
 			'contentTranslation' => 'ترجمة المحتوى',
 			'appLanguage' => 'لغة التطبيق',
 			'apiKeyRequired' => 'مفتاح API (مطلوب)',
 			'getApiKey' => 'الحصول على مفتاح API',
-			'seeTranslation' => 'رؤية الترجمة',
-			'seeOriginal' => 'رؤية الأصل',
+			'seeTranslation' => 'عرض الترجمة',
+			'seeOriginal' => 'عرض الأصلي',
 			'plan' => 'الخطة',
 			'free' => 'مجاني',
-			'pro' => 'احترافي',
-			'errorTranslating' => 'حدث خطأ أثناء ترجمة المحتوى.',
-			'errorMissingKey' => 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات -> تفضيلات اللغة للمزيد.',
-			'comingSoon' => 'قريباً',
+			'pro' => 'محترف',
+			'errorTranslating' => 'خطأ في ترجمة المحتوى.',
+			'errorMissingKey' => 'مفتاح API مفقود أو انتهت صلاحية الاشتراك. تحقق من الإعدادات → تفضيلات اللغة.',
+			'comingSoon' => 'قريبًا',
 			'content' => 'المحتوى',
 			'expiresOn' => ({required Object date}) => 'ينتهي في: ${date}',
 			'collapseNote' => 'طي الملاحظة',
 			'reactions' => 'التفاعلات',
 			'reposts' => 'إعادة النشر',
 			'notifDisabled' => 'الإشعارات معطلة!',
-			'notifDisabledMessage' => 'الإشعارات معطلة لهذا النوع، يمكنك تفعيلها في إعدادات الإشعارات.',
-			'oneNotifOptionAvailable' => 'يجب أن يكون هناك خيار إشعار واحد متاح على الأقل.',
+			'notifDisabledMessage' => 'الإشعارات معطلة لهذا النوع، قم بتمكينها في إعدادات الإشعارات.',
+			'oneNotifOptionAvailable' => 'يجب أن يكون خيار إشعار واحد متاحًا على الأقل.',
 			'readAll' => 'قراءة الكل',
-			'usernameTaken' => 'اسم المستخدم مأخوذ',
+			'usernameTaken' => 'اسم المستخدم محجوز',
 			'usernameRequired' => 'اسم المستخدم مطلوب',
-			'deleteWalletConfirmation' => 'يرجى التأكد من حفظ عبارة اتصال NWC الخاصة بك بأمان، لأننا لا نستطيع المساعدة في استرداد المحافظ المفقودة.',
+			'deleteWalletConfirmation' => 'تأكد من حفظ عبارة اتصال NWC الخاصة بك في مكان آمن — لا يمكننا المساعدة في استعادة المحافظ المفقودة.',
 			'unsupportedKind' => 'نوع غير مدعوم',
 			'analyticsCrashlytics' => 'Crashlytics',
-			'analyticsCache' => 'Crashlytics والذاكرة المؤقتة',
-			'analyticsCacheOn' => 'تم تشغيل Crashlytics.',
-			'analyticsCacheOff' => 'تم إيقاف Crashlytics.',
-			'shareNoUsage' => 'أنت لا تشارك أي crashlytics معنا في الوقت الحالي.',
+			'analyticsCache' => 'Crashlytics وكاش',
+			'analyticsCacheOn' => 'تم تمكين Crashlytics.',
+			'analyticsCacheOff' => 'تم تعطيل Crashlytics.',
+			'shareNoUsage' => 'أنت لا تشارك حاليًا معنا بيانات crashlytics.',
 			'wantShareAnalytics' => 'تريد مشاركة crashlytics؟',
-			'yakihonneAnCr' => 'Crashlytics الخاصة بـ YakiHonne',
-			'crashlyticsTerms' => 'جمع crashlytics مجهولة الهوية أمر حيوي لتحسين مزايا تطبيقنا وتجربة المستخدم. يمكننا من تحديد تفضيلات المستخدمين وتحسين المزايا الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقاً أكثر تخصيصاً وكفاءة لمستخدمينا.',
-			'collectAnonymised' => 'نجمع crashlytics مجهولة الهوية لتحسين تجربة التطبيق.',
-			'linkWalletToProfile' => 'ربط المحفظة بملفك الشخصي',
-			'linkWalletToProfileDesc' => 'المحفظة المربوطة ستُستخدم لاستقبال الساتس',
-			'noWalletLinked' => 'ليس لديك محفظة مربوطة بملفك الشخصي فكر في ربط إحدى محافظك في القائمة أعلاه',
+			'yakihonneAnCr' => 'Crashlytics YakiHonne',
+			'crashlyticsTerms' => 'جمع crashlytics المجهول أمر حاسم لتحسين الميزات وتجربة المستخدم في التطبيق. يساعدنا في فهم تفضيلات المستخدمين، تحسين الميزات الشائعة وإجراء تحسينات مدروسة، مما يضمن تطبيقًا أكثر تخصيصًا وكفاءة.',
+			'collectAnonymised' => 'نحن نجمع crashlytics المجهولة لتحسين التطبيق.',
+			'linkWalletToProfile' => 'ربط المحفظة بالملف الشخصي',
+			'linkWalletToProfileDesc' => 'سيتم استخدام المحفظة المرتبطة لاستلام الساتوشي',
+			'noWalletLinked' => 'ليس لديك محفظة مرتبطة، فكر في ربط واحدة من محافظك في القائمة أعلاه',
 			'addPoll' => 'إضافة استطلاع',
 			'browsePolls' => 'تصفح الاستطلاعات',
-			'maciPolls' => 'استطلاع MACI',
-			'beta' => 'تجريبي',
+			'maciPolls' => 'استطلاعات MACI',
+			'beta' => 'بيتا',
 			'choosePollType' => 'اختر نوع الاستطلاع',
 			'created' => 'تم الإنشاء',
 			'tallying' => 'العد',
 			'ended' => 'انتهى',
-			'closed' => 'مُغلق',
-			'voteResultsBy' => 'نتائج التصويت بواسطة',
+			'closed' => 'مغلق',
+			'voteResultsBy' => 'نتائج التصويت حسب',
 			'votes' => 'الأصوات',
-			'voiceCredit' => 'رصيد الصوت',
+			'voiceCredit' => 'ائتمان الصوت',
 			'viewDetails' => 'عرض التفاصيل',
 			'signup' => 'التسجيل',
-			'notDownloadProof' => 'لا يمكن تحميل الأدلة',
+			'notDownloadProof' => 'تعذر تنزيل الإثباتات',
 			'name' => 'الاسم',
 			'status' => 'الحالة',
 			'circuit' => 'الدائرة',
 			'votingSystem' => 'نظام التصويت',
 			'proofSystem' => 'نظام الإثبات',
 			'gasStation' => 'محطة الغاز',
-			'totalFund' => '(إجمالي التمويل)',
-			'roundStart' => 'بداية الجولة',
+			'totalFund' => '(الصندوق الإجمالي)',
+			'roundStart' => 'بدء الجولة',
 			'roundEnd' => 'نهاية الجولة',
 			'operator' => 'المشغل',
 			'contractCreator' => 'منشئ العقد',
 			'contractAddress' => 'عنوان العقد',
 			'blockHeight' => 'ارتفاع الكتلة',
 			'atContractCreation' => ({required Object number}) => '${number} (عند إنشاء العقد)',
-			'zkProofs' => 'أدلة ZK',
-			'downloadZkProofs' => 'تحميل الأدلة',
-			'walletConnectionString' => 'نص اتصال المحفظة',
-			'walletConnectionStringDesc' => 'يرجى التأكد من نسخ أو تصدير نص اتصال محفظتك بأمان. نحن لا نخزن هذه المعلومات، وإذا فُقدت، لا يمكن استردادها.',
+			'zkProofs' => 'إثباتات ZK',
+			'downloadZkProofs' => 'تنزيل الإثباتات',
+			'walletConnectionString' => 'سلسلة اتصال المحفظة',
+			'walletConnectionStringDesc' => 'تأكد من نسخ أو تصدير سلسلة اتصال المحفظة بشكل آمن. نحن لا نخزن هذه المعلومات، وإذا فقدت، لا يمكن استرجاعها.',
 			'export' => 'تصدير',
 			'logout' => 'تسجيل الخروج',
 			'exportAndLogout' => 'تصدير وتسجيل الخروج',
-			'exportWalletsDesc' => 'يبدو أن لديك محافظ مربوطة بحسابك. يرجى تحميل أسرار محفظتك قبل تسجيل الخروج.',
+			'exportWalletsDesc' => 'يبدو أن لديك محافظ مرتبطة بحسابك. قم بتنزيل أسرار المحافظ قبل الخروج.',
 			'manageWallets' => 'إدارة المحافظ',
 			'roundDuration' => 'مدة الجولة',
-			'startAt' => ({required Object date}) => 'يبدأ في: ${date}',
+			'startAt' => ({required Object date}) => 'البدء في: ${date}',
 			'loginAction' => 'تسجيل الدخول',
 			'addPicture' => 'إضافة صورة',
-			'editPicture' => 'تعديل الصورة',
+			'editPicture' => 'تحرير الصورة',
 			'exportKeys' => 'تصدير المفاتيح',
-			'mutedUser' => 'مستخدم مكتوم',
+			'mutedUser' => 'مستخدم مكتم',
 			'unaccessibleContent' => 'محتوى غير قابل للوصول',
-			'mutedUserDesc' => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لرؤية هذا المحتوى',
+			'mutedUserDesc' => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لعرض المحتوى',
 			'commentHidden' => 'هذا التعليق مخفي',
 			'upcoming' => 'قادم',
-			'exportCredentials' => 'تصدير بيانات الاعتماد',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$2(String path) {
 		return switch (path) {
-			'loginToYakihonne' => 'تسجيل الدخول إلى Yakihonne',
-			'alreadyUser' => 'مستخدم بالفعل؟',
+			'exportCredentials' => 'تصدير البيانات الاعتمادية',
+			'loginToYakihonne' => 'تسجيل الدخول إلى YakiHonne',
+			'alreadyUser' => 'هل أنت مستخدم بالفعل؟',
 			'createPoll' => 'إنشاء استطلاع',
-			'gasStationTotal' => 'محطة الغاز (إجمالي الممول)',
+			'gasStationTotal' => 'محطة الغاز (الممول الإجمالي)',
 			'gasStationRemaining' => 'محطة الغاز (الرصيد المتبقي)',
 			'paste' => 'لصق',
 			'manual' => 'يدوي',
-			'contacts' => 'جهات الاتصال',
-			'typeManualDesc' => 'اكتب عنوان Lightning أو فاتورة Lightning أو LNURL',
-			'useValidPaymentRequest' => 'يرجى استخدام طلب دفع صحيح',
+			'contacts' => 'الاتصالات',
+			'typeManualDesc' => 'اكتب عنوان Lightning، فاتورة Lightning أو LNURL',
+			'useValidPaymentRequest' => 'يرجى استخدام طلب دفع صالح',
 			'save' => 'حفظ',
-			'saveImageGallery' => 'تم تحميل الصورة إلى معرضك',
-			'errorSavingImage' => 'حدث خطأ أثناء تحميل الصورة',
-			'copyImageGallery' => 'تم نسخ الصورة إلى الحافظة',
+			'saveImageGallery' => 'تم تنزيل الصورة إلى معرضك',
+			'errorSavingImage' => 'حدث خطأ أثناء تنزيل الصورة',
+			'copyImageGallery' => 'تم نسخ الصورة إلى حافظتك',
 			'errorCopyImage' => 'حدث خطأ أثناء نسخ الصورة',
 			'scan' => 'مسح',
-			'invalidLightningAddress' => 'عنوان lightning غير صحيح',
-			'deleteAccountDesc' => 'أنت على وشك حذف حسابك، هل تريد المتابعة؟',
-			'paymentFailedInvoice' => 'فشل الدفع: تحقق من صحة هذه الفاتورة',
-			'validSatsAmount' => 'تعيين مبلغ ساتس صحيح',
-			'placeholder' => 'نائب',
+			'invalidLightningAddress' => 'عنوان Lightning غير صالح',
+			'deleteAccountDesc' => 'أنت على وشك حذف حسابك، هل ترغب في المتابعة؟',
+			'paymentFailedInvoice' => 'فشل الدفع: تحقق من صلاحية هذه الفاتورة',
+			'validSatsAmount' => 'حدد مبلغ ساتوشي صالح',
+			'placeholder' => 'عنصر نائب',
 			'inputFieldCustomization' => 'تخصيص حقل الإدخال',
 			'addInputField' => 'إضافة حقل إدخال',
 			'addButton' => 'إضافة زر',
-			'selectImage' => 'اختيار صورة',
-			'moveLeft' => 'نقل يساراً',
-			'moveRight' => 'نقل يميناً',
-			'buttonRequired' => 'يجب أن يكون هناك زر واحد متاح على الأقل',
-			'missingInputDesc' => 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ويدجتك الذكية، يرجى إضافة حقل إدخال لتعمل الوظيفة بشكل صحيح.',
-			'countdown' => 'العد التنازلي',
-			'contentEndsAt' => 'المحتوى ينتهي في',
-			'countdownTime' => 'وقت العد التنازلي إجباري',
-			'contentEndsDate' => 'تاريخ انتهاء المحتوى إجباري',
-			'lnMandatory' => 'عنوان lightning إجباري',
-			'pubkeysMandatory' => 'ملف شخصي واحد على الأقل إجباري',
-			'buttonNoUrl' => 'روابط الأزرار إجبارية',
-			'shareWidgetImage' => 'مشاركة صورة الويدجت',
-			'inputField' => 'حقل الإدخال',
-			'noReplies' => 'لا توجد ردود',
+			'selectImage' => 'اختر صورة',
+			'moveLeft' => 'تحريك يسارًا',
+			'moveRight' => 'تحريك يمينًا',
+			'buttonRequired' => 'يجب أن تكون هناك زر واحد على الأقل متاح',
+			'missingInputDesc' => 'يبدو أنك تستخدم إحدى الوظائف المخصصة التي تتطلب مكون حقل إدخال دون تضمين واحد في ودجيتك الذكي، يرجى إضافة حقل إدخال حتى تعمل الوظيفة بشكل صحيح.',
+			'countdown' => 'عد تنازلي',
+			'contentEndsAt' => 'ينتهي المحتوى في',
+			'countdownTime' => 'وقت العد التنازلي إلزامي',
+			'contentEndsDate' => 'تاريخ انتهاء المحتوى إلزامي',
+			'lnMandatory' => 'عنوان Lightning إلزامي',
+			'pubkeysMandatory' => 'ملف شخصي واحد على الأقل إلزامي',
+			'buttonNoUrl' => 'روابط الأزرار إلزامية',
+			'shareWidgetImage' => 'مشاركة صورة الودجيت',
+			'inputField' => 'حقل إدخال',
+			'noReplies' => 'لا ردود',
 			'message' => 'رسالة',
 			'chat' => 'دردشة',
-			'onlyLettersNumber' => 'الحروف والأرقام فقط مسموحة',
-			'appCache' => 'ذاكرة التطبيق المؤقتة',
-			'cachedData' => 'البيانات المخزنة مؤقتاً',
-			'cachedMedia' => 'الوسائط المخزنة مؤقتاً',
-			'cacheCleared' => 'تم مسح الذاكرة المؤقتة',
-			'closeAppClearingCache' => 'من الأفضل إعادة تشغيل التطبيق عند مسح الذاكرة المؤقتة لضمان سريان جميع التغييرات وتشغيل التطبيق بسلاسة',
-			'appCacheNotice' => 'ذاكرة التطبيق المؤقتة تزداد في الحجم. لضمان الأداء السلس، يُنصح بمسح البيانات القديمة.',
-			'manageCache' => 'إدارة الذاكرة المؤقتة',
-			'filterByTime' => 'التصفية حسب الوقت',
-			'allTime' => 'كل الأوقات',
+			'onlyLettersNumber' => 'مسموح بالحروف والأرقام فقط',
+			'appCache' => 'كاش التطبيق',
+			'cachedData' => 'البيانات المخزنة',
+			'cachedMedia' => 'الوسائط المخزنة',
+			'cacheCleared' => 'تم مسح الكاش',
+			'closeAppClearingCache' => 'من الأفضل إعادة تشغيل التطبيق بعد مسح الكاش لضمان تطبيق جميع التغييرات وتشغيل التطبيق بسلاسة',
+			'appCacheNotice' => 'كاش تطبيقك يزداد حجما. لضمان أداء سلس، يُوصى بمسح البيانات القديمة.',
+			'manageCache' => 'إدارة الكاش',
+			'filterByTime' => 'تصفية حسب الوقت',
+			'allTime' => 'كل الوقت',
 			'oneMonth' => 'شهر واحد',
 			'threeMonths' => '3 أشهر',
 			'sixMonths' => '6 أشهر',
 			'oneYear' => 'سنة واحدة',
 			'defaultZapAmount' => 'مبلغ الزاب الافتراضي',
-			'oneTapZap' => 'تفعيل زاب بنقرة واحدة',
+			'oneTapZap' => 'تمكين زاب بنقرة واحدة',
 			'verify' => 'التحقق',
 			'reset' => 'إعادة تعيين',
-			'appCannotVerified' => 'لا يمكن التحقق من التطبيق أو أنه غير صحيح',
-			'useValidAppUrl' => 'استخدم رابط تطبيق صحيح',
+			'appCannotVerified' => 'لا يمكن التحقق من التطبيق أو غير صالح',
+			'useValidAppUrl' => 'استخدم رابط تطبيق صالح',
 			'app' => 'التطبيق',
 			'userNotConnected' => 'المستخدم غير متصل',
-			'userCannotSignEvent' => 'هذا المستخدم لا يستطيع توقيع الأحداث.',
-			'invalidEvent' => 'حدث غير صحيح',
+			'userCannotSignEvent' => 'لا يمكن لهذا المستخدم توقيع الأحداث.',
+			'invalidEvent' => 'حدث غير صالح',
 			'eventCannotBeSigned' => 'لا يمكن توقيع الحدث',
 			'signEvent' => 'توقيع الحدث',
 			'sign' => 'توقيع',
@@ -2550,297 +2600,345 @@ extension on TranslationsAr {
 			'signEventDes' => 'أنت على وشك توقيع الحدث التالي',
 			'enableAutomaticSigning' => 'التوقيع التلقائي',
 			'tools' => 'الأدوات',
-			'searchSmartWidgets' => 'البحث عن ويدجت ذكية',
-			'noToolsAvailable' => 'لا توجد أدوات متاحة',
+			'searchSmartWidgets' => 'البحث عن ودجيتات ذكية',
+			'noToolsAvailable' => 'لا أدوات متاحة',
 			'underMaintenance' => 'تحت الصيانة',
-			'smartWidgetMaintenance' => 'الويدجت الذكية معطلة للصيانة. نحن نصلحها وستعود قريباً!',
+			'smartWidgetMaintenance' => 'الودجيت الذكي متوقف للصيانة. نحن نصلحه وسيعود قريبًا!',
 			'mySavedTools' => 'أدواتي المحفوظة',
 			'availableTools' => 'الأدوات المتاحة',
 			'remove' => 'إزالة',
 			'youHaveNoTools' => 'ليس لديك أدوات',
 			'discoverTools' => 'اكتشف الأدوات المنشورة لمساعدتك في إنشاء المحتوى',
-			'addWidgetTools' => 'إضافة أدوات ويدجت',
-			'widgetSearch' => 'البحث عن ويدجت',
-			'widgetSearchDesc' => 'البحث عن ويدجت ذكية منشورة وما صنعه الناس',
-			'getInspired' => 'احصل على الإلهام',
-			'getInspirtedDesc' => 'اطلب من الذكاء الاصطناعي مساعدتك في بناء ويدجتك الذكية',
+			'addWidgetTools' => 'إضافة أدوات الودجيت',
+			'widgetSearch' => 'بحث الودجيت',
+			'widgetSearchDesc' => 'البحث عن ودجيتات ذكية منشورة وما صنعه الناس',
+			'getInspired' => 'احصل على إلهام',
+			'getInspirtedDesc' => 'اطلب من إي آي الخاص بنا مساعدتك في بناء ودجيتك الذكي',
 			'trySearch' => 'جرب طرق بحث مختلفة',
 			'typeForCommands' => 'اكتب / للأوامر',
 			'loadMore' => 'تحميل المزيد',
 			'searchingFor' => ({required Object name}) => 'البحث عن: ${name}',
-			'playground' => 'ساحة اللعب',
-			'typeKeywords' => 'اكتب كلمات مفتاحية (مثال: كلمة1، كلمة2..)',
+			'playground' => 'ملعب',
+			'typeKeywords' => 'اكتب كلمات مفتاحية (مثل: Keyword1, Keyword2..)',
 			'enableGossip' => 'نموذج Gossip',
-			'enableGossipDesc' => 'نموذج Gossip معطل افتراضياً. يمكنك تفعيله في الإعدادات تحت إشراف المحتوى.',
+			'enableGossipDesc' => 'نموذج Gossip معطل افتراضيًا. يمكنك تمكينه في الإعدادات، تحت الإشراف على المحتوى.',
 			'enableExternalBrowser' => 'استخدام متصفح خارجي',
-			'restartAppTakeEffect' => 'أعد تشغيل التطبيق لتسري العملية',
+			'restartAppTakeEffect' => 'أعد تشغيل التطبيق ليصبح الإجراء ساري المفعول',
 			'tips' => 'نصائح',
-			'docs' => 'المستندات',
-			'tryMiniApp' => 'جرب تطبيقك المصغر بالاختبار العملي والتفاعلي.',
-			'exploreOurRepos' => 'استكشف مستودعاتنا أو تحقق من مستندات الويدجت الذكية.',
-			'bringAi' => 'نحن نجلب الذكاء الاصطناعي!',
-			'bringAiDesc' => 'نحن نصنع مساعد ذكاء اصطناعي لتبسيط عملك مع الويدجت القابلة للبرمجة وتطوير التطبيقات المصغرة—ترقبوا!',
+			'docs' => 'الوثائق',
+			'tryMiniApp' => 'جرب تطبيقك الصغير مع اختبار عملي تفاعلي.',
+			'exploreOurRepos' => 'استكشف مستودعاتنا أو تحقق من وثائق ودجيتاتنا الذكية.',
+			'bringAi' => 'نحن نأتي بالإي آي!',
+			'bringAiDesc' => 'نحن نصنع مساعد إي آي لتبسيط عملك مع الودجيتات القابلة للبرمجة وتطوير التطبيقات الصغيرة — راقب!',
 			'notesCount' => ({required Object number}) => '${number} ملاحظة(ات)',
 			'mixedContentCount' => ({required Object number}) => '${number} محتوى',
-			'noApp' => 'لم يتم العثور على تطبيق مناسب لفتح الملف المُصدَّر',
-			'andMore' => ({required Object number}) => 'و ${number} آخر(ين)',
-			'addFilter' => 'إضافة مرشح',
-			'entitleFilter' => 'عنوان المرشح',
-			'includedWords' => 'الكلمات المُضمنة',
-			'excludedWords' => 'الكلمات المُستبعدة',
+			'noApp' => 'لم يتم العثور على تطبيق مناسب لفتح الملف المصدر',
+			'andMore' => ({required Object number}) => 'و ${number} آخر(ون)',
+			'addFilter' => 'إضافة فلتر',
+			'entitleFilter' => 'عنوان الفلتر',
+			'includedWords' => 'الكلمات المضمنة',
+			'excludedWords' => 'الكلمات المستبعدة',
 			'hideSensitiveContent' => 'إخفاء المحتوى الحساس',
-			'mustIncludeThumbnail' => 'يجب تضمين صورة مصغرة',
+			'mustIncludeThumbnail' => 'يجب تضمين الصورة المصغرة',
 			'forArticles' => 'للمقالات',
 			'forVideos' => 'للفيديوهات',
 			'forCurations' => 'للتنسيقات',
-			'articleMinWords' => 'الحد الأدنى لعدد كلمات المحتوى',
-			'showOnlyArticleMedia' => 'إظهار المقالات التي تحتوي على وسائط فقط',
-			'showOnlyNotesMedia' => 'إظهار الملاحظات التي تحتوي على وسائط فقط',
+			'articleMinWords' => 'عدد كلمات المحتوى الأدنى',
+			'showOnlyArticleMedia' => 'عرض المقالات ذات الوسائط فقط',
+			'showOnlyNotesMedia' => 'عرض الملاحظات ذات الوسائط فقط',
 			'curationsType' => 'نوع التنسيقات',
-			'minItemCount' => 'الحد الأدنى لعدد العناصر',
-			'addWord' => 'إضافة كلمة مناسبة',
-			'wordNotInIncluded' => 'تأكد من أن الكلمة ليست في الكلمات المُضمنة',
-			'wordNotInExcluded' => 'تأكد من أن الكلمة ليست في الكلمات المُستبعدة',
+			'minItemCount' => 'عدد العناصر الأدنى',
+			'addWord' => 'أضف كلمة مناسبة',
+			'wordNotInIncluded' => 'تأكد من أن الكلمة غير موجودة في الكلمات المضمنة',
+			'wordNotInExcluded' => 'تأكد من أن الكلمة غير موجودة في الكلمات المستبعدة',
 			'fieldRequired' => 'الحقل مطلوب',
-			'filterAdded' => 'تم إضافة المرشح',
-			'filterUpdated' => 'تم تحديث المرشح',
-			'filterDeleted' => 'تم حذف المرشح',
-			'filters' => 'المرشحات',
-			'contentFeed' => 'تدفق المحتوى',
-			'communityFeed' => 'تدفق المجتمع',
-			'relaysFeed' => 'تدفق المرحلات',
-			'marketplaceFeed' => 'تدفق السوق',
-			'addYourFeed' => 'أضف تدفقك المفضل',
+			'filterAdded' => 'تم إضافة الفلتر',
+			'filterUpdated' => 'تم تحديث الفلتر',
+			'filterDeleted' => 'تم حذف الفلتر',
+			'filters' => 'الفلاتر',
+			'contentFeed' => 'تغذية المحتوى',
+			'communityFeed' => 'تغذية المجتمع',
+			'relaysFeed' => 'تغذية الترحيلات',
+			'marketplaceFeed' => 'تغذية السوق',
+			'addYourFeed' => 'أضف تغذيتك المفضلة',
 			'myList' => 'قائمتي',
-			'allFreeFeeds' => 'جميع التدفقات المجانية',
-			'noRelays' => 'لا توجد مرحلات',
-			'addRelays' => 'أضف قائمة مرحلاتك للاستمتاع بتدفق نظيف ومخصص',
-			'adjustYourFeedList' => 'اضبط قائمة تدفقك',
-			'addRelayUrl' => 'إضافة رابط المرحل',
-			'feedOptionEnabled' => 'يجب تفعيل خيار تدفق واحد على الأقل',
-			'feedSetUpdate' => 'تم تحديث مجموعة التدفق',
+			'allFreeFeeds' => 'جميع التغذيات المجانية',
+			'noRelays' => 'لا توجد ترحيلات',
+			'addRelays' => 'أضف قائمة ترحيلاتك للاستمتاع بتغذية نظيفة ومخصصة',
+			'adjustYourFeedList' => 'ضبط قائمة تغذيتك',
+			'addRelayUrl' => 'إضافة رابط الترحيل',
+			'feedOptionEnabled' => 'يجب تمكين خيار تغذية واحد على الأقل',
+			'feedSetUpdate' => 'تم تحديث مجموعة التغذية',
 			'global' => 'عالمي',
 			'fromNetwork' => 'من الشبكة',
 			'top' => 'الأعلى',
-			'showFollowingList' => 'تدفقك الحالي مبني على قائمة متابعة شخص آخر، ابدأ في متابعة أشخاص لتخصيص تدفقك حسب تفضيلك',
+			'showFollowingList' => 'تغذيتك الحالية مبنية على قائمة متابعة شخص آخر، ابدأ في متابعة الناس لتخصيص تغذيتك حسب تفضيلاتك',
 			'from' => 'من',
 			'to' => 'إلى',
 			'dayMonthYear' => 'يوم/شهر/سنة',
-			'fromDateMessage' => 'تاريخ \'من\' يجب أن يكون سابقاً لتاريخ \'إلى\'',
-			'toDateMessage' => 'تاريخ \'إلى\' يجب أن يكون لاحقاً لتاريخ \'من\'',
-			'noResults' => 'لا توجد نتائج',
-			'noResultsFilterMessage' => 'يبدو أنك تطبق مرشحاً مخصصاً، يرجى ضبط المعاملات والتواريخ للحصول على المزيد من البيانات',
-			'noResultsNoFilterMessage' => 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معاملات مرشح مختلفة',
-			'addToNotes' => 'إضافة للملاحظات',
-			'addToDiscover' => 'إضافة للاكتشاف',
-			'shareRelayContent' => 'مشاركة محتوى المرحل',
-			'shareRelayUrl' => 'مشاركة رابط المرحل',
+			'fromDateMessage' => 'تاريخ \'من\' يجب أن يكون أقدم من تاريخ \'إلى\'',
+			'toDateMessage' => 'تاريخ \'إلى\' يجب أن يكون أحدث من تاريخ \'من\'',
+			'noResults' => 'لا نتائج',
+			'noResultsFilterMessage' => 'يبدو أنك تستخدم فلتر مخصص، يرجى ضبط المعلمات والتواريخ للحصول على مزيد من البيانات',
+			'noResultsNoFilterMessage' => 'لم يتم العثور على شيء، يرجى تغيير مصدر المحتوى أو تطبيق معلمات فلتر مختلفة',
+			'addToNotes' => 'إضافة إلى الملاحظات',
+			'addToDiscover' => 'إضافة إلى الاكتشاف',
+			'shareRelayContent' => 'مشاركة محتوى الترحيل',
+			'shareRelayUrl' => 'مشاركة رابط الترحيل',
 			'basic' => 'أساسي',
 			'privateMessages' => 'الرسائل الخاصة',
-			'pushNotifications' => 'الإشعارات الفورية',
+			'pushNotifications' => 'إشعارات الدفع',
 			'repliesView' => 'عرض الردود',
-			'threadView' => 'خيط',
-			'boxView' => 'صندوق',
+			'threadView' => 'الخيط',
+			'boxView' => 'الصناديق',
 			'viewAs' => 'عرض كـ',
-			'feedSettings' => 'إعدادات التدفق',
-			'appliedFilterDesc' => 'هذه الملاحظة مخفية بسبب المرشح المطبق حالياً.',
-			'showNote' => 'إظهار الملاحظة',
+			'feedSettings' => 'إعدادات التغذية',
+			'appliedFilterDesc' => 'هذه الملاحظة مخفية بسبب الفلتر المطبق حاليًا.',
+			'showNote' => 'عرض الملاحظة',
 			'allMedia' => 'جميع الوسائط',
-			'searchInNostr' => 'البحث في نوستر',
-			'findPeopleContent' => 'البحث عن أشخاص وملاحظات ومحتوى',
+			'searchInNostr' => 'البحث في Nostr',
+			'findPeopleContent' => 'ابحث عن الناس والملاحظات والمحتوى',
 			'activeService' => 'الخدمة النشطة',
 			'regularServers' => 'الخوادم العادية',
 			'blossomServers' => 'خوادم BLOSSOM',
 			'mirrorAllServer' => 'مرآة جميع الخوادم',
 			'mainServer' => 'الخادم الرئيسي',
-			'select' => 'اختيار',
+			'select' => 'اختر',
 			'noServerFound' => 'لم يتم العثور على خادم',
 			'serverExists' => 'الخادم موجود بالفعل في قائمتك',
-			'invalidUrl' => 'تنسيق رابط غير صحيح',
+			'invalidUrl' => 'تنسيق رابط غير صالح',
 			'serverPath' => 'مسار الخادم',
-			'errorAddingBlossom' => 'حدث خطأ أثناء إضافة خادم blossom',
-			'errorSelectBlossom' => 'حدث خطأ أثناء اختيار خادم blossom',
-			'errorDeleteBlossom' => 'حدث خطأ أثناء حذف خادم blossom',
-			'wotConfig' => 'إعداد شبكة الثقة',
-			'wot' => 'شبكة الثقة',
-			'wotThreshold' => 'عتبة شبكة الثقة',
+			'errorAddingBlossom' => 'حدث خطأ أثناء إضافة خادم Blossom',
+			'errorSelectBlossom' => 'حدث خطأ أثناء اختيار خادم Blossom',
+			'errorDeleteBlossom' => 'حدث خطأ أثناء حذف خادم Blossom',
+			'wotConfig' => 'تكوين Web of Trust',
+			'wot' => 'Web of Trust',
+			'wotThreshold' => 'عتبة Web of Trust',
 			'postActions' => 'إجراءات المنشور',
-			'enabledFor' => 'مُفعل لـ',
-			'dmRelayTitle' => 'مرحلات الرسائل الخاصة غير مُعدة!',
-			'dmRelayDesc' => 'حدث قائمة مرحلاتك وفقاً لذلك. ',
+			'enabledFor' => 'ممكن لـ',
+			'dmRelayTitle' => 'ترحيلات الرسائل الخاصة غير مهيأة!',
+			'dmRelayDesc' => 'قم بتحديث قائمة الترحيلات وفقًا لذلك.',
 			'youFollow' => 'أنت تتابع',
-			'quotaLimit' => 'لقد تجاوزت حد الحصة اليومي',
-			'alwaysUseExternal' => 'استخدم دائماً زابس المحفظة الخارجية',
-			'alwaysUseExternalDesc' => 'استخدم تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
+			'quotaLimit' => 'لقد تجاوزت حد الكمية اليومي',
+			'alwaysUseExternal' => 'استخدم دائمًا زابات المحفظة الخارجية',
+			'alwaysUseExternalDesc' => 'استخدم تطبيق محفظة Lightning خارجي بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
 			'unreachableExternalWallet' => 'محفظة خارجية غير قابلة للوصول',
-			'secureStorageDesc' => 'مفاتيحك مُخزنة بأمان على جهازك ولا تُشارك معنا أو مع أي شخص آخر أبداً.',
-			'pubkeySharedDesc' => 'آمن للمشاركة - هذا يُعرفك على نوستر.',
-			'privKeyDesc' => 'احتفظ به خاصاً - احفظه بأمان للوصول لحسابك في مكان آخر.',
-			'settingsKeysDesc' => 'إدارة مفاتيح نوستر لهوية الشبكة وتوقيع الأحداث ومصادقة المنشورات.',
-			'settingsRelaysDesc' => 'إعداد اتصالات مرحل نوستر لتخزين وتوزيع الأحداث.',
-			'settingsCustomizationDesc' => 'تخصيص عرض تدفق YakiHonne والإيماءات والمعاينات والتفضيلات لتجربة نوستر أفضل.',
-			'settingsNotificationsDesc' => 'التحكم في الإشعارات للرسائل والإشارات والتفاعلات وأحداث نوستر الأخرى.',
-			'settingsContentDesc' => 'التحكم في تفاعلات المحتوى وإعدادات الخصوصية ومعالجة الوسائط وتفضيلات الرسائل على نوستر.',
-			'settingsLanguageDesc' => 'اختر لغتك المفضلة لواجهة YakiHonne وترجمة المحتوى.',
-			'settingsWalletDesc' => 'ربط وإدارة محافظ Bitcoin Lightning لإرسال/استقبال الزابس بمبالغ قابلة للتخصيص وتكامل خارجي.',
-			'settingsAppearanceDesc' => 'تخصيص المظهر البصري لـ YakiHonne ليطابق تفضيلاتك وراحة المشاهدة.',
-			'settingsCacheDesc' => 'إدارة مراقبة أداء التطبيق وتقارير الأخطاء وتحسين التخزين للتشغيل السلس.',
-			'addQuickRelayDesc' => 'إضافة مرحل جديد بسرعة عبر إدخال رابطه.',
-			'fewerRelays' => 'مرحلات مستقرة أقل = أداء أفضل ومزامنة أسرع.',
-			'greenDotsDesc' => 'النقاط الخضراء تُظهر الاتصالات النشطة.',
-			'redDotsDesc' => 'النقاط الحمراء تُظهر المرحلات غير المتصلة.',
-			'greyDotsDesc' => 'النقاط الرمادية تُظهر المرحلات المعلقة.',
-			'homeFeedCustomDesc' => 'اختر نمط عرض الردود (صندوق أو خيط) وإدارة تفضيلات الاقتراحات للأشخاص والمحتوى والاهتمامات.',
-			'NewPostDesc' => 'اختر ما يحدث عند الضغط المطول أثناء إنشاء المنشورات (مُعين حالياً على ملاحظة).',
-			'profilePreviewDesc' => 'إظهار معاينات الملف الشخصي للمستخدم عند النقر على أسماء المستخدمين في تدفقك.',
-			'collapseNoteDesc' => 'تصغير المنشورات الطويلة تلقائياً للحفاظ على تدفقك نظيفاً وقابلاً للقراءة.',
-			'pushNotificationsDesc' => 'احصل على تنبيهات فورية على جهازك. يركز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة',
-			'privateMessagesDesc' => 'احصل على تنبيه للرسائل المباشرة الجديدة والمحادثات الخاصة.',
-			'followingDesc' => 'احصل على إشعار عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.',
-			'mentionsDesc' => 'احصل على تنبيه عندما يذكرك شخص أو يرد على منشوراتك.',
-			'repostsDesc' => 'احصل على تنبيه عندما يشارك أو يعيد نشر شخص محتواك.',
-			'reactionsDesc' => 'احصل على إشعار عندما يعجب أو يتفاعل شخص مع منشوراتك.',
-			'zapDesc' => 'احصل على إشعار عندما تستقبل إكراميات Bitcoin (زابس) على منشوراتك.',
-			'muteListDesc' => 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تدفقك.',
-			'mediaUploaderDesc' => 'اختر أي خدمة ترفع صورك وملفات الوسائط.',
-			'autoSignDesc' => 'توقيع الأحداث المطلوبة من التطبيقات المصغرة (ويدجت ذكية للإجراء/الأداة) تلقائياً دون تأكيد يدوي في كل مرة.',
-			'gossipDesc' => 'إدارة مرحل متطورة تجد منشورات متابعيك تلقائياً عبر مرحلات مختلفة مع تقليل الاتصالات والتكيف مع المرحلات غير المتصلة.',
+			'secureStorageDesc' => 'مفاتيحك مخزنة بشكل آمن على جهازك ولا تتم مشاركتها معنا أو مع أي شخص آخر.',
+			'pubkeySharedDesc' => 'آمن للمشاركة - يحددك هذا على Nostr.',
+			'privKeyDesc' => 'احتفظ به خاصًا - قم بعمل نسخة احتياطية آمنة للوصول إلى حسابك في مكان آخر.',
+			'settingsKeysDesc' => 'إدارة مفاتيح Nostr الخاصة بك للهوية الشبكية، توقيع الأحداث، ومصادقة المنشورات.',
+			'settingsRelaysDesc' => 'تكوين اتصالات ترحيل Nostr لتخزين وتوزيع الأحداث.',
+			'settingsCustomizationDesc' => 'خصص عرض تغذية YakiHonne، الإيماءات، المعاينات، والتفضيلات لتجربة Nostr أفضل.',
+			'settingsNotificationsDesc' => 'تحكم في الإشعارات للرسائل، الإشارات، التفاعلات، وأحداث Nostr الأخرى.',
+			'settingsContentDesc' => 'تحكم في التفاعلات مع المحتوى، إعدادات الخصوصية، معالجة الوسائط، وتفضيلات الرسائل على Nostr.',
+			'settingsLanguageDesc' => 'اختر اللغة المفضلة لواجهة YakiHonne وترجمة المحتوى.',
+			'settingsWalletDesc' => 'اتصل وأدر محافظ Bitcoin Lightning لإرسال/استلام الزابات مع مبالغ قابلة للتخصيص وتكامل خارجي.',
+			'settingsAppearanceDesc' => 'خصص مظهر YakiHonne ليتناسب مع تفضيلاتك وراحة العرض.',
+			'settingsCacheDesc' => 'إدارة مراقبة أداء التطبيق، تقارير الأخطاء، وتحسين التخزين لعمل سلس.',
+			'addQuickRelayDesc' => 'أضف ترحيلًا جديدًا بسرعة بإدخال URL الخاص به.',
+			'fewerRelays' => 'ترحيلات أقل مستقرة = أداء أفضل ومزامنة أسرع.',
+			'greenDotsDesc' => 'النقاط الخضراء تظهر الاتصالات النشطة.',
+			'redDotsDesc' => 'النقاط الحمراء تظهر الترحيلات غير المتصلة.',
+			'greyDotsDesc' => 'النقاط الرمادية تظهر الترحيلات المعلقة.',
+			'homeFeedCustomDesc' => 'اختر أسلوب عرض الردود (صناديق أو خيط) وأدر تفضيلات الاقتراحات للأشخاص، المحتوى، والاهتمامات.',
+			'NewPostDesc' => 'اختر ما يحدث عند الضغط الطويل أثناء إنشاء المنشورات (مضبوط حاليًا على ملاحظة).',
+			'profilePreviewDesc' => 'عرض معاينات الملف الشخصي عند النقر على أسماء المستخدمين في تغذيتك.',
+			'collapseNoteDesc' => 'تصغير المنشورات الطويلة تلقائيًا للحفاظ على تغذيتك نظيفة وقابلة للقراءة.',
+			'pushNotificationsDesc' => 'احصل على تنبيهات فورية على جهازك. تركيز على الخصوصية باستخدام بروتوكولات FCM و APNS الآمنة',
+			'privateMessagesDesc' => 'احصل على تنبيهات للرسائل المباشرة الجديدة والمحادثات الخاصة.',
+			'followingDesc' => 'احصل على إشعارات عندما ينشر الأشخاص الذين تتابعهم محتوى جديد.',
+			'mentionsDesc' => 'احصل على تنبيهات عندما يذكرك شخص أو يرد على منشوراتك.',
+			'repostsDesc' => 'احصل على تنبيهات عندما يشارك شخص أو يعاد نشر محتواك.',
+			'reactionsDesc' => 'احصل على إشعارات عندما يعجب شخص أو يتفاعل مع منشوراتك.',
+			'zapDesc' => 'احصل على إشعارات عندما تستلم نصائح Bitcoin (زابات) على منشوراتك.',
+			'muteListDesc' => 'عرض وإدارة المستخدمين الذين حظرتهم من الظهور في تغذيتك.',
+			'mediaUploaderDesc' => 'اختر الخدمة التي ترفع صورك وملفات الوسائط.',
+			'autoSignDesc' => 'توقيع الأحداث تلقائيًا المطلوبة من التطبيقات الصغيرة (ودجيتات الإجراء/الأداة) دون تأكيد يدوي كل مرة.',
+			'gossipDesc' => 'إدارة ترحيلات متطورة تجد تلقائيًا منشورات متابعيك عبر ترحيلات مختلفة مع تقليل الاتصالات والتكيف مع الترحيلات غير المتصلة.',
 			'useExternalBrowsDesc' => 'فتح الروابط في تطبيق المتصفح الافتراضي بدلاً من المتصفح المدمج.',
-			'secureDmDesc' => 'استخدام أحدث معيار رسائل خاصة (NIP-17) مع تشفير متقدم. عطل لاستخدام تنسيق NIP-4 القديم للتوافق.',
-			'wotConfigDesc' => 'آلية ثقة لامركزية تستخدم شهادات اجتماعية لإنشاء سمعة ضمن بروتوكول نوستر.',
-			'appLangDesc' => 'اختر اللغة لواجهة YakiHonne والقوائم والأزرار.',
-			'contentTransDesc' => 'اختر خدمة الترجمة للمنشورات بلغات أجنبية.',
-			'planDesc' => 'مستوى خطة الترجمة الحالية وحدود الاستخدام.',
-			'manageWalletsDesc' => 'إضافة وتنظيم محافظ Lightning لإرسال واستقبال زابس Bitcoin على نوستر.',
-			'defaultZapDesc' => 'تعيين مبلغ Bitcoin الافتراضي (بالساتس) عند إرسال زابس سريعة للمنشورات.',
-			'enableZapDesc' => 'نقرة واحدة ترسل المبلغ الافتراضي فوراً. النقر المزدوج يفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، النقر المزدوج يرسل المبلغ الافتراضي.',
-			'externalWalletDesc' => 'استخدام تطبيق محفظة Lightning خارجية بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
-			'fontSizeDesc' => 'ضبط حجم النص في جميع أنحاء التطبيق لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.',
-			'appThemeDesc' => 'التبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.',
-			'crashlyticsDesc' => 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة تحسين الأداء وإصلاح الأخطاء. نستخدم تحليلات Umami لتحسين تجربتك. اختر عدم المشاركة في أي وقت.',
-			'showSuggDesc' => 'عرض توصيات المحتوى العامة في تدفقك.',
-			'showSuggPeople' => 'إظهار المستخدمين الموصى بهم للمتابعة بناءً على نشاطك.',
-			'showSuggContent' => 'عرض المنشورات والمقالات الموصى بها في تدفقك.',
-			'showSuggInterests' => 'إظهار توصيات الموضوعات والاهتمامات للاكتشاف.',
-			'striveToMake' => 'نسعى لتحقيق أفضل ما في نوستر، ادعمنا أدناه أو أرسل لنا تعليقاتك القيمة: زاب، رسائل مباشرة، github.',
-			'errorAmber' => 'لقد رفضت أو أنك متصل بالفعل بـ Amber',
-			'useOneRelay' => 'يجب أن تبقي على الأقل وسيط واحد متصل',
-			'automaticPurge' => 'تنظيف تلقائي للذاكرة المؤقتة',
-			'automaticPurgeDesc' => 'مسح ذاكرة التطبيق المؤقتة تلقائيًا عند وصولها إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام المفرط للتخزين.',
-			'customServices' => 'خدمات مخصصة',
+			'secureDmDesc' => 'استخدم أحدث معيار للرسائل الخاصة (NIP-17) مع تشفير متقدم. تعطيل لاستخدام تنسيق NIP-4 القديم للتوافق.',
+			'wotConfigDesc' => 'آلية ثقة لامركزية تستخدم الشهادات الاجتماعية لإنشاء سمعة داخل بروتوكول Nostr.',
+			'appLangDesc' => 'اختر اللغة لواجهة YakiHonne، القوائم، والأزرار.',
+			'contentTransDesc' => 'اختر خدمة الترجمة للمنشورات باللغات الأجنبية.',
+			'planDesc' => 'مستوى خطة الترجمة الحالي وحدود الاستخدام.',
+			'manageWalletsDesc' => 'أضف ونظم محافظ Lightning الخاصة بك لإرسال واستلام زابات Bitcoin على Nostr.',
+			'defaultZapDesc' => 'حدد مبلغ Bitcoin الافتراضي (بالساتوشي) عند إرسال زابات سريعة للمنشورات.',
+			'enableZapDesc' => 'نقرة واحدة ترسل المبلغ الافتراضي فورًا. نقرتان تفتح خيارات الزاب (المبلغ، المحفظة، الرسالة). عند التعطيل، نقرتان ترسل المبلغ الافتراضي.',
+			'externalWalletDesc' => 'استخدم تطبيق محفظة Lightning خارجي بدلاً من محفظة YakiHonne المدمجة لجميع معاملات الزاب.',
+			'fontSizeDesc' => 'ضبط حجم النص في التطبيق بأكمله لقراءة أفضل - استخدم الشريط لجعل النص أكبر أو أصغر.',
+			'appThemeDesc' => 'تبديل بين الوضع الفاتح والداكن لتخصيص المظهر البصري للتطبيق.',
+			'crashlyticsDesc' => 'تقارير الأعطال المجهولة وتحليلات التطبيق لمساعدة في تحسين الأداء وإصلاح الأخطاء. نستخدم Umami لتحسين تجربتك. الانسحاب في أي وقت.',
+			'showSuggDesc' => 'عرض توصيات المحتوى العامة في تغذيتك.',
+			'showSuggPeople' => 'عرض مستخدمين موصى بهم للمتابعة بناءً على نشاطك.',
+			'showSuggContent' => 'عرض منشورات ومقالات موصى بها في تغذيتك.',
+			'showSuggInterests' => 'عرض توصيات المواضيع والاهتمامات للاكتشاف.',
+			'striveToMake' => 'نسعى لجعل Nostr الأفضل، دعمنا أدناه أو أرسل لنا تغذيتك القيمة: زاب، رسائل مباشرة، جيتهاب.',
+			'errorAmber' => 'إما رفضت أو أنت متصل بالفعل مع amber',
+			'useOneRelay' => 'يجب أن تترك ترحيل واحد متصل على الأقل',
+			'automaticPurge' => 'مسح الكاش تلقائيًا',
+			'automaticPurgeDesc' => 'مسح كاش التطبيق تلقائيًا عند الوصول إلى 2 جيجابايت. يحافظ على الأداء ويمنع الاستخدام الزائد للتخزين.',
+			'customServices' => 'الخدمات المخصصة',
 			'defaultServices' => 'الخدمات الافتراضية',
 			'addService' => 'إضافة خدمة',
-			'customServicesDesc' => 'الخدمات المخصصة المتوفرة التي أضفتها.',
-			'urlRequired' => 'عنوان URL مطلوب',
-			'serviceAdded' => 'تمت إضافة الخدمة',
+			'customServicesDesc' => 'الخدمات المخصصة المتاحة المضافة بواسطتك.',
+			'urlRequired' => 'الرابط مطلوب',
+			'serviceAdded' => 'تم إضافة الخدمة',
 			'showRawEvent' => 'عرض الحدث الخام',
 			'rawEventData' => 'بيانات الحدث الخام',
 			'copyRawEventData' => 'تم نسخ بيانات الحدث الخام! 👏',
 			'kind' => 'النوع',
 			'shortNote' => 'ملاحظة قصيرة',
-			'postedOnDate' => 'نُشر في',
+			'postedOnDate' => 'نشر في',
 			'showMore' => '... عرض المزيد',
-			'accountDeleted' => 'تم حذف هذا الحساب ولم يعد من الممكن الوصول إليه.',
-			'ok' => 'حسناً',
+			'accountDeleted' => 'تم حذف هذا الحساب ولا يمكن الوصول إليه بعد الآن.',
+			'ok' => 'حسنًا',
 			'redeem' => 'استبدال',
-			'redeemCode' => 'استبدال الرمز',
-			'redeemAndEarn' => 'استبدال واربح',
+			'redeemCode' => 'كود الاستبدال',
+			'redeemAndEarn' => 'استبدال وكسب',
 			'redeemingFailed' => 'فشل الاستبدال',
-			'redeemInProgress' => 'جارٍ استبدال الرمز...',
-			'redeemCodeDesc' => 'أدخل الرمز لاستبداله',
-			'missingCode' => 'الرمز مفقود',
-			'missingPubkey' => 'المفتاح العام مفقود',
-			'invalidPubkey' => 'المفتاح العام غير صالح',
-			'missingLightningAddress' => 'عنوان لايتنينغ مفقود',
-			'codeNotFound' => 'الرمز غير موجود',
-			'redeemCodeRequired' => 'رمز الاستبدال مطلوب',
-			'redeemCodeInvalid' => 'رمز الاستبدال غير صالح',
-			'codeBeingRedeemed' => 'يتم الآن استبدال الرمز. إذا لم يكتمل بنجاح، يرجى المحاولة مرة أخرى قريبًا.',
-			'redeemCodeSuccess' => 'تم استبدال الرمز بنجاح',
-			'redeemFailed' => 'تعذر استبدال الرمز، يرجى المحاولة لاحقًا.',
-			'codeAlreadyRedeemed' => 'تم استبدال الرمز بالفعل',
-			'satsEarned' => ({required Object amount}) => '+${amount} ساتوشي مكتسبة.',
-			'selectReceivingWallet' => 'اختر المحفظة المستلمة',
-			'redeemCodeMessage' => 'احصل على ساتوشي مجانية باستخدام رموز YakiHonne — فقط أدخل الرمز وزد رصيدك فورًا.',
-			'scanCode' => 'مسح الرمز',
-			'enterCode' => 'أدخل الرمز',
+			'redeemInProgress' => 'جاري استبدال الكود...',
+			'redeemCodeDesc' => 'أدخل كودك لاستبداله',
+			'missingCode' => 'كود مفقود',
+			'missingPubkey' => 'pubkey مفقود',
+			'invalidPubkey' => 'pubkey غير صالح',
+			'missingLightningAddress' => 'عنوان Lightning مفقود',
+			'codeNotFound' => 'الكود غير موجود',
+			'redeemCodeRequired' => 'كود الاستبدال مطلوب',
+			'redeemCodeInvalid' => 'كود الاستبدال غير صالح',
+			'codeBeingRedeemed' => 'كودك يتم استبداله. إذا لم يتم بنجاح، يرجى المحاولة مرة أخرى قريبًا.',
+			'redeemCodeSuccess' => 'تم استبدال الكود بنجاح',
+			'redeemFailed' => 'تعذر استبدال الكود، يرجى المحاولة لاحقًا.',
+			'codeAlreadyRedeemed' => 'تم استبدال الكود بالفعل',
+			'satsEarned' => ({required Object amount}) => '+${amount} ساتوشي مكسب.',
+			'selectReceivingWallet' => 'اختر محفظة الاستلام',
+			'redeemCodeMessage' => 'ادعي ساتوشي مجاني بكودات YakiHonne القابلة للاستبدال — أدخل كودك فقط وزد رصيدك فورًا.',
+			'scanCode' => 'مسح الكود',
+			'enterCode' => 'أدخل الكود',
 			'errorSharingMedia' => 'حدث خطأ أثناء مشاركة الوسائط',
 			'open' => 'فتح',
-			'openUrl' => 'فتح الرابط',
+			'openUrl' => 'فتح URL',
 			'openUrlDesc' => ({required Object url}) => 'هل تريد فتح "${url}"؟',
-			'openUrlPrompt' => 'تأكيد فتح الرابط',
-			'openUrlPromptDesc' => 'تنبيه أمني يعرض الرابط الكامل قبل فتحه في المتصفح.',
+			'openUrlPrompt' => 'تأكيد فتح URL',
+			'openUrlPromptDesc' => 'تأكيد أمان يعرض URL الكامل قبل فتحه في المتصفح.',
+			'waitingForNetwork' => 'انتظار الشبكة...',
 			'whatsNew' => 'ما الجديد',
 			'appCustom' => 'تخصيص التطبيق',
 			'poll' => 'استطلاع',
-			'pendingEvents' => 'الأحداث المعلقة',
-			'pendingEventsDesc' => 'يتم إنشاء الأحداث المعلقة أثناء انقطاع الاتصال أو ضعف الشبكة. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.',
-			'singleColumnFeed' => 'عرض بعمود واحد',
-			'singleColumnFeedDesc' => 'اعرض الخلاصة الرئيسية كعمود واحد واسع لتحسين قابلية القراءة.',
-			'waitingPayment' => 'في انتظار الدفع',
+			'pendingEvents' => 'أحداث معلقة',
+			'pendingEventsDesc' => 'تم إنشاء الأحداث المعلقة أثناء الغير متصل أو الاتصال الضعيف. سيتم إرسالها تلقائيًا عند استعادة الاتصال بالإنترنت.',
+			'singleColumnFeed' => 'تغذية عمود واحد',
+			'singleColumnFeedDesc' => 'عرض تغذية الرئيسية كعمود واحد واسع لقراءة أفضل.',
+			'waitingPayment' => 'انتظار الدفع',
 			'copyId' => 'نسخ المعرف',
 			'idCopied' => 'تم نسخ المعرف! 👏',
-			'republish' => 'إعادة النشر',
-			'useRelayRepublish' => 'يجب عليك اختيار مرسل واحد على الأقل لإعادة النشر إليه.',
-			'republishSucces' => 'تمت إعادة نشر الحدث بنجاح!',
+			'republish' => 'إعادة نشر',
+			'useRelayRepublish' => 'يجب اختيار ترحيل واحد على الأقل لإعادة النشر إليه.',
+			'republishSucces' => 'تم إعادة نشر الحدث بنجاح!',
 			'errorRepublishEvent' => 'حدث خطأ أثناء إعادة نشر الحدث',
-			'remoteSigner' => 'موقّع عن بُعد',
+			'remoteSigner' => 'توقيع عن بعد',
 			'amber' => 'Amber',
-			'useUrlBunker' => 'استخدم الرابط أدناه للاتصال بمخزن البيانات الخاص بك',
+			'useUrlBunker' => 'استخدم URL أدناه للاتصال ببونكرك',
 			'or' => 'أو',
 			'messagesDisabled' => 'الرسائل معطلة',
-			'messagesDisabledDesc' => 'أنت متصل بموقّع عن بُعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. للحصول على أفضل تجربة، استخدم موقّعًا محليًا لتمكين المراسلة المباشرة.',
-			'sharedOn' => ({required Object date}) => 'تمت المشاركة في ${date}',
+			'messagesDisabledDesc' => 'أنت متصل بتوقيع عن بعد. قد تحتوي الرسائل المباشرة على كميات كبيرة من البيانات وقد لا تعمل بشكل صحيح. لأفضل تجربة، استخدم توقيعًا محليًا لتمكين الرسائل المباشرة.',
+			'sharedOn' => ({required Object date}) => 'مشارك في ${date}',
 			'shareAsImage' => 'مشاركة كصورة',
 			'viewOptions' => 'خيارات العرض',
-			'feedCustomization' => 'تخصيص الخلاصة',
+			'feedCustomization' => 'تخصيص التغذية',
 			'defaultReaction' => 'التفاعل الافتراضي',
-			'defaultReactionDesc' => 'حدد تفاعلًا افتراضيًا للرد على المنشورات.',
-			'oneTapReaction' => 'تفعيل التفاعل بنقرة واحدة',
-			'oneTapReactionDesc' => 'التفاعل الفوري بالتفاعل الافتراضي بنقرة واحدة. النقر المزدوج يفتح قائمة الرموز التعبيرية للاختيار منها. عند التعطيل، يقوم النقر المزدوج بإرسال التفاعل الافتراضي.',
-			'sendingTo' => 'يتم الإرسال إلى',
-			'shareEmptyUsers' => 'سيظهر هنا المستخدمون الذين تتابعهم وأصدقاؤك لتجربة مشاركة أسرع',
-			'publishOnly' => 'النشر فقط إلى',
+			'defaultReactionDesc' => 'حدد تفاعلًا افتراضيًا للتفاعل مع المنشورات.',
+			'oneTapReaction' => 'تمكين تفاعل بنقرة واحدة',
+			'oneTapReactionDesc' => 'نقرة واحدة تفاعل بالتفاعل الافتراضي فورًا. نقرتان تفتح قائمة الإيموجي للاختيار. عند التعطيل، نقرتان ترسل التفاعل الافتراضي',
+			'sendingTo' => 'إرسال إلى',
+			'shareEmptyUsers' => 'قائمة متابعيك وأصدقائك ستظهر هنا لتجربة مشاركة أسرع',
+			'publishOnly' => 'نشر فقط إلى',
 			'protectedEvent' => 'حدث محمي',
-			'protectedEventDesc' => 'الحدث المحمي هو حدث لا يمكن إعادة نشره إلا من قبل مؤلفه. يساعد هذا في الحفاظ على أصالة المحتوى ومنع الآخرين من نسخه أو إعادة إصداره.',
-			'browseRelay' => 'تصفح المرسل',
+			'protectedEventDesc' => 'حدث محمي هو حدث يمكن إعادة نشره فقط من قبل مؤلفه. هذا يحافظ على أصالة المحتوى ويمنع الآخرين من نسخه أو إعادة إصداره.',
+			'browseRelay' => 'تصفح الترحيل',
 			'addFavorite' => 'إضافة إلى المفضلة',
 			'removeFavorite' => 'إزالة من المفضلة',
 			'collections' => 'المجموعات',
 			'online' => 'متصل',
 			'offline' => 'غير متصل',
 			'network' => 'الشبكة',
-			'followedBy' => ({required Object number}) => 'يتابعك ${number}',
-			'favoredBy' => ({required Object number}) => 'أُضيف إلى المفضلة بواسطة ${number}',
-			'requiredAuthentication' => 'يتطلب المصادقة',
-			'relayOrbits' => 'دوائر المرسل',
-			'relayOrbitsDesc' => 'تصفح واستكشف خلاصات المرسلين',
-			'people' => 'الأشخاص',
+			'followedBy' => ({required Object number}) => 'يتبعه ${number}',
+			'favoredBy' => ({required Object number}) => 'مفضل لدى ${number}',
+			'requiredAuthentication' => 'مطلوب المصادقة',
+			'relayOrbits' => 'مدارات الترحيل',
+			'relayOrbitsDesc' => 'تصفح واستكشاف تغذيات الترحيل',
+			'people' => 'الناس',
 			'youNotConnected' => 'أنت غير متصل',
-			'youNotConnectedDesc' => 'قم بتسجيل الدخول إلى حسابك لتصفح مرسلي شبكتك',
-			'checkingRelayConnectivity' => 'جاري التحقق من اتصال المرسل',
-			'unreachableRelay' => 'مرسل غير قابل للوصول',
-			'engageWithUsers' => 'تفاعل للتوسّع',
-			'engageWithUsersDesc' => 'يساعدك التفاعل مع المزيد من المستخدمين على اكتشاف مرسلين جدد وتوسيع قائمة المرسلين لديك لتجربة أغنى وأكثر اتصالًا.',
-			'loadingChatHistory' => 'جاري تحميل سجل المحادثة...',
+			'youNotConnectedDesc' => 'سجل الدخول إلى حسابك لتصفح ترحيلات شبكتك',
+			'checkingRelayConnectivity' => 'التحقق من اتصال الترحيل',
+			'unreachableRelay' => 'ترحيل غير قابل للوصول',
+			'engageWithUsers' => 'تفاعل للتوسع',
+			'engageWithUsersDesc' => 'التفاعل مع المزيد من المستخدمين يساعدك على اكتشاف ترحيلات جديدة ونمو قائمتك لتجربة أكثر ثراءً واتصالًا.',
+			'loadingChatHistory' => 'تحميل تاريخ الدردشة...',
 			'contentActionsOrder' => 'ترتيب إجراءات المحتوى',
-			'contentActionsOrderDesc' => 'أعد ترتيب تفاعلات منشورك بسهولة لتتناسب مع الترتيب الذي تفضله.',
-			'quotes' => 'اقتباسات',
-			'eventLoading' => 'جارٍ تحميل الحدث...',
+			'contentActionsOrderDesc' => 'أعد ترتيب تفاعلات منشوراتك بسهولة لتناسب ترتيبك المفضل.',
+			'quotes' => 'الاقتباسات',
+			'eventLoading' => 'تحميل الحدث...',
 			'loadMessages' => 'تحميل الرسائل',
-			'messagesNotLoaded' => 'لم يتم تحميل الرسائل',
-			'messagesNotLoadedDesc' => 'لم يتم تحميل الرسائل بسبب استخدام موقّع بعيد محلي، إذا كنت ترغب في تحميلها، يرجى النقر على الزر أدناه.',
-			'noteLoading' => 'جارٍ تحميل الملاحظة...',
-			'hideNonFollowedMedia' => 'إخفاء الوسائط من غير المتابعين',
-			'hideNonFollowedMediaDesc' => 'إخفاء الصور ومقاطع الفيديو تلقائيًا من المستخدمين غير المتابعين حتى تضغط لعرضها.',
-			'clickToView' => 'اضغط للعرض',
-			'relayFeedListEmpty' => 'قائمة موجز المبدلات فارغة',
-			'relayFeedListEmptyDesc' => 'أضف المزيد من المبدلات إلى قائمتك للاستمتاع بموجز مخصص.',
-			'addRelay' => 'أضف مبدلات',
+			'messagesNotLoaded' => 'الرسائل غير محملة',
+			'messagesNotLoadedDesc' => 'الرسائل غير محملة بسبب استخدام توقيع عن بعد محلي، إذا كنت ترغب في تحميلها، انقر الزر أدناه.',
+			'noteLoading' => 'تحميل الملاحظة...',
+			'hideNonFollowedMedia' => 'إخفاء وسائط غير المتابعين',
+			'hideNonFollowedMediaDesc' => 'إخفاء الصور والفيديوهات تلقائيًا من المستخدمين غير المتابعين حتى النقر للكشف.',
+			'clickToView' => 'انقر للعرض',
+			'relayFeedListEmpty' => 'قائمة تغذيات الترحيلات فارغة',
+			'relayFeedListEmptyDesc' => 'أضف المزيد من الترحيلات إلى قائمتك للاستمتاع بتغذية مخصصة.',
+			'addRelay' => 'إضافة ترحيلات',
 			'hiddenContent' => 'محتوى مخفي',
-			'hiddenContentDesc' => 'قمنا بإخفاء هذا المحتوى لأنك لا تتابع هذا الحساب.',
-			'enabledActions' => 'الإجراءات المفعّلة',
-			'enabledActionsDesc' => 'لا توجد إجراءات مفعّلة متاحة.',
+			'hiddenContentDesc' => 'لقد أخفينا هذا المحتوى لأنك لا تتابع هذا الحساب.',
+			'enabledActions' => 'الإجراءات الممكنة',
+			'enabledActionsDesc' => 'لا إجراءات ممكنة متاحة.',
+			'fetchingNotificationEvent' => 'جلب حدث الإشعار',
+			'notificationEventNotFound' => 'حدث الإشعار غير موجود',
+			'fiatCurrency' => 'العملة الورقية',
+			'fiatCurrencyDesc' => 'تحويل الساتوشي إلى العملة الورقية المختارة لفهم قيمتها بشكل أفضل',
+			'linkPreview' => 'معاينة الرابط',
+			'linkPreviewDesc' => 'تبديل لعرض أو إخفاء معاينات الروابط المشتركة في المنشورات.',
+			'muteThread' => 'كتم الخيط',
+			'muteThreadDesc' => 'أنت على وشك كتم الخيط، هل ترغب في المتابعة؟',
+			'unmuteThread' => 'إلغاء كتم الخيط',
+			'unmuteThreadDesc' => 'أنت على وشك إلغاء كتم الخيط، هل ترغب في المتابعة؟',
+			'threadMuted' => 'تم كتم الخيط',
+			'threadUnmuted' => 'تم إلغاء كتم الخيط',
+			'noMutedEventsFound' => 'لم يتم العثور على أحداث مكتمة.',
+			'editCode' => 'تحرير الكود',
+			'previewCode' => 'معاينة الكود',
+			'liveCode' => 'كود حي',
+			'tag' => 'وسم',
+			'quickConnectRelay' => 'اتصال سريع بالترحيل',
+			'exploreSearchRelays' => 'استكشاف ترحيلات البحث',
+			'navigateToSearch' => 'التنقل وإضافة ترحيلات بحث نشطة',
+			'errorSavingVideo' => 'حدث خطأ أثناء تنزيل الفيديو',
+			'saveVideoGallery' => 'تم تنزيل الفيديو إلى معرضك',
+			'downloadingVideo' => 'تنزيل الفيديو',
+			'primaryColor' => 'اللون الأساسي',
+			'primaryColorDesc' => 'اختر اللون البارز الذي يشكل مزاج التطبيق ويبرز العناصر الرئيسية.',
+			'single' => 'مفرد',
+			'sets' => 'مجموعات',
+			'selectFromRelaySets' => 'اختر من مجموعات الترحيل الخاصة بك',
+			'favoriteRelays' => 'الترحيلات المفضلة',
+			'favoriteRelaySets' => 'مجموعات الترحيل المفضلة',
+			'addRelaySet' => 'إضافة مجموعة ترحيل',
+			'updateRelaySet' => 'تحديث مجموعة الترحيل',
+			'relaySetCreated' => 'تم إنشاء مجموعة الترحيل',
+			'errorOnCreatingRelaySet' => 'حدث خطأ أثناء إنشاء مجموعة الترحيل',
+			'errorOnUpdatingRelaySet' => 'حدث خطأ أثناء تحديث مجموعة الترحيل',
+			'relaySetDeleted' => 'تم حذف مجموعة الترحيل',
+			'errorDeletingRelaySet' => 'حدث خطأ أثناء حذف مجموعة الترحيل',
+			'relaysNumber' => ({required Object number}) => '${number} ترحيلات',
+			'relaySetNotFound' => 'لم يتم العثور على مجموعة الترحيل',
+			'relaySetNotFoundDesc' => 'مجموعة الترحيل مفقودة أو تم حذفها.',
+			'savedRelaySets' => 'مجموعات الترحيل المحفوظة',
+			'relaysets' => 'مجموعات الترحيل',
+			'relaySetListEmpty' => 'قائمة مجموعات الترحيل فارغة',
+			'relaySetListEmptyDesc' => 'قم بإنشاء مجموعات ترحيل لتنظيم الترحيلات الخاصة بك لأغراض وسيناريوهات مختلفة.',
+			'favoriteRelaysFeed' => 'تغذية الترحيلات المفضلة',
+			'maxMentions' => 'الحد الأقصى للإشارات',
+			'maxMentionsDesc' => 'إخفاء الإشعارات من الملاحظات التي تحتوي على أكثر من 10 إشارات لمستخدمين.',
 			_ => null,
 		};
 	}

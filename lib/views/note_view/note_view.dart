@@ -14,14 +14,13 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
-import '../widgets/empty_list.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/parsed_media_container.dart';
 
 // Constants
-const _kLoadingDelay = Duration(milliseconds: 500);
-const _kScrollDuration = Duration(milliseconds: 200);
-const _kAnimationDuration = Duration(milliseconds: 300);
+const _kScrollDuration = Duration(milliseconds: 300);
+const _kFadeDuration = Duration(milliseconds: 300);
+const _kStaggerDelay = Duration(milliseconds: 50);
 
 class NoteView extends HookWidget {
   NoteView({
@@ -46,20 +45,20 @@ class NoteView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentNote = useState(note);
-    final isLoading = useState(!note.isRoot);
+    final isTransitioning = useState(false);
     final rootEvent = useState<String?>(null);
     final threadIds = useState([note.id]);
     final targetKey = useRef(GlobalKey()).value;
+    final scrollController = useMemoized(() => ScrollController());
 
     final loadPrevious = useCallback(
       () async {
-        isLoading.value = true;
         await notesEventsCubit.getNotePrevious(
           currentNote.value,
-          (val) => isLoading.value = val,
+          (_) {}, // Silent loading
         );
 
-        await Future.delayed(_kLoadingDelay);
+        await Future.delayed(const Duration(milliseconds: 300));
 
         if (targetKey.currentContext != null) {
           Scrollable.ensureVisible(
@@ -70,118 +69,145 @@ class NoteView extends HookWidget {
           );
         }
       },
-      [currentNote, isLoading],
-    );
-
-    final updateNote = useCallback(
-      (DetailedNoteModel newNote, {bool isRemoving = false}) {
-        isLoading.value = false;
-        currentNote.value = newNote;
-        if (!isRemoving) {
-          threadIds.value = [...threadIds.value, newNote.id];
-        } else {
-          threadIds.value = threadIds.value.length > 1
-              ? threadIds.value.sublist(0, threadIds.value.length - 1)
-              : threadIds.value;
-        }
-
-        loadPrevious();
-      },
-      [loadPrevious],
+      [currentNote.value.id],
     );
 
     final loadRootEvent = useCallback(
       () {
-        if ((currentNote.value.originId ?? '').isNotEmpty) {
-          try {
-            final isReplaceable = currentNote.value.originId!.contains(':');
-            if (isReplaceable) {
-              rootEvent.value = currentNote.value.originId!.split(':').last;
-            } else {
-              rootEvent.value = currentNote.value.originId;
-            }
+        final originId = currentNote.value.originId;
+        if (originId == null || originId.isEmpty) {
+          return;
+        }
 
-            singleEventCubit.getEvent(rootEvent.value!, isReplaceable);
-          } catch (e) {
-            lg.i(e);
-          }
+        try {
+          final isReplaceable = originId.contains(':');
+          rootEvent.value = isReplaceable ? originId.split(':').last : originId;
+          singleEventCubit.getEvent(rootEvent.value!, isReplaceable);
+        } catch (e) {
+          lg.i(e);
         }
       },
-      [currentNote],
+      [currentNote.value.id],
+    );
+
+    final updateNote = useCallback(
+      (DetailedNoteModel newNote, {bool isRemoving = false}) async {
+        // Start fade out
+        isTransitioning.value = true;
+
+        // Wait for fade out
+        await Future.delayed(_kFadeDuration);
+
+        // Update note and thread
+        currentNote.value = newNote;
+
+        threadIds.value = isRemoving
+            ? (threadIds.value.length > 1
+                ? threadIds.value.sublist(0, threadIds.value.length - 1)
+                : threadIds.value)
+            : [...threadIds.value, newNote.id];
+
+        // Reset scroll to top
+        if (scrollController.hasClients) {
+          scrollController.jumpTo(0);
+        }
+
+        // Start fade in
+        isTransitioning.value = false;
+
+        // Load data in background
+        loadPrevious();
+        loadRootEvent();
+      },
+      [loadPrevious, scrollController],
     );
 
     useEffect(
       () {
         loadPrevious();
         loadRootEvent();
-        return null;
+        return () {
+          scrollController.dispose();
+        };
       },
-      [],
+      const [],
     );
 
     return BlocBuilder<NotesEventsCubit, NotesEventsState>(
       buildWhen: (prev, curr) =>
-          _shouldRebuild(prev, curr, currentNote.value.id),
-      builder: (context, state) => Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.thread.capitalizeFirst(),
-          onBackClicked: () => _handleBack(context, threadIds, updateNote),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          child: NestedScrollView(
-            headerSliverBuilder: (context, _) => [
-              SliverToBoxAdapter(
-                child: _HeaderContent(
-                  note: currentNote.value,
-                  isLoading: isLoading.value,
-                  previousNotes:
-                      state.previousNotes[currentNote.value.id] ?? [],
-                  rootEvent: rootEvent.value,
-                ),
-              ),
-              if (state.previousNotes[currentNote.value.id]?.isNotEmpty ??
-                  false) ...[
-                SliverToBoxAdapter(
-                  child: _PreviousNotesList(
-                    notes: state.previousNotes[currentNote.value.id]!,
-                    onNoteSelected: updateNote,
+          prev.previousNotes[currentNote.value.id] !=
+              curr.previousNotes[currentNote.value.id] ||
+          prev.mutes != curr.mutes,
+      builder: (context, state) {
+        final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
+
+        return Scaffold(
+          appBar: CustomAppBar(
+            title: context.t.thread.capitalizeFirst(),
+            onBackClicked: () => _handleBack(context, threadIds, updateNote),
+          ),
+          body: AnimatedOpacity(
+            opacity: isTransitioning.value ? 0.0 : 1.0,
+            duration: _kFadeDuration,
+            curve: Curves.easeInOut,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: NestedScrollView(
+                controller: scrollController,
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  // Header
+                  SliverToBoxAdapter(
+                    child: _HeaderContent(
+                      note: currentNote.value,
+                      previousNotes: previousNotes,
+                      rootEvent: rootEvent.value,
+                    ),
                   ),
-                ),
-              ],
-              SliverToBoxAdapter(
-                key: targetKey,
-                child: DetailedNoteContainer(
-                  key: ValueKey(currentNote.value),
-                  note: currentNote.value,
-                  isMain: true,
-                  addLine: false,
-                  autoTranslate: autoTranslate,
+
+                  // Previous notes with staggered animation
+                  if (previousNotes.isNotEmpty)
+                    _PreviousNotesList(
+                      notes: previousNotes,
+                      onNoteSelected: updateNote,
+                      isTransitioning: isTransitioning.value,
+                    ),
+
+                  // Main note - highlighted
+                  SliverToBoxAdapter(
+                    key: targetKey,
+                    child: DetailedNoteContainer(
+                      key: ValueKey(currentNote.value),
+                      note: currentNote.value,
+                      isMain: true,
+                      addLine: false,
+                      autoTranslate: autoTranslate,
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: kDefaultPadding / 2,
+                    ),
+                  ),
+                ],
+                body: NoteRepliesList(
+                  key: ValueKey('replies_${currentNote.value.id}'),
+                  selectedNote: currentNote,
+                  setNote: updateNote,
+                  isTransitioning: isTransitioning.value,
                 ),
               ),
-            ],
-            body: NoteRepliesList(
-              selectedNote: currentNote,
-              setNote: updateNote,
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
-
-  bool _shouldRebuild(
-          NotesEventsState prev, NotesEventsState curr, String noteId) =>
-      prev.previousNotes[noteId] != curr.previousNotes[noteId] ||
-      prev.mutes != curr.mutes;
 
   Future<void> _handleBack(
     BuildContext context,
     ValueNotifier<List<String>> threadIds,
-    Function(
-      DetailedNoteModel, {
-      bool isRemoving,
-    }) updateNote,
+    Function(DetailedNoteModel, {bool isRemoving}) updateNote,
   ) async {
     if (threadIds.value.length > 1) {
       final lastId = threadIds.value[threadIds.value.length - 2];
@@ -195,72 +221,65 @@ class NoteView extends HookWidget {
   }
 }
 
-class _HeaderContent extends HookWidget {
+class _HeaderContent extends StatelessWidget {
   const _HeaderContent({
     required this.note,
-    required this.isLoading,
     required this.previousNotes,
     required this.rootEvent,
   });
 
   final DetailedNoteModel note;
-  final bool isLoading;
   final List<DetailedNoteModel> previousNotes;
   final String? rootEvent;
 
-  /// check if root is addressable (["a", kind:pubkey:dtag])
   bool get isAddressable =>
-      (note.originId ?? '').isNotEmpty && !note.isOriginEtag!;
+      (note.originId ?? '').isNotEmpty && !(note.isOriginEtag ?? false);
+
+  bool get shouldShowIndicator {
+    return isAddressable
+        ? (previousNotes.isEmpty && note.replyTo.isNotEmpty) ||
+            (previousNotes.isNotEmpty && previousNotes.first.replyTo.isNotEmpty)
+        : (!note.isRoot && previousNotes.isEmpty) ||
+            (previousNotes.isNotEmpty && !previousNotes.first.isRoot);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final showLoading =
-        useState(_shouldShowLoading(isAddressable, note, previousNotes));
-
     return Column(
       children: [
         const SizedBox(height: kDefaultPadding / 2),
-
-        // 🔹 Addressable root
-        if (isAddressable) _addressableContainer(),
-
-        // 🔹 Root is ["e", <event_id>, ...] → fetch first
+        if (isAddressable) _buildAddressableContainer(),
         if (!isAddressable && rootEvent != null)
-          _nonAddressableContainer(showLoading),
-
-        // 🔹 Loading indicator
-        if (showLoading.value) _loadingPreviewPosts(context),
-
-        const SizedBox(height: kDefaultPadding / 1.5),
-      ],
-    );
-  }
-
-  Row _loadingPreviewPosts(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          context.t.loadingPreviousPosts.capitalizeFirst(),
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
-        ),
-        const SizedBox(width: kDefaultPadding / 3),
-        if (isLoading)
-          SpinKitCircle(color: Theme.of(context).primaryColor, size: 20)
-        else
-          Icon(
-            Icons.arrow_downward_rounded,
-            size: 20,
-            color: Theme.of(context).primaryColor,
+          _buildNonAddressableContainer(),
+        if (shouldShowIndicator)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.more_horiz,
+                  size: 20,
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                ),
+                const SizedBox(width: kDefaultPadding / 3),
+                Text(
+                  context.t.thread,
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        color: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.6),
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+              ],
+            ),
           ),
       ],
     );
   }
 
-  SingleEventProvider _nonAddressableContainer(
-      ValueNotifier<bool> showLoading) {
+  Widget _buildNonAddressableContainer() {
     return SingleEventProvider(
       id: rootEvent!,
       isReplaceable: false,
@@ -269,107 +288,91 @@ class _HeaderContent extends HookWidget {
           return const SizedBox.shrink();
         }
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (showLoading.value) {
-            showLoading.value = false;
-          }
-        });
-        // check if fetched event is a poll
-        if (event.kind == EventKind.POLL ||
-            event.kind == EventKind.VIDEO_HORIZONTAL ||
-            event.kind == EventKind.VIDEO_VERTICAL) {
+        final kind = event.kind;
+        if (kind == EventKind.POLL ||
+            kind == EventKind.VIDEO_HORIZONTAL ||
+            kind == EventKind.VIDEO_VERTICAL) {
           final baseEventModel = getBaseEventModel(event);
 
-          return AnimatedSwitcher(
-            duration: _kAnimationDuration,
-            child: baseEventModel != null
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: kDefaultPadding / 2,
-                    ),
-                    child: ParsedMediaContainer(
-                      key: ValueKey(baseEventModel.id),
-                      baseEventModel: baseEventModel,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          );
+          return baseEventModel != null
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                  child: ParsedMediaContainer(
+                    key: ValueKey(baseEventModel.id),
+                    baseEventModel: baseEventModel,
+                  ),
+                )
+              : const SizedBox.shrink();
         }
-        // not a poll → show nothing
         return const SizedBox.shrink();
       },
     );
   }
 
-  SingleEventProvider _addressableContainer() {
+  Widget _buildAddressableContainer() {
     return SingleEventProvider(
       id: rootEvent ?? '',
       isReplaceable: true,
       child: (event) {
         final baseEventModel = getBaseEventModel(event);
 
-        return AnimatedSwitcher(
-          duration: _kAnimationDuration,
-          child: baseEventModel != null
-              ? Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: kDefaultPadding / 2,
-                  ),
-                  child: ParsedMediaContainer(
-                    key: ValueKey(baseEventModel.id),
-                    baseEventModel: baseEventModel,
-                  ),
-                )
-              : const SizedBox.shrink(),
-        );
+        return baseEventModel != null
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                child: ParsedMediaContainer(
+                  key: ValueKey(baseEventModel.id),
+                  baseEventModel: baseEventModel,
+                ),
+              )
+            : const SizedBox.shrink();
       },
     );
   }
-
-  bool _shouldShowLoading(
-    bool isAddressable,
-    DetailedNoteModel note,
-    List<DetailedNoteModel> previousNotes,
-  ) {
-    return isAddressable
-        ? (previousNotes.isEmpty && note.replyTo.isNotEmpty) ||
-            (previousNotes.isNotEmpty && previousNotes.first.replyTo.isNotEmpty)
-        : (!note.isRoot && previousNotes.isEmpty) ||
-            (previousNotes.isNotEmpty && !previousNotes.first.isRoot);
-  }
 }
 
-class _PreviousNotesList extends StatelessWidget {
+class _PreviousNotesList extends HookWidget {
   const _PreviousNotesList({
     required this.notes,
     required this.onNoteSelected,
+    required this.isTransitioning,
   });
 
   final List<DetailedNoteModel> notes;
   final Function(DetailedNoteModel) onNoteSelected;
+  final bool isTransitioning;
 
   @override
-  Widget build(BuildContext context) => SizeChangedLayoutNotifier(
-        child: MediaQuery.removePadding(
-          context: context,
-          removeBottom: true,
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: notes.length,
-            itemBuilder: (context, index) => DetailedNoteContainer(
-              key: ValueKey(notes[index].id),
-              note: notes[index],
-              isMain: false,
-              addLine: true,
-              extendLine: index == notes.length - 1,
-              onClicked: () => onNoteSelected(notes[index]),
-            ),
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: kDefaultPadding / 2),
+  Widget build(BuildContext context) {
+    return SliverList.separated(
+      itemCount: notes.length,
+      itemBuilder: (context, index) {
+        final note = notes[index];
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: _kFadeDuration + (_kStaggerDelay * index),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 10 * (1 - value)),
+                child: child,
+              ),
+            );
+          },
+          child: DetailedNoteContainer(
+            key: ValueKey(note.id),
+            note: note,
+            isMain: false,
+            addLine: true,
+            extendLine: index == notes.length - 1,
+            onClicked: isTransitioning ? null : () => onNoteSelected(note),
           ),
-        ),
-      );
+        );
+      },
+      separatorBuilder: (_, __) => const SizedBox(height: kDefaultPadding / 2),
+    );
+  }
 }
 
 class NoteRepliesList extends HookWidget {
@@ -377,26 +380,33 @@ class NoteRepliesList extends HookWidget {
     super.key,
     required this.selectedNote,
     required this.setNote,
+    required this.isTransitioning,
   });
 
   final ValueNotifier<DetailedNoteModel> selectedNote;
   final Function(DetailedNoteModel note, {bool isRemoving}) setNote;
+  final bool isTransitioning;
 
   @override
   Widget build(BuildContext context) {
     final replies = useState(<DetailedNoteModel>[]);
+    final isLoading = useState(true);
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final selectedNoteId = selectedNote.value.id;
 
     final updateReplies = useCallback(
       () async {
+        isLoading.value = true;
+
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
-          id: selectedNote.value.id,
+          id: selectedNoteId,
           type: NoteRelatedEventsType.replies,
         );
 
         replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
+        isLoading.value = false;
       },
-      [selectedNote],
+      [selectedNoteId],
     );
 
     useEffect(
@@ -404,75 +414,177 @@ class NoteRepliesList extends HookWidget {
         updateReplies();
         return null;
       },
-      [selectedNote.value.id],
+      [selectedNoteId],
     );
 
     return BlocListener<NotesEventsCubit, NotesEventsState>(
       listenWhen: (prev, curr) =>
-          prev.eventsStats[selectedNote.value.id] !=
-              curr.eventsStats[selectedNote.value.id] ||
+          prev.eventsStats[selectedNoteId] !=
+              curr.eventsStats[selectedNoteId] ||
           prev.mutes != curr.mutes ||
           prev.mutesEvents != curr.mutesEvents,
       listener: (_, __) => updateReplies(),
       child: CustomScrollView(
-        slivers: replies.value.isEmpty
-            ? [
-                SliverToBoxAdapter(
-                  child: EmptyListWithLogo(description: context.t.noReplies),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: kBottomNavigationBarHeight),
-                ),
-              ]
-            : [
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: kDefaultPadding / 2),
-                ),
-                SliverToBoxAdapter(
-                  child: Text(
-                    context.t.replies.capitalizeFirst(),
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+        slivers: [
+          if (isLoading.value)
+            SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(kDefaultPadding * 2),
+                  child: Column(
+                    children: [
+                      SpinKitCircle(
+                        color: Theme.of(context).primaryColor,
+                        size: 30,
+                      ),
+                      const SizedBox(height: kDefaultPadding / 2),
+                      Text(
+                        context.t.loading,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
                   ),
                 ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: kDefaultPadding / 2),
-                ),
-                if (isTablet)
-                  SliverMasonryGrid.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: kDefaultPadding,
-                    mainAxisSpacing: kDefaultPadding,
-                    itemBuilder: (context, index) => DetailedNoteContainer(
-                      key: ValueKey(replies.value[index].id),
-                      note: replies.value[index],
-                      isMain: false,
-                      addLine: false,
-                      onClicked: () => setNote(replies.value[index]),
-                    ),
-                    childCount: replies.value.length,
-                  )
-                else
-                  SliverList.separated(
-                    itemCount: replies.value.length,
-                    itemBuilder: (context, index) => DetailedNoteContainer(
-                      key: ValueKey(replies.value[index].id),
-                      note: replies.value[index],
-                      isMain: false,
-                      addLine: false,
-                      onClicked: () => setNote(replies.value[index]),
-                    ),
-                    separatorBuilder: (_, __) => const Divider(
-                      height: kDefaultPadding * 1.5,
-                      thickness: 0.3,
-                      indent: 45,
-                    ),
-                  ),
-                const SliverToBoxAdapter(
-                    child: SizedBox(height: kBottomNavigationBarHeight)),
-              ],
+              ),
+            )
+          else if (replies.value.isEmpty)
+            ..._buildEmptyReplies(context)
+          else
+            ..._buildRepliesList(context, replies.value, isTablet),
+        ],
       ),
+    );
+  }
+
+  List<Widget> _buildEmptyReplies(BuildContext context) {
+    return [
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(kDefaultPadding * 2),
+          child: Center(
+            child: Column(
+              children: [
+                SvgPicture.asset(
+                  LogosIcons.logoMarkWhite,
+                  height: 50,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding),
+                Text(
+                  context.t.noReplies,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).disabledColor,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SliverToBoxAdapter(
+        child: SizedBox(height: kBottomNavigationBarHeight),
+      ),
+    ];
+  }
+
+  List<Widget> _buildRepliesList(
+    BuildContext context,
+    List<DetailedNoteModel> replyList,
+    bool isTablet,
+  ) {
+    return [
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: kDefaultPadding / 2,
+            bottom: kDefaultPadding,
+          ),
+          child: Text(
+            context.t.replies.capitalizeFirst(),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+        ),
+      ),
+      if (isTablet)
+        SliverMasonryGrid.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: kDefaultPadding,
+          mainAxisSpacing: kDefaultPadding,
+          itemBuilder: (context, index) {
+            final reply = replyList[index];
+            return _AnimatedReplyItem(
+              key: ValueKey(reply.id),
+              index: index,
+              child: DetailedNoteContainer(
+                note: reply,
+                isMain: false,
+                addLine: false,
+                onClicked: isTransitioning ? null : () => setNote(reply),
+              ),
+            );
+          },
+          childCount: replyList.length,
+        )
+      else
+        SliverList.separated(
+          itemCount: replyList.length,
+          itemBuilder: (context, index) {
+            final reply = replyList[index];
+            return _AnimatedReplyItem(
+              key: ValueKey(reply.id),
+              index: index,
+              child: DetailedNoteContainer(
+                note: reply,
+                isMain: false,
+                addLine: false,
+                onClicked: isTransitioning ? null : () => setNote(reply),
+              ),
+            );
+          },
+          separatorBuilder: (_, __) => const Divider(
+            height: kDefaultPadding * 1.5,
+            thickness: 0.3,
+            indent: 45,
+          ),
+        ),
+      const SliverToBoxAdapter(
+        child: SizedBox(height: kBottomNavigationBarHeight),
+      ),
+    ];
+  }
+}
+
+class _AnimatedReplyItem extends StatelessWidget {
+  const _AnimatedReplyItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  final int index;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: _kFadeDuration + (_kStaggerDelay * (index * 0.5)),
+      curve: Curves.easeOut,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 10 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: child,
     );
   }
 }

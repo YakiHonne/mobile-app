@@ -80,6 +80,7 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     buildTypes {
         release {
             shrinkResources false
@@ -87,6 +88,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false   // make sure this is false (default)
         }
     }
 }

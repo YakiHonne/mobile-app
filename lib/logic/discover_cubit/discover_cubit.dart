@@ -9,6 +9,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
@@ -176,7 +177,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
               final globalIds = state.content.map((e) => e.id).toSet();
               content.removeWhere((e) => globalIds.contains(e.id));
             }
-          } else if (currentSelectedSource.key == AppContentSource.algo) {
+          } else if (currentSelectedSource.key == AppContentSource.relay) {
             content = await getExploreFeedRelayEvents(
               since: first.createdAt.toSecondsSinceEpoch() + 1,
               limit: 20,
@@ -239,13 +240,11 @@ class DiscoverCubit extends Cubit<DiscoverState> {
         exploreType: exploreType,
         isAdding: isAdding,
       );
-    } else if (currentSelectedSource.key == AppContentSource.algo) {
+    } else {
       await buildExploreFeedFromRelays(
         exploreType: exploreType,
         isAdding: isAdding,
       );
-    } else if (currentSelectedSource.key == AppContentSource.dvm) {
-      await buildExploreFeedFromDvm();
     }
 
     getExtra();
@@ -408,8 +407,10 @@ class DiscoverCubit extends Cubit<DiscoverState> {
     int? since,
     int? limit,
   }) async {
+    final val = appSettingsManagerCubit.state.selectedDiscoverSource.value;
+
     final content = await NostrFunctionsRepository.getDiscoverAlgoData(
-      url: appSettingsManagerCubit.state.selectedDiscoverSource.value,
+      relays: val is String ? [val] : (val as UserRelaySet).relays,
       until: until,
       limit: limit ?? 50,
       since: since ?? f.from,
