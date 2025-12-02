@@ -959,7 +959,6 @@ class _HomeDashboardState extends State<HomeDashboard> {
         refreshController.refreshCompleted();
       },
       child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
         slivers: widgets,
       ),
     );

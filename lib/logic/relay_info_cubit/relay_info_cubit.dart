@@ -503,9 +503,11 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
     );
 
     if (events.isNotEmpty) {
-      final favouriteRelaysEvent = events.firstWhere(
-        (e) => e.kind == EventKind.FAVORITE_RELAYS,
-      );
+      final favouriteRelaysEvent = events
+          .where(
+            (e) => e.kind == EventKind.FAVORITE_RELAYS,
+          )
+          .firstOrNull;
 
       final relaySetEvents = events
           .where(

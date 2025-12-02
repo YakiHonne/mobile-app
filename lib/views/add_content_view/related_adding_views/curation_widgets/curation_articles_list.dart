@@ -135,7 +135,6 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
             ),
             child: CustomScrollView(
               controller: scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 _searchTextField(context, searchTextField),
                 SliverPadding(

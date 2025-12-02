@@ -446,7 +446,11 @@ class LeadingCubit extends Cubit<LeadingState> {
     final val = appSettingsManagerCubit.state.selectedNotesSource.value;
 
     final content = await NostrFunctionsRepository.getLeadingRelayData(
-      relays: val is String ? [val] : (val as UserRelaySet).relays,
+      relays: val != null
+          ? val is String
+              ? [val]
+              : (val as UserRelaySet).relays
+          : [],
       until: until,
       limit: 50,
       since: since,

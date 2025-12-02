@@ -572,7 +572,8 @@ class RelaySearchTextfield extends StatelessWidget {
                           backgroundColor: kTransparent,
                         ),
                         onPressed: () async {
-                          if (formkey.currentState!.validate()) {
+                          if (formkey.currentState != null &&
+                              formkey.currentState!.validate()) {
                             addRelay();
                           }
                         },

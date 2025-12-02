@@ -119,7 +119,6 @@ class _ContentDashboardState extends State<ContentDashboard> {
             onLoading: () => buildContent.call(context, true, state.chosenRE),
             onRefresh: () => buildContent.call(context, false, state.chosenRE),
             child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 _appbar(context),
                 _pulldownButton(style),
