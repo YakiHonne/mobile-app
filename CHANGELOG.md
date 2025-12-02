@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.6] - 2025-12-02
+
+### Fixed
+
+- Fix scrolling stuck behaviour.
+- Fix nostr scheme decoding issue.
+- Fix audio controller not being dismissed properly.
+
+
 ## [1.9.5] - 2025-11-25
 
 ### Added

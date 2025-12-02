@@ -33,7 +33,7 @@ class SmartWidgetAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uri = Uri.parse(url);
+    final uri = Uri.parse(url.trim());
 
     return BlocProvider(
       create: (context) => SmartWidgetAppCubit(

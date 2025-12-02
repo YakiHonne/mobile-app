@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -139,39 +140,48 @@ class MyApp extends HookWidget {
                 onTap: () => onGlobalTap(context),
                 child: BlocBuilder<LocalizationCubit, LocalizationState>(
                   builder: (context, localizationState) {
-                    return MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      theme: state.theme,
-                      onGenerateRoute: (settings) => onGenerateRoute(settings),
-                      navigatorObservers: AppConstants.navigatorObservers,
-                      localizationsDelegates:
-                          AppConstants.localizationDelegates,
-                      locale:
-                          TranslationProvider.of(context).locale.flutterLocale,
-                      supportedLocales: AppLocaleUtils.supportedLocales,
-                      navigatorKey: GlobalKeys.navigatorKey,
-                      builder: EasyLoading.init(
-                        builder: (context, child) {
-                          child = botToastBuilder(context, child);
+                    return RefreshConfiguration(
+                      springDescription: const SpringDescription(
+                        mass: 1,
+                        stiffness: 364.718677686,
+                        damping: 35.2,
+                      ),
+                      child: MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        theme: state.theme,
+                        onGenerateRoute: (settings) =>
+                            onGenerateRoute(settings),
+                        navigatorObservers: AppConstants.navigatorObservers,
+                        localizationsDelegates:
+                            AppConstants.localizationDelegates,
+                        locale: TranslationProvider.of(context)
+                            .locale
+                            .flutterLocale,
+                        supportedLocales: AppLocaleUtils.supportedLocales,
+                        navigatorKey: GlobalKeys.navigatorKey,
+                        builder: EasyLoading.init(
+                          builder: (context, child) {
+                            child = botToastBuilder(context, child);
 
-                          return Stack(
-                            children: [
-                              MediaQuery(
-                                data: MediaQuery.of(context).copyWith(
-                                  textScaler: TextScaler.linear(
-                                    state.textScaleFactor,
+                            return Stack(
+                              children: [
+                                MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    textScaler: TextScaler.linear(
+                                      state.textScaleFactor,
+                                    ),
+                                  ),
+                                  child: ResponsiveBreakpoints.builder(
+                                    child: child,
+                                    breakpoints:
+                                        AppConstants.responsiveBreakpoints,
                                   ),
                                 ),
-                                child: ResponsiveBreakpoints.builder(
-                                  child: child,
-                                  breakpoints:
-                                      AppConstants.responsiveBreakpoints,
-                                ),
-                              ),
-                              const RelaysProgressBar(),
-                            ],
-                          );
-                        },
+                                const RelaysProgressBar(),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     );
                   },

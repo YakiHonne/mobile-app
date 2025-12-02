@@ -176,7 +176,7 @@ class _AudioDisplayerState extends State<AudioDisplayer>
             PositionData(
               _player.position,
               _player.bufferedPosition,
-              _player.duration!,
+              _player.duration ?? Duration.zero,
             ),
           );
         },
@@ -187,7 +187,7 @@ class _AudioDisplayerState extends State<AudioDisplayer>
             PositionData(
               _player.position,
               _player.bufferedPosition,
-              _player.duration!,
+              _player.duration ?? Duration.zero,
             ),
           );
         },
@@ -198,7 +198,7 @@ class _AudioDisplayerState extends State<AudioDisplayer>
             PositionData(
               _player.position,
               _player.bufferedPosition,
-              _player.duration!,
+              _player.duration ?? Duration.zero,
             ),
           );
         },

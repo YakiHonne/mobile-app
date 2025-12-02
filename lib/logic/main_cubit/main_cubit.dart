@@ -341,6 +341,10 @@ class MainCubit extends Cubit<MainState> {
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
 
+      if (nostrDecode['special'] == null) {
+        return;
+      }
+
       final hexCode = hex.decode(nostrDecode['special']);
       author = nostrDecode['author'];
       special = String.fromCharCodes(hexCode);
@@ -376,7 +380,11 @@ class MainCubit extends Cubit<MainState> {
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
-      final List<int> hexCode = hex.decode(nostrDecode['special']);
+      if (nostrDecode['special'] == null) {
+        return;
+      }
+
+      final hexCode = hex.decode(nostrDecode['special']);
       special = String.fromCharCodes(hexCode);
       author = nostrDecode['author'];
       relays = List<String>.from(nostrDecode['relays']);
@@ -407,7 +415,12 @@ class MainCubit extends Cubit<MainState> {
     if (nostrUri.startsWith('naddr')) {
       final String naddr = nostrUri.split('?').last.replaceAll('naddr=', '');
       final nostrDecode = Nip19.decodeShareableEntity(naddr);
-      final List<int> hexCode = hex.decode(nostrDecode['special']);
+
+      if (nostrDecode['special'] == null) {
+        return;
+      }
+
+      final hexCode = hex.decode(nostrDecode['special']);
       author = nostrDecode['author'];
       special = String.fromCharCodes(hexCode);
       relays = List<String>.from(nostrDecode['relays']);
@@ -451,7 +464,11 @@ class MainCubit extends Cubit<MainState> {
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
-      final List<int> hexCode = hex.decode(nostrDecode['special']);
+      if (nostrDecode['special'] == null) {
+        return;
+      }
+
+      final hexCode = hex.decode(nostrDecode['special']);
       special = String.fromCharCodes(hexCode);
       author = nostrDecode['author'];
       relays = List<String>.from(nostrDecode['relays']);

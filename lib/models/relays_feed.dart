@@ -146,7 +146,9 @@ class UserRelaySet {
   String getTitle() {
     return title.isNotEmpty
         ? title
-        : '${relays.first.nineCharacters()}...${relays.last.nineCharacters()}';
+        : relays.isNotEmpty
+            ? '${relays.first.nineCharacters()}...${relays.last.nineCharacters()}'
+            : gc.t.noTitle;
   }
 
   String getDescription() {

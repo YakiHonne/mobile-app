@@ -256,18 +256,10 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  // Features
-  'Add relays sets.',
-  'Add russian language.',
-
-  // Improvements
-  'Fetch events from the relays encoded in the nostr scheme in search.',
-  'Optimise note view.',
-  'Add option to mute notifications with more than 10 mentions.',
-
   // Bug fixes
-  'Fix click on tag issue in search page.',
-  'Fix search relays update overrides user regular relay list.',
+  'Fix scrolling stuck behaviour.',
+  'Fix nostr scheme decoding issue.',
+  'Fix audio controller not being dismissed properly.'
 ];
 
 const content = [

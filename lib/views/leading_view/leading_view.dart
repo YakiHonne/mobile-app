@@ -73,7 +73,6 @@ class _LeadingViewState extends State<LeadingView> {
             builder: (context, state) {
               return SmartRefresher(
                 controller: refreshController,
-                scrollController: widget.scrollController,
                 enablePullUp: true,
                 header: const RefresherClassicHeader(),
                 footer: const RefresherClassicFooter(),
@@ -87,9 +86,6 @@ class _LeadingViewState extends State<LeadingView> {
                 ),
                 child: CustomScrollView(
                   controller: widget.scrollController,
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
                   slivers: [
                     if (state.showSuggestions &&
                         (state.onMediaLoading ||

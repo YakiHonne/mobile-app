@@ -914,10 +914,12 @@ class DmsCubit extends Cubit<DmsState>
     if (giftWrapNewestDateTime == null ||
         event.createdAt > giftWrapNewestDateTime!) {
       giftWrapNewestDateTime = event.createdAt;
-      localDatabaseRepository.setNewestGiftWrap(
-        currentSigner!.getPublicKey(),
-        event.createdAt,
-      );
+      if (canSign()) {
+        localDatabaseRepository.setNewestGiftWrap(
+          currentSigner!.getPublicKey(),
+          event.createdAt,
+        );
+      }
     }
   }
 

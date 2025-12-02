@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.5+171';
+const String appVersion = 'v1.9.6+172';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';

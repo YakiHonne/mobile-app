@@ -94,7 +94,6 @@ class _DiscoverViewState extends State<DiscoverView> {
         builder: (context, state) {
           return SmartRefresher(
             controller: refreshController,
-            scrollController: widget.scrollController,
             enablePullUp: true,
             header: const RefresherClassicHeader(),
             footer: const RefresherClassicFooter(),
@@ -102,9 +101,6 @@ class _DiscoverViewState extends State<DiscoverView> {
             onRefresh: () => reset(context),
             child: CustomScrollView(
               controller: widget.scrollController,
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
-              ),
               slivers: [
                 const SliverToBoxAdapter(
                   child: SizedBox(
