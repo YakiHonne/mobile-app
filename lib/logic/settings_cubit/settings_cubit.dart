@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/nostr/event_signer/remote_event_signer.dart'
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
+import '../../common/notifications/notification_helper.dart';
 import '../../initializers.dart';
 import '../../models/app_client_model.dart';
 import '../../models/app_models/settings_data.dart';
@@ -248,6 +249,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     nc.setSigner(currentSigner);
     currentUserRelayList.pubkey = currentSigner!.getPublicKey();
 
+    NotificationHelper.sharedInstance.resetPushDenialCache();
+
     try {
       nostrRepository.setCurrentAppCustomizationFromCache(broadcast: true);
       nostrRepository.setCurrentUserDraft();
@@ -292,6 +295,8 @@ class SettingsCubit extends Cubit<SettingsState> {
       currentSigner = null;
       nc.setSigner(currentSigner);
       nostrRepository.setCurrentSignerState(null);
+
+      NotificationHelper.sharedInstance.resetPushDenialCache();
       privateKeyIndex = index;
 
       c.call();

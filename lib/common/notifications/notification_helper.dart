@@ -29,6 +29,14 @@ class NotificationHelper {
   Event? unSendNotification;
   bool forwardedToAmber = false;
 
+  final Map<String, bool> _pushDeniedBySigner = {};
+  String? _lastDeviceId;
+
+  void resetPushDenialCache() {
+    _pushDeniedBySigner.clear();
+    _lastDeviceId = null;
+  }
+
   Future<void> init() async {
     startHeartBeat();
     nc.addConnectStatusListener(
@@ -72,6 +80,13 @@ class NotificationHelper {
     String content,
   ) async {
     try {
+      if (canSign()) {
+        final pubkey = currentSigner!.getPublicKey();
+        if (_pushDeniedBySigner[pubkey] == true) {
+          return null;
+        }
+      }
+
       final enContent = await currentSigner!.encrypt04(content, receiver);
       final tags = Nip4.toTags(receiver, '', null);
 
@@ -96,6 +111,15 @@ class NotificationHelper {
 
       return event;
     } catch (e) {
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('no permission') ||
+          errorStr.contains('permission denied') ||
+          errorStr.contains('denied')) {
+        if (canSign()) {
+          final pubkey = currentSigner!.getPublicKey();
+          _pushDeniedBySigner[pubkey] = true;
+        }
+      }
       lg.i(e);
       return null;
     }
@@ -155,12 +179,26 @@ class NotificationHelper {
     String deviceId,
     List<int> kinds,
   ) async {
+    final c = nostrRepository.currentAppCustomization;
+    if (!(c?.enablePushNotification ?? false)) {
+      return false;
+    }
+
+    if (deviceId.isNotEmpty && deviceId == _lastDeviceId) {
+      if (canSign()) {
+        final pubkey = currentSigner!.getPublicKey();
+        if (_pushDeniedBySigner[pubkey] == true) {
+          return false;
+        }
+      }
+    }
+
     if (serverPubkey.isEmpty || forwardedToAmber) {
       forwardedToAmber = false;
       return false;
     }
 
-    final c = nostrRepository.currentAppCustomization;
+    _lastDeviceId = deviceId;
 
     final map = {
       'online': deviceId.isEmpty ? 0 : 1,
