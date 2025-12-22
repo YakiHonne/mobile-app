@@ -330,11 +330,16 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   void setPushNotifications(String deviceId) {
+    final c = nostrRepository.currentAppCustomization;
+
+    if (!(c?.enablePushNotification ?? false)) {
+      return;
+    }
+
     final kinds = <int>{
       EventKind.DIRECT_MESSAGE,
       EventKind.PRIVATE_DIRECT_MESSAGE,
     };
-    final c = nostrRepository.currentAppCustomization;
 
     if (c?.notifMentionsReplies ?? false) {
       kinds.addAll(
