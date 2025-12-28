@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -11,6 +12,7 @@ import 'logic/discover_cubit/discover_cubit.dart';
 import 'logic/dms_cubit/dms_cubit.dart';
 import 'logic/leading_cubit/leading_cubit.dart';
 import 'logic/localization_cubit/localization_cubit.dart';
+import 'logic/media_cubit/media_cubit.dart';
 import 'logic/media_servers_cubit/media_servers_cubit.dart';
 import 'logic/metadata_cubit/metadata_cubit.dart';
 import 'logic/notes_events_cubit/notes_events_cubit.dart';
@@ -56,6 +58,8 @@ late LeadingCubit leadingCubit;
 
 late DiscoverCubit discoverCubit;
 
+late MediaCubit mediaCubit;
+
 late MediaServersCubit mediaServersCubit;
 
 late NotificationsCubit notificationsCubit;
@@ -93,6 +97,8 @@ late UnsentEventsCubit unsentEventsCubit;
 late EventSigner actionsSigner;
 
 late BuildContext gc;
+
+late List<CameraDescription> cameras;
 
 RelaySet? feedRelaySet;
 

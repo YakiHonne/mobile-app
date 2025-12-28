@@ -26,10 +26,10 @@ import '../../../points_management_view/widgets/points_login_popup.dart';
 import '../../../profile_view/profile_view.dart';
 import '../../../profile_view/widgets/profile_connections_view.dart';
 import '../../../widgets/classic_footer.dart';
+import '../../../widgets/media_components/horizontal_video_view.dart';
+import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/modal_with_blur.dart';
 import '../../../widgets/profile_picture.dart';
-import '../../../widgets/video_components/horizontal_video_view.dart';
-import '../../../widgets/video_components/vertical_video_view.dart';
 import 'dashboard_containers.dart';
 
 class HomeDashboard extends StatefulWidget {
@@ -325,7 +325,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                           context,
                           (context) => ProfileView(
                             pubkey: currentSigner!.getPublicKey(),
-                            index: 1,
+                            profileData: ProfileData.replies,
                           ),
                         );
                       },

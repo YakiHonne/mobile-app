@@ -15,6 +15,7 @@ import '../common/notifications/notification_helper.dart';
 import '../logic/main_cubit/main_cubit.dart';
 import '../models/app_models/app_customization.dart';
 import '../models/app_models/diverse_functions.dart';
+import '../models/app_view_config.dart';
 import '../models/bookmark_list_model.dart';
 import '../models/chat_message.dart';
 import '../models/filter_status.dart';
@@ -53,6 +54,7 @@ class NostrDataRepository {
   Map<String, AppCustomization> appCustomizations = {};
   Map<String, RemoteEventSigner> remoteSigners = {};
   Map<String, dynamic> previewCache = {};
+  Map<String, dynamic> videoThumbnails = {};
   Map<String, String> blurHash = {};
   Map<String, int> defaultZapAmounts = {};
   Map<String, String> defaultReactions = {};
@@ -72,6 +74,7 @@ class NostrDataRepository {
   // Sets
   Set<String> unsentEvents = {};
   Set<String> usersMessageNotifications = {};
+  Set<String> pinnedNotes = {};
 
   // Configuration flags
   bool isCrashlyticsEnabled = true;
@@ -79,7 +82,6 @@ class NostrDataRepository {
   bool showCacheExceedsSize = true;
   bool enableOneTapZap = false;
   bool enableOneTapReaction = false;
-  bool delayLeading = true;
   bool wotDataLoaded = false;
   bool isUsingExternalSigner = false;
   bool remoteSignerWebViewOpened = false;
@@ -88,6 +90,7 @@ class NostrDataRepository {
   MuteModel muteModel = MuteModel.empty();
   Metadata currentMetadata = Metadata.empty();
   AppCustomization? currentAppCustomization;
+  AppViewConfig? currentAppViewConfig;
   UserDrafts? userDrafts;
   Timer? draftTimer;
 
@@ -115,6 +118,7 @@ class NostrDataRepository {
   final bookmarksController =
       StreamController<Map<String, BookmarkListModel>>.broadcast();
   final mutesController = StreamController<MuteModel>.broadcast();
+  final pinnedNotesController = StreamController<Set<String>>.broadcast();
 
   // Getters
   BuildContext currentContext() => mainCubit.context;
@@ -136,6 +140,7 @@ class NostrDataRepository {
   Stream<Map<String, BookmarkListModel>> get bookmarksStream =>
       bookmarksController.stream;
   Stream<MuteModel> get mutesStream => mutesController.stream;
+  Stream<Set<String>> get pinnedNotesStream => pinnedNotesController.stream;
 
   // =============================================================================
   // search relays
@@ -161,12 +166,16 @@ class NostrDataRepository {
   // FILTER STATUS
   // =============================================================================
 
-  void setFilterStatus({required bool isLeading, required bool status}) {
-    if (isLeading) {
+  void setFilterStatus(
+      {required ViewDataTypes viewType, required bool status}) {
+    if (viewType == ViewDataTypes.notes) {
       filterStatus.leadingFilter = status;
-    } else {
+    } else if (viewType == ViewDataTypes.articles) {
       filterStatus.discoverFilter = status;
+    } else if (viewType == ViewDataTypes.media) {
+      filterStatus.mediaFilter = status;
     }
+
     localDatabaseRepository.setFilterStatus(fs: filterStatus);
   }
 
@@ -222,6 +231,34 @@ class NostrDataRepository {
   }
 
   // =============================================================================
+  // APP VIEW CONFIG
+  // =============================================================================
+
+  void loadAppViewConfig() {
+    if (canSign()) {
+      // localDatabaseRepository
+      //     .deleteAppViewConfig(currentSigner!.getPublicKey());
+
+      final appViewConfigString = localDatabaseRepository
+          .getAppViewConfig(currentSigner!.getPublicKey());
+
+      currentAppViewConfig = appViewConfigString != null
+          ? AppViewConfig.fromJson(appViewConfigString)
+          : AppViewConfig.initial();
+    }
+  }
+
+  void setAppViewConfig(AppViewConfig appViewConfig) {
+    if (canSign()) {
+      currentAppViewConfig = appViewConfig;
+
+      localDatabaseRepository.setAppViewConfig(
+        currentSigner!.getPublicKey(),
+        appViewConfig.toJson(),
+      );
+    }
+  }
+  // =============================================================================
   // MEDIA MANAGER
   // =============================================================================
 
@@ -258,6 +295,39 @@ class NostrDataRepository {
     );
 
     localDatabaseRepository.setMediaManager(mediaManagerItems.values.toList());
+  }
+
+  // =============================================================================
+  // PINNED NOTES MANAGEMENT
+  // =============================================================================
+
+  Future<void> setPinnedNote({required String noteId}) async {
+    final pList = Set<String>.from(pinnedNotes);
+    if (!pList.contains(noteId)) {
+      pList.add(noteId);
+    } else {
+      pList.remove(noteId);
+    }
+
+    final e = await Event.genEvent(
+      kind: EventKind.PINNED_NOTES,
+      tags: pList.map((e) => ['e', e]).toList(),
+      content: '',
+      signer: currentSigner,
+    );
+
+    if (e != null) {
+      final isSuccess = await NostrFunctionsRepository.sendEvent(
+        event: e,
+        setProgress: true,
+      );
+
+      if (isSuccess) {
+        pinnedNotes = pList;
+        pinnedNotesController.add(pinnedNotes);
+        nc.db.saveEvent(e);
+      }
+    }
   }
 
   // =============================================================================
@@ -920,6 +990,8 @@ class NostrDataRepository {
               searchRelays.add(t[1]);
             }
           }
+        } else if (event.kind == EventKind.PINNED_NOTES) {
+          pinnedNotes = event.eTags.toSet();
         }
       },
       onDone: () {
@@ -930,6 +1002,7 @@ class NostrDataRepository {
         }
 
         nc.connectRelays(dmRelays);
+
         dmsCubit.showDmsRelayMessage = dmRelays.isEmpty;
         completer.complete();
       },
@@ -947,6 +1020,7 @@ class NostrDataRepository {
             EventKind.DM_RELAYS,
             EventKind.INTEREST_SET,
             EventKind.SEARCH_RELAYS,
+            EventKind.PINNED_NOTES,
           ],
           authors: [
             currentSigner!.getPublicKey(),
@@ -954,36 +1028,66 @@ class NostrDataRepository {
         ),
       );
 
+      int? newestPinnedNotesEvent;
+      int? newestDmRelaysEvent;
+      int? newestSearchRelaysEvent;
+      int? newestBookmarksEvent;
+      int? newestInterestsEvent;
+
       for (final e in events) {
         if (e.kind == EventKind.CATEGORIZED_BOOKMARK) {
-          final bookmark = BookmarkListModel.fromEvent(e);
+          if (newestBookmarksEvent == null ||
+              newestBookmarksEvent < e.createdAt) {
+            newestBookmarksEvent = e.createdAt;
 
-          final canBeAdded = bookmarksLists[bookmark.identifier] == null ||
-              bookmarksLists[bookmark.identifier]!
-                      .createdAt
-                      .toSecondsSinceEpoch()
-                      .compareTo(bookmark.createdAt.toSecondsSinceEpoch()) <
-                  1;
+            final bookmark = BookmarkListModel.fromEvent(e);
 
-          if (canBeAdded) {
-            bookmarksLists[bookmark.identifier] = bookmark;
-            bookmarksController.add(bookmarksLists);
+            final canBeAdded = bookmarksLists[bookmark.identifier] == null ||
+                bookmarksLists[bookmark.identifier]!
+                        .createdAt
+                        .toSecondsSinceEpoch()
+                        .compareTo(bookmark.createdAt.toSecondsSinceEpoch()) <
+                    1;
+
+            if (canBeAdded) {
+              bookmarksLists[bookmark.identifier] = bookmark;
+              bookmarksController.add(bookmarksLists);
+            }
           }
         } else if (e.kind == EventKind.INTEREST_SET) {
-          setInterestSet(interestsFromEvent(e).toSet());
+          if (newestInterestsEvent == null ||
+              newestInterestsEvent < e.createdAt) {
+            newestInterestsEvent = e.createdAt;
+            setInterestSet(interestsFromEvent(e).toSet());
+          }
         } else if (e.kind == EventKind.DM_RELAYS) {
-          for (final t in e.tags) {
-            if (t[0] == 'relay' && t.length > 1 && !dmRelays.contains(t[1])) {
-              dmRelays.add(t[1]);
+          if (newestDmRelaysEvent == null ||
+              newestDmRelaysEvent < e.createdAt) {
+            newestDmRelaysEvent = e.createdAt;
+            for (final t in e.tags) {
+              if (t[0] == 'relay' && t.length > 1 && !dmRelays.contains(t[1])) {
+                dmRelays.add(t[1]);
+              }
             }
           }
         } else if (e.kind == EventKind.SEARCH_RELAYS) {
-          for (final t in e.tags) {
-            if (t[0] == 'relay' &&
-                t.length > 1 &&
-                !searchRelays.contains(t[1])) {
-              searchRelays.add(t[1]);
+          if (newestSearchRelaysEvent == null ||
+              newestSearchRelaysEvent < e.createdAt) {
+            newestSearchRelaysEvent = e.createdAt;
+
+            for (final t in e.tags) {
+              if (t[0] == 'relay' &&
+                  t.length > 1 &&
+                  !searchRelays.contains(t[1])) {
+                searchRelays.add(t[1]);
+              }
             }
+          }
+        } else if (e.kind == EventKind.PINNED_NOTES) {
+          if (newestPinnedNotesEvent == null ||
+              newestPinnedNotesEvent < e.createdAt) {
+            pinnedNotes = e.eTags.toSet();
+            newestPinnedNotesEvent = e.createdAt;
           }
         }
       }
@@ -1002,6 +1106,8 @@ class NostrDataRepository {
     }
 
     bookmarksLists.clear();
+    pinnedNotes.clear();
+    dmRelays.clear();
     loadingBookmarks.clear();
     bookmarksController.add({});
     muteModel = MuteModel.empty();
@@ -1021,7 +1127,9 @@ class NostrDataRepository {
     interests = [];
     currentMetadata = Metadata.empty();
     appSettingsManagerCubit.reset();
+    relayInfoCubit.reset();
     relayInfoCubit.clear();
+    currentAppViewConfig = null;
     await notificationsCubit.clear();
 
     currentUserRelayList = UserRelayList(

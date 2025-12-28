@@ -1741,6 +1741,7 @@ class MediaContainer extends HookWidget {
             link: mediaItem.key,
             removePadding: false,
             autoPlay: true,
+            enableSound: false,
           );
   }
 }
@@ -1767,7 +1768,6 @@ class MediaImage extends HookWidget {
         children: [
           CommonThumbnail(
             image: url,
-            placeholder: getRandomPlaceholder(input: url, isPfp: false),
             height: 0,
             radius: kDefaultPadding / 2,
             isRound: true,

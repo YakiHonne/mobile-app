@@ -262,8 +262,6 @@ class AddBookmarksListView extends HookWidget {
             : LayoutBuilder(
                 builder: (context, constraints) => CommonThumbnail(
                   image: url.value,
-                  placeholder:
-                      getRandomPlaceholder(input: url.value, isPfp: false),
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
                   isRound: true,

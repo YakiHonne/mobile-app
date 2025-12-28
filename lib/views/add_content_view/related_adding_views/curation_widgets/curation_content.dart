@@ -438,7 +438,6 @@ class AddingCurationArticleContainer extends HookWidget {
                 children: [
                   CommonThumbnail(
                     image: image,
-                    placeholder: placeholder,
                     width: 50,
                     height: 50,
                     isRound: true,

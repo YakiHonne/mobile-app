@@ -9,10 +9,12 @@ class VerticalSkeletonSelector extends StatelessWidget {
     super.key,
     required this.placeHolderWidget,
     this.useColumn = true,
+    this.removePadding = false,
   });
 
   final Widget placeHolderWidget;
   final bool useColumn;
+  final bool removePadding;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +25,11 @@ class VerticalSkeletonSelector extends StatelessWidget {
 
   Padding _phonePlaceholder(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(
-        kDefaultPadding / 2,
-      ),
+      padding: removePadding
+          ? EdgeInsets.zero
+          : const EdgeInsets.all(
+              kDefaultPadding / 2,
+            ),
       child: useColumn
           ? Column(
               children: [

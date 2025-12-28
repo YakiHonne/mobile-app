@@ -384,19 +384,12 @@ class AddCuration extends HookWidget {
           ? state.imageLink.isEmpty
               ? SizedBox(
                   height: 20.h,
-                  child: const NoMediaPlaceHolder(
-                    isError: false,
-                    image: '',
-                  ),
+                  child: const NoMediaPlaceHolder(),
                 )
               : CommonThumbnail(
                   image: state.imageLink,
                   height: 20.h,
                   width: double.infinity,
-                  placeholder: getRandomPlaceholder(
-                    input: state.imageLink,
-                    isPfp: false,
-                  ),
                   isRound: true,
                   radius: kDefaultPadding,
                 )
@@ -493,7 +486,6 @@ class ArticleSuggestedCurationList extends StatelessWidget {
         children: [
           CommonThumbnail(
             image: curation.image,
-            placeholder: curation.placeHolder,
             width: 60,
             height: 60,
           ),

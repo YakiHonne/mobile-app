@@ -56,6 +56,7 @@ Future<void> reset() async {
 
   if (canSign()) {
     notificationsCubit.initNotifications();
+    dmsCubit.query();
     connectivityService.checkInternet();
     walletManagerCubit.processUnprocessedInvoices();
   }

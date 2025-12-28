@@ -23,11 +23,13 @@ import 'app_bar_widgets.dart';
 class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function() onClicked;
   final bool isConnected;
+  final List<ScrollController> scrollControllers;
 
   const MainViewAppBar({
     super.key,
     required this.onClicked,
     required this.isConnected,
+    required this.scrollControllers,
   });
 
   @override
@@ -184,20 +186,28 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildTitle(BuildContext context, MainState state) {
     if (state.mainView == MainViews.leading ||
-        state.mainView == MainViews.discover) {
+        state.mainView == MainViews.articles ||
+        state.mainView == MainViews.media) {
       return SizedBox(
         width: 50.w,
         child: Center(
           child: SourceButton(
-            isDiscover: state.mainView == MainViews.discover,
+            viewType: state.mainView == MainViews.articles
+                ? ViewDataTypes.articles
+                : state.mainView == MainViews.leading
+                    ? ViewDataTypes.notes
+                    : ViewDataTypes.media,
             onSourceChanged: () {
               if (state.mainView == MainViews.leading) {
                 leadingCubit.buildLeadingFeed(isAdding: false);
-              } else {
+              } else if (state.mainView == MainViews.articles) {
                 discoverCubit.buildDiscoverFeed(
                   exploreType: discoverCubit.exploreType,
                   isAdding: false,
                 );
+              } else if (state.mainView == MainViews.media) {
+                scrollControllers[1].jumpTo(0);
+                mediaCubit.buildMediaFeed(isAdding: false);
               }
             },
           ),
@@ -207,7 +217,7 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
         walletManagerCubit.state.wallets.isNotEmpty) {
       return const SelectedWalletContainer();
     } else if (state.mainView == MainViews.dms && canSign()) {
-      return const InboxTypes();
+      return InboxTypes(scrollController: scrollControllers[2]);
     } else if (state.mainView == MainViews.notifications && canSign()) {
       return const NotificationTypes();
     } else {
@@ -226,8 +236,15 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
   List<Widget> _buildActions(BuildContext context, MainState state) {
     return [
       if (state.mainView == MainViews.leading ||
-          state.mainView == MainViews.discover) ...[
-        FilterGlobalButton(isDiscover: state.mainView == MainViews.discover),
+          state.mainView == MainViews.articles ||
+          state.mainView == MainViews.media) ...[
+        FilterGlobalButton(
+          viewType: state.mainView == MainViews.articles
+              ? ViewDataTypes.articles
+              : state.mainView == MainViews.leading
+                  ? ViewDataTypes.notes
+                  : ViewDataTypes.media,
+        ),
       ],
       const SizedBox(width: kDefaultPadding / 8),
       if (state.mainView == MainViews.dms) ...[
@@ -236,7 +253,8 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
         CustomIconButton(
           onClicked: () {
             if (state.mainView == MainViews.leading ||
-                state.mainView == MainViews.discover) {
+                state.mainView == MainViews.articles ||
+                state.mainView == MainViews.media) {
               YNavigator.pushPage(context, (context) => SearchView());
             } else if (state.mainView == MainViews.wallet) {
               doIfCanSign(
@@ -300,8 +318,10 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
       return context.t.inbox.capitalizeFirst();
     } else if (mainView == MainViews.leading) {
       return context.t.notes.capitalizeFirst();
-    } else if (mainView == MainViews.discover) {
-      return context.t.discover.capitalizeFirst();
+    } else if (mainView == MainViews.articles) {
+      return context.t.articles.capitalizeFirst();
+    } else if (mainView == MainViews.media) {
+      return context.t.media.capitalizeFirst();
     } else if (mainView == MainViews.wallet) {
       return context.t.wallet.capitalizeFirst();
     } else if (mainView == MainViews.smartWidgets) {

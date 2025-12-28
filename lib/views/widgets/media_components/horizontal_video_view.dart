@@ -9,11 +9,10 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:numeral/numeral.dart';
 
 import '../../../logic/horizontal_video_cubit/horizontal_video_cubit.dart';
+import '../../../logic/notes_events_cubit/notes_events_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
-import '../../../models/detailed_note_model.dart';
 import '../../../models/video_model.dart';
 import '../../../utils/utils.dart';
-import '../../threads_view/threads_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../buttons_containers_widgets.dart';
 import '../content_stats.dart';
@@ -23,7 +22,6 @@ import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import '../profile_picture.dart';
 import 'horizontal_video_container.dart';
-import 'video_description.dart';
 
 class HorizontalVideoView extends HookWidget {
   static const routeName = '/horizontalVideoView';
@@ -78,72 +76,79 @@ class HorizontalVideoView extends HookWidget {
     );
   }
 
-  BlocBuilder<HorizontalVideoCubit, HorizontalVideoState> _content(
-      ValueNotifier<List<VideoModel>> videoSuggestions) {
-    return BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
+  Widget _content(ValueNotifier<List<VideoModel>> videoSuggestions) {
+    return BlocBuilder<NotesEventsCubit, NotesEventsState>(
+      buildWhen: (previous, current) =>
+          current.eventsStats[video.getId()] !=
+          previous.eventsStats[video.getId()],
       builder: (context, state) {
-        return CustomScrollView(
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: CustomVideoPlayer(
-                link: video.url,
-                removeBorders: true,
-                removePadding: true,
-                autoPlay: true,
-                fallbackUrls: video.fallbackUrls,
-              ),
-            ),
-            _videoData(context, state),
-            SliverToBoxAdapter(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (_) => ContentThreadsView(
-                        aTag: video.id,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-                  ),
-                  padding: const EdgeInsets.all(kDefaultPadding / 2),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: kDefaultPadding / 2,
-                    vertical: kDefaultPadding / 2,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _replies(context, state),
-                      const SizedBox(
-                        height: kDefaultPadding / 2,
-                      ),
-                      if (state.replies.isEmpty)
-                        _noReplies(context)
-                      else
-                        _firstReply(state),
-                    ],
+        return BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
+          builder: (context, state) {
+            return CustomScrollView(
+              physics: const ClampingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: CustomVideoPlayer(
+                    link: video.url,
+                    removeBorders: true,
+                    removePadding: true,
+                    autoPlay: true,
+                    fallbackUrls: video.fallbackUrls,
                   ),
                 ),
-              ),
-            ),
-            if (videoSuggestions.value.isNotEmpty) ...[
-              _videoSuggestions(context),
-              _videoSuggestionsList(videoSuggestions),
-            ],
-            const SliverToBoxAdapter(
-              child: SizedBox(
-                height: kDefaultPadding,
-              ),
-            )
-          ],
+                _videoData(context, state),
+                // SliverToBoxAdapter(
+                //   child: GestureDetector(
+                //     behavior: HitTestBehavior.translucent,
+                //     onTap: () {
+                //       Navigator.push(
+                //         context,
+                //         CupertinoPageRoute(
+                //           builder: (_) => ContentThreadsView(
+                //             aTag: video.id,
+                //           ),
+                //         ),
+                //       );
+                //     },
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         color: Theme.of(context).cardColor,
+                //         borderRadius:
+                //             BorderRadius.circular(kDefaultPadding / 2),
+                //       ),
+                //       padding: const EdgeInsets.all(kDefaultPadding / 2),
+                //       margin: const EdgeInsets.symmetric(
+                //         horizontal: kDefaultPadding / 2,
+                //         vertical: kDefaultPadding / 2,
+                //       ),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           _replies(context, state),
+                //           const SizedBox(
+                //             height: kDefaultPadding / 2,
+                //           ),
+                //           if (state.replies.isEmpty)
+                //             _noReplies(context)
+                //           else
+                //             _firstReply(state),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                if (videoSuggestions.value.isNotEmpty) ...[
+                  _videoSuggestions(context),
+                  _videoSuggestionsList(videoSuggestions),
+                ],
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kDefaultPadding,
+                  ),
+                )
+              ],
+            );
+          },
         );
       },
     );
@@ -215,113 +220,113 @@ class HorizontalVideoView extends HookWidget {
     );
   }
 
-  Builder _firstReply(HorizontalVideoState state) {
-    return Builder(
-      builder: (context) {
-        final comment = state.replies.first;
+  // Builder _firstReply(HorizontalVideoState state) {
+  //   return Builder(
+  //     builder: (context) {
+  //       final comment = state.replies.first;
 
-        return MetadataProvider(
-          pubkey: comment.pubkey,
-          child: (metadata, nip05) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ProfilePicture2(
-                  size: 25,
-                  image: metadata.picture,
-                  pubkey: metadata.pubkey,
-                  padding: 0,
-                  strokeWidth: 1,
-                  strokeColor: Theme.of(context).primaryColorDark,
-                  onClicked: () {},
-                ),
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                _replyMetadataRow(metadata, context, comment),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  //       return MetadataProvider(
+  //         pubkey: comment.pubkey,
+  //         child: (metadata, nip05) {
+  //           return Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               ProfilePicture2(
+  //                 size: 25,
+  //                 image: metadata.picture,
+  //                 pubkey: metadata.pubkey,
+  //                 padding: 0,
+  //                 strokeWidth: 1,
+  //                 strokeColor: Theme.of(context).primaryColorDark,
+  //                 onClicked: () {},
+  //               ),
+  //               const SizedBox(
+  //                 width: kDefaultPadding / 2,
+  //               ),
+  //               _replyMetadataRow(metadata, context, comment),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
-  Expanded _replyMetadataRow(
-      Metadata metadata, BuildContext context, DetailedNoteModel comment) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            metadata.getName(),
-            style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(
-            height: kDefaultPadding / 4,
-          ),
-          Text(
-            comment.content,
-            style: Theme.of(context).textTheme.labelMedium,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
+  // Expanded _replyMetadataRow(
+  //     Metadata metadata, BuildContext context, DetailedNoteModel comment) {
+  //   return Expanded(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           metadata.getName(),
+  //           style: Theme.of(context).textTheme.labelLarge!.copyWith(
+  //                 fontWeight: FontWeight.w700,
+  //                 height: 1,
+  //               ),
+  //           maxLines: 1,
+  //           overflow: TextOverflow.ellipsis,
+  //         ),
+  //         const SizedBox(
+  //           height: kDefaultPadding / 4,
+  //         ),
+  //         Text(
+  //           comment.content,
+  //           style: Theme.of(context).textTheme.labelMedium,
+  //           maxLines: 1,
+  //           overflow: TextOverflow.ellipsis,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Column _noReplies(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.t.noCommentsCanBeFound.capitalizeFirst(),
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-          textAlign: TextAlign.start,
-        ),
-        const SizedBox(
-          height: kDefaultPadding / 4,
-        ),
-        Text(
-          context.t.beFirstCommentThisVideo.capitalizeFirst(),
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(),
-          textAlign: TextAlign.start,
-        ),
-      ],
-    );
-  }
+  // Column _noReplies(BuildContext context) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         context.t.noCommentsCanBeFound.capitalizeFirst(),
+  //         style: Theme.of(context).textTheme.titleSmall!.copyWith(
+  //               fontWeight: FontWeight.w800,
+  //             ),
+  //         textAlign: TextAlign.start,
+  //       ),
+  //       const SizedBox(
+  //         height: kDefaultPadding / 4,
+  //       ),
+  //       Text(
+  //         context.t.beFirstCommentThisVideo.capitalizeFirst(),
+  //         style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+  //         textAlign: TextAlign.start,
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Row _replies(BuildContext context, HorizontalVideoState state) {
-    return Row(
-      children: [
-        Text(
-          context.t.comments.capitalizeFirst(),
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-        ),
-        DotContainer(
-          color: Theme.of(context).highlightColor,
-          size: 3,
-        ),
-        Text(
-          '${state.replies.length}',
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).primaryColor,
-              ),
-        ),
-      ],
-    );
-  }
+  // Row _replies(BuildContext context, HorizontalVideoState state) {
+  //   return Row(
+  //     children: [
+  //       Text(
+  //         context.t.comments.capitalizeFirst(),
+  //         style: Theme.of(context).textTheme.labelMedium!.copyWith(
+  //               fontWeight: FontWeight.w600,
+  //             ),
+  //       ),
+  //       DotContainer(
+  //         color: Theme.of(context).highlightColor,
+  //         size: 3,
+  //       ),
+  //       Text(
+  //         '${state.replies.length}',
+  //         style: Theme.of(context).textTheme.labelMedium!.copyWith(
+  //               fontWeight: FontWeight.w600,
+  //               color: Theme.of(context).primaryColor,
+  //             ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   SliverToBoxAdapter _videoData(
       BuildContext context, HorizontalVideoState state) {
@@ -490,28 +495,28 @@ class HorizontalVideoView extends HookWidget {
   GestureDetector _videoInfo(BuildContext context, HorizontalVideoState state) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
-          builder: (_) {
-            return HVDescription(
-              createdAt: video.createdAt,
-              description: video.summary,
-              title: video.title,
-              tags: video.tags,
-              upvotes: state.votes.values
-                  .map((element) => element.vote)
-                  .toList()
-                  .length
-                  .toString(),
-              views: state.viewsCount.length.toString(),
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        );
+        // showModalBottomSheet(
+        //   context: context,
+        //   elevation: 0,
+        //   builder: (_) {
+        //     return HVDescription(
+        //       createdAt: video.createdAt,
+        //       description: video.summary,
+        //       title: video.title,
+        //       tags: video.tags,
+        //       upvotes: state.votes.values
+        //           .map((element) => element.vote)
+        //           .toList()
+        //           .length
+        //           .toString(),
+        //       views: state.viewsCount.length.toString(),
+        //     );
+        //   },
+        //   isScrollControlled: true,
+        //   useRootNavigator: true,
+        //   useSafeArea: true,
+        //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        // );
       },
       behavior: HitTestBehavior.translucent,
       child: Column(

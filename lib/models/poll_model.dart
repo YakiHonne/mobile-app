@@ -161,7 +161,13 @@ class PollModel extends Equatable implements BaseEventModel {
     );
   }
 
-  String nEvent() {
+  String toJson() => json.encode(toMap());
+
+  factory PollModel.fromJson(String source) =>
+      PollModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String getScheme() {
     return Nip19.encodeShareableEntity(
       'nevent',
       id,
@@ -171,10 +177,10 @@ class PollModel extends Equatable implements BaseEventModel {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory PollModel.fromJson(String source) =>
-      PollModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  @override
+  Future<String> getSchemeWithRelays() async {
+    return '';
+  }
 }
 
 class PollOption extends Equatable {

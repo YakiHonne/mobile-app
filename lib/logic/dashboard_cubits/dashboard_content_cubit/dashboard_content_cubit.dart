@@ -7,6 +7,7 @@ import '../../../models/article_model.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/detailed_note_model.dart';
 import '../../../models/flash_news_model.dart';
+import '../../../models/picture_model.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../models/video_model.dart';
 import '../../../repositories/nostr_functions_repository.dart';
@@ -99,6 +100,8 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
         if (re == AppContentType.video) ...[
           EventKind.VIDEO_HORIZONTAL,
           EventKind.VIDEO_VERTICAL,
+          EventKind.LEGACY_VIDEO_HORIZONTAL,
+          EventKind.LEGACY_VIDEO_VERTICAL,
         ],
         if (re == AppContentType.smartWidget) ...[
           EventKind.SMART_WIDGET_ENH,
@@ -106,6 +109,9 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
         if (re == AppContentType.note) ...[
           EventKind.TEXT_NOTE,
           EventKind.REPOST,
+        ],
+        if (re == AppContentType.picture) ...[
+          EventKind.PICTURE,
         ],
       ],
       pubkeys: [currentSigner!.getPublicKey()],
@@ -132,6 +138,8 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
                   return VideoModel.fromEvent(e);
                 } else if (re == AppContentType.smartWidget) {
                   return SmartWidget.fromEvent(e);
+                } else if (re == AppContentType.picture) {
+                  return PictureModel.fromEvent(e);
                 } else {
                   if (e.kind == EventKind.TEXT_NOTE) {
                     return DetailedNoteModel.fromEvent(e);

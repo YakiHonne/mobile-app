@@ -152,10 +152,6 @@ class InterestFollowingContainer extends HookWidget {
               image: interestSet.image,
               width: cts.maxWidth * 0.17,
               height: cts.maxWidth * 0.17,
-              placeholder: getRandomPlaceholder(
-                input: interestSet.image,
-                isPfp: false,
-              ),
               radius: kDefaultPadding,
               isRound: true,
             ),

@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.9.6+172
+version: 1.9.7+177
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -22,6 +22,7 @@ dependencies:
   buttons_tabbar: ^1.3.8
   cached_network_image: ^3.2.3
   calendar_date_picker2: ^1.1.7
+  camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
   chewie: ^1.10.0
   connectivity_plus: ^6.0.5
@@ -37,7 +38,7 @@ dependencies:
   emoji_picker_flutter: ^4.3.0
   equatable: ^2.0.5
   expandable: ^5.0.1
-  extended_image: ^8.3.1
+  extended_image: ^10.0.1
   fc_native_video_thumbnail: ^0.12.0
   fl_chart: ^0.69.0
   flutter:
@@ -74,6 +75,7 @@ dependencies:
       ref: master
   glassmorphism: ^3.0.0
   html: ^0.15.4
+  image_editor_plus: ^1.0.8
   image_gallery_saver_plus: ^4.0.1
   image_picker: ^1.1.2
   interactiveviewer_gallery_plus: ^0.1.0
@@ -99,7 +101,7 @@ dependencies:
   path: ^1.8.3
   path_drawing: ^1.0.1
   path_provider: ^2.1.5
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   pretty_qr_code: ^3.4.0
   pull_down_button: ^0.10.2
   pull_to_refresh: ^2.0.0
@@ -125,6 +127,7 @@ dependencies:
   url_launcher: ^6.1.14
   uuid: ^4.3.3
   video_player: ^2.9.2
+  video_thumbnail: ^0.5.6
   video_url_validator: ^1.0.3
   visibility_detector: ^0.4.0+2
   webview_flutter: ^4.10.0

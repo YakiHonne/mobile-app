@@ -1475,6 +1475,30 @@ class TranslationsHi extends Translations {
 	@override String get favoriteRelaysFeed => 'पसंदीदा रिले फीड';
 	@override String get maxMentions => 'अधिकतम मेंशन';
 	@override String get maxMentionsDesc => '10 से अधिक उपयोगकर्ता मेंशन वाली नोट्स से नोटिफिकेशन छिपाएँ.';
+	@override String get media => 'मीडिया';
+	@override String get pinned => 'पिन किया हुआ';
+	@override String get pictures => 'तस्वीरें';
+	@override String get unpin => 'अनपिन करें';
+	@override String get pin => 'पिन करें';
+	@override String userPublishedPicture({required Object name}) => '${name} ने एक तस्वीर प्रकाशित की';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} ने आपकी तस्वीर को ${number} सैट्स ज़ैप किया';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} ने आपकी तस्वीर पर ${reaction} रिएक्ट किया';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} ने उस तस्वीर पर ${reaction} रिएक्ट किया जिसमें आपको मेंशन किया गया था';
+	@override String userRepliedYourPicture({required Object name}) => '${name} ने आपकी तस्वीर पर जवाब दिया';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} ने उस तस्वीर पर जवाब दिया जिसमें आपको मेंशन किया गया था';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} ने आपको एक तस्वीर में मेंशन किया';
+	@override String userCommentedYourPicture({required Object name}) => '${name} ने आपकी तस्वीर पर टिप्पणी की';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} ने उस तस्वीर पर टिप्पणी की जिसमें आपको मेंशन किया गया था';
+	@override String userQuotedYourPicture({required Object name}) => '${name} ने आपकी तस्वीर को उद्धृत किया';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} ने उस तस्वीर को उद्धृत किया जिसमें आपको मेंशन किया गया था';
+	@override String get cameraPermission => 'या तो ऐप को कैमरा एक्सेस करने की अनुमति नहीं है या इस डिवाइस पर कोई कैमरा उपलब्ध नहीं है।';
+	@override String get fetchingPicture => 'तस्वीर प्राप्त की जा रही है...';
+	@override String get addDescription => 'विवरण जोड़ें...';
+	@override String get uploadingVideo => 'वीडियो अपलोड हो रहा है...';
+	@override String get uploadThumbnail => 'थंबनेल अपलोड करें';
+	@override String get chooseThumbnailVideo => 'अपने वीडियो के लिए उचित थंबनेल चुनें';
+	@override String get publishing => 'प्रकाशित किया जा रहा है...';
+	@override String get giveMeCatchyTitle => 'मुझे एक आकर्षक शीर्षक दें';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -2939,6 +2963,30 @@ extension on TranslationsHi {
 			'favoriteRelaysFeed' => 'पसंदीदा रिले फीड',
 			'maxMentions' => 'अधिकतम मेंशन',
 			'maxMentionsDesc' => '10 से अधिक उपयोगकर्ता मेंशन वाली नोट्स से नोटिफिकेशन छिपाएँ.',
+			'media' => 'मीडिया',
+			'pinned' => 'पिन किया हुआ',
+			'pictures' => 'तस्वीरें',
+			'unpin' => 'अनपिन करें',
+			'pin' => 'पिन करें',
+			'userPublishedPicture' => ({required Object name}) => '${name} ने एक तस्वीर प्रकाशित की',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} ने आपकी तस्वीर को ${number} सैट्स ज़ैप किया',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} ने आपकी तस्वीर पर ${reaction} रिएक्ट किया',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} ने उस तस्वीर पर ${reaction} रिएक्ट किया जिसमें आपको मेंशन किया गया था',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} ने आपकी तस्वीर पर जवाब दिया',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} ने उस तस्वीर पर जवाब दिया जिसमें आपको मेंशन किया गया था',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} ने आपको एक तस्वीर में मेंशन किया',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} ने आपकी तस्वीर पर टिप्पणी की',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} ने उस तस्वीर पर टिप्पणी की जिसमें आपको मेंशन किया गया था',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} ने आपकी तस्वीर को उद्धृत किया',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} ने उस तस्वीर को उद्धृत किया जिसमें आपको मेंशन किया गया था',
+			'cameraPermission' => 'या तो ऐप को कैमरा एक्सेस करने की अनुमति नहीं है या इस डिवाइस पर कोई कैमरा उपलब्ध नहीं है।',
+			'fetchingPicture' => 'तस्वीर प्राप्त की जा रही है...',
+			'addDescription' => 'विवरण जोड़ें...',
+			'uploadingVideo' => 'वीडियो अपलोड हो रहा है...',
+			'uploadThumbnail' => 'थंबनेल अपलोड करें',
+			'chooseThumbnailVideo' => 'अपने वीडियो के लिए उचित थंबनेल चुनें',
+			'publishing' => 'प्रकाशित किया जा रहा है...',
+			'giveMeCatchyTitle' => 'मुझे एक आकर्षक शीर्षक दें',
 			_ => null,
 		};
 	}

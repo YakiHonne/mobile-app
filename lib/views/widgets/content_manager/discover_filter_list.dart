@@ -13,9 +13,9 @@ import '../dotted_container.dart';
 import 'add_discover_filter.dart';
 
 class AppFilterList extends StatelessWidget {
-  const AppFilterList({super.key, required this.isDiscover});
+  const AppFilterList({super.key, required this.viewType});
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,12 @@ class AppFilterList extends StatelessWidget {
                     title: context.t.filters.capitalizeFirst(),
                     isBack: false,
                   ),
-                  if (isDiscover)
+                  if (viewType == ViewDataTypes.articles)
                     _discoverList(scrollController)
+                  else if (viewType == ViewDataTypes.notes)
+                    _notesList(scrollController)
                   else
-                    _notesList(scrollController),
+                    _mediaList(scrollController),
                   _addFilter(context),
                 ],
               ),
@@ -85,13 +87,17 @@ class AppFilterList extends StatelessWidget {
                   context: context,
                   elevation: 0,
                   builder: (_) {
-                    if (isDiscover) {
+                    if (viewType == ViewDataTypes.articles) {
                       return AddDiscoverFilter(
                         discoverFilter: DiscoverFilter.defaultFilter(),
                       );
-                    } else {
+                    } else if (viewType == ViewDataTypes.notes) {
                       return AddNotesFilter(
                         notesFilter: NotesFilter.defaultFilter(),
+                      );
+                    } else {
+                      return AddMediaFilter(
+                        mediaFilter: MediaFilter.defaultFilter(),
                       );
                     }
                   },
@@ -108,41 +114,16 @@ class AppFilterList extends StatelessWidget {
     );
   }
 
-  BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState> _notesList(
-      ScrollController scrollController) {
-    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
-      builder: (context, state) {
-        final nf = state.notesFilters.entries.toList();
-
-        return Expanded(
-          child: ScrollShadow(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            size: 4,
-            child: ListView.separated(
-              controller: scrollController,
-              itemBuilder: (context, index) {
-                final f = nf[index];
-
-                return _discoverFilterItem(f, context, state);
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                height: kDefaultPadding / 4,
-              ),
-              itemCount: nf.length,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  GestureDetector _discoverFilterItem(MapEntry<String, NotesFilter> f,
-      BuildContext context, AppSettingsManagerState state) {
+  GestureDetector _discoverFilterItem(
+    MapEntry<String, NotesFilter> f,
+    BuildContext context,
+    AppSettingsManagerState state,
+  ) {
     return GestureDetector(
       onTap: () {
         appSettingsManagerCubit.setFilter(
           id: f.key,
-          isDiscover: isDiscover,
+          viewType: viewType,
         );
 
         YNavigator.pop(context);
@@ -154,7 +135,7 @@ class AppFilterList extends StatelessWidget {
         onDelete: () {
           appSettingsManagerCubit.deleteFilter(
             id: f.key,
-            isDiscover: isDiscover,
+            viewType: viewType,
           );
         },
         onEdit: () {
@@ -206,13 +187,44 @@ class AppFilterList extends StatelessWidget {
     );
   }
 
-  GestureDetector _notesFilterItem(MapEntry<String, DiscoverFilter> f,
-      BuildContext context, AppSettingsManagerState state) {
+  BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState> _notesList(
+      ScrollController scrollController) {
+    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+      builder: (context, state) {
+        final nf = state.notesFilters.entries.toList();
+
+        return Expanded(
+          child: ScrollShadow(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            size: 4,
+            child: ListView.separated(
+              controller: scrollController,
+              itemBuilder: (context, index) {
+                final f = nf[index];
+
+                return _discoverFilterItem(f, context, state);
+              },
+              separatorBuilder: (context, index) => const SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              itemCount: nf.length,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  GestureDetector _notesFilterItem(
+    MapEntry<String, DiscoverFilter> f,
+    BuildContext context,
+    AppSettingsManagerState state,
+  ) {
     return GestureDetector(
       onTap: () {
         appSettingsManagerCubit.setFilter(
           id: f.key,
-          isDiscover: isDiscover,
+          viewType: viewType,
         );
 
         YNavigator.pop(context);
@@ -224,7 +236,7 @@ class AppFilterList extends StatelessWidget {
         onDelete: () {
           appSettingsManagerCubit.deleteFilter(
             id: f.key,
-            isDiscover: isDiscover,
+            viewType: viewType,
           );
         },
         onEdit: () {
@@ -236,6 +248,79 @@ class AppFilterList extends StatelessWidget {
             builder: (_) {
               return AddDiscoverFilter(
                 discoverFilter: f.value,
+              );
+            },
+            isScrollControlled: true,
+            useRootNavigator: true,
+            useSafeArea: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          );
+        },
+      ),
+    );
+  }
+
+  BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState> _mediaList(
+      ScrollController scrollController) {
+    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+      builder: (context, state) {
+        final nf = state.mediaFilters.entries.toList();
+
+        return Expanded(
+          child: ScrollShadow(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            size: 4,
+            child: ListView.separated(
+              controller: scrollController,
+              itemBuilder: (context, index) {
+                final f = nf[index];
+
+                return _mediaFilterItem(f, context, state);
+              },
+              separatorBuilder: (context, index) => const SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              itemCount: nf.length,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  GestureDetector _mediaFilterItem(
+    MapEntry<String, MediaFilter> f,
+    BuildContext context,
+    AppSettingsManagerState state,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        appSettingsManagerCubit.setFilter(
+          id: f.key,
+          viewType: viewType,
+        );
+
+        YNavigator.pop(context);
+      },
+      child: FilterContainer(
+        title: f.value.title.capitalizeFirst(),
+        selectedFilter: state.selectedDiscoverFilter,
+        id: f.key,
+        onDelete: () {
+          appSettingsManagerCubit.deleteFilter(
+            id: f.key,
+            viewType: viewType,
+          );
+        },
+        onEdit: () {
+          YNavigator.pop(context);
+
+          showModalBottomSheet(
+            context: context,
+            elevation: 0,
+            builder: (_) {
+              return AddMediaFilter(
+                mediaFilter: f.value,
               );
             },
             isScrollControlled: true,
@@ -319,7 +404,7 @@ class FilterContainer extends StatelessWidget {
             onTap: onEdit,
             title: context.t.edit.capitalizeFirst(),
             iconWidget: SvgPicture.asset(
-              FeatureIcons.article,
+              FeatureIcons.editArticle,
               height: 20,
               width: 20,
               colorFilter: ColorFilter.mode(

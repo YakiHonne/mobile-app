@@ -197,8 +197,6 @@ class PublishPreviewContainer extends HookWidget {
             : LayoutBuilder(
                 builder: (context, constraints) => CommonThumbnail(
                   image: imageLink,
-                  placeholder:
-                      getRandomPlaceholder(input: imageLink, isPfp: false),
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
                   isRound: true,

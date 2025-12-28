@@ -100,6 +100,8 @@ class DashboardHomeCubit extends Cubit<DashboardHomeState> {
           EventKind.CURATION_VIDEOS,
           EventKind.VIDEO_HORIZONTAL,
           EventKind.VIDEO_VERTICAL,
+          EventKind.LEGACY_VIDEO_HORIZONTAL,
+          EventKind.LEGACY_VIDEO_VERTICAL,
         ],
         pubkeys: [currentSigner!.getPublicKey()],
         limit: 10,
@@ -121,7 +123,9 @@ class DashboardHomeCubit extends Cubit<DashboardHomeState> {
           .where(
             (element) =>
                 element.kind == EventKind.VIDEO_HORIZONTAL ||
-                element.kind == EventKind.VIDEO_VERTICAL,
+                element.kind == EventKind.VIDEO_VERTICAL ||
+                element.kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+                element.kind == EventKind.LEGACY_VIDEO_VERTICAL,
           )
           .toList();
 

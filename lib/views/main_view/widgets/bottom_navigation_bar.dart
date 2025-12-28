@@ -45,7 +45,7 @@ class MainViewBottomNavigationBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _homeButton(state, context),
-              _discoverButton(state, context),
+              _mediaButton(state, context),
               _walletButton(state, context),
               _dmsButton(state),
               _notificationButton(state),
@@ -147,17 +147,17 @@ class MainViewBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Expanded _discoverButton(MainState state, BuildContext context) {
+  Expanded _mediaButton(MainState state, BuildContext context) {
     return Expanded(
       child: BottomNavBarItem(
-        icon: FeatureIcons.discover,
-        selectedIcon: FeatureIcons.discoverFilled,
-        isSelected: state.mainView == MainViews.discover,
+        icon: FeatureIcons.media,
+        selectedIcon: FeatureIcons.mediaBold,
+        isSelected: state.mainView == MainViews.media,
         onClicked: () {
-          if (state.mainView == MainViews.discover) {
+          if (state.mainView == MainViews.media) {
             onClicked.call();
           }
-          context.read<MainCubit>().updateIndex(MainViews.discover);
+          context.read<MainCubit>().updateIndex(MainViews.media);
           HapticFeedback.mediumImpact();
         },
       ),

@@ -1475,6 +1475,30 @@ class TranslationsAr extends Translations {
 	@override String get favoriteRelaysFeed => 'تغذية الترحيلات المفضلة';
 	@override String get maxMentions => 'الحد الأقصى للإشارات';
 	@override String get maxMentionsDesc => 'إخفاء الإشعارات من الملاحظات التي تحتوي على أكثر من 10 إشارات لمستخدمين.';
+	@override String get media => 'وسائط';
+	@override String get pinned => 'مثبت';
+	@override String get pictures => 'صور';
+	@override String get unpin => 'إزالة التثبيت';
+	@override String get pin => 'تثبيت';
+	@override String userPublishedPicture({required Object name}) => '${name} نشر صورة';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} زاب صورةك ${number} سات';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع صورةك';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع صورة تم ذكرك فيها';
+	@override String userRepliedYourPicture({required Object name}) => '${name} رد على صورةك';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} رد على صورة تم ذكرك فيها';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} ذكرك في صورة';
+	@override String userCommentedYourPicture({required Object name}) => '${name} علق على صورةك';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} علق على صورة تم ذكرك فيها';
+	@override String userQuotedYourPicture({required Object name}) => '${name} اقتبس صورةك';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} اقتبس صورة تم ذكرك فيها';
+	@override String get cameraPermission => 'إما أن التطبيق لا يملك إذن الوصول إلى الكاميرا أو لا توجد كاميرات متاحة على هذا الجهاز.';
+	@override String get fetchingPicture => 'جاري جلب الصورة...';
+	@override String get addDescription => 'إضافة وصف...';
+	@override String get uploadingVideo => 'جاري رفع الفيديو...';
+	@override String get uploadThumbnail => 'رفع صورة مصغرة';
+	@override String get chooseThumbnailVideo => 'اختر صورة مصغرة مناسبة لفيديوك';
+	@override String get publishing => 'جاري النشر...';
+	@override String get giveMeCatchyTitle => 'أعطني عنواناً جذاباً';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -2939,6 +2963,30 @@ extension on TranslationsAr {
 			'favoriteRelaysFeed' => 'تغذية الترحيلات المفضلة',
 			'maxMentions' => 'الحد الأقصى للإشارات',
 			'maxMentionsDesc' => 'إخفاء الإشعارات من الملاحظات التي تحتوي على أكثر من 10 إشارات لمستخدمين.',
+			'media' => 'وسائط',
+			'pinned' => 'مثبت',
+			'pictures' => 'صور',
+			'unpin' => 'إزالة التثبيت',
+			'pin' => 'تثبيت',
+			'userPublishedPicture' => ({required Object name}) => '${name} نشر صورة',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} زاب صورةك ${number} سات',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع صورةك',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} مع صورة تم ذكرك فيها',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} رد على صورةك',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} رد على صورة تم ذكرك فيها',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} ذكرك في صورة',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} علق على صورةك',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} علق على صورة تم ذكرك فيها',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} اقتبس صورةك',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} اقتبس صورة تم ذكرك فيها',
+			'cameraPermission' => 'إما أن التطبيق لا يملك إذن الوصول إلى الكاميرا أو لا توجد كاميرات متاحة على هذا الجهاز.',
+			'fetchingPicture' => 'جاري جلب الصورة...',
+			'addDescription' => 'إضافة وصف...',
+			'uploadingVideo' => 'جاري رفع الفيديو...',
+			'uploadThumbnail' => 'رفع صورة مصغرة',
+			'chooseThumbnailVideo' => 'اختر صورة مصغرة مناسبة لفيديوك',
+			'publishing' => 'جاري النشر...',
+			'giveMeCatchyTitle' => 'أعطني عنواناً جذاباً',
 			_ => null,
 		};
 	}

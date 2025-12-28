@@ -171,7 +171,7 @@ class ProfileFastAccess extends HookWidget {
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 label: SvgPicture.asset(
-                  FeatureIcons.article,
+                  FeatureIcons.editArticle,
                   width: 15,
                   height: 15,
                   colorFilter: ColorFilter.mode(

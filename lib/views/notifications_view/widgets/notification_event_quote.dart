@@ -9,6 +9,7 @@ import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/event_relation.dart';
+import '../../../models/picture_model.dart';
 import '../../../models/poll_model.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../models/video_model.dart';
@@ -263,6 +264,9 @@ class NotificationEventMain extends StatelessWidget {
     } else if (mainEvent.kind == EventKind.LONG_FORM ||
         mainEvent.kind == EventKind.VIDEO_HORIZONTAL ||
         mainEvent.kind == EventKind.VIDEO_VERTICAL ||
+        mainEvent.kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+        mainEvent.kind == EventKind.LEGACY_VIDEO_VERTICAL ||
+        mainEvent.kind == EventKind.PICTURE ||
         mainEvent.kind == EventKind.SMART_WIDGET_ENH ||
         mainEvent.kind == EventKind.POLL ||
         mainEvent.kind == EventKind.CURATION_ARTICLES ||
@@ -295,6 +299,19 @@ class NotificationEventMain extends StatelessWidget {
           text = context.t.userPublishedVideo(
             name: metadata.getName().trim(),
           );
+        case EventKind.LEGACY_VIDEO_HORIZONTAL:
+          text = context.t.userPublishedVideo(
+            name: metadata.getName().trim(),
+          );
+        case EventKind.LEGACY_VIDEO_VERTICAL:
+          text = context.t.userPublishedVideo(
+            name: metadata.getName().trim(),
+          );
+        case EventKind.PICTURE:
+          text = context.t.userPublishedPicture(
+            name: metadata.getName().trim(),
+          );
+
         case EventKind.POLL:
           text = context.t.userPublishedPoll(
             name: metadata.getName().trim(),
@@ -350,6 +367,12 @@ class NotificationEventMain extends StatelessWidget {
         text = VideoModel.fromEvent(event).title;
       case EventKind.VIDEO_VERTICAL:
         text = VideoModel.fromEvent(event).title;
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = VideoModel.fromEvent(event).title;
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = VideoModel.fromEvent(event).title;
+      case EventKind.PICTURE:
+        text = PictureModel.fromEvent(event).title;
       case EventKind.POLL:
         text = PollModel.fromEvent(event).content;
       case EventKind.TEXT_NOTE:
@@ -379,10 +402,12 @@ class NotificationEventMain extends StatelessWidget {
     } else if (event.kind == EventKind.SMART_WIDGET_ENH) {
       final sw = SmartWidget.fromEvent(event);
       attachedText = sw.title.trim();
-    } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
-        event.kind == EventKind.VIDEO_VERTICAL) {
+    } else if (VideoModel.isVideo(event.kind)) {
       final video = VideoModel.fromEvent(event);
       attachedText = video.title.trim();
+    } else if (event.kind == EventKind.PICTURE) {
+      final picture = PictureModel.fromEvent(event);
+      attachedText = picture.title.trim();
     } else if (event.kind == EventKind.TEXT_NOTE) {
       if (mainEvent.origin.kind != EventKind.REACTION &&
           mainEvent.origin.kind != EventKind.REPOST) {
@@ -400,6 +425,9 @@ class NotificationEventMain extends StatelessWidget {
         event.kind != EventKind.APP_CUSTOM &&
         event.kind != EventKind.VIDEO_HORIZONTAL &&
         event.kind != EventKind.VIDEO_VERTICAL &&
+        event.kind != EventKind.LEGACY_VIDEO_HORIZONTAL &&
+        event.kind != EventKind.LEGACY_VIDEO_VERTICAL &&
+        event.kind != EventKind.PICTURE &&
         event.kind != EventKind.POLL &&
         event.kind != EventKind.TEXT_NOTE) {
       spans.add(const TextSpan(text: 'undefined'));
@@ -555,6 +583,21 @@ class NotificationEventMain extends StatelessWidget {
           name: metadata.getName().trim(),
           number: amount,
         );
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = context.t.userZappedYourVideo(
+          name: metadata.getName().trim(),
+          number: amount,
+        );
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = context.t.userZappedYourVideo(
+          name: metadata.getName().trim(),
+          number: amount,
+        );
+      case EventKind.PICTURE:
+        text = context.t.userZappedYourPicture(
+          name: metadata.getName().trim(),
+          number: amount,
+        );
       case EventKind.POLL:
         text = context.t.userZappedYourPoll(
           name: metadata.getName().trim(),
@@ -643,6 +686,36 @@ class NotificationEventMain extends StatelessWidget {
                 reaction: getReaction(origin),
               )
             : context.t.userReactedVideoYouIn(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              );
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = isAuthor
+            ? context.t.userReactedYourVideo(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              )
+            : context.t.userReactedVideoYouIn(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              );
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = isAuthor
+            ? context.t.userReactedYourVideo(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              )
+            : context.t.userReactedVideoYouIn(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              );
+      case EventKind.PICTURE:
+        text = isAuthor
+            ? context.t.userReactedYourPicture(
+                name: metadata.getName().trim(),
+                reaction: getReaction(origin),
+              )
+            : context.t.userReactedPictureYouIn(
                 name: metadata.getName().trim(),
                 reaction: getReaction(origin),
               );
@@ -777,6 +850,30 @@ class NotificationEventMain extends StatelessWidget {
             : context.t.userRepliedVideoYouIn(
                 name: metadata.getName().trim(),
               );
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = isAuthor
+            ? context.t.userRepliedYourVideo(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userRepliedVideoYouIn(
+                name: metadata.getName().trim(),
+              );
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = isAuthor
+            ? context.t.userRepliedYourVideo(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userRepliedVideoYouIn(
+                name: metadata.getName().trim(),
+              );
+      case EventKind.PICTURE:
+        text = isAuthor
+            ? context.t.userRepliedYourPicture(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userRepliedPictureYouIn(
+                name: metadata.getName().trim(),
+              );
       case EventKind.POLL:
         text = isAuthor
             ? context.t.userRepliedYourPoll(
@@ -829,6 +926,12 @@ class NotificationEventMain extends StatelessWidget {
         text = context.t.userMentionedYouInVideo(name: name);
       case EventKind.VIDEO_VERTICAL:
         text = context.t.userMentionedYouInVideo(name: name);
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = context.t.userMentionedYouInVideo(name: name);
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = context.t.userMentionedYouInVideo(name: name);
+      case EventKind.PICTURE:
+        text = context.t.userMentionedYouInPicture(name: name);
       case EventKind.POLL:
         text = context.t.userMentionedYouInPoll(name: name);
       case EventKind.TEXT_NOTE:
@@ -881,6 +984,18 @@ class NotificationEventMain extends StatelessWidget {
         text = isAuthor
             ? context.t.userCommentedYourVideo(name: name)
             : context.t.userCommentedVideoYouIn(name: name);
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = isAuthor
+            ? context.t.userCommentedYourVideo(name: name)
+            : context.t.userCommentedVideoYouIn(name: name);
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = isAuthor
+            ? context.t.userCommentedYourVideo(name: name)
+            : context.t.userCommentedVideoYouIn(name: name);
+      case EventKind.PICTURE:
+        text = isAuthor
+            ? context.t.userCommentedYourPicture(name: name)
+            : context.t.userCommentedPictureYouIn(name: name);
       case EventKind.POLL:
         text = isAuthor
             ? context.t.userCommentedYourPoll(name: name)
@@ -952,6 +1067,30 @@ class NotificationEventMain extends StatelessWidget {
                 name: metadata.getName().trim(),
               )
             : context.t.userQuotedVideoYouIn(
+                name: metadata.getName().trim(),
+              );
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        text = isAuthor
+            ? context.t.userQuotedYourVideo(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userQuotedVideoYouIn(
+                name: metadata.getName().trim(),
+              );
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        text = isAuthor
+            ? context.t.userQuotedYourVideo(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userQuotedVideoYouIn(
+                name: metadata.getName().trim(),
+              );
+      case EventKind.PICTURE:
+        text = isAuthor
+            ? context.t.userQuotedYourPicture(
+                name: metadata.getName().trim(),
+              )
+            : context.t.userQuotedPictureYouIn(
                 name: metadata.getName().trim(),
               );
       case EventKind.TEXT_NOTE:

@@ -30,9 +30,9 @@ import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/media_components/horizontal_video_view.dart';
+import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/response_snackbar.dart';
-import '../../../widgets/video_components/horizontal_video_view.dart';
-import '../../../widgets/video_components/vertical_video_view.dart';
 import '../home/dashboard_containers.dart';
 
 class BookmarksListDetails extends HookWidget {
@@ -326,10 +326,6 @@ class BookmarksListDetails extends HookWidget {
                   width: double.infinity,
                   child: CommonThumbnail(
                     image: state.bookmarkListModel.image,
-                    placeholder: getRandomPlaceholder(
-                      input: state.bookmarkListModel.id,
-                      isPfp: false,
-                    ),
                   ),
                 ),
                 const SizedBox(
@@ -534,7 +530,6 @@ class BookmarksListDetailsAppbar extends HookWidget {
                             ),
                             child: CommonThumbnail(
                               image: state.bookmarkListModel.image,
-                              placeholder: state.bookmarkListModel.placeholder,
                               width: double.infinity,
                               height: constraints.maxHeight,
                               radius: 0,
@@ -633,7 +628,6 @@ class DashboardBookmarkContainer extends StatelessWidget {
             if (image != null)
               CommonThumbnail(
                 image: image!,
-                placeholder: getRandomPlaceholder(input: id, isPfp: false),
                 width: 40,
                 height: 40,
                 radius: kDefaultPadding / 2,

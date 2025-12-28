@@ -14,6 +14,7 @@ class VideoModel extends Equatable implements BaseEventModel {
   final String id;
   @override
   final String pubkey;
+  final String identifier;
   final int kind;
   final String title;
   final String summary;
@@ -28,7 +29,6 @@ class VideoModel extends Equatable implements BaseEventModel {
   final String mimeType;
   final List<String> tags;
   final List<String> participants;
-  final bool isHorizontal;
   final List<ZapSplit> zapsSplits;
   final List<String> fallbackUrls;
   final bool contentWarning;
@@ -38,6 +38,7 @@ class VideoModel extends Equatable implements BaseEventModel {
   const VideoModel({
     required this.id,
     required this.pubkey,
+    required this.identifier,
     required this.kind,
     required this.title,
     required this.summary,
@@ -51,7 +52,6 @@ class VideoModel extends Equatable implements BaseEventModel {
     required this.mimeType,
     required this.tags,
     required this.participants,
-    required this.isHorizontal,
     required this.zapsSplits,
     required this.fallbackUrls,
     required this.contentWarning,
@@ -59,29 +59,44 @@ class VideoModel extends Equatable implements BaseEventModel {
     required this.stringifiedEvent,
   });
 
-  String getNevent() {
-    return Nip19.encodeShareableEntity(
-      'nevent',
-      id,
-      [],
-      pubkey,
-      kind,
-    );
-  }
+  String getId() => isRepleaceableVideo() ? identifier : id;
+
+  static bool isVideo(int kind) =>
+      kind == EventKind.VIDEO_HORIZONTAL ||
+      kind == EventKind.VIDEO_VERTICAL ||
+      kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+      kind == EventKind.LEGACY_VIDEO_VERTICAL;
 
   Future<String> getNeventWithRelays() async {
     final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
 
+    String selectedId = '';
+
+    if (isRepleaceableVideo()) {
+      final List<int> charCodes = identifier.runes.toList();
+      selectedId = charCodes.map((code) => code.toRadixString(16)).join();
+    } else {
+      selectedId = id;
+    }
+
     return Nip19.encodeShareableEntity(
-      'nevent',
-      id,
+      isRepleaceableVideo() ? 'naddr' : 'nevent',
+      selectedId,
       relays,
       pubkey,
       kind,
     );
   }
 
-  bool isHorizontalVideo() => kind == EventKind.VIDEO_HORIZONTAL;
+  bool get isHorizontal => isHorizontalVideo();
+
+  bool isHorizontalVideo() =>
+      kind == EventKind.VIDEO_HORIZONTAL ||
+      kind == EventKind.LEGACY_VIDEO_HORIZONTAL;
+
+  bool isRepleaceableVideo() =>
+      kind == EventKind.LEGACY_VIDEO_VERTICAL ||
+      kind == EventKind.LEGACY_VIDEO_HORIZONTAL;
 
   factory VideoModel.fromEvent(Event e, {String? relay}) {
     final videoId = e.id;
@@ -93,11 +108,12 @@ class VideoModel extends Equatable implements BaseEventModel {
 
     String title = '';
     String alt = '';
+    String identifier = '';
     String thumbnail = '';
     String url = '';
     num duration = 0;
     String mimeType = '';
-    final bool isHorizontal = e.kind == EventKind.VIDEO_HORIZONTAL;
+
     final List<String> tags = [];
     bool contentWarning = false;
     final List<String> participants = [];
@@ -116,6 +132,8 @@ class VideoModel extends Equatable implements BaseEventModel {
         alt = tag[1];
       } else if (tag.first == 'm' && tag.length > 1) {
         mimeType = tag[1];
+      } else if (tag.first == 'd' && tag.length > 1) {
+        identifier = tag[1];
       } else if (tag.first == 'duration' && tag.length > 1) {
         duration = num.tryParse(tag[1]) ?? 0;
       } else if (tag.first == 't' && tag.length > 1) {
@@ -156,6 +174,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     return VideoModel(
       id: videoId,
       pubkey: pubkey,
+      identifier: identifier,
       kind: kind,
       title: title,
       summary: summary,
@@ -169,7 +188,6 @@ class VideoModel extends Equatable implements BaseEventModel {
       mimeType: mimeType,
       tags: tags,
       participants: participants,
-      isHorizontal: isHorizontal,
       zapsSplits: zaps,
       fallbackUrls: fallbackUrls,
       contentWarning: contentWarning,
@@ -195,7 +213,6 @@ class VideoModel extends Equatable implements BaseEventModel {
     String? mimeType,
     List<String>? tags,
     List<String>? participants,
-    bool? isHorizontal,
     List<ZapSplit>? zapsSplits,
     bool? contentWarning,
     Set<String>? relays,
@@ -205,6 +222,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     return VideoModel(
       id: id ?? this.id,
       pubkey: pubKey ?? pubkey,
+      identifier: identifier ?? this.identifier,
       kind: kind ?? this.kind,
       title: title ?? this.title,
       summary: summary ?? this.summary,
@@ -218,7 +236,6 @@ class VideoModel extends Equatable implements BaseEventModel {
       mimeType: mimeType ?? this.mimeType,
       tags: tags ?? this.tags,
       participants: participants ?? this.participants,
-      isHorizontal: isHorizontal ?? this.isHorizontal,
       zapsSplits: zapsSplits ?? this.zapsSplits,
       contentWarning: contentWarning ?? this.contentWarning,
       relays: relays ?? this.relays,
@@ -256,6 +273,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       'videoId': id,
       'pubkey': pubkey,
       'kind': kind,
+      'identifier': identifier,
       'title': title,
       'summary': summary,
       'alt': alt,
@@ -268,7 +286,6 @@ class VideoModel extends Equatable implements BaseEventModel {
       'mimeType': mimeType,
       'tags': tags,
       'participants': participants,
-      'isHorizontal': isHorizontal,
       'zapsSplits': zapsSplits.map((x) => x.toMap()).toList(),
       'contentWarning': contentWarning,
       'relays': relays.toList(),
@@ -284,6 +301,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       id: map['videoId'] as String,
       pubkey: map['pubkey'] as String,
       kind: map['kind'] as int,
+      identifier: map['identifier'] as String,
       title: map['title'] as String,
       summary: map['summary'] as String,
       alt: map['alt'] as String,
@@ -297,7 +315,6 @@ class VideoModel extends Equatable implements BaseEventModel {
       mimeType: map['mimeType'] as String,
       tags: List<String>.from(map['tags']),
       participants: List<String>.from(map['participants']),
-      isHorizontal: map['isHorizontal'] as bool,
       zapsSplits: List<ZapSplit>.from(
         map['zapsSplits'].map<ZapSplit>(
           (x) => ZapSplit.fromMap(x as Map<String, dynamic>),
@@ -314,4 +331,46 @@ class VideoModel extends Equatable implements BaseEventModel {
 
   factory VideoModel.fromJson(String source) =>
       VideoModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String getScheme() {
+    String selectedId = '';
+
+    if (isRepleaceableVideo()) {
+      final List<int> charCodes = identifier.runes.toList();
+      selectedId = charCodes.map((code) => code.toRadixString(16)).join();
+    } else {
+      selectedId = id;
+    }
+
+    return Nip19.encodeShareableEntity(
+      isRepleaceableVideo() ? 'naddr' : 'nevent',
+      selectedId,
+      [],
+      pubkey,
+      kind,
+    );
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
+
+    String selectedId = '';
+
+    if (isRepleaceableVideo()) {
+      final List<int> charCodes = identifier.runes.toList();
+      selectedId = charCodes.map((code) => code.toRadixString(16)).join();
+    } else {
+      selectedId = id;
+    }
+
+    return Nip19.encodeShareableEntity(
+      isRepleaceableVideo() ? 'naddr' : 'nevent',
+      selectedId,
+      relays,
+      pubkey,
+      kind,
+    );
+  }
 }

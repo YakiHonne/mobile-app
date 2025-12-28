@@ -101,7 +101,6 @@ class DashboardBookmarksCubit extends Cubit<DashboardBookmarksState> {
       title: title,
       description: description,
       image: image,
-      placeholder: bookmarkListModel?.placeholder ?? '',
       identifier:
           bookmarkListModel?.identifier ?? StringUtil.getRandomString(16),
       bookmarkedReplaceableEvents:

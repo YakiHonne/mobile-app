@@ -441,7 +441,6 @@ class DashboardContentContainer extends StatelessWidget {
             if (image != null)
               CommonThumbnail(
                 image: image!,
-                placeholder: getRandomPlaceholder(input: id, isPfp: false),
                 width: 50,
                 height: 50,
                 radius: kDefaultPadding / 2,
@@ -477,13 +476,15 @@ class DashboardContentContainer extends StatelessWidget {
       enableCopyId: kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK &&
           (kind == EventKind.TEXT_NOTE ||
+              kind == EventKind.PICTURE ||
               kind == EventKind.VIDEO_HORIZONTAL ||
               kind == EventKind.VIDEO_VERTICAL),
       enableCopyNaddr: kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK &&
           kind != EventKind.TEXT_NOTE &&
           kind != EventKind.VIDEO_HORIZONTAL &&
-          kind != EventKind.VIDEO_VERTICAL,
+          kind != EventKind.VIDEO_VERTICAL &&
+          kind != EventKind.PICTURE,
       enableShare: kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK,
       enableDelete: kind != EventKind.TEXT_NOTE,

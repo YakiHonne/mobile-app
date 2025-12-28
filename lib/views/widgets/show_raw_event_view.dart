@@ -352,7 +352,7 @@ class ShowRawEventView extends StatelessWidget {
 class _JsonFormatter {
   static String format(String rawJson) {
     try {
-      final Map<String, dynamic> eventMap = jsonDecode(rawJson);
+      final Map<String, dynamic> eventMap = jsonDecode(rawJson.trim());
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
       return encoder.convert(eventMap);
     } catch (e) {

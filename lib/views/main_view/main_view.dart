@@ -9,9 +9,11 @@ import '../../routes/navigator.dart';
 import '../../utils/app_cycle.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
+import '../add_content_view/add_media_view.dart';
 import '../discover_view/discover_view.dart';
 import '../dm_view/dm_view.dart';
 import '../leading_view/leading_view.dart';
+import '../media_view/media_view.dart';
 import '../notifications_view/notifications_view.dart';
 import '../smart_widgets_view/smart_widgets_search.dart';
 import '../wallet_view/wallet_view.dart';
@@ -21,11 +23,12 @@ import 'widgets/main_view_appbar.dart';
 
 final indexMap = {
   MainViews.leading: 0,
-  MainViews.discover: 1,
+  MainViews.media: 1,
   MainViews.wallet: 2,
   MainViews.dms: 3,
   MainViews.notifications: 4,
   MainViews.smartWidgets: 5,
+  MainViews.articles: 6,
 };
 
 class MainView extends HookWidget {
@@ -98,11 +101,13 @@ class MainViewContent extends HookWidget {
               }
             },
           ),
-          floatingActionButton: state.mainView != MainViews.leading
+          floatingActionButton: state.mainView != MainViews.leading &&
+                  state.mainView != MainViews.media
               ? const SizedBox()
-              : _createContent(context),
+              : _createContent(context, state.mainView),
           appBar: MainViewAppBar(
             isConnected: state.isConnected,
+            scrollControllers: mainScrollControllers,
             onClicked: () {
               if (mainScrollControllers[currentIndex].hasClients) {
                 mainScrollControllers[currentIndex].animateTo(
@@ -123,8 +128,8 @@ class MainViewContent extends HookWidget {
                   key: const PageStorageKey('leading'),
                   scrollController: mainScrollControllers[0],
                 ),
-                DiscoverView(
-                  key: const PageStorageKey('discover'),
+                MediaView(
+                  key: const PageStorageKey('media'),
                   scrollController: mainScrollControllers[1],
                 ),
                 InternalWalletsView(
@@ -141,6 +146,9 @@ class MainViewContent extends HookWidget {
                 SmartWidgetsSearch(
                   key: const PageStorageKey('smartwidgets'),
                 ),
+                DiscoverView(
+                  key: const PageStorageKey('discover'),
+                ),
               ],
             ),
           ),
@@ -149,24 +157,31 @@ class MainViewContent extends HookWidget {
     );
   }
 
-  RepaintBoundary _createContent(BuildContext context) {
+  RepaintBoundary _createContent(BuildContext context, MainViews mainView) {
+    final isMedia = mainView == MainViews.media;
+
     return RepaintBoundary(
       child: GestureDetector(
         onLongPress: () {
           doIfCanSign(
             func: () {
               HapticFeedback.mediumImpact();
+
+              final addContent = AddContentView(
+                contentType: AppContentType.values.firstWhere(
+                  (e) =>
+                      e.name ==
+                      nostrRepository
+                          .currentAppCustomization?.writingContentType,
+                  orElse: () => AppContentType.note,
+                ),
+              );
+
+              final addMedia = AddMediaView();
+
               YNavigator.pushPage(
                 context,
-                (context) => AddContentView(
-                  contentType: AppContentType.values.firstWhere(
-                    (e) =>
-                        e.name ==
-                        nostrRepository
-                            .currentAppCustomization?.writingContentType,
-                    orElse: () => AppContentType.note,
-                  ),
-                ),
+                (_) => isMedia ? addMedia : addContent,
               );
             },
             context: context,
@@ -177,9 +192,9 @@ class MainViewContent extends HookWidget {
           shape: const CircleBorder(),
           heroTag: 'content_creation',
           child: SvgPicture.asset(
-            FeatureIcons.addRaw,
-            width: 20,
-            height: 20,
+            isMedia ? FeatureIcons.mediaAdd : FeatureIcons.addRaw,
+            width: isMedia ? 25 : 22,
+            height: isMedia ? 25 : 22,
             colorFilter: const ColorFilter.mode(
               kWhite,
               BlendMode.srcIn,
@@ -189,9 +204,15 @@ class MainViewContent extends HookWidget {
             doIfCanSign(
               func: () {
                 HapticFeedback.mediumImpact();
+                HapticFeedback.mediumImpact();
+
+                final addContent = AddContentView();
+
+                final addMedia = AddMediaView();
+
                 YNavigator.pushPage(
                   context,
-                  (context) => AddContentView(),
+                  (_) => isMedia ? addMedia : addContent,
                 );
               },
               context: context,

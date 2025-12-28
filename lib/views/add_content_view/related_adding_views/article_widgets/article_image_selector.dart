@@ -223,20 +223,13 @@ class ImageSelector extends HookWidget {
                     if (link.isEmpty)
                       SizedBox(
                         height: 20.h,
-                        child: const NoMediaPlaceHolder(
-                          image: '',
-                          isError: false,
-                        ),
+                        child: const NoMediaPlaceHolder(),
                       )
                     else
                       CommonThumbnail(
                         image: link,
                         height: 20.h,
                         width: double.infinity,
-                        placeholder: getRandomPlaceholder(
-                          input: link,
-                          isPfp: false,
-                        ),
                         isRound: true,
                         radius: kDefaultPadding,
                       ),
@@ -332,19 +325,12 @@ class ImageSelector extends HookWidget {
           ? state.imageLink.isEmpty
               ? SizedBox(
                   height: 20.h,
-                  child: const NoMediaPlaceHolder(
-                    image: '',
-                    isError: false,
-                  ),
+                  child: const NoMediaPlaceHolder(),
                 )
               : CommonThumbnail(
                   image: state.imageLink,
                   height: 20.h,
                   width: double.infinity,
-                  placeholder: getRandomPlaceholder(
-                    input: state.imageLink,
-                    isPfp: false,
-                  ),
                   isRound: true,
                   radius: kDefaultPadding,
                 )

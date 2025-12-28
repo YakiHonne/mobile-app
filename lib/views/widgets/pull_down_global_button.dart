@@ -3,7 +3,6 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/app_models/popup_menu_common_item.dart';
-import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
@@ -35,6 +34,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.enableSecureMessage = false,
     this.enableZap = false,
     this.enableRepublish = false,
+    this.enablePin = false,
     this.muteStatus = false,
     this.muteEventStatus = false,
     this.bookmarkStatus = false,
@@ -61,6 +61,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.onCopyNpub,
     this.onCopyNpubHex,
     this.onCopyNoteId,
+    this.onPin,
     this.widgetImage,
     this.backgroundColor,
     this.buttonColor,
@@ -95,6 +96,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final bool enableZap;
   final bool enableSecureMessage;
   final bool enableRepublish;
+  final bool enablePin;
 
   final Function()? onRefresh;
   final Function()? onShowUserRelays;
@@ -118,6 +120,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Function()? onZap;
   final Function()? onSecureMessage;
   final Function()? onRepublish;
+  final Function()? onPin;
   final Function(String, bool)? onMuteActionSuccess;
 
   final bool muteStatus;
@@ -219,7 +222,7 @@ class PullDownGlobalButton extends StatelessWidget {
               icon: FeatureIcons.copyNaddr,
               onTap: () => onCopyNoteId != null
                   ? onCopyNoteId!.call()
-                  : PdmCommonActions.copyId(model as DetailedNoteModel),
+                  : PdmCommonActions.copyId(model),
             ),
           if (enableUserRelays)
             _pullDownItem(
@@ -259,6 +262,19 @@ class PullDownGlobalButton extends StatelessWidget {
                       isCloning != null ? true : null,
                     ),
             ),
+          if (canSign() && enablePin)
+            _pullDownItem(
+              context: context,
+              title: nostrRepository.pinnedNotes.contains(model.id)
+                  ? context.t.unpin.capitalizeFirst()
+                  : context.t.pin.capitalizeFirst(),
+              icon: nostrRepository.pinnedNotes.contains(model.id)
+                  ? FeatureIcons.unpin
+                  : FeatureIcons.pin,
+              onTap: () => onPin != null
+                  ? onPin!.call()
+                  : PdmCommonActions.pinEvent(model),
+            ),
           if (canSign() && enableShareWidgetImage)
             _pullDownItem(
               context: context,
@@ -282,7 +298,7 @@ class PullDownGlobalButton extends StatelessWidget {
             _pullDownItem(
               context: context,
               title: context.t.edit.capitalizeFirst(),
-              icon: FeatureIcons.article,
+              icon: FeatureIcons.editArticle,
               onTap: () => onEdit != null
                   ? onEdit!.call()
                   : PdmCommonActions.editEvent(

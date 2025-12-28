@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -66,61 +65,36 @@ class CurationContainer extends HookWidget {
 class NoMediaPlaceHolder extends StatelessWidget {
   const NoMediaPlaceHolder({
     super.key,
+    this.isPfp = false,
     this.isRound,
     this.value,
     this.isTopRounded,
     this.isLeftRounded,
     this.height,
     this.width,
-    this.useDefault = true,
-    required this.isError,
-    required this.image,
   });
 
+  final bool isPfp;
   final bool? isRound;
   final bool? isTopRounded;
   final bool? isLeftRounded;
   final double? value;
-  final bool isError;
-  final String image;
   final double? height;
   final double? width;
-  final bool useDefault;
 
   @override
   Widget build(BuildContext context) {
-    final radius = isTopRounded != null
-        ? BorderRadius.only(
-            topLeft: Radius.circular(value ?? kDefaultPadding),
-            topRight: Radius.circular(value ?? kDefaultPadding),
-          )
-        : isLeftRounded != null
-            ? BorderRadius.only(
-                topLeft: Radius.circular(value ?? kDefaultPadding),
-                bottomLeft: Radius.circular(value ?? kDefaultPadding),
-              )
-            : BorderRadius.circular(
-                isRound != null
-                    ? isRound!
-                        ? value ?? 300
-                        : 0
-                    : kDefaultPadding,
-              );
-
-    final s = useDefault
-        ? ExtendedImage.asset(
-            image.isEmpty ? randomCovers.first : image,
-            fit: BoxFit.cover,
-            shape: BoxShape.rectangle,
-            borderRadius: radius,
-          )
-        : SizedBox(
-            width: width,
-            height: height,
-            child: const NoImage2PlaceHolder(
-              icon: FeatureIcons.noImage,
-            ),
-          );
+    final s = SizedBox(
+      width: width,
+      height: height,
+      child: NoImage2PlaceHolder(
+        icon: isPfp ? FeatureIcons.user : FeatureIcons.noImage,
+        isRound: isRound,
+        isTopRounded: isTopRounded,
+        isLeftRounded: isLeftRounded,
+        value: value,
+      ),
+    );
 
     return height != null && width != null
         ? SizedBox(
@@ -235,17 +209,41 @@ class NoImage2PlaceHolder extends StatelessWidget {
   const NoImage2PlaceHolder({
     super.key,
     required this.icon,
+    this.isRound,
+    this.isTopRounded,
+    this.isLeftRounded,
+    this.value,
   });
 
   final String icon;
+  final bool? isRound;
+  final bool? isTopRounded;
+  final bool? isLeftRounded;
+  final double? value;
 
   @override
   Widget build(BuildContext context) {
+    final radius = isTopRounded != null
+        ? BorderRadius.only(
+            topLeft: Radius.circular(value ?? kDefaultPadding),
+            topRight: Radius.circular(value ?? kDefaultPadding),
+          )
+        : isLeftRounded != null
+            ? BorderRadius.only(
+                topLeft: Radius.circular(value ?? kDefaultPadding),
+                bottomLeft: Radius.circular(value ?? kDefaultPadding),
+              )
+            : BorderRadius.circular(
+                isRound != null
+                    ? isRound!
+                        ? value ?? 300
+                        : 0
+                    : kDefaultPadding,
+              );
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          kDefaultPadding / 2,
-        ),
+        borderRadius: radius,
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border.all(
           color: Theme.of(context).dividerColor,
@@ -261,8 +259,6 @@ class NoImage2PlaceHolder extends StatelessWidget {
               Theme.of(context).primaryColorDark,
               BlendMode.srcIn,
             ),
-            width: 30,
-            height: 30,
           ),
         ),
       ),

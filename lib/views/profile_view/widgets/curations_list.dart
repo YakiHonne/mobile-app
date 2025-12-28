@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
+import '../../../models/curation_model.dart';
 import '../../../utils/utils.dart';
 import '../../curation_view/curation_view.dart';
 import '../../widgets/curation_container.dart';
@@ -24,12 +25,12 @@ class ProfileCurations extends StatelessWidget {
     return Scrollbar(
       child: BlocBuilder<ProfileCubit, ProfileState>(
         buildWhen: (previous, current) =>
-            previous.curations != current.curations ||
+            previous.content != current.content ||
             previous.bookmarks != current.bookmarks ||
             previous.mutes != current.mutes ||
             previous.user != current.user,
         builder: (context, state) {
-          if (state.curations.isEmpty) {
+          if (state.content.isEmpty) {
             return EmptyList(
               icon: FeatureIcons.selfArticles,
               description: context.t
@@ -59,7 +60,8 @@ class ProfileCurations extends StatelessWidget {
         vertical: kDefaultPadding,
       ),
       itemBuilder: (context, index) {
-        final curation = state.curations.elementAt(index);
+        final event = state.content.elementAt(index);
+        final curation = Curation.fromEvent(event, '');
 
         return CurationContainer(
           curation: curation,
@@ -76,7 +78,7 @@ class ProfileCurations extends StatelessWidget {
           padding: 0,
         );
       },
-      itemCount: state.curations.length,
+      itemCount: state.content.length,
     );
   }
 
@@ -92,7 +94,8 @@ class ProfileCurations extends StatelessWidget {
         vertical: kDefaultPadding / 2,
       ),
       itemBuilder: (context, index) {
-        final curation = state.curations.elementAt(index);
+        final event = state.content.elementAt(index);
+        final curation = Curation.fromEvent(event, '');
 
         return CurationContainer(
           curation: curation,
@@ -109,7 +112,7 @@ class ProfileCurations extends StatelessWidget {
           padding: 0,
         );
       },
-      itemCount: state.curations.length,
+      itemCount: state.content.length,
     );
   }
 }

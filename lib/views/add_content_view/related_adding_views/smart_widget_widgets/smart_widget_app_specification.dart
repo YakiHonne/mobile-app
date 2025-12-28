@@ -131,8 +131,6 @@ class SmartWidgetAppSpecification extends HookWidget {
           children: [
             CommonThumbnail(
               image: state.appSmartWidget.icon,
-              placeholder: getRandomPlaceholder(
-                  input: state.appSmartWidget.icon, isPfp: false),
               width: 50,
               height: 50,
               radius: kDefaultPadding / 2,
@@ -295,8 +293,6 @@ class SmartWidgetAppSpecificationRow extends HookWidget {
                       children: [
                         CommonThumbnail(
                           image: state.appSmartWidget.icon,
-                          placeholder: getRandomPlaceholder(
-                              input: state.appSmartWidget.icon, isPfp: false),
                           width: 50,
                           height: 50,
                           radius: kDefaultPadding / 2,

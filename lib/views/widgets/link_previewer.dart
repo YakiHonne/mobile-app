@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:just_audio/just_audio.dart' as ja;
 import 'package:override_text_scale_factor/override_text_scale_factor.dart';
 import 'package:video_player/video_player.dart';
@@ -16,8 +17,8 @@ import '../../logic/video_controller_manager_cubit/video_controller_manager_cubi
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import 'content_renderer/url_type_checker.dart';
+import 'media_components/video_download.dart';
 import 'seek_bar.dart';
-import 'video_components/video_download.dart';
 
 class LinkPreviewer extends HookWidget {
   const LinkPreviewer({
@@ -429,6 +430,7 @@ class CustomVideoPlayer extends StatefulWidget {
     this.removeBorders,
     this.autoPlay,
     this.fallbackUrls,
+    this.enableSound = true,
   });
 
   final String link;
@@ -439,6 +441,7 @@ class CustomVideoPlayer extends StatefulWidget {
   final bool? removeBorders;
   final bool? autoPlay;
   final List<String>? fallbackUrls;
+  final bool enableSound;
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -511,6 +514,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           removeControls: widget.removeControls,
           autoPlay: widget.autoPlay,
           fallbackUrls: fallbackUrls,
+          enableSound: widget.enableSound,
         ),
       );
     } catch (_) {
@@ -533,14 +537,18 @@ class RegularVideoPlayer extends StatefulWidget {
     this.isNetwork = true,
     this.removeControls,
     this.autoPlay,
+    this.loop,
     this.fallbackUrls,
+    this.enableSound = true,
   });
 
   final String link;
   final bool isNetwork;
   final bool? removeControls;
   final bool? autoPlay;
+  final bool? loop;
   final List<String>? fallbackUrls;
+  final bool enableSound;
 
   @override
   State<RegularVideoPlayer> createState() => _RegularVideoPlayerState();
@@ -564,6 +572,7 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
       removeControls: widget.removeControls,
       isNetwork: widget.isNetwork,
       fallbackUrls: widget.fallbackUrls,
+      enableSound: widget.enableSound,
       onFallbackUrlCalled: (url) {
         _usedUrl = url;
       },
@@ -620,7 +629,10 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
                   child: SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 1),
+                    child: SpinKitCircle(
+                      color: kWhite,
+                      size: 20,
+                    ),
                   ),
                 ),
         );

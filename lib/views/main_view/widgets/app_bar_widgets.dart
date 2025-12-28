@@ -173,7 +173,9 @@ class DmOptionsButton extends StatelessWidget {
 }
 
 class InboxTypes extends HookWidget {
-  const InboxTypes({super.key});
+  const InboxTypes({super.key, required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +215,10 @@ class InboxTypes extends HookWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       selected: isSelected,
-                      onTap: () => dmsCubit.setIndex(i),
+                      onTap: () {
+                        dmsCubit.setIndex(i);
+                        scrollController.jumpTo(0);
+                      },
                       itemTheme: PullDownMenuItemTheme(
                         textStyle:
                             Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -402,37 +407,43 @@ class NotificationTypes extends HookWidget {
 class FilterGlobalButton extends StatelessWidget {
   const FilterGlobalButton({
     super.key,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppSettingsManagerCubit, AppSettingsManagerState>(
       listener: (context, state) {
-        if (isDiscover) {
+        if (viewType == ViewDataTypes.articles) {
           discoverCubit.buildDiscoverFeed(
             exploreType: discoverCubit.exploreType,
             isAdding: false,
           );
-        } else {
+        } else if (viewType == ViewDataTypes.notes) {
           leadingCubit.buildLeadingFeed(isAdding: false);
+        } else if (viewType == ViewDataTypes.media) {
+          mediaCubit.buildMediaFeed(isAdding: false);
         }
       },
       listenWhen: (previous, current) =>
           previous.selectedDiscoverFilter != current.selectedDiscoverFilter ||
+          previous.selectedMediaFilter != current.selectedMediaFilter ||
           previous.selectedNotesFilter != current.selectedNotesFilter ||
           previous.discoverFilters != current.discoverFilters ||
+          previous.mediaFilters != current.mediaFilters ||
           previous.notesFilters != current.notesFilters,
       builder: (context, state) {
-        final filter = isDiscover
+        final filter = viewType == ViewDataTypes.articles
             ? state.discoverFilters[state.selectedDiscoverFilter]
-            : state.notesFilters[state.selectedNotesFilter];
+            : viewType == ViewDataTypes.media
+                ? state.mediaFilters[state.selectedMediaFilter]
+                : state.notesFilters[state.selectedNotesFilter];
 
         return Stack(
           children: [
-            _customIcnButton(state, context),
+            _customIconButton(state, context),
             if (filter != null)
               Positioned(
                 right: 1,
@@ -449,7 +460,7 @@ class FilterGlobalButton extends StatelessWidget {
     );
   }
 
-  CustomIconButton _customIcnButton(
+  CustomIconButton _customIconButton(
       AppSettingsManagerState state, BuildContext context) {
     return CustomIconButton(
       onClicked: () {
@@ -457,7 +468,7 @@ class FilterGlobalButton extends StatelessWidget {
           func: () {
             Widget view;
 
-            if (isDiscover) {
+            if (viewType == ViewDataTypes.articles) {
               if (state.discoverFilters.isEmpty) {
                 view = AddDiscoverFilter(
                   discoverFilter:
@@ -465,17 +476,27 @@ class FilterGlobalButton extends StatelessWidget {
                 );
               } else {
                 view = AppFilterList(
-                  isDiscover: isDiscover,
+                  viewType: viewType,
                 );
               }
-            } else {
+            } else if (viewType == ViewDataTypes.notes) {
               if (state.notesFilters.isEmpty) {
                 view = AddNotesFilter(
                   notesFilter: appSettingsManagerCubit.getSelectedNotesFilter(),
                 );
               } else {
                 view = AppFilterList(
-                  isDiscover: isDiscover,
+                  viewType: viewType,
+                );
+              }
+            } else {
+              if (state.mediaFilters.isEmpty) {
+                view = AddMediaFilter(
+                  mediaFilter: appSettingsManagerCubit.getSelectedMediaFilter(),
+                );
+              } else {
+                view = AppFilterList(
+                  viewType: viewType,
                 );
               }
             }

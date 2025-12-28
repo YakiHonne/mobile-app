@@ -10,6 +10,7 @@ import '../../../models/article_model.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/detailed_note_model.dart';
 import '../../../models/event_relation.dart';
+import '../../../models/picture_model.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../models/video_model.dart';
 import '../../../routes/navigator.dart';
@@ -21,8 +22,9 @@ import '../../note_view/note_view.dart';
 import '../../smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/data_providers.dart';
-import '../../widgets/video_components/horizontal_video_view.dart';
-import '../../widgets/video_components/vertical_video_view.dart';
+import '../../widgets/media_components/horizontal_video_view.dart';
+import '../../widgets/media_components/picture_view.dart';
+import '../../widgets/media_components/vertical_video_view.dart';
 import '../../write_note_view/write_note_view.dart';
 import 'notification_event_quote.dart';
 import 'notification_image_container.dart';
@@ -263,12 +265,18 @@ class _NotificationGlobalContainerState
         page = HorizontalVideoView(video: VideoModel.fromEvent(event));
       case EventKind.VIDEO_VERTICAL:
         page = VerticalVideoView(video: VideoModel.fromEvent(event));
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        page = HorizontalVideoView(video: VideoModel.fromEvent(event));
+      case EventKind.LEGACY_VIDEO_VERTICAL:
+        page = VerticalVideoView(video: VideoModel.fromEvent(event));
       case EventKind.TEXT_NOTE:
         page = NoteView(note: DetailedNoteModel.fromEvent(event));
+      case EventKind.PICTURE:
+        page = PictureView(picture: PictureModel.fromEvent(event));
       case EventKind.SMART_WIDGET_ENH:
         final swm = SmartWidget.fromEvent(event);
         page = SmartWidgetChecker(
-          naddr: swm.getNaddr(),
+          naddr: swm.getScheme(),
           swm: swm,
         );
     }

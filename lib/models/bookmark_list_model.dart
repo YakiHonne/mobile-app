@@ -11,7 +11,6 @@ class BookmarkListModel implements BaseEventModel {
   final String title;
   final String description;
   final String image;
-  final String placeholder;
   final String identifier;
   final List<EventCoordinates> bookmarkedReplaceableEvents;
   final List<String> bookmarkedEvents;
@@ -28,7 +27,6 @@ class BookmarkListModel implements BaseEventModel {
     required this.title,
     required this.description,
     required this.image,
-    required this.placeholder,
     required this.identifier,
     required this.bookmarkedReplaceableEvents,
     required this.bookmarkedEvents,
@@ -152,11 +150,6 @@ class BookmarkListModel implements BaseEventModel {
       }
     }
 
-    final placeHolder = getRandomPlaceholder(
-      input: identifier,
-      isPfp: false,
-    );
-
     return BookmarkListModel(
       id: event.id,
       title: title,
@@ -169,7 +162,6 @@ class BookmarkListModel implements BaseEventModel {
       bookmarkedTags: bookmarkedTags,
       pubkey: event.pubkey,
       createdAt: createdAt,
-      placeholder: placeHolder,
       stringifiedEvent: event.toJsonString(),
     );
   }
@@ -194,7 +186,6 @@ class BookmarkListModel implements BaseEventModel {
       title: title ?? this.title,
       description: description ?? this.description,
       image: image ?? this.image,
-      placeholder: placeholder ?? this.placeholder,
       identifier: identifier ?? this.identifier,
       bookmarkedReplaceableEvents:
           bookmarkedReplaceableEvents ?? this.bookmarkedReplaceableEvents,
@@ -208,10 +199,33 @@ class BookmarkListModel implements BaseEventModel {
   }
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+        id,
+        title,
+        description,
+        image,
+        identifier,
+        bookmarkedReplaceableEvents,
+        bookmarkedEvents,
+        bookmarkedUrls,
+        bookmarkedTags,
+        pubkey,
+        createdAt,
+        stringifiedEvent,
+      ];
 
   @override
   bool? get stringify => throw UnimplementedError();
+
+  @override
+  String getScheme() {
+    return '';
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    return '';
+  }
 }
 
 class BookmarkOtherType extends BaseEventModel {
@@ -227,4 +241,14 @@ class BookmarkOtherType extends BaseEventModel {
   final String val;
   final bool isTag;
   final String description;
+
+  @override
+  String getScheme() {
+    return '';
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    return '';
+  }
 }

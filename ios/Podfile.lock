@@ -6,6 +6,8 @@ PODS:
   - awesome_notifications (0.10.0):
     - Flutter
     - IosAwnCore (~> 0.10.0)
+  - camera_avfoundation (0.0.1):
+    - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -37,6 +39,18 @@ PODS:
   - IosAwnCore (0.10.0)
   - just_audio (0.0.1):
     - Flutter
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
+    - libwebp/webp
+  - libwebp/mux (1.5.0):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
+    - libwebp/sharpyuv
   - MTBBarcodeScanner (5.0.11)
   - open_filex (0.0.2):
     - Flutter
@@ -104,6 +118,9 @@ PODS:
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - video_thumbnail (0.0.1):
+    - Flutter
+    - libwebp
   - wakelock_plus (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -114,6 +131,7 @@ DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
@@ -141,12 +159,14 @@ DEPENDENCIES:
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
+  - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
     - IosAwnCore
+    - libwebp
     - MTBBarcodeScanner
     - OrderedSet
     - Sentry
@@ -159,6 +179,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   awesome_notifications:
     :path: ".symlinks/plugins/awesome_notifications/ios"
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/darwin"
   device_info_plus:
@@ -213,6 +235,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
+  video_thumbnail:
+    :path: ".symlinks/plugins/video_thumbnail/ios"
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
   webview_flutter_wkwebview:
@@ -222,6 +246,7 @@ SPEC CHECKSUMS:
   app_links: 3da4c36b46cac3bf24eb897f1a6ce80bda109874
   audio_session: f08db0697111ac84ba46191b55488c0563bb29c6
   awesome_notifications: 0f432b28098d193920b11a44cfa9d2d9313a3888
+  camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
   connectivity_plus: 3f6c9057f4cd64198dc826edfb0542892f825343
   device_info_plus: 71ffc6ab7634ade6267c7a93088ed7e4f74e5896
   emoji_picker_flutter: ece213fc274bdddefb77d502d33080dc54e616cc
@@ -235,6 +260,7 @@ SPEC CHECKSUMS:
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   IosAwnCore: 653786a911089012092ce831f2945cd339855a89
   just_audio: 6c031bb61297cf218b4462be616638e81c058e97
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
@@ -254,6 +280,7 @@ SPEC CHECKSUMS:
   sqlite3_flutter_libs: 616267f2fca40e9c6af8c5d82324e05667040b6e
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
+  video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 

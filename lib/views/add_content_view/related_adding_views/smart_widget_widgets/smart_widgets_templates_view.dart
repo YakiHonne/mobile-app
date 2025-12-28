@@ -128,7 +128,7 @@ class SmartWidgetTemplatesView extends StatelessWidget {
                       context,
                       (context) => SmartWidgetChecker(
                         swm: sw,
-                        naddr: sw.getNaddr(),
+                        naddr: sw.getScheme(),
                       ),
                     );
                   }
@@ -197,8 +197,6 @@ class SWTemplateContainer extends StatelessWidget {
           Positioned.fill(
             child: CommonThumbnail(
               image: template.thumbnail,
-              placeholder:
-                  getRandomPlaceholder(input: template.thumbnail, isPfp: false),
               width: double.infinity,
               radius: kDefaultPadding / 2,
               height: 0,

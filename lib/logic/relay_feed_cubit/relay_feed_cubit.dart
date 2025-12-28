@@ -32,7 +32,7 @@ class RelayFeedCubit extends Cubit<RelayFeedState> {
       removeUponDisposal = true;
     }
 
-    buildRelayFeed(type: RelayContentType.all, isAdding: false);
+    buildRelayFeed(type: RelayContentType.notes, isAdding: false);
   }
 
   void clearData() {
@@ -74,10 +74,12 @@ class RelayFeedCubit extends Cubit<RelayFeedState> {
       relay: relay,
     );
 
+    lg.i(content);
+
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: content,
+          content: [...state.content, ...content],
           onLoading: false,
           onAddingData:
               content.isEmpty ? UpdatingState.idle : UpdatingState.success,

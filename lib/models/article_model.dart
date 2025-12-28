@@ -98,11 +98,6 @@ class Article extends Equatable implements BaseEventModel {
       }
     }
 
-    final placeHolder = getRandomPlaceholder(
-      input: identifier,
-      isPfp: false,
-    );
-
     return Article(
       id: event.id,
       identifier: identifier,
@@ -117,7 +112,6 @@ class Article extends Equatable implements BaseEventModel {
       hashTags: hashTags,
       isDraft: isDraft ?? false,
       isSensitive: isSensitive,
-      placeholder: placeHolder,
       zapsSplits: zaps,
       stringifiedEvent: event.toJsonString(),
       relays: relay != null ? {relay} : {},
@@ -172,11 +166,6 @@ class Article extends Equatable implements BaseEventModel {
   }
 
   factory Article.fromMap(Map<String, dynamic> map) {
-    final placeHolder = getRandomPlaceholder(
-      input: map['identifier'] ?? '',
-      isPfp: true,
-    );
-
     return Article(
       id: map['articleId'] as String,
       identifier: map['identifier'] as String,
@@ -193,7 +182,6 @@ class Article extends Equatable implements BaseEventModel {
       hashTags: List<String>.from(map['hashTags'] as List),
       isSensitive: map['isSensitive'] as bool,
       isDraft: map['isDraft'] as bool,
-      placeholder: placeHolder,
       relays: const {},
       stringifiedEvent: map['stringifiedEvent'] as String? ?? '',
     );
@@ -222,6 +210,36 @@ class Article extends Equatable implements BaseEventModel {
         relays,
         zapsSplits,
       ];
+
+  @override
+  String getScheme() {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      [],
+      pubkey,
+      EventKind.LONG_FORM,
+    );
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+    final relays =
+        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      relays,
+      pubkey,
+      EventKind.LONG_FORM,
+    );
+  }
 }
 
 class ZapSplit extends Equatable {

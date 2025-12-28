@@ -26,8 +26,8 @@ import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
 import '../../views/note_view/note_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
-import '../../views/widgets/video_components/horizontal_video_view.dart';
-import '../../views/widgets/video_components/vertical_video_view.dart';
+import '../../views/widgets/media_components/horizontal_video_view.dart';
+import '../../views/widgets/media_components/vertical_video_view.dart';
 
 part 'single_event_state.dart';
 

@@ -525,7 +525,7 @@ class DashboardSmartWidgetsList extends StatelessWidget {
             context,
             (context) => SmartWidgetChecker(
               swm: item,
-              naddr: item.getNaddr(),
+              naddr: item.getScheme(),
             ),
           );
         };
@@ -585,7 +585,7 @@ class DashboardSmartWidgetsList extends StatelessWidget {
             context,
             (context) => SmartWidgetChecker(
               swm: item,
-              naddr: item.getNaddr(),
+              naddr: item.getScheme(),
             ),
           );
         };
@@ -630,6 +630,8 @@ String getTitle(AppContentType re, BuildContext context) {
       title = context.t.widgets.capitalizeFirst();
     case AppContentType.note:
       title = context.t.notes.capitalizeFirst();
+    case AppContentType.picture:
+      title = context.t.pictures.capitalizeFirst();
   }
 
   return title;

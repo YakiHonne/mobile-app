@@ -13,10 +13,10 @@ import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/media_components/horizontal_video_view.dart';
+import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/pull_down_global_button.dart';
-import '../../widgets/video_components/horizontal_video_view.dart';
-import '../../widgets/video_components/vertical_video_view.dart';
 
 class MediaBox extends StatelessWidget {
   const MediaBox({super.key});
@@ -240,10 +240,6 @@ class LeadingMediaContainer extends HookWidget {
           Positioned.fill(
             child: CommonThumbnail(
               image: image,
-              placeholder: getRandomPlaceholder(
-                input: title,
-                isPfp: false,
-              ),
               width: double.infinity,
               height: 110,
               radius: kDefaultPadding / 2,

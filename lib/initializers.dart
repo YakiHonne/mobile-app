@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:amberflutter/amberflutter.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ import 'logic/discover_cubit/discover_cubit.dart';
 import 'logic/dms_cubit/dms_cubit.dart';
 import 'logic/leading_cubit/leading_cubit.dart';
 import 'logic/localization_cubit/localization_cubit.dart';
+import 'logic/media_cubit/media_cubit.dart';
 import 'logic/media_servers_cubit/media_servers_cubit.dart';
 import 'logic/metadata_cubit/metadata_cubit.dart';
 import 'logic/notes_events_cubit/notes_events_cubit.dart';
@@ -137,6 +139,11 @@ class AppInitializer {
   static Future<void> _initializeSettings() async {
     settingsCubit = SettingsCubit();
     await settingsCubit.init();
+    initCameras();
+  }
+
+  static Future<void> initCameras() async {
+    cameras = await availableCameras();
   }
 
   /// Initialize repositories
@@ -148,7 +155,11 @@ class AppInitializer {
     nostrRepository.loadAppCustomization();
 
     nostrRepository.filterStatus = localDatabaseRepository.getFilterStatus() ??
-        FilterStatus(leadingFilter: true, discoverFilter: true);
+        FilterStatus(
+          leadingFilter: true,
+          discoverFilter: true,
+          mediaFilter: true,
+        );
 
     nostrRepository.setCurrentCrashlytics();
     await nostrRepository.loadRemoteSigners();
@@ -189,6 +200,7 @@ class AppInitializer {
   static void _initFeedCubits() {
     discoverCubit = DiscoverCubit();
     leadingCubit = LeadingCubit();
+    mediaCubit = MediaCubit();
   }
 
   /// Setup authentication and signing
@@ -225,15 +237,23 @@ class AppInitializer {
   /// Initialize relay system
   static Future<void> _initializeRelaySystem() async {
     // Setup default relay list
-    currentUserRelayList = UserRelayList(
-      pubkey: currentSigner?.getPublicKey() ?? '',
-      relays: {
-        for (final String url in DEFAULT_BOOTSTRAP_RELAYS)
-          url: ReadWriteMarker.readWrite
-      },
-      createdAt: Helpers.now,
-      refreshedTimestamp: Helpers.now,
-    );
+    final pubkey = currentSigner?.getPublicKey() ?? '';
+    UserRelayList? relayList;
+
+    if (pubkey.isNotEmpty) {
+      relayList = await nc.db.loadUserRelayList(pubkey);
+    }
+
+    currentUserRelayList = relayList ??
+        UserRelayList(
+          pubkey: currentSigner?.getPublicKey() ?? '',
+          relays: {
+            for (final String url in DEFAULT_BOOTSTRAP_RELAYS)
+              url: ReadWriteMarker.readWrite
+          },
+          createdAt: Helpers.now,
+          refreshedTimestamp: Helpers.now,
+        );
 
     // Load cached data
     nostrRepository.setCurrentAppCustomizationFromCache();

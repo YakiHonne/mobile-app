@@ -11,10 +11,6 @@ class HorizontalVideoState extends Equatable {
   final bool isLoading;
   final bool isBookmarked;
   final bool refresh;
-  final Map<String, double> zaps;
-  final Set<String> reports;
-  final Map<String, VoteModel> votes;
-  final List<DetailedNoteModel> replies;
   final List<String> mutes;
   final List<String> viewsCount;
 
@@ -28,10 +24,6 @@ class HorizontalVideoState extends Equatable {
     required this.isLoading,
     required this.isBookmarked,
     required this.refresh,
-    required this.zaps,
-    required this.reports,
-    required this.votes,
-    required this.replies,
     required this.mutes,
     required this.viewsCount,
   });
@@ -47,10 +39,6 @@ class HorizontalVideoState extends Equatable {
         isLoading,
         isBookmarked,
         refresh,
-        zaps,
-        reports,
-        votes,
-        replies,
         mutes,
         viewsCount,
       ];
@@ -65,10 +53,6 @@ class HorizontalVideoState extends Equatable {
     bool? isLoading,
     bool? isBookmarked,
     bool? refresh,
-    Map<String, double>? zaps,
-    Set<String>? reports,
-    Map<String, VoteModel>? votes,
-    List<DetailedNoteModel>? replies,
     List<String>? mutes,
     List<String>? viewsCount,
   }) {
@@ -82,10 +66,6 @@ class HorizontalVideoState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isBookmarked: isBookmarked ?? this.isBookmarked,
       refresh: refresh ?? this.refresh,
-      zaps: zaps ?? this.zaps,
-      reports: reports ?? this.reports,
-      votes: votes ?? this.votes,
-      replies: replies ?? this.replies,
       mutes: mutes ?? this.mutes,
       viewsCount: viewsCount ?? this.viewsCount,
     );

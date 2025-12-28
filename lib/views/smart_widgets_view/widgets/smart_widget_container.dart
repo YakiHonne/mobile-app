@@ -257,10 +257,6 @@ class SmartWidgetComponentData extends HookWidget {
         image: imageUrl,
         radius: kDefaultPadding / 2,
         isRound: true,
-        placeholder: getRandomPlaceholder(
-          input: imageUrl,
-          isPfp: false,
-        ),
         width: double.infinity,
         height: 0,
       ),

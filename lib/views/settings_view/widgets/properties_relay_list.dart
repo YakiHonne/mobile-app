@@ -531,7 +531,6 @@ class RelayImage extends StatelessWidget {
       child: relayInfo != null && relayInfo!.icon.isNotEmpty
           ? CommonThumbnail(
               image: relayInfo!.icon,
-              placeholder: getRandomPlaceholder(input: relay, isPfp: false),
               width: 35,
               height: 35,
               isRound: true,

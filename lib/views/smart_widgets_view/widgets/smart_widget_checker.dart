@@ -45,8 +45,8 @@ class SmartWidgetChecker extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final naddrTextEditingController =
-        useTextEditingController(text: naddr ?? swm?.getNaddr());
-    final naddNotifier = useState<String>(naddr ?? swm?.getNaddr() ?? '');
+        useTextEditingController(text: naddr ?? swm?.getScheme());
+    final naddNotifier = useState<String>(naddr ?? swm?.getScheme() ?? '');
     final isLayoutToggled = useState(false);
     final swmNotifier = useState(swm);
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);

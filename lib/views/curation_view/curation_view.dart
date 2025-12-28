@@ -24,11 +24,11 @@ import '../widgets/content_stats.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/media_components/horizontal_video_view.dart';
+import '../widgets/media_components/vertical_video_view.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/video_common_container.dart';
-import '../widgets/video_components/horizontal_video_view.dart';
-import '../widgets/video_components/vertical_video_view.dart';
 
 class CurationView extends HookWidget {
   static const routeName = '/curationView';

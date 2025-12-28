@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -24,25 +23,21 @@ import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/profile_picture.dart';
-import '../widgets/tag_container.dart';
 import 'widgets/discover_feed.dart';
 
 class DiscoverView extends StatefulWidget {
   DiscoverView({
     super.key,
-    required this.scrollController,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Discover view');
   }
-
-  final ScrollController scrollController;
 
   @override
   State<DiscoverView> createState() => _DiscoverViewState();
 }
 
 class _DiscoverViewState extends State<DiscoverView> {
-  ExploreType selectedExploreType = ExploreType.all;
+  ExploreType selectedExploreType = ExploreType.articles;
 
   final refreshController = RefreshController();
 
@@ -100,14 +95,13 @@ class _DiscoverViewState extends State<DiscoverView> {
             onLoading: () => buildExploreFeed.call(context, true),
             onRefresh: () => reset(context),
             child: CustomScrollView(
-              controller: widget.scrollController,
               slivers: [
                 const SliverToBoxAdapter(
                   child: SizedBox(
                     height: kDefaultPadding / 2,
                   ),
                 ),
-                _appbar(context),
+                // _appbar(context),
                 if (state.showFollowingListMessage)
                   const SliverToBoxAdapter(
                     child: ShowFollowingListMessageBox(),
@@ -149,48 +143,48 @@ class _DiscoverViewState extends State<DiscoverView> {
     );
   }
 
-  SliverAppBar _appbar(BuildContext context) {
-    return SliverAppBar(
-      leading: const SizedBox.shrink(),
-      automaticallyImplyLeading: false,
-      leadingWidth: 0,
-      titleSpacing: 0,
-      title: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 36,
-          width: double.infinity,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(
-              width: kDefaultPadding / 4,
-            ),
-            itemBuilder: (context, index) {
-              final type = ExploreType.values[index];
+  // SliverAppBar _appbar(BuildContext context) {
+  //   return SliverAppBar(
+  //     leading: const SizedBox.shrink(),
+  //     automaticallyImplyLeading: false,
+  //     leadingWidth: 0,
+  //     titleSpacing: 0,
+  //     title: Container(
+  //       color: Theme.of(context).scaffoldBackgroundColor,
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: SizedBox(
+  //         height: 36,
+  //         width: double.infinity,
+  //         child: ListView.separated(
+  //           scrollDirection: Axis.horizontal,
+  //           separatorBuilder: (context, index) => const SizedBox(
+  //             width: kDefaultPadding / 4,
+  //           ),
+  //           itemBuilder: (context, index) {
+  //             final type = ExploreType.values[index];
 
-              return TagContainer(
-                title: typeName(type: type, context: context).capitalizeFirst(),
-                isActive: selectedExploreType == type,
-                style: Theme.of(context).textTheme.labelLarge,
-                onClick: () {
-                  setState(
-                    () {
-                      selectedExploreType = type;
-                      HapticFeedback.lightImpact();
-                    },
-                  );
+  //             return TagContainer(
+  //               title: typeName(type: type, context: context).capitalizeFirst(),
+  //               isActive: selectedExploreType == type,
+  //               style: Theme.of(context).textTheme.labelLarge,
+  //               onClick: () {
+  //                 setState(
+  //                   () {
+  //                     selectedExploreType = type;
+  //                     HapticFeedback.lightImpact();
+  //                   },
+  //                 );
 
-                  reset(context);
-                },
-              );
-            },
-            itemCount: ExploreType.values.length,
-          ),
-        ),
-      ),
-    );
-  }
+  //                 reset(context);
+  //               },
+  //             );
+  //           },
+  //           itemCount: ExploreType.values.length,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   String typeName({required ExploreType type, required BuildContext context}) {
     switch (type) {
@@ -210,10 +204,10 @@ class SourceButton extends HookWidget {
   const SourceButton({
     super.key,
     required this.onSourceChanged,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
   final Function() onSourceChanged;
 
   @override
@@ -224,7 +218,8 @@ class SourceButton extends HookWidget {
       },
       listenWhen: (previous, current) =>
           previous.selectedDiscoverSource != current.selectedDiscoverSource ||
-          previous.selectedNotesSource != current.selectedNotesSource,
+          previous.selectedNotesSource != current.selectedNotesSource ||
+          previous.selectedMediaSource != current.selectedMediaSource,
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
@@ -232,7 +227,7 @@ class SourceButton extends HookWidget {
               context: context,
               elevation: 0,
               builder: (_) {
-                return AppSourcesList(isDiscover: isDiscover);
+                return AppSourcesList(viewType: viewType);
               },
               isScrollControlled: true,
               useRootNavigator: true,
@@ -259,14 +254,16 @@ class SourceButton extends HookWidget {
         spacing: kDefaultPadding / 4,
         children: [
           SourceImage(
-            isDiscover: isDiscover,
+            viewType: viewType,
           ),
           Flexible(
             child: Builder(
               builder: (context) {
-                final source = isDiscover
+                final source = viewType == ViewDataTypes.articles
                     ? appSettingsManagerCubit.getDiscoverSelectedSource()
-                    : appSettingsManagerCubit.getNotesSelectedSource();
+                    : viewType == ViewDataTypes.notes
+                        ? appSettingsManagerCubit.getNotesSelectedSource()
+                        : appSettingsManagerCubit.getMediaSelectedSource();
 
                 final title = source.key == AppContentSource.relay
                     ? Relay.removeSocket(source.value.value) ??
@@ -274,9 +271,11 @@ class SourceButton extends HookWidget {
                     : source.key == AppContentSource.relaySet
                         ? (source.value.value as UserRelaySet).getTitle()
                         : getSourceName(
-                            name: isDiscover
+                            name: viewType == ViewDataTypes.articles
                                 ? state.selectedDiscoverSource.value
-                                : state.selectedNotesSource.value,
+                                : viewType == ViewDataTypes.notes
+                                    ? state.selectedNotesSource.value
+                                    : state.selectedMediaSource.value,
                           ).capitalizeFirst();
 
                 return Text(
@@ -302,17 +301,19 @@ class SourceButton extends HookWidget {
 }
 
 class SourceImage extends StatelessWidget {
-  const SourceImage({super.key, required this.isDiscover});
+  const SourceImage({super.key, required this.viewType});
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
       builder: (context, state) {
-        final source = isDiscover
+        final source = viewType == ViewDataTypes.articles
             ? appSettingsManagerCubit.getDiscoverSelectedSource()
-            : appSettingsManagerCubit.getNotesSelectedSource();
+            : viewType == ViewDataTypes.notes
+                ? appSettingsManagerCubit.getNotesSelectedSource()
+                : appSettingsManagerCubit.getMediaSelectedSource();
 
         return SizedBox(
           width: 30,
@@ -352,10 +353,6 @@ class SourceImage extends StatelessWidget {
       {required BuildContext context, required String url}) {
     return CommonThumbnail(
       image: url,
-      placeholder: getRandomPlaceholder(
-        input: url,
-        isPfp: false,
-      ),
       width: 26,
       height: 26,
       isRound: true,
@@ -388,10 +385,6 @@ class SourceImage extends StatelessWidget {
         return relayInfo != null && relayInfo.icon.isNotEmpty
             ? CommonThumbnail(
                 image: relayInfo.icon,
-                placeholder: getRandomPlaceholder(
-                  input: url,
-                  isPfp: false,
-                ),
                 width: 26,
                 height: 26,
                 isRound: true,
@@ -419,10 +412,10 @@ class FilterButton extends StatelessWidget {
   const FilterButton({
     super.key,
     required this.onFilterChanged,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
   final Function() onFilterChanged;
 
   @override
@@ -434,12 +427,16 @@ class FilterButton extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous.selectedDiscoverFilter != current.selectedDiscoverFilter ||
           previous.selectedNotesFilter != current.selectedNotesFilter ||
+          previous.selectedMediaFilter != current.selectedMediaFilter ||
           previous.discoverFilters != current.discoverFilters ||
-          previous.notesFilters != current.notesFilters,
+          previous.notesFilters != current.notesFilters ||
+          previous.mediaFilters != current.mediaFilters,
       builder: (context, state) {
-        final title = isDiscover
+        final title = viewType == ViewDataTypes.articles
             ? state.discoverFilters[state.selectedDiscoverFilter]?.title ?? ''
-            : state.notesFilters[state.selectedNotesFilter]?.title ?? '';
+            : viewType == ViewDataTypes.notes
+                ? state.notesFilters[state.selectedNotesFilter]?.title ?? ''
+                : state.mediaFilters[state.selectedMediaFilter]?.title ?? '';
 
         return Row(
           spacing: kDefaultPadding / 8,
@@ -461,7 +458,7 @@ class FilterButton extends StatelessWidget {
           func: () {
             Widget view;
 
-            if (isDiscover) {
+            if (viewType == ViewDataTypes.articles) {
               if (state.discoverFilters.isEmpty) {
                 view = AddDiscoverFilter(
                   discoverFilter:
@@ -469,17 +466,27 @@ class FilterButton extends StatelessWidget {
                 );
               } else {
                 view = AppFilterList(
-                  isDiscover: isDiscover,
+                  viewType: viewType,
                 );
               }
-            } else {
+            } else if (viewType == ViewDataTypes.notes) {
               if (state.notesFilters.isEmpty) {
                 view = AddNotesFilter(
                   notesFilter: appSettingsManagerCubit.getSelectedNotesFilter(),
                 );
               } else {
                 view = AppFilterList(
-                  isDiscover: isDiscover,
+                  viewType: viewType,
+                );
+              }
+            } else {
+              if (state.mediaFilters.isEmpty) {
+                view = AddMediaFilter(
+                  mediaFilter: appSettingsManagerCubit.getSelectedMediaFilter(),
+                );
+              } else {
+                view = AppFilterList(
+                  viewType: viewType,
                 );
               }
             }
@@ -562,7 +569,7 @@ class FilterButton extends StatelessWidget {
                     onClicked: () {
                       appSettingsManagerCubit.setFilter(
                         id: '',
-                        isDiscover: isDiscover,
+                        viewType: viewType,
                       );
                     },
                     icon: FeatureIcons.closeRaw,
@@ -608,7 +615,6 @@ class LeadingNewContentComponent extends HookWidget {
           isShowing: isShowing,
           onClicked: () {
             discoverCubit.appendExtra();
-            widget.scrollController.jumpTo(0.0);
           },
         );
       },

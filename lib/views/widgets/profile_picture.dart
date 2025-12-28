@@ -43,21 +43,16 @@ class ProfilePicture2 extends StatelessWidget {
             border: Border.all(width: strokeWidth, color: strokeColor),
             color: backgroundColor ?? Theme.of(context).primaryColorLight,
           ),
-          child: image.isEmpty
-              ? errorContainer(context, pubkey, false)
-              : RepaintBoundary(
-                  child: CommonThumbnail(
-                    image: image,
-                    placeholder: getRandomPlaceholder(
-                      input: image,
-                      isPfp: true,
-                    ),
-                    radius: 1000,
-                    isRound: true,
-                    height: size,
-                    width: size,
-                  ),
-                ),
+          child: RepaintBoundary(
+            child: CommonThumbnail(
+              image: image,
+              radius: 1000,
+              isRound: true,
+              isPfp: true,
+              height: size,
+              width: size,
+            ),
+          ),
         ),
       ),
     );
@@ -103,40 +98,16 @@ class ProfilePicture3 extends StatelessWidget {
             border: Border.all(width: strokeWidth, color: strokeColor),
             color: backgroundColor ?? Theme.of(context).primaryColorLight,
           ),
-          child: image.isEmpty
-              ? errorContainer(context, pubkey, true)
-              : CommonThumbnail(
-                  image: image,
-                  placeholder: getRandomPlaceholder(
-                    input: image,
-                    isPfp: true,
-                  ),
-                  radius: kDefaultPadding / 2,
-                  isRound: true,
-                  isPfp: true,
-                  height: size,
-                  width: size,
-                ),
+          child: CommonThumbnail(
+            image: image,
+            radius: kDefaultPadding / 2,
+            isRound: true,
+            isPfp: true,
+            height: size,
+            width: size,
+          ),
         ),
       ),
     );
   }
-}
-
-Container errorContainer(BuildContext context, String pubkey, bool isSquared) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Theme.of(context).primaryColorLight,
-      borderRadius:
-          BorderRadius.circular(isSquared ? kDefaultPadding / 2 : 300),
-      image: DecorationImage(
-        image: AssetImage(
-          getRandomPlaceholder(
-            input: pubkey,
-            isPfp: true,
-          ),
-        ),
-      ),
-    ),
-  );
 }

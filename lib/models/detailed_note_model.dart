@@ -40,28 +40,6 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     this.isOriginEtag,
   });
 
-  String getNevent() {
-    return Nip19.encodeShareableEntity(
-      'nevent',
-      id,
-      [],
-      pubkey,
-      EventKind.TEXT_NOTE,
-    );
-  }
-
-  Future<String> getNeventWithRelays() async {
-    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
-
-    return Nip19.encodeShareableEntity(
-      'nevent',
-      id,
-      relays,
-      pubkey,
-      EventKind.TEXT_NOTE,
-    );
-  }
-
   String getYakiHonneUrl() {
     return '${baseUrl}notes/${Nip19.encodeNote(id)}';
   }
@@ -201,6 +179,30 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
         isPaid,
         isOriginEtag,
       ];
+
+  @override
+  String getScheme() {
+    return Nip19.encodeShareableEntity(
+      'nevent',
+      id,
+      [],
+      pubkey,
+      EventKind.TEXT_NOTE,
+    );
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
+
+    return Nip19.encodeShareableEntity(
+      'nevent',
+      id,
+      relays,
+      pubkey,
+      EventKind.TEXT_NOTE,
+    );
+  }
 }
 
 class RepostModel extends Equatable implements BaseEventModel {
@@ -250,5 +252,15 @@ class RepostModel extends Equatable implements BaseEventModel {
     } catch (_) {
       return null;
     }
+  }
+
+  @override
+  String getScheme() {
+    return '';
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    return '';
   }
 }

@@ -157,7 +157,10 @@ class AddNoteMainView extends HookWidget {
               showModalBottomSheet(
                 context: context,
                 builder: (_) {
-                  return ParsedContentDisplay(content: content);
+                  return ParsedContentDisplay(
+                    content: content,
+                    baseEventModel: attachedEvent,
+                  );
                 },
                 isScrollControlled: true,
                 useRootNavigator: true,

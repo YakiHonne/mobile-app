@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
+import '../../../models/smart_widgets_components.dart';
 import '../../../utils/utils.dart';
 import '../../smart_widgets_view/widgets/global_smart_widget_container.dart';
 import '../../widgets/content_placeholder.dart';
@@ -24,13 +25,13 @@ class ProfileSmartWidgets extends StatelessWidget {
     return Scrollbar(
       child: BlocBuilder<ProfileCubit, ProfileState>(
         buildWhen: (previous, current) =>
-            previous.isSmartWidgetsLoading != current.isSmartWidgetsLoading ||
-            previous.smartWidgets != current.smartWidgets ||
+            previous.isLoading != current.isLoading ||
+            previous.content != current.content ||
             previous.user != current.user ||
             previous.mutes != current.mutes ||
             previous.bookmarks != current.bookmarks,
         builder: (context, state) {
-          if (state.isSmartWidgetsLoading) {
+          if (state.isLoading) {
             return const SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
@@ -38,7 +39,7 @@ class ProfileSmartWidgets extends StatelessWidget {
               ),
             );
           } else {
-            if (state.smartWidgets.isEmpty) {
+            if (state.content.isEmpty) {
               return EmptyList(
                 description: context.t.userNoSmartWidgets(
                   name: state.user.getName(),
@@ -69,14 +70,15 @@ class ProfileSmartWidgets extends StatelessWidget {
       ),
       physics: const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final smartWidget = state.smartWidgets[index];
+        final event = state.content[index];
+        final smartWidget = SmartWidget.fromEvent(event);
 
         return GlobalSmartWidgetContainer(
           smartWidgetModel: smartWidget,
           canPerformOwnerActions: state.isSameUser,
         );
       },
-      itemCount: state.smartWidgets.length,
+      itemCount: state.content.length,
     );
   }
 
@@ -93,14 +95,15 @@ class ProfileSmartWidgets extends StatelessWidget {
         vertical: kDefaultPadding,
       ),
       itemBuilder: (context, index) {
-        final smartWidget = state.smartWidgets[index];
+        final event = state.content[index];
+        final smartWidget = SmartWidget.fromEvent(event);
 
         return GlobalSmartWidgetContainer(
           smartWidgetModel: smartWidget,
           canPerformOwnerActions: state.isSameUser,
         );
       },
-      itemCount: state.smartWidgets.length,
+      itemCount: state.content.length,
     );
   }
 }

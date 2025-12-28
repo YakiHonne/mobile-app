@@ -221,7 +221,7 @@ class NoteView extends HookWidget {
   }
 }
 
-class _HeaderContent extends StatelessWidget {
+class _HeaderContent extends HookWidget {
   const _HeaderContent({
     required this.note,
     required this.previousNotes,
@@ -245,13 +245,27 @@ class _HeaderContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasBeenFound = useState(false);
+
     return Column(
       children: [
         const SizedBox(height: kDefaultPadding / 2),
-        if (isAddressable) _buildAddressableContainer(),
+        if (isAddressable)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _buildAddressableContainer(),
+          ),
         if (!isAddressable && rootEvent != null)
-          _buildNonAddressableContainer(),
-        if (shouldShowIndicator)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _buildNonAddressableContainer((hbf) async {
+              await Future.delayed(const Duration(milliseconds: 500));
+              hasBeenFound.value = hbf;
+            }),
+          ),
+        if (isAddressable
+            ? shouldShowIndicator
+            : (shouldShowIndicator && !hasBeenFound.value))
           Padding(
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: Row(
@@ -260,15 +274,15 @@ class _HeaderContent extends StatelessWidget {
                 Icon(
                   Icons.more_horiz,
                   size: 20,
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                 ),
                 const SizedBox(width: kDefaultPadding / 3),
                 Text(
                   context.t.thread,
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         color: Theme.of(context)
                             .primaryColor
-                            .withValues(alpha: 0.6),
+                            .withValues(alpha: 0.7),
                         fontStyle: FontStyle.italic,
                       ),
                 ),
@@ -279,7 +293,7 @@ class _HeaderContent extends StatelessWidget {
     );
   }
 
-  Widget _buildNonAddressableContainer() {
+  Widget _buildNonAddressableContainer(Function(bool) eventFound) {
     return SingleEventProvider(
       id: rootEvent!,
       isReplaceable: false,
@@ -291,8 +305,10 @@ class _HeaderContent extends StatelessWidget {
         final kind = event.kind;
         if (kind == EventKind.POLL ||
             kind == EventKind.VIDEO_HORIZONTAL ||
-            kind == EventKind.VIDEO_VERTICAL) {
+            kind == EventKind.VIDEO_VERTICAL ||
+            kind == EventKind.PICTURE) {
           final baseEventModel = getBaseEventModel(event);
+          eventFound(baseEventModel != null);
 
           return baseEventModel != null
               ? Padding(
@@ -304,6 +320,7 @@ class _HeaderContent extends StatelessWidget {
                 )
               : const SizedBox.shrink();
         }
+
         return const SizedBox.shrink();
       },
     );

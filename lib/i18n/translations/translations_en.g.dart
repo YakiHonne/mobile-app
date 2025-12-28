@@ -4348,6 +4348,78 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Hide notifications from notes with more than 10 user mentions.'
 	String get maxMentionsDesc => 'Hide notifications from notes with more than 10 user mentions.';
+
+	/// en: 'Media'
+	String get media => 'Media';
+
+	/// en: 'Pinned'
+	String get pinned => 'Pinned';
+
+	/// en: 'Pictures'
+	String get pictures => 'Pictures';
+
+	/// en: 'Unpin'
+	String get unpin => 'Unpin';
+
+	/// en: 'Pin'
+	String get pin => 'Pin';
+
+	/// en: '{{name}} published a picture'
+	String userPublishedPicture({required Object name}) => '${name} published a picture';
+
+	/// en: '{{name}} zapped your picture {{number}} sats'
+	String userZappedYourPicture({required Object name, required Object number}) => '${name} zapped your picture ${number} sats';
+
+	/// en: '{{name}} reacted {{reaction}} to your picture'
+	String userReactedYourPicture({required Object name, required Object reaction}) => '${name} reacted ${reaction} to your picture';
+
+	/// en: '{{name}} reacted {{reaction}} to a picture you were mentioned in'
+	String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} reacted ${reaction} to a picture you were mentioned in';
+
+	/// en: '{{name}} replied to your picture'
+	String userRepliedYourPicture({required Object name}) => '${name} replied to your picture';
+
+	/// en: '{{name}} replied to a picture you were mentioned in'
+	String userRepliedPictureYouIn({required Object name}) => '${name} replied to a picture you were mentioned in';
+
+	/// en: '{{name}} mentioned you in a picture'
+	String userMentionedYouInPicture({required Object name}) => '${name} mentioned you in a picture';
+
+	/// en: '{{name}} commented on your picture'
+	String userCommentedYourPicture({required Object name}) => '${name} commented on your picture';
+
+	/// en: '{{name}} commented on a picture you were mentioned in'
+	String userCommentedPictureYouIn({required Object name}) => '${name} commented on a picture you were mentioned in';
+
+	/// en: '{{name}} quoted your picture'
+	String userQuotedYourPicture({required Object name}) => '${name} quoted your picture';
+
+	/// en: '{{name}} quoted a picture you were mentioned in'
+	String userQuotedPictureYouIn({required Object name}) => '${name} quoted a picture you were mentioned in';
+
+	/// en: 'Either the app does not have permission to access the camera or there are no cameras available on this device.'
+	String get cameraPermission => 'Either the app does not have permission to access the camera or there are no cameras available on this device.';
+
+	/// en: 'Fetching picture...'
+	String get fetchingPicture => 'Fetching picture...';
+
+	/// en: 'Add description...'
+	String get addDescription => 'Add description...';
+
+	/// en: 'Uploading video...'
+	String get uploadingVideo => 'Uploading video...';
+
+	/// en: 'Upload thumbnail'
+	String get uploadThumbnail => 'Upload thumbnail';
+
+	/// en: 'Choose a proper thumbnail for your video'
+	String get chooseThumbnailVideo => 'Choose a proper thumbnail for your video';
+
+	/// en: 'Publishing...'
+	String get publishing => 'Publishing...';
+
+	/// en: 'Give me a catchy title'
+	String get giveMeCatchyTitle => 'Give me a catchy title';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5812,6 +5884,30 @@ extension on Translations {
 			'favoriteRelaysFeed' => 'Favorite relays feed',
 			'maxMentions' => 'Max mentions',
 			'maxMentionsDesc' => 'Hide notifications from notes with more than 10 user mentions.',
+			'media' => 'Media',
+			'pinned' => 'Pinned',
+			'pictures' => 'Pictures',
+			'unpin' => 'Unpin',
+			'pin' => 'Pin',
+			'userPublishedPicture' => ({required Object name}) => '${name} published a picture',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} zapped your picture ${number} sats',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} reacted ${reaction} to your picture',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} reacted ${reaction} to a picture you were mentioned in',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} replied to your picture',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} replied to a picture you were mentioned in',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} mentioned you in a picture',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} commented on your picture',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} commented on a picture you were mentioned in',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} quoted your picture',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} quoted a picture you were mentioned in',
+			'cameraPermission' => 'Either the app does not have permission to access the camera or there are no cameras available on this device.',
+			'fetchingPicture' => 'Fetching picture...',
+			'addDescription' => 'Add description...',
+			'uploadingVideo' => 'Uploading video...',
+			'uploadThumbnail' => 'Upload thumbnail',
+			'chooseThumbnailVideo' => 'Choose a proper thumbnail for your video',
+			'publishing' => 'Publishing...',
+			'giveMeCatchyTitle' => 'Give me a catchy title',
 			_ => null,
 		};
 	}

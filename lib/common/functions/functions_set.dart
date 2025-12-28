@@ -3,6 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:aescryptojs/aescryptojs.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
@@ -28,6 +30,8 @@ import '../../models/article_model.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/flash_news_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/video_model.dart';
 import '../../models/vote_model.dart';
@@ -46,12 +50,12 @@ import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/search_view/search_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_display.dart';
 import '../../views/widgets/content_renderer/content_renderer.dart';
+import '../../views/widgets/media_components/horizontal_video_view.dart';
+import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/modal_with_blur.dart';
 import '../../views/widgets/reactions_box.dart';
 import '../../views/widgets/response_snackbar.dart';
 import '../../views/widgets/scroll_to_top.dart';
-import '../../views/widgets/video_components/horizontal_video_view.dart';
-import '../../views/widgets/video_components/vertical_video_view.dart';
 import '../common_regex.dart';
 import '../linkify/linkifiers.dart';
 
@@ -469,6 +473,8 @@ bool isReplaceable(int? kind) {
   return kind == EventKind.LONG_FORM ||
       kind == EventKind.CURATION_ARTICLES ||
       kind == EventKind.CURATION_VIDEOS ||
+      kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+      kind == EventKind.LEGACY_VIDEO_VERTICAL ||
       kind == EventKind.SMART_WIDGET_ENH;
 }
 
@@ -480,6 +486,8 @@ bool isSupportedEvent(int? kind) {
       kind == EventKind.TEXT_NOTE ||
       kind == EventKind.VIDEO_HORIZONTAL ||
       kind == EventKind.VIDEO_VERTICAL ||
+      kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+      kind == EventKind.LEGACY_VIDEO_VERTICAL ||
       kind == EventKind.POLL;
 }
 
@@ -514,8 +522,7 @@ Future<String> externalShearableLink({
               ? 'profile'
               : kind == EventKind.SMART_WIDGET_ENH
                   ? 'smart-widget'
-                  : (kind == EventKind.VIDEO_HORIZONTAL ||
-                          kind == EventKind.VIDEO_VERTICAL)
+                  : VideoModel.isVideo(kind)
                       ? 'video'
                       : 'note';
 
@@ -587,12 +594,9 @@ Future<String> createShareableLink(
     hexString = charCodes.map((code) => code.toRadixString(16)).join();
   }
 
-  final isReplaceable = kind == EventKind.LONG_FORM ||
-      kind == EventKind.CURATION_ARTICLES ||
-      kind == EventKind.CURATION_VIDEOS ||
-      kind == EventKind.SMART_WIDGET_ENH;
+  final isReplaceableKind = isReplaceable(kind);
 
-  if (isReplaceable) {
+  if (isReplaceableKind) {
     if (emailRegExp.hasMatch(m.nip05) && useDefault) {
       if (kind == EventKind.CURATION_ARTICLES ||
           kind == EventKind.CURATION_VIDEOS) {
@@ -1352,4 +1356,28 @@ Future<List<String>> getEventSeenOnRelays({
 }) async {
   final ev = await nc.db.loadEventById(id, isReplaceable);
   return ev?.seenOn.take(2).toList() ?? [];
+}
+
+TextDirection getTextDirect(String text) {
+  return intl.Bidi.detectRtlDirectionality(text)
+      ? TextDirection.rtl
+      : TextDirection.ltr;
+}
+
+Future<File> saveUint8ListToTempFile(Uint8List data, String filename) async {
+  final tempDir = await getTemporaryDirectory();
+  final file = File('${tempDir.path}/$filename');
+  await file.writeAsBytes(data);
+  return file;
+}
+
+bool isMediaModel(BaseEventModel model) {
+  return model is PictureModel || model is VideoModel;
+}
+
+Future<ui.Image> getImageDimensions(File file) async {
+  final bytes = await file.readAsBytes();
+  final codec = await ui.instantiateImageCodec(bytes);
+  final frame = await codec.getNextFrame();
+  return frame.image;
 }

@@ -276,10 +276,6 @@ class GalleryComponent extends HookWidget {
       child: entry.value == UrlType.image
           ? CommonThumbnail(
               image: entry.key,
-              placeholder: getRandomPlaceholder(
-                input: entry.key,
-                isPfp: false,
-              ),
               radius: 0,
               fit: BoxFit.cover,
               isRound: false,
@@ -288,8 +284,10 @@ class GalleryComponent extends HookWidget {
     );
   }
 
-  FutureBuilder<File?> _videoImage(
-      MapEntry<String, UrlType> entry, BuildContext context) {
+  FutureBuilder<String?> _videoImage(
+    MapEntry<String, UrlType> entry,
+    BuildContext context,
+  ) {
     return FutureBuilder(
       future: VideoUtils.getVideoThumbnailImage(
         videoURL: entry.key,
@@ -303,7 +301,7 @@ class GalleryComponent extends HookWidget {
               color: kDimGrey2,
               child: snapshot.hasData && snapshot.data != null
                   ? ExtendedImage.file(
-                      snapshot.data!,
+                      File(snapshot.data!),
                       fit: BoxFit.cover,
                       compressionRatio: 16 / 9,
                     )
@@ -363,11 +361,17 @@ class OpenGalleryWidget extends HookWidget {
     required this.media,
     required this.index,
     required this.entry,
+    this.isGallery = true,
+    this.isRound = true,
+    this.addBlackLayer = false,
   });
 
   final List<MapEntry<String, UrlType>> media;
   final MapEntry<String, UrlType> entry;
   final int index;
+  final bool isGallery;
+  final bool isRound;
+  final bool addBlackLayer;
 
   @override
   Widget build(BuildContext context) {
@@ -393,7 +397,30 @@ class OpenGalleryWidget extends HookWidget {
       child: Stack(
         children: [
           _interactiveViewer(
-              context, currentIndex, currentSource, calculateBottomPadding),
+            context,
+            currentIndex,
+            currentSource,
+            calculateBottomPadding,
+            isRound,
+          ),
+          if (addBlackLayer)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        kBlack,
+                        kTransparent,
+                      ],
+                      stops: [0, 0.3],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           if (media.length > 1) _count(bottomPadding, context, currentIndex),
           _viewer(currentIndex, context, currentSource),
         ],
@@ -425,7 +452,9 @@ class OpenGalleryWidget extends HookWidget {
                           YNavigator.pop(context);
                         },
                         vd: -1,
-                        icon: FeatureIcons.closeRaw,
+                        icon: isGallery
+                            ? FeatureIcons.closeRaw
+                            : FeatureIcons.arrowLeft,
                         size: 20,
                         backgroundColor: Theme.of(context).cardColor,
                       ),
@@ -559,7 +588,8 @@ class OpenGalleryWidget extends HookWidget {
       BuildContext context,
       ValueNotifier<int> currentIndex,
       ValueNotifier<MapEntry<String, UrlType>> currentSource,
-      Function() calculateBottomPadding) {
+      Function() calculateBottomPadding,
+      bool isRound) {
     return Positioned.fill(
       child: GestureDetector(
         onLongPress: () {
@@ -572,6 +602,7 @@ class OpenGalleryWidget extends HookWidget {
             return itemBuilder(
               entry: media[index],
               context: context,
+              isRound: isRound,
             );
           },
           onPageChanged: (int pageIndex) {
@@ -588,6 +619,7 @@ class OpenGalleryWidget extends HookWidget {
 Widget itemBuilder({
   required MapEntry<String, UrlType> entry,
   required BuildContext context,
+  required bool isRound,
 }) {
   if (entry.value == UrlType.video) {
     return SafeArea(child: CustomVideoPlayer(link: entry.key));
@@ -597,14 +629,10 @@ Widget itemBuilder({
         return SafeArea(
           child: CommonThumbnail(
             image: entry.key,
-            placeholder: getRandomPlaceholder(
-              input: entry.key,
-              isPfp: false,
-            ),
             fit: BoxFit.contain,
-            radius: kDefaultPadding / 2,
+            radius: isRound ? kDefaultPadding / 2 : 0,
             useDefaultNoMedia: false,
-            isRound: true,
+            isRound: isRound,
           ),
         );
       },

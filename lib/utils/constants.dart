@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.6+172';
+const String appVersion = 'v1.9.7+177';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -267,42 +267,6 @@ final fieldValidator = MultiValidator(
     ),
   ],
 );
-
-const randomCovers = [
-  RandomCovers.randomCover1,
-  RandomCovers.randomCover2,
-  RandomCovers.randomCover3,
-  RandomCovers.randomCover4,
-  RandomCovers.randomCover5,
-  RandomCovers.randomCover6,
-  RandomCovers.randomCover7,
-  RandomCovers.randomCover8,
-  RandomCovers.randomCover9,
-  RandomCovers.randomCover10,
-];
-
-String getRandomPlaceholder({
-  required String input,
-  required bool isPfp,
-}) {
-  String inputToBeHashed = input;
-
-  if (inputToBeHashed.isEmpty) {
-    inputToBeHashed = 'default';
-  }
-
-  int hash = 0;
-
-  for (int i = 0; i < inputToBeHashed.length; i++) {
-    hash = (hash * 31) + inputToBeHashed.codeUnitAt(i);
-  }
-
-  // Ensure the hash is non-negative
-  hash = hash.abs();
-  final int oneDigitNumber = hash % 10;
-
-  return isPfp ? randomPfps[oneDigitNumber] : randomCovers[oneDigitNumber];
-}
 
 const randomPfps = [
   RandomPfps.randomPfp1,

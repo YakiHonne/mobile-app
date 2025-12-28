@@ -47,7 +47,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
   StreamSubscription? feedStream;
   StreamSubscription? mutesStream;
   Timer? currentExtraTimer;
-  ExploreType exploreType = ExploreType.all;
+  ExploreType exploreType = ExploreType.articles;
   final extraIds = <String>{};
 
   // =============================================================================
@@ -62,7 +62,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
 
         // Build initial feed
         buildDiscoverFeed(
-          exploreType: ExploreType.all,
+          exploreType: ExploreType.articles,
           isAdding: false,
         );
 

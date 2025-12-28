@@ -724,7 +724,7 @@ class RelaySetContainer extends HookWidget {
             CustomIconButton(
               onClicked: onEdit!,
               backgroundColor: Theme.of(context).cardColor,
-              icon: FeatureIcons.article,
+              icon: FeatureIcons.editArticle,
               size: 20,
               vd: -1,
             ),
@@ -900,7 +900,6 @@ class RelaySetImage extends StatelessWidget {
       child: url.isNotEmpty
           ? CommonThumbnail(
               image: url,
-              placeholder: getRandomPlaceholder(input: url, isPfp: false),
               width: size ?? 40,
               height: size ?? 40,
               isRound: true,
@@ -947,7 +946,6 @@ class RelayImage extends StatelessWidget {
       child: relayInfo != null && relayInfo!.icon.isNotEmpty
           ? CommonThumbnail(
               image: relayInfo!.icon,
-              placeholder: getRandomPlaceholder(input: url, isPfp: false),
               width: size ?? 40,
               height: size ?? 40,
               isRound: true,
@@ -977,11 +975,11 @@ class ShareRelayFeed extends StatelessWidget {
   const ShareRelayFeed({
     super.key,
     required this.relay,
-    required this.isDiscover,
+    required this.viewType,
   });
 
   final String relay;
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -1008,7 +1006,7 @@ class ShareRelayFeed extends StatelessWidget {
           child: Builder(
             builder: (context) {
               final feedUrl =
-                  'https://www.yakihonne.com/r/${isDiscover ? 'discover' : 'notes'}?r=$relay';
+                  'https://www.yakihonne.com/r/${viewType == ViewDataTypes.articles ? 'discover' : viewType == ViewDataTypes.notes ? 'notes' : 'media'}?r=$relay';
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

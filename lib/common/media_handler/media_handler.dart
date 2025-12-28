@@ -49,6 +49,21 @@ class MediaHandler {
     }
   }
 
+  static Future<Map<String, String>> uploadMediaWithData(
+    File media, {
+    String? message,
+    Function(int, int)? onSendProgress,
+  }) async {
+    try {
+      return await mediaServersCubit.uploadMedia(
+        file: media,
+        onSendProgress: onSendProgress,
+      );
+    } catch (_) {
+      return {};
+    }
+  }
+
   static Future<File?> selectMedia(MediaType mediaType) async {
     try {
       final XFile? media;

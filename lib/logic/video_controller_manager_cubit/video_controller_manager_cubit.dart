@@ -10,7 +10,7 @@ import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
 import '../../views/widgets/app_video_player/fullscreen_video_player.dart';
 import '../../views/widgets/link_previewer.dart';
-import '../../views/widgets/video_components/custom_video_controls.dart';
+import '../../views/widgets/media_components/custom_video_controls.dart';
 
 part 'video_controller_manager_state.dart';
 
@@ -34,6 +34,10 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     String id, {
     bool autoPlay = false,
     bool isNetwork = true,
+    bool looping = false,
+    bool showControls = true,
+    bool enableSound = true,
+    double? aspectRatio,
     bool? removeControls,
     List<String>? fallbackUrls,
     Function(String)? onFallbackUrlCalled,
@@ -44,9 +48,9 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     }
 
     // In case of fast scrolling, we wait to make sure the user is on the view
-    toBeAdded.add(url);
+    toBeAdded.add(id);
     await Future.delayed(const Duration(milliseconds: 500));
-    if (!toBeAdded.contains(url)) {
+    if (!toBeAdded.contains(id)) {
       return;
     }
 
@@ -55,11 +59,19 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       String usedUrl = url;
       if (isNetwork) {
         videoController = await _initNetworkVideo(url);
+        if (!toBeAdded.contains(id)) {
+          await videoController?.dispose();
+          return;
+        }
 
         if (videoController == null) {
           if (fallbackUrls != null && fallbackUrls.isNotEmpty) {
             for (final fallbackUrl in fallbackUrls) {
               videoController = await _initNetworkVideo(fallbackUrl);
+              if (!toBeAdded.contains(id)) {
+                await videoController?.dispose();
+                return;
+              }
 
               if (videoController != null) {
                 usedUrl = fallbackUrl;
@@ -73,13 +85,17 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         final file = File(url);
         videoController = VideoPlayerController.file(file);
         await videoController.initialize();
+        if (!toBeAdded.contains(id)) {
+          await videoController.dispose();
+          return;
+        }
       }
 
       if (videoController == null) {
         return;
       }
 
-      if (autoPlay) {
+      if (!enableSound) {
         videoController.setVolume(0);
       }
 
@@ -95,6 +111,9 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         autoPlay: autoPlay,
         allowPlaybackSpeedChanging: false,
         showControlsOnInitialize: false,
+        showControls: showControls,
+        looping: looping,
+        aspectRatio: aspectRatio,
         routePageBuilder:
             (context, animation, secondaryAnimation, controllerProvider) =>
                 FullScreenVideoPlayer(url: url, provider: controllerProvider),
@@ -154,7 +173,6 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       return videoController;
     } catch (e) {
-      lg.i(e);
       return null;
     }
   }
@@ -163,7 +181,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     required String url,
     required String id,
   }) {
-    toBeAdded.remove(url);
+    toBeAdded.remove(id);
     final currentUrl = state.videoIds[id];
 
     if (currentUrl == null) {

@@ -179,6 +179,9 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
     );
 
     if (isSuccessful) {
+      lg.i(ev.toJson());
+      nc.db.saveEvent(ev);
+
       if (isAdding) {
         await nc.connect(relay);
       } else {

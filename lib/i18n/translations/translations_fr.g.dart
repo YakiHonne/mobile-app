@@ -1475,6 +1475,30 @@ class TranslationsFr extends Translations {
 	@override String get favoriteRelaysFeed => 'Flux de relais favoris';
 	@override String get maxMentions => 'Mentions max';
 	@override String get maxMentionsDesc => 'Masquer les notifications des notes contenant plus de 10 mentions d\'utilisateurs.';
+	@override String get media => 'Média';
+	@override String get pinned => 'Épinglé';
+	@override String get pictures => 'Images';
+	@override String get unpin => 'Désépingler';
+	@override String get pin => 'Épingler';
+	@override String userPublishedPicture({required Object name}) => '${name} a publié une image';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} a zappé votre image ${number} sats';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} a réagi ${reaction} à votre image';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} a réagi ${reaction} à une image où vous êtes mentionné';
+	@override String userRepliedYourPicture({required Object name}) => '${name} a répondu à votre image';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} a répondu à une image où vous êtes mentionné';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} vous a mentionné dans une image';
+	@override String userCommentedYourPicture({required Object name}) => '${name} a commenté votre image';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} a commenté une image où vous êtes mentionné';
+	@override String userQuotedYourPicture({required Object name}) => '${name} a cité votre image';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} a cité une image où vous êtes mentionné';
+	@override String get cameraPermission => 'L\'application n\'a pas la permission d\'accéder à la caméra ou il n\'y a pas de caméras disponibles sur cet appareil.';
+	@override String get fetchingPicture => 'Récupération de l\'image...';
+	@override String get addDescription => 'Ajouter une description...';
+	@override String get uploadingVideo => 'Téléchargement de la vidéo...';
+	@override String get uploadThumbnail => 'Télécharger une vignette';
+	@override String get chooseThumbnailVideo => 'Choisissez une vignette appropriée pour votre vidéo';
+	@override String get publishing => 'Publication en cours...';
+	@override String get giveMeCatchyTitle => 'Donne-moi un titre accrocheur';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -2939,6 +2963,30 @@ extension on TranslationsFr {
 			'favoriteRelaysFeed' => 'Flux de relais favoris',
 			'maxMentions' => 'Mentions max',
 			'maxMentionsDesc' => 'Masquer les notifications des notes contenant plus de 10 mentions d\'utilisateurs.',
+			'media' => 'Média',
+			'pinned' => 'Épinglé',
+			'pictures' => 'Images',
+			'unpin' => 'Désépingler',
+			'pin' => 'Épingler',
+			'userPublishedPicture' => ({required Object name}) => '${name} a publié une image',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} a zappé votre image ${number} sats',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} a réagi ${reaction} à votre image',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} a réagi ${reaction} à une image où vous êtes mentionné',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} a répondu à votre image',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} a répondu à une image où vous êtes mentionné',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} vous a mentionné dans une image',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} a commenté votre image',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} a commenté une image où vous êtes mentionné',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} a cité votre image',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} a cité une image où vous êtes mentionné',
+			'cameraPermission' => 'L\'application n\'a pas la permission d\'accéder à la caméra ou il n\'y a pas de caméras disponibles sur cet appareil.',
+			'fetchingPicture' => 'Récupération de l\'image...',
+			'addDescription' => 'Ajouter une description...',
+			'uploadingVideo' => 'Téléchargement de la vidéo...',
+			'uploadThumbnail' => 'Télécharger une vignette',
+			'chooseThumbnailVideo' => 'Choisissez une vignette appropriée pour votre vidéo',
+			'publishing' => 'Publication en cours...',
+			'giveMeCatchyTitle' => 'Donne-moi un titre accrocheur',
 			_ => null,
 		};
 	}

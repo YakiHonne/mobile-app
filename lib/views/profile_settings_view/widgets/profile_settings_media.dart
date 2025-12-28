@@ -33,8 +33,6 @@ class ProfileSettingsMedia extends StatelessWidget {
                     width: constraints.maxWidth,
                     isRound: false,
                     radius: 0,
-                    placeholder:
-                        getRandomPlaceholder(input: state.pubkey, isPfp: false),
                     height: 120,
                   ),
                 ),

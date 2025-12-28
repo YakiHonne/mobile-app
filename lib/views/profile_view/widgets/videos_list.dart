@@ -5,12 +5,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
+import '../../../models/video_model.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/media_components/horizontal_video_view.dart';
+import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/video_common_container.dart';
-import '../../widgets/video_components/horizontal_video_view.dart';
-import '../../widgets/video_components/vertical_video_view.dart';
 
 class ProfileVideos extends StatelessWidget {
   const ProfileVideos({
@@ -26,12 +27,12 @@ class ProfileVideos extends StatelessWidget {
     return Scrollbar(
       child: BlocBuilder<ProfileCubit, ProfileState>(
         buildWhen: (previous, current) =>
-            previous.isVideoLoading != current.isVideoLoading ||
-            previous.videos != current.videos ||
+            previous.isLoading != current.isLoading ||
+            previous.content != current.content ||
             previous.user != current.user ||
             previous.bookmarks != current.bookmarks,
         builder: (context, state) {
-          if (state.isVideoLoading) {
+          if (state.isLoading) {
             return const SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
@@ -39,7 +40,7 @@ class ProfileVideos extends StatelessWidget {
               ),
             );
           } else {
-            if (state.videos.isEmpty) {
+            if (state.content.isEmpty) {
               return EmptyList(
                 description: context.t
                     .userNoVideos(
@@ -73,7 +74,8 @@ class ProfileVideos extends StatelessWidget {
       ),
       physics: const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final video = state.videos[index];
+        final event = state.content[index];
+        final video = VideoModel.fromEvent(event);
 
         return VideoCommonContainer(
           isBookmarked: state.bookmarks.contains(video.id),
@@ -91,7 +93,7 @@ class ProfileVideos extends StatelessWidget {
           },
         );
       },
-      itemCount: state.videos.length,
+      itemCount: state.content.length,
     );
   }
 
@@ -108,7 +110,8 @@ class ProfileVideos extends StatelessWidget {
         vertical: kDefaultPadding,
       ),
       itemBuilder: (context, index) {
-        final video = state.videos[index];
+        final event = state.content[index];
+        final video = VideoModel.fromEvent(event);
 
         return VideoCommonContainer(
           isBookmarked: state.bookmarks.contains(video.id),
@@ -126,7 +129,7 @@ class ProfileVideos extends StatelessWidget {
           },
         );
       },
-      itemCount: state.videos.length,
+      itemCount: state.content.length,
     );
   }
 }

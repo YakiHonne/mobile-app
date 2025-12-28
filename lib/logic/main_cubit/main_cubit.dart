@@ -20,6 +20,7 @@ import '../../models/app_models/extended_model.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/video_model.dart';
 import '../../repositories/http_functions_repository.dart';
@@ -35,9 +36,10 @@ import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../views/uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../../views/version_news/app_news_popup.dart';
+import '../../views/widgets/media_components/horizontal_video_view.dart';
+import '../../views/widgets/media_components/picture_view.dart';
+import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/received_share_intent.dart';
-import '../../views/widgets/video_components/horizontal_video_view.dart';
-import '../../views/widgets/video_components/vertical_video_view.dart';
 
 part 'main_state.dart';
 
@@ -188,8 +190,10 @@ class MainCubit extends Cubit<MainState> {
     if (_deepLinksSub == null && initial != null) {
       if (!initial.startsWith('nostr+walletconnect') &&
           !initial.contains('yakihonne.com/wallet/alby')) {
-        if (initial.contains('njump.me')) {
-          handleNostrEntity(initial.split('/').last, '');
+        final entity = _extractNostrEntity(initial);
+
+        if (entity.isNotEmpty) {
+          handleNostrEntity(entity, '');
         } else {
           forwardView(
             uriString: initial,
@@ -219,13 +223,36 @@ class MainCubit extends Cubit<MainState> {
           walletManagerCubit.addAlby(uriString);
         }
       } else {
-        forwardView(
-          uriString: uriString,
-          isNostrScheme: uriString.startsWith('nostr:'),
-          skipDelay: false,
-        );
+        final entity = _extractNostrEntity(uriString);
+
+        if (entity.isNotEmpty) {
+          handleNostrEntity(entity, '');
+        } else {
+          forwardView(
+            uriString: uriString,
+            isNostrScheme: uriString.startsWith('nostr:'),
+            skipDelay: false,
+          );
+        }
       }
     }
+  }
+
+  String _extractNostrEntity(String url) {
+    if (url.contains('njump.me') ||
+        url.contains('njump.to') ||
+        url.contains('iris.to')) {
+      return url.split('/').last;
+    } else if (url.contains('primal.net')) {
+      final uri = Uri.parse(url);
+      final segments = uri.pathSegments;
+
+      if (segments.length >= 2 && ['e', 'p', 'a'].contains(segments[0])) {
+        return segments[1];
+      }
+    }
+
+    return '';
   }
 
   Future<void> forwardView({
@@ -370,7 +397,7 @@ class MainCubit extends Cubit<MainState> {
 
   Future<void> _handleCurationLink(String nostrUri) async {
     if (nostrUri == 'curation') {
-      updateIndex(MainViews.discover);
+      updateIndex(MainViews.media);
       return;
     }
 
@@ -444,7 +471,7 @@ class MainCubit extends Cubit<MainState> {
         context,
         SmartWidgetChecker.routeName,
         arguments: [
-          smartWidgetModel.getNaddr(),
+          smartWidgetModel.getScheme(),
           smartWidgetModel,
           true,
         ],
@@ -454,7 +481,7 @@ class MainCubit extends Cubit<MainState> {
 
   Future<void> _handleVideoLink(String nostrUri) async {
     if (nostrUri == 'video') {
-      updateIndex(MainViews.discover);
+      updateIndex(MainViews.media);
       return;
     }
 
@@ -605,6 +632,14 @@ class MainCubit extends Cubit<MainState> {
       } else if (event.kind == EventKind.TEXT_NOTE) {
         final note = DetailedNoteModel.fromEvent(event);
         Navigator.pushNamed(context, NoteView.routeName, arguments: [note]);
+      } else if (event.kind == EventKind.PICTURE) {
+        final picture = PictureModel.fromEvent(event);
+        YNavigator.pushPage(
+          context,
+          (context) => PictureView(
+            picture: picture,
+          ),
+        );
       } else if (event.kind == EventKind.LONG_FORM) {
         final article = Article.fromEvent(event);
         Navigator.pushNamed(context, ArticleView.routeName, arguments: article);
@@ -633,7 +668,7 @@ class MainCubit extends Cubit<MainState> {
         YNavigator.pushPage(
           context,
           (context) => SmartWidgetChecker(
-            naddr: smartWidget.getNaddr(),
+            naddr: smartWidget.getScheme(),
             swm: smartWidget,
             viewMode: true,
           ),
@@ -687,7 +722,7 @@ class MainCubit extends Cubit<MainState> {
       Navigator.pushNamed(
         context,
         SmartWidgetChecker.routeName,
-        arguments: <Object>[smartWidgetModel.getNaddr(), smartWidgetModel],
+        arguments: <Object>[smartWidgetModel.getScheme(), smartWidgetModel],
       );
     } else {
       BotToastUtils.showError(context.t.eventNotRecognized.capitalizeFirst());
@@ -734,6 +769,8 @@ class MainCubit extends Cubit<MainState> {
     String? pubkey,
     List<String>? relays,
   }) async {
+    lg.i('getForwardedEvent => $identifier, $pubkey, $relays');
+
     final event = await getForwardEvent(
       author: pubkey,
       identifier: identifier,
@@ -744,6 +781,8 @@ class MainCubit extends Cubit<MainState> {
     if (event != null) {
       return event;
     }
+
+    lg.i('getForwardedEvent => $event');
 
     if (pubkey != null && pubkey.isNotEmpty) {
       final relayList = await nc.getSingleUserRelayList(pubkey);
@@ -790,6 +829,8 @@ class MainCubit extends Cubit<MainState> {
         message = context.t.fetchingNote.capitalizeFirst();
       case EventKind.METADATA:
         message = context.t.fetchingProfile.capitalizeFirst();
+      case EventKind.PICTURE:
+        message = context.t.fetchingPicture.capitalizeFirst();
       default:
         message = context.t.fetchingEvent.capitalizeFirst();
     }
