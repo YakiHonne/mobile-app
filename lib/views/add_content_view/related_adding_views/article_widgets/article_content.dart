@@ -67,31 +67,35 @@ class ArticleContent extends HookWidget {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BlocBuilder<WriteArticleCubit, WriteArticleState>(
-                      buildWhen: (previous, current) =>
-                          previous.title != current.title,
-                      builder: (context, state) {
-                        return Text(
-                          state.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: kDefaultPadding / 2,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: MarkDownWidget(
-                      content: state.content,
-                      onLinkClicked: (link) => openWebPage(url: link),
+                    child: Directionality(
+                      textDirection: getTextDirect(state.content),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BlocBuilder<WriteArticleCubit, WriteArticleState>(
+                            buildWhen: (previous, current) =>
+                                previous.title != current.title,
+                            builder: (context, state) {
+                              return Text(
+                                state.title,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: kDefaultPadding / 2,
+                          ),
+                          MarkDownWidget(
+                            content: state.content,
+                            onLinkClicked: (link) => openWebPage(url: link),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SliverToBoxAdapter(

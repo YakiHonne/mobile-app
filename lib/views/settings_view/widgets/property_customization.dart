@@ -449,6 +449,8 @@ class PropertyCustomization extends HookWidget {
         return context.t.smartWidget;
       case AppContentType.curation:
         return context.t.curation;
+      case AppContentType.picture:
+        return context.t.pictures;
     }
   }
 }

@@ -17,8 +17,8 @@ import '../views/settings_view/widgets/relay_info_view.dart';
 import '../views/settings_view/widgets/relays_update.dart';
 import '../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../views/uncensored_notes_view/widgets/un_flashnews_details.dart';
-import '../views/widgets/video_components/horizontal_video_view.dart';
-import '../views/widgets/video_components/vertical_video_view.dart';
+import '../views/widgets/media_components/horizontal_video_view.dart';
+import '../views/widgets/media_components/vertical_video_view.dart';
 
 Route onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {

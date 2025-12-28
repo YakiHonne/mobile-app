@@ -321,6 +321,16 @@ class FlashNews extends Equatable implements BaseEventModel {
         isAuthentic,
         tags,
       ];
+
+  @override
+  String getScheme() {
+    return '';
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    return '';
+  }
 }
 
 abstract class BaseEventModel extends Equatable {
@@ -336,6 +346,10 @@ abstract class BaseEventModel extends Equatable {
 
   @override
   List<Object?> get props => [createdAt, pubkey, id];
+
+  String getScheme();
+
+  Future<String> getSchemeWithRelays();
 }
 
 class LightMetadata implements BaseEventModel {
@@ -361,7 +375,18 @@ class LightMetadata implements BaseEventModel {
     );
   }
 
-  String getNProfile() {
+  @override
+  bool? get stringify => throw UnimplementedError();
+
+  @override
+  List<Object?> get props => [
+        createdAt,
+        pubkey,
+        id,
+      ];
+
+  @override
+  String getScheme() {
     return Nip19.encodeShareableEntity(
       'nprofile',
       pubkey,
@@ -371,7 +396,8 @@ class LightMetadata implements BaseEventModel {
     );
   }
 
-  Future<String> getNProfileWithRelays() async {
+  @override
+  Future<String> getSchemeWithRelays() async {
     final relays = await getEventSeenOnRelays(id: id, isReplaceable: false);
 
     return Nip19.encodeShareableEntity(
@@ -382,14 +408,4 @@ class LightMetadata implements BaseEventModel {
       EventKind.METADATA,
     );
   }
-
-  @override
-  bool? get stringify => throw UnimplementedError();
-
-  @override
-  List<Object?> get props => [
-        createdAt,
-        pubkey,
-        id,
-      ];
 }

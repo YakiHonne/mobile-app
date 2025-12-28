@@ -6,29 +6,36 @@ class AppSettingsManagerState extends Equatable {
   final String selectedDiscoverFilter;
   final List<BaseFeed> discoverSources;
   final Map<String, CommunityFeedOption> discoverCommunity;
-  final Map<String, DvmModel> discoverDvms;
   final MapEntry<String, dynamic> selectedDiscoverSource;
 
   final Map<String, NotesFilter> notesFilters;
   final String selectedNotesFilter;
   final List<BaseFeed> notesSources;
   final Map<String, CommunityFeedOption> notesCommunity;
-  final Map<String, DvmModel> notesDvms;
   final MapEntry<String, dynamic> selectedNotesSource;
+
+  final Map<String, MediaFilter> mediaFilters;
+  final String selectedMediaFilter;
+  final List<BaseFeed> mediaSources;
+  final Map<String, CommunityFeedOption> mediaCommunity;
+  final MapEntry<String, dynamic> selectedMediaSource;
 
   const AppSettingsManagerState({
     required this.discoverFilters,
     required this.selectedDiscoverFilter,
     required this.discoverSources,
     required this.discoverCommunity,
-    required this.discoverDvms,
     required this.selectedDiscoverSource,
     required this.notesFilters,
     required this.selectedNotesFilter,
     required this.notesSources,
     required this.notesCommunity,
-    required this.notesDvms,
     required this.selectedNotesSource,
+    required this.mediaFilters,
+    required this.selectedMediaFilter,
+    required this.mediaSources,
+    required this.mediaCommunity,
+    required this.selectedMediaSource,
   });
 
   @override
@@ -37,14 +44,17 @@ class AppSettingsManagerState extends Equatable {
         selectedDiscoverFilter,
         discoverSources,
         discoverCommunity,
-        discoverDvms,
         selectedDiscoverSource,
         notesFilters,
         selectedNotesFilter,
         notesSources,
         notesCommunity,
-        notesDvms,
         selectedNotesSource,
+        mediaFilters,
+        selectedMediaFilter,
+        mediaSources,
+        mediaCommunity,
+        selectedMediaSource,
       ];
 
   AppSettingsManagerState copyWith({
@@ -52,14 +62,17 @@ class AppSettingsManagerState extends Equatable {
     String? selectedDiscoverFilter,
     List<BaseFeed>? discoverSources,
     Map<String, CommunityFeedOption>? discoverCommunity,
-    Map<String, DvmModel>? discoverDvms,
     MapEntry<String, dynamic>? selectedDiscoverSource,
     Map<String, NotesFilter>? notesFilters,
     String? selectedNotesFilter,
     List<BaseFeed>? notesSources,
     Map<String, CommunityFeedOption>? notesCommunity,
-    Map<String, DvmModel>? notesDvms,
     MapEntry<String, dynamic>? selectedNotesSource,
+    Map<String, MediaFilter>? mediaFilters,
+    String? selectedMediaFilter,
+    List<BaseFeed>? mediaSources,
+    Map<String, CommunityFeedOption>? mediaCommunity,
+    MapEntry<String, dynamic>? selectedMediaSource,
   }) {
     return AppSettingsManagerState(
       discoverFilters: discoverFilters ?? this.discoverFilters,
@@ -67,15 +80,18 @@ class AppSettingsManagerState extends Equatable {
           selectedDiscoverFilter ?? this.selectedDiscoverFilter,
       discoverSources: discoverSources ?? this.discoverSources,
       discoverCommunity: discoverCommunity ?? this.discoverCommunity,
-      discoverDvms: discoverDvms ?? this.discoverDvms,
       selectedDiscoverSource:
           selectedDiscoverSource ?? this.selectedDiscoverSource,
       notesFilters: notesFilters ?? this.notesFilters,
       selectedNotesFilter: selectedNotesFilter ?? this.selectedNotesFilter,
       notesSources: notesSources ?? this.notesSources,
       notesCommunity: notesCommunity ?? this.notesCommunity,
-      notesDvms: notesDvms ?? this.notesDvms,
       selectedNotesSource: selectedNotesSource ?? this.selectedNotesSource,
+      mediaFilters: mediaFilters ?? this.mediaFilters,
+      selectedMediaFilter: selectedMediaFilter ?? this.selectedMediaFilter,
+      mediaSources: mediaSources ?? this.mediaSources,
+      mediaCommunity: mediaCommunity ?? this.mediaCommunity,
+      selectedMediaSource: selectedMediaSource ?? this.selectedMediaSource,
     );
   }
 }

@@ -110,17 +110,10 @@ class MarkDownWidget extends StatelessWidget {
                     ? const SizedBox(
                         height: 120,
                         width: double.infinity,
-                        child: NoMediaPlaceHolder(
-                          image: '',
-                          isError: false,
-                        ),
+                        child: NoMediaPlaceHolder(),
                       )
                     : CommonThumbnail(
                         image: url,
-                        placeholder: getRandomPlaceholder(
-                          input: url,
-                          isPfp: false,
-                        ),
                         radius: 0,
                         isRound: false,
                       ),

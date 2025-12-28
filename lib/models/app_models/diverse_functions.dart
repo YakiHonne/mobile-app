@@ -22,6 +22,7 @@ import '../curation_model.dart';
 import '../detailed_note_model.dart';
 import '../flash_news_model.dart';
 import '../parsed_text_optimizer.dart';
+import '../picture_model.dart';
 import '../poll_model.dart';
 import '../smart_widgets_components.dart';
 import '../video_model.dart';
@@ -161,12 +162,16 @@ Future<List<String>> broadcastRelays(
   return urlsToBroadcast.toList();
 }
 
-Future<List<String>> getDmInboxRelays(String? inboxPubKey) async {
+Future<List<String>> getDmInboxRelays(
+  String? inboxPubKey, {
+  bool forceRefresh = false,
+}) async {
   Set<String> urlsToBroadcast = {};
   final gossip = settingsCubit.gossip ?? false;
 
   if (inboxPubKey != null) {
-    urlsToBroadcast = (await getDmRelays(inboxPubKey)).toSet();
+    urlsToBroadcast =
+        (await getDmRelays(inboxPubKey, forceRefresh: forceRefresh)).toSet();
 
     if (urlsToBroadcast.length > 2) {
       urlsToBroadcast = urlsToBroadcast.take(2).toSet();
@@ -186,7 +191,10 @@ Future<List<String>> getDmInboxRelays(String? inboxPubKey) async {
   return urlsToBroadcast.toList();
 }
 
-Future<List<String>> getDmRelays(String pubkey) async {
+Future<List<String>> getDmRelays(
+  String pubkey, {
+  bool forceRefresh = false,
+}) async {
   final timer = Timer(
     const Duration(milliseconds: 200),
     () {
@@ -198,14 +206,16 @@ Future<List<String>> getDmRelays(String pubkey) async {
 
   final urlsToBroadcast = <String>[];
 
-  final ev = await nc.db.loadEvent(kind: EventKind.DM_RELAYS, pubkey: pubkey);
+  if (!forceRefresh) {
+    final ev = await nc.db.loadEvent(kind: EventKind.DM_RELAYS, pubkey: pubkey);
 
-  if (ev != null) {
-    urlsToBroadcast.addAll(getRelayFromTag(ev.tags));
+    if (ev != null) {
+      urlsToBroadcast.addAll(getRelayFromTag(ev.tags));
 
-    if (urlsToBroadcast.isNotEmpty) {
-      timer.cancel();
-      return urlsToBroadcast;
+      if (urlsToBroadcast.isNotEmpty) {
+        timer.cancel();
+        return urlsToBroadcast;
+      }
     }
   }
 
@@ -390,22 +400,7 @@ Map<String, bool> getStandAloneEvents(String content) {
 
 // ** BaseEventModel related functions
 String? naddr(BaseEventModel item) {
-  try {
-    if (item is Article) {
-      return item.getNaddr();
-    } else if (item is Curation) {
-      return item.getNaddr();
-    } else if (item is VideoModel) {
-      return item.getNevent();
-    } else if (item is SmartWidget) {
-      return item.getNaddr();
-    }
-
-    return null;
-  } catch (e) {
-    lg.i(e);
-    return null;
-  }
+  return item.getScheme();
 }
 
 BaseEventModel? getBaseEventModel(Event? event) {
@@ -430,6 +425,8 @@ BaseEventModel? getBaseEventModel(Event? event) {
       return SmartWidget.fromEvent(event);
     case EventKind.POLL:
       return PollModel.fromEvent(event);
+    case EventKind.PICTURE:
+      return PictureModel.fromEvent(event);
 
     default:
       return null;
@@ -462,6 +459,8 @@ List<String> getBaseEventModelData(BaseEventModel item) {
       return [item.image, item.title, item.description];
     } else if (item is VideoModel) {
       return [item.thumbnail, item.title, item.summary];
+    } else if (item is PictureModel) {
+      return [item.images.first.url, item.title, item.content];
     } else if (item is SmartWidget) {
       return ['', item.title, ''];
     }

@@ -16,23 +16,25 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
 import '../../routes/pages_router.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
+import '../media_view/media_view.dart';
 import '../relay_feed_view/relay_feed_view.dart';
 import '../settings_view/widgets/relays_update.dart';
 import '../widgets/article_container.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
+import '../widgets/media_components/horizontal_video_view.dart';
+import '../widgets/media_components/vertical_video_view.dart';
 import '../widgets/nip05_component.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/tag_container.dart';
 import '../widgets/video_common_container.dart';
-import '../widgets/video_components/horizontal_video_view.dart';
-import '../widgets/video_components/vertical_video_view.dart';
 
 // ignore: must_be_immutable
 class SearchView extends HookWidget {
@@ -50,7 +52,7 @@ class SearchView extends HookWidget {
       context.t.people.capitalizeFirst(),
       context.t.notes.capitalizeFirst(),
       context.t.articles.capitalizeFirst(),
-      context.t.videos.capitalizeFirst(),
+      context.t.media.capitalizeFirst(),
     ];
 
     final searchText = useState(search);
@@ -621,11 +623,13 @@ class SearchView extends HookWidget {
     required BuildContext context,
   }) {
     if (searchResultsType == SearchResultsType.loading) {
-      return const SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.all(kDefaultPadding / 2),
-          child: ExploreMediaSkeleton(),
-        ),
+      return SliverToBoxAdapter(
+        child: contentType == 3
+            ? const MediaPlaceholder()
+            : const Padding(
+                padding: EdgeInsets.all(kDefaultPadding / 2),
+                child: ExploreMediaSkeleton(),
+              ),
       );
     } else if (searchResultsType == SearchResultsType.noSearch) {
       return const SliverToBoxAdapter(
@@ -741,6 +745,12 @@ class ContentList extends StatelessWidget {
           return const SliverToBoxAdapter(child: SearchNoResult());
         }
 
+        if (contentType == 3) {
+          return MediaGrid(
+            content: content,
+            loadVideos: true,
+          );
+        }
         if (ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
           return _itemsGrid(content);
         } else {
@@ -838,14 +848,16 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  List<dynamic> getFilteredContent(
-    List<dynamic> totalContent,
+  List<BaseEventModel> getFilteredContent(
+    List<BaseEventModel> totalContent,
     int contentType,
   ) {
     if (contentType == 2) {
       return totalContent.whereType<Article>().toList();
     } else if (contentType == 3) {
-      return totalContent.whereType<VideoModel>().toList();
+      return totalContent
+          .where((element) => element is VideoModel || element is PictureModel)
+          .toList();
     } else if (contentType == 1) {
       return totalContent.whereType<DetailedNoteModel>().toList();
     } else {

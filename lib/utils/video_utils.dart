@@ -1,15 +1,16 @@
 import 'dart:io';
 
-import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'utils.dart';
 
 class VideoUtils {
-  static final Map<String, File> _thumbnailFileCache = <String, File>{};
+  static final _thumbnailFileCache = <String, String>{};
 
-  static File? getVideoThumbnailImageFromMem({
+  static String? getVideoThumbnailImageFromMem({
     String? videoURL,
     String? cacheKey,
   }) {
@@ -20,56 +21,57 @@ class VideoUtils {
       return null;
     }
 
-    final file = _thumbnailFileCache[cacheKey];
-    if (file != null && !file.existsSync()) {
-      return null;
-    }
+    final memUrl = _thumbnailFileCache[cacheKey];
 
-    return file;
+    return memUrl;
   }
 
   static void putVideoThumbnailImageToMem({
     String? videoURL,
     String? cacheKey,
-    File? file,
+    String? memUrl,
   }) {
     if (videoURL != null) {
       cacheKey ??= _thumbnailSnapshotURL(videoURL);
     }
+
     if (cacheKey == null) {
       return;
     }
 
-    if (file != null && file.existsSync()) {
-      _thumbnailFileCache[cacheKey] = file;
+    if (memUrl != null) {
+      _thumbnailFileCache[cacheKey] = memUrl;
     } else {
       _thumbnailFileCache.remove(cacheKey);
     }
   }
 
-  static Future<File?> getVideoThumbnailImage({
+  static Future<String?> getVideoThumbnailImage({
     required String videoURL,
     required BuildContext context,
     bool onlyFromCache = false,
   }) async {
     try {
-      File? thumbnailImageFile;
+      String? memUrl;
 
       // Memory
-      thumbnailImageFile = getVideoThumbnailImageFromMem(videoURL: videoURL);
-      if (thumbnailImageFile != null) {
-        return thumbnailImageFile;
+      memUrl = getVideoThumbnailImageFromMem(videoURL: videoURL);
+      if (memUrl != null) {
+        return memUrl;
       }
 
       final thumbnailURL = _thumbnailSnapshotURL(videoURL);
-      thumbnailImageFile =
+      final thumbnailImageFile =
           (await imagesCacheManager.getFileFromCache(thumbnailURL))?.file;
 
       if (onlyFromCache ||
           thumbnailImageFile != null && thumbnailImageFile.existsSync()) {
         putVideoThumbnailImageToMem(
-            videoURL: videoURL, file: thumbnailImageFile);
-        return thumbnailImageFile;
+          videoURL: videoURL,
+          memUrl: thumbnailImageFile!.path,
+        );
+
+        return thumbnailImageFile.path;
       }
 
       // New Create
@@ -78,28 +80,25 @@ class VideoUtils {
       );
 
       file.createSync(recursive: true);
-      bool filePath = false;
+      String? filePath;
 
       if (context.mounted) {
-        filePath = await FcNativeVideoThumbnail().getVideoThumbnail(
-          srcFile: videoURL,
-          destFile: file.path,
-          width: (MediaQuery.of(context).size.width *
-                  MediaQuery.of(context).devicePixelRatio)
-              .toInt(),
-          height: 100,
-          format: 'jpeg',
+        final path = (await getTemporaryDirectory()).path;
+
+        filePath = await VideoThumbnail.thumbnailFile(
+          video: videoURL,
+          thumbnailPath: path,
           quality: 100,
         );
       }
 
-      if (!filePath) {
+      if (filePath == null) {
         return null;
       }
 
-      thumbnailImageFile = File(file.path);
-      final cacheFile = await _putFileToCache(thumbnailURL, thumbnailImageFile);
-      return cacheFile;
+      final s = File(filePath);
+      await _putFileToCache(thumbnailURL, s);
+      return filePath;
     } catch (e) {
       return null;
     }
@@ -144,7 +143,7 @@ class VideoUtils {
       cacheKey,
     ];
     for (final key in updateCacheKey) {
-      putVideoThumbnailImageToMem(cacheKey: key, file: cacheFile);
+      putVideoThumbnailImageToMem(cacheKey: key, memUrl: cacheFile.path);
     }
     // file.delete();
 

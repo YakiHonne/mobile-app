@@ -384,8 +384,6 @@ class ToolContainer extends StatelessWidget {
             children: [
               CommonThumbnail(
                 image: tool.type == SWType.basic ? tool.image : tool.icon,
-                placeholder:
-                    getRandomPlaceholder(input: tool.icon, isPfp: false),
                 width: 45,
                 height: 45,
                 isRound: true,
@@ -472,7 +470,7 @@ class ToolContainer extends StatelessWidget {
         context,
         (context) => SmartWidgetChecker(
           swm: tool,
-          naddr: tool.getNaddr(),
+          naddr: tool.getScheme(),
           viewMode: true,
         ),
       );

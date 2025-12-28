@@ -67,6 +67,14 @@ class NotificationHelper {
     }
   }
 
+  bool isPushNotificationEnabled() {
+    final pn =
+        nostrRepository.currentAppCustomization?.enablePushNotification ??
+            false;
+
+    return pn;
+  }
+
   Future<Event?> _encode(
     String receiver,
     String content,
@@ -91,6 +99,7 @@ class NotificationHelper {
       );
 
       if (currentSigner is AmberEventSigner) {
+        await Future.delayed(const Duration(seconds: 1));
         forwardedToAmber = false;
       }
 
@@ -102,6 +111,11 @@ class NotificationHelper {
   }
 
   Future<void> _heartBeat() async {
+    if (!isPushNotificationEnabled()) {
+      lg.i('message');
+      return;
+    }
+
     final map = {'online': 1};
     final event = await _encode(serverPubkey, jsonEncode(map));
     if (event != null) {
@@ -114,6 +128,10 @@ class NotificationHelper {
   }
 
   Future<void> setOffline() async {
+    if (!isPushNotificationEnabled()) {
+      return;
+    }
+
     if (!forwardedToAmber) {
       final map = {'online': 0};
       _stopHeartBeat();
@@ -133,6 +151,11 @@ class NotificationHelper {
   }
 
   Future<bool> logout() async {
+    if (!isPushNotificationEnabled()) {
+      lg.i('message');
+      return false;
+    }
+
     if (canSign()) {
       final map = {'online': 0, 'deviceId': ''};
       final event = await _encode(serverPubkey, jsonEncode(map));
@@ -155,6 +178,11 @@ class NotificationHelper {
     String deviceId,
     List<int> kinds,
   ) async {
+    if (!isPushNotificationEnabled()) {
+      lg.i('message');
+      return false;
+    }
+
     if (serverPubkey.isEmpty || forwardedToAmber) {
       forwardedToAmber = false;
       return false;

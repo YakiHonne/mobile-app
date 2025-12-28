@@ -1,5 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/material.dart';
+
+import 'utils.dart';
+
 enum AppTheme { purpleWhite, purpleDark }
 
 enum CurrentRoute { logify, disclosure, main }
@@ -20,7 +24,8 @@ enum MainViews {
   leading,
   wallet,
   smartWidgets,
-  discover,
+  articles,
+  media,
   hidden,
 }
 
@@ -160,13 +165,27 @@ enum CommonFeedTypes {
 
 enum ExploreType { all, articles, videos, curations }
 
-enum RelayContentType { all, notes, articles, videos, curations }
+enum RelayContentType { notes, articles, media, curations }
 
 enum DashboardType { home, content, smart, bookmarks, interests }
 
 enum InterestStatus { add, delete, available }
 
-enum AppContentType { note, article, smartWidget, video, curation }
+enum AppContentType { note, article, smartWidget, video, curation, picture }
+
+enum AppMediaType {
+  image,
+  video;
+
+  String getDisplayName(BuildContext context) {
+    switch (this) {
+      case AppMediaType.image:
+        return context.t.image.capitalizeFirst();
+      case AppMediaType.video:
+        return context.t.video.capitalizeFirst();
+    }
+  }
+}
 
 enum AppContentSource {
   community,
@@ -230,3 +249,94 @@ enum AddingRelayOptions { dms, relays, favorite }
 enum DmDataState { disabled, enabled, canBeLoaded }
 
 enum ArticleWritingState { edit, preview, editPreview }
+
+enum ProfileData {
+  notes,
+  pinned,
+  replies,
+  mentions,
+  articles,
+  curations,
+  smartWidgets,
+  allMedia,
+  videos,
+  pictures;
+
+  String getDisplayName(BuildContext context) {
+    switch (this) {
+      case ProfileData.notes:
+        return context.t.notes.capitalizeFirst();
+      case ProfileData.pinned:
+        return context.t.pinned.capitalizeFirst();
+      case ProfileData.replies:
+        return context.t.replies.capitalizeFirst();
+      case ProfileData.mentions:
+        return context.t.mentions.capitalizeFirst();
+      case ProfileData.articles:
+        return context.t.articles.capitalizeFirst();
+      case ProfileData.curations:
+        return context.t.curations.capitalizeFirst();
+      case ProfileData.smartWidgets:
+        return context.t.smartWidgets.capitalizeFirst();
+      case ProfileData.allMedia:
+        return context.t.all.capitalizeFirst();
+      case ProfileData.videos:
+        return context.t.videos.capitalizeFirst();
+      case ProfileData.pictures:
+        return context.t.pictures.capitalizeFirst();
+    }
+  }
+
+  String getType() {
+    switch (this) {
+      case ProfileData.notes:
+        return 'notes';
+      case ProfileData.pinned:
+        return 'notes';
+      case ProfileData.replies:
+        return 'notes';
+      case ProfileData.mentions:
+        return 'notes';
+      case ProfileData.articles:
+        return 'articles';
+      case ProfileData.curations:
+        return 'others';
+      case ProfileData.smartWidgets:
+        return 'others';
+      case ProfileData.allMedia:
+        return 'media';
+      case ProfileData.videos:
+        return 'media';
+      case ProfileData.pictures:
+        return 'media';
+    }
+  }
+}
+
+enum NoteTypes {
+  pinned,
+  notes,
+  replies,
+  mentions;
+
+  String getDisplayName(BuildContext context) {
+    switch (this) {
+      case NoteTypes.pinned:
+        return context.t.pinned.capitalizeFirst();
+      case NoteTypes.notes:
+        return context.t.notes.capitalizeFirst();
+      case NoteTypes.replies:
+        return context.t.replies.capitalizeFirst();
+      case NoteTypes.mentions:
+        return context.t.mentions.capitalizeFirst();
+    }
+  }
+}
+
+enum ViewDataTypes {
+  notes,
+  articles,
+  media;
+}
+
+enum PublishMediaStatus { idle, uploading, publishing }

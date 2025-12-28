@@ -295,8 +295,6 @@ class SetRelaySet extends HookWidget {
                   : LayoutBuilder(
                       builder: (context, constraints) => CommonThumbnail(
                         image: url.value,
-                        placeholder: getRandomPlaceholder(
-                            input: url.value, isPfp: false),
                         width: constraints.maxWidth,
                         height: constraints.maxHeight,
                         isRound: true,
@@ -315,7 +313,7 @@ class SetRelaySet extends HookWidget {
               children: [
                 CustomIconButton(
                   onClicked: addImage,
-                  icon: FeatureIcons.article,
+                  icon: FeatureIcons.editArticle,
                   size: 20,
                   backgroundColor: Theme.of(context).cardColor,
                 ),

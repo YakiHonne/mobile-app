@@ -409,12 +409,21 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     return res;
   }
 
-  Future<Map<String, String>> uploadMedia({required File file}) async {
+  Future<Map<String, String>> uploadMedia({
+    required File file,
+    Function(int, int)? onSendProgress,
+  }) async {
     try {
       if (state.isBlossomActive && state.activeBlossomServer.isNotEmpty) {
-        return await _uploadToBlossom(file);
+        return await _uploadToBlossom(
+          file,
+          onSendProgress,
+        );
       } else {
-        return await _uploadToRegularServer(file);
+        return await _uploadToRegularServer(
+          file,
+          onSendProgress: onSendProgress,
+        );
       }
     } catch (e) {
       lg.e('Upload error: $e');
@@ -424,7 +433,10 @@ class MediaServersCubit extends Cubit<MediaServersState> {
   }
 
   // Blossom upload implementation
-  Future<Map<String, String>> _uploadToBlossom(File file) async {
+  Future<Map<String, String>> _uploadToBlossom(
+    File file,
+    Function(int, int)? onSendProgress,
+  ) async {
     try {
       final fileBytes = await file.readAsBytes();
       final hash = _calculateSHA256(fileBytes);
@@ -444,6 +456,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
         fileBytes,
         authEvent,
         mimeType,
+        onSendProgress,
       );
 
       if (res.isEmpty) {
@@ -468,7 +481,10 @@ class MediaServersCubit extends Cubit<MediaServersState> {
   }
 
   // Regular server upload (existing NIP-96 implementation)
-  Future<Map<String, String>> _uploadToRegularServer(File file) async {
+  Future<Map<String, String>> _uploadToRegularServer(
+    File file, {
+    Function(int, int)? onSendProgress,
+  }) async {
     final authEvent = await _createRegularAuthEvent();
 
     if (authEvent == null) {
@@ -477,7 +493,11 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     }
 
     final formData = await _createFormData(file);
-    final response = await _performRegularUpload(formData, authEvent);
+    final response = await _performRegularUpload(
+      formData,
+      authEvent,
+      onSendProgress,
+    );
 
     return _parseUploadResponse(response, false);
   }
@@ -800,6 +820,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     Uint8List fileBytes,
     Event authEvent,
     String mimeType,
+    Function(int, int)? onSendProgress,
   ) async {
     try {
       // Ensure server URL ends with /
@@ -812,6 +833,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       final response = await dio.put(
         uploadUrl,
         data: Stream.fromIterable([fileBytes]),
+        onSendProgress: onSendProgress,
         options: Options(
           headers: {
             'Content-Type': mimeType,
@@ -900,8 +922,8 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     return dioinstance.FormData.fromMap(userMap);
   }
 
-  Future<Response> _performRegularUpload(
-      dioinstance.FormData formData, Event authEvent) async {
+  Future<Response> _performRegularUpload(dioinstance.FormData formData,
+      Event authEvent, Function(int, int)? onSendProgress) async {
     final config = _getServerConfig(state.activeRegularServer);
     final bytes = utf8.encode(authEvent.toJsonString());
     final base64Str = base64.encode(bytes);
@@ -912,22 +934,42 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       headers: {'Authorization': 'Nostr $base64Str'},
     ));
 
-    return dio.post(config.uploadPath, data: formData);
+    return dio.post(
+      config.uploadPath,
+      data: formData,
+      onSendProgress: onSendProgress,
+    );
   }
 
   Map<String, String> _parseUploadResponse(Response response, bool isBlossom) {
     if (isBlossom) {
       String? url;
       String? type;
+      String? blurhash;
+      String? dim;
+      String? duration;
+      int? size;
+      String? x;
 
+      lg.i(response.data);
       if (response.data.runtimeType == String) {
         final decode = jsonDecode(response.data);
 
         url = decode['url'];
         type = decode['type'];
+        blurhash = decode['blurhash'];
+        dim = decode['dim'];
+        duration = decode['duration'];
+        size = decode['size'];
+        x = decode['sha256'];
       } else {
         url = response.data['url'];
         type = response.data['type'];
+        blurhash = response.data['blurhash'];
+        dim = response.data['dim'];
+        duration = response.data['duration'];
+        size = response.data['size'];
+        x = response.data['sha256'];
       }
 
       if (url == null) {
@@ -938,6 +980,11 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       return {
         'url': url,
         if (type != null) 'm': type,
+        if (blurhash != null) 'blurhash': blurhash,
+        if (dim != null) 'dim': dim,
+        if (duration != null) 'duration': duration,
+        if (size != null) 'size': size.toString(),
+        if (x != null) 'sha256': x,
       };
     } else {
       if (response.data['status'] != 'success') {

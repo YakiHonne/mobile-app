@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../logic/article_cubit/article_cubit.dart';
@@ -113,11 +112,9 @@ class ArticleView extends HookWidget {
 
         concatenatedContent.value = text;
 
-        textDirectionality.value = intl.Bidi.detectRtlDirectionality(
+        textDirectionality.value = getTextDirect(
           extractedContent.value['replacedString'],
-        )
-            ? TextDirection.rtl
-            : TextDirection.ltr;
+        );
       },
     );
 
@@ -395,10 +392,6 @@ class ArticleView extends HookWidget {
             aspectRatio: 16 / 9,
             child: CommonThumbnail(
               image: article.image,
-              placeholder: getRandomPlaceholder(
-                input: article.identifier,
-                isPfp: false,
-              ),
               width: double.infinity,
               radius: kDefaultPadding,
             ),

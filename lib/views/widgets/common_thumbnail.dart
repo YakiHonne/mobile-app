@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:extended_image/extended_image.dart';
@@ -13,7 +14,7 @@ class CommonThumbnail extends StatelessWidget {
   const CommonThumbnail({
     super.key,
     required this.image,
-    required this.placeholder,
+    this.memoryUrl,
     this.width,
     this.height,
     this.radius,
@@ -26,7 +27,7 @@ class CommonThumbnail extends StatelessWidget {
   });
 
   final String image;
-  final String placeholder;
+  final String? memoryUrl;
   final double? width;
   final double? height;
   final double? radius;
@@ -42,6 +43,11 @@ class CommonThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (memoryUrl != null) {
+      final file = File(memoryUrl!);
+      return _buildFileImage(context, file);
+    }
+
     final cleanImage = image.trim();
 
     if (cleanImage.isEmpty) {
@@ -53,6 +59,19 @@ class CommonThumbnail extends StatelessWidget {
     }
 
     return _buildNetworkImage(context, cleanImage);
+  }
+
+  ExtendedImage _buildFileImage(BuildContext context, File file) {
+    return ExtendedImage.file(
+      file,
+      width: width,
+      height: height,
+      fit: fit,
+      borderRadius: _getBorderRadius(),
+      shape: BoxShape.rectangle,
+      border: _getBorder(context),
+      loadStateChanged: _handleLoadState,
+    );
   }
 
   Widget _buildBase64Image() {
@@ -159,12 +178,10 @@ class CommonThumbnail extends StatelessWidget {
           height: commonProps.height,
           width: commonProps.width,
           isRound: commonProps.isRound,
-          image: placeholder,
-          isError: true,
           value: commonProps.radius,
-          useDefault: useDefaultNoMedia,
           isTopRounded: commonProps.isTopRounded,
           isLeftRounded: commonProps.isLeftRounded,
+          isPfp: isPfp,
         );
     }
   }

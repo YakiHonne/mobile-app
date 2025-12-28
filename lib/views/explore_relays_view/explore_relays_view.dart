@@ -24,6 +24,7 @@ class ExploreRelaysView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scrollController = useScrollController();
     final types = useMemoized(() {
       relayInfoCubit.init();
 
@@ -48,8 +49,9 @@ class ExploreRelaysView extends HookWidget {
           horizontal: kDefaultPadding / 2,
         ),
         child: CustomScrollView(
+          controller: scrollController,
           slivers: [
-            _appbar(context, types, selectedType, search),
+            _appbar(context, types, selectedType, search, scrollController),
             const SliverToBoxAdapter(
               child: SizedBox(
                 height: kDefaultPadding / 2,
@@ -94,8 +96,13 @@ class ExploreRelaysView extends HookWidget {
     );
   }
 
-  SliverAppBar _appbar(BuildContext context, List<String> types,
-      ValueNotifier<String> selectedType, ValueNotifier<String> search) {
+  SliverAppBar _appbar(
+    BuildContext context,
+    List<String> types,
+    ValueNotifier<String> selectedType,
+    ValueNotifier<String> search,
+    ScrollController scrollController,
+  ) {
     return SliverAppBar(
       leading: const SizedBox.shrink(),
       automaticallyImplyLeading: false,
@@ -124,6 +131,7 @@ class ExploreRelaysView extends HookWidget {
                   search.value = '';
                   selectedType.value = type;
                   HapticFeedback.lightImpact();
+                  scrollController.jumpTo(0);
                 },
               );
             },

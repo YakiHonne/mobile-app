@@ -2,7 +2,7 @@
 part of 'search_cubit.dart';
 
 class SearchState extends Equatable {
-  final List<dynamic> content;
+  final List<BaseEventModel> content;
   final List<Metadata> authors;
   final String search;
   final bool isSearching;
@@ -44,7 +44,7 @@ class SearchState extends Equatable {
       ];
 
   SearchState copyWith({
-    List<dynamic>? content,
+    List<BaseEventModel>? content,
     List<Metadata>? authors,
     String? search,
     bool? isSearching,

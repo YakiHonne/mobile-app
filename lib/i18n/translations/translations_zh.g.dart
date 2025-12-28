@@ -1475,6 +1475,30 @@ class TranslationsZh extends Translations {
 	@override String get favoriteRelaysFeed => '收藏中继Feed';
 	@override String get maxMentions => '最大提及';
 	@override String get maxMentionsDesc => '隐藏超过10个用户提及的笔记通知。';
+	@override String get media => '媒体';
+	@override String get pinned => '置顶';
+	@override String get pictures => '图片';
+	@override String get unpin => '取消置顶';
+	@override String get pin => '置顶';
+	@override String userPublishedPicture({required Object name}) => '${name} 发布了一张图片';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} 用 ${number} sats zap 了你的图片';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} 对你的图片做出了 ${reaction} 反应';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} 对一张提到你的图片做出了 ${reaction} 反应';
+	@override String userRepliedYourPicture({required Object name}) => '${name} 回复了你的图片';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} 回复了一张提到你的图片';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} 在一张图片中提到了你';
+	@override String userCommentedYourPicture({required Object name}) => '${name} 评论了你的图片';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} 评论了一张提到你的图片';
+	@override String userQuotedYourPicture({required Object name}) => '${name} 引用了你的图片';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} 引用了一张提到你的图片';
+	@override String get cameraPermission => '应用没有权限访问相机，或者此设备上没有可用相机。';
+	@override String get fetchingPicture => '正在获取图片...';
+	@override String get addDescription => '添加描述...';
+	@override String get uploadingVideo => '正在上传视频...';
+	@override String get uploadThumbnail => '上传缩略图';
+	@override String get chooseThumbnailVideo => '为您的视频选择合适的缩略图';
+	@override String get publishing => '正在发布...';
+	@override String get giveMeCatchyTitle => '给我一个吸引人的标题';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2939,6 +2963,30 @@ extension on TranslationsZh {
 			'favoriteRelaysFeed' => '收藏中继Feed',
 			'maxMentions' => '最大提及',
 			'maxMentionsDesc' => '隐藏超过10个用户提及的笔记通知。',
+			'media' => '媒体',
+			'pinned' => '置顶',
+			'pictures' => '图片',
+			'unpin' => '取消置顶',
+			'pin' => '置顶',
+			'userPublishedPicture' => ({required Object name}) => '${name} 发布了一张图片',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} 用 ${number} sats zap 了你的图片',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} 对你的图片做出了 ${reaction} 反应',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} 对一张提到你的图片做出了 ${reaction} 反应',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} 回复了你的图片',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} 回复了一张提到你的图片',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} 在一张图片中提到了你',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} 评论了你的图片',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} 评论了一张提到你的图片',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} 引用了你的图片',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} 引用了一张提到你的图片',
+			'cameraPermission' => '应用没有权限访问相机，或者此设备上没有可用相机。',
+			'fetchingPicture' => '正在获取图片...',
+			'addDescription' => '添加描述...',
+			'uploadingVideo' => '正在上传视频...',
+			'uploadThumbnail' => '上传缩略图',
+			'chooseThumbnailVideo' => '为您的视频选择合适的缩略图',
+			'publishing' => '正在发布...',
+			'giveMeCatchyTitle' => '给我一个吸引人的标题',
 			_ => null,
 		};
 	}

@@ -125,7 +125,6 @@ class HttpFunctionsRepository {
         return null;
       }
     } on DioException catch (ex) {
-      lg.i(ex.response);
       if (kDebugMode) {
         print(ex.error);
       }

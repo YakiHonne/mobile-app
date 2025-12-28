@@ -1475,6 +1475,30 @@ class TranslationsRu extends Translations {
 	@override String get favoriteRelaysFeed => 'Лента избранных релеев';
 	@override String get maxMentions => 'Максимум упоминаний';
 	@override String get maxMentionsDesc => 'Скрывать уведомления от заметок, в которых упоминается более 10 пользователей.';
+	@override String get media => 'Медиа';
+	@override String get pinned => 'Закреплён';
+	@override String get pictures => 'Изображения';
+	@override String get unpin => 'Открепить';
+	@override String get pin => 'Закрепить';
+	@override String userPublishedPicture({required Object name}) => '${name} опубликовал изображение';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} запнул ваше изображение на ${number} сатов';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на ваше изображение';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на изображение, где вас упомянули';
+	@override String userRepliedYourPicture({required Object name}) => '${name} ответил на ваше изображение';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} ответил на изображение, где вас упомянули';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} упомянул вас в изображении';
+	@override String userCommentedYourPicture({required Object name}) => '${name} прокомментировал ваше изображение';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} прокомментировал изображение, где вас упомянули';
+	@override String userQuotedYourPicture({required Object name}) => '${name} процитировал ваше изображение';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} процитировал изображение, где вас упомянули';
+	@override String get cameraPermission => 'Приложение не имеет разрешения на доступ к камере или на этом устройстве нет доступных камер.';
+	@override String get fetchingPicture => 'Получение изображения...';
+	@override String get addDescription => 'Добавить описание...';
+	@override String get uploadingVideo => 'Загрузка видео...';
+	@override String get uploadThumbnail => 'Загрузить миниатюру';
+	@override String get chooseThumbnailVideo => 'Выберите подходящую миниатюру для вашего видео';
+	@override String get publishing => 'Публикация...';
+	@override String get giveMeCatchyTitle => 'Дайте мне запоминающийся заголовок';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -2939,6 +2963,30 @@ extension on TranslationsRu {
 			'favoriteRelaysFeed' => 'Лента избранных релеев',
 			'maxMentions' => 'Максимум упоминаний',
 			'maxMentionsDesc' => 'Скрывать уведомления от заметок, в которых упоминается более 10 пользователей.',
+			'media' => 'Медиа',
+			'pinned' => 'Закреплён',
+			'pictures' => 'Изображения',
+			'unpin' => 'Открепить',
+			'pin' => 'Закрепить',
+			'userPublishedPicture' => ({required Object name}) => '${name} опубликовал изображение',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} запнул ваше изображение на ${number} сатов',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на ваше изображение',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на изображение, где вас упомянули',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} ответил на ваше изображение',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} ответил на изображение, где вас упомянули',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} упомянул вас в изображении',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} прокомментировал ваше изображение',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} прокомментировал изображение, где вас упомянули',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} процитировал ваше изображение',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} процитировал изображение, где вас упомянули',
+			'cameraPermission' => 'Приложение не имеет разрешения на доступ к камере или на этом устройстве нет доступных камер.',
+			'fetchingPicture' => 'Получение изображения...',
+			'addDescription' => 'Добавить описание...',
+			'uploadingVideo' => 'Загрузка видео...',
+			'uploadThumbnail' => 'Загрузить миниатюру',
+			'chooseThumbnailVideo' => 'Выберите подходящую миниатюру для вашего видео',
+			'publishing' => 'Публикация...',
+			'giveMeCatchyTitle' => 'Дайте мне запоминающийся заголовок',
 			_ => null,
 		};
 	}

@@ -340,6 +340,7 @@ class MainViewDrawer extends HookWidget {
             if (canSign()) ...[
               _profileDrawerItem(state, context),
             ],
+            _articlesDrawerItem(state, context),
             _relaysOrbitDrawerItem(state, context),
             if (canSign()) ...[
               _smartWidgetDrawerItem(state, context),
@@ -383,6 +384,19 @@ class MainViewDrawer extends HookWidget {
       icon: FeatureIcons.dashboard2,
       selectedIcon: FeatureIcons.propertiesFilled,
       title: context.t.dashboard.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _articlesDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.articles,
+      onClicked: () {
+        context.read<MainCubit>().updateIndex(MainViews.articles);
+        Scaffold.of(context).closeDrawer();
+      },
+      icon: FeatureIcons.article,
+      selectedIcon: FeatureIcons.articleFilled,
+      title: context.t.articles.capitalizeFirst(),
     );
   }
 

@@ -10,10 +10,10 @@ import 'dicover_settings_views/reorder_settings_view.dart';
 class DiscoverSourcesSettings extends HookWidget {
   const DiscoverSourcesSettings({
     super.key,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class DiscoverSourcesSettings extends HookWidget {
           ),
           ReorderSettingsView(
             controller: scrollController,
-            isDiscover: isDiscover,
+            viewType: viewType,
           ),
         ],
       ),

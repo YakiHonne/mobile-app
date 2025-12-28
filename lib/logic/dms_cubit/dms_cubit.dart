@@ -63,6 +63,7 @@ class DmsCubit extends Cubit<DmsState>
   late StreamSubscription followingsSubscription;
   late StreamSubscription muteListSubscription;
   final Map<String, DMSessionDetail> _pendingSessionUpdates = {};
+  Set<String> searchDmRelaysPubkeys = {};
   bool _hasPendingUpdates = false;
   Timer? _uiUpdateTimer;
   Timer? sendNotificationTimer;
@@ -283,7 +284,14 @@ class DmsCubit extends Cubit<DmsState>
           return;
         }
 
-        final relays = await getDmInboxRelays(pubkey);
+        final relays = await getDmInboxRelays(
+          pubkey,
+          forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
+        );
+
+        lg.i(relays);
+
+        searchDmRelaysPubkeys.add(pubkey);
 
         final successList = await Future.wait(
           [
@@ -303,7 +311,12 @@ class DmsCubit extends Cubit<DmsState>
         isSuccessful = successList.first && successList.last;
         event = senderEvent;
       } else {
-        final relays = await getDmInboxRelays(pubkey);
+        final relays = await getDmInboxRelays(
+          pubkey,
+          forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
+        );
+
+        searchDmRelaysPubkeys.add(pubkey);
 
         final receivedEvent = await currentSigner!.encrypt04Event(
           text,
@@ -741,6 +754,8 @@ class DmsCubit extends Cubit<DmsState>
 
   // MODIFIED: Query only processes truly new events
   Future<void> query() async {
+    await Future.delayed(const Duration(seconds: 2));
+
     if (dmsSubscriptionId != null) {
       nc.closeRequests([dmsSubscriptionId!]);
     }

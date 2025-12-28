@@ -16,17 +16,18 @@ import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
+import '../../media_view/media_view.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/classic_footer.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/media_components/horizontal_video_view.dart';
+import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/note_stats.dart';
 import '../../widgets/tag_container.dart';
 import '../../widgets/video_common_container.dart';
-import '../../widgets/video_components/horizontal_video_view.dart';
-import '../../widgets/video_components/vertical_video_view.dart';
 
 class RelayContentFeed extends StatefulWidget {
   const RelayContentFeed({
@@ -38,7 +39,7 @@ class RelayContentFeed extends StatefulWidget {
 }
 
 class _RelayContentFeedState extends State<RelayContentFeed> {
-  RelayContentType selectedExploreType = RelayContentType.all;
+  RelayContentType selectedExploreType = RelayContentType.notes;
   final scrollController = ScrollController();
   final refreshController = RefreshController();
 
@@ -83,39 +84,50 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
             final relay = context.read<RelayFeedCubit>().relay;
 
             return SmartRefresher(
-              controller: refreshController,
-              scrollController: scrollController,
-              enablePullUp: true,
-              header: const RefresherClassicHeader(),
-              footer: const RefresherClassicFooter(),
-              onLoading: () => buildRelayFeed.call(context, true),
-              onRefresh: () => buildRelayFeed.call(context, false),
-              child: NestedScrollView(
-                controller: scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
+                controller: refreshController,
+                scrollController: scrollController,
+                enablePullUp: true,
+                header: const RefresherClassicHeader(),
+                footer: const RefresherClassicFooter(),
+                onLoading: () => buildRelayFeed.call(context, true),
+                onRefresh: () => buildRelayFeed.call(context, false),
+                child: CustomScrollView(
+                  slivers: [
                     if (relayInfoCubit.state.relayInfos[relay] != null)
                       _relayBox(context),
                     _appbar(context),
-                  ];
-                },
-                body: state.onLoading
-                    ? const ContentPlaceholder()
-                    : const ContentList(),
-              ),
-              // ScrollShadow(
-              //   color: Theme.of(context).scaffoldBackgroundColor,
-              //   child: CustomScrollView(
-              //     controller: scrollController,
-              //     slivers: [
-              //       if (state.onLoading)
-              //         const SliverToBoxAdapter(child: ContentPlaceholder())
-              //       else
-              //         const ContentList(),
-              //     ],
-              //   ),
-              // ),
-            );
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                    ),
+                    if (state.onLoading)
+                      SliverToBoxAdapter(
+                        child: selectedExploreType == RelayContentType.media
+                            ? const MediaPlaceholder()
+                            : const ContentPlaceholder(),
+                      )
+                    else
+                      ContentList(
+                        type: selectedExploreType,
+                        scrollController: scrollController,
+                      ),
+                  ],
+                )
+
+                // ScrollShadow(
+                //   color: Theme.of(context).scaffoldBackgroundColor,
+                //   child: CustomScrollView(
+                //     controller: scrollController,
+                //     slivers: [
+                //       if (state.onLoading)
+                //         const SliverToBoxAdapter(child: ContentPlaceholder())
+                //       else
+                //         const ContentList(),
+                //     ],
+                //   ),
+                // ),
+                );
           },
         );
       },
@@ -180,12 +192,10 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
   String typeName(
       {required RelayContentType type, required BuildContext context}) {
     switch (type) {
-      case RelayContentType.all:
-        return context.t.all;
       case RelayContentType.articles:
         return context.t.articles;
-      case RelayContentType.videos:
-        return context.t.videos;
+      case RelayContentType.media:
+        return context.t.media;
       case RelayContentType.curations:
         return context.t.curations;
       case RelayContentType.notes:
@@ -197,7 +207,12 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
 class ContentList extends StatelessWidget {
   const ContentList({
     super.key,
+    required this.type,
+    required this.scrollController,
   });
+
+  final RelayContentType type;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -211,10 +226,19 @@ class ContentList extends StatelessWidget {
         final content = state.content;
 
         if (content.isEmpty) {
-          return EmptyList(
-            description: context.t.noResultsNoFilterMessage,
-            icon: LogosIcons.logoMarkWhite,
-            title: context.t.noResults,
+          return SliverToBoxAdapter(
+            child: EmptyList(
+              description: context.t.noResultsNoFilterMessage,
+              icon: LogosIcons.logoMarkWhite,
+              title: context.t.noResults,
+            ),
+          );
+        }
+
+        if (type == RelayContentType.media) {
+          return MediaGrid(
+            content: content,
+            loadVideos: true,
           );
         }
 
@@ -227,12 +251,11 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  Widget _itemsList(List<BaseEventModel> content) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      child: ListView.separated(
+  SliverPadding _itemsList(List<BaseEventModel> content) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      sliver: SliverList.separated(
         itemCount: content.length,
-        physics: const AlwaysScrollableScrollPhysics(),
         separatorBuilder: (context, index) => const Divider(
           height: kDefaultPadding,
           thickness: 0.5,
@@ -246,15 +269,12 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  Widget _itemsGrid(List<BaseEventModel> content) {
+  Padding _itemsGrid(List<BaseEventModel> content) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding / 2,
-      ),
-      child: MasonryGridView.count(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      child: SliverMasonryGrid.count(
         crossAxisCount: 2,
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: content.length,
+        childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
         mainAxisSpacing: kDefaultPadding / 2,
         itemBuilder: (context, index) {

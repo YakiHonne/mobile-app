@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.9.7] - 2025-12-23
+
+### Added
+
+- Introducing Media feed (videos, images).
+- Added profile pinned notes.
+
+### Changed
+
+- Add RTL directionality in Articles' editor.
+- Profile sections reworked.
+- Added mentions section in profile.
+- Load latest selected sources on startup.
+- Re-scroll to the top of feed when changing options.
+
+### Fixed
+
+- Fix Amber encryption syncing & Amber nip44 event decryption issue.
+- Fix messages not being fetched from dm relays.
+- Fix "nostr:" not working in search.
+- App stability improvements.
+- Bug fixes & performance improvements.
+
+
 ## [1.9.6] - 2025-12-02
 
 ### Fixed

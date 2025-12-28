@@ -13,6 +13,7 @@ import '../../views/add_content_view/related_adding_views/article_widgets/articl
 import '../../views/add_content_view/related_adding_views/article_widgets/gpt_chat.dart';
 import '../../views/widgets/custom_icon_buttons.dart';
 import '../../views/widgets/smart_widget_selection.dart';
+import '../common_regex.dart';
 import 'format_markdown.dart';
 
 /// Widget with markdown buttons
@@ -204,6 +205,18 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     );
   }
 
+  TextDirection _detectTextDirection(String text) {
+    // ignore: always_put_control_body_on_new_line
+    if (text.isEmpty) return TextDirection.ltr;
+    final first = text.split(' ').first;
+
+    if (rtlPattern.hasMatch(first)) {
+      return TextDirection.rtl;
+    }
+
+    return TextDirection.ltr;
+  }
+
   CustomScrollView _editingScrollView(BuildContext context) {
     return CustomScrollView(
       controller: _scrollController,
@@ -212,6 +225,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           child: TextFormField(
             minLines: 1,
             maxLines: 2,
+            textDirection: _detectTextDirection(widget.titleController.text),
             textCapitalization: TextCapitalization.sentences,
             keyboardType: TextInputType.text,
             onFieldSubmitted: (event) => focusNode.requestFocus(),
@@ -220,7 +234,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                 ),
             controller: widget.titleController,
             decoration: InputDecoration(
-              hintText: 'Give me a catchy title',
+              hintText: context.t.giveMeCatchyTitle,
               hintStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).highlightColor,
@@ -239,82 +253,85 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           ),
         ),
         SliverToBoxAdapter(
-          child: TextFormField(
-            focusNode: focusNode,
-            textInputAction: TextInputAction.newline,
-            controller: _controller,
-            onChanged: (value) {
-              widget.onTextChanged(_controller.text);
-            },
-            contextMenuBuilder: (
-              BuildContext context,
-              EditableTextState editableTextState,
-            ) {
-              return AdaptiveTextSelectionToolbar.editable(
-                anchors: editableTextState.contextMenuAnchors,
-                onLookUp: () {},
-                onSearchWeb: () {},
-                onShare: () {},
-                clipboardStatus: ClipboardStatus.pasteable,
-                onCopy: () => editableTextState
-                    .copySelection(SelectionChangedCause.toolbar),
-                onCut: () => editableTextState
-                    .cutSelection(SelectionChangedCause.toolbar),
-                onPaste: () async {
-                  final String pastableText = await getPastableString();
+          child: ValueListenableBuilder(
+            valueListenable: _controller,
+            builder: (context, value, child) => TextFormField(
+              focusNode: focusNode,
+              textInputAction: TextInputAction.newline,
+              controller: _controller,
+              onChanged: (value) {
+                widget.onTextChanged(_controller.text);
+              },
+              contextMenuBuilder: (
+                BuildContext context,
+                EditableTextState editableTextState,
+              ) {
+                return AdaptiveTextSelectionToolbar.editable(
+                  anchors: editableTextState.contextMenuAnchors,
+                  onLookUp: () {},
+                  onSearchWeb: () {},
+                  onShare: () {},
+                  clipboardStatus: ClipboardStatus.pasteable,
+                  onCopy: () => editableTextState
+                      .copySelection(SelectionChangedCause.toolbar),
+                  onCut: () => editableTextState
+                      .cutSelection(SelectionChangedCause.toolbar),
+                  onPaste: () async {
+                    final String pastableText = await getPastableString();
 
-                  final cursorPos = _controller.selection.base.offset;
+                    final cursorPos = _controller.selection.base.offset;
 
-                  final String suffixText =
-                      _controller.text.substring(cursorPos);
+                    final String suffixText =
+                        _controller.text.substring(cursorPos);
 
-                  final String specialChars = pastableText;
-                  final int length = specialChars.length;
+                    final String specialChars = pastableText;
+                    final int length = specialChars.length;
 
-                  final String prefixText =
-                      _controller.text.substring(0, cursorPos);
+                    final String prefixText =
+                        _controller.text.substring(0, cursorPos);
 
-                  _controller.text = prefixText + specialChars + suffixText;
-                  _controller.selection = TextSelection(
-                    baseOffset: cursorPos + length,
-                    extentOffset: cursorPos + length,
-                  );
+                    _controller.text = prefixText + specialChars + suffixText;
+                    _controller.selection = TextSelection(
+                      baseOffset: cursorPos + length,
+                      extentOffset: cursorPos + length,
+                    );
 
-                  editableTextState.updateEditingValue(
-                    editableTextState.currentTextEditingValue.copyWith(
-                      text: prefixText + specialChars + suffixText,
-                    ),
-                  );
+                    editableTextState.updateEditingValue(
+                      editableTextState.currentTextEditingValue.copyWith(
+                        text: prefixText + specialChars + suffixText,
+                      ),
+                    );
 
-                  editableTextState.hideToolbar();
-                },
-                onSelectAll: () => editableTextState.selectAll(
-                  SelectionChangedCause.toolbar,
-                ),
-                onLiveTextInput: () {},
-              );
-            },
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            validator: widget.validators != null
-                ? (value) => widget.validators!(value)
-                : null,
-            style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
-            cursorColor: Theme.of(context).primaryColorDark,
-            textDirection: widget.textDirection,
-            decoration: InputDecoration(
-              hintText: widget.label,
-              hintStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: Theme.of(context).highlightColor),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-              fillColor: kTransparent,
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
+                    editableTextState.hideToolbar();
+                  },
+                  onSelectAll: () => editableTextState.selectAll(
+                    SelectionChangedCause.toolbar,
+                  ),
+                  onLiveTextInput: () {},
+                );
+              },
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              validator: widget.validators != null
+                  ? (value) => widget.validators!(value)
+                  : null,
+              style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+              cursorColor: Theme.of(context).primaryColorDark,
+              textDirection: _detectTextDirection(_controller.text),
+              decoration: InputDecoration(
+                hintText: widget.label,
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Theme.of(context).highlightColor),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                fillColor: kTransparent,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
             ),
           ),
         ),
@@ -705,7 +722,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
       builder: (_) {
         return SmartWidgetSelection(
           onWidgetAdded: (sw) {
-            onTap.call(type, link: sw.getNaddr());
+            onTap.call(type, link: sw.getScheme());
             Navigator.pop(context);
           },
         );

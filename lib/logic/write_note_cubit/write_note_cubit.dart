@@ -9,7 +9,6 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
-import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -75,6 +74,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     String? selectedExternalRelay,
   }) async {
     toBeSubmittedEvent = null;
+    final ae = state.quotedContent;
 
     if (content.trim().isEmpty && !state.isQuotedContentAvailable) {
       BotToastUtils.showError(
@@ -101,6 +101,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
               [],
         );
       }
+
       final rPubkey = replyContent['pubkey'];
 
       if (rPubkey != null &&
@@ -117,23 +118,12 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     String? qTag;
 
     if (state.isQuotedContentAvailable) {
-      qTag = getBaseEventModelId(state.quotedContent!);
+      qTag = getBaseEventModelId(ae!);
 
-      String? addr;
+      updatedContent = '$updatedContent \nnostr:${ae.getScheme()}';
 
-      if (state.quotedContent is DetailedNoteModel) {
-        qTag = state.quotedContent!.id;
-        addr = Nip19.encodeNote(state.quotedContent!.id);
-      } else {
-        addr = naddr(state.quotedContent!);
-      }
-
-      if (addr != null) {
-        updatedContent = '$updatedContent nostr:$addr';
-      }
-
-      if (!pTags.contains(state.quotedContent!.pubkey)) {
-        pTags.add(state.quotedContent!.pubkey);
+      if (!pTags.contains(ae.pubkey)) {
+        pTags.add(ae.pubkey);
       }
     }
 

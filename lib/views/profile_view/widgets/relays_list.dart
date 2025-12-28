@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
@@ -66,12 +65,7 @@ class ProfileRelays extends StatelessWidget {
                   const SizedBox(
                     height: kDefaultPadding,
                   ),
-                  if (state.isRelaysLoading)
-                    SpinKitSpinningLines(
-                      size: 25,
-                      color: Theme.of(context).primaryColorDark,
-                    )
-                  else if (state.userRelays.isEmpty)
+                  if (state.userRelays.isEmpty)
                     EmptyList(
                       description: context.t.noUserRelays.capitalizeFirst(),
                       icon: FeatureIcons.relays,

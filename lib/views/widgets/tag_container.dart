@@ -28,7 +28,8 @@ class TagContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onClick,
       behavior: HitTestBehavior.translucent,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(
           vertical: kDefaultPadding / 2,
           horizontal: kDefaultPadding / 2,

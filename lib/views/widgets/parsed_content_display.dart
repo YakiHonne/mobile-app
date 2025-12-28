@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../models/flash_news_model.dart';
 import '../../utils/utils.dart';
 import 'dotted_container.dart';
 
 class ParsedContentDisplay extends StatelessWidget {
-  const ParsedContentDisplay({super.key, required this.content});
+  const ParsedContentDisplay({
+    super.key,
+    required this.content,
+    this.baseEventModel,
+  });
 
   final String content;
+  final BaseEventModel? baseEventModel;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +52,7 @@ class ParsedContentDisplay extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(kDefaultPadding / 2),
                 width: double.infinity,
-                child: ParsedText(text: content),
+                child: ParsedText(text: _getParsedContent()),
               ),
             ),
             const SizedBox(
@@ -56,5 +62,13 @@ class ParsedContentDisplay extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getParsedContent() {
+    if (baseEventModel == null) {
+      return content;
+    }
+
+    return '$content \n${baseEventModel!.getScheme()}';
   }
 }

@@ -10,6 +10,7 @@ import '../../../../logic/dashboard_cubits/dashboard_content_cubit/dashboard_con
 import '../../../../models/article_model.dart';
 import '../../../../models/curation_model.dart';
 import '../../../../models/detailed_note_model.dart';
+import '../../../../models/picture_model.dart';
 import '../../../../models/smart_widgets_components.dart';
 import '../../../../models/video_model.dart';
 import '../../../../routes/navigator.dart';
@@ -22,9 +23,10 @@ import '../../../smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/content_placeholder.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/media_components/horizontal_video_view.dart';
+import '../../../widgets/media_components/picture_view.dart';
+import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/tag_container.dart';
-import '../../../widgets/video_components/horizontal_video_view.dart';
-import '../../../widgets/video_components/vertical_video_view.dart';
 import '../home/dashboard_containers.dart';
 
 final dashboardArticleFilter = [
@@ -51,6 +53,7 @@ class _ContentDashboardState extends State<ContentDashboard> {
     AppContentType.note,
     AppContentType.curation,
     AppContentType.video,
+    AppContentType.picture,
   ];
 
   @override
@@ -544,6 +547,8 @@ class _ContentDashboardState extends State<ContentDashboard> {
         title = context.t.videos.capitalizeFirst();
       case AppContentType.smartWidget:
         title = context.t.smartWidget.capitalizeFirst();
+      case AppContentType.picture:
+        title = context.t.pictures.capitalizeFirst();
     }
     return title;
   }
@@ -633,7 +638,7 @@ class DashboardContentList extends StatelessWidget {
           context,
           (context) => SmartWidgetChecker(
             swm: item,
-            naddr: item.getNaddr(),
+            naddr: item.getScheme(),
           ),
         );
       };
@@ -659,6 +664,25 @@ class DashboardContentList extends StatelessWidget {
       isPaid = note.isPaid;
       onClick = () {
         YNavigator.pushPage(context, (context) => NoteView(note: note));
+      };
+    } else if (item is PictureModel) {
+      content = item.title.isNotEmpty ? item.title : item.content;
+
+      if (content.isEmpty) {
+        content = context.t.noTitle.capitalizeFirst();
+      }
+
+      kind = EventKind.PICTURE;
+      image = item.images.first.url;
+      id = item.id;
+
+      onClick = () {
+        YNavigator.pushPage(
+          context,
+          (context) => PictureView(
+            picture: item,
+          ),
+        );
       };
     }
 
@@ -721,6 +745,8 @@ String getTitle(AppContentType re, BuildContext context) {
       title = context.t.widgets.capitalizeFirst();
     case AppContentType.note:
       title = context.t.notes.capitalizeFirst();
+    case AppContentType.picture:
+      title = context.t.pictures.capitalizeFirst();
   }
 
   return title;

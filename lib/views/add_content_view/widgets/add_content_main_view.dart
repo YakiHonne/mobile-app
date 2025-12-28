@@ -99,6 +99,8 @@ class AddContentMainView extends StatelessWidget {
           smartWidgetModel: smartWidgetModel,
           selectFirstSmartWidgetDraft: selectFirstSmartWidgetDraft,
         );
+      case AppContentType.picture:
+        return const SizedBox.shrink();
     }
   }
 }

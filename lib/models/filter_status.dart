@@ -4,23 +4,27 @@ import 'dart:convert';
 class FilterStatus {
   bool leadingFilter;
   bool discoverFilter;
+  bool mediaFilter;
 
   FilterStatus({
     required this.leadingFilter,
     required this.discoverFilter,
+    required this.mediaFilter,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'leadingFilter': leadingFilter,
       'discoverFilter': discoverFilter,
+      'mediaFilter': mediaFilter,
     };
   }
 
   factory FilterStatus.fromMap(Map<String, dynamic> map) {
     return FilterStatus(
-      leadingFilter: map['leadingFilter'] as bool,
-      discoverFilter: map['discoverFilter'] as bool,
+      leadingFilter: map['leadingFilter'] as bool? ?? false,
+      discoverFilter: map['discoverFilter'] as bool? ?? false,
+      mediaFilter: map['mediaFilter'] as bool? ?? false,
     );
   }
 

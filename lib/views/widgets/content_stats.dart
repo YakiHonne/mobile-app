@@ -53,10 +53,11 @@ class ContentStats extends HookWidget {
   Widget build(BuildContext context) {
     final double iconSize = isInside ? 18 : 16;
     final double? fontSize = isInside ? 15 : null;
-    final isVideo =
-        kind == EventKind.VIDEO_HORIZONTAL || kind == EventKind.VIDEO_VERTICAL;
+    final isVideo = VideoModel.isVideo(kind);
 
-    final aTag = isVideo ? identifier : '$kind:$pubkey:$identifier';
+    final aTag = isVideo && !(attachedEvent as VideoModel).isRepleaceableVideo()
+        ? identifier
+        : '$kind:$pubkey:$identifier';
 
     // ✅ REPLACE the problematic useMemoized with this optimized version:
     final hasRequestedStats = useState(false);
@@ -109,28 +110,32 @@ class ContentStats extends HookWidget {
           final selfReply = stats['selfReply'];
 
           final widgets = buildActionButtons(
-              context: context,
-              reactions: reactions,
-              selfReaction: selfReaction,
-              replies: replies,
-              selfReply: selfReply,
-              quotes: quotes,
-              selfQuote: selfQuote,
-              zappers: zappers,
-              zapsData: zapsData,
-              selfZaps: selfZaps,
-              iconSize: iconSize,
-              fontSize: fontSize,
-              isVideo: isVideo,
-              aTag: aTag);
+            context: context,
+            reactions: reactions,
+            selfReaction: selfReaction,
+            replies: replies,
+            selfReply: selfReply,
+            quotes: quotes,
+            selfQuote: selfQuote,
+            zappers: zappers,
+            zapsData: zapsData,
+            selfZaps: selfZaps,
+            iconSize: iconSize,
+            fontSize: fontSize,
+            isVideo: isVideo,
+            aTag: aTag,
+          );
 
           final pullDownButton = PullDownGlobalButton(
             model: attachedEvent,
             enablePostInNote: true,
             enableCopyNpub: true,
             enableRepublish: true,
-            enableCopyId: attachedEvent is VideoModel,
-            enableCopyNaddr: attachedEvent is! VideoModel,
+            enableCopyId: attachedEvent is VideoModel &&
+                !(attachedEvent as VideoModel).isRepleaceableVideo(),
+            enableCopyNaddr: attachedEvent is! VideoModel ||
+                (attachedEvent is VideoModel &&
+                    (attachedEvent as VideoModel).isRepleaceableVideo()),
             enableBookmark: true,
             enableShareImage: true,
             enableAddToCuration: isInside,
@@ -410,7 +415,15 @@ class ContentStats extends HookWidget {
             'content': title,
             'replyData': isVideo
                 ? [
-                    ['e', identifier, '', 'root']
+                    [
+                      if ((attachedEvent as VideoModel).isRepleaceableVideo())
+                        'a'
+                      else
+                        'e',
+                      identifier,
+                      '',
+                      'root'
+                    ]
                   ]
                 : [
                     Nip33.coordinatesToTag(

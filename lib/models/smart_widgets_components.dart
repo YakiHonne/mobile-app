@@ -94,34 +94,6 @@ class SmartWidget extends Equatable implements BaseEventModel {
     required this.stringifiedEvent,
   });
 
-  String getNaddr() {
-    final List<int> charCodes = identifier.runes.toList();
-    final special = charCodes.map((code) => code.toRadixString(16)).join();
-
-    return Nip19.encodeShareableEntity(
-      'naddr',
-      special,
-      [],
-      pubkey,
-      EventKind.SMART_WIDGET_ENH,
-    );
-  }
-
-  Future<String> getNaddrWithRelays() async {
-    final List<int> charCodes = identifier.runes.toList();
-    final special = charCodes.map((code) => code.toRadixString(16)).join();
-    final relays =
-        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
-
-    return Nip19.encodeShareableEntity(
-      'naddr',
-      special,
-      relays,
-      pubkey,
-      EventKind.SMART_WIDGET_ENH,
-    );
-  }
-
   String aTag() {
     return '${EventKind.SMART_WIDGET_ENH}:$pubkey:$identifier';
   }
@@ -260,6 +232,36 @@ class SmartWidget extends Equatable implements BaseEventModel {
 
   factory SmartWidget.fromJson(String source) =>
       SmartWidget.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String getScheme() {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      [],
+      pubkey,
+      EventKind.SMART_WIDGET_ENH,
+    );
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+    final relays =
+        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      relays,
+      pubkey,
+      EventKind.SMART_WIDGET_ENH,
+    );
+  }
 }
 
 abstract class SmartWidgetBoxComponent {

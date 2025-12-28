@@ -59,7 +59,7 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
               },
               title: context.t.edit.capitalizeFirst(),
               iconWidget: SvgPicture.asset(
-                FeatureIcons.article,
+                FeatureIcons.editArticle,
                 height: 20,
                 width: 20,
                 colorFilter: ColorFilter.mode(
@@ -155,7 +155,8 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
           ];
         },
         buttonBuilder: (context, showMenu) => SmallRectangularButton(
-          backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.8),
+          backgroundColor:
+              Theme.of(context).primaryColor.withValues(alpha: 0.8),
           onClick: showMenu,
           icon: FeatureIcons.more,
         ),

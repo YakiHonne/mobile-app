@@ -22,6 +22,8 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/flash_news_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
@@ -29,6 +31,7 @@ import '../../utils/utils.dart';
 import '../dm_view/widgets/dm_details.dart';
 import '../note_view/note_view.dart';
 import '../profile_view/profile_view.dart';
+import '../threads_view/threads_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../write_note_view/write_note_view.dart';
 import 'buttons_containers_widgets.dart';
@@ -45,7 +48,8 @@ import 'zappers_view.dart';
 class NoteStats extends HookWidget {
   const NoteStats({
     super.key,
-    required this.note,
+    required this.id,
+    required this.model,
     required this.isMain,
     this.autoTranslate = false,
     this.onEventAdded,
@@ -53,7 +57,8 @@ class NoteStats extends HookWidget {
     this.onMuteActionSuccess,
   });
 
-  final DetailedNoteModel note;
+  final String id;
+  final BaseEventModel model;
   final bool isMain;
   final bool autoTranslate;
   final Function(String)? onTextTranslated;
@@ -74,9 +79,9 @@ class NoteStats extends HookWidget {
           if (context.mounted && isInViewport.value) {
             hasRequestedStats.value = true;
             if (isMain) {
-              notesEventsCubit.getSpecificContentStats(note.id);
+              notesEventsCubit.getSpecificContentStats(model.id);
             } else {
-              notesEventsCubit.getContentStatsOptimized(note.id);
+              notesEventsCubit.getContentStatsOptimized(model.id);
             }
           }
         });
@@ -87,14 +92,14 @@ class NoteStats extends HookWidget {
     }, [isInViewport.value]);
 
     return VisibilityDetector(
-      key: ValueKey(note.id),
+      key: ValueKey(model.id),
       onVisibilityChanged: (info) {
         if (context.mounted) {
           if (info.visibleFraction == 0.5) {
             if (isMain) {
-              notesEventsCubit.getSpecificContentStats(note.id);
+              notesEventsCubit.getSpecificContentStats(model.id);
             } else {
-              notesEventsCubit.getContentStats(note.id);
+              notesEventsCubit.getContentStats(model.id);
             }
           }
 
@@ -105,10 +110,10 @@ class NoteStats extends HookWidget {
       },
       child: BlocBuilder<NotesEventsCubit, NotesEventsState>(
         buildWhen: (previous, current) =>
-            previous.eventsStats[note.id] != current.eventsStats[note.id] ||
+            previous.eventsStats[model.id] != current.eventsStats[model.id] ||
             previous.mutes != current.mutes,
         builder: (context, state) {
-          final stats = notesEventsCubit.getDirectStats(note.id);
+          final stats = notesEventsCubit.getDirectStats(model.id);
 
           final replies = stats['replies'];
           final reposts = stats['reposts'];
@@ -127,81 +132,98 @@ class NoteStats extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: kDefaultPadding / 4,
               children: [
-                AnimatedCrossFade(
-                  firstChild: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: kDefaultPadding / 4,
+                if (model is DetailedNoteModel)
+                  AnimatedCrossFade(
+                    firstChild: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPadding / 4,
+                      ),
+                      child: ZappersRow(
+                        zapData: zapsData,
+                        zappers: zappers,
+                      ),
                     ),
-                    child: ZappersRow(
-                      zapData: zapsData,
-                      zappers: zappers,
+                    secondChild: const SizedBox(
+                      width: double.infinity,
+                    ),
+                    crossFadeState: zappers.isNotEmpty
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(
+                      milliseconds: 300,
                     ),
                   ),
-                  secondChild: const SizedBox(
-                    width: double.infinity,
-                  ),
-                  crossFadeState: zappers.isNotEmpty
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  duration: const Duration(
-                    milliseconds: 300,
-                  ),
-                ),
                 SizedBox(
                   height: 25,
                   child: Row(
                     children: [
                       Expanded(
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: buildActionButtons(
-                            context: context,
-                            reactions: reactions,
-                            selfReaction: selfReaction,
-                            replies: replies,
-                            selfReply: selfReply,
-                            reposts: reposts,
-                            selfRepost: selfRepost,
-                            quotes: quotes,
-                            selfQuote: selfQuote,
-                            zappers: zappers,
-                            zapsData: zapsData,
-                            selfZaps: selfZaps,
-                          ),
-                        ),
+                        child: model is DetailedNoteModel
+                            ? ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: buildActionButtons(
+                                  context: context,
+                                  reactions: reactions,
+                                  selfReaction: selfReaction,
+                                  replies: replies,
+                                  selfReply: selfReply,
+                                  reposts: reposts,
+                                  selfRepost: selfRepost,
+                                  quotes: quotes,
+                                  selfQuote: selfQuote,
+                                  zappers: zappers,
+                                  zapsData: zapsData,
+                                  selfZaps: selfZaps,
+                                ))
+                            : _buildPictureActionButtons(
+                                context: context,
+                                reactions: reactions,
+                                selfReaction: selfReaction,
+                                replies: replies,
+                                selfReply: selfReply,
+                                reposts: reposts,
+                                selfRepost: selfRepost,
+                                quotes: quotes,
+                                selfQuote: selfQuote,
+                                zappers: zappers,
+                                zapsData: zapsData,
+                                selfZaps: selfZaps,
+                              ),
                       ),
                       const SizedBox(
                         width: kDefaultPadding / 2,
                       ),
-                      TranslationButton(
-                        autoTranslate: autoTranslate,
-                        isMain: isMain,
-                        note: note,
-                        onTextTranslated: onTextTranslated,
-                      ),
+                      if (model is DetailedNoteModel)
+                        TranslationButton(
+                          autoTranslate: autoTranslate,
+                          isMain: isMain,
+                          note: model as DetailedNoteModel,
+                          onTextTranslated: onTextTranslated,
+                        ),
                       BlocBuilder<NotesEventsCubit, NotesEventsState>(
                         buildWhen: (previous, current) =>
                             previous.mutes != current.mutes,
                         builder: (context, state) {
                           return PullDownGlobalButton(
-                            model: note,
+                            model: model,
                             enableCopyNpub: true,
                             enableCopyId: true,
                             enableBookmark: true,
-                            enableShareImage: true,
+                            enableShareImage: model is DetailedNoteModel,
                             enableShowRawEvent: true,
                             enableRepublish: true,
+                            enablePin: canSign() && model is DetailedNoteModel,
                             bookmarkStatus:
                                 notesEventsCubit.state.bookmarks.contains(
-                              note.id,
+                              model.id,
                             ),
                             enableShare: true,
                             enableMute: true,
-                            enableMuteEvent: true,
+                            enableMuteEvent: model is DetailedNoteModel,
                             muteEventStatus:
-                                state.mutesEvents.contains(note.id),
+                                state.mutesEvents.contains(model.id),
                             iconColor: Theme.of(context).highlightColor,
-                            muteStatus: state.mutes.contains(note.pubkey),
+                            muteStatus: state.mutes.contains(model.pubkey),
                           );
                         },
                       ),
@@ -213,6 +235,56 @@ class NoteStats extends HookWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildPictureActionButtons({
+    required BuildContext context,
+    required dynamic reactions,
+    required dynamic selfReaction,
+    required dynamic replies,
+    required dynamic selfReply,
+    required dynamic reposts,
+    required dynamic selfRepost,
+    required dynamic quotes,
+    required dynamic selfQuote,
+    required dynamic zappers,
+    required dynamic zapsData,
+    required dynamic selfZaps,
+  }) {
+    final actions =
+        nostrRepository.currentAppCustomization?.actionsArrangement ??
+            defaultActionsArrangement;
+
+    return Row(
+      children: [
+        ...actions.entries
+            .where(
+          (action) => action.value,
+        )
+            .map((action) {
+          switch (action.key) {
+            case 'reactions':
+              return Expanded(
+                child: _reactButton(selfReaction, reactions),
+              );
+            case 'replies':
+              return Expanded(
+                child: _replyButton(context, selfReply, replies),
+              );
+            case 'quotes':
+              return Expanded(
+                child: _quoteButton(selfQuote, context, quotes),
+              );
+            case 'zaps':
+              return Expanded(
+                child: _zapButton(selfZaps, zappers, zapsData),
+              );
+            default:
+              return const SizedBox.shrink();
+          }
+        }),
+      ],
     );
   }
 
@@ -245,7 +317,11 @@ class NoteStats extends HookWidget {
             case 'replies':
               return _replyButton(context, selfReply, replies);
             case 'reposts':
-              return _repostButton(context, reposts, selfRepost);
+              if (model is DetailedNoteModel) {
+                return _repostButton(context, reposts, selfRepost);
+              }
+
+              return const SizedBox.shrink();
             case 'quotes':
               return _quoteButton(selfQuote, context, quotes);
             case 'zaps':
@@ -261,7 +337,8 @@ class NoteStats extends HookWidget {
 
   ZapButton _zapButton(selfZaps, zappers, zapsData) {
     return ZapButton(
-      note: note,
+      id: model.id,
+      eventPubkey: model.pubkey,
       pubkey: currentSigner?.getPublicKey() ?? '',
       selfZaps: selfZaps,
       zappers: zappers,
@@ -280,7 +357,7 @@ class NoteStats extends HookWidget {
           elevation: 0,
           builder: (_) {
             return NetStatsView(
-              id: note.id,
+              id: model.id,
               type: NoteRelatedEventsType.quotes,
             );
           },
@@ -298,12 +375,12 @@ class NoteStats extends HookWidget {
               elevation: 0,
               builder: (_) {
                 return AddReply(
-                  attachedEvent: note,
+                  attachedEvent: model,
                   isMention: false,
                   onSuccess: (ev) {
                     notesEventsCubit.addEventRelatedData(
                       event: ev,
-                      replyNoteId: note.id,
+                      replyNoteId: model.id,
                     );
                   },
                 );
@@ -339,7 +416,7 @@ class NoteStats extends HookWidget {
           elevation: 0,
           builder: (_) {
             return NetStatsView(
-              id: note.id,
+              id: model.id,
               type: NoteRelatedEventsType.reposts,
             );
           },
@@ -352,7 +429,7 @@ class NoteStats extends HookWidget {
       onClicked: () {
         doIfCanSign(
           func: () {
-            notesEventsCubit.repostNote(note);
+            notesEventsCubit.repostNote(model as DetailedNoteModel);
           },
           context: context,
         );
@@ -376,7 +453,9 @@ class NoteStats extends HookWidget {
       onLongPress: () {
         YNavigator.pushPage(
           context,
-          (context) => NoteView(note: note),
+          (context) => model is DetailedNoteModel
+              ? NoteView(note: model as DetailedNoteModel)
+              : ContentThreadsView(aTag: model.id),
         );
       },
       onClicked: () {
@@ -386,23 +465,48 @@ class NoteStats extends HookWidget {
               context: context,
               elevation: 0,
               builder: (_) {
-                return AddReply(
-                  onSuccess: (ev) {
-                    notesEventsCubit.addEventRelatedData(
-                      event: ev,
-                      replyNoteId: note.id,
-                    );
+                if (model is DetailedNoteModel) {
+                  final m = model as DetailedNoteModel;
+                  return AddReply(
+                    onSuccess: (ev) {
+                      notesEventsCubit.addEventRelatedData(
+                        event: ev,
+                        replyNoteId: m.id,
+                      );
 
-                    onEventAdded?.call();
-                  },
-                  replyContent: {
-                    'pubkey': note.pubkey,
-                    'pTags': note.cleanPtags(),
-                    'date': note.createdAt,
-                    'content': note.content,
-                    'replyData': note.replyData(),
-                  },
-                );
+                      onEventAdded?.call();
+                    },
+                    replyContent: {
+                      'pubkey': m.pubkey,
+                      'pTags': m.cleanPtags(),
+                      'date': m.createdAt,
+                      'content': m.content,
+                      'replyData': m.replyData(),
+                    },
+                  );
+                } else {
+                  final m = model as PictureModel;
+
+                  return AddReply(
+                    onSuccess: (ev) {
+                      notesEventsCubit.addEventRelatedData(
+                        event: ev,
+                        replyNoteId: m.id,
+                      );
+
+                      onEventAdded?.call();
+                    },
+                    // attachedEvent: m,
+                    replyContent: {
+                      'pubkey': m.pubkey,
+                      'date': m.createdAt,
+                      'content': m.content,
+                      'replyData': [
+                        ['e', m.id, '', 'root'],
+                      ]
+                    },
+                  );
+                }
               },
               isScrollControlled: true,
               useRootNavigator: true,
@@ -428,9 +532,9 @@ class NoteStats extends HookWidget {
   CustomReactionButton _reactButton(selfReaction, reactions) {
     return CustomReactionButton(
       selfReaction: selfReaction,
-      id: note.id,
+      id: model.id,
       isReplaceable: false,
-      pubkey: note.pubkey,
+      pubkey: model.pubkey,
       reactions: reactions,
       size: 16,
     );
@@ -776,14 +880,16 @@ class ZappersRow extends StatelessWidget {
 class ZapButton extends HookWidget {
   const ZapButton({
     super.key,
-    required this.note,
+    required this.id,
+    required this.eventPubkey,
     required this.zapsData,
     required this.zappers,
     required this.selfZaps,
     required this.pubkey,
   });
 
-  final DetailedNoteModel note;
+  final String id;
+  final String eventPubkey;
   final Map<String, dynamic> zapsData;
   final Map<String, MapEntry<String, int>> zappers;
   final bool selfZaps;
@@ -797,7 +903,7 @@ class ZapButton extends HookWidget {
       () {
         doIfCanSign(
           func: () async {
-            final m = await metadataCubit.getAvailableMetadata(note.pubkey);
+            final m = await metadataCubit.getAvailableMetadata(eventPubkey);
             isFastZapping.value = true;
 
             walletManagerCubit.handleWalletZap(
@@ -812,15 +918,15 @@ class ZapButton extends HookWidget {
 
                 BotToastUtils.showError(message);
               },
-              eventId: note.id,
+              eventId: id,
               onSuccess: (_) {
                 if (context.mounted) {
                   isFastZapping.value = false;
                 }
 
                 notesEventsCubit.handleSubmittedZap(
-                  eventId: note.id,
-                  recipientPubkey: note.pubkey,
+                  eventId: id,
+                  recipientPubkey: eventPubkey,
                   amount: getCurrentUserDefaultZapAmount(),
                   senderPubkey: currentSigner!.getPublicKey(),
                   isIdentifier: false,
@@ -842,7 +948,7 @@ class ZapButton extends HookWidget {
       () {
         doIfCanSign(
           func: () async {
-            final m = await metadataCubit.getAvailableMetadata(note.pubkey);
+            final m = await metadataCubit.getAvailableMetadata(eventPubkey);
 
             if (context.mounted) {
               showModalBottomSheet(
@@ -851,13 +957,13 @@ class ZapButton extends HookWidget {
                 builder: (_) {
                   return SendZapsView(
                     metadata: m,
-                    eventId: note.id,
+                    eventId: id,
                     isZapSplit: false,
                     zapSplits: const [],
                     onSuccess: (_, amount) {
                       notesEventsCubit.handleSubmittedZap(
-                        eventId: note.id,
-                        recipientPubkey: note.pubkey,
+                        eventId: id,
+                        recipientPubkey: eventPubkey,
                         amount: amount,
                         senderPubkey: currentSigner!.getPublicKey(),
                         isIdentifier: false,
@@ -895,7 +1001,7 @@ class ZapButton extends HookWidget {
   Widget _zapButton(
       BuildContext context, Function() onDefaultZap, Function() onSetZap) {
     return Opacity(
-      opacity: pubkey == note.pubkey ? 0.5 : 1,
+      opacity: pubkey == eventPubkey ? 0.5 : 1,
       child: CustomIconButton(
         key: ValueKey(selfZaps),
         backgroundColor: kTransparent,
@@ -918,7 +1024,7 @@ class ZapButton extends HookWidget {
           }
         },
         onDoubleTap: () {
-          if (pubkey == note.pubkey) {
+          if (pubkey == eventPubkey) {
             return;
           }
 
@@ -929,7 +1035,7 @@ class ZapButton extends HookWidget {
           }
         },
         onClicked: () {
-          if (pubkey == note.pubkey) {
+          if (pubkey == eventPubkey) {
             return;
           }
 
@@ -1606,7 +1712,8 @@ class DetailedNoteContainer extends HookWidget {
             height: kDefaultPadding / 4,
           ),
           NoteStats(
-            note: note,
+            id: note.id,
+            model: note,
             isMain: isMain,
             onEventAdded: onEventAdded,
             autoTranslate: autoTranslate,
@@ -1692,7 +1799,8 @@ class DetailedNoteContainer extends HookWidget {
               height: kDefaultPadding / 3,
             ),
             NoteStats(
-              note: note,
+              id: note.id,
+              model: note,
               isMain: isMain,
               onEventAdded: onEventAdded,
               autoTranslate: autoTranslate,

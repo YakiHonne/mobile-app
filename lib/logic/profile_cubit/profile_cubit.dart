@@ -11,10 +11,6 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
-import '../../models/article_model.dart';
-import '../../models/curation_model.dart';
-import '../../models/smart_widgets_components.dart';
-import '../../models/video_model.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -26,49 +22,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
     required this.pubkey,
   }) : super(
-          ProfileState(
-            profileStatus: ProfileStatus.loading,
-            notesLoading: UpdatingState.success,
-            repliesLoading: UpdatingState.success,
-            isFollowedByUser: false,
-            isRelaysLoading: true,
-            isVideoLoading: true,
-            isNotesLoading: true,
-            isRepliesLoading: true,
-            isSmartWidgetsLoading: true,
-            isArticlesLoading: true,
-            mutes: nostrRepository.muteModel.usersMutes.toList(),
-            userRelays: const [],
-            videos: const [],
-            notes: const [],
-            replies: const [],
-            articles: const [],
-            curations: const [],
-            smartWidgets: const [],
-            canBeZapped: false,
-            isFollowingUser: false,
-            isNip05: false,
-            isSameUser: canSign() && pubkey == currentSigner!.getPublicKey(),
-            followers: 0,
-            followings: 0,
-            bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
-            activeRelays: nc.activeRelays(),
-            ownRelays: nc.relays(),
-            user: Metadata.empty().copyWith(
-              pubkey: pubkey,
-            ),
-            ratingImpact: 0,
-            writingImpact: 0,
-            negativeWritingImpact: 0,
-            ongoingWritingImpact: 0,
-            positiveRatingImpactH: 0,
-            positiveRatingImpactNh: 0,
-            positiveWritingImpact: 0,
-            negativeRatingImpactH: 0,
-            negativeRatingImpactNh: 0,
-            ongoingRatingImpact: 0,
-            refresh: false,
-          ),
+          ProfileState.intial(pubkey: pubkey),
         ) {
     bookmarksSubscription = nostrRepository.bookmarksStream.listen(
       (bookmarks) {
@@ -113,15 +67,30 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
     );
 
+    if (canSign() && pubkey == currentSigner!.getPublicKey()) {
+      pinnedNotesSubscription = nostrRepository.pinnedNotesStream.listen(
+        (pNotes) {
+          pinnedNotes = pNotes;
+          if (currentProfileData == ProfileData.pinned) {
+            getUserInfos(profileData: ProfileData.pinned);
+          }
+        },
+      );
+    }
+
     setIsFollowedByUser();
   }
 
   late StreamSubscription followingsSubscription;
   late StreamSubscription bookmarksSubscription;
   late StreamSubscription mutesListSubscription;
+  StreamSubscription? pinnedNotesSubscription;
 
   final String pubkey;
+  String fetchId = '';
   Set<String> requests = {};
+  Set<String> pinnedNotes = {};
+  ProfileData currentProfileData = ProfileData.notes;
 
   Future<void> setIsFollowedByUser() async {
     final contactList = await contactListCubit.getContactList(pubkey);
@@ -140,79 +109,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void emitEmptyState() {
     if (!isClosed) {
-      _emit(
-        ProfileState(
-          profileStatus: ProfileStatus.loading,
-          isFollowedByUser: false,
-          notesLoading: UpdatingState.idle,
-          repliesLoading: UpdatingState.idle,
-          isVideoLoading: true,
-          isRelaysLoading: true,
-          isNotesLoading: true,
-          isRepliesLoading: true,
-          isSmartWidgetsLoading: true,
-          userRelays: const [],
-          videos: const [],
-          notes: const [],
-          replies: const [],
-          articles: const [],
-          curations: const [],
-          smartWidgets: const [],
-          mutes: nostrRepository.muteModel.usersMutes.toList(),
-          isArticlesLoading: true,
-          canBeZapped: false,
-          isFollowingUser: false,
-          isNip05: false,
-          isSameUser: canSign() && pubkey == currentSigner!.getPublicKey(),
-          followers: 0,
-          followings: 0,
-          bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
-          activeRelays: nc.activeRelays(),
-          ownRelays: nc.relays(),
-          user: Metadata.empty()..copyWith(pubkey: pubkey),
-          ratingImpact: 0,
-          writingImpact: 0,
-          negativeWritingImpact: 0,
-          ongoingWritingImpact: 0,
-          positiveRatingImpactH: 0,
-          positiveRatingImpactNh: 0,
-          positiveWritingImpact: 0,
-          negativeRatingImpactH: 0,
-          negativeRatingImpactNh: 0,
-          ongoingRatingImpact: 0,
-          refresh: !state.refresh,
-        ),
-      );
+      _emit(ProfileState.intial(pubkey: pubkey));
 
       setIsFollowedByUser();
     }
   }
 
   void initView() {
+    establishRequiredData();
     getUserInfos();
-    getImpacts();
-  }
-
-  Future<void> getImpacts() async {
-    try {
-      final response = await HttpFunctionsRepository.getImpacts(pubkey);
-      if (!isClosed) {
-        _emit(
-          state.copyWith(
-            writingImpact: response['writing'],
-            ratingImpact: response['rating'],
-            negativeWritingImpact: response['negativeWriting'],
-            ongoingWritingImpact: response['ongoingWriting'],
-            positiveRatingImpactH: response['positiveRatingH'],
-            positiveRatingImpactNh: response['positiveRatingNh'],
-            positiveWritingImpact: response['positiveWriting'],
-            negativeRatingImpactH: response['negativeRatingH'],
-            negativeRatingImpactNh: response['negativeRatingNh'],
-            ongoingRatingImpact: response['ongoingRating'],
-          ),
-        );
-      }
-    } catch (_) {}
   }
 
   void onRemoveMutedContent(
@@ -220,7 +125,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     bool isNotes,
   ) {
     if (!isClosed) {
-      final newContent = List<Event>.from(isNotes ? state.notes : state.replies)
+      final newContent = List<Event>.from(state.content)
         ..removeWhere((e) {
           if (e.kind == EventKind.REPOST) {
             try {
@@ -237,8 +142,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       _emit(
         state.copyWith(
-          notes: isNotes ? newContent : state.notes,
-          replies: !isNotes ? newContent : state.replies,
+          content: newContent,
           refresh: !state.refresh,
         ),
       );
@@ -269,52 +173,52 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  void getMoreNotes(bool isReplies) {
-    if (state.notes.isNotEmpty) {
-      final oldNotes = isReplies ? state.replies : state.notes;
+  // void getMoreNotes(bool isReplies) {
+  //   if (state.notes.isNotEmpty) {
+  //     final oldNotes = isReplies ? state.replies : state.notes;
 
-      List<Event> newNotes = [];
-      if (!isClosed) {
-        _emit(
-          state.copyWith(
-            notesLoading: isReplies ? null : UpdatingState.progress,
-            repliesLoading: isReplies ? UpdatingState.progress : null,
-          ),
-        );
-      }
+  //     List<Event> newNotes = [];
+  //     if (!isClosed) {
+  //       _emit(
+  //         state.copyWith(
+  //           notesLoading: isReplies ? null : UpdatingState.progress,
+  //           repliesLoading: isReplies ? UpdatingState.progress : null,
+  //         ),
+  //       );
+  //     }
 
-      NostrFunctionsRepository.getDetailedNotes(
-        kinds: [EventKind.TEXT_NOTE, if (!isReplies) EventKind.REPOST],
-        isReplies: isReplies,
-        onNotesFunc: (notes) {
-          newNotes = notes;
-        },
-        pubkeys: [pubkey],
-        until: oldNotes.last.createdAt - 1,
-        limit: 30,
-        onDone: () {
-          if (!isClosed) {
-            _emit(
-              state.copyWith(
-                notes: isReplies ? null : [...oldNotes, ...newNotes],
-                notesLoading: isReplies
-                    ? null
-                    : newNotes.isEmpty
-                        ? UpdatingState.idle
-                        : UpdatingState.success,
-                replies: !isReplies ? null : [...oldNotes, ...newNotes],
-                repliesLoading: !isReplies
-                    ? null
-                    : newNotes.isEmpty
-                        ? UpdatingState.idle
-                        : UpdatingState.success,
-              ),
-            );
-          }
-        },
-      );
-    }
-  }
+  //     NostrFunctionsRepository.getDetailedNotes(
+  //       kinds: [EventKind.TEXT_NOTE, if (!isReplies) EventKind.REPOST],
+  //       isReplies: isReplies,
+  //       onNotesFunc: (notes) {
+  //         newNotes = notes;
+  //       },
+  //       pubkeys: [pubkey],
+  //       until: oldNotes.last.createdAt - 1,
+  //       limit: 30,
+  //       onDone: () {
+  //         if (!isClosed) {
+  //           _emit(
+  //             state.copyWith(
+  //               notes: isReplies ? null : [...oldNotes, ...newNotes],
+  //               notesLoading: isReplies
+  //                   ? null
+  //                   : newNotes.isEmpty
+  //                       ? UpdatingState.idle
+  //                       : UpdatingState.success,
+  //               replies: !isReplies ? null : [...oldNotes, ...newNotes],
+  //               repliesLoading: !isReplies
+  //                   ? null
+  //                   : newNotes.isEmpty
+  //                       ? UpdatingState.idle
+  //                       : UpdatingState.success,
+  //             ),
+  //           );
+  //         }
+  //       },
+  //     );
+  //   }
+  // }
 
   Future<void> shareLink(RenderBox? renderBox) async {
     final res = await externalShearableLink(
@@ -333,9 +237,25 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> establishRequiredData() async {
+    loadPinnedNotes();
     establishMetadata();
     getFollowingsAndFollowersCount();
     loadContactList();
+  }
+
+  Future<void> loadPinnedNotes() async {
+    if (pubkey != currentSigner?.getPublicKey()) {
+      final events = await NostrFunctionsRepository.getEventsAsync(
+        pubkeys: [pubkey],
+        kinds: [EventKind.PINNED_NOTES],
+      );
+
+      if (events.isNotEmpty) {
+        pinnedNotes = events.first.eTags.toSet();
+      }
+    } else {
+      pinnedNotes = nostrRepository.pinnedNotes;
+    }
   }
 
   Future<void> establishMetadata() async {
@@ -388,97 +308,147 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
-  Future<void> getUserInfos() async {
-    establishRequiredData();
+  Future<void> getUserInfos({
+    bool isAdding = false,
+    ProfileData profileData = ProfileData.notes,
+  }) async {
+    final id = uuid.v4();
+    fetchId = id;
 
-    final requestId = await NostrFunctionsRepository.getUserProfile(
-      authorPubkey: pubkey,
-      curationsFunc: (curations) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              curations: curations,
-            ),
-          );
-        }
-      },
-      smartWidgetFunc: (widgets) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              smartWidgets: widgets,
-              isSmartWidgetsLoading: false,
-            ),
-          );
-        }
-      },
-      videosFunc: (videos) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              videos: videos,
-              isVideoLoading: false,
-            ),
-          );
-        }
-      },
-      notesFunc: (notes) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              notes: notes,
-              isNotesLoading: false,
-            ),
-          );
-        }
-      },
-      repliesFunc: (replies) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              replies: replies,
-              isRepliesLoading: false,
-            ),
-          );
-        }
-      },
-      articleFunc: (articles) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              articles: articles,
-              isArticlesLoading: false,
-            ),
-          );
-        }
-      },
-      relaysFunc: (relays) {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              userRelays: relays.toList(),
-              isRelaysLoading: false,
-            ),
-          );
-        }
-      },
-      onDone: () {
-        if (!isClosed) {
-          _emit(
-            state.copyWith(
-              isArticlesLoading: false,
-              isRelaysLoading: false,
-              isVideoLoading: false,
-              isNotesLoading: false,
-              isSmartWidgetsLoading: false,
-              isRepliesLoading: false,
-            ),
-          );
-        }
-      },
+    currentProfileData = profileData;
+    int? until;
+
+    if (!isAdding) {
+      _emit(state.intialData());
+    } else {
+      _emit(
+        state.copyWith(
+          loadingState: UpdatingState.progress,
+        ),
+      );
+
+      until = state.content.last.createdAt - 1;
+    }
+
+    if (profileData == ProfileData.pinned && pinnedNotes.isEmpty) {
+      _emit(
+        state.copyWith(
+          loadingState: UpdatingState.idle,
+          isLoading: false,
+        ),
+      );
+
+      return;
+    }
+
+    final events = await NostrFunctionsRepository.getEventsAsync(
+      kinds: [
+        if (profileData == ProfileData.notes) ...[
+          EventKind.TEXT_NOTE,
+          EventKind.REPOST
+        ],
+        if (profileData == ProfileData.pinned ||
+            profileData == ProfileData.replies ||
+            profileData == ProfileData.mentions) ...[
+          EventKind.TEXT_NOTE,
+        ],
+        if (profileData == ProfileData.curations) ...[
+          EventKind.CURATION_ARTICLES,
+          EventKind.CURATION_VIDEOS,
+        ],
+        if (profileData == ProfileData.videos ||
+            profileData == ProfileData.allMedia) ...[
+          EventKind.VIDEO_HORIZONTAL,
+          EventKind.VIDEO_VERTICAL,
+          EventKind.LEGACY_VIDEO_HORIZONTAL,
+          EventKind.LEGACY_VIDEO_VERTICAL,
+        ],
+        if (profileData == ProfileData.pictures ||
+            profileData == ProfileData.allMedia) ...[
+          EventKind.PICTURE,
+        ],
+        if (profileData == ProfileData.smartWidgets) EventKind.SMART_WIDGET_ENH,
+        if (profileData == ProfileData.articles) EventKind.LONG_FORM,
+      ],
+      pTags: profileData == ProfileData.mentions ? [pubkey] : null,
+      pubkeys: profileData == ProfileData.mentions ||
+              profileData == ProfileData.pinned
+          ? null
+          : [pubkey],
+      ids: profileData == ProfileData.pinned ? pinnedNotes.toList() : null,
+      until: until,
+      limit: 100,
+      source: EventsSource.all,
     );
 
-    requests.add(requestId);
+    if (fetchId == id) {
+      final handledEvents =
+          handleEvents(events: events, profileData: profileData);
+
+      _emit(
+        state.copyWith(
+          loadingState:
+              handledEvents.isEmpty || profileData == ProfileData.pinned
+                  ? UpdatingState.idle
+                  : UpdatingState.success,
+          content: [...state.content, ...handledEvents],
+          isLoading: false,
+        ),
+      );
+    }
+  }
+
+  List<Event> handleEvents({
+    required List<Event> events,
+    required ProfileData profileData,
+  }) {
+    List<Event> selectedEvents = <Event>[];
+
+    switch (profileData) {
+      case ProfileData.notes:
+        for (final e in events) {
+          if ((e.kind == EventKind.TEXT_NOTE && e.root == null) ||
+              e.kind == EventKind.REPOST) {
+            selectedEvents.add(e);
+          }
+        }
+
+      case ProfileData.mentions:
+        for (final e in events) {
+          final hasMentionVal = hasMention(content: e.content, pubkey: pubkey);
+
+          if (hasMentionVal) {
+            selectedEvents.add(e);
+          }
+        }
+
+      case ProfileData.replies:
+        for (final e in events) {
+          if (e.root != null) {
+            selectedEvents.add(e);
+          }
+        }
+
+      case ProfileData.pinned:
+        selectedEvents = events;
+
+      case ProfileData.articles:
+        selectedEvents = events;
+      case ProfileData.curations:
+        selectedEvents = events;
+      case ProfileData.smartWidgets:
+        selectedEvents = events;
+      case ProfileData.allMedia:
+        selectedEvents = events;
+      case ProfileData.videos:
+        selectedEvents = events;
+      case ProfileData.pictures:
+        selectedEvents = events;
+    }
+
+    selectedEvents.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return selectedEvents;
   }
 
   Future<void> getFollowingsAndFollowersCount() async {
@@ -577,6 +547,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     followingsSubscription.cancel();
     bookmarksSubscription.cancel();
     mutesListSubscription.cancel();
+    pinnedNotesSubscription?.cancel();
     nc.closeRequests(requests.toList());
     return super.close();
   }

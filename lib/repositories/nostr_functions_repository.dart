@@ -24,6 +24,7 @@ import '../models/bookmark_list_model.dart';
 import '../models/curation_model.dart';
 import '../models/detailed_note_model.dart';
 import '../models/flash_news_model.dart';
+import '../models/picture_model.dart';
 import '../models/points_system_models.dart';
 import '../models/poll_model.dart';
 import '../models/smart_widgets_components.dart';
@@ -1445,18 +1446,7 @@ class NostrFunctionsRepository {
     return evs;
   }
 
-  static Stream<Event> getCurrentUserRelatedData({
-    List<String>? ids,
-    List<String>? dTags,
-    List<String>? pubkeys,
-    List<String>? tags,
-    List<String>? aTags,
-    List<String>? eTags,
-    List<int>? kinds,
-    int? limit,
-    String? relay,
-    int? until,
-  }) {
+  static Stream<Event> getCurrentUserRelatedData() {
     final controller = StreamController<Event>();
     List<String> currentUncompletedRelays = nc.activeRelays();
 
@@ -1466,7 +1456,10 @@ class NostrFunctionsRepository {
       [
         Filter(
           kinds: [
-            if (canSign()) EventKind.MUTE_LIST,
+            if (canSign()) ...[
+              EventKind.MUTE_LIST,
+              EventKind.PINNED_NOTES,
+            ],
             EventKind.CATEGORIZED_BOOKMARK,
           ],
           authors: [pubkey],
@@ -1481,6 +1474,7 @@ class NostrFunctionsRepository {
         ),
       ],
       currentUserRelayList.urls.toList(),
+      source: EventsSource.relays,
       eventCallBack: (event, relay) {
         if (!controller.isClosed) {
           controller.add(event);
@@ -1971,7 +1965,6 @@ class NostrFunctionsRepository {
       title: 'Smart widget saved tools',
       description: '',
       image: '',
-      placeholder: '',
       identifier: smartWidgetSavedTools,
       bookmarkedReplaceableEvents: [],
       bookmarkedEvents: [],
@@ -2155,168 +2148,230 @@ class NostrFunctionsRepository {
     );
   }
 
-  static Future<String> getUserProfile({
-    required String authorPubkey,
-    required Function(Set<String>) relaysFunc,
-    required Function(List<Article>) articleFunc,
-    required Function(List<VideoModel>) videosFunc,
-    required Function(List<Event>) notesFunc,
-    required Function(List<Event>) repliesFunc,
-    required Function(List<Curation>) curationsFunc,
-    required Function(List<SmartWidget>) smartWidgetFunc,
-    required Function() onDone,
-  }) async {
-    List<String> currentUncompletedRelays = nc.activeRelays();
+  // static Future<String> getUserProfile({
+  //   required String authorPubkey,
+  //   required Function(Set<String>) relaysFunc,
+  //   required Function(List<Article>) articleFunc,
+  //   required Function(List<VideoModel>) videosFunc,
+  //   required Function(List<Event>) notesFunc,
+  //   required Function(List<Event>) repliesFunc,
+  //   required Function(List<Curation>) curationsFunc,
+  //   required Function(List<SmartWidget>) smartWidgetFunc,
+  //   required Function(List<DetailedNoteModel>) mentionsFunc,
+  //   required Function(List<PictureModel>) picturesFunc,
+  //   required Function() onDone,
+  //   required ProfileData profileData,
+  //   int? until,
+  // }) async {
+  //   List<String> currentUncompletedRelays = nc.activeRelays();
 
-    Set<String> relays = {};
-    final DateTime kind10002Date = DateTime(2000);
-    final Map<String, Article> articlesToBeEmitted = {};
-    final Map<String, VideoModel> videosToBeEmitted = {};
-    final Map<String, Event> notesToBeEmitted = {};
-    final Map<String, Event> repliesToBeEmitted = {};
-    final Map<String, Curation> curationsToBeEmitted = {};
-    final Map<String, SmartWidget> smartWidgetsToBeEmitted = {};
+  //   Set<String> relays = {};
+  //   final DateTime kind10002Date = DateTime(2000);
+  //   final Map<String, Article> articlesToBeEmitted = {};
+  //   final Map<String, VideoModel> videosToBeEmitted = {};
+  //   final Map<String, Event> notesToBeEmitted = {};
+  //   final Map<String, Event> repliesToBeEmitted = {};
+  //   final Map<String, Curation> curationsToBeEmitted = {};
+  //   final Map<String, SmartWidget> smartWidgetsToBeEmitted = {};
+  //   final Map<String, DetailedNoteModel> mentionsToBeEmitted = {};
+  //   final Map<String, PictureModel> picturesToBeEmitted = {};
 
-    Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) {
-        if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
-          onDone.call();
-          timer.cancel();
-        }
-      },
-    );
+  //   Timer.periodic(
+  //     const Duration(milliseconds: 500),
+  //     (timer) {
+  //       if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
+  //         onDone.call();
+  //         timer.cancel();
+  //       }
+  //     },
+  //   );
 
-    return nc.doSubscribe(
-      [
-        Filter(
-          kinds: [EventKind.CONTACT_LIST],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.SMART_WIDGET_ENH],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.REPOST],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.RELAY_LIST_METADATA],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.LONG_FORM],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.CURATION_ARTICLES, EventKind.CURATION_VIDEOS],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.VIDEO_HORIZONTAL, EventKind.VIDEO_VERTICAL],
-          authors: [authorPubkey],
-        ),
-        Filter(
-          kinds: [EventKind.TEXT_NOTE],
-          authors: [authorPubkey],
-          limit: 50,
-        ),
-      ],
-      [],
-      source: EventsSource.all,
-      eventCallBack: (event, relay) async {
-        if (event.kind == EventKind.VIDEO_HORIZONTAL ||
-            event.kind == EventKind.VIDEO_VERTICAL &&
-                event.pubkey == authorPubkey) {
-          final video = VideoModel.fromEvent(event);
+  //   return nc.doSubscribe(
+  //     [
+  //       if (profileData == ProfileData.all || profileData == ProfileData.other)
+  //         Filter(
+  //           kinds: [EventKind.CONTACT_LIST, EventKind.RELAY_LIST_METADATA],
+  //           authors: [authorPubkey],
+  //         ),
+  //       if (profileData == ProfileData.all ||
+  //           profileData == ProfileData.articles)
+  //         Filter(
+  //           kinds: [EventKind.LONG_FORM],
+  //           authors: [authorPubkey],
+  //           until: until,
+  //           limit: 30,
+  //         ),
+  //       if (profileData == ProfileData.all ||
+  //           profileData == ProfileData.curations)
+  //         Filter(
+  //           kinds: [
+  //             EventKind.CURATION_ARTICLES,
+  //             EventKind.CURATION_VIDEOS,
+  //           ],
+  //           authors: [authorPubkey],
+  //           until: until,
+  //           limit: 30,
+  //         ),
+  //       if (profileData == ProfileData.all ||
+  //           profileData == ProfileData.smartWidgets)
+  //         Filter(
+  //           kinds: [EventKind.SMART_WIDGET_ENH],
+  //           authors: [authorPubkey],
+  //           until: until,
+  //           limit: 30,
+  //         ),
+  //       if (profileData == ProfileData.all || profileData == ProfileData.videos)
+  //         Filter(
+  //           kinds: [
+  //             EventKind.VIDEO_HORIZONTAL,
+  //             EventKind.VIDEO_VERTICAL,
+  //             EventKind.LEGACY_VIDEO_HORIZONTAL,
+  //             EventKind.LEGACY_VIDEO_VERTICAL,
+  //           ],
+  //           authors: [authorPubkey],
+  //           until: until,
+  //           limit: 30,
+  //         ),
+  //       if (profileData == ProfileData.all ||
+  //           profileData == ProfileData.pictures)
+  //         Filter(
+  //           kinds: [EventKind.PICTURE],
+  //           authors: [authorPubkey],
+  //           until: until,
+  //           limit: 30,
+  //         ),
+  //       if (profileData == ProfileData.all || profileData == ProfileData.notes)
+  //         Filter(
+  //           kinds: [EventKind.TEXT_NOTE, EventKind.REPOST],
+  //           authors: [authorPubkey],
+  //           limit: 20,
+  //           until: until,
+  //         ),
+  //       if (profileData == ProfileData.all ||
+  //           profileData == ProfileData.mentions)
+  //         Filter(
+  //           kinds: [EventKind.TEXT_NOTE],
+  //           p: [authorPubkey],
+  //           limit: 20,
+  //           until: until,
+  //         ),
+  //     ],
+  //     [],
+  //     source: EventsSource.all,
+  //     eventCallBack: (event, relay) async {
+  //       if ((VideoModel.isVideo(event.kind)) && event.pubkey == authorPubkey) {
+  //         final video = VideoModel.fromEvent(event);
 
-          if (video.url.isNotEmpty) {
-            final old = videosToBeEmitted[video.id];
+  //         if (video.url.isNotEmpty) {
+  //           final old = videosToBeEmitted[video.id];
 
-            if (old == null || old.createdAt.compareTo(video.createdAt) < 1) {
-              videosToBeEmitted[video.id] = video;
-              videosFunc.call(videosToBeEmitted.values.toList());
-            }
-          }
-        } else if (event.kind == EventKind.CURATION_ARTICLES ||
-            event.kind == EventKind.CURATION_VIDEOS &&
-                event.pubkey == authorPubkey) {
-          final curation = Curation.fromEvent(event, relay);
+  //           if (old == null || old.createdAt.compareTo(video.createdAt) < 1) {
+  //             videosToBeEmitted[video.id] = video;
+  //             videosFunc.call(videosToBeEmitted.values.toList());
+  //           }
+  //         }
+  //       } else if (Curation.isCuration(event.kind) &&
+  //           event.pubkey == authorPubkey) {
+  //         final curation = Curation.fromEvent(event, relay);
 
-          final oldCuration = curationsToBeEmitted[curation.identifier];
+  //         final oldCuration = curationsToBeEmitted[curation.identifier];
 
-          curationsToBeEmitted[curation.identifier] = filterCuration(
-            oldCuration: oldCuration,
-            newCuration: curation,
-          );
+  //         curationsToBeEmitted[curation.identifier] = filterCuration(
+  //           oldCuration: oldCuration,
+  //           newCuration: curation,
+  //         );
 
-          curationsFunc.call(curationsToBeEmitted.values.toList());
-        } else if (event.kind == EventKind.RELAY_LIST_METADATA) {
-          final eventDate =
-              DateTime.fromMillisecondsSinceEpoch(event.createdAt * 1000);
+  //         curationsFunc.call(curationsToBeEmitted.values.toList());
+  //       } else if (event.kind == EventKind.RELAY_LIST_METADATA) {
+  //         final eventDate =
+  //             DateTime.fromMillisecondsSinceEpoch(event.createdAt * 1000);
 
-          if (kind10002Date.compareTo(eventDate) < 1) {
-            final set = UserRelayList.fromNip65(Nip65.fromEvent(event));
-            nc.db.saveUserRelayList(set);
-            relays = set.urls.toSet();
-            relaysFunc.call(relays);
-          }
-        } else if (event.kind == EventKind.LONG_FORM) {
-          final article = Article.fromEvent(event);
-          final oldArticle = articlesToBeEmitted[article.identifier];
+  //         if (kind10002Date.compareTo(eventDate) < 1) {
+  //           final set = UserRelayList.fromNip65(Nip65.fromEvent(event));
+  //           nc.db.saveUserRelayList(set);
+  //           relays = set.urls.toSet();
+  //           relaysFunc.call(relays);
+  //         }
+  //       } else if (event.kind == EventKind.LONG_FORM) {
+  //         final article = Article.fromEvent(event);
+  //         final oldArticle = articlesToBeEmitted[article.identifier];
 
-          if (oldArticle == null ||
-              article.createdAt.isAfter(oldArticle.createdAt)) {
-            articlesToBeEmitted[article.identifier] = article;
-            final sortedArticles = articlesToBeEmitted.values.toList()
-              ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-            articleFunc.call(sortedArticles);
-          }
-        } else if (event.kind == EventKind.SMART_WIDGET_ENH) {
-          final widget = SmartWidget.fromEvent(event);
-          final oldWidget = smartWidgetsToBeEmitted[widget.identifier];
+  //         if (oldArticle == null ||
+  //             article.createdAt.isAfter(oldArticle.createdAt)) {
+  //           articlesToBeEmitted[article.identifier] = article;
+  //           final sortedArticles = articlesToBeEmitted.values.toList()
+  //             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //           articleFunc.call(sortedArticles);
+  //         }
+  //       } else if (event.kind == EventKind.SMART_WIDGET_ENH) {
+  //         final widget = SmartWidget.fromEvent(event);
+  //         final oldWidget = smartWidgetsToBeEmitted[widget.identifier];
 
-          if (oldWidget == null ||
-              widget.createdAt.isAfter(oldWidget.createdAt)) {
-            smartWidgetsToBeEmitted[widget.identifier] = widget;
-            final sortedWidgets = smartWidgetsToBeEmitted.values.toList()
-              ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-            smartWidgetFunc.call(sortedWidgets);
-          }
-        } else if (event.kind == EventKind.TEXT_NOTE) {
-          if (event.root == null) {
-            if (notesToBeEmitted[event.id] == null ||
-                event.createdAt > notesToBeEmitted[event.id]!.createdAt) {
-              notesToBeEmitted[event.id] = event;
-              final sortedNotes = notesToBeEmitted.values.toList()
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              notesFunc.call(sortedNotes);
-            }
-          } else {
-            if (repliesToBeEmitted[event.id] == null ||
-                event.createdAt > repliesToBeEmitted[event.id]!.createdAt) {
-              repliesToBeEmitted[event.id] = event;
-              final sortedNotes = repliesToBeEmitted.values.toList()
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              repliesFunc.call(sortedNotes);
-            }
-          }
-        } else if (event.kind == EventKind.REPOST) {
-          if (notesToBeEmitted[event.id] == null) {
-            notesToBeEmitted[event.id] = event;
-            final sortedNotes = notesToBeEmitted.values.toList()
-              ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-            notesFunc.call(sortedNotes);
-          }
-        }
-      },
-      eoseCallBack: (authorRequestId, ok, relay, unCompletedRelays) {
-        currentUncompletedRelays = unCompletedRelays;
-        nc.closeSubscription(authorRequestId, relay);
-      },
-    );
-  }
+  //         if (oldWidget == null ||
+  //             widget.createdAt.isAfter(oldWidget.createdAt)) {
+  //           smartWidgetsToBeEmitted[widget.identifier] = widget;
+  //           final sortedWidgets = smartWidgetsToBeEmitted.values.toList()
+  //             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //           smartWidgetFunc.call(sortedWidgets);
+  //         }
+  //       } else if (event.kind == EventKind.TEXT_NOTE) {
+  //         if (event.pubkey == authorPubkey) {
+  //           if (event.root == null) {
+  //             if (notesToBeEmitted[event.id] == null ||
+  //                 event.createdAt > notesToBeEmitted[event.id]!.createdAt) {
+  //               notesToBeEmitted[event.id] = event;
+  //               final sortedNotes = notesToBeEmitted.values.toList()
+  //                 ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //               notesFunc.call(sortedNotes);
+  //             }
+  //           } else {
+  //             if (repliesToBeEmitted[event.id] == null ||
+  //                 event.createdAt > repliesToBeEmitted[event.id]!.createdAt) {
+  //               repliesToBeEmitted[event.id] = event;
+  //               final sortedNotes = repliesToBeEmitted.values.toList()
+  //                 ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //               repliesFunc.call(sortedNotes);
+  //             }
+  //           }
+  //         } else {
+  //           final hasMentionVal =
+  //               hasMention(content: event.content, pubkey: authorPubkey);
+
+  //           if (hasMentionVal &&
+  //               (mentionsToBeEmitted[event.id] == null ||
+  //                   event.createdAt >
+  //                       mentionsToBeEmitted[event.id]!
+  //                           .createdAt
+  //                           .toSecondsSinceEpoch())) {
+  //             mentionsToBeEmitted[event.id] =
+  //                 DetailedNoteModel.fromEvent(event);
+  //             final sortedMentions = mentionsToBeEmitted.values.toList()
+  //               ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //             mentionsFunc.call(sortedMentions);
+  //           }
+  //         }
+  //       } else if (event.kind == EventKind.PICTURE) {
+  //         if (picturesToBeEmitted[event.id] == null) {
+  //           picturesToBeEmitted[event.id] = PictureModel.fromEvent(event);
+  //           final sortedPictures = picturesToBeEmitted.values.toList()
+  //             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //           picturesFunc.call(sortedPictures);
+  //         }
+  //       } else if (event.kind == EventKind.REPOST) {
+  //         if (notesToBeEmitted[event.id] == null) {
+  //           notesToBeEmitted[event.id] = event;
+  //           final sortedNotes = notesToBeEmitted.values.toList()
+  //             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //           notesFunc.call(sortedNotes);
+  //         }
+  //       }
+  //     },
+  //     eoseCallBack: (authorRequestId, ok, relay, unCompletedRelays) {
+  //       currentUncompletedRelays = unCompletedRelays;
+  //       nc.closeSubscription(authorRequestId, relay);
+  //     },
+  //   );
+  // }
 
   // =============================================================================
   // ZAPS FUNCTIONS
@@ -2670,7 +2725,7 @@ class NostrFunctionsRepository {
 
     final filters = <Filter>[];
 
-    if (type == RelayContentType.all || type == RelayContentType.notes) {
+    if (type == RelayContentType.notes) {
       final f1 = Filter(
         kinds: [
           EventKind.TEXT_NOTE,
@@ -2681,7 +2736,7 @@ class NostrFunctionsRepository {
       filters.add(f1);
     }
 
-    if (type == RelayContentType.all || type == RelayContentType.articles) {
+    if (type == RelayContentType.articles) {
       final f2 = Filter(
         kinds: [
           EventKind.LONG_FORM,
@@ -2692,11 +2747,14 @@ class NostrFunctionsRepository {
       filters.add(f2);
     }
 
-    if (type == RelayContentType.all || type == RelayContentType.videos) {
+    if (type == RelayContentType.media) {
       final f3 = Filter(
         kinds: [
           EventKind.VIDEO_HORIZONTAL,
           EventKind.VIDEO_VERTICAL,
+          EventKind.LEGACY_VIDEO_HORIZONTAL,
+          EventKind.LEGACY_VIDEO_VERTICAL,
+          EventKind.PICTURE,
         ],
         until: until,
         limit: limit,
@@ -2704,7 +2762,7 @@ class NostrFunctionsRepository {
       filters.add(f3);
     }
 
-    if (type == RelayContentType.all || type == RelayContentType.curations) {
+    if (type == RelayContentType.curations) {
       final f4 = Filter(
         kinds: [
           EventKind.CURATION_ARTICLES,
@@ -2869,6 +2927,75 @@ class NostrFunctionsRepository {
       } else if (event.kind == EventKind.REPOST && events[event.id] == null) {
         events[event.id] = event;
       }
+    }
+
+    final f = feedRelaySet?.urls.toList();
+    final relays = core != null
+        ? core.relays()
+        : f != null && f.isNotEmpty
+            ? f
+            : DEFAULT_BOOTSTRAP_RELAYS;
+
+    try {
+      await (core ?? nc).doQuery(
+        [f1],
+        relays,
+        timeOut: 1,
+        source: EventsSource.all,
+        eventCallBack: (ev, relay) {
+          setEvents(fallBackEventToBeEmitted, ev);
+        },
+      );
+    } catch (e, stack) {
+      lg.i(stack);
+    }
+
+    List<Event> events = [];
+    if (eventsToBeEmitted.isNotEmpty) {
+      events = eventsToBeEmitted.values.toList();
+      events.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    } else {
+      events = fallBackEventToBeEmitted.values.toList();
+      events.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    }
+
+    return events;
+  }
+
+  static Future<List<Event>> buildMediaFeed({
+    NostrCore? core,
+    List<String>? pubkeys,
+    List<String>? tags,
+    int? limit,
+    int? until,
+    int? since,
+  }) async {
+    final eventsToBeEmitted = <String, Event>{};
+    final fallBackEventToBeEmitted = <String, Event>{};
+
+    final f1 = Filter(
+      kinds: [
+        EventKind.VIDEO_HORIZONTAL,
+        EventKind.VIDEO_VERTICAL,
+        EventKind.LEGACY_VIDEO_HORIZONTAL,
+        EventKind.LEGACY_VIDEO_VERTICAL,
+        EventKind.PICTURE,
+      ],
+      authors: pubkeys,
+      t: tags,
+      until: until,
+      since: since,
+      limit: limit,
+    );
+
+    void setEvents(Map<String, Event> events, Event event) {
+      final isMuted = isUserMuted(event.pubkey);
+
+      if (isMuted) {
+        return;
+      }
+
+      events[event.id] = event;
     }
 
     final f = feedRelaySet?.urls.toList();
@@ -3580,13 +3707,37 @@ class NostrFunctionsRepository {
     );
   }
 
+  static Future<List<Event>> getMediaRelayData({
+    required List<String> relays,
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    return getEventsAsync(
+      kinds: [
+        EventKind.VIDEO_HORIZONTAL,
+        EventKind.VIDEO_VERTICAL,
+        EventKind.LEGACY_VIDEO_HORIZONTAL,
+        EventKind.LEGACY_VIDEO_VERTICAL,
+        EventKind.PICTURE,
+      ],
+      until: until,
+      since: since,
+      limit: limit,
+      relays: relays,
+      core: nc,
+      source: EventsSource.all,
+    );
+  }
+
   // * get home page data /
-  static Future<List<dynamic>> getHomePageData({
+  static Future<List<BaseEventModel>> getHomePageData({
     required List<String> tags,
     required String search,
   }) async {
     final Map<String, Article> articlesToBeEmitted = {};
     final Map<String, VideoModel> videosToBeEmitted = {};
+    final Map<String, PictureModel> picturesToBeEmitted = {};
     final Map<String, DetailedNoteModel> notesToBeEmitted = {};
     final list = <BaseEventModel>[];
 
@@ -3607,7 +3758,9 @@ class NostrFunctionsRepository {
             newArticle: article,
           );
         } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
-            event.kind == EventKind.VIDEO_VERTICAL) {
+            event.kind == EventKind.VIDEO_VERTICAL ||
+            event.kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+            event.kind == EventKind.LEGACY_VIDEO_VERTICAL) {
           final video = VideoModel.fromEvent(
             event,
             relay: relay,
@@ -3617,6 +3770,18 @@ class NostrFunctionsRepository {
           if (oldVideo == null ||
               oldVideo.createdAt.isBefore(video.createdAt)) {
             videosToBeEmitted[video.id] = video;
+          }
+        }
+        if (event.kind == EventKind.PICTURE) {
+          final picture = PictureModel.fromEvent(
+            event,
+            relay: relay,
+          );
+
+          final oldPicture = picturesToBeEmitted[picture.id];
+          if (oldPicture == null ||
+              oldPicture.createdAt.isBefore(picture.createdAt)) {
+            picturesToBeEmitted[picture.id] = picture;
           }
         } else if (event.kind == EventKind.TEXT_NOTE) {
           notesToBeEmitted[event.id] = DetailedNoteModel.fromEvent(event);
@@ -3635,6 +3800,9 @@ class NostrFunctionsRepository {
                   EventKind.LONG_FORM,
                   EventKind.VIDEO_HORIZONTAL,
                   EventKind.VIDEO_VERTICAL,
+                  EventKind.LEGACY_VIDEO_HORIZONTAL,
+                  EventKind.LEGACY_VIDEO_VERTICAL,
+                  EventKind.PICTURE,
                 ],
                 t: tags,
               ),
@@ -3662,6 +3830,9 @@ class NostrFunctionsRepository {
                   EventKind.LONG_FORM,
                   EventKind.VIDEO_HORIZONTAL,
                   EventKind.VIDEO_VERTICAL,
+                  EventKind.LEGACY_VIDEO_HORIZONTAL,
+                  EventKind.LEGACY_VIDEO_VERTICAL,
+                  EventKind.PICTURE,
                 ],
                 search: search,
               ),
@@ -3684,13 +3855,14 @@ class NostrFunctionsRepository {
 
     final articles = orderedList(articlesToBeEmitted.values.toList());
     final videos = orderedList(videosToBeEmitted.values.toList());
-
     final notes = orderedList(notesToBeEmitted.values.toList());
+    final pictures = orderedList(picturesToBeEmitted.values.toList());
 
     final length = [
       articles.length,
       videos.length,
       notes.length,
+      pictures.length,
     ].reduce(max);
 
     for (int i = 0; i < length; i++) {
@@ -3704,6 +3876,10 @@ class NostrFunctionsRepository {
 
       if (notes.isNotEmpty) {
         list.add(notes.removeAt(0));
+      }
+
+      if (pictures.isNotEmpty) {
+        list.add(pictures.removeAt(0));
       }
     }
 

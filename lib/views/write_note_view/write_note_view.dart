@@ -535,7 +535,6 @@ class _MediaPreviewSection extends StatelessWidget {
       children: [
         CommonThumbnail(
           image: m,
-          placeholder: getRandomPlaceholder(input: m, isPfp: false),
           width: double.infinity,
           height: 200,
           radius: kDefaultPadding / 2,

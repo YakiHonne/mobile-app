@@ -256,10 +256,18 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  // Bug fixes
-  'Fix scrolling stuck behaviour.',
-  'Fix nostr scheme decoding issue.',
-  'Fix audio controller not being dismissed properly.'
+  'Introducing Media feed (videos, images).',
+  'Added profile pinned notes.',
+  "Add RTL directionality in Articles' editor.",
+  'Profile sections reworked.',
+  'Added mentions section in profile.',
+  'Load latest selected sources on startup.',
+  'Re-scroll to the top of feed when changing options.',
+  'Fix Amber encryption syncing & Amber nip44 event decrytion issue.',
+  'Fix messages not being fetched from dm relays.',
+  'Fix "nostr:" not working in search.',
+  'App stability improvements.',
+  'Bug fixes & performance improvements.'
 ];
 
 const content = [

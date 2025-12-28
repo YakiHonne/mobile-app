@@ -11,11 +11,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/bookmark_list_model.dart';
-import '../../models/detailed_note_model.dart';
 import '../../models/video_model.dart';
-import '../../models/vote_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
-import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'horizontal_video_state.dart';
@@ -31,10 +28,6 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
             refresh: false,
             isSameArticleAuthor:
                 video.pubkey == nostrRepository.currentMetadata.pubkey,
-            votes: const <String, VoteModel>{},
-            replies: const <DetailedNoteModel>[],
-            zaps: const <String, double>{},
-            reports: const <String>{},
             isFollowingAuthor: false,
             isBookmarked: getBookmarkIds(nostrRepository.bookmarksLists)
                 .contains(video.id),
@@ -111,7 +104,6 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
 
   void initView() {
     setAuthor();
-    getStats();
     setVideoView();
   }
 
@@ -183,7 +175,7 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
       final bool isSuccessful = await NostrFunctionsRepository.sendEvent(
         event: event,
         relays: currentUserRelayList.writes,
-        setProgress: true,
+        setProgress: false,
       );
 
       if (isSuccessful &&
@@ -201,74 +193,6 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
     }
   }
 
-  void getStats() {
-    NostrFunctionsRepository.getStats(
-      identifier: state.video.id,
-      eventKind: state.video.kind,
-      eventPubkey: state.video.pubkey,
-      isEtag: false,
-      getViews: true,
-    ).listen(
-      (data) {
-        if (data is Map<String, Map<String, VoteModel>>) {
-          final Map<String, VoteModel> votes =
-              Map<String, VoteModel>.from(state.votes)
-                ..addAll(
-                  data[state.video.id] ?? <String, VoteModel>{},
-                );
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                votes: votes,
-              ),
-            );
-          }
-        } else if (data is Map<String, DetailedNoteModel>) {
-          final replies = data.values
-              .toList()
-              .where(
-                (e) =>
-                    e.replyTo == getBaseEventModelId(state.video) ||
-                    e.originId == getBaseEventModelId(state.video),
-              )
-              .toList();
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                replies: replies,
-              ),
-            );
-          }
-        } else if (data is Map<String, double>) {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                zaps: data,
-              ),
-            );
-          }
-        } else if (data is Set<String>) {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                reports: data,
-              ),
-            );
-          }
-        } else if (data is List<String>) {
-          if (!isClosed) {
-            emit(
-              state.copyWith(
-                viewsCount: data,
-              ),
-            );
-          }
-        }
-      },
-      onDone: () {},
-    );
-  }
-
   Future<void> setFollowingState() async {
     final CancelFunc cancel = BotToast.showLoading();
 
@@ -276,90 +200,6 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
       isFollowingAuthor: state.isFollowingAuthor,
       targetPubkey: state.video.pubkey,
     );
-
-    cancel.call();
-  }
-
-  void addReply({
-    required Event event,
-  }) {
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          replies: List.from(state.replies)
-            ..add(
-              DetailedNoteModel.fromEvent(event),
-            ),
-        ),
-      );
-    }
-  }
-
-  Future<void> setVote({
-    required bool upvote,
-    required String eventId,
-    required String eventPubkey,
-  }) async {
-    final cancel = BotToast.showLoading();
-
-    final currentVoteModel = state.votes[state.currentUserPubkey];
-
-    if (currentVoteModel == null || upvote != currentVoteModel.vote) {
-      final addingEventId = await NostrFunctionsRepository.addVote(
-        eventId: eventId,
-        upvote: upvote,
-        identifier: state.video.id,
-        kind: state.video.kind,
-        eventPubkey: eventPubkey,
-        isEtag: true,
-      );
-
-      if (addingEventId != null) {
-        if (currentVoteModel != null) {
-          await NostrFunctionsRepository.deleteEvent(
-            eventId: currentVoteModel.eventId,
-          );
-        }
-
-        final Map<String, VoteModel> newMap = Map.from(state.votes);
-
-        newMap[state.currentUserPubkey] = VoteModel(
-          eventId: addingEventId,
-          pubkey: state.currentUserPubkey,
-          vote: upvote,
-        );
-        if (!isClosed) {
-          emit(
-            state.copyWith(votes: newMap),
-          );
-        }
-      } else {
-        BotToastUtils.showError(
-          t.voteNotSubmitted.capitalizeFirst(),
-        );
-      }
-    } else {
-      final bool isSuccessful = await NostrFunctionsRepository.deleteEvent(
-        eventId: currentVoteModel.eventId,
-      );
-
-      if (isSuccessful) {
-        final Map<String, VoteModel> newMap = Map.from(state.votes);
-
-        newMap.remove(currentVoteModel.pubkey);
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              votes: newMap,
-            ),
-          );
-        }
-      } else {
-        BotToastUtils.showError(
-          t.voteNotSubmitted.capitalizeFirst(),
-        );
-      }
-    }
 
     cancel.call();
   }

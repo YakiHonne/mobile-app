@@ -72,10 +72,6 @@ class SuggestedInterestContainer extends StatelessWidget {
         children: [
           CommonThumbnail(
             image: interest.icon,
-            placeholder: getRandomPlaceholder(
-              input: interest.topic,
-              isPfp: false,
-            ),
             width: 40,
             height: 40,
             radius: kDefaultPadding / 2,

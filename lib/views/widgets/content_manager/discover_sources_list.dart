@@ -17,10 +17,10 @@ import 'discover_sources_settings.dart';
 class AppSourcesList extends HookWidget {
   const AppSourcesList({
     super.key,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +29,21 @@ class AppSourcesList extends HookWidget {
         final widgets = <Widget>[];
 
         Widget? getWidget(BaseFeed feed) {
-          if (feed is DiscoverCommunityFeed && !feed.isDisabled()) {
-            return CommunityDiscoverList(isDiscover: isDiscover);
-          } else if (feed is NotesCommunityFeed && !feed.isDisabled()) {
-            return CommunityDiscoverList(isDiscover: isDiscover);
+          if ((feed is DiscoverCommunityFeed && !feed.isDisabled()) ||
+              (feed is NotesCommunityFeed && !feed.isDisabled()) ||
+              (feed is MediaCommunityFeed && !feed.isDisabled())) {
+            return CommunityDiscoverList(viewType: viewType);
           }
 
           return null;
         }
 
-        final sources = isDiscover ? state.discoverSources : state.notesSources;
+        final sources = viewType == ViewDataTypes.articles
+            ? state.discoverSources
+            : viewType == ViewDataTypes.notes
+                ? state.notesSources
+                : state.mediaSources;
+
         final hasFavorite =
             relayInfoCubit.state.relayFeeds.favoriteRelays.isNotEmpty ||
                 relayInfoCubit.state.relayFeeds.events.isNotEmpty;
@@ -58,9 +63,11 @@ class AppSourcesList extends HookWidget {
             thickness: 0.5,
           ),
           if (hasFavorite)
-            RelaysDiscoverList(isDiscover: isDiscover)
+            RelaysDiscoverList(viewType: viewType)
           else
-            const NoRelaysAvailable(),
+            NoRelaysAvailable(
+              viewType: viewType,
+            ),
         ]);
 
         return Padding(
@@ -128,7 +135,7 @@ class AppSourcesList extends HookWidget {
               elevation: 0,
               builder: (_) {
                 return DiscoverSourcesSettings(
-                  isDiscover: isDiscover,
+                  viewType: viewType,
                 );
               },
               isScrollControlled: true,
@@ -148,7 +155,10 @@ class AppSourcesList extends HookWidget {
 class NoRelaysAvailable extends StatelessWidget {
   const NoRelaysAvailable({
     super.key,
+    required this.viewType,
   });
+
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -198,8 +208,8 @@ class NoRelaysAvailable extends StatelessWidget {
                         context: context,
                         elevation: 0,
                         builder: (_) {
-                          return const DiscoverSourcesSettings(
-                            isDiscover: false,
+                          return DiscoverSourcesSettings(
+                            viewType: viewType,
                           );
                         },
                         isScrollControlled: true,
@@ -230,10 +240,10 @@ class NoRelaysAvailable extends StatelessWidget {
 class RelaysDiscoverList extends StatelessWidget {
   const RelaysDiscoverList({
     super.key,
-    required this.isDiscover,
+    required this.viewType,
   });
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -244,9 +254,11 @@ class RelaysDiscoverList extends StatelessWidget {
             final relays = state.relayFeeds.favoriteRelays;
             final relaySets = state.relayFeeds.events;
 
-            final selectedKey = isDiscover
+            final selectedKey = viewType == ViewDataTypes.articles
                 ? aState.selectedDiscoverSource.key
-                : aState.selectedNotesSource.key;
+                : viewType == ViewDataTypes.notes
+                    ? aState.selectedNotesSource.key
+                    : aState.selectedMediaSource.key;
 
             return Column(
               spacing: kDefaultPadding / 3,
@@ -319,7 +331,7 @@ class RelaysDiscoverList extends StatelessWidget {
                   event.identifier,
                   relaySet,
                 ),
-                isDiscover: isDiscover,
+                viewType: viewType,
               );
 
               YNavigator.pop(context);
@@ -332,7 +344,9 @@ class RelaysDiscoverList extends StatelessWidget {
   }
 
   BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState> _relaysList(
-      List<String> relays, String selectedKey) {
+    List<String> relays,
+    String selectedKey,
+  ) {
     return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
       builder: (context, state) {
         return MediaQuery.removePadding(
@@ -357,7 +371,10 @@ class RelaysDiscoverList extends StatelessWidget {
   }
 
   RelayContainer _relayContainer(
-      String r, String selectedKey, BuildContext context) {
+    String r,
+    String selectedKey,
+    BuildContext context,
+  ) {
     return RelayContainer(
       url: r,
       isSelected: selectedKey == r,
@@ -368,7 +385,7 @@ class RelaysDiscoverList extends StatelessWidget {
           builder: (_) {
             return ShareRelayFeed(
               relay: r,
-              isDiscover: isDiscover,
+              viewType: viewType,
             );
           },
           isScrollControlled: true,
@@ -383,7 +400,7 @@ class RelaysDiscoverList extends StatelessWidget {
             r,
             r,
           ),
-          isDiscover: isDiscover,
+          viewType: viewType,
         );
 
         YNavigator.pop(context);
@@ -393,25 +410,38 @@ class RelaysDiscoverList extends StatelessWidget {
 }
 
 class CommunityDiscoverList extends StatelessWidget {
-  const CommunityDiscoverList({super.key, required this.isDiscover});
+  const CommunityDiscoverList({super.key, required this.viewType});
 
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
       builder: (context, state) {
-        final communityFeed = isDiscover
+        final communityFeed = viewType == ViewDataTypes.articles
             ? state.discoverCommunity.entries.toList().toList().where(
                   (element) => element.value.enabled,
                 )
-            : state.notesCommunity.entries.toList().where(
-                  (element) => element.value.enabled,
-                );
+            : viewType == ViewDataTypes.notes
+                ? state.notesCommunity.entries.toList().where(
+                      (element) => element.value.enabled,
+                    )
+                : state.mediaCommunity.entries.toList().where(
+                      (element) => element.value.enabled,
+                    );
 
-        final selectedKey = isDiscover
-            ? state.selectedDiscoverSource.key
-            : state.selectedNotesSource.key;
+        String selectedKey = '';
+        final selectedSource = viewType == ViewDataTypes.articles
+            ? state.selectedDiscoverSource
+            : viewType == ViewDataTypes.notes
+                ? state.selectedNotesSource
+                : state.selectedMediaSource;
+
+        if (selectedSource.value is String) {
+          selectedKey = selectedSource.value;
+        } else {
+          selectedKey = selectedSource.key;
+        }
 
         return Column(
           spacing: kDefaultPadding / 3,
@@ -432,23 +462,24 @@ class CommunityDiscoverList extends StatelessWidget {
   }
 
   Column _communityOptions(
-      Iterable<MapEntry<String, CommunityFeedOption>> communityFeed,
-      String selectedKey,
-      BuildContext context) {
+    Iterable<MapEntry<String, CommunityFeedOption>> communityFeed,
+    String selectedKey,
+    BuildContext context,
+  ) {
     return Column(
       spacing: kDefaultPadding / 3,
       children: communityFeed
           .map(
             (communityOption) => CommunityOptionContainer(
               communityOption: communityOption,
-              isSelected: communityOption.key == selectedKey,
+              isSelected: communityOption.value.name == selectedKey,
               onClick: () {
                 appSettingsManagerCubit.setSource(
                   source: MapEntry(
                     communityOption.key,
                     communityOption.value.name,
                   ),
-                  isDiscover: isDiscover,
+                  viewType: viewType,
                 );
 
                 YNavigator.pop(context);

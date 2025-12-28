@@ -693,7 +693,7 @@ class AddDiscoverFilter extends HookWidget {
                 elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
-                    isDiscover: true,
+                    viewType: ViewDataTypes.articles,
                   );
                 },
                 isScrollControlled: true,
@@ -1281,7 +1281,502 @@ class AddNotesFilter extends HookWidget {
                 elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
-                    isDiscover: false,
+                    viewType: ViewDataTypes.notes,
+                  );
+                },
+                isScrollControlled: true,
+                useRootNavigator: true,
+                useSafeArea: true,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class AddMediaFilter extends HookWidget {
+  const AddMediaFilter({super.key, required this.mediaFilter});
+
+  final MediaFilter mediaFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = useTextEditingController(text: mediaFilter.title);
+    final includedKeywords = useState(mediaFilter.includedKeywords);
+    final excludedKeywords = useState(mediaFilter.excludedKeywords);
+    final hideSensitive = useState(mediaFilter.hideSensitive);
+    final includedController = useTextEditingController();
+    final excludedController = useTextEditingController();
+    final postedBy = useState(mediaFilter.postedBy.toSet());
+    final from = useState(mediaFilter.from);
+    final to = useState(mediaFilter.to);
+    final isLoading = useState(false);
+
+    final titleKey = useMemoized(
+      () => GlobalKey<FormState>(),
+    );
+
+    final setFilter = useCallback(
+      () async {
+        if (titleKey.currentState!.validate()) {
+          final mf = MediaFilter(
+            id: mediaFilter.isDefault() ? uuid.v4() : mediaFilter.id,
+            title: title.text,
+            includedKeywords: includedKeywords.value,
+            hideSensitive: hideSensitive.value,
+            excludedKeywords: excludedKeywords.value,
+            postedBy: postedBy.value.toList(),
+            from: from.value,
+            to: to.value,
+          );
+
+          isLoading.value = true;
+
+          if (mediaFilter.isDefault()) {
+            await appSettingsManagerCubit.addMediaFilter(filter: mf);
+          } else {
+            await appSettingsManagerCubit.updateMediaFilter(filter: mf);
+          }
+
+          isLoading.value = false;
+
+          YNavigator.pop(context);
+        }
+      },
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.95,
+          minChildSize: 0.60,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (_, controller) => Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Column(
+              children: [
+                _appbar(),
+                Expanded(
+                  child: _content(
+                    context,
+                    controller,
+                    titleKey,
+                    title,
+                    from,
+                    to,
+                    includedController,
+                    excludedKeywords,
+                    includedKeywords,
+                    excludedController,
+                    hideSensitive,
+                    postedBy,
+                  ),
+                ),
+                Container(
+                  height: kBottomNavigationBarHeight +
+                      MediaQuery.of(context).padding.bottom,
+                  width: double.infinity,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom / 2,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: RegularLoadingButton(
+                          title: mediaFilter.isDefault()
+                              ? context.t.add.capitalizeFirst()
+                              : context.t.update.capitalizeFirst(),
+                          isLoading: isLoading.value,
+                          onClicked: setFilter,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ScrollShadow _content(
+      BuildContext context,
+      ScrollController controller,
+      GlobalKey<FormState> titleKey,
+      TextEditingController title,
+      ValueNotifier<int?> from,
+      ValueNotifier<int?> to,
+      TextEditingController includedController,
+      ValueNotifier<List<String>> excludedKeywords,
+      ValueNotifier<List<String>> includedKeywords,
+      TextEditingController excludedController,
+      ValueNotifier<bool> hideSensitive,
+      ValueNotifier<Set<String>> postedBy) {
+    return ScrollShadow(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      size: 4,
+      child: ListView(
+        controller: controller,
+        shrinkWrap: true,
+        padding: const EdgeInsets.symmetric(
+          vertical: kDefaultPadding / 2,
+        ),
+        children: [
+          Form(
+            key: titleKey,
+            child: TextFormField(
+              controller: title,
+              style: Theme.of(context).textTheme.bodyMedium,
+              decoration: InputDecoration(
+                hintText: context.t.entitleFilter,
+              ),
+              validator: RequiredValidator(
+                errorText: context.t.fieldRequired,
+              ).call,
+            ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          _fromTo(context, from, to),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          _includeTextfield(
+              includedController, context, excludedKeywords, includedKeywords),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          if (includedKeywords.value.isNotEmpty) ...[
+            WordsWrap(
+              keywords: includedKeywords.value,
+              onDelete: (keyword) {
+                includedKeywords.value = List.from(includedKeywords.value)
+                  ..remove(keyword);
+              },
+            ),
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+          ],
+          _excludeTextfield(
+              excludedController, context, includedKeywords, excludedKeywords),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          if (excludedKeywords.value.isNotEmpty) ...[
+            WordsWrap(
+              keywords: excludedKeywords.value,
+              onDelete: (keyword) {
+                excludedKeywords.value = List.from(excludedKeywords.value)
+                  ..remove(keyword);
+              },
+            ),
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+          ],
+          Container(
+            decoration: defaultBoxDecoration(
+              ctx: context,
+              radius: kDefaultPadding / 1.5,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding / 2,
+              vertical: kDefaultPadding / 3,
+            ),
+            child: ToggleBox(
+              title: context.t.sensitiveContent,
+              isToggled: hideSensitive.value,
+              onToggle: (p0) => hideSensitive.value = p0,
+            ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          _postedBy(context, postedBy),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          if (postedBy.value.isNotEmpty) ...[
+            _usersList(postedBy),
+          ],
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+        ],
+      ),
+    );
+  }
+
+  SizedBox _usersList(ValueNotifier<Set<String>> postedBy) {
+    return SizedBox(
+      height: 60,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: kDefaultPadding / 4,
+        ),
+        itemBuilder: (context, index) {
+          final pubkey = postedBy.value.toList()[index];
+
+          return MetadataProvider(
+            pubkey: pubkey,
+            child: (metadata, nip05) => RemovableProfile(
+              metadata: metadata,
+              pubkey: pubkey,
+              postedBy: postedBy,
+            ),
+          );
+        },
+        itemCount: postedBy.value.length,
+      ),
+    );
+  }
+
+  GestureDetector _postedBy(
+      BuildContext context, ValueNotifier<Set<String>> postedBy) {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) {
+            return UserToZap(
+              onUserSelected: (user) {
+                postedBy.value.add(user.pubkey);
+                YNavigator.pop(context);
+              },
+            );
+          },
+          isScrollControlled: true,
+          useRootNavigator: true,
+          useSafeArea: true,
+          elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        );
+      },
+      child: TextFormField(
+        enabled: false,
+        decoration: InputDecoration(
+          hintText: context.t.postedBy,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(kDefaultPadding / 1.5),
+            child: SvgPicture.asset(
+              FeatureIcons.search,
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColorDark,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).dividerColor,
+              width: 0.5,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(kDefaultPadding / 1.5),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextFormField _excludeTextfield(
+      TextEditingController excludedController,
+      BuildContext context,
+      ValueNotifier<List<String>> includedKeywords,
+      ValueNotifier<List<String>> excludedKeywords) {
+    return TextFormField(
+      controller: excludedController,
+      style: Theme.of(context).textTheme.bodyMedium,
+      onFieldSubmitted: (text) {
+        if (text.isEmpty) {
+          BotToastUtils.showError(context.t.addWord);
+          return;
+        }
+
+        if (includedKeywords.value.contains(text)) {
+          BotToastUtils.showError(
+            context.t.wordNotInIncluded,
+          );
+
+          return;
+        }
+
+        excludedKeywords.value = List.from(excludedKeywords.value)
+          ..add(text.trim().toLowerCase());
+        excludedController.clear();
+      },
+      decoration: InputDecoration(
+        hintText: context.t.excludedWords,
+        suffixIcon: CustomIconButton(
+          onClicked: () {
+            final text = excludedController.text.trim().toLowerCase();
+            if (text.isEmpty) {
+              BotToastUtils.showError(context.t.addWord);
+              return;
+            }
+
+            if (includedKeywords.value.contains(text)) {
+              BotToastUtils.showError(
+                context.t.wordNotInIncluded,
+              );
+
+              return;
+            }
+
+            excludedKeywords.value = List.from(excludedKeywords.value)
+              ..add(text.trim().toLowerCase());
+            excludedController.clear();
+          },
+          icon: FeatureIcons.addRaw,
+          size: 18,
+          backgroundColor: kTransparent,
+        ),
+      ),
+    );
+  }
+
+  TextFormField _includeTextfield(
+      TextEditingController includedController,
+      BuildContext context,
+      ValueNotifier<List<String>> excludedKeywords,
+      ValueNotifier<List<String>> includedKeywords) {
+    return TextFormField(
+      controller: includedController,
+      style: Theme.of(context).textTheme.bodyMedium,
+      onFieldSubmitted: (text) {
+        if (text.isEmpty) {
+          BotToastUtils.showError(context.t.addWord);
+          return;
+        }
+
+        if (excludedKeywords.value.contains(text)) {
+          BotToastUtils.showError(
+            context.t.wordNotInExcluded,
+          );
+
+          return;
+        }
+
+        includedKeywords.value = List.from(includedKeywords.value)
+          ..add(text.trim().toLowerCase());
+        includedController.clear();
+      },
+      decoration: InputDecoration(
+        hintText: context.t.includedWords,
+        suffixIcon: CustomIconButton(
+          onClicked: () {
+            final text = includedController.text;
+            if (text.isEmpty) {
+              BotToastUtils.showError(context.t.addWord);
+              return;
+            }
+
+            if (excludedKeywords.value.contains(text)) {
+              BotToastUtils.showError(
+                context.t.wordNotInExcluded,
+              );
+
+              return;
+            }
+
+            includedKeywords.value = List.from(includedKeywords.value)
+              ..add(text.trim().toLowerCase());
+            includedController.clear();
+          },
+          icon: FeatureIcons.addRaw,
+          size: 18,
+          backgroundColor: kTransparent,
+        ),
+      ),
+    );
+  }
+
+  Row _fromTo(
+      BuildContext context, ValueNotifier<int?> from, ValueNotifier<int?> to) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: FilterDatePicker(
+            text: context.t.from,
+            currentDate: from,
+            setDate: (date) {
+              if (date != null && to.value != null && to.value! <= date) {
+                BotToastUtils.showError(
+                  context.t.fromDateMessage,
+                );
+                return;
+              }
+
+              from.value = date;
+            },
+          ),
+        ),
+        Expanded(
+          child: FilterDatePicker(
+            text: context.t.to,
+            currentDate: to,
+            setDate: (date) {
+              if (date != null && from.value != null && from.value! >= date) {
+                BotToastUtils.showError(
+                  context.t.toDateMessage,
+                );
+                return;
+              }
+
+              to.value = date;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState> _appbar() {
+    return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+      builder: (context, state) {
+        final listAvailable = state.notesFilters.isNotEmpty;
+
+        return ModalBottomSheetAppbar(
+          title: context.t.addFilter.capitalizeFirst(),
+          isBack: listAvailable,
+          onClicked: () {
+            YNavigator.pop(context);
+            if (listAvailable) {
+              showModalBottomSheet(
+                context: context,
+                elevation: 0,
+                builder: (_) {
+                  return const AppFilterList(
+                    viewType: ViewDataTypes.media,
                   );
                 },
                 isScrollControlled: true,

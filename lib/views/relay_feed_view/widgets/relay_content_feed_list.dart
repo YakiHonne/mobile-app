@@ -13,9 +13,9 @@ import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/curation_container.dart';
+import '../../widgets/media_components/horizontal_video_view.dart';
+import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/video_common_container.dart';
-import '../../widgets/video_components/horizontal_video_view.dart';
-import '../../widgets/video_components/vertical_video_view.dart';
 
 class RelayContentFeedList extends StatelessWidget {
   const RelayContentFeedList({super.key});

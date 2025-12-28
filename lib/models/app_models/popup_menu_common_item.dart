@@ -27,6 +27,7 @@ import '../bookmark_list_model.dart';
 import '../curation_model.dart';
 import '../detailed_note_model.dart';
 import '../flash_news_model.dart';
+import '../picture_model.dart';
 import '../smart_widgets_components.dart';
 import '../video_model.dart';
 
@@ -178,54 +179,49 @@ class PdmCommonActions {
     late VoidCallback onShareUrl;
     late VoidCallback onShareNostrScheme;
 
+    nostrScheme = await item.getSchemeWithRelays();
     // Extract values based on item type
     if (item is Article) {
-      nostrScheme = await item.getNaddrWithRelays();
-
       url = await externalShearableLink(
         kind: EventKind.LONG_FORM,
         pubkey: item.pubkey,
         id: item.identifier,
       );
     } else if (item is Curation) {
-      nostrScheme = await item.getNaddrWithRelays();
-
       url = await externalShearableLink(
         kind: item.kind,
         pubkey: item.pubkey,
         id: item.identifier,
       );
     } else if (item is VideoModel) {
-      nostrScheme = await item.getNeventWithRelays();
-
       url = await externalShearableLink(
         kind: item.kind,
         pubkey: item.pubkey,
-        id: item.id,
+        id: item.isRepleaceableVideo() ? item.identifier : item.id,
       );
     } else if (item is DetailedNoteModel) {
-      nostrScheme = await item.getNeventWithRelays();
-
       url = await externalShearableLink(
         kind: EventKind.TEXT_NOTE,
         pubkey: item.pubkey,
         id: item.id,
       );
     } else if (item is LightMetadata) {
-      nostrScheme = await item.getNProfileWithRelays();
-
       url = await externalShearableLink(
         kind: EventKind.METADATA,
         pubkey: '',
         id: item.pubkey,
       );
     } else if (item is SmartWidget) {
-      nostrScheme = await item.getNaddrWithRelays();
-
       url = await externalShearableLink(
         kind: EventKind.SMART_WIDGET_ENH,
         pubkey: item.pubkey,
         id: item.identifier,
+      );
+    } else if (item is PictureModel) {
+      url = await externalShearableLink(
+        kind: EventKind.PICTURE,
+        pubkey: item.pubkey,
+        id: item.id,
       );
     } else {
       return;
@@ -351,12 +347,20 @@ class PdmCommonActions {
   }
 
   static void copyId(BaseEventModel model) {
+    final isNote = model is DetailedNoteModel;
+
+    final ev = Event.fromString(isNote
+        ? model.stringifiedEvent
+        : model is VideoModel
+            ? model.stringifiedEvent
+            : (model as PictureModel).stringifiedEvent);
+
     final id = Nip19.encodeShareableEntity(
       'nevent',
       model.id,
-      [],
+      ev?.seenOn ?? [],
       model.pubkey,
-      EventKind.TEXT_NOTE,
+      model is DetailedNoteModel ? EventKind.TEXT_NOTE : EventKind.PICTURE,
     );
 
     Clipboard.setData(ClipboardData(text: id));
@@ -450,6 +454,8 @@ class PdmCommonActions {
       attachedEvent = model.stringifiedEvent;
     } else if (model is BookmarkListModel) {
       attachedEvent = model.stringifiedEvent;
+    } else if (model is PictureModel) {
+      attachedEvent = model.stringifiedEvent;
     }
 
     showModalBottomSheet(
@@ -475,7 +481,7 @@ class PdmCommonActions {
       context,
       SmartWidgetChecker.routeName,
       arguments: [
-        smartWidgetModel.getNaddr(),
+        smartWidgetModel.getScheme(),
         smartWidgetModel,
       ],
     );
@@ -518,6 +524,12 @@ class PdmCommonActions {
         isCloning: isCloning,
       ),
     );
+  }
+
+  static void pinEvent(
+    BaseEventModel model,
+  ) {
+    nostrRepository.setPinnedNote(noteId: model.id);
   }
 
   static void addToCuration(BuildContext context, BaseEventModel model) {

@@ -15,11 +15,11 @@ class ReorderSettingsView extends HookWidget {
   const ReorderSettingsView({
     super.key,
     required this.controller,
-    required this.isDiscover,
+    required this.viewType,
   });
 
   final ScrollController controller;
-  final bool isDiscover;
+  final ViewDataTypes viewType;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +31,7 @@ class ReorderSettingsView extends HookWidget {
 
     final dSources = currentAppSettings.value.contentSources.discoverSources;
     final nSources = currentAppSettings.value.contentSources.notesSources;
+    final mSources = currentAppSettings.value.contentSources.mediaSources;
 
     final dSourcesList = useState([
       dSources.communityFeed,
@@ -40,17 +41,27 @@ class ReorderSettingsView extends HookWidget {
       nSources.communityFeed,
     ]);
 
+    final mSourcesList = useState([
+      mSources.communityFeed,
+    ]);
+
     void setSourcesList() {
-      if (isDiscover) {
+      if (viewType == ViewDataTypes.articles) {
         final s = currentAppSettings.value.contentSources.discoverSources;
 
         dSourcesList.value = [
           s.communityFeed,
         ];
-      } else {
+      } else if (viewType == ViewDataTypes.notes) {
         final s = currentAppSettings.value.contentSources.notesSources;
 
         nSourcesList.value = [
+          s.communityFeed,
+        ];
+      } else if (viewType == ViewDataTypes.media) {
+        final s = currentAppSettings.value.contentSources.mediaSources;
+
+        mSourcesList.value = [
           s.communityFeed,
         ];
       }
@@ -62,7 +73,7 @@ class ReorderSettingsView extends HookWidget {
 
         final settings = currentAppSettings.value;
 
-        if (isDiscover) {
+        if (viewType == ViewDataTypes.articles) {
           final discoverSources = settings.contentSources.discoverSources;
 
           final communityFeed = discoverSources.communityFeed;
@@ -71,7 +82,7 @@ class ReorderSettingsView extends HookWidget {
             communityFeed.top,
             communityFeed.global,
           ].where((opt) => opt.enabled).length;
-        } else {
+        } else if (viewType == ViewDataTypes.notes) {
           final notesSources = settings.contentSources.notesSources;
 
           final communityFeed = notesSources.communityFeed;
@@ -81,6 +92,14 @@ class ReorderSettingsView extends HookWidget {
             communityFeed.global,
             communityFeed.paid,
             communityFeed.widgets,
+          ].where((opt) => opt.enabled).length;
+        } else if (viewType == ViewDataTypes.media) {
+          final mediaSources = settings.contentSources.mediaSources;
+
+          final communityFeed = mediaSources.communityFeed;
+          count += [
+            communityFeed.recent,
+            communityFeed.global,
           ].where((opt) => opt.enabled).length;
         }
 
@@ -172,6 +191,45 @@ class ReorderSettingsView extends HookWidget {
                 paid: options.firstWhere((option) => option.name == 'paid'),
                 widgets:
                     options.firstWhere((option) => option.name == 'widgets'),
+              ),
+            ),
+          ),
+        );
+
+        setSourcesList();
+      } else if (feed is MediaCommunityFeed) {
+        final options = [
+          feed.recent,
+          feed.global,
+        ]..sort(
+            (a, b) => a.index.compareTo(b.index),
+          );
+
+        if (index < 0 || index >= options.length) {
+          return;
+        }
+
+        if (!status && countEnabledOptions() == 1 && options[index].enabled) {
+          BotToastUtils.showWarning(context.t.oneFeedOptionAvailable);
+          return;
+        }
+
+        options[index] = CommunityFeedOption(
+          name: options[index].name,
+          enabled: status,
+          index: options[index].index,
+          id: options[index].id,
+        );
+
+        final c = currentAppSettings.value;
+
+        currentAppSettings.value = c.copyWith(
+          contentSources: c.contentSources.copyWith(
+            mediaSources: c.contentSources.mediaSources.copyWith(
+              communityFeed: MediaCommunityFeed(
+                index: feed.index,
+                recent: options.firstWhere((option) => option.name == 'recent'),
+                global: options.firstWhere((option) => option.name == 'global'),
               ),
             ),
           ),
@@ -280,6 +338,50 @@ class ReorderSettingsView extends HookWidget {
         );
 
         setSourcesList();
+      } else if (feed is MediaCommunityFeed) {
+        final options = [
+          feed.recent,
+          feed.global,
+        ]..sort(
+            (a, b) => a.index.compareTo(b.index),
+          );
+
+        if (oldIndex < 0 ||
+            oldIndex >= options.length ||
+            newIndex < 0 ||
+            newIndex >= options.length) {
+          return;
+        }
+
+        final movedOption = options.removeAt(oldIndex);
+        options.insert(newIndex, movedOption);
+
+        for (int i = 0; i < options.length; i++) {
+          options[i] = CommunityFeedOption(
+            name: options[i].name,
+            enabled: options[i].enabled,
+            index: i,
+            id: options[i].id,
+          );
+        }
+
+        final c = currentAppSettings.value;
+
+        final ms = MediaCommunityFeed(
+          index: feed.index,
+          recent: options.firstWhere((option) => option.name == 'recent'),
+          global: options.firstWhere((option) => option.name == 'global'),
+        );
+
+        currentAppSettings.value = c.copyWith(
+          contentSources: c.contentSources.copyWith(
+            mediaSources: c.contentSources.mediaSources.copyWith(
+              communityFeed: ms,
+            ),
+          ),
+        );
+
+        setSourcesList();
       }
     }
 
@@ -287,7 +389,7 @@ class ReorderSettingsView extends HookWidget {
       builder: (context, state) {
         late Widget widget;
 
-        if (isDiscover) {
+        if (viewType == ViewDataTypes.articles) {
           final feed = dSourcesList.value.first;
           widget = DiscoverCommunitySettingsBox(
             key: const ValueKey('community'),
@@ -299,9 +401,21 @@ class ReorderSettingsView extends HookWidget {
             ),
             onToggle: (index, status) => toggleOption(index, status, feed),
           );
-        } else {
+        } else if (viewType == ViewDataTypes.notes) {
           final feed = nSourcesList.value.first;
           widget = NotesCommunitySettingsBox(
+            key: const ValueKey('community'),
+            feed: feed,
+            onReorder: (oldIndex, newIndex) => setOrder(
+              oldIndex,
+              newIndex,
+              feed,
+            ),
+            onToggle: (index, status) => toggleOption(index, status, feed),
+          );
+        } else if (viewType == ViewDataTypes.media) {
+          final feed = mSourcesList.value.first;
+          widget = MediaCommunitySettingsBox(
             key: const ValueKey('community'),
             feed: feed,
             onReorder: (oldIndex, newIndex) => setOrder(
@@ -358,7 +472,6 @@ class ReorderSettingsView extends HookWidget {
 
                 await appSettingsManagerCubit.updateSources(
                   settings: currentAppSettings.value,
-                  isDiscover: isDiscover,
                 );
 
                 isLoading.value = false;
@@ -410,6 +523,34 @@ class NotesCommunitySettingsBox extends StatelessWidget {
   });
 
   final NotesCommunityFeed feed;
+  final Function(int, bool) onToggle;
+  final Function(int, int) onReorder;
+
+  @override
+  Widget build(BuildContext context) {
+    return CommunityFeedList(
+      items: feed
+          .getMappedContent()
+          .entries
+          .map(
+            (option) => MapEntry(option.value.name, option.value.enabled),
+          )
+          .toList(),
+      onToggle: onToggle,
+      onReorder: onReorder,
+    );
+  }
+}
+
+class MediaCommunitySettingsBox extends StatelessWidget {
+  const MediaCommunitySettingsBox({
+    super.key,
+    required this.feed,
+    required this.onToggle,
+    required this.onReorder,
+  });
+
+  final MediaCommunityFeed feed;
   final Function(int, bool) onToggle;
   final Function(int, int) onReorder;
 

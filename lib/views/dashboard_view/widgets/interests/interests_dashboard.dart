@@ -176,8 +176,6 @@ class DashboardInterestContainer extends StatelessWidget {
               if (image != null) {
                 return CommonThumbnail(
                   image: image,
-                  placeholder:
-                      getRandomPlaceholder(input: interest, isPfp: false),
                   width: 40,
                   height: 40,
                   radius: kDefaultPadding / 2,

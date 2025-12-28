@@ -397,7 +397,6 @@ class NaddrArticleContainer extends HookWidget {
               String title;
               String about;
               String backgroundImage;
-              String placeHolder;
 
               if (naddrType == ArticleNaddrTypes.article) {
                 final article = component as Article;
@@ -406,7 +405,6 @@ class NaddrArticleContainer extends HookWidget {
                 title = article.title;
                 about = article.summary;
                 backgroundImage = article.image;
-                placeHolder = article.placeholder;
               } else {
                 final curation = component as Curation;
                 createdAt = curation.createdAt;
@@ -414,7 +412,6 @@ class NaddrArticleContainer extends HookWidget {
                 title = curation.title;
                 about = curation.description;
                 backgroundImage = curation.image;
-                placeHolder = curation.placeHolder;
               }
 
               return GestureDetector(
@@ -472,7 +469,6 @@ class NaddrArticleContainer extends HookWidget {
                               ),
                               child: CommonThumbnail(
                                 image: backgroundImage,
-                                placeholder: placeHolder,
                                 width: double.infinity,
                                 height: 70,
                                 radius: 0,

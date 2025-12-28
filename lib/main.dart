@@ -113,6 +113,7 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: crashlyticsCubit),
         BlocProvider.value(value: leadingCubit),
         BlocProvider.value(value: discoverCubit),
+        BlocProvider.value(value: mediaCubit),
         BlocProvider.value(value: unsentEventsCubit),
         BlocProvider.value(value: videoControllerManagerCubit),
       ],

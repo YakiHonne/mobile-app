@@ -12,6 +12,7 @@ import '../../common/common_regex.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/bookmark_list_model.dart';
+import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
 
@@ -22,7 +23,7 @@ class SearchCubit extends Cubit<SearchState> {
     required this.context,
   }) : super(
           SearchState(
-            content: const <dynamic>[],
+            content: const <BaseEventModel>[],
             authors: const <Metadata>[],
             contentSearchResult: SearchResultsType.noSearch,
             profileSearchResult: SearchResultsType.noSearch,
@@ -102,7 +103,13 @@ class SearchCubit extends Cubit<SearchState> {
     checkForRelay(search);
 
     if (nostrSchemeRegex.hasMatch(search)) {
-      nostrRepository.mainCubit.handleNostrEntity(search, '');
+      String searchWithoutScheme = search;
+
+      if (search.startsWith('nostr:')) {
+        searchWithoutScheme = search.split('nostr:').last;
+      }
+
+      nostrRepository.mainCubit.handleNostrEntity(searchWithoutScheme, '');
     } else {
       await _performGeneralSearch(search);
     }
@@ -112,7 +119,7 @@ class SearchCubit extends Cubit<SearchState> {
     _emit(
       profileSearchResult: SearchResultsType.loading,
       contentSearchResult: SearchResultsType.loading,
-      content: <dynamic>[],
+      content: <BaseEventModel>[],
       authors: <Metadata>[],
     );
 
@@ -122,7 +129,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   void _resetSearch() {
     _emit(
-      content: <dynamic>[],
+      content: <BaseEventModel>[],
       authors: <Metadata>[],
       contentSearchResult: SearchResultsType.noSearch,
       profileSearchResult: SearchResultsType.noSearch,
@@ -153,7 +160,7 @@ class SearchCubit extends Cubit<SearchState> {
   Future<void> getContent(String search) async {
     _emit(isSearching: true);
 
-    final List<dynamic> currentContent = List<dynamic>.from(state.content);
+    final currentContent = List<BaseEventModel>.from(state.content);
 
     final searchTag =
         search.startsWith('#') ? search.removeFirstCharacter() : search;
@@ -170,7 +177,7 @@ class SearchCubit extends Cubit<SearchState> {
       search: search,
     );
 
-    final List<dynamic> updatedContent = List<dynamic>.from(currentContent);
+    final updatedContent = List<BaseEventModel>.from(currentContent);
     updatedContent.addAll(content);
 
     _emit(
@@ -266,7 +273,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   // State Management
   void _emit({
-    List<dynamic>? content,
+    List<BaseEventModel>? content,
     List<Metadata>? authors,
     String? search,
     bool? isSearching,

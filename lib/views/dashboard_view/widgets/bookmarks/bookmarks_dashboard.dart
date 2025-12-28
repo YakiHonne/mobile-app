@@ -324,7 +324,6 @@ class BookmarkContainer extends StatelessWidget {
         children: [
           CommonThumbnail(
             image: bookmarkListModel.image,
-            placeholder: bookmarkListModel.placeholder,
             width: 90,
             height: 90,
             radius: kDefaultPadding / 2,

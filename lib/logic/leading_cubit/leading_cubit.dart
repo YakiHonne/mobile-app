@@ -48,6 +48,7 @@ class LeadingCubit extends Cubit<LeadingState> {
   // =============================================================================
   late StreamSubscription feedStream;
   late StreamSubscription mutesStream;
+  bool delayLeading = true;
   final extraIds = <String>{};
   int? score;
   Timer? currentExtraTimer;
@@ -101,9 +102,9 @@ class LeadingCubit extends Cubit<LeadingState> {
   // =============================================================================
   /// Initialize the view with data and suggestions
   Future<void> initView() async {
-    if (nostrRepository.delayLeading) {
+    if (delayLeading) {
       await Future.delayed(const Duration(seconds: 1));
-      nostrRepository.delayLeading = false;
+      delayLeading = false;
     }
 
     fetchMedia();

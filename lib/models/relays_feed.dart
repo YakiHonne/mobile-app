@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart'
@@ -163,4 +165,35 @@ class UserRelaySet {
       null,
     );
   }
+
+  factory UserRelaySet.fromMap(Map<String, dynamic> map) {
+    return UserRelaySet(
+      id: map['id'],
+      identifier: map['identifier'],
+      pubkey: map['pubkey'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      title: map['title'],
+      description: map['description'],
+      image: map['image'],
+      relays: List<String>.from(map['relays']),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'identifier': identifier,
+      'pubkey': pubkey,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'title': title,
+      'description': description,
+      'image': image,
+      'relays': relays,
+    };
+  }
+
+  String toJson() => jsonEncode(toMap());
+
+  static UserRelaySet fromJson(String json) =>
+      UserRelaySet.fromMap(jsonDecode(json));
 }

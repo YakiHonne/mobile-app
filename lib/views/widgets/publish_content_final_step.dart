@@ -4,6 +4,7 @@ import '../../models/app_models/popup_menu_common_item.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
@@ -13,8 +14,9 @@ import '../article_view/article_view.dart';
 import '../curation_view/curation_view.dart';
 import '../smart_widgets_view/widgets/smart_widget_checker.dart';
 import 'dotted_container.dart';
-import 'video_components/horizontal_video_view.dart';
-import 'video_components/vertical_video_view.dart';
+import 'media_components/horizontal_video_view.dart';
+import 'media_components/picture_view.dart';
+import 'media_components/vertical_video_view.dart';
 
 class PublishContentFinalStep extends StatelessWidget {
   const PublishContentFinalStep({
@@ -171,7 +173,7 @@ class PublishContentFinalStep extends StatelessWidget {
             YNavigator.pushPage(
               context,
               (context) => SmartWidgetChecker(
-                naddr: (event as SmartWidget).getNaddr(),
+                naddr: (event as SmartWidget).getScheme(),
                 swm: event as SmartWidget,
               ),
             );
@@ -183,6 +185,13 @@ class PublishContentFinalStep extends StatelessWidget {
               (context) => video.isHorizontal
                   ? HorizontalVideoView(video: video)
                   : VerticalVideoView(video: video),
+            );
+          } else if (appContentType == AppContentType.picture) {
+            final picture = event as PictureModel;
+
+            YNavigator.pushPage(
+              context,
+              (context) => PictureView(picture: picture),
             );
           }
         },

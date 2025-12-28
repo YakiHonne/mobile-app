@@ -75,6 +75,7 @@ class LocalDatabaseRepository {
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
   static const String _unsentEvents = 'unsent_events';
   static const String _unsentEventsPubkeys = 'unsent_events_pubkeys';
+  static const String _appViewConfig = 'app_view_config';
 
   // Features & Services
   static const String _translationServices = 'translation_services';
@@ -471,6 +472,19 @@ class LocalDatabaseRepository {
   // ==================================================
   // CONTENT & COMMUNICATION
   // ==================================================
+
+  /// App view config
+  String? getAppViewConfig(String pubkey) {
+    return _getPrefsData<String>('$pubkey-$_appViewConfig');
+  }
+
+  Future<void> setAppViewConfig(String pubkey, String config) async {
+    await _setPrefsData('$pubkey-$_appViewConfig', config);
+  }
+
+  Future<void> deleteAppViewConfig(String pubkey) async {
+    await prefs.remove('$pubkey-$_appViewConfig');
+  }
 
   /// Topics Management
   Future<String> getTopics() async {

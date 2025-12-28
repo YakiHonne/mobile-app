@@ -330,10 +330,6 @@ class SWappSmartWidget extends StatelessWidget {
               image: state.appSmartWidget.image,
               radius: kDefaultPadding / 2,
               isRound: true,
-              placeholder: getRandomPlaceholder(
-                input: '4',
-                isPfp: false,
-              ),
               width: width,
               height: state.appSmartWidget.image.isEmpty ? (width * 8) / 16 : 0,
             )
@@ -499,10 +495,6 @@ class ImageEditableContainer extends StatelessWidget {
       image: smartWidgetBox.image.url,
       radius: kDefaultPadding / 2,
       isRound: true,
-      placeholder: getRandomPlaceholder(
-        input: '4',
-        isPfp: false,
-      ),
       width: width,
       height: url.isEmpty ? (width * 8) / 16 : 0,
     );
@@ -621,7 +613,7 @@ class InputFieldEditableContainer extends StatelessWidget {
         Expanded(
           child: GridSideButton(
             isHorizontal: true,
-            icon: FeatureIcons.article,
+            icon: FeatureIcons.editArticle,
             backGroundColor: Theme.of(context).cardColor,
             onTap: () {
               showModalBottomSheet(

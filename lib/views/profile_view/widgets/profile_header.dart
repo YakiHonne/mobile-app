@@ -35,8 +35,7 @@ class ProfileHeader extends StatelessWidget {
                 previous.user != current.user ||
                 previous.isNip05 != current.isNip05 ||
                 previous.refresh != current.refresh ||
-                previous.userRelays != current.userRelays ||
-                previous.isRelaysLoading != current.isRelaysLoading,
+                previous.userRelays != current.userRelays,
             builder: (context, state) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

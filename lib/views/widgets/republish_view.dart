@@ -294,10 +294,6 @@ class RepublishView extends HookWidget {
           child: relayInfo != null && relayInfo.icon.isNotEmpty
               ? CommonThumbnail(
                   image: relayInfo.icon,
-                  placeholder: getRandomPlaceholder(
-                    input: r,
-                    isPfp: false,
-                  ),
                   width: 40,
                   height: 40,
                   isRound: true,

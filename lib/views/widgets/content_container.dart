@@ -258,10 +258,6 @@ class ContentContainer extends HookWidget {
                 builder: (context, cts) {
                   return CommonThumbnail(
                     image: thumbnail.isEmpty ? metadata.picture : thumbnail,
-                    placeholder: getRandomPlaceholder(
-                      input: id,
-                      isPfp: false,
-                    ),
                     width: cts.maxWidth,
                     height: cts.maxWidth,
                     radius: kDefaultPadding,

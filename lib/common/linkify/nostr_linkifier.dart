@@ -141,15 +141,6 @@ class NostrSchemeLinkifier extends Linkifier {
     return Neventlement(eventId ?? '', fullKey);
   }
 
-  // bool _isValidEventKind(dynamic eventKind) {
-  //   return eventKind == EventKind.LONG_FORM ||
-  //       eventKind == EventKind.VIDEO_HORIZONTAL ||
-  //       eventKind == EventKind.VIDEO_VERTICAL ||
-  //       eventKind == EventKind.SMART_WIDGET_ENH ||
-  //       eventKind == EventKind.CURATION_ARTICLES ||
-  //       eventKind == EventKind.CURATION_VIDEOS;
-  // }
-
   LinkifyElement _createElementFromEventKind(
     int eventKind,
     String identifier,
@@ -170,6 +161,18 @@ class NostrSchemeLinkifier extends Linkifier {
           fullKey,
         );
       case EventKind.VIDEO_VERTICAL:
+        return ArtCurSchemeElement(
+          identifier,
+          'video',
+          fullKey,
+        );
+      case EventKind.LEGACY_VIDEO_HORIZONTAL:
+        return ArtCurSchemeElement(
+          identifier,
+          'video',
+          fullKey,
+        );
+      case EventKind.LEGACY_VIDEO_VERTICAL:
         return ArtCurSchemeElement(
           identifier,
           'video',

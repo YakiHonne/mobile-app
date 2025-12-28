@@ -52,35 +52,10 @@ class Curation extends Equatable implements BaseEventModel {
     required this.stringifiedEvent,
   });
 
+  static bool isCuration(int kind) =>
+      kind == EventKind.CURATION_ARTICLES || kind == EventKind.CURATION_VIDEOS;
+
   bool isArticleCuration() => kind == EventKind.CURATION_ARTICLES;
-
-  String getNaddr() {
-    final List<int> charCodes = identifier.runes.toList();
-    final special = charCodes.map((code) => code.toRadixString(16)).join();
-
-    return Nip19.encodeShareableEntity(
-      'naddr',
-      special,
-      [],
-      pubkey,
-      kind,
-    );
-  }
-
-  Future<String> getNaddrWithRelays() async {
-    final List<int> charCodes = identifier.runes.toList();
-    final special = charCodes.map((code) => code.toRadixString(16)).join();
-    final relays =
-        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
-
-    return Nip19.encodeShareableEntity(
-      'naddr',
-      special,
-      relays,
-      pubkey,
-      kind,
-    );
-  }
 
   factory Curation.fromEvent(Event event, String relay) {
     String identifier = '';
@@ -135,11 +110,6 @@ class Curation extends Equatable implements BaseEventModel {
       }
     }
 
-    final placeHolder = getRandomPlaceholder(
-      input: identifier,
-      isPfp: false,
-    );
-
     return Curation(
       id: event.id,
       kind: event.kind,
@@ -153,7 +123,6 @@ class Curation extends Equatable implements BaseEventModel {
       createdAt: createdAt,
       tags: tags,
       publishedAt: publishedAt,
-      placeHolder: placeHolder,
       zapsSplits: zaps,
       client: client,
       relays: {relay},
@@ -270,6 +239,36 @@ class Curation extends Equatable implements BaseEventModel {
       zapsSplits: zapsSplits ?? this.zapsSplits,
       client: client ?? this.client,
       stringifiedEvent: stringifiedEvent ?? this.stringifiedEvent,
+    );
+  }
+
+  @override
+  String getScheme() {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      [],
+      pubkey,
+      kind,
+    );
+  }
+
+  @override
+  Future<String> getSchemeWithRelays() async {
+    final List<int> charCodes = identifier.runes.toList();
+    final special = charCodes.map((code) => code.toRadixString(16)).join();
+    final relays =
+        await getEventSeenOnRelays(id: identifier, isReplaceable: true);
+
+    return Nip19.encodeShareableEntity(
+      'naddr',
+      special,
+      relays,
+      pubkey,
+      kind,
     );
   }
 }

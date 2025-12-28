@@ -59,6 +59,22 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
     }
   }
 
+  void reset() {
+    _safeEmit(
+      state.copyWith(
+        relayContacts: {},
+        networkRelays: [],
+        relayFavored: {},
+        relayFeeds: const RelayFeeds(
+          favoriteRelays: [],
+          events: [],
+        ),
+        favoriteUserRelaySets: [],
+        userRelaySets: {},
+      ),
+    );
+  }
+
   Future<void> getRelaysInfo() async {
     if (_pendingRelays.isEmpty) {
       return;

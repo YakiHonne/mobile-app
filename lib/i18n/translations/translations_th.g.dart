@@ -1475,6 +1475,30 @@ class TranslationsTh extends Translations {
 	@override String get favoriteRelaysFeed => 'ฟีดรีเลย์โปรด';
 	@override String get maxMentions => 'กล่าวถึงสูงสุด';
 	@override String get maxMentionsDesc => 'ซ่อนการแจ้งเตือนจากโน้ตที่มีการกล่าวถึงผู้ใช้มากกว่า 10 คน';
+	@override String get media => 'สื่อ';
+	@override String get pinned => 'ปักหมุด';
+	@override String get pictures => 'รูปภาพ';
+	@override String get unpin => 'เลิกปักหมุด';
+	@override String get pin => 'ปักหมุด';
+	@override String userPublishedPicture({required Object name}) => '${name} เผยแพร่รูปภาพ';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} แซปรูปภาพของคุณ ${number} sats';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อรูปภาพของคุณ';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อรูปภาพที่คุณถูกกล่าวถึง';
+	@override String userRepliedYourPicture({required Object name}) => '${name} ตอบกลับรูปภาพของคุณ';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} ตอบกลับรูปภาพที่คุณถูกกล่าวถึง';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} กล่าวถึงคุณในรูปภาพ';
+	@override String userCommentedYourPicture({required Object name}) => '${name} แสดงความคิดเห็นบนรูปภาพของคุณ';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} แสดงความคิดเห็นบนรูปภาพที่คุณถูกกล่าวถึง';
+	@override String userQuotedYourPicture({required Object name}) => '${name} อ้างอิงรูปภาพของคุณ';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} อ้างอิงรูปภาพที่คุณถูกกล่าวถึง';
+	@override String get cameraPermission => 'แอปไม่มีสิทธิ์เข้าถึงกล้อง หรือไม่มีกล้องที่ใช้งานได้บนอุปกรณ์นี้';
+	@override String get fetchingPicture => 'กำลังดึงรูปภาพ...';
+	@override String get addDescription => 'เพิ่มคำอธิบาย...';
+	@override String get uploadingVideo => 'กำลังอัปโหลดวิดีโอ...';
+	@override String get uploadThumbnail => 'อัปโหลดภาพขนาดย่อ';
+	@override String get chooseThumbnailVideo => 'เลือกภาพขนาดย่อที่เหมาะสมสำหรับวิดีโอของคุณ';
+	@override String get publishing => 'กำลังเผยแพร่...';
+	@override String get giveMeCatchyTitle => 'ให้ฉันมีหัวข้อที่น่าสนใจ';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -2939,6 +2963,30 @@ extension on TranslationsTh {
 			'favoriteRelaysFeed' => 'ฟีดรีเลย์โปรด',
 			'maxMentions' => 'กล่าวถึงสูงสุด',
 			'maxMentionsDesc' => 'ซ่อนการแจ้งเตือนจากโน้ตที่มีการกล่าวถึงผู้ใช้มากกว่า 10 คน',
+			'media' => 'สื่อ',
+			'pinned' => 'ปักหมุด',
+			'pictures' => 'รูปภาพ',
+			'unpin' => 'เลิกปักหมุด',
+			'pin' => 'ปักหมุด',
+			'userPublishedPicture' => ({required Object name}) => '${name} เผยแพร่รูปภาพ',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} แซปรูปภาพของคุณ ${number} sats',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อรูปภาพของคุณ',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} ตอบสนอง ${reaction} ต่อรูปภาพที่คุณถูกกล่าวถึง',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} ตอบกลับรูปภาพของคุณ',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} ตอบกลับรูปภาพที่คุณถูกกล่าวถึง',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} กล่าวถึงคุณในรูปภาพ',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} แสดงความคิดเห็นบนรูปภาพของคุณ',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} แสดงความคิดเห็นบนรูปภาพที่คุณถูกกล่าวถึง',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} อ้างอิงรูปภาพของคุณ',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} อ้างอิงรูปภาพที่คุณถูกกล่าวถึง',
+			'cameraPermission' => 'แอปไม่มีสิทธิ์เข้าถึงกล้อง หรือไม่มีกล้องที่ใช้งานได้บนอุปกรณ์นี้',
+			'fetchingPicture' => 'กำลังดึงรูปภาพ...',
+			'addDescription' => 'เพิ่มคำอธิบาย...',
+			'uploadingVideo' => 'กำลังอัปโหลดวิดีโอ...',
+			'uploadThumbnail' => 'อัปโหลดภาพขนาดย่อ',
+			'chooseThumbnailVideo' => 'เลือกภาพขนาดย่อที่เหมาะสมสำหรับวิดีโอของคุณ',
+			'publishing' => 'กำลังเผยแพร่...',
+			'giveMeCatchyTitle' => 'ให้ฉันมีหัวข้อที่น่าสนใจ',
 			_ => null,
 		};
 	}

@@ -107,7 +107,6 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
       title: title,
       description: description,
       image: '',
-      placeholder: '',
       id: '',
       stringifiedEvent: '',
       bookmarkedTags: [],

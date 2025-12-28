@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
-import 'package:nested_scroll_view_plus/nested_scroll_view_plus.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../logic/dms_cubit/dms_cubit.dart';
 import '../../logic/profile_cubit/profile_cubit.dart';
@@ -18,20 +18,18 @@ import '../gallery_view/gallery_view.dart';
 import '../profile_settings_view/profile_settings_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../widgets/buttons_containers_widgets.dart';
+import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/pull_down_global_button.dart';
-import '../widgets/scroll_to_top.dart';
-import 'widgets/articles_list.dart';
-import 'widgets/curations_list.dart';
-import 'widgets/notes_list.dart';
+import 'widgets/profile_articles.dart';
 import 'widgets/profile_header.dart';
+import 'widgets/profile_media.dart';
+import 'widgets/profile_notes.dart';
+import 'widgets/profile_others.dart';
 import 'widgets/relays_list.dart';
-import 'widgets/replies_list.dart';
-import 'widgets/smart_widgets_list.dart';
-import 'widgets/videos_list.dart';
 
 class ProfileView extends HookWidget {
   static const routeName = '/profileView';
@@ -41,7 +39,8 @@ class ProfileView extends HookWidget {
     return CupertinoPageRoute(
       builder: (_) => ProfileView(
         pubkey: list[0] as String,
-        index: list.length > 1 ? list[1] as int : 0,
+        profileData:
+            list.length > 1 ? list[1] as ProfileData : ProfileData.notes,
       ),
     );
   }
@@ -49,92 +48,246 @@ class ProfileView extends HookWidget {
   ProfileView({
     super.key,
     required this.pubkey,
-    this.index = 0,
+    this.profileData = ProfileData.notes,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Profile view');
   }
 
   final String pubkey;
-  final int index;
+  final ProfileData profileData;
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useScrollController();
+    final profileDataState = useState(profileData);
 
     return BlocProvider(
       create: (context) => ProfileCubit(
         pubkey: pubkey,
       )..initView(),
-      child: ScrollsToTop(
-        onScrollsToTop: (event) async {
-          onScrollsToTop(event, scrollController);
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: isUserMuted(pubkey)
+                ? CustomAppBar(
+                    title: context.t.user.capitalize(),
+                  )
+                : null,
+            body: isUserMuted(pubkey)
+                ? Center(
+                    child: MutedUserContent(
+                      pubkey: pubkey,
+                    ),
+                  )
+                : BlocBuilder<ProfileCubit, ProfileState>(
+                    buildWhen: (previous, current) =>
+                        previous.profileStatus != current.profileStatus,
+                    builder: (context, state) {
+                      return DefaultTabController(
+                        length: 4,
+                        initialIndex: getIndex(profileDataState.value),
+                        child: ProfileNestedScrollView(
+                          profileDataState: profileDataState,
+                        ),
+                      );
+                    },
+                  ),
+          );
         },
-        child: BlocBuilder<ProfileCubit, ProfileState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: isUserMuted(pubkey)
-                  ? CustomAppBar(
-                      title: context.t.user.capitalize(),
-                    )
-                  : null,
-              body: isUserMuted(pubkey)
-                  ? Center(
-                      child: MutedUserContent(
-                        pubkey: pubkey,
-                      ),
-                    )
-                  : _profileContentStack(scrollController),
-            );
-          },
-        ),
       ),
     );
   }
 
-  Stack _profileContentStack(ScrollController scrollController) {
-    return Stack(
-      children: [
-        BlocBuilder<ProfileCubit, ProfileState>(
-          buildWhen: (previous, current) =>
-              previous.profileStatus != current.profileStatus,
-          builder: (context, state) {
-            return DefaultTabController(
-              length: 6,
-              initialIndex: index,
-              child: NestedScrollViewPlus(
-                controller: scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    const ProfileAppBar(),
-                    const SliverToBoxAdapter(
-                      child: ProfileHeader(),
-                    ),
-                    const OptionsHeader(),
-                  ];
-                },
-                body: const TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: <Widget>[
-                    ProfileNotes(),
-                    ProfileReplies(),
-                    ProfileArticles(),
-                    ProfileSmartWidgets(),
-                    ProfileVideos(),
-                    ProfileCurations(),
-                  ],
+  int getIndex(ProfileData profileData) {
+    switch (profileData) {
+      case ProfileData.notes:
+        return 0;
+      case ProfileData.replies:
+        return 0;
+      case ProfileData.mentions:
+        return 0;
+      case ProfileData.pinned:
+        return 0;
+      case ProfileData.articles:
+        return 1;
+      case ProfileData.curations:
+        return 3;
+      case ProfileData.smartWidgets:
+        return 3;
+      case ProfileData.allMedia:
+        return 2;
+      case ProfileData.videos:
+        return 2;
+      case ProfileData.pictures:
+        return 2;
+    }
+  }
+}
+
+class ProfileNestedScrollView extends StatefulWidget {
+  const ProfileNestedScrollView({
+    super.key,
+    required this.profileDataState,
+  });
+
+  final ValueNotifier<ProfileData> profileDataState;
+
+  @override
+  State<ProfileNestedScrollView> createState() =>
+      _ProfileNestedScrollViewState();
+}
+
+class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
+  final refreshController = RefreshController();
+  void onRefresh({required Function() onInit}) {
+    refreshController.resetNoData();
+    onInit.call();
+    refreshController.refreshCompleted();
+  }
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.loadingState == UpdatingState.success) {
+          refreshController.loadComplete();
+        } else if (state.loadingState == UpdatingState.idle) {
+          refreshController.loadNoData();
+        }
+      },
+      buildWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
+          previous.loadingState != current.loadingState ||
+          previous.mutes != current.mutes ||
+          previous.user != current.user,
+      builder: (context, state) {
+        return SmartRefresher(
+            controller: refreshController,
+            enablePullUp: true,
+            enablePullDown: false,
+            footer: const RefresherClassicFooter(),
+            onLoading: () => context.read<ProfileCubit>().getUserInfos(
+                  profileData: widget.profileDataState.value,
+                  isAdding: true,
                 ),
-              ),
+            child: CustomScrollView(
+              slivers: [
+                ProfileAppBar(
+                  profileData: widget.profileDataState.value,
+                ),
+                const SliverToBoxAdapter(
+                  child: ProfileHeader(),
+                ),
+                OptionsHeader(
+                  onProfileDataChanged: (profileData) {
+                    widget.profileDataState.value = profileData;
+                    context.read<ProfileCubit>().getUserInfos(
+                          profileData: profileData,
+                        );
+                  },
+                ),
+                MediaQuery.removePadding(
+                  removeTop: true,
+                  context: context,
+                  child: getCurrentWidget(
+                    context: context,
+                    profileDataState: widget.profileDataState,
+                  ),
+                ),
+              ],
+            )
+
+            //  NestedScrollViewPlus(
+            //   headerSliverBuilder: (context, innerBoxIsScrolled) {
+            //     return [
+            //       const ProfileAppBar(),
+            //       const SliverToBoxAdapter(
+            //         child: ProfileHeader(),
+            //       ),
+            //       OptionsHeader(
+            //         onProfileDataChanged: (profileData) {
+            //           widget.profileDataState.value = profileData;
+            //           context.read<ProfileCubit>().getUserInfos(
+            //                 profileData: profileData,
+            //               );
+            //         },
+            //       ),
+            //     ];
+            //   },
+            //   body: TabBarView(
+            //     physics: const NeverScrollableScrollPhysics(),
+            //     children: <Widget>[
+            //       ProfileGlobalNotes(
+            //       profileData: widget.profileDataState.value,
+            //       onProfileDataChanged: (profileData) {
+            //         widget.profileDataState.value = profileData;
+            //         context.read<ProfileCubit>().getUserInfos(
+            //               profileData: profileData,
+            //             );
+            //       },
+            //       ),
+            //       const ProfileArticles(),
+            //       ProfileMedia(),
+            //       ProfileMedia(),
+            //     ],
+            //   ),
+            // ),
             );
-          },
-        ),
-        ResetScrollButton(scrollController: scrollController),
-      ],
+      },
     );
+  }
+
+  Widget getCurrentWidget({
+    required BuildContext context,
+    required ValueNotifier<ProfileData> profileDataState,
+  }) {
+    final type = profileDataState.value.getType();
+
+    if (type == 'notes') {
+      return ProfileNotes(
+        profileData: widget.profileDataState.value,
+        onProfileDataChanged: (profileData) {
+          widget.profileDataState.value = profileData;
+          context.read<ProfileCubit>().getUserInfos(
+                profileData: profileData,
+              );
+        },
+      );
+    } else if (type == 'articles') {
+      return const ProfileArticles();
+    } else if (type == 'media') {
+      return ProfileMedia(
+        profileData: widget.profileDataState.value,
+        onProfileDataChanged: (profileData) {
+          widget.profileDataState.value = profileData;
+          context.read<ProfileCubit>().getUserInfos(
+                profileData: profileData,
+              );
+        },
+      );
+    } else {
+      return ProfileOthers(
+        profileData: widget.profileDataState.value,
+        onProfileDataChanged: (profileData) {
+          widget.profileDataState.value = profileData;
+          context.read<ProfileCubit>().getUserInfos(
+                profileData: profileData,
+              );
+        },
+      );
+    }
   }
 }
 
 class OptionsHeader extends HookWidget {
-  const OptionsHeader({super.key});
+  const OptionsHeader({super.key, required this.onProfileDataChanged});
+
+  final Function(ProfileData profileData) onProfileDataChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -163,10 +316,9 @@ class OptionsHeader extends HookWidget {
             child: TabBar(
               onTap: (selectedIndex) {
                 index.value = selectedIndex;
+                onProfileDataChanged(getProfileData(selectedIndex));
               },
               indicatorSize: TabBarIndicatorSize.tab,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
               padding: EdgeInsets.zero,
               labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Theme.of(context).primaryColorDark,
@@ -180,11 +332,9 @@ class OptionsHeader extends HookWidget {
               dividerColor: Theme.of(context).dividerColor,
               tabs: [
                 Tab(text: context.t.notes.capitalizeFirst()),
-                Tab(text: context.t.replies.capitalizeFirst()),
                 Tab(text: context.t.articles.capitalizeFirst()),
-                Tab(text: context.t.smartWidgets.capitalizeFirst()),
-                Tab(text: context.t.videos.capitalizeFirst()),
-                Tab(text: context.t.curations.capitalizeFirst()),
+                Tab(text: context.t.media.capitalizeFirst()),
+                Tab(text: context.t.others.capitalizeFirst()),
               ],
             ),
           ),
@@ -192,12 +342,30 @@ class OptionsHeader extends HookWidget {
       ),
     );
   }
+
+  ProfileData getProfileData(int index) {
+    switch (index) {
+      case 0:
+        return ProfileData.notes;
+      case 1:
+        return ProfileData.articles;
+      case 2:
+        return ProfileData.allMedia;
+      case 3:
+        return ProfileData.curations;
+      default:
+        return ProfileData.notes;
+    }
+  }
 }
 
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar({
     super.key,
+    required this.profileData,
   });
+
+  final ProfileData profileData;
 
   @override
   Widget build(BuildContext context) {
@@ -441,10 +609,6 @@ class ProfileAppBar extends StatelessWidget {
         },
         child: CommonThumbnail(
           image: state.user.banner,
-          placeholder: getRandomPlaceholder(
-            input: state.user.pubkey,
-            isPfp: false,
-          ),
           width: double.infinity,
           height: constraints.maxHeight,
           radius: 0,
@@ -488,8 +652,9 @@ class ProfileAppBar extends StatelessWidget {
             );
           },
           onRefresh: () {
-            context.read<ProfileCubit>().emitEmptyState();
-            context.read<ProfileCubit>().initView();
+            context.read<ProfileCubit>().getUserInfos(
+                  profileData: profileData,
+                );
           },
         ),
       ),

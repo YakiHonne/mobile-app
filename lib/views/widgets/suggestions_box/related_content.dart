@@ -100,7 +100,6 @@ class SuggestedArticleContainer extends HookWidget {
           children: [
             CommonThumbnail(
               image: article.image,
-              placeholder: article.placeholder,
               width: 45,
               height: 45,
               radius: kDefaultPadding / 2,

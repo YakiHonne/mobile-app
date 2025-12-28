@@ -9,9 +9,13 @@ class SingleImageSelector extends HookWidget {
   const SingleImageSelector({
     super.key,
     required this.onUrlProvided,
+    this.title,
+    this.description,
   });
 
   final Function(String) onUrlProvided;
+  final String? title;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,7 @@ class SingleImageSelector extends HookWidget {
                 height: kDefaultPadding / 2,
               ),
               Text(
-                context.t.pickYourImage.capitalizeFirst(),
+                title ?? context.t.pickYourImage.capitalizeFirst(),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -53,7 +57,7 @@ class SingleImageSelector extends HookWidget {
                 height: kDefaultPadding,
               ),
               Text(
-                context.t.uploadPasteUrl.capitalizeFirst(),
+                description ?? context.t.uploadPasteUrl.capitalizeFirst(),
                 style: TextStyle(
                   color: Theme.of(context).highlightColor,
                 ),

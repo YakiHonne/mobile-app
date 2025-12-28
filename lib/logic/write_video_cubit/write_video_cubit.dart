@@ -373,7 +373,7 @@ class WriteVideoCubit extends Cubit<WriteVideoState> {
     }
   }
 
-  Future<Map<String, String>> uploadVideo(File video) async {
+  Future<Map<String, dynamic>> uploadVideo(File video) async {
     try {
       return await mediaServersCubit.uploadMedia(
         file: video,

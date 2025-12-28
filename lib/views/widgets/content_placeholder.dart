@@ -4,26 +4,148 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../utils/utils.dart';
 import 'place_holders.dart';
 
-class ContentPlaceholder extends StatelessWidget {
-  const ContentPlaceholder({super.key});
+class MediaPlaceholder extends StatelessWidget {
+  const MediaPlaceholder({super.key, this.removePadding = false});
+  final bool removePadding;
 
   @override
   Widget build(BuildContext context) {
-    return const VerticalSkeletonSelector(
-      placeHolderWidget: ExploreMediaSkeleton(),
+    return const MediaSkeleton();
+  }
+}
+
+class ContentPlaceholder extends StatelessWidget {
+  const ContentPlaceholder({super.key, this.removePadding = false});
+  final bool removePadding;
+  @override
+  Widget build(BuildContext context) {
+    return VerticalSkeletonSelector(
+      placeHolderWidget: const ExploreMediaSkeleton(),
+      removePadding: removePadding,
     );
   }
 }
 
 class NotesPlaceholder extends StatelessWidget {
-  const NotesPlaceholder({super.key, this.useColumn = true});
+  const NotesPlaceholder({
+    super.key,
+    this.useColumn = true,
+    this.removePadding = false,
+  });
   final bool useColumn;
-
+  final bool removePadding;
   @override
   Widget build(BuildContext context) {
     return VerticalSkeletonSelector(
       placeHolderWidget: const LeadingNotesSkeleton(),
       useColumn: useColumn,
+      removePadding: removePadding,
+    );
+  }
+}
+
+class MediaSkeleton extends StatelessWidget {
+  const MediaSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: Skeletonizer(
+        effect: ShimmerEffect(
+          baseColor: Theme.of(context).cardColor,
+          duration: const Duration(seconds: 1),
+          highlightColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        child: Column(
+          spacing: kDefaultPadding / 8,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _skeletonRow(context: context, flip: true),
+            _skeletonRow(context: context),
+            _skeletonRow(context: context, flip: true),
+            _skeletonRow(context: context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _skeletonRow({required BuildContext context, bool flip = false}) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: kDefaultPadding / 8,
+      children: [
+        if (flip)
+          Expanded(
+            child: Skeleton.shade(
+              child: Container(
+                height: ((width / 3) * 2) + kDefaultPadding / 8,
+                decoration: const BoxDecoration(
+                  color: kDimGrey,
+                ),
+              ),
+            ),
+          ),
+        Expanded(
+          child: Column(
+            spacing: kDefaultPadding / 8,
+            children: [
+              Skeleton.shade(
+                child: Container(
+                  height: width / 3,
+                  decoration: const BoxDecoration(
+                    color: kDimGrey,
+                  ),
+                ),
+              ),
+              Skeleton.shade(
+                child: Container(
+                  height: width / 3,
+                  decoration: const BoxDecoration(
+                    color: kDimGrey,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            spacing: kDefaultPadding / 8,
+            children: [
+              Skeleton.shade(
+                child: Container(
+                  height: width / 3,
+                  decoration: const BoxDecoration(
+                    color: kDimGrey,
+                  ),
+                ),
+              ),
+              Skeleton.shade(
+                child: Container(
+                  height: width / 3,
+                  decoration: const BoxDecoration(
+                    color: kDimGrey,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!flip)
+          Expanded(
+            child: Skeleton.shade(
+              child: Container(
+                height: ((width / 3) * 2) + kDefaultPadding / 8,
+                decoration: const BoxDecoration(
+                  color: kDimGrey,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

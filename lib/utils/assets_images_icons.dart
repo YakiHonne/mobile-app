@@ -55,7 +55,7 @@ class FeatureIcons {
   static const String settings = 'assets/icons/features/settings.svg';
   static const String search = 'assets/icons/features/search.svg';
   static const String curations = 'assets/icons/features/curation.svg';
-  static const String article = 'assets/icons/features/edit.svg';
+  static const String editArticle = 'assets/icons/features/edit.svg';
   static const String selfArticles = 'assets/icons/features/posts.svg';
   static const String selfCurations = 'assets/icons/features/stories.svg';
   static const String menu = 'assets/icons/features/menu.svg';
@@ -223,6 +223,8 @@ class FeatureIcons {
   static const String layout11 = 'assets/icons/features/layout-11.svg';
   static const String arrowDown = 'assets/icons/features/arrow-down.svg';
   static const String arrowUp = 'assets/icons/features/arrow-up.svg';
+  static const String arrowLeft = 'assets/icons/features/arrow-left.svg';
+  static const String arrowRight = 'assets/icons/features/arrow-right.svg';
   static const String youtube = 'assets/icons/features/youtube.svg';
   static const String telegram = 'assets/icons/features/telegram.svg';
   static const String discord = 'assets/icons/features/discord.svg';
@@ -306,6 +308,13 @@ class FeatureIcons {
   static const String liveCode = 'assets/icons/features/live-code.svg';
   static const String previewCode = 'assets/icons/features/preview-code.svg';
   static const String hashtag = 'assets/icons/features/hashtag.svg';
+  static const String mediaAdd = 'assets/icons/features/media-add.svg';
+  static const String mediaBold = 'assets/icons/features/media-bold.svg';
+  static const String media = 'assets/icons/features/media.svg';
+  static const String article = 'assets/icons/features/article.svg';
+  static const String imageFilter = 'assets/icons/features/designtools.svg';
+  static const String pin = 'assets/icons/features/pin.svg';
+  static const String unpin = 'assets/icons/features/unpin.svg';
 }
 
 class RandomCovers {

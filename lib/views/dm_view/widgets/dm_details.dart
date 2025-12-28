@@ -876,7 +876,6 @@ class DmImageContainer extends StatelessWidget {
           child: CommonThumbnail(
             image: url,
             radius: kDefaultPadding / 2,
-            placeholder: getRandomPlaceholder(input: url, isPfp: false),
           ),
         ),
         Positioned(

@@ -1475,6 +1475,30 @@ class TranslationsJa extends Translations {
 	@override String get favoriteRelaysFeed => 'お気に入りリレーフィード';
 	@override String get maxMentions => '最大メンション';
 	@override String get maxMentionsDesc => '10以上のユーザーメンションを持つノートから通知隠す。';
+	@override String get media => 'メディア';
+	@override String get pinned => 'ピン留め';
+	@override String get pictures => '画像';
+	@override String get unpin => 'ピン留め解除';
+	@override String get pin => 'ピン留め';
+	@override String userPublishedPicture({required Object name}) => '${name} が画像を公開しました';
+	@override String userZappedYourPicture({required Object name, required Object number}) => '${name} があなたの画像を ${number} sats でザップしました';
+	@override String userReactedYourPicture({required Object name, required Object reaction}) => '${name} があなたの画像に ${reaction} で反応しました';
+	@override String userReactedPictureYouIn({required Object name, required Object reaction}) => '${name} があなたがメンションされた画像に ${reaction} で反応しました';
+	@override String userRepliedYourPicture({required Object name}) => '${name} があなたの画像に返信しました';
+	@override String userRepliedPictureYouIn({required Object name}) => '${name} があなたがメンションされた画像に返信しました';
+	@override String userMentionedYouInPicture({required Object name}) => '${name} が画像であなたをメンションしました';
+	@override String userCommentedYourPicture({required Object name}) => '${name} があなたの画像にコメントしました';
+	@override String userCommentedPictureYouIn({required Object name}) => '${name} があなたがメンションされた画像にコメントしました';
+	@override String userQuotedYourPicture({required Object name}) => '${name} があなたの画像を引用しました';
+	@override String userQuotedPictureYouIn({required Object name}) => '${name} があなたがメンションされた画像を引用しました';
+	@override String get cameraPermission => 'アプリがカメラにアクセスする権限がないか、このデバイスに利用可能なカメラがありません。';
+	@override String get fetchingPicture => '画像を取得中...';
+	@override String get addDescription => '説明を追加...';
+	@override String get uploadingVideo => '動画をアップロード中...';
+	@override String get uploadThumbnail => 'サムネイルをアップロード';
+	@override String get chooseThumbnailVideo => '動画に適切なサムネイルを選択してください';
+	@override String get publishing => '公開中...';
+	@override String get giveMeCatchyTitle => 'キャッチーなタイトルを教えて';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -2939,6 +2963,30 @@ extension on TranslationsJa {
 			'favoriteRelaysFeed' => 'お気に入りリレーフィード',
 			'maxMentions' => '最大メンション',
 			'maxMentionsDesc' => '10以上のユーザーメンションを持つノートから通知隠す。',
+			'media' => 'メディア',
+			'pinned' => 'ピン留め',
+			'pictures' => '画像',
+			'unpin' => 'ピン留め解除',
+			'pin' => 'ピン留め',
+			'userPublishedPicture' => ({required Object name}) => '${name} が画像を公開しました',
+			'userZappedYourPicture' => ({required Object name, required Object number}) => '${name} があなたの画像を ${number} sats でザップしました',
+			'userReactedYourPicture' => ({required Object name, required Object reaction}) => '${name} があなたの画像に ${reaction} で反応しました',
+			'userReactedPictureYouIn' => ({required Object name, required Object reaction}) => '${name} があなたがメンションされた画像に ${reaction} で反応しました',
+			'userRepliedYourPicture' => ({required Object name}) => '${name} があなたの画像に返信しました',
+			'userRepliedPictureYouIn' => ({required Object name}) => '${name} があなたがメンションされた画像に返信しました',
+			'userMentionedYouInPicture' => ({required Object name}) => '${name} が画像であなたをメンションしました',
+			'userCommentedYourPicture' => ({required Object name}) => '${name} があなたの画像にコメントしました',
+			'userCommentedPictureYouIn' => ({required Object name}) => '${name} があなたがメンションされた画像にコメントしました',
+			'userQuotedYourPicture' => ({required Object name}) => '${name} があなたの画像を引用しました',
+			'userQuotedPictureYouIn' => ({required Object name}) => '${name} があなたがメンションされた画像を引用しました',
+			'cameraPermission' => 'アプリがカメラにアクセスする権限がないか、このデバイスに利用可能なカメラがありません。',
+			'fetchingPicture' => '画像を取得中...',
+			'addDescription' => '説明を追加...',
+			'uploadingVideo' => '動画をアップロード中...',
+			'uploadThumbnail' => 'サムネイルをアップロード',
+			'chooseThumbnailVideo' => '動画に適切なサムネイルを選択してください',
+			'publishing' => '公開中...',
+			'giveMeCatchyTitle' => 'キャッチーなタイトルを教えて',
 			_ => null,
 		};
 	}
