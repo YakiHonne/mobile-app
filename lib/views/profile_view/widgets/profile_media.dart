@@ -457,7 +457,9 @@ class VideoCard extends HookWidget {
             QueueRequest(
               video.url,
               (data) {
-                memThumbnail.value = data;
+                if (context.mounted) {
+                  memThumbnail.value = data;
+                }
               },
             ),
           );
@@ -511,6 +513,90 @@ class VideoCard extends HookWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class VideoThumbnailCard extends HookWidget {
+  const VideoThumbnailCard({
+    super.key,
+    required this.url,
+    required this.onTap,
+  });
+
+  final String url;
+  final Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final memThumbnail = useState<String?>(null);
+
+    useMemoized(() {
+      VideoThumbnailQueueManager.instance.addRequest(
+        QueueRequest(
+          url,
+          (data) {
+            if (context.mounted) {
+              memThumbnail.value = data;
+            }
+          },
+        ),
+      );
+    }, [url]);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          color: kBlack,
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (memThumbnail.value != null && memThumbnail.value!.isNotEmpty)
+              CommonThumbnail(
+                image: '',
+                memoryUrl: memThumbnail.value,
+                radius: kDefaultPadding / 2,
+                isRound: true,
+                fit: BoxFit.contain,
+              )
+            else
+              Center(
+                child: SvgPicture.asset(
+                  FeatureIcons.videoLink,
+                  width: 30,
+                  height: 30,
+                  colorFilter: const ColorFilter.mode(
+                    kWhite,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            Positioned(
+              top: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: kWhite.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

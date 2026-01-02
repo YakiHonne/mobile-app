@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 
 import 'package:aescryptojs/aescryptojs.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_file_saver/flutter_file_saver.dart';
@@ -408,7 +407,7 @@ Future<void> setMuteStatus({
   required Function() onSuccess,
   bool isPubkey = true,
 }) async {
-  final cancel = BotToast.showLoading();
+  final cancel = BotToastUtils.showLoading();
   final result = await NostrFunctionsRepository.setMuteList(
     muteKey: muteKey,
     isPubkey: isPubkey,
@@ -524,7 +523,9 @@ Future<String> externalShearableLink({
                   ? 'smart-widget'
                   : VideoModel.isVideo(kind)
                       ? 'video'
-                      : 'note';
+                      : kind == EventKind.PICTURE
+                          ? 'image'
+                          : 'note';
 
   final link = '$baseUrl$page/$nScheme';
 
@@ -587,6 +588,7 @@ Future<String> createShareableLink(
   if (kind == EventKind.TEXT_NOTE ||
       kind == EventKind.VIDEO_HORIZONTAL ||
       kind == EventKind.VIDEO_VERTICAL ||
+      kind == EventKind.PICTURE ||
       kind == EventKind.METADATA) {
     hexString = id;
   } else {
@@ -624,7 +626,7 @@ Future<String> createShareableLink(
       kind,
     );
   }
-
+  lg.i(shareableLink);
   return shareableLink;
 }
 
@@ -971,7 +973,7 @@ bool isAudioExtension(String extension) {
 }
 
 bool isVideoExtension(String extension) {
-  return ['mp4', 'avi', 'mkv', 'mov', 'flv', 'webm']
+  return ['mp4', 'avi', 'mkv', 'mov', 'flv', 'webm', '3gp', 'qt']
       .contains(extension.toLowerCase());
 }
 

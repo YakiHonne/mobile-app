@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,6 +13,7 @@ import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import 'article_container.dart';
 import 'curation_container.dart';
@@ -188,7 +188,7 @@ class ShareContentImage extends HookWidget {
     required ScreenshotController screenshotController,
     required BuildContext context,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final temp = await getApplicationDocumentsDirectory();

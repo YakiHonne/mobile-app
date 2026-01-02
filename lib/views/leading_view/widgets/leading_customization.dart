@@ -412,6 +412,40 @@ class LeadingCustomization extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    context.t.autoPlay.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  Text(
+                    context.t.autoPlayDesc,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: state.enableAutoPlay,
+                activeTrackColor: Theme.of(context).primaryColor,
+                onChanged: (isToggled) {
+                  context.read<CustomizeLeadingCubit>().setAutoPlayStatus();
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     context.t.linkPreview.capitalizeFirst(),
                     style: Theme.of(context).textTheme.labelLarge,
                   ),

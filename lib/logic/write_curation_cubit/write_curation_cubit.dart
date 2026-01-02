@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -190,7 +189,7 @@ class WriteCurationCubit extends Cubit<WriteCurationState> {
     required Function(String) onFailure,
     required Function(Curation) onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       if (state.title.trim().isEmpty) {

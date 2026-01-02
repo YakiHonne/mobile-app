@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "Carica miniatura",
   "chooseThumbnailVideo": "Scegli una miniatura appropriata per il tuo video",
   "publishing": "Pubblicazione in corso...",
-  "giveMeCatchyTitle": "Dammi un titolo accattivante"
+  "giveMeCatchyTitle": "Dammi un titolo accattivante",
+  "autoPlay": "Abilita riproduzione automatica video",
+  "autoPlayDesc": "Riproduci automaticamente i video mentre scorri il tuo feed.",
+  "copyText": "Copia testo",
+  "errorSelectingMedia": "Errore durante la selezione dei media",
+  "fetchingUserOutboxRelays": "Recupero relay in uscita utente",
+  "noMediaSelected": "Nessun media selezionato"
 }

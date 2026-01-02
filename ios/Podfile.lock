@@ -257,7 +257,7 @@ SPEC CHECKSUMS:
   flutter_native_splash: 35ddbc7228eafcb3969dcc5f1fbbe27c1145a4f0
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   image_gallery_saver_plus: e597bf65a7846979417a3eae0763b71b6dfec6c3
-  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   IosAwnCore: 653786a911089012092ce831f2945cd339855a89
   just_audio: 6c031bb61297cf218b4462be616638e81c058e97
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8

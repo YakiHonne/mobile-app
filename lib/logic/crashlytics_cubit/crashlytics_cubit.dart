@@ -1,10 +1,10 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'crashlytics_state.dart';
@@ -91,7 +91,7 @@ class CrashlyticsCubit extends Cubit<CrashlyticsState> {
     required bool mediaCheckBox,
     Function()? onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await Future.wait([
       if (dataCheckBox) NostrFunctionsRepository.clearCache(),

@@ -303,6 +303,18 @@ class PdmCommonActions {
     BotToastUtils.showSuccess(t.publicKeyCopied);
   }
 
+  static void copyText(BaseEventModel model) {
+    if (model is DetailedNoteModel) {
+      Clipboard.setData(
+        ClipboardData(
+          text: model.content,
+        ),
+      );
+
+      BotToastUtils.showSuccess(t.textSuccesfulyCopied);
+    }
+  }
+
   static Future<void> republish({
     required BaseEventModel model,
     required BuildContext context,

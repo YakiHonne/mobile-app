@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -321,7 +320,7 @@ class ArticleCurationsCubit extends Cubit<ArticleCurationsState> {
     required Function(String) onFailure,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final articlesList = curation.eventsIds
@@ -392,7 +391,7 @@ class ArticleCurationsCubit extends Cubit<ArticleCurationsState> {
   Future<void> addCuration({
     required Function(String) onFailure,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       if (state.title.trim().isEmpty) {

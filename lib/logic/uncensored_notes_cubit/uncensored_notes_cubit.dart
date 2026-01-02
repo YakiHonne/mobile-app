@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -182,7 +181,7 @@ class UncensoredNotesCubit extends Cubit<UncensoredNotesState> {
     required String ratingId,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final isSuccessful = await NostrFunctionsRepository.deleteEvent(
       eventId: ratingId,

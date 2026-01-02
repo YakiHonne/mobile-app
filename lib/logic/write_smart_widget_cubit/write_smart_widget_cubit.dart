@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -470,7 +469,7 @@ class WriteSmartWidgetCubit extends Cubit<WriteSmartWidgetState> {
     required File file,
     required Function(String) onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final mediaLink = (await mediaServersCubit.uploadMedia(file: file))['url'];
 
@@ -533,7 +532,7 @@ class WriteSmartWidgetCubit extends Cubit<WriteSmartWidgetState> {
       }
     }
 
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final event = await Event.genEvent(

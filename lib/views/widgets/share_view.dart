@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../logic/share_content_cubit/share_content_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../logify_view/logify_view.dart';
 import 'content_manager/add_discover_filter.dart';
@@ -601,7 +601,7 @@ class ShareQrCode extends HookWidget {
   Future<void> shareImage(
     ScreenshotController controller,
   ) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final temp = await getApplicationDocumentsDirectory();

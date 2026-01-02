@@ -256,18 +256,12 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Introducing Media feed (videos, images).',
-  'Added profile pinned notes.',
-  "Add RTL directionality in Articles' editor.",
-  'Profile sections reworked.',
-  'Added mentions section in profile.',
-  'Load latest selected sources on startup.',
-  'Re-scroll to the top of feed when changing options.',
-  'Fix Amber encryption syncing & Amber nip44 event decrytion issue.',
-  'Fix messages not being fetched from dm relays.',
-  'Fix "nostr:" not working in search.',
-  'App stability improvements.',
-  'Bug fixes & performance improvements.'
+  'Add option to disable auto-play.',
+  'Add option to copy note text.',
+  'Add support for qt, 3gp videos & support for ipfs media.',
+  'Add content warning for media.',
+  'Fix media upload issue.',
+  'Fix sharing media issue.',
 ];
 
 const content = [

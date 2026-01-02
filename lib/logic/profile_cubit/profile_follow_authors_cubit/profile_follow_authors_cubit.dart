@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
@@ -131,7 +130,7 @@ class ProfileFollowAuthorsCubit extends Cubit<ProfileFollowAuthorsState> {
 
   Future<void> setFollowingState() async {
     if (state.isValidUser) {
-      final cancel = BotToast.showLoading();
+      final cancel = BotToastUtils.showLoading();
 
       final contactList =
           await contactListCubit.setContacts(state.pendings.toList());

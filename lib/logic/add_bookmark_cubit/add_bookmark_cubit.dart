@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -101,7 +100,7 @@ class AddBookmarkCubit extends Cubit<AddBookmarkState> {
     }
 
     title.trim().capitalize();
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final createdBookmark = BookmarkListModel(
       title: title,

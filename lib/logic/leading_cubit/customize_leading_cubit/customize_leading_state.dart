@@ -9,6 +9,7 @@ class CustomizeLeadingState extends Equatable {
   final bool showPeopleToFollow;
   final bool showRelatedContent;
   final bool showInterests;
+  final bool enableAutoPlay;
   final bool refresh;
   final bool collapseNote;
   final bool useSingleColumnFeed;
@@ -22,6 +23,7 @@ class CustomizeLeadingState extends Equatable {
     required this.showPeopleToFollow,
     required this.showRelatedContent,
     required this.showInterests,
+    required this.enableAutoPlay,
     required this.refresh,
     required this.collapseNote,
     required this.useSingleColumnFeed,
@@ -37,6 +39,7 @@ class CustomizeLeadingState extends Equatable {
         showPeopleToFollow,
         showRelatedContent,
         showInterests,
+        enableAutoPlay,
         refresh,
         collapseNote,
         useSingleColumnFeed,
@@ -51,6 +54,7 @@ class CustomizeLeadingState extends Equatable {
     bool? showPeopleToFollow,
     bool? showRelatedContent,
     bool? showInterests,
+    bool? enableAutoPlay,
     bool? refresh,
     bool? collapseNote,
     bool? useSingleColumnFeed,
@@ -64,6 +68,7 @@ class CustomizeLeadingState extends Equatable {
       showPeopleToFollow: showPeopleToFollow ?? this.showPeopleToFollow,
       showRelatedContent: showRelatedContent ?? this.showRelatedContent,
       showInterests: showInterests ?? this.showInterests,
+      enableAutoPlay: enableAutoPlay ?? this.enableAutoPlay,
       refresh: refresh ?? this.refresh,
       collapseNote: collapseNote ?? this.collapseNote,
       useSingleColumnFeed: useSingleColumnFeed ?? this.useSingleColumnFeed,

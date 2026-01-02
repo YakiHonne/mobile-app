@@ -4420,6 +4420,24 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Give me a catchy title'
 	String get giveMeCatchyTitle => 'Give me a catchy title';
+
+	/// en: 'Enable video auto play'
+	String get autoPlay => 'Enable video auto play';
+
+	/// en: 'Automatically play videos when you scroll through your feed.'
+	String get autoPlayDesc => 'Automatically play videos when you scroll through your feed.';
+
+	/// en: 'Copy text'
+	String get copyText => 'Copy text';
+
+	/// en: 'Error occured while selecting media'
+	String get errorSelectingMedia => 'Error occured while selecting media';
+
+	/// en: 'Fetching user outbox relays'
+	String get fetchingUserOutboxRelays => 'Fetching user outbox relays';
+
+	/// en: 'No media selected'
+	String get noMediaSelected => 'No media selected';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5908,6 +5926,12 @@ extension on Translations {
 			'chooseThumbnailVideo' => 'Choose a proper thumbnail for your video',
 			'publishing' => 'Publishing...',
 			'giveMeCatchyTitle' => 'Give me a catchy title',
+			'autoPlay' => 'Enable video auto play',
+			'autoPlayDesc' => 'Automatically play videos when you scroll through your feed.',
+			'copyText' => 'Copy text',
+			'errorSelectingMedia' => 'Error occured while selecting media',
+			'fetchingUserOutboxRelays' => 'Fetching user outbox relays',
+			'noMediaSelected' => 'No media selected',
 			_ => null,
 		};
 	}

@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,7 +65,7 @@ class DashboardBookmarksCubit extends Cubit<DashboardBookmarksState> {
     required String bookmarkListIdentifier,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final isSuccessful = await NostrFunctionsRepository.deleteEvent(
       eventId: bookmarkListEventId,
@@ -95,7 +94,7 @@ class DashboardBookmarksCubit extends Cubit<DashboardBookmarksState> {
     }
 
     title.trim().capitalize();
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final createdBookmark = BookmarkListModel(
       title: title,

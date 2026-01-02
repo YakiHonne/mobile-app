@@ -275,7 +275,7 @@ class PictureModel extends Equatable implements BaseEventModel {
           ));
         }
       } else if (tag.first == 'content-warning' && tag.length > 1) {
-        contentWarningReason = tag[1];
+        contentWarningReason = tag[1].isNotEmpty ? tag[1] : 'Reason unknown';
       } else if (tag.first == 'p' && tag.length > 1) {
         taggedUsers.add(tag[1]);
       } else if (tag.first == 'm' && tag.length > 1) {

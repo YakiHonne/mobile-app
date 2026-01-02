@@ -290,7 +290,6 @@ class VerticalVideoView extends HookWidget {
         removePadding: true,
         removeBorders: true,
         removeControls: true,
-        autoPlay: true,
         fallbackUrls: video.fallbackUrls,
       ),
     );

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,7 +74,7 @@ class UsersInfoListCubit extends Cubit<UsersInfoListState> {
 
   Future<void> setFollowingState() async {
     if (canSign()) {
-      final cancel = BotToast.showLoading();
+      final cancel = BotToastUtils.showLoading();
 
       final contactList =
           await contactListCubit.setContacts(state.pendings.toList());

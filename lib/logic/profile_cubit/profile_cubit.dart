@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +89,19 @@ class ProfileCubit extends Cubit<ProfileState> {
   String fetchId = '';
   Set<String> requests = {};
   Set<String> pinnedNotes = {};
+  Set<String> userWriteRelays = {};
+  bool isUserWriteRelaysLoaded = false;
   ProfileData currentProfileData = ProfileData.notes;
+
+  Future<void> getUserWriteRelays() async {
+    if (!isUserWriteRelaysLoaded) {
+      isUserWriteRelaysLoaded = true;
+
+      final relays = await getOutboxRelays(pubkey, showMessage: false);
+
+      userWriteRelays = relays.toSet();
+    }
+  }
 
   Future<void> setIsFollowedByUser() async {
     final contactList = await contactListCubit.getContactList(pubkey);
@@ -105,14 +116,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         refresh: !state.refresh,
       ),
     );
-  }
-
-  void emitEmptyState() {
-    if (!isClosed) {
-      _emit(ProfileState.intial(pubkey: pubkey));
-
-      setIsFollowedByUser();
-    }
   }
 
   void initView() {
@@ -153,7 +156,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String pubkey,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final result = await NostrFunctionsRepository.setMuteList(muteKey: pubkey);
     cancel();
@@ -172,53 +175,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       BotToastUtils.showUnreachableRelaysError();
     }
   }
-
-  // void getMoreNotes(bool isReplies) {
-  //   if (state.notes.isNotEmpty) {
-  //     final oldNotes = isReplies ? state.replies : state.notes;
-
-  //     List<Event> newNotes = [];
-  //     if (!isClosed) {
-  //       _emit(
-  //         state.copyWith(
-  //           notesLoading: isReplies ? null : UpdatingState.progress,
-  //           repliesLoading: isReplies ? UpdatingState.progress : null,
-  //         ),
-  //       );
-  //     }
-
-  //     NostrFunctionsRepository.getDetailedNotes(
-  //       kinds: [EventKind.TEXT_NOTE, if (!isReplies) EventKind.REPOST],
-  //       isReplies: isReplies,
-  //       onNotesFunc: (notes) {
-  //         newNotes = notes;
-  //       },
-  //       pubkeys: [pubkey],
-  //       until: oldNotes.last.createdAt - 1,
-  //       limit: 30,
-  //       onDone: () {
-  //         if (!isClosed) {
-  //           _emit(
-  //             state.copyWith(
-  //               notes: isReplies ? null : [...oldNotes, ...newNotes],
-  //               notesLoading: isReplies
-  //                   ? null
-  //                   : newNotes.isEmpty
-  //                       ? UpdatingState.idle
-  //                       : UpdatingState.success,
-  //               replies: !isReplies ? null : [...oldNotes, ...newNotes],
-  //               repliesLoading: !isReplies
-  //                   ? null
-  //                   : newNotes.isEmpty
-  //                       ? UpdatingState.idle
-  //                       : UpdatingState.success,
-  //             ),
-  //           );
-  //         }
-  //       },
-  //     );
-  //   }
-  // }
 
   Future<void> shareLink(RenderBox? renderBox) async {
     final res = await externalShearableLink(
@@ -312,6 +268,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     bool isAdding = false,
     ProfileData profileData = ProfileData.notes,
   }) async {
+    await getUserWriteRelays();
     final id = uuid.v4();
     fetchId = id;
 
@@ -378,6 +335,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       ids: profileData == ProfileData.pinned ? pinnedNotes.toList() : null,
       until: until,
       limit: 100,
+      relays: userWriteRelays.toList(),
       source: EventsSource.all,
     );
 
@@ -495,7 +453,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       return;
     }
 
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final isSuccessful = await NostrFunctionsRepository.connectToRelay(relay);
 
@@ -526,7 +484,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> setFollowingState() async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: state.isFollowingUser,

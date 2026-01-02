@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -159,7 +158,7 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
   }
 
   Future<void> onDeleteContent(String id) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final isSuccessful =
         await NostrFunctionsRepository.deleteEvent(eventId: id);

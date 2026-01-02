@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.9.7+177
+version: 1.9.8+179
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -77,7 +77,7 @@ dependencies:
   html: ^0.15.4
   image_editor_plus: ^1.0.8
   image_gallery_saver_plus: ^4.0.1
-  image_picker: ^1.1.2
+  image_picker: ^1.2.1
   interactiveviewer_gallery_plus: ^0.1.0
   intl: ^0.20.2
   just_audio: ^0.9.39

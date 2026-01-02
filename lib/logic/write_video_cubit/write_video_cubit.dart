@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -277,7 +276,7 @@ class WriteVideoCubit extends Cubit<WriteVideoState> {
 
   void addFileMetadata(String nevent) {
     if (nevent.startsWith('nevent') || nevent.startsWith('nostr:nevent')) {
-      final cancel = BotToast.showLoading();
+      final cancel = BotToastUtils.showLoading();
       final map = Nip19.decodeShareableEntity(nevent);
 
       if (map['prefix'] == 'nevent' && map['kind'] == EventKind.FILE_METADATA) {
@@ -338,7 +337,7 @@ class WriteVideoCubit extends Cubit<WriteVideoState> {
 
   Future<void> selectAndUploadVideo() async {
     try {
-      final cancel = BotToast.showLoading();
+      final cancel = BotToastUtils.showLoading();
 
       final XFile? video;
       video = await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -388,7 +387,7 @@ class WriteVideoCubit extends Cubit<WriteVideoState> {
     required Function(String) onFailure,
     required Function(VideoModel) onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final event = await Event.genEvent(
@@ -414,7 +413,10 @@ class WriteVideoCubit extends Cubit<WriteVideoState> {
             'm ${state.mimeType}',
           ],
           ...state.tags.map((tag) => ['t', tag]),
-          if (state.contentWarning) ['L', 'content-warning'],
+          if (state.contentWarning) ...[
+            ['content-warning', ''],
+            ['L', 'content-warning']
+          ],
           if (state.isZapSplitEnabled)
             ...state.zapsSplits.map(
               (e) => [

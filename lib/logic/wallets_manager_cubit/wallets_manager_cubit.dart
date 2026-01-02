@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +201,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     required BuildContext context,
     required Function() onNameFailure,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final wallet = await _createWalletOnServer(name);
@@ -1635,7 +1634,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String invoice,
     Function()? onSuccess,
   ) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       if (selectedWallet is NostrWalletConnectModel) {

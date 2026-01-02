@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bip340/bip340.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/remote_event_signer.dart';
@@ -234,7 +233,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       t.loggingIn.capitalizeFirst(),
     );
 
-    final c = BotToast.showLoading();
+    final c = BotToastUtils.showLoading();
 
     final String? key = this.key;
     final bool isPrivate = isPrivateKey;
@@ -287,7 +286,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         t.loggingOut.capitalizeFirst(),
       );
 
-      final c = BotToast.showLoading();
+      final c = BotToastUtils.showLoading();
       await nostrRepository.clearData();
 
       currentSigner = null;
@@ -345,7 +344,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     BotToastUtils.showWarning(
       t.disconnecting.capitalizeFirst(),
     );
-    final c = BotToast.showLoading();
+    final c = BotToastUtils.showLoading();
 
     localDatabaseRepository.setKeysMap(json.encode({}));
     privateKeyIndex = null;

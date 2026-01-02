@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:bolt11_decoder/bolt11_decoder.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/nostr/remote_cache_event.dart';
@@ -542,7 +541,7 @@ class NostrFunctionsRepository {
     required SmartWidget sm,
     required Function(SmartWidget) onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
     try {
       final event = await Event.genEvent(
         content: sm.title,
@@ -2668,7 +2667,7 @@ class NostrFunctionsRepository {
   }
 
   static Future<void> setCustomTopics(String topic) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final List<String> currentTopics =
         List<String>.from(nostrRepository.userTopics);

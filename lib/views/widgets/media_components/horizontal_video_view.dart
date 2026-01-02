@@ -92,7 +92,6 @@ class HorizontalVideoView extends HookWidget {
                     link: video.url,
                     removeBorders: true,
                     removePadding: true,
-                    autoPlay: true,
                     fallbackUrls: video.fallbackUrls,
                   ),
                 ),

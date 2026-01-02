@@ -277,6 +277,38 @@ Future<List<String>> getInboxRelays(String pubKey,
   return urlsToBroadcast;
 }
 
+Future<List<String>> getOutboxRelays(
+  String pubkey, {
+  bool showMessage = true,
+  bool forceRefresh = false,
+}) async {
+  final timer = Timer(
+    const Duration(milliseconds: 200),
+    () {
+      if (showMessage) {
+        BotToastUtils.showInformation(
+          t.fetchingUserOutboxRelays.capitalizeFirst(),
+        );
+      }
+    },
+  );
+
+  List<String> urlsToBroadcast = [];
+
+  final userRelayList = await nc.getSingleUserRelayList(
+    pubkey,
+    forceRefresh: forceRefresh,
+  );
+
+  timer.cancel();
+
+  if (userRelayList != null) {
+    urlsToBroadcast = userRelayList.writes.toList();
+  }
+
+  return urlsToBroadcast;
+}
+
 int estimateReadingTime(String articleText, {int wordsPerMinute = 200}) {
   final List<String> words = articleText.split(RegExp(r'\s+'));
 

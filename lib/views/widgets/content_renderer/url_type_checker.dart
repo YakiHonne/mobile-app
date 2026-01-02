@@ -62,10 +62,22 @@ class UrlTypeChecker {
   /// Optimized file extension extraction
   static String _getFileExtension(String url) {
     try {
-      // Remove query parameters and fragments
+      final uri = Uri.tryParse(url);
+      if (uri != null && uri.queryParameters.containsKey('filename')) {
+        final filename = uri.queryParameters['filename']!;
+        final fileParts = filename.split('.');
+        if (fileParts.length > 1) {
+          return fileParts.last.toLowerCase();
+        }
+      }
+
       final cleanUrl = url.split('?').first.split('#').first;
       final parts = cleanUrl.split('.');
-      return parts.length > 1 ? parts.last.toLowerCase() : '';
+      if (parts.length > 1) {
+        return parts.last.toLowerCase();
+      }
+
+      return '';
     } catch (e) {
       return '';
     }

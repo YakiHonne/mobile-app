@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
@@ -91,7 +90,7 @@ class UpdateRelaysCubit extends Cubit<UpdateRelaysState> {
   Future<void> updateRelays({
     required Function() onSuccess,
   }) async {
-    final cancelLoading = BotToast.showLoading();
+    final cancelLoading = BotToastUtils.showLoading();
 
     try {
       final updatedRelayMap = _buildUpdatedRelayMap();

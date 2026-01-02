@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/event_stats.dart';
@@ -684,7 +683,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     EventStats eventStats,
     Map<String, EventStats> stats,
   ) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final event = await Event.genEvent(
       kind: EventKind.REPOST,

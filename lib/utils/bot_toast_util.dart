@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'utils.dart';
 
@@ -62,6 +63,34 @@ class BotToastUtils {
         color: kWhite,
         fontSize: 12,
       ),
+    );
+  }
+
+  static CancelFunc showLoading() {
+    final ctx = nostrRepository.currentContext();
+
+    return BotToast.showCustomLoading(
+      align: Alignment.center,
+      toastBuilder: (cancelFunc) {
+        return UnconstrainedBox(
+          child: Container(
+            height: 70,
+            width: 70,
+            decoration: BoxDecoration(
+              color: Theme.of(ctx).cardColor,
+              borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+              border: Border.all(
+                color: Theme.of(ctx).dividerColor,
+                width: 0.5,
+              ),
+            ),
+            child: SpinKitCircle(
+              color: Theme.of(ctx).primaryColor,
+              size: 25,
+            ),
+          ),
+        );
+      },
     );
   }
 }

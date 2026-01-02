@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.8] - 2026-01-02
+
+### Changed
+
+- Add option to disable auto-play.
+- Add option to copy note text.
+- Add support for qt, 3gp videos & support for ipfs media.
+- Add content warning for media.
+
+### Fixed
+
+- Fix media upload issue.
+- Fix sharing media issue.
+
+
 ## [1.9.7] - 2025-12-23
 
 ### Added
