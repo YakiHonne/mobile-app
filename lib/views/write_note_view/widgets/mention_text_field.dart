@@ -1,6 +1,5 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:mention_tag_text_field/mention_tag_text_field.dart';
 import '../../../common/common_regex.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
+import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 
 class ClipboardPasteMentionTextField extends StatefulWidget {
@@ -107,7 +107,7 @@ class _ClipboardPasteMentionTextFieldState
       _pasteText,
       (status) {
         if (status) {
-          cancel = BotToast.showLoading();
+          cancel = BotToastUtils.showLoading();
         } else {
           cancel.call();
         }

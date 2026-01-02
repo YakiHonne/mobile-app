@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
@@ -40,7 +39,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     required Function(String) onFailure,
     required Function(String) onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       String lud16 = data['lud16'] ?? '';

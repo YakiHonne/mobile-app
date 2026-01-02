@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -260,7 +259,7 @@ class CurationCubit extends Cubit<CurationState> {
     required String eventId,
     required String eventPubkey,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final VoteModel? currentVoteModel = state.votes[state.currentUserPubkey];
 
@@ -340,7 +339,7 @@ class CurationCubit extends Cubit<CurationState> {
   }
 
   Future<void> setFollowingState() async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: state.isFollowingAuthor,

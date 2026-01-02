@@ -50,19 +50,23 @@ class AppInitializer {
 
   static Future<void> initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
-
+    // print('===============> intializing core dependencies');
     // Initialize core dependencies
     await _initializeCoreDependencies();
 
+    // print('===============> intializing authentication and signing');
     // Initialize Firebase and database
     _initializeLocalDatabase();
-
     // Initialize Nostr core
-    await _initializeNostrCore();
 
+    // print('Nostr core initialized');
+    await _initializeNostrCore();
     // Setup cubits and global state
+
+    // print('Cubits and global state initialized');
     await _setupCubitsAndGlobals();
 
+    // print('Notifications initialized');
     // Initialize notifications (critical: must be right after cubits)
     _initializeNotifications();
 
@@ -99,7 +103,7 @@ class AppInitializer {
   /// Setup all cubits and global state
   static Future<void> _setupCubitsAndGlobals() async {
     // Initialize basic services
-    await _initializeBasicServices();
+    _initializeBasicServices();
 
     // Initialize core settings
     await _initializeSettings();

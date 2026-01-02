@@ -43,7 +43,7 @@ subprojects {
 
 android {
     namespace "com.yakihonne.yakihonne"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
     project.ext.set("appName", "yakihonne")
 

@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/picture_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'picture_state.dart';
@@ -48,7 +48,7 @@ class PictureCubit extends Cubit<PictureState> {
   }
 
   Future<void> setFollowingState() async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: state.isFollowingAuthor,

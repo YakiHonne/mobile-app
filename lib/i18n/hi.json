@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "थंबनेल अपलोड करें",
   "chooseThumbnailVideo": "अपने वीडियो के लिए उचित थंबनेल चुनें",
   "publishing": "प्रकाशित किया जा रहा है...",
-  "giveMeCatchyTitle": "मुझे एक आकर्षक शीर्षक दें"
+  "giveMeCatchyTitle": "मुझे एक आकर्षक शीर्षक दें",
+  "autoPlay": "वीडियो ऑटो प्ले सक्षम करें",
+  "autoPlayDesc": "जब आप अपनी फ़ीड स्क्रॉल करते हैं तो वीडियो अपने आप चलने लगते हैं।",
+  "copyText": "टेक्स्ट कॉपी करें",
+  "errorSelectingMedia": "मीडिया का चयन करते समय त्रुटि हुई",
+  "fetchingUserOutboxRelays": "उपयोगकर्ता आउटबॉक्स रिले प्राप्त कर रहा है",
+  "noMediaSelected": "कोई मीडिया नहीं चुना गया"
 }

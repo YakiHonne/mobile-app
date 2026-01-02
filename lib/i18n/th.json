@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "อัปโหลดภาพขนาดย่อ",
   "chooseThumbnailVideo": "เลือกภาพขนาดย่อที่เหมาะสมสำหรับวิดีโอของคุณ",
   "publishing": "กำลังเผยแพร่...",
-  "giveMeCatchyTitle": "ให้ฉันมีหัวข้อที่น่าสนใจ"
+  "giveMeCatchyTitle": "ให้ฉันมีหัวข้อที่น่าสนใจ",
+  "autoPlay": "เปิดใช้งานการเล่นวิดีโออัตโนมัติ",
+  "autoPlayDesc": "เล่นวิดีโอโดยอัตโนมัติเมื่อคุณเลื่อนดูฟีดของคุณ",
+  "copyText": "คัดลอกข้อความ",
+  "errorSelectingMedia": "เกิดข้อผิดพลาดขณะเลือกสื่อ",
+  "fetchingUserOutboxRelays": "กำลังดึงข้อมูลรีเลย์ขาออกของผู้ใช้",
+  "noMediaSelected": "ไม่ได้เลือกสื่อ"
 }

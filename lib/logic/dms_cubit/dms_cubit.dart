@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -119,7 +118,7 @@ class DmsCubit extends Cubit<DmsState>
     required Function() onSuccess,
     required Function() onFailed,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final imageLink = (await mediaServersCubit.uploadMedia(file: file))['url'];
 
@@ -288,8 +287,6 @@ class DmsCubit extends Cubit<DmsState>
           pubkey,
           forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
         );
-
-        lg.i(relays);
 
         searchDmRelaysPubkeys.add(pubkey);
 
@@ -905,7 +902,7 @@ class DmsCubit extends Cubit<DmsState>
     required String pubkey,
     required Function() onSuccess,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final result = await NostrFunctionsRepository.setMuteList(muteKey: pubkey);
     cancel();

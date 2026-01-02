@@ -114,7 +114,10 @@ class AddMediaCubit extends Cubit<AddMediaState> {
           ],
           if (mimeType.isNotEmpty) ['m', mimeType],
           if (tags.isNotEmpty) ...tags.map((tag) => ['t', tag]),
-          if (isSensitive) ['L', 'content-warning'],
+          if (isSensitive) ...[
+            ['content-warning', ''],
+            ['L', 'content-warning']
+          ],
         ],
       );
 

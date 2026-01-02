@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "Télécharger une vignette",
   "chooseThumbnailVideo": "Choisissez une vignette appropriée pour votre vidéo",
   "publishing": "Publication en cours...",
-  "giveMeCatchyTitle": "Donne-moi un titre accrocheur"
+  "giveMeCatchyTitle": "Donne-moi un titre accrocheur",
+  "autoPlay": "Activer la lecture automatique des vidéos",
+  "autoPlayDesc": "Lisez automatiquement les vidéos lorsque vous faites défiler votre flux.",
+  "copyText": "Copier le texte",
+  "errorSelectingMedia": "Une erreur s'est produite lors de la sélection du média",
+  "fetchingUserOutboxRelays": "Récupération des relais de sortie de l'utilisateur",
+  "noMediaSelected": "Aucun média sélectionné"
 }

@@ -17,6 +17,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
             showPeopleToFollow: true,
             showRelatedContent: true,
             useSingleColumnFeed: false,
+            enableAutoPlay: true,
             collapseNote: true,
             hideNonFollowedMedia: true,
             linkPreview: true,
@@ -53,6 +54,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
           actionsArrangement: c.actionsArrangement,
           hideNonFollowedMedia: c.hideNonFollowingMedia,
           linkPreview: c.enableLinkPreview,
+          enableAutoPlay: c.enableAutoPlay,
         ),
       );
     }
@@ -86,6 +88,17 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       emit(
         state.copyWith(
           showInterests: !state.showInterests,
+        ),
+      );
+    }
+  }
+
+  void setAutoPlayStatus() {
+    isUpdated = true;
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          enableAutoPlay: !state.enableAutoPlay,
         ),
       );
     }
@@ -226,6 +239,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       c.actionsArrangement = state.actionsArrangement;
       c.hideNonFollowingMedia = state.hideNonFollowedMedia;
       c.enableLinkPreview = state.linkPreview;
+      c.enableAutoPlay = state.enableAutoPlay;
 
       c.leadingFeedCustomization = {
         for (final c in state.feedTypes.entries) c.key.name: c.value

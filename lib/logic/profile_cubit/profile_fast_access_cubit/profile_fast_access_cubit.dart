@@ -2,12 +2,12 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../repositories/http_functions_repository.dart';
 import '../../../repositories/nostr_functions_repository.dart';
+import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 
 part 'profile_fast_access_state.dart';
@@ -85,7 +85,7 @@ class ProfileFastAccessCubit extends Cubit<ProfileFastAccessState> {
   }
 
   Future<void> setFollowingState() async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: state.isFollowing,

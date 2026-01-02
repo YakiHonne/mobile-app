@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:aescryptojs/aescryptojs.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -174,7 +173,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       );
     }
 
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final event = await Event.genEvent(
       kind: EventKind.TEXT_NOTE,
@@ -266,7 +265,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
   }
 
   Future<void> submitEvent(Function() onSuccess) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final isChecked = await NostrFunctionsRepository.checkPayment(
       toBeSubmittedEvent!.id,

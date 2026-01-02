@@ -1720,7 +1720,8 @@ class MediaContainer extends HookWidget {
 
   Widget _buildSingleMedia(BuildContext context) {
     final mediaItem = media.first;
-
+    final enableAutoplay =
+        nostrRepository.currentAppCustomization?.enableAutoPlay ?? true;
     return mediaItem.value == UrlType.image
         ? Container(
             decoration: BoxDecoration(
@@ -1740,7 +1741,7 @@ class MediaContainer extends HookWidget {
         : CustomVideoPlayer(
             link: mediaItem.key,
             removePadding: false,
-            autoPlay: true,
+            autoPlay: enableAutoplay,
             enableSound: false,
           );
   }

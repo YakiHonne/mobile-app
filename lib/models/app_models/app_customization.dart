@@ -18,6 +18,7 @@ class AppCustomization {
   bool collapsedNote;
   bool openPromptedUrl;
   bool enablePushNotification;
+  bool enableAutoPlay;
   bool notifMentionsReplies;
   bool notifReactions;
   bool notifReposts;
@@ -41,6 +42,7 @@ class AppCustomization {
     this.enableProfilePreview = true,
     this.collapsedNote = true,
     this.enablePushNotification = true,
+    this.enableAutoPlay = true,
     this.notifPrivateMessage = true,
     this.notifMentionsReplies = true,
     this.notifReactions = true,
@@ -68,6 +70,7 @@ class AppCustomization {
       'showDonationBox': showDonationBox,
       'showShareBox': showShareBox,
       'useSingleColumnFeed': useSingleColumnFeed,
+      'enableAutoPlay': enableAutoPlay,
       'writingContentType': writingContentType,
       'collapsedNote': collapsedNote,
       'openPromptedUrl': openPromptedUrl,
@@ -95,6 +98,7 @@ class AppCustomization {
       showSuggestedInterests: map['showSuggestedInterests'] as bool? ?? true,
       showDonationBox: map['showDonationBox'] as bool? ?? true,
       useSingleColumnFeed: map['useSingleColumnFeed'] as bool? ?? false,
+      enableAutoPlay: map['enableAutoPlay'] as bool? ?? true,
       collapsedNote: map['collapsedNote'] as bool? ?? true,
       showShareBox: map['showShareBox'] as bool? ?? true,
       openPromptedUrl: map['openPromptedUrl'] as bool? ?? true,

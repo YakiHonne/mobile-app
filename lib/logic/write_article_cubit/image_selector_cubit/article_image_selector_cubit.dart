@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -84,7 +83,7 @@ class ArticleImageSelectorCubit extends Cubit<ArticleImageSelectorState> {
     required Function(String) onSuccess,
     required Function(String) onFailure,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final link = (await mediaServersCubit.uploadMedia(

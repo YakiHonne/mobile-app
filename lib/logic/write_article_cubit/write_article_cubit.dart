@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -377,7 +376,7 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
     required Function(Article?) onSuccess,
     required EventSigner signer,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final content = sanitizeContent(state.content);
@@ -401,7 +400,10 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
             else
               currentUnixTimestampSeconds().toString(),
           ],
-          if (state.isSensitive) ['L', 'content-warning'],
+          if (state.isSensitive) ...[
+            ['content-warning', ''],
+            ['L', 'content-warning']
+          ],
           ...state.keywords.map((tag) => ['t', tag]),
           if (state.isZapSplitEnabled)
             ...state.zapsSplits.map(

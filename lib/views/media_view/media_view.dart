@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -118,6 +118,8 @@ class MediaGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sortedContent = content;
+    final autoPlay =
+        nostrRepository.currentAppCustomization?.enableAutoPlay ?? true;
 
     return BlocProvider.value(
       value: nostrRepository.mainCubit,
@@ -143,114 +145,150 @@ class MediaGrid extends StatelessWidget {
                 positionInPattern == 0 || positionInPattern == 7;
 
             if (item is PictureModel) {
-              return GestureDetector(
-                onTap: () {
-                  YNavigator.pushPage(
-                    context,
-                    (context) => PictureView(picture: item),
-                  );
-                },
-                onLongPress: () {
-                  openGallery(
-                    source: MapEntry(item.getUrl(), UrlType.image),
-                    index: 0,
-                    context: context,
-                  );
-                },
-                child: CommonThumbnail(
-                  image: item.getUrl(),
-                  radius: 0,
-                  isRound: false,
-                ),
-              );
+              return PictureWidget(item: item);
             }
 
             final video = item as VideoModel;
 
-            return isLargeTile
-                ? BlocBuilder<MainCubit, MainState>(
-                    builder: (context, state) {
-                      if (loadVideos) {
-                        return FeedVideoPlayer(
-                          link: item.url,
-                          fallbackUrls: video.fallbackUrls,
-                          video: video,
-                          isTabActive: state.mainView == MainViews.media,
-                        );
-                      }
-
-                      return const SizedBox();
-                    },
-                  )
-                : VideoCard(video: video);
+            return VideoWidget(
+              video: video,
+              isLargeTile: isLargeTile,
+              loadVideos: loadVideos,
+              autoPlay: autoPlay,
+              itemUrl: item.url,
+            );
           },
           childCount: sortedContent.length,
         ),
       ),
     );
   }
+}
 
-  // List<BaseEventModel> _sortMediaContent(List<BaseEventModel> content) {
-  //   if (content.length <= 5) {
-  //     // For small lists, just sort with priority
-  //     return _sortByPriority(content);
-  //   }
+class VideoWidget extends HookWidget {
+  const VideoWidget({
+    super.key,
+    required this.video,
+    required this.isLargeTile,
+    required this.loadVideos,
+    required this.autoPlay,
+    required this.itemUrl,
+  });
 
-  //   final result = <BaseEventModel>[];
+  final VideoModel video;
+  final bool isLargeTile;
+  final bool loadVideos;
+  final bool autoPlay;
+  final String itemUrl;
 
-  //   // Process in groups of 5
-  //   for (int i = 0; i < content.length; i += 5) {
-  //     final groupEnd = (i + 5 < content.length) ? i + 5 : content.length;
-  //     final group = content.sublist(i, groupEnd);
+  @override
+  Widget build(BuildContext context) {
+    final isDisplayed = useState(!video.contentWarning);
 
-  //     // Find the best item for position 0 (large tile) based on priority
-  //     BaseEventModel? bestForLargeTile;
-  //     int bestIndex = -1;
-  //     int bestPriority = -1;
+    return GestureDetector(
+      onTap: () {
+        if (!isDisplayed.value) {
+          isDisplayed.value = !isDisplayed.value;
+        }
+      },
+      child: isDisplayed.value
+          ? Builder(
+              builder: (context) {
+                return isLargeTile
+                    ? BlocBuilder<MainCubit, MainState>(
+                        builder: (context, state) {
+                          if (loadVideos) {
+                            if (autoPlay) {
+                              return FeedVideoPlayer(
+                                link: itemUrl,
+                                fallbackUrls: video.fallbackUrls,
+                                video: video,
+                                isTabActive: state.mainView == MainViews.media,
+                              );
+                            } else {
+                              return VideoCard(video: video);
+                            }
+                          }
 
-  //     for (int j = 0; j < group.length; j++) {
-  //       final priority = _getMediaPriority(group[j]);
-  //       if (priority > bestPriority) {
-  //         bestPriority = priority;
-  //         bestForLargeTile = group[j];
-  //         bestIndex = j;
-  //       }
-  //     }
+                          return const SizedBox();
+                        },
+                      )
+                    : VideoCard(video: video);
+              },
+            )
+          : Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                FeatureIcons.notVisible,
+                width: 25,
+                height: 25,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColorDark,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+    );
+  }
+}
 
-  //     // Reorder this group: best item first, then the rest
-  //     if (bestForLargeTile != null && bestIndex != -1) {
-  //       result.add(bestForLargeTile);
-  //       for (int j = 0; j < group.length; j++) {
-  //         if (j != bestIndex) {
-  //           result.add(group[j]);
-  //         }
-  //       }
-  //     } else {
-  //       result.addAll(group);
-  //     }
-  //   }
+class PictureWidget extends HookWidget {
+  const PictureWidget({
+    super.key,
+    required this.item,
+  });
 
-  //   return result;
-  // }
+  final PictureModel item;
 
-  // /// Sort a list by priority (for small lists)
-  // List<BaseEventModel> _sortByPriority(List<BaseEventModel> content) {
-  //   final sorted = List<BaseEventModel>.from(content);
-  //   sorted.sort((a, b) => _getMediaPriority(b).compareTo(_getMediaPriority(a)));
-  //   return sorted;
-  // }
+  @override
+  Widget build(BuildContext context) {
+    final isDisplayed = useState(!item.hasContentWarning);
 
-  // /// Returns priority score for media type
-  // /// Higher score = higher priority for large tiles
-  // /// - Vertical videos: 3 (highest priority)
-  // /// - Images: 2
-  // /// - Horizontal videos: 1 (lowest priority)
-  // int _getMediaPriority(BaseEventModel event) {
-  //   if (event is VideoModel) {
-  //     return event.isHorizontal ? 1 : 3;
-  //   } else if (event is PictureModel) {
-  //     return 2;
-  //   }
-  //   return 0;
-  // }
+    return GestureDetector(
+      onTap: () {
+        if (!isDisplayed.value) {
+          isDisplayed.value = true;
+          return;
+        }
+
+        YNavigator.pushPage(
+          context,
+          (context) => PictureView(picture: item),
+        );
+      },
+      onLongPress: () {
+        if (isDisplayed.value) {
+          openGallery(
+            source: MapEntry(item.getUrl(), UrlType.image),
+            index: 0,
+            context: context,
+          );
+        }
+      },
+      child: isDisplayed.value
+          ? CommonThumbnail(
+              image: item.getUrl(),
+              radius: 0,
+              isRound: false,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                FeatureIcons.notVisible,
+                width: 25,
+                height: 25,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColorDark,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+    );
+  }
 }

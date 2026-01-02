@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,7 +39,7 @@ class MediaHandler {
     try {
       BotToastUtils.showInformation(gc.t.uploadingImage);
 
-      final cancel = BotToast.showLoading();
+      final cancel = BotToastUtils.showLoading();
       final res = (await mediaServersCubit.uploadMedia(file: media))['url'];
       cancel.call();
       return res;
@@ -90,27 +89,18 @@ class MediaHandler {
     }
   }
 
-  static Future<List<File>> selectMultiMedia() async {
+  static Future<List<File>?> selectMultiMedia() async {
     try {
-      final selectedMedias = <File>[];
-      final medias = await ImagePicker().pickMultipleMedia();
-
-      if (medias.isNotEmpty) {
-        for (final m in medias) {
-          selectedMedias.add(File(m.path));
-        }
-
-        return selectedMedias;
-      } else {
-        return [];
-      }
+      return (await ImagePicker().pickMultipleMedia())
+          .map((e) => File(e.path))
+          .toList();
     } catch (_) {
-      return [];
+      return null;
     }
   }
 
   static Future<String?> selectMediaAndUpload(MediaType mediaType) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final media = await selectMedia(mediaType);
 
@@ -125,12 +115,17 @@ class MediaHandler {
   }
 
   static Future<List<String>> selectMultiMediaAndUpload() async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final medias = await selectMultiMedia();
 
+    if (medias == null) {
+      BotToastUtils.showError(t.errorSelectingMedia);
+      cancel.call();
+      return [];
+    }
+
     if (medias.isEmpty) {
-      BotToastUtils.showError(t.errorUploadingMedia);
       cancel.call();
       return [];
     }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
@@ -11,6 +10,7 @@ import '../../models/article_model.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/topic.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../utils/bot_toast_util.dart';
 
 part 'suggestions_box_state.dart';
 
@@ -196,7 +196,7 @@ class SuggestionsBoxCubit extends Cubit<SuggestionsBoxState> {
   Future<void> setFollowingState({
     required String pubkey,
   }) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: false,

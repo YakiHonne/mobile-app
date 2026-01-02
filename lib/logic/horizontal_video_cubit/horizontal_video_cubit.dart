@@ -13,6 +13,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'horizontal_video_state.dart';
@@ -194,7 +195,7 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
   }
 
   Future<void> setFollowingState() async {
-    final CancelFunc cancel = BotToast.showLoading();
+    final CancelFunc cancel = BotToastUtils.showLoading();
 
     await NostrFunctionsRepository.setFollowingEvent(
       isFollowingAuthor: state.isFollowingAuthor,

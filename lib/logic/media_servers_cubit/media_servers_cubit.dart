@@ -951,7 +951,6 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       int? size;
       String? x;
 
-      lg.i(response.data);
       if (response.data.runtimeType == String) {
         final decode = jsonDecode(response.data);
 

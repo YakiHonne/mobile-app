@@ -1458,5 +1458,11 @@
   "uploadThumbnail" : "Upload thumbnail",
   "chooseThumbnailVideo" : "Choose a proper thumbnail for your video",
   "publishing" : "Publishing...",
-  "giveMeCatchyTitle" : "Give me a catchy title"
+  "giveMeCatchyTitle" : "Give me a catchy title",
+  "autoPlay" : "Enable video auto play",
+  "autoPlayDesc" : "Automatically play videos when you scroll through your feed.",
+  "copyText": "Copy text",
+  "errorSelectingMedia": "Error occured while selecting media",
+  "fetchingUserOutboxRelays": "Fetching user outbox relays",
+  "noMediaSelected": "No media selected"
 }

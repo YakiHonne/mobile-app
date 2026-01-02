@@ -15,6 +15,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.enableCopyNaddr = false,
     this.enableCopyNpub = false,
     this.enableCopyNpubHex = false,
+    this.enableCopyText = false,
     this.enableCopyId = false,
     this.enableShare = false,
     this.enableShareImage = false,
@@ -60,6 +61,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.onCopyNaddr,
     this.onCopyNpub,
     this.onCopyNpubHex,
+    this.onCopyText,
     this.onCopyNoteId,
     this.onPin,
     this.widgetImage,
@@ -79,6 +81,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final bool enablePostInNote;
   final bool enableCopyNpub;
   final bool enableCopyNpubHex;
+  final bool enableCopyText;
   final bool enableCopyId;
   final bool enableCopyNaddr;
   final bool enableBookmark;
@@ -107,6 +110,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Function()? onShareImage;
   final Function()? onCopyNaddr;
   final Function()? onCopyNpub;
+  final Function()? onCopyText;
   final Function()? onAddToCuration;
   final Function()? onCopyNpubHex;
   final Function()? onCopyNoteId;
@@ -223,6 +227,15 @@ class PullDownGlobalButton extends StatelessWidget {
               onTap: () => onCopyNoteId != null
                   ? onCopyNoteId!.call()
                   : PdmCommonActions.copyId(model),
+            ),
+          if (enableCopyText)
+            _pullDownItem(
+              context: context,
+              title: context.t.copyText.capitalizeFirst(),
+              icon: FeatureIcons.codeText,
+              onTap: () => onCopyText != null
+                  ? onCopyText!.call()
+                  : PdmCommonActions.copyText(model),
             ),
           if (enableUserRelays)
             _pullDownItem(

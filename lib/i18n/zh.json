@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "上传缩略图",
   "chooseThumbnailVideo": "为您的视频选择合适的缩略图",
   "publishing": "正在发布...",
-  "giveMeCatchyTitle": "给我一个吸引人的标题"
+  "giveMeCatchyTitle": "给我一个吸引人的标题",
+  "autoPlay": "启用视频自动播放",
+  "autoPlayDesc": "滚动浏览提要时自动播放视频。",
+  "copyText": "复制文本",
+  "errorSelectingMedia": "选择媒体时出错",
+  "fetchingUserOutboxRelays": "正在获取用户发件箱中继",
+  "noMediaSelected": "未选择媒体"
 }

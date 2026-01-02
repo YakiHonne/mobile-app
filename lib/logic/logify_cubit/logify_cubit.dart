@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:amberflutter/amberflutter.dart' as amb;
 import 'package:bip340/bip340.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +148,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     nostrRepository.setCurrentAppCustomizationFromCache(broadcast: true);
     nostrRepository.setCurrentUserDraft();
 
-    final c = BotToast.showLoading();
+    final c = BotToastUtils.showLoading();
 
     currentUserRelayList = UserRelayList(
       pubkey: currentSigner?.getPublicKey() ?? '',

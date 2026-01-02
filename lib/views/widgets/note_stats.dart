@@ -209,6 +209,7 @@ class NoteStats extends HookWidget {
                             enableCopyNpub: true,
                             enableCopyId: true,
                             enableBookmark: true,
+                            enableCopyText: true,
                             enableShareImage: model is DetailedNoteModel,
                             enableShowRawEvent: true,
                             enableRepublish: true,

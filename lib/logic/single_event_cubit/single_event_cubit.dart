@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -419,7 +418,7 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
       return;
     }
 
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     final currentZapPolls = Map<String, List<PollStat>>.from(state.pollStats);
     final zaps = <String, Event>{};

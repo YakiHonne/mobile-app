@@ -1458,5 +1458,11 @@
   "uploadThumbnail": "サムネイルをアップロード",
   "chooseThumbnailVideo": "動画に適切なサムネイルを選択してください",
   "publishing": "公開中...",
-  "giveMeCatchyTitle": "キャッチーなタイトルを教えて"
+  "giveMeCatchyTitle": "キャッチーなタイトルを教えて",
+  "autoPlay": "動画の自動再生を有効にする",
+  "autoPlayDesc": "フィードをスクロールすると動画が自動的に再生されます。",
+  "copyText": "テキストをコピー",
+  "errorSelectingMedia": "メディアの選択中にエラーが発生しました",
+  "fetchingUserOutboxRelays": "ユーザーのアウトボックスリレーを取得中",
+  "noMediaSelected": "メディアが選択されていません"
 }

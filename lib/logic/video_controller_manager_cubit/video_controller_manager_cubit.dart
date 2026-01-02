@@ -27,6 +27,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   ChewieController? getChewieController(String url) =>
       state.chewieControllers[url];
   final toBeAdded = <String>{};
+  final inProcessUrls = <String>{};
 
   /// Acquire (increments usage count, initializes if needed)
   Future<void> acquireVideo(
@@ -43,7 +44,13 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     Function(String)? onFallbackUrlCalled,
     Function(String)? onDownloadVideo,
   }) async {
-    if (state.videoControllers[url] != null) {
+    // If already loaded or loading, just register the new ID
+    if (state.videoControllers[url] != null || inProcessUrls.contains(url)) {
+      if (!state.videoIds.containsKey(id)) {
+        final videoIds = Map<String, String>.from(state.videoIds);
+        videoIds[id] = url;
+        _emit(videoIds: videoIds);
+      }
       return;
     }
 
@@ -54,13 +61,27 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       return;
     }
 
+    // Double check after delay
+    if (state.videoControllers[url] != null || inProcessUrls.contains(url)) {
+      if (!state.videoIds.containsKey(id)) {
+        final videoIds = Map<String, String>.from(state.videoIds);
+        videoIds[id] = url;
+        _emit(videoIds: videoIds);
+      }
+      return;
+    }
+
     try {
       VideoPlayerController? videoController;
       String usedUrl = url;
+      inProcessUrls.add(url);
+
       if (isNetwork) {
         videoController = await _initNetworkVideo(url);
+        // User scrolled away during initialization check
         if (!toBeAdded.contains(id)) {
           await videoController?.dispose();
+          inProcessUrls.remove(url);
           return;
         }
 
@@ -70,6 +91,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
               videoController = await _initNetworkVideo(fallbackUrl);
               if (!toBeAdded.contains(id)) {
                 await videoController?.dispose();
+                inProcessUrls.remove(url);
                 return;
               }
 
@@ -87,9 +109,12 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         await videoController.initialize();
         if (!toBeAdded.contains(id)) {
           await videoController.dispose();
+          inProcessUrls.remove(url);
           return;
         }
       }
+
+      inProcessUrls.remove(url);
 
       if (videoController == null) {
         return;
@@ -143,6 +168,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       );
     } catch (e) {
       lg.i(e);
+      inProcessUrls.remove(url);
     }
   }
 
@@ -188,6 +214,20 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       return;
     }
 
+    // Remove the ID association first
+    final videoIds = Map<String, String>.from(state.videoIds);
+    videoIds.remove(id);
+
+    // Check if any other ID is still using this URL
+    final isStillInUse = videoIds.containsValue(url);
+
+    if (isStillInUse) {
+      // Just update the videoIds, don't dispose the controller
+      _emit(videoIds: videoIds);
+      return;
+    }
+
+    // Safe to dispose
     state.chewieControllers[url]?.dispose();
     state.videoControllers[url]?.dispose();
 
@@ -195,11 +235,9 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         Map<String, ChewieController>.from(state.chewieControllers);
     final videoControllers =
         Map<String, VideoPlayerController>.from(state.videoControllers);
-    final videoIds = Map<String, String>.from(state.videoIds);
 
     chewieControllers.remove(url);
     videoControllers.remove(url);
-    videoIds.remove(id);
 
     _emit(
       chewieControllers: chewieControllers,

@@ -16,6 +16,7 @@ import '../../common/media_handler/media_handler.dart';
 import '../../logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
+import '../profile_view/widgets/profile_media.dart';
 import 'content_renderer/url_type_checker.dart';
 import 'media_components/video_download.dart';
 import 'seek_bar.dart';
@@ -428,7 +429,7 @@ class CustomVideoPlayer extends StatefulWidget {
     this.removePadding,
     this.removeControls,
     this.removeBorders,
-    this.autoPlay,
+    this.autoPlay = true,
     this.fallbackUrls,
     this.enableSound = true,
   });
@@ -439,7 +440,7 @@ class CustomVideoPlayer extends StatefulWidget {
   final bool? removePadding;
   final bool? removeControls;
   final bool? removeBorders;
-  final bool? autoPlay;
+  final bool autoPlay;
   final List<String>? fallbackUrls;
   final bool enableSound;
 
@@ -448,9 +449,16 @@ class CustomVideoPlayer extends StatefulWidget {
 }
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  late bool autoplay;
+
   @override
   void initState() {
     super.initState();
+    if (videoControllerManagerCubit.getVideoController(widget.link) != null) {
+      autoplay = true;
+    } else {
+      autoplay = widget.autoPlay;
+    }
   }
 
   @override
@@ -467,13 +475,22 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       child: AspectRatio(
         aspectRatio: widget.ratio ?? (16 / 9),
         child: Center(
-          child: _container(context),
+          child: autoplay
+              ? _container(context, autoplay)
+              : VideoThumbnailCard(
+                  url: widget.link,
+                  onTap: () {
+                    setState(() {
+                      autoplay = true;
+                    });
+                  },
+                ),
         ),
       ),
     );
   }
 
-  Container _container(BuildContext context) {
+  Container _container(BuildContext context, bool autoplay) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: widget.removeBorders != null
@@ -498,11 +515,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                     ),
               ),
             )
-          : getVideoPlayer(widget.fallbackUrls),
+          : getVideoPlayer(widget.fallbackUrls, autoplay),
     );
   }
 
-  Widget getVideoPlayer(List<String>? fallbackUrls) {
+  Widget getVideoPlayer(List<String>? fallbackUrls, bool autoplay) {
     try {
       // return AppVideoPlayer(
       //   url: widget.link,
@@ -512,7 +529,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         child: RegularVideoPlayer(
           link: widget.link,
           removeControls: widget.removeControls,
-          autoPlay: widget.autoPlay,
+          autoPlay: autoplay,
           fallbackUrls: fallbackUrls,
           enableSound: widget.enableSound,
         ),

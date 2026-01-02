@@ -281,6 +281,12 @@ class MainCubit extends Cubit<MainState> {
       } else {
         await handleNaddrFromNip05(url: uriString);
       }
+    } else if (uriString.contains('yakihonne.com/video')) {
+      if (nostrUri.startsWith('naddr')) {
+        await _handleVideoLink(nostrUri);
+      } else {
+        await handleNaddrFromNip05(url: uriString);
+      }
     } else if (uriString.contains('yakihonne.com/smart-widget')) {
       if (nostrUri.startsWith('naddr')) {
         await _handleSmartWidgetLink(nostrUri);
@@ -324,7 +330,7 @@ class MainCubit extends Cubit<MainState> {
             : type == 'curation'
                 ? EventKind.CURATION_ARTICLES
                 : type == 'video'
-                    ? EventKind.VIDEO_HORIZONTAL
+                    ? EventKind.LEGACY_VIDEO_VERTICAL
                     : EventKind.SMART_WIDGET_ENH;
 
         final List<int> charCodes = identifier.runes.toList();
@@ -345,8 +351,8 @@ class MainCubit extends Cubit<MainState> {
             kind == EventKind.CURATION_VIDEOS) {
           await _handleCurationLink(naddr);
           return;
-        } else if (kind == EventKind.VIDEO_HORIZONTAL ||
-            kind == EventKind.VIDEO_VERTICAL) {
+        } else if (kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+            kind == EventKind.LEGACY_VIDEO_VERTICAL) {
           await _handleVideoLink(naddr);
           return;
         } else {
@@ -488,6 +494,7 @@ class MainCubit extends Cubit<MainState> {
     String special = '';
     String author = '';
     List<String> relays = [];
+    List<int> kinds = [];
 
     if (nostrUri.startsWith('naddr')) {
       final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
@@ -499,12 +506,17 @@ class MainCubit extends Cubit<MainState> {
       special = String.fromCharCodes(hexCode);
       author = nostrDecode['author'];
       relays = List<String>.from(nostrDecode['relays']);
+      kinds = <int>[
+        EventKind.LEGACY_VIDEO_HORIZONTAL,
+        EventKind.LEGACY_VIDEO_VERTICAL
+      ];
     } else {
       special = nostrUri;
+      kinds = <int>[EventKind.VIDEO_HORIZONTAL, EventKind.VIDEO_VERTICAL];
     }
 
     final event = await getForwardedEvent(
-      kinds: <int>[EventKind.VIDEO_HORIZONTAL, EventKind.VIDEO_VERTICAL],
+      kinds: kinds,
       identifier: special,
       pubkey: author,
       relays: relays,
@@ -514,6 +526,7 @@ class MainCubit extends Cubit<MainState> {
       BotToastUtils.showError(context.t.videoNotFound.capitalizeFirst());
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final VideoModel video = VideoModel.fromEvent(event);
+
       Navigator.pushNamed(
         context,
         video.kind == EventKind.VIDEO_HORIZONTAL
@@ -633,6 +646,7 @@ class MainCubit extends Cubit<MainState> {
         final note = DetailedNoteModel.fromEvent(event);
         Navigator.pushNamed(context, NoteView.routeName, arguments: [note]);
       } else if (event.kind == EventKind.PICTURE) {
+        lg.i('event.kind == EventKind.PICTURE');
         final picture = PictureModel.fromEvent(event);
         YNavigator.pushPage(
           context,
@@ -769,8 +783,6 @@ class MainCubit extends Cubit<MainState> {
     String? pubkey,
     List<String>? relays,
   }) async {
-    lg.i('getForwardedEvent => $identifier, $pubkey, $relays');
-
     final event = await getForwardEvent(
       author: pubkey,
       identifier: identifier,

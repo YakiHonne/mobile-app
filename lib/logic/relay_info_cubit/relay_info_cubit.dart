@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/relay_info.dart';
@@ -629,7 +628,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
   }
 
   Future<void> setAndUpdateFavoriteRelay(String relay) async {
-    final cancel = BotToast.showLoading();
+    final cancel = BotToastUtils.showLoading();
 
     updateFavoriteRelays(relay);
     final isSuccessful = await setFavoriteRelays();
