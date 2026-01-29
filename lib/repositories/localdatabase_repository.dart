@@ -92,6 +92,9 @@ class LocalDatabaseRepository {
   static const String _pendingFlashNews = 'pending_flash_news';
   static const String _newNotifications = 'new_notifications';
   static const String _registeredNotifications = 'registred_notifications';
+  static const String _cashuTokens = 'cashu_tokens';
+  static const String _userWalletType = 'user_wallet_type';
+  static const String _userActiveMint = 'user_active_mint';
 
   // ==================================================
   // INITIALIZATION
@@ -872,5 +875,36 @@ class LocalDatabaseRepository {
       lg.i('Error getting storage info: $e');
       return {};
     }
+  }
+  // ==================================================
+  // CASHU TOKENS
+  // ==================================================
+
+  List<String> getCashuTokens(String pubkey) {
+    return _getPrefsData<List<String>>('$_cashuTokens$pubkey') ?? [];
+  }
+
+  Future<void> setCashuTokens(String pubkey, List<String> tokens) async {
+    await _setPrefsData('$_cashuTokens$pubkey', tokens);
+  }
+
+  bool getUserWalletType(String pubkey) {
+    return _getPrefsData<bool>('$pubkey-$_userWalletType',
+            defaultValue: false) ??
+        false;
+  }
+
+  Future<void> setUserWalletType(String pubkey, bool isCashu) async {
+    await _setPrefsData('$pubkey-$_userWalletType', isCashu);
+  }
+
+  String getUserActiveMint(String pubkey) {
+    return _getPrefsData<String>('$pubkey-$_userActiveMint',
+            defaultValue: '') ??
+        '';
+  }
+
+  Future<void> setUserActiveMint(String pubkey, String mintUrl) async {
+    await _setPrefsData('$pubkey-$_userActiveMint', mintUrl);
   }
 }

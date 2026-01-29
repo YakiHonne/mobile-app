@@ -699,7 +699,9 @@ class DashboardContentList extends StatelessWidget {
       isHiddenType: true,
       onDeleteItem: (id) {
         YNavigator.pop(context);
-        context.read<DashboardContentCubit>().onDeleteContent(id);
+        context
+            .read<DashboardContentCubit>()
+            .onDeleteContent(id, isNote: kind == EventKind.TEXT_NOTE);
       },
       onRefresh: () {},
       borderColor:

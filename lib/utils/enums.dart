@@ -236,6 +236,12 @@ enum WalletSendingType {
   none,
 }
 
+enum ZapPaymentMethod {
+  cashu,
+  internal,
+  external,
+}
+
 enum RedeemCodeStatus {
   options,
   loading,

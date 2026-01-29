@@ -258,7 +258,7 @@ class ReceiveInvoiceQrCode extends HookWidget {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(
-          ' USD',
+          ' ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: Theme.of(context).highlightColor,
               ),

@@ -76,6 +76,26 @@ class SingleEventProvider extends HookWidget {
   }
 }
 
+class DeletedNoteProvider extends StatelessWidget {
+  const DeletedNoteProvider({
+    super.key,
+    required this.id,
+    required this.child,
+  });
+
+  final String id;
+  final Widget Function(bool) child;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: nostrRepository.deletedNotesStream,
+      builder: (context, snapshot) =>
+          child.call(snapshot.data?.contains(id) ?? false),
+    );
+  }
+}
+
 class MutedUserProvider extends StatelessWidget {
   const MutedUserProvider({
     super.key,

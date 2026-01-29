@@ -112,7 +112,7 @@ class SendMainView extends HookWidget {
         onClicked: () {
           YNavigator.pushPage(
             context,
-            (context) => const QrCodeView(),
+            (context) => const WalletQrCodeView(),
           );
         },
         title: context.t.scan,

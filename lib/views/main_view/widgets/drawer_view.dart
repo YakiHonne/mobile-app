@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:numeral/numeral.dart';
 
+import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
@@ -84,7 +85,7 @@ class MainViewDrawer extends HookWidget {
           _accountManager(context)
         else
           _login(context),
-        if (canSign()) _walletManager(),
+        if (canSign()) _walletManager(state),
         const SizedBox(
           height: kBottomNavigationBarHeight / 2,
         ),
@@ -92,70 +93,100 @@ class MainViewDrawer extends HookWidget {
     );
   }
 
-  BlocBuilder<WalletsManagerCubit, WalletsManagerState> _walletManager() {
+  Widget _walletManager(MainState mainState) {
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, lightningState) {
-        if (lightningState.wallets.isEmpty) {
-          return const SizedBox.shrink();
-        }
+        return BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
+          builder: (context, cashuState) {
+            final isCashu = mainState.isCashuWallet;
 
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            context.read<MainCubit>().updateIndex(MainViews.wallet);
-            Scaffold.of(context).closeDrawer();
+            if (!isCashu && lightningState.wallets.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            final rate =
+                walletManagerCubit.btcInFiat[lightningState.activeCurrency];
+            final cashuFiat = (cashuState.balance != -1 && rate != null)
+                ? (cashuState.balance / 100000000) * rate
+                : -1.0;
+
+            final balance =
+                isCashu ? cashuState.balance : lightningState.balance;
+            final balanceInFiat =
+                isCashu ? cashuFiat : lightningState.balanceInFiat;
+            final isHidden = lightningState.isWalletHidden;
+            final activeCurrency = lightningState.activeCurrency;
+
+            return GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                context.read<MainCubit>().updateIndex(MainViews.wallet);
+                Scaffold.of(context).closeDrawer();
+              },
+              child: Column(
+                children: [
+                  const Divider(
+                    height: kDefaultPadding / 2,
+                    indent: kDefaultPadding / 2,
+                    endIndent: kDefaultPadding / 2,
+                  ),
+                  const SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: kDefaultPadding / 2,
+                        ),
+                        VerticalDivider(
+                          thickness: 2,
+                          color: Theme.of(context).primaryColor,
+                          width: 0,
+                        ),
+                        const SizedBox(
+                          width: kDefaultPadding / 1.5,
+                        ),
+                        _walletInfo(
+                          balance,
+                          balanceInFiat,
+                          activeCurrency,
+                          isHidden,
+                          context,
+                        ),
+                        const SizedBox(
+                          width: kDefaultPadding / 1.5,
+                        ),
+                        CustomIconButton(
+                          onClicked: () {
+                            walletManagerCubit.toggleWallet();
+                          },
+                          icon: !lightningState.isWalletHidden
+                              ? FeatureIcons.notVisible
+                              : FeatureIcons.visible,
+                          size: 22,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
-          child: Column(
-            children: [
-              const Divider(
-                height: kDefaultPadding / 2,
-                indent: kDefaultPadding / 2,
-                endIndent: kDefaultPadding / 2,
-              ),
-              const SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: kDefaultPadding / 2,
-                    ),
-                    VerticalDivider(
-                      thickness: 2,
-                      color: Theme.of(context).primaryColor,
-                      width: 0,
-                    ),
-                    const SizedBox(
-                      width: kDefaultPadding / 1.5,
-                    ),
-                    _walletInfo(lightningState, context),
-                    const SizedBox(
-                      width: kDefaultPadding / 1.5,
-                    ),
-                    CustomIconButton(
-                      onClicked: () {
-                        walletManagerCubit.toggleWallet();
-                      },
-                      icon: !lightningState.isWalletHidden
-                          ? FeatureIcons.notVisible
-                          : FeatureIcons.visible,
-                      size: 22,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         );
       },
     );
   }
 
   Expanded _walletInfo(
-      WalletsManagerState lightningState, BuildContext context) {
+    int balance,
+    double balanceInFiat,
+    String activeCurrency,
+    bool isHidden,
+    BuildContext context,
+  ) {
     return Expanded(
       child: Column(
         children: [
@@ -163,9 +194,7 @@ class MainViewDrawer extends HookWidget {
             children: [
               Flexible(
                 child: Text(
-                  lightningState.isWalletHidden
-                      ? '*****'
-                      : '${lightningState.balance != -1 ? lightningState.balance : 'N/A'}',
+                  isHidden ? '*****' : '${balance != -1 ? balance : 'N/A'}',
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1,
@@ -193,11 +222,11 @@ class MainViewDrawer extends HookWidget {
             spacing: kDefaultPadding / 4,
             children: [
               Text(
-                '${currenciesSymbols[lightningState.activeCurrency]}${lightningState.isWalletHidden ? '*****' : lightningState.balanceInFiat == -1 ? 'N/A' : lightningState.balanceInFiat.toStringAsFixed(2)}',
+                '${currenciesSymbols[activeCurrency]}${isHidden ? '*****' : balanceInFiat == -1 ? 'N/A' : balanceInFiat.toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               Text(
-                lightningState.activeCurrency.toUpperCase(),
+                activeCurrency.toUpperCase(),
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: Theme.of(context).highlightColor,
                     ),

@@ -20,6 +20,7 @@ import '../../curation_view/curation_view.dart';
 import '../../dm_view/widgets/dm_details.dart';
 import '../../note_view/note_view.dart';
 import '../../smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../wallet_cashu_view/widgets/cashu_history.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
@@ -231,11 +232,23 @@ class _NotificationGlobalContainerState
   }
 
   void onClick(BuildContext context) {
+    // Open Cashu history modal for NutZaps
+    if (widget.mainEvent.kind == EventKind.CASHU_NUTZAP) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => const CashuHistory(initialIndex: 2),
+      );
+      return;
+    }
+
     if (relatedEvent != null) {
       final page = getView(
         widget.mainEvent.kind == EventKind.REACTION ||
                 widget.mainEvent.kind == EventKind.REPOST ||
-                widget.mainEvent.kind == EventKind.ZAP
+                widget.mainEvent.kind == EventKind.ZAP ||
+                widget.mainEvent.kind == EventKind.CASHU_NUTZAP
             ? relatedEvent!
             : widget.mainEvent,
       );
@@ -246,7 +259,10 @@ class _NotificationGlobalContainerState
     } else {
       final page = getView(widget.mainEvent);
       if (page != null) {
-        YNavigator.pushPage(context, (context) => page);
+        YNavigator.pushPage(
+          context,
+          (context) => page,
+        );
       }
     }
   }
@@ -285,7 +301,8 @@ class _NotificationGlobalContainerState
   }
 
   String getZapContent() {
-    if (widget.mainEvent.kind == EventKind.ZAP) {
+    if (widget.mainEvent.kind == EventKind.ZAP ||
+        widget.mainEvent.kind == EventKind.CASHU_NUTZAP) {
       final result = getZapPubkey(widget.mainEvent.tags);
       return result.last;
     }

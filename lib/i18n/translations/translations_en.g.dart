@@ -4438,6 +4438,321 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'No media selected'
 	String get noMediaSelected => 'No media selected';
+
+	/// en: 'Memo (optional)'
+	String get memoOptional => 'Memo (optional)';
+
+	/// en: 'Pay or Swap'
+	String get payOrSwap => 'Pay or Swap';
+
+	/// en: 'Pay Lightning invoice or to lightning address'
+	String get payOrSwapDesc => 'Pay Lightning invoice or to lightning address';
+
+	/// en: 'Claimed'
+	String get claimed => 'Claimed';
+
+	/// en: 'Cashu Wallet'
+	String get cashuWallet => 'Cashu Wallet';
+
+	/// en: 'Wallet Balance'
+	String get walletBalance => 'Wallet Balance';
+
+	/// en: 'Mint Balance'
+	String get mintBalance => 'Mint Balance';
+
+	/// en: 'Mint has been copied'
+	String get mintHasBeenCopied => 'Mint has been copied';
+
+	/// en: 'Swap'
+	String get swap => 'Swap';
+
+	/// en: 'Swap tokens'
+	String get swapTokens => 'Swap tokens';
+
+	/// en: 'Swap tokens between mints'
+	String get swapTokensDesc => 'Swap tokens between mints';
+
+	/// en: 'Swap from'
+	String get swapFrom => 'Swap from';
+
+	/// en: 'Swap to'
+	String get swapTo => 'Swap to';
+
+	/// en: 'Select mint'
+	String get selectMint => 'Select mint';
+
+	/// en: 'Amount'
+	String get amount => 'Amount';
+
+	/// en: 'Cashu History'
+	String get cashuHistory => 'Cashu History';
+
+	/// en: 'History'
+	String get history => 'History';
+
+	/// en: 'Nutzaps'
+	String get nutzaps => 'Nutzaps';
+
+	/// en: 'Recommended'
+	String get recommended => 'Recommended';
+
+	/// en: 'Mints'
+	String get mints => 'Mints';
+
+	/// en: 'Mint'
+	String get swapModesMint => 'Mint';
+
+	/// en: 'Wallet'
+	String get swapModesWallet => 'Wallet';
+
+	/// en: 'Redeem eCash'
+	String get redeemEcash => 'Redeem eCash';
+
+	/// en: 'Deposit'
+	String get deposit => 'Deposit';
+
+	/// en: 'Redeem ecash tokens to your wallet'
+	String get redeemEcashDesc => 'Redeem ecash tokens to your wallet';
+
+	/// en: 'Mint new ecash tokens by depositing sats'
+	String get depositDesc => 'Mint new ecash tokens by depositing sats';
+
+	/// en: 'Paste token'
+	String get pasteToken => 'Paste token';
+
+	/// en: 'Scan'
+	String get scanToken => 'Scan';
+
+	/// en: 'Token Details'
+	String get tokenDetails => 'Token Details';
+
+	/// en: 'Issuing Mint'
+	String get issuingMint => 'Issuing Mint';
+
+	/// en: 'Proofs'
+	String get proofs => 'Proofs';
+
+	/// en: 'Redeem Token'
+	String get redeemToken => 'Redeem Token';
+
+	/// en: 'Invalid token'
+	String get invalidToken => 'Invalid token';
+
+	/// en: 'Token redeemed successfully'
+	String get tokenRedeemed => 'Token redeemed successfully';
+
+	/// en: 'No mints available'
+	String get noMintsAvailable => 'No mints available';
+
+	/// en: 'Currencies'
+	String get currencies => 'Currencies';
+
+	/// en: 'NUTs'
+	String get nuts => 'NUTs';
+
+	/// en: 'Error occured while updating mints list'
+	String get errorUpdatingMint => 'Error occured while updating mints list';
+
+	/// en: 'Active'
+	String get active => 'Active';
+
+	/// en: 'Inactive'
+	String get inactive => 'Inactive';
+
+	/// en: 'Add Cashu Wallet & start sending and receiving Ecash over nostr.'
+	String get addCashuWallet => 'Add Cashu Wallet & start sending and receiving Ecash over nostr.';
+
+	/// en: 'Mint URL'
+	String get mintUrl => 'Mint URL';
+
+	/// en: 'Mint you are trying to add is not available'
+	String get mintUnavailable => 'Mint you are trying to add is not available';
+
+	/// en: 'Inactive mints'
+	String get inactiveMints => 'Inactive mints';
+
+	/// en: 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.'
+	String get inactiveMintsDesc => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.';
+
+	/// en: 'Error occured while adding mint'
+	String get errorAddingMint => 'Error occured while adding mint';
+
+	/// en: 'Restore wallet'
+	String get restoreWallet => 'Restore wallet';
+
+	/// en: 'Restore proofs of your wallet in this mint to save them on NOSTR'
+	String get restoreWalletDesc => 'Restore proofs of your wallet in this mint to save them on NOSTR';
+
+	/// en: 'Your seed phrase is only used locally to derive your wallet keys.'
+	String get seedPhraseLocallyOnly => 'Your seed phrase is only used locally to derive your wallet keys.';
+
+	/// en: 'Proofs restored'
+	String get proofsRestored => 'Proofs restored';
+
+	/// en: 'No proofs found'
+	String get noProofsFound => 'No proofs found';
+
+	/// en: 'Error occured while restoring proofs'
+	String get errorRestoringProofs => 'Error occured while restoring proofs';
+
+	/// en: 'Invalid amount'
+	String get invalidAmount => 'Invalid amount';
+
+	/// en: 'Broadcasting new tokens'
+	String get broadcastingNew => 'Broadcasting new tokens';
+
+	/// en: 'Broadcasting spending history'
+	String get broadcastingSpent => 'Broadcasting spending history';
+
+	/// en: 'Finalizing'
+	String get finalizing => 'Finalizing';
+
+	/// en: 'Selecting tokens'
+	String get selectingTokens => 'Selecting tokens';
+
+	/// en: 'Requesting melt quote'
+	String get requestingMeltQuote => 'Requesting melt quote';
+
+	/// en: 'Melting'
+	String get melting => 'Melting';
+
+	/// en: 'Requesting mint quote'
+	String get requestingMintQuote => 'Requesting mint quote';
+
+	/// en: 'Minting'
+	String get minting => 'Minting';
+
+	/// en: 'Can't swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the 'to' field to select a wallet destination.'
+	String get cantSwapWithWallet => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.';
+
+	/// en: 'Select destination'
+	String get selectDestination => 'Select destination';
+
+	/// en: 'Internal wallets'
+	String get internalWallets => 'Internal wallets';
+
+	/// en: 'Verify Token'
+	String get verifyToken => 'Verify Token';
+
+	/// en: 'Memo'
+	String get memo => 'Memo';
+
+	/// en: 'Paying invoice'
+	String get payingInvoice => 'Paying invoice';
+
+	/// en: 'Add mint'
+	String get addMint => 'Add mint';
+
+	/// en: 'Getting mint info'
+	String get gettingMintInfo => 'Getting mint info';
+
+	/// en: 'Generating invoice'
+	String get generatingInvoice => 'Generating invoice';
+
+	/// en: 'Check Payment Status'
+	String get checkPaymentStatus => 'Check Payment Status';
+
+	/// en: 'Deposit Succeeded'
+	String get depositSuccess => 'Deposit Succeeded';
+
+	/// en: 'Send eCash'
+	String get sendEcash => 'Send eCash';
+
+	/// en: 'Create and share a Cashu token'
+	String get sendEcashDesc => 'Create and share a Cashu token';
+
+	/// en: 'Insufficient funds'
+	String get insufficientFunds => 'Insufficient funds';
+
+	/// en: 'Copy Token'
+	String get copyToken => 'Copy Token';
+
+	/// en: 'Share Token'
+	String get shareToken => 'Share Token';
+
+	/// en: 'Create Token'
+	String get createToken => 'Create Token';
+
+	/// en: 'eCash'
+	String get eCash => 'eCash';
+
+	/// en: 'No token can be found'
+	String get noTokenCanBeFound => 'No token can be found';
+
+	/// en: 'Already spent'
+	String get alreadySpent => 'Already spent';
+
+	/// en: 'Check Status'
+	String get checkStatus => 'Check Status';
+
+	/// en: 'Delete Token'
+	String get deleteToken => 'Delete Token';
+
+	/// en: 'Are you sure you want to delete this token? This action cannot be undone.'
+	String get deleteTokenDesc => 'Are you sure you want to delete this token? This action cannot be undone.';
+
+	/// en: 'Nut Zap'
+	String get nutZap => 'Nut Zap';
+
+	/// en: 'Send sats to a user via Nostr'
+	String get nutZapDesc => 'Send sats to a user via Nostr';
+
+	/// en: 'Sync'
+	String get syncData => 'Sync';
+
+	/// en: 'Checking tokens validity'
+	String get checkingTokensValidity => 'Checking tokens validity';
+
+	/// en: 'Nut Zap Sent'
+	String get nutZapSent => 'Nut Zap Sent';
+
+	/// en: 'No NutZaps found'
+	String get noNutzapsFound => 'No NutZaps found';
+
+	/// en: 'You haven't received any NutZaps yet.'
+	String get noNutzapsFoundDesc => 'You haven\'t received any NutZaps yet.';
+
+	/// en: 'Swap was Successful'
+	String get swapSuccessful => 'Swap was Successful';
+
+	/// en: 'NutZap Claimed Successfully'
+	String get nutzapClaimedSuccessful => 'NutZap Claimed Successfully';
+
+	/// en: 'Initializing'
+	String get initializing => 'Initializing';
+
+	/// en: '{{name}} nut zapped you {{number}} sats'
+	String userNutZappedYou({required Object name, required Object number}) => '${name} nut zapped you ${number} sats';
+
+	/// en: 'Note deleted successfully'
+	String get noteDeletedSuccessfully => 'Note deleted successfully';
+
+	/// en: 'eCash Created'
+	String get ecashCreated => 'eCash Created';
+
+	/// en: 'To Mint'
+	String get toMint => 'To Mint';
+
+	/// en: 'To Lightning'
+	String get toLightning => 'To Lightning';
+
+	/// en: 'Pay or Withdraw'
+	String get payOrWithdraw => 'Pay or Withdraw';
+
+	/// en: 'Withdraw'
+	String get withdraw => 'Withdraw';
+
+	/// en: 'Ecash'
+	String get ecash => 'Ecash';
+
+	/// en: 'Lightning Network'
+	String get lightningNetwork => 'Lightning Network';
+
+	/// en: 'Pay Lightning invoice or to lightning address'
+	String get lightningNetworkDesc => 'Pay Lightning invoice or to lightning address';
+
+	/// en: 'Info'
+	String get info => 'Info';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -4449,7 +4764,8 @@ extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return _flatMapFunction$0(path)
 			?? _flatMapFunction$1(path)
-			?? _flatMapFunction$2(path);
+			?? _flatMapFunction$2(path)
+			?? _flatMapFunction$3(path);
 	}
 
 	dynamic _flatMapFunction$0(String path) {
@@ -5932,6 +6248,117 @@ extension on Translations {
 			'errorSelectingMedia' => 'Error occured while selecting media',
 			'fetchingUserOutboxRelays' => 'Fetching user outbox relays',
 			'noMediaSelected' => 'No media selected',
+			'memoOptional' => 'Memo (optional)',
+			'payOrSwap' => 'Pay or Swap',
+			'payOrSwapDesc' => 'Pay Lightning invoice or to lightning address',
+			'claimed' => 'Claimed',
+			'cashuWallet' => 'Cashu Wallet',
+			'walletBalance' => 'Wallet Balance',
+			'mintBalance' => 'Mint Balance',
+			'mintHasBeenCopied' => 'Mint has been copied',
+			'swap' => 'Swap',
+			'swapTokens' => 'Swap tokens',
+			'swapTokensDesc' => 'Swap tokens between mints',
+			'swapFrom' => 'Swap from',
+			'swapTo' => 'Swap to',
+			'selectMint' => 'Select mint',
+			'amount' => 'Amount',
+			'cashuHistory' => 'Cashu History',
+			'history' => 'History',
+			'nutzaps' => 'Nutzaps',
+			'recommended' => 'Recommended',
+			'mints' => 'Mints',
+			'swapModesMint' => 'Mint',
+			'swapModesWallet' => 'Wallet',
+			'redeemEcash' => 'Redeem eCash',
+			'deposit' => 'Deposit',
+			'redeemEcashDesc' => 'Redeem ecash tokens to your wallet',
+			'depositDesc' => 'Mint new ecash tokens by depositing sats',
+			'pasteToken' => 'Paste token',
+			'scanToken' => 'Scan',
+			'tokenDetails' => 'Token Details',
+			'issuingMint' => 'Issuing Mint',
+			'proofs' => 'Proofs',
+			'redeemToken' => 'Redeem Token',
+			'invalidToken' => 'Invalid token',
+			'tokenRedeemed' => 'Token redeemed successfully',
+			'noMintsAvailable' => 'No mints available',
+			'currencies' => 'Currencies',
+			'nuts' => 'NUTs',
+			'errorUpdatingMint' => 'Error occured while updating mints list',
+			'active' => 'Active',
+			'inactive' => 'Inactive',
+			'addCashuWallet' => 'Add Cashu Wallet & start sending and receiving Ecash over nostr.',
+			'mintUrl' => 'Mint URL',
+			'mintUnavailable' => 'Mint you are trying to add is not available',
+			'inactiveMints' => 'Inactive mints',
+			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
+			'errorAddingMint' => 'Error occured while adding mint',
+			'restoreWallet' => 'Restore wallet',
+			'restoreWalletDesc' => 'Restore proofs of your wallet in this mint to save them on NOSTR',
+			'seedPhraseLocallyOnly' => 'Your seed phrase is only used locally to derive your wallet keys.',
+			'proofsRestored' => 'Proofs restored',
+			'noProofsFound' => 'No proofs found',
+			'errorRestoringProofs' => 'Error occured while restoring proofs',
+			'invalidAmount' => 'Invalid amount',
+			'broadcastingNew' => 'Broadcasting new tokens',
+			'broadcastingSpent' => 'Broadcasting spending history',
+			'finalizing' => 'Finalizing',
+			'selectingTokens' => 'Selecting tokens',
+			'requestingMeltQuote' => 'Requesting melt quote',
+			'melting' => 'Melting',
+			'requestingMintQuote' => 'Requesting mint quote',
+			'minting' => 'Minting',
+			'cantSwapWithWallet' => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.',
+			'selectDestination' => 'Select destination',
+			'internalWallets' => 'Internal wallets',
+			'verifyToken' => 'Verify Token',
+			'memo' => 'Memo',
+			'payingInvoice' => 'Paying invoice',
+			'addMint' => 'Add mint',
+			'gettingMintInfo' => 'Getting mint info',
+			'generatingInvoice' => 'Generating invoice',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
+			'checkPaymentStatus' => 'Check Payment Status',
+			'depositSuccess' => 'Deposit Succeeded',
+			'sendEcash' => 'Send eCash',
+			'sendEcashDesc' => 'Create and share a Cashu token',
+			'insufficientFunds' => 'Insufficient funds',
+			'copyToken' => 'Copy Token',
+			'shareToken' => 'Share Token',
+			'createToken' => 'Create Token',
+			'eCash' => 'eCash',
+			'noTokenCanBeFound' => 'No token can be found',
+			'alreadySpent' => 'Already spent',
+			'checkStatus' => 'Check Status',
+			'deleteToken' => 'Delete Token',
+			'deleteTokenDesc' => 'Are you sure you want to delete this token? This action cannot be undone.',
+			'nutZap' => 'Nut Zap',
+			'nutZapDesc' => 'Send sats to a user via Nostr',
+			'syncData' => 'Sync',
+			'checkingTokensValidity' => 'Checking tokens validity',
+			'nutZapSent' => 'Nut Zap Sent',
+			'noNutzapsFound' => 'No NutZaps found',
+			'noNutzapsFoundDesc' => 'You haven\'t received any NutZaps yet.',
+			'swapSuccessful' => 'Swap was Successful',
+			'nutzapClaimedSuccessful' => 'NutZap Claimed Successfully',
+			'initializing' => 'Initializing',
+			'userNutZappedYou' => ({required Object name, required Object number}) => '${name} nut zapped you ${number} sats',
+			'noteDeletedSuccessfully' => 'Note deleted successfully',
+			'ecashCreated' => 'eCash Created',
+			'toMint' => 'To Mint',
+			'toLightning' => 'To Lightning',
+			'payOrWithdraw' => 'Pay or Withdraw',
+			'withdraw' => 'Withdraw',
+			'ecash' => 'Ecash',
+			'lightningNetwork' => 'Lightning Network',
+			'lightningNetworkDesc' => 'Pay Lightning invoice or to lightning address',
+			'info' => 'Info',
 			_ => null,
 		};
 	}

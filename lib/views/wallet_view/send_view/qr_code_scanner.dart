@@ -11,14 +11,14 @@ import '../receive_view/lightning_address_qr_code.dart';
 import 'send_using_invoice.dart';
 import 'send_using_lightning_address.dart';
 
-class QrCodeView extends StatefulWidget {
-  const QrCodeView({super.key});
+class WalletQrCodeView extends StatefulWidget {
+  const WalletQrCodeView({super.key});
 
   @override
-  State<QrCodeView> createState() => _QrCodeViewState();
+  State<WalletQrCodeView> createState() => _WalletQrCodeViewState();
 }
 
-class _QrCodeViewState extends State<QrCodeView> with RouteAware {
+class _WalletQrCodeViewState extends State<WalletQrCodeView> with RouteAware {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String invoice = '';
@@ -234,36 +234,38 @@ class _QrCodeViewState extends State<QrCodeView> with RouteAware {
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      final res = scanData.code;
+    controller.scannedDataStream.listen(
+      (scanData) {
+        final res = scanData.code;
 
-      if (res != null && res.isNotEmpty) {
-        if (context.mounted) {
-          if (res.toLowerCase().startsWith('lnbc')) {
-            if (invoice.isEmpty) {
-              invoice = res;
+        if (res != null && res.isNotEmpty) {
+          if (context.mounted) {
+            if (res.toLowerCase().startsWith('lnbc')) {
+              if (invoice.isEmpty) {
+                invoice = res;
 
-              YNavigator.pushPage(
-                context,
-                (context) => SendUsingInvoice(invoice: res),
-              );
-            }
-          } else if (res.toLowerCase().startsWith('lnurl') ||
-              emailRegExp.hasMatch(res)) {
-            if (invoice.isEmpty) {
-              invoice = res;
+                YNavigator.pushPage(
+                  context,
+                  (context) => SendUsingInvoice(invoice: res),
+                );
+              }
+            } else if (res.toLowerCase().startsWith('lnurl') ||
+                emailRegExp.hasMatch(res)) {
+              if (invoice.isEmpty) {
+                invoice = res;
 
-              YNavigator.pushReplacement(
-                context,
-                SendUsingLightningAddress(
-                  lnLnurl: res,
-                  isManual: false,
-                ),
-              );
+                YNavigator.pushReplacement(
+                  context,
+                  SendUsingLightningAddress(
+                    lnLnurl: res,
+                    isManual: false,
+                  ),
+                );
+              }
             }
           }
         }
-      }
-    });
+      },
+    );
   }
 }

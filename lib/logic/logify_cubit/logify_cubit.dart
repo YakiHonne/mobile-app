@@ -409,6 +409,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     nostrRepository.setCurrentUserDraft();
 
     walletManagerCubit.switchWallets();
+    cashuWalletManagerCubit.init();
 
     if (state.wallet.isNotEmpty) {
       walletManagerCubit.addNwc(state.wallet);
@@ -618,6 +619,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     nostrRepository.setCurrentUserDraft();
 
     walletManagerCubit.switchWallets();
+    cashuWalletManagerCubit.init();
 
     if (state.wallet.isNotEmpty) {
       walletManagerCubit.addNwc(state.wallet);

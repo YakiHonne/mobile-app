@@ -99,6 +99,7 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: pointsManagementCubit),
         BlocProvider.value(value: routingCubit),
         BlocProvider.value(value: walletManagerCubit),
+        BlocProvider.value(value: cashuWalletManagerCubit),
         BlocProvider.value(value: localizationCubit),
         BlocProvider.value(value: metadataCubit),
         BlocProvider.value(value: notificationsCubit),
@@ -116,6 +117,7 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: mediaCubit),
         BlocProvider.value(value: unsentEventsCubit),
         BlocProvider.value(value: videoControllerManagerCubit),
+        BlocProvider.value(value: botUtilsLoadingProgressCubit),
       ],
       [],
     );

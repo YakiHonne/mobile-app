@@ -29,6 +29,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
             bookmarks: getBookmarkIds(nostrRepository.bookmarksLists).toSet(),
             mutes: nostrRepository.muteModel.usersMutes.toList(),
             mutesEvents: nostrRepository.muteModel.eventsMutes.toList(),
+            deletedNotes: const {},
           ),
         ) {
     _init();
@@ -732,6 +733,55 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       stats[ns.eventId] = ns;
       nc.db.saveEventStats(ns);
     }
+  }
+
+  Future<bool> deleteNote(String id) async {
+    final isSuccessful = await NostrFunctionsRepository.deleteEvent(
+      eventId: id,
+    );
+
+    if (isSuccessful) {
+      final eventsStats = Map<String, EventStats>.from(state.eventsStats);
+
+      // Remove the note stats itself
+      eventsStats.remove(id);
+
+      // Remove the note from other stats where it might be a comment (reply)
+      final idsToUpdate = <String>[];
+
+      for (final entry in eventsStats.entries) {
+        if (entry.value.replies.containsKey(id)) {
+          idsToUpdate.add(entry.key);
+        }
+      }
+
+      for (final parentId in idsToUpdate) {
+        final stats = eventsStats[parentId];
+        if (stats != null) {
+          final updatedStats = stats.removeReply(id);
+
+          eventsStats[parentId] = updatedStats;
+          nc.db.saveEventStats(updatedStats);
+        }
+      }
+
+      final previousNotes =
+          Map<String, List<DetailedNoteModel>>.from(state.previousNotes);
+      previousNotes.remove(id);
+
+      emit(
+        state.copyWith(
+          eventsStats: eventsStats,
+          previousNotes: previousNotes,
+          deletedNotes: Set.from(state.deletedNotes)..add(id),
+        ),
+      );
+
+      nostrRepository.notifyNoteDeletion(id);
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> onReact({

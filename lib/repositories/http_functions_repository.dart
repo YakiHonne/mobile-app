@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -419,6 +420,25 @@ class HttpFunctionsRepository {
     }
 
     return null;
+  }
+
+  static Future<List<MintInfo>> getRecommendedMints() async {
+    try {
+      final response = await getSpecified(
+        '${cacheUrl}mints',
+      );
+
+      if (response != null) {
+        return List<MintInfo>.from(response.map((e) {
+          return MintInfo.fromServerMap(e['data'], e['url']);
+        }));
+      } else {
+        return [];
+      }
+    } catch (e) {
+      lg.i(e);
+      return [];
+    }
   }
 
   static String getWidgetUrl(String url) {

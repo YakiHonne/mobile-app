@@ -1111,6 +1111,7 @@ class NostrFunctionsRepository {
       filter4 = Filter(
         kinds: [
           EventKind.ZAP,
+          EventKind.CASHU_NUTZAP,
         ],
         p: [pubkey],
         since: since,
@@ -4952,6 +4953,34 @@ class NostrFunctionsRepository {
       timeout: timerTicks,
       onComplete: (_) {
         nc.db.removeEvent(eventId);
+      },
+      relyOnUnsentEvents: relyOnUnsentEvents,
+    );
+  }
+
+  static Future<bool> deleteEvents({
+    required List<String> eventIds,
+    List<String>? relays,
+    bool relyOnUnsentEvents = true,
+  }) async {
+    final event = await Event.genEvent(
+      kind: EventKind.EVENT_DELETION,
+      tags: eventIds.map((e) => ['e', e]).toList(),
+      content: 'these events are to be deleted',
+      signer: currentSigner,
+    );
+
+    lg.i(event?.toJson());
+    if (event == null) {
+      return false;
+    }
+
+    return _handleEventOperation(
+      event: event,
+      relays: relays ?? [],
+      timeout: timerTicks,
+      onComplete: (_) {
+        nc.db.removeEvents(eventIds);
       },
       relyOnUnsentEvents: relyOnUnsentEvents,
     );

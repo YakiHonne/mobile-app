@@ -48,6 +48,7 @@ class LeadingCubit extends Cubit<LeadingState> {
   // =============================================================================
   late StreamSubscription feedStream;
   late StreamSubscription mutesStream;
+  late StreamSubscription noteDeletionStream;
   bool delayLeading = true;
   final extraIds = <String>{};
   int? score;
@@ -90,6 +91,23 @@ class LeadingCubit extends Cubit<LeadingState> {
             state.copyWith(
               content: newContent,
               refresh: true,
+            ),
+          );
+        }
+      },
+    );
+
+    noteDeletionStream = nostrRepository.deletedNotesStream.listen(
+      (ids) {
+        lg.i(ids);
+        if (!isClosed) {
+          final newContent = List<Event>.from(state.content)
+            ..removeWhere((e) => ids.contains(e.id));
+
+          emit(
+            state.copyWith(
+              content: newContent,
+              refresh: !state.refresh,
             ),
           );
         }
@@ -553,6 +571,7 @@ class LeadingCubit extends Cubit<LeadingState> {
   Future<void> close() {
     feedStream.cancel();
     mutesStream.cancel();
+    noteDeletionStream.cancel();
     // Note: score is an int, not a StreamSubscription
     return super.close();
   }

@@ -181,3 +181,14 @@ class NostrWalletConnectModel extends WalletModel {
       NostrWalletConnectModel.fromMap(
           json.decode(source) as Map<String, dynamic>);
 }
+
+extension WalletModelName on WalletModel {
+  String get name {
+    if (this is AlbyConnectModel) {
+      return 'Alby';
+    } else if (this is NostrWalletConnectModel) {
+      return 'NWC (${(this as NostrWalletConnectModel).lud16.isNotEmpty ? (this as NostrWalletConnectModel).lud16 : '...'})';
+    }
+    return 'Wallet';
+  }
+}

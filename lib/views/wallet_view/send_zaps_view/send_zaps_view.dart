@@ -53,10 +53,10 @@ class SendZapsView extends HookWidget {
     final sendZapViewType = useState(_getInitialViewType());
     final lnbcValue = useState(lnbc);
     final resultData = useState<Map<String, dynamic>>({});
-    final useDefaultWallet = useState(_shouldUseDefaultWallet());
+    final zapPaymentMethod = useState(_getInitialPaymentMethod());
 
     // Effects
-    _setupEffects(useDefaultWallet);
+    _setupEffects();
 
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, state) => _buildContainer(
@@ -64,7 +64,7 @@ class SendZapsView extends HookWidget {
         sendZapViewType: sendZapViewType,
         lnbcValue: lnbcValue,
         resultData: resultData,
-        useDefaultWallet: useDefaultWallet,
+        zapPaymentMethod: zapPaymentMethod,
       ),
     );
   }
@@ -82,20 +82,24 @@ class SendZapsView extends HookWidget {
   }
 
   /// Determine if we should use the default wallet
-  bool _shouldUseDefaultWallet() {
+  /// Determine the initial payment method
+  ZapPaymentMethod _getInitialPaymentMethod() {
     final state = walletManagerCubit.state;
-    return state.useDefaultWallet ||
-        (!state.useDefaultWallet && !state.hasWallets);
+    if (state.useDefaultWallet ||
+        (!state.useDefaultWallet && !state.hasWallets)) {
+      return ZapPaymentMethod.external;
+    }
+    return ZapPaymentMethod.internal;
   }
 
   /// Setup hooks effects
-  void _setupEffects(ValueNotifier<bool> useDefaultWallet) {
+  void _setupEffects() {
     useEffect(
       () {
         walletManagerCubit.requestBalance();
         return () => walletManagerCubit.resetInvoice();
       },
-      [],
+      const [],
     );
   }
 
@@ -105,7 +109,7 @@ class SendZapsView extends HookWidget {
     required ValueNotifier<SendZapViewType> sendZapViewType,
     required ValueNotifier<String?> lnbcValue,
     required ValueNotifier<Map<String, dynamic>> resultData,
-    required ValueNotifier<bool> useDefaultWallet,
+    required ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   }) {
     return Container(
       width: double.infinity,
@@ -127,7 +131,7 @@ class SendZapsView extends HookWidget {
                 type: sendZapViewType,
                 lnbcValue: lnbcValue,
                 resultData: resultData,
-                useDefaultWallet: useDefaultWallet,
+                zapPaymentMethod: zapPaymentMethod,
               ),
             ),
           ),
@@ -157,15 +161,15 @@ class SendZapsView extends HookWidget {
     required ValueNotifier<SendZapViewType> type,
     required ValueNotifier<String?> lnbcValue,
     required ValueNotifier<Map<String, dynamic>> resultData,
-    required ValueNotifier<bool> useDefaultWallet,
+    required ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   }) {
     switch (type.value) {
       case SendZapViewType.amount:
         return _buildAmountWidget(
-            type, lnbcValue, resultData, useDefaultWallet);
+            type, lnbcValue, resultData, zapPaymentMethod);
       case SendZapViewType.invoice:
         return _buildInvoiceWidget(
-            type, lnbcValue, resultData, useDefaultWallet);
+            type, lnbcValue, resultData, zapPaymentMethod);
       case SendZapViewType.result:
         return _buildResultWidget(type, resultData);
     }
@@ -176,7 +180,7 @@ class SendZapsView extends HookWidget {
     ValueNotifier<SendZapViewType> type,
     ValueNotifier<String?> lnbcValue,
     ValueNotifier<Map<String, dynamic>> resultData,
-    ValueNotifier<bool> useDefaultWallet,
+    ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   ) {
     return SendAmountSet(
       metadata: metadata,
@@ -193,7 +197,7 @@ class SendZapsView extends HookWidget {
       valMin: valMin,
       initialVal: initialVal,
       lnbc: lnbcValue.value,
-      useDefaultWallet: useDefaultWallet,
+      zapPaymentMethod: zapPaymentMethod,
     );
   }
 
@@ -202,7 +206,7 @@ class SendZapsView extends HookWidget {
     ValueNotifier<SendZapViewType> type,
     ValueNotifier<String?> lnbcValue,
     ValueNotifier<Map<String, dynamic>> resultData,
-    ValueNotifier<bool> useDefaultWallet,
+    ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   ) {
     return SendZapsUsingInvoice(
       invoice: lnbcValue.value!,
@@ -210,7 +214,7 @@ class SendZapsView extends HookWidget {
       onSwitchToSend:
           lnbc == null ? () => type.value = SendZapViewType.amount : null,
       onFailure: (message) => _handleFailure(message, type, resultData),
-      useDefaultWallet: useDefaultWallet,
+      zapPaymentMethod: zapPaymentMethod,
       onSuccess: (amount) => _handleInvoiceSuccess(amount, type, resultData),
     );
   }

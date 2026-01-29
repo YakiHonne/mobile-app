@@ -75,6 +75,8 @@ class NotificationImageContainer extends StatelessWidget {
         icon = FeatureIcons.nReactions;
       case EventKind.ZAP:
         icon = FeatureIcons.nZaps;
+      case EventKind.CASHU_NUTZAP:
+        icon = FeatureIcons.nZaps;
       case EventKind.LONG_FORM:
         icon = FeatureIcons.nArticles;
       case EventKind.CURATION_ARTICLES:

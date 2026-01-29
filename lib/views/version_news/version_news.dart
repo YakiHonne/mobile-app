@@ -256,12 +256,15 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Add option to disable auto-play.',
-  'Add option to copy note text.',
-  'Add support for qt, 3gp videos & support for ipfs media.',
-  'Add content warning for media.',
-  'Fix media upload issue.',
-  'Fix sharing media issue.',
+  'Ecash implementation.',
+  'Note deletion.',
+  'Add gesture detector on the image box when tryin to upload an image in article publishing.',
+  'Improve database indexing for faster data loading.',
+  'Fix adding relay manually is not working when creating a relay set.',
+  'Fix mute thread in search is not working.',
+  'Fix relay list is not showing on user profile.',
+  'Fix app audio taking priority over other audios from other running apps.',
+  'Bug fixes and performance improvements.',
 ];
 
 const content = [

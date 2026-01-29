@@ -6,6 +6,8 @@ import 'package:nostr_core_enhanced/nostr_core.dart';
 
 import 'common/tracker/umami_tracker.dart';
 import 'logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import 'logic/bot_utils_loading_progress_cubit/bot_utils_loading_progress_cubit.dart';
+import 'logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import 'logic/contact_list_cubit/contact_list_cubit.dart';
 import 'logic/crashlytics_cubit/crashlytics_cubit.dart';
 import 'logic/discover_cubit/discover_cubit.dart';
@@ -68,6 +70,8 @@ late DmsCubit dmsCubit;
 
 late WalletsManagerCubit walletManagerCubit;
 
+late CashuWalletManagerCubit cashuWalletManagerCubit;
+
 late RelaysProgressCubit relaysProgressCubit;
 
 late NostrCore nc;
@@ -93,6 +97,8 @@ late AppSettingsManagerCubit appSettingsManagerCubit;
 late CrashlyticsCubit crashlyticsCubit;
 
 late UnsentEventsCubit unsentEventsCubit;
+
+late BotUtilsLoadingProgressCubit botUtilsLoadingProgressCubit;
 
 late EventSigner actionsSigner;
 

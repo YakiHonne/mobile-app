@@ -188,7 +188,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         final filtered = <Event>[];
 
         for (final e in events) {
-          if (e.kind == EventKind.ZAP) {
+          if (e.kind == EventKind.ZAP || e.kind == EventKind.CASHU_NUTZAP) {
             filtered.add(e);
           } else {
             final score = wotScores[e.pubkey] ?? 0;
@@ -358,6 +358,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       kinds.addAll(
         [
           EventKind.ZAP,
+          EventKind.CASHU_NUTZAP,
         ],
       );
     }

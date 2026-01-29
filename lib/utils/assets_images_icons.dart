@@ -45,6 +45,7 @@ class Images {
   static const String blurredImageWhite = 'assets/images/blur-white.png';
   static const String blurredImageBlack = 'assets/images/blur-black.png';
   static const String blur = 'assets/images/blur.png';
+  static const String cashu = 'assets/images/cashu.png';
 }
 
 class FeatureIcons {
@@ -315,6 +316,20 @@ class FeatureIcons {
   static const String imageFilter = 'assets/icons/features/designtools.svg';
   static const String pin = 'assets/icons/features/pin.svg';
   static const String unpin = 'assets/icons/features/unpin.svg';
+  static const String downloadCloud =
+      'assets/icons/features/download-cloud.svg';
+  static const String swap = 'assets/icons/features/swap.svg';
+  static const String addMint = 'assets/icons/features/add-mint.svg';
+  static const String removeMint = 'assets/icons/features/remove-mint.svg';
+  static const String depositSats = 'assets/icons/features/deposit-sats.svg';
+  static const String nutZap = 'assets/icons/features/nut-zap.svg';
+  static const String redeemEcash = 'assets/icons/features/redeem-ecash.svg';
+  static const String sendEcash = 'assets/icons/features/send-ecash.svg';
+  static const String swapMintLightning =
+      'assets/icons/features/swap-mint-lightning.svg';
+  static const String restore = 'assets/icons/features/restore.svg';
+  static const String inactiveMints =
+      'assets/icons/features/inactive-mints.svg';
 }
 
 class RandomCovers {

@@ -22,6 +22,7 @@ class CustomIconButton extends StatelessWidget {
     this.value,
     this.onLongPress,
     this.onDoubleTap,
+    this.borderRadius,
     this.vd,
     this.borderColor,
     this.borderWidth,
@@ -42,6 +43,7 @@ class CustomIconButton extends StatelessWidget {
   final Color? iconColor;
   final Color? textColor;
   final Color? borderColor;
+  final double? borderRadius;
   final double? borderWidth;
   final String? value;
   final double? vd;
@@ -89,14 +91,18 @@ class CustomIconButton extends StatelessWidget {
     return IconButton.styleFrom(
       backgroundColor: backgroundColor,
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      shape: borderColor != null
-          ? StadiumBorder(
-              side: BorderSide(
-                color: borderColor!,
-                width: borderWidth ?? 0.5,
-              ),
+      shape: borderRadius != null
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius!),
             )
-          : null,
+          : borderColor != null
+              ? StadiumBorder(
+                  side: BorderSide(
+                    color: borderColor!,
+                    width: borderWidth ?? 0.5,
+                  ),
+                )
+              : null,
       visualDensity: vd != null
           ? VisualDensity(
               vertical: vd!,

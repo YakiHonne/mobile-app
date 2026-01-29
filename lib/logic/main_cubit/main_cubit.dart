@@ -57,6 +57,7 @@ class MainCubit extends Cubit<MainState> {
             pubKey: nostrRepository.currentMetadata.pubkey,
             isMyContentShrinked: true,
             isHorizontal: true,
+            isCashuWallet: false,
             isConnected: connectivityService.isConnected,
           ),
         ) {
@@ -64,6 +65,7 @@ class MainCubit extends Cubit<MainState> {
     initUniLinks();
     initShareIntent();
     checkCurrentVersionNews();
+    _loadUserPreferences();
     _setupSubscriptions();
     walletManagerCubit.init();
   }
@@ -112,6 +114,7 @@ class MainCubit extends Cubit<MainState> {
               name: '',
             ));
           } else {
+            _loadUserPreferences();
             emit(state.copyWith(
               refresh: !state.refresh,
               image: metadata.picture,
@@ -123,6 +126,23 @@ class MainCubit extends Cubit<MainState> {
         }
       },
     );
+  }
+
+  void changeWalletType() {
+    final newIsCashu = !state.isCashuWallet;
+    emit(state.copyWith(isCashuWallet: newIsCashu));
+
+    if (state.pubKey.isNotEmpty) {
+      localDatabaseRepository.setUserWalletType(state.pubKey, newIsCashu);
+    }
+  }
+
+  void _loadUserPreferences() {
+    final pubkey = nostrRepository.currentMetadata.pubkey;
+    if (pubkey.isNotEmpty) {
+      final isCashu = localDatabaseRepository.getUserWalletType(pubkey);
+      emit(state.copyWith(isCashuWallet: isCashu));
+    }
   }
 
   Future<void> initView() async {

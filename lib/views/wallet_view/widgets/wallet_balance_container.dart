@@ -74,7 +74,7 @@ class WallatBalanceContainer extends StatelessWidget {
           onTap: () {
             YNavigator.pushPage(
               context,
-              (context) => const QrCodeView(),
+              (context) => const WalletQrCodeView(),
             );
           },
           child: Container(

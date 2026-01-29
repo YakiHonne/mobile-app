@@ -185,11 +185,17 @@ class DashboardHomeCubit extends Cubit<DashboardHomeState> {
     }
   }
 
-  Future<void> onDeleteContent(String id) async {
+  Future<void> onDeleteContent(String id, {bool isNote = false}) async {
     final cancel = BotToastUtils.showLoading();
 
-    final isSuccessful =
-        await NostrFunctionsRepository.deleteEvent(eventId: id);
+    bool isSuccessful = false;
+
+    if (isNote) {
+      isSuccessful = await notesEventsCubit.deleteNote(id);
+    } else {
+      isSuccessful = await NostrFunctionsRepository.deleteEvent(eventId: id);
+    }
+
     if (isSuccessful) {
       getLatestContent();
       getRecent();

@@ -7,6 +7,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
+import '../../../models/cashu/nutzap.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/event_relation.dart';
 import '../../../models/picture_model.dart';
@@ -164,6 +165,40 @@ class NotificationEventMain extends StatelessWidget {
           ),
         ];
       }
+
+      return getRichtext(spans);
+    } else if (mainEvent.kind == EventKind.CASHU_NUTZAP) {
+      final nutZapEvent = NutZap.fromEvent(mainEvent.origin);
+      final attachedText = nutZapEvent.memo;
+
+      final spans = <InlineSpan>[
+        TextSpan(
+          text: context.t.userNutZappedYou(
+            name: metadata.getName().trim(),
+            number: nutZapEvent.amount.toString(),
+          ),
+        ),
+        if (attachedText.isNotEmpty) ...[
+          TextSpan(
+            text: ':\n',
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).primaryColorDark,
+                  fontWeight: FontWeight.w600,
+                  height: 1.5,
+                ),
+          ),
+          WidgetSpan(
+            child: ParsedText(
+              text: attachedText,
+              enableHidingMedia: true,
+              pubkey: mainEvent.pubkey,
+              scrollPhysics: const NeverScrollableScrollPhysics(),
+              isNotification: true,
+              onClicked: onClick,
+            ),
+          ),
+        ]
+      ];
 
       return getRichtext(spans);
     } else if (mainEvent.kind == EventKind.REACTION) {

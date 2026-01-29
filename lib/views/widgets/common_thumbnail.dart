@@ -15,6 +15,7 @@ class CommonThumbnail extends StatelessWidget {
     super.key,
     required this.image,
     this.memoryUrl,
+    this.assetUrl,
     this.width,
     this.height,
     this.radius,
@@ -28,6 +29,7 @@ class CommonThumbnail extends StatelessWidget {
 
   final String image;
   final String? memoryUrl;
+  final String? assetUrl;
   final double? width;
   final double? height;
   final double? radius;
@@ -48,6 +50,10 @@ class CommonThumbnail extends StatelessWidget {
       return _buildFileImage(context, file);
     }
 
+    if (assetUrl != null && image.isEmpty) {
+      return _buildAssetImage(context, assetUrl!);
+    }
+
     final cleanImage = image.trim();
 
     if (cleanImage.isEmpty) {
@@ -64,6 +70,27 @@ class CommonThumbnail extends StatelessWidget {
   ExtendedImage _buildFileImage(BuildContext context, File file) {
     return ExtendedImage.file(
       file,
+      width: width,
+      height: height,
+      fit: fit,
+      borderRadius: _getBorderRadius(),
+      shape: BoxShape.rectangle,
+      border: _getBorder(context),
+      loadStateChanged: _handleLoadState,
+    );
+  }
+
+  Widget _buildAssetImage(BuildContext context, String assetUrl) {
+    if (assetUrl.trim().endsWith('.svg')) {
+      return SvgPicture.asset(
+        assetUrl,
+        width: width,
+        height: height,
+        fit: fit ?? BoxFit.contain,
+      );
+    }
+    return ExtendedImage.asset(
+      assetUrl,
       width: width,
       height: height,
       fit: fit,
