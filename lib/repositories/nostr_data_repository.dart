@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:nostr_core_enhanced/cashu/models/cashu_encoded_token.dart';
 import 'package:nostr_core_enhanced/core/nostr_core_repository.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/models/user_drafts.dart';
@@ -69,12 +70,14 @@ class NostrDataRepository {
   List<Topic> topics = [];
   List<String> userTopics = [];
   List<ChatMessage> gptMessages = [];
+  List<CashuEncodedToken> cashuEncodedTokens = [];
   List<PendingFlashNews> pendingFlashNews = [];
 
   // Sets
   Set<String> unsentEvents = {};
   Set<String> usersMessageNotifications = {};
   Set<String> pinnedNotes = {};
+  Set<String> deletedNotes = {};
 
   // Configuration flags
   bool isCrashlyticsEnabled = true;
@@ -119,9 +122,12 @@ class NostrDataRepository {
       StreamController<Map<String, BookmarkListModel>>.broadcast();
   final mutesController = StreamController<MuteModel>.broadcast();
   final pinnedNotesController = StreamController<Set<String>>.broadcast();
+  final deletedNotesController = StreamController<Set<String>>.broadcast();
 
   // Getters
   BuildContext currentContext() => mainCubit.context;
+
+  BuildContext get ctx => mainCubit.context;
 
   // Streams
   Stream<EventSigner?> get currentSignerStream =>
@@ -141,6 +147,70 @@ class NostrDataRepository {
       bookmarksController.stream;
   Stream<MuteModel> get mutesStream => mutesController.stream;
   Stream<Set<String>> get pinnedNotesStream => pinnedNotesController.stream;
+  Stream<Set<String>> get deletedNotesStream => deletedNotesController.stream;
+
+  // =============================================================================
+  // CASHU TOKENS
+  // =============================================================================
+
+  void notifyNoteDeletion(String id) {
+    deletedNotes.add(id);
+    deletedNotesController.add(deletedNotes);
+  }
+
+  void loadCashuTokens() {
+    if (canSign()) {
+      final tokens = localDatabaseRepository.getCashuTokens(
+        currentSigner!.getPublicKey(),
+      );
+
+      cashuEncodedTokens = tokens
+          .map((e) {
+            try {
+              return CashuEncodedToken.fromMap(jsonDecode(e));
+            } catch (_) {
+              return null;
+            }
+          })
+          .whereType<CashuEncodedToken>()
+          .toList();
+    }
+  }
+
+  void addCashuToken(CashuEncodedToken token) {
+    cashuEncodedTokens.add(token);
+    _saveCashuTokens();
+  }
+
+  void removeCashuToken(CashuEncodedToken token) {
+    cashuEncodedTokens
+        .removeWhere((element) => element.encodedToken == token.encodedToken);
+
+    _saveCashuTokens();
+  }
+
+  void markCashuTokenAsSpent(CashuEncodedToken token) {
+    final index = cashuEncodedTokens
+        .indexWhere((element) => element.encodedToken == token.encodedToken);
+
+    if (index != -1) {
+      cashuEncodedTokens[index] =
+          token.copyWith(status: CashuEncodedToken.SPENT);
+    }
+
+    _saveCashuTokens();
+  }
+
+  void _saveCashuTokens() {
+    if (canSign()) {
+      final tokens =
+          cashuEncodedTokens.map((e) => jsonEncode(e.toMap())).toList();
+      localDatabaseRepository.setCashuTokens(
+        currentSigner!.getPublicKey(),
+        tokens,
+      );
+    }
+  }
 
   // =============================================================================
   // search relays
@@ -338,6 +408,7 @@ class NostrDataRepository {
     getPricing();
     getTopics();
     loadDmsDrafts();
+
     pointsManagementCubit.getRecentStats();
 
     final localData = await Future.wait(
@@ -933,6 +1004,7 @@ class NostrDataRepository {
     bool checkAccountStatus = false,
   }) async {
     await loadCurrentSignerMetadata(checkAccountStatus: checkAccountStatus);
+    loadCashuTokens();
 
     await Future.wait([
       notificationsCubit.initNotifications(),
@@ -1121,6 +1193,7 @@ class NostrDataRepository {
     pendingFlashNews.clear();
     userTopics.clear();
     gptMessages.clear();
+    cashuEncodedTokens.clear();
     userTopicsController.add([]);
     contactListCubit.clear();
     dmsCubit.clear();

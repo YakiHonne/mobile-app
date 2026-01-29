@@ -221,10 +221,7 @@ class YNavigator extends Navigator {
         isScrollControlled: true,
         enableDrag: !allowPageScroll,
         backgroundColor: Colors.transparent,
-        builder: (BuildContext context) => SizedBox(
-          height: MediaQuery.of(context).size.height * 0.9,
-          child: builder(context),
-        ),
+        builder: (BuildContext context) => builder(context),
       );
     }
   }

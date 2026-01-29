@@ -133,7 +133,13 @@ class NoteView extends HookWidget {
       const [],
     );
 
-    return BlocBuilder<NotesEventsCubit, NotesEventsState>(
+    return BlocConsumer<NotesEventsCubit, NotesEventsState>(
+      listenWhen: (prev, curr) => prev.deletedNotes != curr.deletedNotes,
+      listener: (context, state) {
+        if (state.deletedNotes.contains(currentNote.value.id)) {
+          YNavigator.pop(context);
+        }
+      },
       buildWhen: (prev, curr) =>
           prev.previousNotes[currentNote.value.id] !=
               curr.previousNotes[currentNote.value.id] ||

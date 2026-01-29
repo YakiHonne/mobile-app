@@ -10,7 +10,6 @@ import 'package:nostr_core_enhanced/models/models.dart';
 
 import '../../common/common_regex.dart';
 import '../../models/app_models/diverse_functions.dart';
-import '../../models/article_model.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
@@ -59,11 +58,12 @@ class SearchCubit extends Cubit<SearchState> {
       (mm) {
         _emit(
           content: state.content
-              .where((t) => t is Article && !mm.usersMutes.contains(t.pubkey))
+              .where((t) =>
+                  !mm.eventsMutes.contains(t.id) ||
+                  mm.usersMutes.contains(t.pubkey))
               .toList(),
           authors: state.authors
-              .where(
-                  (Metadata author) => !mm.usersMutes.contains(author.pubkey))
+              .where((author) => !mm.usersMutes.contains(author.pubkey))
               .toList(),
         );
       },
@@ -179,6 +179,10 @@ class SearchCubit extends Cubit<SearchState> {
 
     final updatedContent = List<BaseEventModel>.from(currentContent);
     updatedContent.addAll(content);
+
+    final mm = nostrRepository.muteModel;
+    updatedContent
+        .removeWhere((element) => mm.eventsMutes.contains(element.id));
 
     _emit(
       content: updatedContent,

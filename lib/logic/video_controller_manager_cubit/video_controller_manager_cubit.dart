@@ -77,7 +77,8 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       inProcessUrls.add(url);
 
       if (isNetwork) {
-        videoController = await _initNetworkVideo(url);
+        videoController =
+            await _initNetworkVideo(url, enableSound: enableSound);
         // User scrolled away during initialization check
         if (!toBeAdded.contains(id)) {
           await videoController?.dispose();
@@ -88,7 +89,10 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         if (videoController == null) {
           if (fallbackUrls != null && fallbackUrls.isNotEmpty) {
             for (final fallbackUrl in fallbackUrls) {
-              videoController = await _initNetworkVideo(fallbackUrl);
+              videoController = await _initNetworkVideo(
+                fallbackUrl,
+                enableSound: enableSound,
+              );
               if (!toBeAdded.contains(id)) {
                 await videoController?.dispose();
                 inProcessUrls.remove(url);
@@ -105,7 +109,13 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         }
       } else {
         final file = File(url);
-        videoController = VideoPlayerController.file(file);
+        // When sound is disabled, mix with other audio to avoid interrupting background music
+        videoController = enableSound
+            ? VideoPlayerController.file(file)
+            : VideoPlayerController.file(
+                file,
+                videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+              );
         await videoController.initialize();
         if (!toBeAdded.contains(id)) {
           await videoController.dispose();
@@ -180,10 +190,21 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     );
   }
 
-  Future<VideoPlayerController?> _initNetworkVideo(String url) async {
+  Future<VideoPlayerController?> _initNetworkVideo(
+    String url, {
+    bool enableSound = true,
+  }) async {
     try {
       bool hasBeenDisposed = false;
-      final videoController = VideoPlayerController.networkUrl(Uri.parse(url));
+
+      // When sound is disabled, mix with other audio to avoid interrupting background music
+      final videoController = enableSound
+          ? VideoPlayerController.networkUrl(Uri.parse(url))
+          : VideoPlayerController.networkUrl(
+              Uri.parse(url),
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+            );
+
       await videoController.initialize().timeout(
         const Duration(seconds: 5),
         onTimeout: () {

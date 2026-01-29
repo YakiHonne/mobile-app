@@ -303,7 +303,10 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
   void setSourceLocally({
     required ViewDataTypes viewType,
   }) {
-    final currentConfig = nostrRepository.currentAppViewConfig!;
+    final currentConfig = nostrRepository.currentAppViewConfig;
+    if (currentConfig == null) {
+      return;
+    }
     AppViewConfig? newConfig;
 
     if (viewType == ViewDataTypes.articles) {

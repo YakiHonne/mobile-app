@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/unsent_events_cubit/unsent_events_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
@@ -11,6 +12,8 @@ import '../../../utils/utils.dart';
 import '../../discover_view/discover_view.dart';
 import '../../notifications_view/widgets/notifications_customization.dart';
 import '../../search_view/search_view.dart';
+import '../../wallet_cashu_view/widgets/cashu_history.dart';
+import '../../wallet_cashu_view/widgets/cashu_restore_proofs.dart';
 import '../../wallet_view/widgets/transactions_list.dart';
 import '../../widgets/animated_components/animated_line.dart';
 import '../../widgets/animated_flip_counter.dart';
@@ -213,8 +216,7 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       );
-    } else if (state.mainView == MainViews.wallet &&
-        walletManagerCubit.state.wallets.isNotEmpty) {
+    } else if (state.mainView == MainViews.wallet) {
       return const SelectedWalletContainer();
     } else if (state.mainView == MainViews.dms && canSign()) {
       return InboxTypes(scrollController: scrollControllers[2]);
@@ -245,6 +247,35 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ? ViewDataTypes.notes
                   : ViewDataTypes.media,
         ),
+      ] else if (state.mainView == MainViews.wallet && state.isCashuWallet) ...[
+        BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
+          builder: (context, state) {
+            if (state.activeMint.isNotEmpty) {
+              return CustomIconButton(
+                onClicked: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => CashuRestoreProofs(
+                      mintUrl: state.activeMint,
+                    ),
+                    isScrollControlled: true,
+                    useRootNavigator: true,
+                    useSafeArea: true,
+                    elevation: 0,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  );
+                },
+                icon: FeatureIcons.restore,
+                size: 20,
+                borderColor: Theme.of(context).dividerColor,
+                backgroundColor: Theme.of(context).cardColor,
+                vd: -1,
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ],
       const SizedBox(width: kDefaultPadding / 8),
       if (state.mainView == MainViews.dms) ...[
@@ -259,15 +290,29 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
             } else if (state.mainView == MainViews.wallet) {
               doIfCanSign(
                 func: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => const TransactionsList(),
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  );
+                  if (state.isCashuWallet) {
+                    showModalBottomSheet(
+                      context: context,
+                      elevation: 0,
+                      builder: (context) => const CashuHistory(),
+                      isScrollControlled: true,
+                      useRootNavigator: true,
+                      useSafeArea: true,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                    );
+                  } else {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (_) => const TransactionsList(),
+                      isScrollControlled: true,
+                      useRootNavigator: true,
+                      useSafeArea: true,
+                      elevation: 0,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                    );
+                  }
                 },
                 context: context,
               );

@@ -147,7 +147,7 @@ class SendUsingInvoice extends HookWidget {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(
-          ' USD',
+          ' ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: Theme.of(context).highlightColor,
               ),
@@ -212,8 +212,9 @@ class InternalWalletSelector extends StatelessWidget {
           behavior: HitTestBehavior.translucent,
           child: Container(
             padding: const EdgeInsets.symmetric(
-              vertical: kDefaultPadding / 4,
+              horizontal: kDefaultPadding / 4,
             ),
+            height: 35,
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
@@ -296,8 +297,9 @@ class ExternalWalletSelector extends StatelessWidget {
           behavior: HitTestBehavior.translucent,
           child: Container(
             padding: const EdgeInsets.symmetric(
-              vertical: kDefaultPadding / 4,
+              horizontal: kDefaultPadding / 4,
             ),
+            height: 35,
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
@@ -310,8 +312,8 @@ class ExternalWalletSelector extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 25,
-                  width: 25,
+                  height: 22,
+                  width: 22,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(kDefaultPadding / 4),
                     image: DecorationImage(

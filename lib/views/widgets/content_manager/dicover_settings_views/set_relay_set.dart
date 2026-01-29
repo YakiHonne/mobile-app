@@ -205,13 +205,16 @@ class SetRelaySet extends HookWidget {
       spacing: kDefaultPadding / 4,
       children: [
         Expanded(
-          child: RelaySearchTextfield(
-            addRelayController: addRelayController,
-            connect: connect,
-            formkey: formkey,
-            addRelay: () => addRelay(),
-            addRelayState: addRelayState,
-            isAdd: true,
+          child: Form(
+            key: formkey,
+            child: RelaySearchTextfield(
+              addRelayController: addRelayController,
+              connect: connect,
+              formkey: formkey,
+              addRelay: () => addRelay(),
+              addRelayState: addRelayState,
+              isAdd: true,
+            ),
           ),
         ),
         SquareIconButton(

@@ -10,6 +10,7 @@ class MainState extends Equatable {
   final String nip05;
   final String pubKey;
   final bool isMyContentShrinked;
+  final bool isCashuWallet;
   final bool isHorizontal;
   final bool isConnected;
 
@@ -22,6 +23,7 @@ class MainState extends Equatable {
     required this.nip05,
     required this.pubKey,
     required this.isMyContentShrinked,
+    required this.isCashuWallet,
     required this.isHorizontal,
     required this.isConnected,
   });
@@ -36,6 +38,7 @@ class MainState extends Equatable {
         nip05,
         pubKey,
         isMyContentShrinked,
+        isCashuWallet,
         isHorizontal,
         isConnected,
       ];
@@ -49,6 +52,7 @@ class MainState extends Equatable {
     String? nip05,
     String? pubKey,
     bool? isMyContentShrinked,
+    bool? isCashuWallet,
     bool? isHorizontal,
     bool? isConnected,
   }) {
@@ -61,6 +65,7 @@ class MainState extends Equatable {
       nip05: nip05 ?? this.nip05,
       pubKey: pubKey ?? this.pubKey,
       isMyContentShrinked: isMyContentShrinked ?? this.isMyContentShrinked,
+      isCashuWallet: isCashuWallet ?? this.isCashuWallet,
       isHorizontal: isHorizontal ?? this.isHorizontal,
       isConnected: isConnected ?? this.isConnected,
     );

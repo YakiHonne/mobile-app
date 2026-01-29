@@ -232,7 +232,9 @@ class SelectedNotifications extends HookWidget {
                   }
                 })
               : index == 2
-                  ? events.where((event) => event.kind == EventKind.ZAP)
+                  ? events.where((event) =>
+                      event.kind == EventKind.ZAP ||
+                      event.kind == EventKind.CASHU_NUTZAP)
                   : index == 3
                       ? events.where((event) {
                           if (isInKinds(event)) {

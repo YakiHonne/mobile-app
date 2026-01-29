@@ -8,6 +8,7 @@ import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:numeral/numeral.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
@@ -26,7 +27,7 @@ class SendAmountSet extends HookWidget {
     required this.metadata,
     required this.isZapSplit,
     required this.zapSplits,
-    required this.useDefaultWallet,
+    required this.zapPaymentMethod,
     this.eventId,
     this.aTag,
     this.pollOption,
@@ -39,9 +40,9 @@ class SendAmountSet extends HookWidget {
     this.lnbc,
   });
 
-  final bool isZapSplit;
   final Metadata metadata;
-  final ValueNotifier<bool> useDefaultWallet;
+  final bool isZapSplit;
+  final ValueNotifier<ZapPaymentMethod> zapPaymentMethod;
   final List<ZapSplit> zapSplits;
   final String? lnbc;
   final String? eventId;
@@ -293,7 +294,9 @@ class SendAmountSet extends HookWidget {
         spacing: kDefaultPadding / 2,
         children: [
           Text(
-            isUsingSats.value ? 'SATS' : 'USD',
+            isUsingSats.value
+                ? 'SATS'
+                : walletManagerCubit.state.activeCurrency.toUpperCase(),
             style: _getCurrencyToggleStyle(context),
           ),
           _buildCurrencyToggleIcon(context),
@@ -332,7 +335,9 @@ class SendAmountSet extends HookWidget {
       builder: (context) {
         final convertedAmount =
             _calculateConvertedAmount(amount.value, isUsingSats.value);
-        final currency = !isUsingSats.value ? 'SATS' : 'USD';
+        final currency = !isUsingSats.value
+            ? 'SATS'
+            : walletManagerCubit.state.activeCurrency.toUpperCase();
 
         return Text(
           '$convertedAmount $currency',
@@ -829,24 +834,24 @@ class SendAmountSet extends HookWidget {
             amount,
             amountController,
             commentController,
+            zapPaymentMethod.value,
           ),
         ],
       ),
     );
   }
 
-  /// Build wallet selector
   Widget _buildWalletSelector() {
-    return MultiWalletSelector(useDefaultWallet: useDefaultWallet);
+    return MultiWalletSelector(zapPaymentMethod: zapPaymentMethod);
   }
 
-  /// Build action buttons
   Widget _buildActionButtons(
     BuildContext context,
     ValueNotifier<WalletSendingType> isSending,
     ValueNotifier<String> amount,
     TextEditingController amountController,
     TextEditingController commentController,
+    ZapPaymentMethod paymentMethod,
   ) {
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, state) => Row(
@@ -935,6 +940,7 @@ class SendAmountSet extends HookWidget {
         amount,
         amountController,
         commentController,
+        zapPaymentMethod.value,
       ),
       title: context.t.send,
       icon: FeatureIcons.send,
@@ -974,9 +980,10 @@ class SendAmountSet extends HookWidget {
     ValueNotifier<String> amount,
     TextEditingController amountController,
     TextEditingController commentController,
+    ZapPaymentMethod paymentMethod,
   ) async {
     if (state.areInvoicesAvailable) {
-      await _handleZapSplitSend(context, isSending);
+      await _handleZapSplitSend(context, isSending, paymentMethod, amount);
     } else {
       await _handleRegularSend(
         context,
@@ -984,6 +991,7 @@ class SendAmountSet extends HookWidget {
         amount,
         amountController,
         commentController,
+        paymentMethod,
       );
     }
   }
@@ -992,20 +1000,39 @@ class SendAmountSet extends HookWidget {
   Future<void> _handleZapSplitSend(
     BuildContext context,
     ValueNotifier<WalletSendingType> isSending,
+    ZapPaymentMethod paymentMethod,
+    ValueNotifier<String> amount,
   ) async {
-    if (!useDefaultWallet.value) {
+    if (paymentMethod != ZapPaymentMethod.external) {
       isSending.value = WalletSendingType.send;
     }
 
-    context.read<WalletsManagerCubit>().handleWalletZapSplit(
-          onFinished: () {
-            isSending.value = WalletSendingType.none;
-            YNavigator.pop(context);
-          },
-          onFailure: onFailure,
-          onSuccess: (message) => onSuccess.call({'message': message}),
-          useDefaultWallet: useDefaultWallet.value,
-        );
+    if (paymentMethod == ZapPaymentMethod.cashu) {
+      final totalAmount = int.tryParse(amount.value) ?? 0;
+      context.read<CashuWalletManagerCubit>().payNutZapSplit(
+            zapSplits: zapSplits,
+            totalAmount: totalAmount,
+            onSuccess: (preimage) => onSuccess.call({
+              'preimage': preimage,
+              'amount': totalAmount,
+            }),
+            onFailure: onFailure,
+            onFinished: () {
+              isSending.value = WalletSendingType.none;
+              YNavigator.pop(context);
+            },
+          );
+    } else {
+      context.read<WalletsManagerCubit>().handleWalletZapSplit(
+            onFinished: () {
+              isSending.value = WalletSendingType.none;
+              YNavigator.pop(context);
+            },
+            onFailure: onFailure,
+            onSuccess: (message) => onSuccess.call({'message': message}),
+            useDefaultWallet: paymentMethod == ZapPaymentMethod.external,
+          );
+    }
   }
 
   /// Handle regular send
@@ -1015,8 +1042,11 @@ class SendAmountSet extends HookWidget {
     ValueNotifier<String> amount,
     TextEditingController amountController,
     TextEditingController commentController,
+    ZapPaymentMethod zapPaymentMethod,
   ) async {
-    isSending.value = WalletSendingType.send;
+    if (zapPaymentMethod != ZapPaymentMethod.external) {
+      isSending.value = WalletSendingType.send;
+    }
 
     await handlePaymentButtonPress(
       context: context,
@@ -1024,7 +1054,10 @@ class SendAmountSet extends HookWidget {
       amountTextEditingController: amountController,
       commentTextEditingController: commentController,
       metadata: metadata,
-      useExternalWallet: useDefaultWallet.value,
+      onSuccess: onSuccess,
+      onFailure: onFailure,
+      zapPaymentMethod: zapPaymentMethod,
+      initialVal: initialVal,
     );
 
     isSending.value = WalletSendingType.none;
@@ -1093,7 +1126,10 @@ class SendAmountSet extends HookWidget {
     required TextEditingController amountTextEditingController,
     required TextEditingController commentTextEditingController,
     required Metadata metadata,
-    required bool useExternalWallet,
+    required ZapPaymentMethod zapPaymentMethod,
+    required Function(Map<String, dynamic> p1) onSuccess,
+    required Function(String p1) onFailure,
+    required num? initialVal,
   }) async {
     final completer = Completer<void>();
     HapticFeedback.mediumImpact();
@@ -1110,36 +1146,69 @@ class SendAmountSet extends HookWidget {
     }
 
     final parsedAmount = int.parse(amount.value);
+    final comment = commentTextEditingController.text;
 
-    context.read<WalletsManagerCubit>().handleWalletZap(
-          sats: parsedAmount,
-          user: metadata,
-          eventId: eventId,
-          aTag: aTag,
-          pollOption: pollOption,
-          comment: commentTextEditingController.text,
-          useExternalWallet: useExternalWallet,
-          onFinished: (_) {
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-          },
-          onSuccess: (preimage) {
-            onSuccess.call({
-              'preimage': preimage,
-              'amount': parsedAmount,
-            });
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-          },
-          onFailure: (message) {
-            onFailure.call(message);
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-          },
-        );
+    if (zapPaymentMethod == ZapPaymentMethod.cashu) {
+      final lud16 = metadata.lud16;
+      if (lud16.isEmpty) {
+        onFailure.call('No lightning address found for this user.');
+        return completer.future;
+      }
+
+      context
+          .read<CashuWalletManagerCubit>()
+          .payLightningAddress(
+            lightningAddress: lud16,
+            amount: parsedAmount,
+            message: comment,
+          )
+          .then((success) {
+        if (success) {
+          onSuccess.call({
+            'preimage': '',
+            'amount': parsedAmount,
+          });
+        }
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      }).catchError((e) {
+        onFailure.call(e.toString());
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      });
+    } else {
+      context.read<WalletsManagerCubit>().handleWalletZap(
+            sats: parsedAmount,
+            user: metadata,
+            eventId: eventId,
+            aTag: aTag,
+            pollOption: pollOption,
+            comment: comment,
+            useExternalWallet: zapPaymentMethod == ZapPaymentMethod.external,
+            onFinished: (_) {
+              if (!completer.isCompleted) {
+                completer.complete();
+              }
+            },
+            onSuccess: (preimage) {
+              onSuccess.call({
+                'preimage': preimage,
+                'amount': parsedAmount,
+              });
+              if (!completer.isCompleted) {
+                completer.complete();
+              }
+            },
+            onFailure: (message) {
+              onFailure.call(message);
+              if (!completer.isCompleted) {
+                completer.complete();
+              }
+            },
+          );
+    }
 
     return completer.future;
   }

@@ -310,7 +310,7 @@ class DashboardDraftContainer extends StatelessWidget {
                       YNavigator.pop(context);
                       context
                           .read<DashboardHomeCubit>()
-                          .onDeleteContent(article!.id);
+                          .onDeleteContent(article!.id, isNote: type == 'Note');
                     },
                   );
                 },
@@ -487,7 +487,7 @@ class DashboardContentContainer extends StatelessWidget {
           kind != EventKind.PICTURE,
       enableShare: kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK,
-      enableDelete: kind != EventKind.TEXT_NOTE,
+      enableDelete: true,
       visualDensity: -4,
       onEdit: kind == EventKind.CATEGORIZED_BOOKMARK
           ? () {

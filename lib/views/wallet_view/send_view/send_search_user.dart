@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +13,20 @@ import '../../../utils/utils.dart';
 import '../../search_view/search_view.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
 import '../../widgets/profile_picture.dart';
 import 'send_using_lightning_address.dart';
 
 class SendByUserSearch extends HookWidget {
-  const SendByUserSearch({super.key});
+  const SendByUserSearch({
+    super.key,
+    this.onMetadataSelected,
+    this.isModal = false,
+  });
+
+  final Function(Metadata)? onMetadataSelected;
+  final bool isModal;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +34,11 @@ class SendByUserSearch extends HookWidget {
     final children = <Widget>[];
     final searchTextController = useTextEditingController();
     final searchText = useState('');
+    final debounceTimer = useRef<Timer?>(null);
+
+    useEffect(() {
+      return () => debounceTimer.value?.cancel();
+    }, []);
 
     useMemoized(() async {
       suggestions.value = await contactListCubit.getRandomSuggestion();
@@ -47,16 +62,20 @@ class SendByUserSearch extends HookWidget {
               style: Theme.of(context).textTheme.bodyMedium,
               onChanged: (search) async {
                 searchText.value = search;
+                debounceTimer.value?.cancel();
 
                 if (search.isEmpty) {
                   context.read<SearchUserCubit>().emptyAuthorsList();
                 } else {
-                  context.read<SearchUserCubit>().getAuthors(
-                    search,
-                    (user) {
-                      onUserSelected.call(user, context);
-                    },
-                  );
+                  debounceTimer.value =
+                      Timer(const Duration(milliseconds: 500), () {
+                    context.read<SearchUserCubit>().getAuthors(
+                      search,
+                      (user) {
+                        onUserSelected.call(user, context);
+                      },
+                    );
+                  });
                 }
               },
               decoration: InputDecoration(
@@ -176,20 +195,54 @@ class SendByUserSearch extends HookWidget {
       ),
     );
 
+    final view = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding / 2,
+      ),
+      child: CustomScrollView(
+        slivers: children,
+      ),
+    );
+
+    if (isModal) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(kDefaultPadding),
+            topRight: Radius.circular(kDefaultPadding),
+          ),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: BlocProvider(
+          create: (context) => SearchUserCubit(),
+          child: Column(
+            children: [
+              ModalBottomSheetAppbar(
+                title: context.t.contacts,
+                isBack: false,
+              ),
+              Expanded(child: view),
+            ],
+          ),
+        ),
+      );
+    }
+
     return BlocProvider(
       create: (context) => SearchUserCubit(),
       child: Scaffold(
         appBar: CustomAppBar(
           title: context.t.contacts,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
-          ),
-          child: CustomScrollView(
-            slivers: children,
-          ),
-        ),
+        body: view,
       ),
     );
   }
@@ -225,7 +278,7 @@ class SendByUserSearch extends HookWidget {
                 Expanded(
                   child: Text(
                     metadata.getName(),
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                    style: Theme.of(context).textTheme.bodySmall,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -239,6 +292,11 @@ class SendByUserSearch extends HookWidget {
   }
 
   void onUserSelected(Metadata metadata, BuildContext context) {
+    if (onMetadataSelected != null) {
+      onMetadataSelected!(metadata);
+      return;
+    }
+
     final t = metadata.getLightningAddress();
 
     if (t == null) {

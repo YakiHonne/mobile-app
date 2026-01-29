@@ -141,16 +141,20 @@ class SettingsCubit extends Cubit<SettingsState> {
         _settingData = setting;
         _keyMap.clear();
 
-        final String? keyMapJson = await localDatabaseRepository.getKeysMap();
+        final data = await Future.wait([
+          localDatabaseRepository.getKeysMap(),
+          localDatabaseRepository.getKeysPrivacyStatus(),
+          localDatabaseRepository.getKeysExternalStatus(),
+          localDatabaseRepository.getExternalKeysType(),
+        ]);
 
-        final String? keyIsPrivateMapJson =
-            await localDatabaseRepository.getKeysPrivacyStatus();
+        final String? keyMapJson = data[0];
 
-        final String? keyIsExternalSignerMapJson =
-            await localDatabaseRepository.getKeysExternalStatus();
+        final String? keyIsPrivateMapJson = data[1];
 
-        final String? externalKeysTypeMapJson =
-            await localDatabaseRepository.getExternalKeysType();
+        final String? keyIsExternalSignerMapJson = data[2];
+
+        final String? externalKeysTypeMapJson = data[3];
 
         if (StringUtil.isNotBlank(keyMapJson)) {
           try {
@@ -299,6 +303,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       if (key != null) {
         doLogin();
         walletManagerCubit.switchWallets();
+        cashuWalletManagerCubit.init();
         onPop.call();
       }
 
@@ -323,6 +328,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         if (key != null) {
           doLogin();
           walletManagerCubit.switchWallets();
+          cashuWalletManagerCubit.init();
         }
       } else {
         currentSigner = null;
@@ -448,6 +454,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         if (fetchData) {
           nostrRepository.loadCurrentUserRelatedData();
           walletManagerCubit.switchWallets();
+          cashuWalletManagerCubit.init();
         }
 
         appSettingsManagerCubit.loadAppSharedSettings();

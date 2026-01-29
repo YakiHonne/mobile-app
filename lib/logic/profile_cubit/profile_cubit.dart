@@ -66,6 +66,22 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
     );
 
+    noteDeletionStream = nostrRepository.deletedNotesStream.listen(
+      (ids) {
+        if (!isClosed) {
+          final newContent = List<Event>.from(state.content)
+            ..removeWhere((e) => ids.contains(e.id));
+
+          emit(
+            state.copyWith(
+              content: newContent,
+              refresh: true,
+            ),
+          );
+        }
+      },
+    );
+
     if (canSign() && pubkey == currentSigner!.getPublicKey()) {
       pinnedNotesSubscription = nostrRepository.pinnedNotesStream.listen(
         (pNotes) {
@@ -83,6 +99,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   late StreamSubscription followingsSubscription;
   late StreamSubscription bookmarksSubscription;
   late StreamSubscription mutesListSubscription;
+  late StreamSubscription noteDeletionStream;
   StreamSubscription? pinnedNotesSubscription;
 
   final String pubkey;
@@ -100,6 +117,18 @@ class ProfileCubit extends Cubit<ProfileState> {
       final relays = await getOutboxRelays(pubkey, showMessage: false);
 
       userWriteRelays = relays.toSet();
+    }
+  }
+
+  Future<void> loadUserRelays() async {
+    final list = await nc.getSingleUserRelayList(pubkey);
+
+    if (list != null) {
+      _emit(
+        state.copyWith(
+          userRelays: list.relays.keys.toList(),
+        ),
+      );
     }
   }
 
@@ -197,6 +226,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     establishMetadata();
     getFollowingsAndFollowersCount();
     loadContactList();
+    loadUserRelays();
   }
 
   Future<void> loadPinnedNotes() async {
@@ -505,6 +535,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     followingsSubscription.cancel();
     bookmarksSubscription.cancel();
     mutesListSubscription.cancel();
+    noteDeletionStream.cancel();
     pinnedNotesSubscription?.cancel();
     nc.closeRequests(requests.toList());
     return super.close();

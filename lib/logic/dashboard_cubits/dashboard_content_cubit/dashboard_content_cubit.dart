@@ -157,11 +157,17 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
     }
   }
 
-  Future<void> onDeleteContent(String id) async {
+  Future<void> onDeleteContent(String id, {bool isNote = false}) async {
     final cancel = BotToastUtils.showLoading();
 
-    final isSuccessful =
-        await NostrFunctionsRepository.deleteEvent(eventId: id);
+    bool isSuccessful = false;
+
+    if (isNote) {
+      isSuccessful = await notesEventsCubit.deleteNote(id);
+    } else {
+      isSuccessful = await NostrFunctionsRepository.deleteEvent(eventId: id);
+    }
+
     if (isSuccessful) {
       buildContent(
         re: state.chosenRE,
@@ -170,7 +176,7 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
       );
     } else {
       BotToastUtils.showError(
-        t.zapSplitsMessage.capitalizeFirst(),
+        t.errorDeletingContent.capitalizeFirst(),
       );
     }
 

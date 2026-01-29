@@ -186,7 +186,7 @@ class AddReply extends HookWidget {
                     );
                   },
                   onSuccess: (ev) {
-                    Navigator.pop(context);
+                    Navigator.pop(nostrRepository.currentContext());
                     onSuccess?.call(ev);
                   },
                 );

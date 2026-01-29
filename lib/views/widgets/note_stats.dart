@@ -43,6 +43,7 @@ import 'note_stats_view.dart';
 import 'parsed_media_container.dart';
 import 'profile_picture.dart';
 import 'pull_down_global_button.dart';
+import 'response_snackbar.dart';
 import 'zappers_view.dart';
 
 class NoteStats extends HookWidget {
@@ -212,8 +213,32 @@ class NoteStats extends HookWidget {
                             enableCopyText: true,
                             enableShareImage: model is DetailedNoteModel,
                             enableShowRawEvent: true,
+                            enableDelete: canSign() &&
+                                currentSigner!.getPublicKey() == model.pubkey,
                             enableRepublish: true,
                             enablePin: canSign() && model is DetailedNoteModel,
+                            onDelete: () {
+                              showCupertinoDeletionDialogue(
+                                context: context,
+                                title: context.t
+                                    .deleteContent(type: context.t.note)
+                                    .capitalizeFirst(),
+                                description: context.t
+                                    .confirmDeleteContent(type: context.t.note)
+                                    .capitalizeFirst(),
+                                buttonText: context.t.delete.capitalizeFirst(),
+                                onDelete: () async {
+                                  final isSuccessful = await notesEventsCubit
+                                      .deleteNote(model.id);
+
+                                  if (isSuccessful && context.mounted) {
+                                    BotToastUtils.showSuccess(
+                                        context.t.noteDeletedSuccessfully);
+                                    Navigator.pop(context);
+                                  }
+                                },
+                              );
+                            },
                             bookmarkStatus:
                                 notesEventsCubit.state.bookmarks.contains(
                               model.id,
@@ -1992,20 +2017,27 @@ class _ReplyContainerState extends State<ReplyContainer> {
     return StreamBuilder(
       stream: nostrRepository.mutesStream,
       builder: (context, snapshot) {
-        return SingleEventProvider(
-          id: widget.replyEvent.value!.key,
-          isReplaceable: widget.replyEvent.value!.value,
-          child: (event) {
-            final shouldBeHidden = widget.shouldConsiderHiddenReply
-                ? (event != null &&
-                    context
-                        .read<LeadingCubit>()
-                        .applyNotesFilter([event]).isEmpty)
-                : false;
+        return DeletedNoteProvider(
+            id: widget.replyEvent.value!.key,
+            child: (isDeleted) {
+              if (isDeleted) {
+                return _content(null, true, context);
+              }
+              return SingleEventProvider(
+                id: widget.replyEvent.value!.key,
+                isReplaceable: widget.replyEvent.value!.value,
+                child: (event) {
+                  final shouldBeHidden = widget.shouldConsiderHiddenReply
+                      ? (event != null &&
+                          context
+                              .read<LeadingCubit>()
+                              .applyNotesFilter([event]).isEmpty)
+                      : false;
 
-            return _content(event, shouldBeHidden, context);
-          },
-        );
+                  return _content(event, shouldBeHidden, context);
+                },
+              );
+            });
       },
     );
   }

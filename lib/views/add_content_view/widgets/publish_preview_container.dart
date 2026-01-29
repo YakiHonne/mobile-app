@@ -100,23 +100,23 @@ class PublishPreviewContainer extends HookWidget {
           );
         }
 
-        return Column(
-          children: [
-            _imageThumbnail(context),
-            if (imageLink.isEmpty)
-              GestureDetector(
-                onTap: addImage,
-                child: Padding(
+        return GestureDetector(
+          onTap: addImage,
+          child: Column(
+            children: [
+              _imageThumbnail(context),
+              if (imageLink.isEmpty)
+                Padding(
                   padding: const EdgeInsets.all(5),
                   child: Text(
                     context.t.uploadImage.capitalizeFirst(),
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
-                ),
-              )
-            else
-              _actionsRow(addImage, context)
-          ],
+                )
+              else
+                _actionsRow(addImage, context)
+            ],
+          ),
         );
       }),
     );

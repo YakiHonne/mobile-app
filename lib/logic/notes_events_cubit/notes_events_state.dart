@@ -7,6 +7,7 @@ class NotesEventsState extends Equatable {
   final List<String> mutes;
   final List<String> mutesEvents;
   final Set<String> bookmarks;
+  final Set<String> deletedNotes;
 
   const NotesEventsState({
     required this.eventsStats,
@@ -14,6 +15,7 @@ class NotesEventsState extends Equatable {
     required this.mutes,
     required this.mutesEvents,
     required this.bookmarks,
+    required this.deletedNotes,
   });
 
   @override
@@ -23,6 +25,7 @@ class NotesEventsState extends Equatable {
         mutesEvents,
         bookmarks,
         eventsStats,
+        deletedNotes,
       ];
 
   NotesEventsState copyWith({
@@ -31,6 +34,7 @@ class NotesEventsState extends Equatable {
     List<String>? mutes,
     List<String>? mutesEvents,
     Set<String>? bookmarks,
+    Set<String>? deletedNotes,
   }) {
     return NotesEventsState(
       eventsStats: eventsStats ?? this.eventsStats,
@@ -38,6 +42,7 @@ class NotesEventsState extends Equatable {
       mutes: mutes ?? this.mutes,
       mutesEvents: mutesEvents ?? this.mutesEvents,
       bookmarks: bookmarks ?? this.bookmarks,
+      deletedNotes: deletedNotes ?? this.deletedNotes,
     );
   }
 }

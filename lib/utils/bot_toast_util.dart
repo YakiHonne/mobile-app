@@ -1,7 +1,9 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../logic/bot_utils_loading_progress_cubit/bot_utils_loading_progress_cubit.dart';
 import 'utils.dart';
 
 class BotToastUtils {
@@ -71,24 +73,47 @@ class BotToastUtils {
 
     return BotToast.showCustomLoading(
       align: Alignment.center,
+      onClose: () {
+        botUtilsLoadingProgressCubit.emitStatus('');
+      },
       toastBuilder: (cancelFunc) {
-        return UnconstrainedBox(
-          child: Container(
-            height: 70,
-            width: 70,
-            decoration: BoxDecoration(
-              color: Theme.of(ctx).cardColor,
-              borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-              border: Border.all(
-                color: Theme.of(ctx).dividerColor,
-                width: 0.5,
+        return BlocBuilder<BotUtilsLoadingProgressCubit,
+            BotUtilsLoadingProgressState>(
+          builder: (context, state) {
+            return UnconstrainedBox(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: state.status.isEmpty ? 70 : 100,
+                width: state.status.isEmpty ? 70 : 100,
+                decoration: BoxDecoration(
+                  color: Theme.of(ctx).cardColor,
+                  borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                  border: Border.all(
+                    color: Theme.of(ctx).dividerColor,
+                    width: 0.5,
+                  ),
+                ),
+                child: Column(
+                  spacing: kDefaultPadding / 4,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SpinKitCircle(
+                      color: Theme.of(ctx).primaryColor,
+                      size: 25,
+                    ),
+                    if (state.status.isNotEmpty)
+                      Text(
+                        state.status,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Theme.of(context).highlightColor,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                  ],
+                ),
               ),
-            ),
-            child: SpinKitCircle(
-              color: Theme.of(ctx).primaryColor,
-              size: 25,
-            ),
-          ),
+            );
+          },
         );
       },
     );

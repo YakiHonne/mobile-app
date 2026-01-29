@@ -17,6 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common/notifications/local_notification_manager.dart';
 import 'common/tracker/umami_tracker.dart';
 import 'logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import 'logic/bot_utils_loading_progress_cubit/bot_utils_loading_progress_cubit.dart';
+import 'logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import 'logic/contact_list_cubit/contact_list_cubit.dart';
 import 'logic/crashlytics_cubit/crashlytics_cubit.dart';
 import 'logic/discover_cubit/discover_cubit.dart';
@@ -50,23 +52,19 @@ class AppInitializer {
 
   static Future<void> initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // print('===============> intializing core dependencies');
+
     // Initialize core dependencies
     await _initializeCoreDependencies();
 
-    // print('===============> intializing authentication and signing');
     // Initialize Firebase and database
     _initializeLocalDatabase();
     // Initialize Nostr core
 
-    // print('Nostr core initialized');
     await _initializeNostrCore();
     // Setup cubits and global state
 
-    // print('Cubits and global state initialized');
     await _setupCubitsAndGlobals();
 
-    // print('Notifications initialized');
     // Initialize notifications (critical: must be right after cubits)
     _initializeNotifications();
 
@@ -95,23 +93,31 @@ class AppInitializer {
   /// Initialize Nostr core
   static Future<void> _initializeNostrCore() async {
     nc = NostrCore(loadRemoteCache: false);
+    _initRemoteCache();
+    await nc.db.init();
+  }
+
+  static Future<void> _initRemoteCache() async {
     await nc.initRemoteCache();
     nc.remoteCacheService.connectCache();
-    await nc.db.init();
   }
 
   /// Setup all cubits and global state
   static Future<void> _setupCubitsAndGlobals() async {
     // Initialize basic services
+
     _initializeBasicServices();
 
     // Initialize core settings
+
     await _initializeSettings();
 
     // Initialize repositories
+
     await _initializeRepositories();
 
     // Initialize all cubits
+
     _initializeCubits();
 
     // Setup authentication and signing
@@ -173,6 +179,7 @@ class AppInitializer {
   static void _initializeCubits() {
     // Initialize localization cubit
     localizationCubit = LocalizationCubit();
+    botUtilsLoadingProgressCubit = BotUtilsLoadingProgressCubit();
     localizationCubit.init();
 
     // Initialize unsent events cubit
@@ -188,6 +195,7 @@ class AppInitializer {
     notificationsCubit = NotificationsCubit();
     dmsCubit = DmsCubit();
     walletManagerCubit = WalletsManagerCubit();
+    cashuWalletManagerCubit = CashuWalletManagerCubit();
     pointsManagementCubit = PointsManagementCubit();
     relaysProgressCubit = RelaysProgressCubit();
     suggestionsBoxCubit = SuggestionsBoxCubit();
@@ -264,11 +272,15 @@ class AppInitializer {
     nostrRepository.setCurrentUserDraft();
     nostrRepository.loadWotConfigurations();
     nostrRepository.loadMediaManager();
-    await nostrRepository.routingInitData();
-    await appSettingsManagerCubit.loadAppSharedSettings();
-    await relayInfoCubit.initRelays();
+
+    await Future.wait([
+      nostrRepository.routingInitData(),
+      appSettingsManagerCubit.loadAppSharedSettings(),
+      relayInfoCubit.initRelays(),
+    ]);
 
     // Connect to relays
+
     if (currentSigner != null) {
       currentUserRelayList.pubkey = currentSigner!.getPublicKey();
 
@@ -322,6 +334,7 @@ class AppInitializer {
     Future.delayed(const Duration(seconds: 2)).then((_) {
       nostrRepository.loadCurrentUserRelatedData();
       settingsCubit.getYakiHonneApp();
+      cashuWalletManagerCubit.init();
     });
   }
 

@@ -1,15 +1,19 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/dms_cubit/dms_cubit.dart';
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/wallet_model.dart';
 import '../../../utils/utils.dart';
+import '../../wallet_cashu_view/widgets/mints_list.dart';
 import '../../wallet_view/widgets/internal_wallets_list_view.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
@@ -21,30 +25,82 @@ class SelectedWalletContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
-      builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (_) {
-                return const InternalWalletsListView();
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            );
-          },
-          behavior: HitTestBehavior.translucent,
-          child: _walletSelector(state),
-        );
+    return BlocBuilder<MainCubit, MainState>(
+      builder: (context, mainState) {
+        if (mainState.isCashuWallet) {
+          return BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
+            builder: (context, state) {
+              if (state.mints.isEmpty) {
+                return FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Text(
+                    context.t.wallet,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                );
+              }
+
+              return GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return const MintsList();
+                    },
+                    isScrollControlled: true,
+                    useRootNavigator: true,
+                    useSafeArea: true,
+                    elevation: 0,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  );
+                },
+                behavior: HitTestBehavior.translucent,
+                child: _cashuWalletSelector(state),
+              );
+            },
+          );
+        } else {
+          return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
+            builder: (context, state) {
+              if (state.wallets.isEmpty) {
+                return FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Text(
+                    context.t.wallet,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                );
+              }
+
+              return GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return const InternalWalletsListView();
+                    },
+                    isScrollControlled: true,
+                    useRootNavigator: true,
+                    useSafeArea: true,
+                    elevation: 0,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  );
+                },
+                behavior: HitTestBehavior.translucent,
+                child: _nwcWalletSelector(state),
+              );
+            },
+          );
+        }
       },
     );
   }
 
-  SizedBox _walletSelector(WalletsManagerState state) {
+  SizedBox _nwcWalletSelector(WalletsManagerState state) {
     return SizedBox(
       width: 50.w,
       child: Builder(
@@ -71,6 +127,55 @@ class SelectedWalletContainer extends StatelessWidget {
               Expanded(
                 child: Text(
                   walletId,
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(
+                width: 30,
+                height: 30,
+                child: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  SizedBox _cashuWalletSelector(CashuWalletManagerState state) {
+    final activeMint = state.mints[state.activeMint];
+    final activeMintName = activeMint?.name ?? state.activeMint;
+    final image = activeMint?.info?.iconUrl ?? '';
+
+    return SizedBox(
+      width: 50.w,
+      child: Builder(
+        builder: (context) {
+          return Row(
+            spacing: kDefaultPadding / 4,
+            children: [
+              if (image.isNotEmpty)
+                ExtendedImage.network(
+                  image,
+                  width: 20,
+                  height: 20,
+                )
+              else
+                ExtendedImage.asset(
+                  Images.cashu,
+                  width: 20,
+                  height: 20,
+                ),
+              Expanded(
+                child: Text(
+                  activeMintName,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         fontWeight: FontWeight.w500,
                       ),

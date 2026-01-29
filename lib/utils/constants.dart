@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v1.9.8+179';
+const String appVersion = 'v2.0.1+183';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -20,7 +20,6 @@ const pointsUrl = 'https://api.yakihonne.com/api/v1/';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
 const searchRelaysUrl = 'https://api.nostr.watch/v2/relays/by/nip';
-const searchUrl = 'https://api.nostr.band/nostr?method=search&count=10&q=';
 const topicsUrl = 'https://yakihonne.com/api/v1/yakihonne-topics';
 const pointsSystemUrl = 'https://www.yakihonne.com/points-system';
 const walletsUrl = 'https://wallet.yakihonne.com/api/wallets';

@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.1] - 2026-01-29
+
+### Added
+
+- Ecash implementation.
+- Note deletion.
+
+### Changed
+
+- Add gesture detector on the image box when tryin to upload an image in article publishing.
+- Improve database indexing for faster data loading.
+
+### Fixed
+
+- Fix adding relay manually is not working when creating a relay set.
+- Fix mute thread in search is not working.
+- Fix relay list is not showing on user profile.
+- Fix app audio taking priority over other audios from other running apps.
+- Bug fixes and performance improvements.
+
 ## [1.9.8] - 2026-01-02
 
 ### Changed

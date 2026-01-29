@@ -13,7 +13,7 @@ final relayRegExp = RegExp(
 );
 
 final contentRelayRegExp = RegExp(
-  r'(ws|wss):\/\/([0-9]{1,3}(?:\.[0-9]{1,3}){3}|[^:\s]+):?([0-9]{1,5})?',
+  r'(ws|wss):\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{2,20}(:\d{1,5})?(\/[-a-zA-Z0-9@:%_,\+.~#?&\/=]*[-a-zA-Z0-9@:%_\+.~#?&\/=])?',
 );
 
 final invoiceRegex = RegExp(
@@ -92,7 +92,7 @@ final nostrNaddrRegex = RegExp(
   dotAll: true,
 );
 
-final RegExp webSocketUrlRegex = RegExp(
+final webSocketUrlRegex = RegExp(
   r'^wss?://([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(:[0-9]{1,5})?(/[^\s]*)?$',
 );
 

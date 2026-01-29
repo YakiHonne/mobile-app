@@ -79,7 +79,7 @@ class _TransactionsListState extends State<TransactionsList> {
                 scrollController: scrollController,
                 enablePullDown: false,
                 enablePullUp: true,
-                header:  MaterialClassicHeader(
+                header: MaterialClassicHeader(
                   color: Theme.of(context).primaryColor,
                 ),
                 footer: const RefresherClassicFooter(),

@@ -16,10 +16,12 @@ import '../leading_view/leading_view.dart';
 import '../media_view/media_view.dart';
 import '../notifications_view/notifications_view.dart';
 import '../smart_widgets_view/smart_widgets_search.dart';
+import '../wallet_cashu_view/cashu_view.dart';
 import '../wallet_view/wallet_view.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'widgets/drawer_view.dart';
 import 'widgets/main_view_appbar.dart';
+import 'widgets/wallet_switcher_fab.dart';
 
 final indexMap = {
   MainViews.leading: 0,
@@ -132,8 +134,21 @@ class MainViewContent extends HookWidget {
                   key: const PageStorageKey('media'),
                   scrollController: mainScrollControllers[1],
                 ),
-                InternalWalletsView(
-                  key: const PageStorageKey('wallet'),
+                BlocBuilder<MainCubit, MainState>(
+                  builder: (context, state) {
+                    return Stack(
+                      children: [
+                        _walletWidget(state),
+                        Positioned(
+                          top: kDefaultPadding / 2,
+                          left: kDefaultPadding / 2,
+                          child: WalletSwitcherFAB(
+                            isCashuWallet: state.isCashuWallet,
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 ),
                 DmsView(
                   key: const PageStorageKey('dms'),
@@ -155,6 +170,18 @@ class MainViewContent extends HookWidget {
         );
       },
     );
+  }
+
+  Widget _walletWidget(MainState state) {
+    if (state.isCashuWallet) {
+      return const CashuWalletView(
+        key: PageStorageKey('cashu'),
+      );
+    } else {
+      return InternalWalletsView(
+        key: const PageStorageKey('wallet'),
+      );
+    }
   }
 
   RepaintBoundary _createContent(BuildContext context, MainViews mainView) {

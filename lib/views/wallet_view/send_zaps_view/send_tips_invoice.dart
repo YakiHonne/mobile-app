@@ -21,7 +21,7 @@ class SendZapsUsingInvoice extends HookWidget {
   // ========================
 
   final String invoice;
-  final ValueNotifier<bool> useDefaultWallet;
+  final ValueNotifier<ZapPaymentMethod> zapPaymentMethod;
   final Function(int) onSuccess;
   final Function(String) onFailure;
   final Function()? onSwitchToSend;
@@ -30,7 +30,7 @@ class SendZapsUsingInvoice extends HookWidget {
   const SendZapsUsingInvoice({
     super.key,
     required this.invoice,
-    required this.useDefaultWallet,
+    required this.zapPaymentMethod,
     required this.onSuccess,
     required this.onFailure,
     this.onSwitchToSend,
@@ -47,7 +47,7 @@ class SendZapsUsingInvoice extends HookWidget {
       children: [
         _buildActionButtons(context),
         Expanded(child: _buildScrollableContent(context)),
-        _buildWalletSelector(useDefaultWallet),
+        _buildWalletSelector(zapPaymentMethod),
         _buildPaymentButton(context),
       ],
     );
@@ -175,7 +175,7 @@ class SendZapsUsingInvoice extends HookWidget {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(
-          ' USD',
+          ' ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: Theme.of(context).highlightColor,
               ),
@@ -189,12 +189,12 @@ class SendZapsUsingInvoice extends HookWidget {
   // ========================
 
   Widget _buildWalletSelector(
-    ValueNotifier<bool> useDefaultWallet,
+    ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   ) {
     return Column(
       children: [
         MultiWalletSelector(
-          useDefaultWallet: useDefaultWallet,
+          zapPaymentMethod: zapPaymentMethod,
         ),
         const SizedBox(
           height: kDefaultPadding / 4,
@@ -313,7 +313,7 @@ class SendZapsUsingInvoice extends HookWidget {
       onSuccess: _handlePaymentSuccess,
       onFailure: onFailure,
       onFinished: (_) {},
-      useDefaultWallet: useDefaultWallet.value,
+      useDefaultWallet: zapPaymentMethod.value == ZapPaymentMethod.external,
     );
   }
 

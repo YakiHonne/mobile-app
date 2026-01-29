@@ -188,11 +188,6 @@ class RemoteLogin extends HookWidget {
       ),
       Center(
         child: Container(
-          width: 60.w,
-          height: 60.w,
-          padding: const EdgeInsets.all(
-            kDefaultPadding / 4,
-          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(kDefaultPadding),
             border: Border.all(
@@ -202,6 +197,7 @@ class RemoteLogin extends HookWidget {
           ),
           child: QrImageView(
             data: connectionUrl,
+            size: 70.w,
             dataModuleStyle: QrDataModuleStyle(
               color: Theme.of(context).primaryColorDark,
               dataModuleShape: QrDataModuleShape.circle,
