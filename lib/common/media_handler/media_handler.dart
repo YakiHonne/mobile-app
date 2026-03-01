@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../utils/bot_toast_util.dart';
@@ -263,9 +262,10 @@ class MediaUtils {
         name: "YakiHonne's image",
       );
 
-      await Share.shareXFiles(
-        [image],
+      await shareContent(
+        text: "Share YakiHonne's content with the others",
         subject: "Share YakiHonne's content with the others",
+        files: [image],
       );
     } catch (e) {
       BotToastUtils.showError(t.errorSharingMedia);

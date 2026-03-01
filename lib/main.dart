@@ -118,6 +118,7 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: unsentEventsCubit),
         BlocProvider.value(value: videoControllerManagerCubit),
         BlocProvider.value(value: botUtilsLoadingProgressCubit),
+        BlocProvider.value(value: packsSettingsCubit),
       ],
       [],
     );

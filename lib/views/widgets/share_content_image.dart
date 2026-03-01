@@ -199,8 +199,8 @@ class ShareContentImage extends HookWidget {
       if (img != null) {
         YNavigator.pop(context);
 
-        await Share.shareXFiles(
-          [
+        await shareContent(
+          files: [
             XFile(img),
           ],
         );

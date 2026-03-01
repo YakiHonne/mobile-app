@@ -143,7 +143,7 @@ class SendUsingInvoice extends HookWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '~ \$${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)}',
+          '~ ${walletManagerCubit.getCurrencySymbol()}${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)}',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(

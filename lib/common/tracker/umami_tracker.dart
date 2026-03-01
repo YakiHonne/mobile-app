@@ -20,28 +20,47 @@ class UmamiAnalytics {
   final String websiteId = 'd6d9c70c-ecf9-4589-aef6-896b65cd08b3';
   final String hostname = 'com.yakihonne.app';
   final Dio _dio;
-  late String agent;
+  String? agent;
+  Future<void>? _initFuture;
+
+  Future<void> init() {
+    _initFuture ??= getUserAgent();
+    return _initFuture!;
+  }
 
   Future<void> getUserAgent() async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     const appName = 'YakiHonne';
-
-    if (Platform.isAndroid) {
-      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      agent =
-          'Mozilla/5.0 (Linux; Android ${androidInfo.version.release}; ${androidInfo.model}) $appName/$appVersion';
-    } else if (Platform.isIOS) {
-      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      agent =
-          "Mozilla/5.0 (iPhone; CPU iPhone OS ${iosInfo.systemVersion.replaceAll('.', '_')} like Mac OS X) $appName/$appVersion";
-    }
-
     agent = '$appName/$appVersion (Unknown Device)';
+
+    try {
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        agent =
+            'Mozilla/5.0 (Linux; Android ${androidInfo.version.release}; ${androidInfo.model}) $appName/$appVersion';
+      } else if (Platform.isIOS) {
+        final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        agent =
+            "Mozilla/5.0 (iPhone; CPU iPhone OS ${iosInfo.systemVersion.replaceAll('.', '_')} like Mac OS X) $appName/$appVersion";
+      } else if (Platform.isMacOS) {
+        final MacOsDeviceInfo macInfo = await deviceInfo.macOsInfo;
+        agent =
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X ${macInfo.majorVersion}.${macInfo.minorVersion}) $appName/$appVersion';
+      }
+    } catch (e, stackTrace) {
+      lg.i('Failed to get device info: $e', stackTrace: stackTrace);
+    }
   }
 
   Future<void> trackEvent({
     String? screenName,
   }) async {
+    await init();
+
+    if (!gc.mounted) {
+      return;
+    }
+
     if (!nostrRepository.isCrashlyticsEnabled) {
       return;
     }
@@ -59,7 +78,7 @@ class UmamiAnalytics {
           'event_value': 'View visited',
           'url': screenName != null ? '/$screenName' : '',
           'screen': screenSize,
-          'userAgent': agent,
+          'userAgent': agent!,
         },
       };
 
@@ -71,8 +90,8 @@ class UmamiAnalytics {
       if (response.statusCode != 200) {
         lg.i('Failed to track event: ${response.statusCode}');
       }
-    } on DioException catch (_) {
-      // lg.i('Error tracking event: ${e.message}');
+    } on DioException catch (e) {
+      lg.i('Error tracking event: ${e.response}');
     }
   }
 }

@@ -26,6 +26,7 @@ class AppCustomization {
   bool notifFollowings;
   bool notifPrivateMessage;
   bool notifMaxMentions;
+  bool enableActionsPopups;
   String writingContentType;
   Map<String, bool> actionsArrangement;
   Map<String, bool> leadingFeedCustomization;
@@ -53,6 +54,7 @@ class AppCustomization {
     this.enableLinkPreview = true,
     this.notifFollowings = true,
     this.notifMaxMentions = true,
+    this.enableActionsPopups = true,
     this.writingContentType = 'note',
     this.actionsArrangement = defaultActionsArrangement,
     this.leadingFeedCustomization = defaultLeadingFeedCustomization,
@@ -85,6 +87,7 @@ class AppCustomization {
       'actionsArrangement': actionsArrangement,
       'notifFollowings': notifFollowings,
       'notifMaxMentions': notifMaxMentions,
+      'enableActionsPopups': enableActionsPopups,
     };
   }
 
@@ -122,6 +125,7 @@ class AppCustomization {
               map['actionsArrangement'] as Map<String, dynamic>,
             ),
       notifMaxMentions: map['notifMaxMentions'] as bool? ?? true,
+      enableActionsPopups: map['enableActionsPopups'] as bool? ?? true,
     );
   }
 

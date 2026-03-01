@@ -3,11 +3,9 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart' as widgets;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
@@ -175,19 +173,16 @@ class ArticleCubit extends Cubit<ArticleState> {
     cancel.call();
   }
 
-  Future<void> shareLink(widgets.RenderBox? renderBox) async {
+  Future<void> shareLink() async {
     final res = await externalShearableLink(
       kind: EventKind.LONG_FORM,
       pubkey: state.article.pubkey,
       id: state.article.identifier,
     );
 
-    Share.share(
-      res,
+    shareContent(
+      text: res,
       subject: 'Check out www.yakihonne.com for me more articles.',
-      sharePositionOrigin: renderBox != null
-          ? renderBox.localToGlobal(widgets.Offset.zero) & renderBox.size
-          : null,
     );
   }
 

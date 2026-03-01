@@ -389,6 +389,10 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     );
   }
 
+  String getCurrencySymbol() {
+    return currenciesSymbols[state.activeCurrency] ?? '';
+  }
+
   void addWalletAndSave(WalletModel wallet) {
     final updatedWallets = Map<String, WalletModel>.from(state.wallets);
     updatedWallets[wallet.id] = wallet;
@@ -802,7 +806,8 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       if (res != null) {
         final data = res['bitcoin'];
         for (final f in currencies.keys) {
-          btcInFiat[f] = (data[f] as int?) ?? -1;
+          btcInFiat[f] =
+              data[f] != null ? num.parse(data[f].toString()).toInt() : -1;
         }
       }
     } catch (e) {

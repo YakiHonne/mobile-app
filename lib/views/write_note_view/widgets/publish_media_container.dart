@@ -23,6 +23,7 @@ class PublishingMediaContainer extends HookWidget {
     required this.onTextChanged,
     required this.mention,
     required this.controller,
+    required this.scheduled,
     required this.isNewNote,
     this.isPaid,
   });
@@ -31,6 +32,7 @@ class PublishingMediaContainer extends HookWidget {
   final Function() onTextChanged;
   final ValueNotifier<String?> mention;
   final ValueNotifier<bool>? isPaid;
+  final ValueNotifier<DateTime?> scheduled;
   final MentionTagTextEditingController controller;
   final bool? isNewNote;
 
@@ -50,6 +52,7 @@ class PublishingMediaContainer extends HookWidget {
             _gif(context),
             _mention(),
             _smartWidgets(context),
+            _scheduledNote(context),
             if (isPaid != null) _paidNote(context),
           ],
         ),
@@ -150,6 +153,31 @@ class PublishingMediaContainer extends HookWidget {
         height: 22,
         colorFilter: ColorFilter.mode(
           Theme.of(context).primaryColorDark,
+          BlendMode.srcIn,
+        ),
+      ),
+    );
+  }
+
+  IconButton _scheduledNote(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        showScheduledNoteDatePicker(
+          context: context,
+          onDateTimeChanged: (value) {
+            scheduled.value = value;
+          },
+          scheduled: scheduled.value,
+        );
+      },
+      icon: SvgPicture.asset(
+        FeatureIcons.calendar,
+        width: 22,
+        height: 22,
+        colorFilter: ColorFilter.mode(
+          scheduled.value == null
+              ? Theme.of(context).primaryColorDark
+              : Theme.of(context).primaryColor,
           BlendMode.srcIn,
         ),
       ),

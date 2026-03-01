@@ -274,7 +274,7 @@ class CashuDepositView extends HookWidget {
                           final amountInUsd = walletManagerCubit
                               .getBtcInFiatFromAmount(amountInSats.value);
                           return Text(
-                            '~ \$${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
+                            '~ ${walletManagerCubit.getCurrencySymbol()}${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!

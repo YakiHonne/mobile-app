@@ -25,8 +25,7 @@ final RegExp base64ImageRegex = RegExp(
   caseSensitive: false,
 );
 
-final hashtagsRegExp =
-    RegExp(r'#([A-Za-zÀ-ÖØ-öø-ÿ0-9]+(-[A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*)');
+final hashtagsRegExp = RegExp(r'#([\p{L}0-9]+(-[\p{L}0-9]+)*)', unicode: true);
 
 final RegExp audioUrlRegex = RegExp(
   r'^https?:\/\/.*\.(mp3|wav|ogg|m4a|aac|flac|wma|opus)(\?.*)?$',

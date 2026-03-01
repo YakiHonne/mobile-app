@@ -1665,10 +1665,9 @@ class DetailedNoteContainer extends HookWidget {
         (isMain
             ? () {}
             : () {
-                Navigator.pushNamed(
+                YNavigator.pushPage(
                   context,
-                  NoteView.routeName,
-                  arguments: [note],
+                  (context) => NoteView(note: note),
                 );
               });
 

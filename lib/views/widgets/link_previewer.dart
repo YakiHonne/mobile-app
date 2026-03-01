@@ -154,58 +154,76 @@ class _AudioDisplayerState extends State<AudioDisplayer>
     with WidgetsBindingObserver {
   final _player = ja.AudioPlayer();
   final combinedController = StreamController<PositionData>();
+  final List<StreamSubscription> _subscriptions = [];
 
   @override
   void initState() {
     super.initState();
-    ambiguate(WidgetsBinding.instance)!.addObserver(this);
+    ambiguate(WidgetsBinding.instance)?.addObserver(this);
     _init();
   }
 
   Future<void> _init() async {
-    _player.playbackEventStream.listen((event) {},
-        onError: (Object e, StackTrace stackTrace) {
-      if (kDebugMode) {
-        print('A stream error occurred: $e');
-      }
-    });
+    _player.playbackEventStream.listen(
+      (event) {},
+      onError: (Object e, StackTrace stackTrace) {
+        if (kDebugMode) {
+          print('A stream error occurred: $e');
+        }
+      },
+    );
 
     try {
       await _player.setAudioSource(ja.AudioSource.uri(Uri.parse(widget.url)));
-      _player.positionStream.listen(
-        (event) {
-          combinedController.add(
-            PositionData(
-              _player.position,
-              _player.bufferedPosition,
-              _player.duration ?? Duration.zero,
-            ),
-          );
-        },
+
+      _subscriptions.add(
+        _player.positionStream.listen(
+          (event) {
+            if (!combinedController.isClosed) {
+              combinedController.add(
+                PositionData(
+                  _player.position,
+                  _player.bufferedPosition,
+                  _player.duration ?? Duration.zero,
+                ),
+              );
+            }
+          },
+        ),
       );
-      _player.bufferedPositionStream.listen(
-        (event) {
-          combinedController.add(
-            PositionData(
-              _player.position,
-              _player.bufferedPosition,
-              _player.duration ?? Duration.zero,
-            ),
-          );
-        },
+
+      _subscriptions.add(
+        _player.bufferedPositionStream.listen(
+          (event) {
+            if (!combinedController.isClosed) {
+              combinedController.add(
+                PositionData(
+                  _player.position,
+                  _player.bufferedPosition,
+                  _player.duration ?? Duration.zero,
+                ),
+              );
+            }
+          },
+        ),
       );
-      _player.durationStream.listen(
-        (event) {
-          combinedController.add(
-            PositionData(
-              _player.position,
-              _player.bufferedPosition,
-              _player.duration ?? Duration.zero,
-            ),
-          );
-        },
+
+      _subscriptions.add(
+        _player.durationStream.listen(
+          (event) {
+            if (!combinedController.isClosed) {
+              combinedController.add(
+                PositionData(
+                  _player.position,
+                  _player.bufferedPosition,
+                  _player.duration ?? Duration.zero,
+                ),
+              );
+            }
+          },
+        ),
       );
-    } on ja.PlayerException catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print('Error loading audio source: $e');
       }
@@ -214,7 +232,11 @@ class _AudioDisplayerState extends State<AudioDisplayer>
 
   @override
   void dispose() {
-    ambiguate(WidgetsBinding.instance)!.removeObserver(this);
+    ambiguate(WidgetsBinding.instance)?.removeObserver(this);
+    for (final sub in _subscriptions) {
+      sub.cancel();
+    }
+    combinedController.close();
     _player.dispose();
     super.dispose();
   }

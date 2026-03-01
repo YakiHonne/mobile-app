@@ -10,6 +10,7 @@ import '../../../utils/utils.dart';
 import 'signup_appbar.dart';
 import 'signup_interests.dart';
 import 'signup_metadata.dart';
+import 'signup_packs.dart';
 import 'signup_preview.dart';
 import 'signup_wallet.dart';
 
@@ -108,7 +109,7 @@ class SignupView extends HookWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
-        4,
+        5,
         (index) => AnimatedContainer(
           margin: const EdgeInsets.only(right: 5.0),
           duration: const Duration(milliseconds: 300),
@@ -138,7 +139,7 @@ class SignupView extends HookWidget {
         child: TextButton(
           onPressed: () {
             FocusManager.instance.primaryFocus?.unfocus();
-            if (currentIndex.value == 3) {
+            if (currentIndex.value == 4) {
               context.read<LogifyCubit>().setupAccount(
                     onSuccess: onPop ??
                         () {
@@ -156,7 +157,7 @@ class SignupView extends HookWidget {
             }
           },
           child: Text(
-            currentIndex.value == 3
+            currentIndex.value == 4
                 ? context.t.letsGetStarted.capitalizeFirst()
                 : context.t.next.capitalizeFirst(),
           ),
@@ -178,6 +179,7 @@ class SignupView extends HookWidget {
             SignupMetadata(
               formKey: formKey,
             ),
+            const SignupPacks(),
             const SignupInterestsAndFollowings(),
             const SignupWallet(),
             const SignupPreview(),

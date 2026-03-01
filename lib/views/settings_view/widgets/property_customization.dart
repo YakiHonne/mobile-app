@@ -38,6 +38,9 @@ class PropertyCustomization extends HookWidget {
       nostrRepository.currentAppCustomization?.writingContentType ??
           AppContentType.note.name,
     );
+    final enableActionsPopups = useState(
+      nostrRepository.currentAppCustomization?.enableActionsPopups ?? true,
+    );
 
     final onUpdateProfilePreview = useCallback(
       () {
@@ -69,6 +72,19 @@ class PropertyCustomization extends HookWidget {
       },
     );
 
+    final onUpdateActionsPopups = useCallback(
+      () {
+        if (nostrRepository.currentAppCustomization?.enableActionsPopups !=
+            enableActionsPopups.value) {
+          nostrRepository.currentAppCustomization?.enableActionsPopups =
+              enableActionsPopups.value;
+          nostrRepository.broadcastCurrentAppCustomization();
+          nostrRepository.saveAppCustomization();
+        }
+      },
+      [enableActionsPopups.value],
+    );
+
     useEffect(
       () {
         onUpdateProfilePreview();
@@ -91,6 +107,13 @@ class PropertyCustomization extends HookWidget {
         return null;
       },
       [openPromptedUrl.value],
+    );
+    useEffect(
+      () {
+        onUpdateActionsPopups();
+        return null;
+      },
+      [enableActionsPopups.value],
     );
 
     final onUpdateSelectedContentType = useCallback(
@@ -141,6 +164,10 @@ class PropertyCustomization extends HookWidget {
                   height: kDefaultPadding,
                 ),
                 _openUrlPrompt(context, openPromptedUrl),
+                const SizedBox(
+                  height: kDefaultPadding,
+                ),
+                _actionsPopups(context, enableActionsPopups),
                 const SizedBox(
                   height: kDefaultPadding,
                 ),
@@ -289,6 +316,31 @@ class PropertyCustomization extends HookWidget {
     );
   }
 
+  Row _actionsPopups(
+      BuildContext context, ValueNotifier<bool> enableActionsPopups) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.actionsPopups.capitalizeFirst(),
+            description: context.t.actionsPopupsDesc,
+          ),
+        ),
+        Transform.scale(
+          scale: 0.8,
+          child: CupertinoSwitch(
+            value: enableActionsPopups.value,
+            activeTrackColor: Theme.of(context).primaryColor,
+            onChanged: (isToggled) {
+              enableActionsPopups.value = isToggled;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Row _profilePreview(
       BuildContext context, ValueNotifier<bool> profilePreview) {
     return Row(
@@ -336,7 +388,7 @@ class PropertyCustomization extends HookWidget {
           ),
           itemBuilder: (context) {
             return List.generate(
-              5,
+              3,
               (index) {
                 AppContentType contentType = AppContentType.note;
 
@@ -345,10 +397,6 @@ class PropertyCustomization extends HookWidget {
                 } else if (index == 1) {
                   contentType = AppContentType.article;
                 } else if (index == 2) {
-                  contentType = AppContentType.curation;
-                } else if (index == 3) {
-                  contentType = AppContentType.video;
-                } else if (index == 4) {
                   contentType = AppContentType.smartWidget;
                 }
 

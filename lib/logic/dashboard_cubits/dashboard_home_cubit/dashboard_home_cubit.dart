@@ -40,6 +40,7 @@ class DashboardHomeCubit extends Cubit<DashboardHomeState> {
     final stats = await NostrFunctionsRepository.getRcUserStats(
       currentSigner!.getPublicKey(),
     );
+
     if (!isClosed) {
       emit(
         state.copyWith(

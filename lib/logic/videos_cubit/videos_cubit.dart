@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
@@ -198,12 +197,9 @@ class VideosCubit extends Cubit<VideosState> {
       id: video.id,
     );
 
-    Share.share(
-      res,
+    shareContent(
+      text: res,
       subject: 'Check out www.yakihonne.com for me more videos.',
-      sharePositionOrigin: renderBox != null
-          ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-          : null,
     );
   }
 

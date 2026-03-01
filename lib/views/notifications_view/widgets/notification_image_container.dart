@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
 
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/event_relation.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/profile_picture.dart';
@@ -91,7 +92,7 @@ class NotificationImageContainer extends StatelessWidget {
         icon = FeatureIcons.nSmartWidgets;
 
       case EventKind.TEXT_NOTE:
-        if (event.isMention(currentSigner!.getPublicKey())) {
+        if (canSign() && event.isMention(currentSigner!.getPublicKey())) {
           icon = FeatureIcons.nMentions;
         } else if (event.isFlashNews()) {
           icon = FeatureIcons.nPaidNotes;

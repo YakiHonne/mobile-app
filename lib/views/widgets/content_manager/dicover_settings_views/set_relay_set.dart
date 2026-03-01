@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../models/relays_feed.dart';
 import '../../../../routes/navigator.dart';
+import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
@@ -34,33 +35,45 @@ class SetRelaySet extends HookWidget {
 
     final addRelay = useCallback(() {
       final r = getProperRelayUrl(addRelayState.value);
-      relaysList.value = List<String>.from(relaysList.value)..insert(0, r);
+
+      if (!relaysList.value.contains(r)) {
+        relaysList.value = List<String>.from(relaysList.value)..insert(0, r);
+      } else {
+        BotToastUtils.showWarning(context.t.relayAlreadyExists);
+      }
+
       connect.value = RelayConnectivity.idle;
       addRelayController.clear();
     });
 
     final bottomAppBar = BottomAppBar(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: RegularLoadingButton(
-        isLoading: isLoading.value,
-        title: context.t.save,
-        onClicked: () async {
-          isLoading.value = true;
+      child: Row(
+        children: [
+          Expanded(
+            child: RegularLoadingButton(
+              isLoading: isLoading.value,
+              title: context.t.save,
+              onClicked: () async {
+                isLoading.value = true;
 
-          await relayInfoCubit.setRelaySet(
-            relays: relaysList.value,
-            title: title.value,
-            description: description.value,
-            image: image.value,
-            identifier: relaySet?.identifier,
-            onSuccess: () {
-              isLoading.value = false;
-              YNavigator.pop(context);
-            },
-          );
+                await relayInfoCubit.setRelaySet(
+                  relays: relaysList.value,
+                  title: title.value,
+                  description: description.value,
+                  image: image.value,
+                  identifier: relaySet?.identifier,
+                  onSuccess: () {
+                    isLoading.value = false;
+                    YNavigator.pop(context);
+                  },
+                );
 
-          isLoading.value = false;
-        },
+                isLoading.value = false;
+              },
+            ),
+          ),
+        ],
       ),
     );
 
@@ -96,7 +109,6 @@ class SetRelaySet extends HookWidget {
 
               return _imageThumbnail(
                 addImage: addImage,
-                context: context,
                 url: image,
               );
             },
@@ -144,7 +156,7 @@ class SetRelaySet extends HookWidget {
             },
           ),
           const SizedBox(
-            height: kDefaultPadding,
+            height: kDefaultPadding / 4,
           ),
           _searchAvailableRelays(
             formkey,
@@ -247,10 +259,28 @@ class SetRelaySet extends HookWidget {
   }
 
   Widget _imageThumbnail({
-    required BuildContext context,
     required ValueNotifier<String> url,
     required Function() addImage,
   }) {
+    return ImageSelectorWidget(
+      url: url,
+      addImage: addImage,
+    );
+  }
+}
+
+class ImageSelectorWidget extends StatelessWidget {
+  const ImageSelectorWidget({
+    super.key,
+    required this.url,
+    required this.addImage,
+  });
+
+  final ValueNotifier<String> url;
+  final Function() addImage;
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         GestureDetector(

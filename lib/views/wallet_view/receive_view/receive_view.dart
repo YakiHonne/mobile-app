@@ -85,8 +85,8 @@ class ReceiveMainView extends HookWidget {
                       byteData.buffer.asUint8List(),
                       mimeType: 'image/png',
                     );
-                    await Share.shareXFiles(
-                      [image],
+                    await shareContent(
+                      files: [image],
                       subject: "Share YakiHonne's content with the others",
                     );
                   }

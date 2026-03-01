@@ -398,27 +398,38 @@ class DashboardContentContainer extends StatelessWidget {
     required this.kind,
     required this.item,
     required this.onClick,
+    this.enableStats = true,
     this.borderColor,
     this.onDeleteItem,
+    this.date,
     this.onRefresh,
+    this.onReschedule,
     this.isPaid,
+    this.onPublish,
     this.isRepost,
+    this.isScheduled,
     this.isHiddenType,
   });
 
-  final String? image;
   final String id;
   final String content;
   final DateTime createdAt;
   final int kind;
+  final bool enableStats;
 
   final BaseEventModel item;
   final Function() onClick;
   final Color? borderColor;
   final Function(String)? onDeleteItem;
+  final Function()? onReschedule;
   final Function()? onRefresh;
+  final Function()? onPublish;
   final bool? isPaid;
+  final bool? isScheduled;
   final bool? isRepost;
+  final String? image;
+
+  final String? date;
   final bool? isHiddenType;
 
   @override
@@ -464,32 +475,42 @@ class DashboardContentContainer extends StatelessWidget {
   PullDownGlobalButton _pulldownButton(BuildContext context) {
     return PullDownGlobalButton(
       model: item,
-      enablePostInNote: kind != EventKind.LONG_FORM_DRAFT &&
+      enablePostInNote: isScheduled == null &&
+          kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.TEXT_NOTE &&
           kind != EventKind.CATEGORIZED_BOOKMARK,
-      enableCheckValidity: item is SmartWidget,
-      enableClone: item is SmartWidget,
-      enableShowRawEvent: true,
-      enableEdit: kind != EventKind.TEXT_NOTE ||
-          kind != EventKind.VIDEO_HORIZONTAL ||
-          kind != EventKind.VIDEO_VERTICAL,
-      enableCopyId: kind != EventKind.LONG_FORM_DRAFT &&
+      enableCheckValidity: isScheduled == null && item is SmartWidget,
+      enableClone: isScheduled == null && item is SmartWidget,
+      enableShowRawEvent: isScheduled == null,
+      enableRepublish: isScheduled != null,
+      onRepublish: onPublish,
+      publishTitle: context.t.publish.capitalizeFirst(),
+      enableEdit: isScheduled == null &&
+          (kind != EventKind.TEXT_NOTE ||
+              kind != EventKind.VIDEO_HORIZONTAL ||
+              kind != EventKind.VIDEO_VERTICAL),
+      enableCopyId: isScheduled == null &&
+          kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK &&
           (kind == EventKind.TEXT_NOTE ||
               kind == EventKind.PICTURE ||
               kind == EventKind.VIDEO_HORIZONTAL ||
               kind == EventKind.VIDEO_VERTICAL),
-      enableCopyNaddr: kind != EventKind.LONG_FORM_DRAFT &&
+      enableCopyNaddr: isScheduled == null &&
+          kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK &&
           kind != EventKind.TEXT_NOTE &&
           kind != EventKind.VIDEO_HORIZONTAL &&
           kind != EventKind.VIDEO_VERTICAL &&
           kind != EventKind.PICTURE,
-      enableShare: kind != EventKind.LONG_FORM_DRAFT &&
+      enableShare: isScheduled == null &&
+          kind != EventKind.LONG_FORM_DRAFT &&
           kind != EventKind.CATEGORIZED_BOOKMARK,
       enableDelete: true,
+      enableReschedule: isScheduled != null,
+      onReschedule: onReschedule,
       visualDensity: -4,
-      onEdit: kind == EventKind.CATEGORIZED_BOOKMARK
+      onEdit: isScheduled == null && kind == EventKind.CATEGORIZED_BOOKMARK
           ? () {
               Navigator.pushNamed(
                 context,
@@ -511,9 +532,10 @@ class DashboardContentContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.t.publishedOn(
-              date: dateFormat2.format(createdAt),
-            ),
+            date ??
+                context.t.publishedOn(
+                  date: dateFormat2.format(createdAt),
+                ),
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   color: Theme.of(context).highlightColor,
                 ),
@@ -552,7 +574,7 @@ class DashboardContentContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                DashboardContentStats(id: id),
+                if (enableStats) DashboardContentStats(id: id),
                 if (isHiddenType == null || !isHiddenType!) ...[
                   const SizedBox(
                     width: kDefaultPadding / 4,

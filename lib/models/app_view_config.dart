@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../utils/utils.dart';
+import 'packs_model.dart';
 import 'relays_feed.dart';
 
 class AppViewConfig {
@@ -33,6 +34,13 @@ class AppViewConfig {
         final value = source.values.first;
 
         if (value is Map) {
+          if (value.containsKey('pubkeys')) {
+            return MapEntry(
+              key,
+              PacksModel.fromMap(Map<String, dynamic>.from(value)),
+            );
+          }
+
           return MapEntry(
             key,
             UserRelaySet.fromMap(Map<String, dynamic>.from(value)),
@@ -120,6 +128,9 @@ class AppViewConfig {
         MapEntry<String, dynamic> source) {
       if (source.value is UserRelaySet) {
         return {source.key: (source.value as UserRelaySet).toMap()};
+      }
+      if (source.value is PacksModel) {
+        return {source.key: (source.value as PacksModel).toMap()};
       }
       return {source.key: source.value};
     }

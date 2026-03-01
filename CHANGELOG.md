@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.0.2] - 2026-03-01
+
+### Added
+
+- Started packs support.
+- Media packs support.
+- Relay based trending notes.
+- Scheduled notes.
+
+### Changed
+
+- Added messages non blocking sending & queueing.
+- Added messages deletion (single/multi).
+- Added note and its reply rendering in messages.
+- Added ability to enable/disable actions popups.
+
+### Fixed
+
+- Fix ecash wallet creation.
+- Fix sharing not function on ios 26.
+- Fix duplication when adding relays to lists.
+- Fix currencies update issue.
+- Fix hashtags with greek language not recognized.
+- Fix note text display issue (unsupported fonts).
+- Adjusted muted thread by adding message box.
+- Other bug fixes and performance improvements.
+
 ## [2.0.1] - 2026-01-29
 
 ### Added

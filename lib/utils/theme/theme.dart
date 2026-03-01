@@ -14,6 +14,7 @@ class AppPreferredThemes {
     return ThemeData(
       brightness: Brightness.light,
       fontFamily: 'DMSans',
+      fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kWhite,
       primaryColor: primaryColor,
@@ -47,6 +48,7 @@ class AppPreferredThemes {
     return ThemeData(
       brightness: Brightness.dark,
       fontFamily: 'DMSans',
+      fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kScaffoldDark,
       cardColor: kCardDark,
@@ -80,6 +82,7 @@ class AppPreferredThemes {
     return ThemeData(
       brightness: Brightness.dark,
       fontFamily: 'DMSans',
+      fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kBlackTheme,
       cardColor: kScaffoldDark,
@@ -114,6 +117,7 @@ class AppPreferredThemes {
     return ThemeData(
       brightness: Brightness.light,
       fontFamily: 'DMSans',
+      fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kCreamTheme,
       primaryColor: primaryColor,

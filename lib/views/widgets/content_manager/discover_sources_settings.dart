@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
 import '../dotted_container.dart';
+import 'dicover_settings_views/packs_settings_view.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
 import 'dicover_settings_views/reorder_settings_view.dart';
 
@@ -11,14 +12,17 @@ class DiscoverSourcesSettings extends HookWidget {
   const DiscoverSourcesSettings({
     super.key,
     required this.viewType,
+    this.index,
   });
 
   final ViewDataTypes viewType;
+  final int? index;
 
   @override
   Widget build(BuildContext context) {
     final tabController = useTabController(
-      initialLength: 2,
+      initialLength: 3,
+      initialIndex: index ?? 0,
     );
 
     return Padding(
@@ -26,7 +30,7 @@ class DiscoverSourcesSettings extends HookWidget {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -92,6 +96,10 @@ class DiscoverSourcesSettings extends HookWidget {
             controller: scrollController,
             viewType: viewType,
           ),
+          PacksSettingsView(
+            controller: scrollController,
+            viewType: viewType,
+          ),
         ],
       ),
     );
@@ -120,10 +128,15 @@ class DiscoverSourcesSettings extends HookWidget {
         tabAlignment: TabAlignment.fill,
         tabs: [
           AppSettingsTab(
-            title: context.t.relaysFeed.capitalizeFirst(),
+            title: context.t.relays.capitalizeFirst(),
           ),
           AppSettingsTab(
-            title: context.t.communityFeed.capitalizeFirst(),
+            title: context.t.community.capitalizeFirst(),
+          ),
+          AppSettingsTab(
+            title: viewType == ViewDataTypes.media
+                ? context.t.mediaPacks.capitalizeFirst()
+                : context.t.starterPacks.capitalizeFirst(),
           ),
         ],
       ),

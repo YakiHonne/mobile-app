@@ -8,11 +8,13 @@ import 'package:pull_down_button/pull_down_button.dart';
 import '../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_cubit.dart';
 import '../../logic/dashboard_cubits/dashboard_content_cubit/dashboard_content_cubit.dart';
 import '../../logic/dashboard_cubits/dashboard_home_cubit/dashboard_home_cubit.dart';
+import '../../logic/dashboard_cubits/dashboard_scheduled_cubit/dashboard_scheduled_cubit.dart';
 import '../../utils/utils.dart';
 import 'widgets/bookmarks/bookmarks_dashboard.dart';
 import 'widgets/content/content_dashboard.dart';
 import 'widgets/home/home_dashboard.dart';
 import 'widgets/interests/interests_dashboard.dart';
+import 'widgets/scheduled/scheduled_dashboard.dart';
 import 'widgets/smart_widgets/smart_widgets_dashboard.dart';
 
 class DashboardView extends HookWidget {
@@ -40,6 +42,10 @@ class DashboardView extends HookWidget {
         ),
         BlocProvider(
           create: (context) => DashboardBookmarksCubit(),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (context) => DashboardScheduledCubit(),
           lazy: false,
         ),
       ],
@@ -94,6 +100,10 @@ class DashboardView extends HookWidget {
         return ContentDashboard(
           key: const ValueKey('content_dashboard'),
           isDraft: isDraft,
+        );
+      case DashboardType.scheduled:
+        return const ScheduledDashboard(
+          key: ValueKey('scheduled_dashboard'),
         );
       case DashboardType.smart:
         return SmartWidgetsDashboard(
@@ -205,6 +215,8 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         title = context.t.home.capitalizeFirst();
       case DashboardType.content:
         title = context.t.content.capitalizeFirst();
+      case DashboardType.scheduled:
+        title = context.t.scheduled.capitalizeFirst();
       case DashboardType.smart:
         title = context.t.smartWidget.capitalizeFirst();
       case DashboardType.bookmarks:

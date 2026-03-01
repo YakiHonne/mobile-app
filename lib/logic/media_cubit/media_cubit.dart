@@ -8,6 +8,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/packs_model.dart';
 import '../../models/picture_model.dart';
 import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
@@ -174,6 +175,11 @@ class MediaCubit extends Cubit<MediaState> {
               final globalIds = state.content.map((e) => e.id).toSet();
               content.removeWhere((e) => globalIds.contains(e.id));
             }
+          } else if (currentSelectedSource.key == AppContentSource.packs) {
+            content = await getMediaFeedPacksEvents(
+              since: first.createdAt.toSecondsSinceEpoch() + 1,
+              limit: 20,
+            );
           } else if (currentSelectedSource.key == AppContentSource.relay) {
             content = await getMediaFeedRelayEvents(
               since: first.createdAt.toSecondsSinceEpoch() + 1,
@@ -220,6 +226,10 @@ class MediaCubit extends Cubit<MediaState> {
 
     if (currentSelectedSource.key == AppContentSource.community) {
       await buildMediaFeedFromCommunity(
+        isAdding: isAdding,
+      );
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      await buildMediaFeedFromPacks(
         isAdding: isAdding,
       );
     } else {
@@ -282,6 +292,23 @@ class MediaCubit extends Cubit<MediaState> {
     return applyMediaFilter(content, removeMuted: true);
   }
 
+  Future<List<BaseEventModel>> getMediaFeedPacksEvents({
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    final val = appSettingsManagerCubit.state.selectedMediaSource.value;
+
+    final content = await NostrFunctionsRepository.getMediaPacksData(
+      pubkeys: val is PacksModel ? val.pubkeys.toList() : [],
+      until: until,
+      limit: 50,
+      since: since,
+    );
+
+    return applyMediaFilter(content, removeMuted: true);
+  }
+
   Future<void> buildMediaFeedFromCommunity({
     required bool isAdding,
   }) async {
@@ -294,6 +321,32 @@ class MediaCubit extends Cubit<MediaState> {
 
     final filtered = await getMediaFeedCommunityEvents(
       f: f,
+      until: until,
+    );
+
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          content: [...state.content, ...filtered],
+          onLoading: false,
+          onAddingData:
+              filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,
+        ),
+      );
+    }
+  }
+
+  Future<void> buildMediaFeedFromPacks({
+    required bool isAdding,
+  }) async {
+    final f = appSettingsManagerCubit.getSelectedMediaFilter();
+    final until = (!isAdding && f.to != null)
+        ? f.to
+        : state.content.isNotEmpty
+            ? state.content.last.createdAt.toSecondsSinceEpoch() - 1
+            : null;
+
+    final filtered = await getMediaFeedPacksEvents(
       until: until,
     );
 

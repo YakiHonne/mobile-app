@@ -150,7 +150,7 @@ class SendZapsResult extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '~ \$${_formatUsdAmount(amountInUsd)}',
+          '~ ${walletManagerCubit.getCurrencySymbol()}${_formatUsdAmount(amountInUsd)}',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(

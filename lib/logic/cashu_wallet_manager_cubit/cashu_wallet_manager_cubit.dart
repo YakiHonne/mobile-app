@@ -83,11 +83,7 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
       final events = await NostrFunctionsRepository.getEventsAsync(
         kinds: [EventKind.CASHU_NUTZAP],
         pTags: [cm.pubkey],
-        // pubkeys: [currentSigner!.getPublicKey()],
       );
-
-      //  await NostrFunctionsRepository.deleteEvents(
-      //     eventIds: events.map((e) => e.id).toList());
 
       final history = await cashuApi.getHistory();
       final redeemedEventIds = <String>{};
@@ -139,6 +135,7 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
             walletMints.first,
           );
         }
+
         cancel();
         return true;
       } else {
@@ -187,13 +184,16 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
 
     final cancel = BotToastUtils.showLoading();
 
-    final isSuccess = await cashuApi.createWallet(mints);
+    final isSuccess = await cashuApi.createWallet(mints, log: (status) {
+      lg.i(status);
+      botUtilsLoadingProgressCubit.emitStatus(status);
+    });
 
     cancel();
 
-    final walletMints = cm.wallet!.mints;
-
     if (isSuccess) {
+      final walletMints = cm.wallet!.mints;
+
       _emit(
         state.copyWith(
           mints: cm.mints,

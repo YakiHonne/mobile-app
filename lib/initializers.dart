@@ -30,6 +30,7 @@ import 'logic/media_servers_cubit/media_servers_cubit.dart';
 import 'logic/metadata_cubit/metadata_cubit.dart';
 import 'logic/notes_events_cubit/notes_events_cubit.dart';
 import 'logic/notifications_cubit/notifications_cubit.dart';
+import 'logic/packs_settings_cubit/packs_settings_cubit.dart';
 import 'logic/points_management_cubit/points_management_cubit.dart';
 import 'logic/relay_info_cubit/relay_info_cubit.dart';
 import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
@@ -93,8 +94,10 @@ class AppInitializer {
   /// Initialize Nostr core
   static Future<void> _initializeNostrCore() async {
     nc = NostrCore(loadRemoteCache: false);
-    _initRemoteCache();
-    await nc.db.init();
+    await Future.wait([
+      _initRemoteCache().timeout(const Duration(seconds: 2)),
+      nc.db.init(),
+    ]);
   }
 
   static Future<void> _initRemoteCache() async {
@@ -137,7 +140,7 @@ class AppInitializer {
     // Initialize analytics (non-critical)
     try {
       umamiAnalytics = UmamiAnalytics();
-      await umamiAnalytics.getUserAgent();
+      unawaited(umamiAnalytics.init());
     } catch (e) {
       if (kDebugMode) {
         print('Analytics initialization failed: $e');
@@ -207,6 +210,7 @@ class AppInitializer {
     videoControllerManagerCubit = VideoControllerManagerCubit();
     routingCubit = RoutingCubit();
     routingCubit.routingViewInit();
+    packsSettingsCubit = PacksSettingsCubit();
   }
 
   static void _initFeedCubits() {
@@ -277,6 +281,7 @@ class AppInitializer {
       nostrRepository.routingInitData(),
       appSettingsManagerCubit.loadAppSharedSettings(),
       relayInfoCubit.initRelays(),
+      packsSettingsCubit.initPacks(),
     ]);
 
     // Connect to relays

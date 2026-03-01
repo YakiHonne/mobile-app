@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
+import 'package:nostr_core_enhanced/nostr_core.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
@@ -30,7 +31,8 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
         );
 
   Event? toBeSubmittedEvent;
-  String? relay;
+  DateTime? scheduledPaid;
+  List<String>? relays;
 
   void addImage(List<String> link) {
     if (!isClosed) {
@@ -71,6 +73,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     required Function() onPaymentProcess,
     Map<String, dynamic>? replyContent,
     String? selectedExternalRelay,
+    DateTime? scheduled,
   }) async {
     toBeSubmittedEvent = null;
     final ae = state.quotedContent;
@@ -180,6 +183,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       tags: tags,
       content: updatedContent,
       signer: signer,
+      createdAt: scheduled?.toSecondsSinceEpoch() ?? 0,
     );
 
     if (event == null) {
@@ -195,10 +199,12 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
         onSuccess: onSuccess,
         replyContent: replyContent,
         relay: relay,
+        scheduled: scheduled,
       );
     } else {
       toBeSubmittedEvent = event;
-      this.relay = relay;
+      scheduledPaid = scheduled;
+      relays = [relay!];
       onPaymentProcess.call();
     }
 
@@ -210,6 +216,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     required Function(Event) onSuccess,
     Map<String, dynamic>? replyContent,
     String? relay,
+    DateTime? scheduled,
   }) async {
     String? pubkey;
     if (state.isQuotedContentAvailable) {
@@ -233,16 +240,27 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       return;
     }
 
-    final isSuccessful = await NostrFunctionsRepository.sendEvent(
-      event: event,
-      relays: relays,
-      setProgress: true,
-      destinationPubkey: pubkey,
-    );
+    bool isSuccessful;
+
+    if (scheduled != null) {
+      isSuccessful = await submitEventScheduled(
+        event: event,
+        relays: relays,
+      );
+    } else {
+      isSuccessful = await NostrFunctionsRepository.sendEvent(
+        event: event,
+        relays: relays,
+        setProgress: true,
+        destinationPubkey: pubkey,
+      );
+    }
 
     if (isSuccessful) {
       BotToastUtils.showSuccess(
-        t.notePublished.capitalizeFirst(),
+        scheduled != null
+            ? t.noteScheduled.capitalizeFirst()
+            : t.notePublished.capitalizeFirst(),
       );
       resetDraft(replyContent);
       onSuccess.call(event);
@@ -272,15 +290,25 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     );
 
     if (isChecked) {
-      final isSuccessful = await NostrFunctionsRepository.sendEvent(
-        event: toBeSubmittedEvent!,
-        relays: relay != null ? [relay!] : currentUserRelayList.writes,
-        setProgress: true,
-      );
+      bool isSuccessful;
+      final rs = relays ?? currentUserRelayList.writes;
+
+      if (scheduledPaid != null) {
+        isSuccessful =
+            await submitEventScheduled(event: toBeSubmittedEvent!, relays: rs);
+      } else {
+        isSuccessful = await NostrFunctionsRepository.sendEvent(
+          event: toBeSubmittedEvent!,
+          relays: rs,
+          setProgress: true,
+        );
+      }
 
       if (isSuccessful) {
         BotToastUtils.showSuccess(
-          t.paidNotePublished.capitalizeFirst(),
+          scheduledPaid != null
+              ? t.paidNoteScheduled.capitalizeFirst()
+              : t.paidNotePublished.capitalizeFirst(),
         );
         resetDraft(null);
         onSuccess.call();
@@ -297,5 +325,42 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
         t.invoiceNotPayed.capitalizeFirst(),
       );
     }
+  }
+
+  Future<bool> submitEventScheduled({
+    required Event event,
+    required List<String> relays,
+  }) async {
+    final dvmMaster = await NostrFunctionsRepository.getDvmMasterResponse();
+
+    if (dvmMaster == null) {
+      BotToastUtils.showError(
+        t.errorSendingEvent.capitalizeFirst(),
+      );
+
+      return false;
+    }
+
+    final giftWrap = await dvmMaster.generateScheduleEvent(
+      relays: relays,
+      event: event,
+      dvmPubkey: DEFAULT_SCHEDULE_DVM_PUBKEY,
+      signer: currentSigner!,
+    );
+
+    if (giftWrap == null) {
+      BotToastUtils.showError(
+        t.errorSendingEvent.capitalizeFirst(),
+      );
+      return false;
+    }
+
+    final isSuccessful = await NostrFunctionsRepository.sendEvent(
+      event: giftWrap,
+      relays: dvmMaster.relays,
+      setProgress: true,
+    );
+
+    return isSuccessful;
   }
 }

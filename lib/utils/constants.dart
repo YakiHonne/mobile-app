@@ -9,11 +9,12 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v2.0.1+183';
+const String appVersion = 'v2.0.2+184';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
+const baseUrl2 = 'www.yakihonne.com';
 const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const pointsUrl = 'https://api.yakihonne.com/api/v1/';

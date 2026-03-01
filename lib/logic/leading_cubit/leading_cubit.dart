@@ -5,10 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
+import 'package:nostr_core_enhanced/nostr_core.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
@@ -223,6 +225,11 @@ class LeadingCubit extends Cubit<LeadingState> {
               f: f,
               isExtra: true,
             );
+          } else if (currentSelectedSource.key == AppContentSource.packs) {
+            content = await getLeadingFeedPacksEvents(
+              since: since,
+              limit: 20,
+            );
           } else {
             content = await getLeadingFeedRelayEvents(
               since: since,
@@ -315,6 +322,10 @@ class LeadingCubit extends Cubit<LeadingState> {
       await buildLeadingFeedFromCommunity(
         isAdding: isAdding,
       );
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      await buildLeadingFeedFromPacks(
+        isAdding: isAdding,
+      );
     } else {
       await buildLeadingFeedFromRelays(
         isAdding: isAdding,
@@ -322,6 +333,36 @@ class LeadingCubit extends Cubit<LeadingState> {
     }
 
     getExtra();
+  }
+
+  Future<void> buildLeadingFeedFromPacks({
+    required bool isAdding,
+  }) async {
+    final f = appSettingsManagerCubit.getSelectedNotesFilter();
+    final val = appSettingsManagerCubit.state.selectedNotesSource.value;
+
+    if (val is PacksModel) {
+      final until = (!isAdding && f.to != null)
+          ? f.to
+          : state.content.isNotEmpty
+              ? state.content.last.createdAt - 1
+              : null;
+      final events = await getLeadingFeedPacksEvents(
+        until: until,
+        limit: 50,
+      );
+
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            content: events,
+            onContentLoading: false,
+            onAddingData:
+                events.isEmpty ? UpdatingState.idle : UpdatingState.success,
+          ),
+        );
+      }
+    }
   }
 
   /// Build the leading feed from community sources
@@ -373,9 +414,11 @@ class LeadingCubit extends Cubit<LeadingState> {
             ? CommonFeedTypes.recent
             : source.value == SOURCE_RECENT_WITH_REPLIES
                 ? CommonFeedTypes.recentWithReplies
-                : source.value == SOURCE_PAID
-                    ? CommonFeedTypes.paid
-                    : CommonFeedTypes.widgets;
+                : source.value == SOURCE_TRENDING
+                    ? CommonFeedTypes.trending
+                    : source.value == SOURCE_PAID
+                        ? CommonFeedTypes.paid
+                        : CommonFeedTypes.widgets;
 
     final usePubkeys = type == CommonFeedTypes.recent ||
         type == CommonFeedTypes.recentWithReplies ||
@@ -416,6 +459,7 @@ class LeadingCubit extends Cubit<LeadingState> {
       type: type,
       pubkeys: pubkeys,
       since: since ?? f.from,
+      relays: type == CommonFeedTypes.trending ? DEFAULT_TRENDING_RELAYS : null,
     );
 
     final filtered = applyNotesFilter(content);
@@ -468,7 +512,9 @@ class LeadingCubit extends Cubit<LeadingState> {
       relays: val != null
           ? val is String
               ? [val]
-              : (val as UserRelaySet).relays
+              : val is UserRelaySet
+                  ? val.relays
+                  : []
           : [],
       until: until,
       limit: 50,
@@ -478,21 +524,25 @@ class LeadingCubit extends Cubit<LeadingState> {
     return applyNotesFilter(content, removeMuted: true);
   }
 
-  /// Build the leading feed from DVM (Decentralized Virtual Machine) data
-  /// Build the leading feed from DVM (Decentralized Virtual Machine) data
-  Future<void> buildLeadingFeedFromDvm() async {
-    final content = await NostrFunctionsRepository.getLeadingDvmData(
-      pubkey: appSettingsManagerCubit.state.selectedNotesSource.key,
-    );
+  Future<List<Event>> getLeadingFeedPacksEvents({
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    final val = appSettingsManagerCubit.state.selectedNotesSource.value;
 
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          content: applyNotesFilter(content),
-          onContentLoading: false,
-          onAddingData: UpdatingState.idle,
-        ),
+    if (val is PacksModel) {
+      final pubkeys = val.pubkeys.toList();
+      final content = await NostrFunctionsRepository.getLeadingPacksData(
+        until: until,
+        limit: limit,
+        since: since,
+        pubkeys: pubkeys,
       );
+
+      return applyNotesFilter(content, removeMuted: true);
+    } else {
+      return [];
     }
   }
 

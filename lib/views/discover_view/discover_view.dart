@@ -11,6 +11,7 @@ import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../utils/utils.dart';
 import '../leading_view/leading_view.dart';
@@ -268,15 +269,17 @@ class SourceButton extends HookWidget {
                 final title = source.key == AppContentSource.relay
                     ? Relay.removeSocket(source.value.value) ??
                         source.value.value
-                    : source.key == AppContentSource.relaySet
-                        ? (source.value.value as UserRelaySet).getTitle()
-                        : getSourceName(
-                            name: viewType == ViewDataTypes.articles
-                                ? state.selectedDiscoverSource.value
-                                : viewType == ViewDataTypes.notes
-                                    ? state.selectedNotesSource.value
-                                    : state.selectedMediaSource.value,
-                          ).capitalizeFirst();
+                    : source.key == AppContentSource.packs
+                        ? (source.value.value as PacksModel).title
+                        : source.key == AppContentSource.relaySet
+                            ? (source.value.value as UserRelaySet).getTitle()
+                            : getSourceName(
+                                name: viewType == ViewDataTypes.articles
+                                    ? state.selectedDiscoverSource.value
+                                    : viewType == ViewDataTypes.notes
+                                        ? state.selectedNotesSource.value
+                                        : state.selectedMediaSource.value,
+                              ).capitalizeFirst();
 
                 return Text(
                   title,
@@ -333,15 +336,23 @@ class SourceImage extends StatelessWidget {
               alignment: Alignment.center,
               child: source.key == AppContentSource.community
                   ? getCommunityImage(context: context, url: source.value.value)
-                  : source.key == AppContentSource.relaySet
-                      ? getRelaySetImage(
-                          context: context,
-                          url: (source.value.value as UserRelaySet).image,
+                  : source.key == AppContentSource.packs
+                      ? CommonThumbnail(
+                          image: (source.value.value as PacksModel).image,
+                          width: 26,
+                          height: 26,
+                          isRound: true,
+                          radius: kDefaultPadding / 4,
                         )
-                      : getRelayImage(
-                          context: context,
-                          url: source.value.value,
-                        ),
+                      : source.key == AppContentSource.relaySet
+                          ? getRelaySetImage(
+                              context: context,
+                              url: (source.value.value as UserRelaySet).image,
+                            )
+                          : getRelayImage(
+                              context: context,
+                              url: source.value.value,
+                            ),
             ),
           ),
         );

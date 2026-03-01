@@ -183,14 +183,19 @@ class ReorderSettingsView extends HookWidget {
             notesSources: c.contentSources.notesSources.copyWith(
               communityFeed: NotesCommunityFeed(
                 index: feed.index,
-                recent: options.firstWhere((option) => option.name == 'recent'),
+                recent: options
+                    .firstWhere((option) => option.name == SOURCE_RECENT),
                 recentWithReplies: options.firstWhere(
-                  (option) => option.name == 'recent_with_replies',
+                  (option) => option.name == SOURCE_RECENT_WITH_REPLIES,
                 ),
-                global: options.firstWhere((option) => option.name == 'global'),
-                paid: options.firstWhere((option) => option.name == 'paid'),
-                widgets:
-                    options.firstWhere((option) => option.name == 'widgets'),
+                trending: options
+                    .firstWhere((option) => option.name == SOURCE_TRENDING),
+                global: options
+                    .firstWhere((option) => option.name == SOURCE_GLOBAL),
+                paid:
+                    options.firstWhere((option) => option.name == SOURCE_PAID),
+                widgets: options
+                    .firstWhere((option) => option.name == SOURCE_WIDGETS),
               ),
             ),
           ),
@@ -321,12 +326,15 @@ class ReorderSettingsView extends HookWidget {
 
         final ns = NotesCommunityFeed(
           index: feed.index,
-          recent: options.firstWhere((option) => option.name == 'recent'),
-          recentWithReplies: options
-              .firstWhere((option) => option.name == 'recent_with_replies'),
-          global: options.firstWhere((option) => option.name == 'global'),
-          paid: options.firstWhere((option) => option.name == 'paid'),
-          widgets: options.firstWhere((option) => option.name == 'widgets'),
+          recent: options.firstWhere((option) => option.name == SOURCE_RECENT),
+          recentWithReplies: options.firstWhere(
+              (option) => option.name == SOURCE_RECENT_WITH_REPLIES),
+          trending:
+              options.firstWhere((option) => option.name == SOURCE_TRENDING),
+          global: options.firstWhere((option) => option.name == SOURCE_GLOBAL),
+          paid: options.firstWhere((option) => option.name == SOURCE_PAID),
+          widgets:
+              options.firstWhere((option) => option.name == SOURCE_WIDGETS),
         );
 
         currentAppSettings.value = c.copyWith(

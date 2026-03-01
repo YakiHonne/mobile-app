@@ -258,6 +258,7 @@ class _NotificationGlobalContainerState
       }
     } else {
       final page = getView(widget.mainEvent);
+
       if (page != null) {
         YNavigator.pushPage(
           context,
