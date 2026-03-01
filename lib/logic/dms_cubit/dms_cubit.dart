@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -43,6 +44,7 @@ class DmsCubit extends Cubit<DmsState>
             selectedTime: 0,
             isLoadingHistory: false,
             dmDataState: DmDataState.enabled,
+            pendingEventIds: const {},
           ),
         ) {
     nostrRepository.isUsingNip44 = localDatabaseRepository.isUsingNip44();
@@ -79,6 +81,8 @@ class DmsCubit extends Cubit<DmsState>
   bool showDmsRelayMessage = false;
   bool _isStreamingMode = false;
   Set<String> _processedEventIds = {};
+  final Queue<Future<void> Function()> _sendQueue = Queue();
+  bool _isSending = false;
 
   // Get WoT score for DM sender (uses core caching)
   Future<double> _getDmWotScore(String senderPubkey) async {
@@ -237,140 +241,279 @@ class DmsCubit extends Cubit<DmsState>
     Function() onSuccessful,
   ) async {
     try {
-      _emit(
-        state.copyWith(
-          isSendingMessage: true,
-        ),
-      );
+      final tempId = 'temp-${Helpers.now}-${text.hashCode}';
+      final shellEvent = Event.partial(
+        kind: state.isUsingNip44
+            ? EventKind.PRIVATE_DIRECT_MESSAGE
+            : EventKind.DIRECT_MESSAGE,
+        tags: [
+          if (replayId != null) ['e', replayId],
+          ['p', pubkey],
+        ],
+        content: text,
+        pubkey: currentSigner!.getPublicKey(),
+        createdAt: Helpers.now,
+      )..id = tempId;
 
-      late Event event;
-      bool isSuccessful = true;
+      // Optimistically add to UI immediately
+      _addEventAndEmitImmediate(pubkey, shellEvent);
+      _updatePendingStatus(tempId, true);
+      onSuccessful.call();
 
-      if (state.isUsingNip44) {
-        final pmEvent = Event.withoutSignature(
-          kind: EventKind.PRIVATE_DIRECT_MESSAGE,
-          tags: [
-            if (replayId != null) ['e', replayId],
-            [
-              'p',
+      _sendQueue.add(() async {
+        try {
+          late Event realEvent;
+
+          final relays = await getDmInboxRelays(
+            pubkey,
+            forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
+          );
+          searchDmRelaysPubkeys.add(pubkey);
+
+          if (state.isUsingNip44) {
+            final pmEvent = Event.withoutSignature(
+              kind: EventKind.PRIVATE_DIRECT_MESSAGE,
+              tags: [
+                if (replayId != null) ['e', replayId],
+                ['p', pubkey],
+              ],
+              content: text,
+              pubkey: currentSigner!.getPublicKey(),
+            );
+
+            final receiverEvent = await currentSigner!.encrypt44Event(
+              pmEvent,
               pubkey,
-            ],
-          ],
-          content: text,
-          pubkey: currentSigner!.getPublicKey(),
-        );
+            );
 
-        final receiverEvent = await currentSigner!.encrypt44Event(
-          pmEvent,
-          pubkey,
-        );
+            final senderEvent = await currentSigner!.encrypt44Event(
+              pmEvent,
+              currentSigner!.getPublicKey(),
+            );
 
-        final senderEvent = await currentSigner!.encrypt44Event(
-          pmEvent,
-          currentSigner!.getPublicKey(),
-        );
+            await currentSigner!.sign(pmEvent);
+            realEvent = pmEvent;
 
-        if (senderEvent == null || receiverEvent == null) {
-          _emit(
-            state.copyWith(
-              isSendingMessage: false,
-            ),
-          );
+            // Swap shell with real event immediately
+            _removeEventsAndEmitImmediate(pubkey, [tempId]);
+            _updatePendingStatus(tempId, false);
+            _addEventAndEmitImmediate(pubkey, realEvent);
+            _updatePendingStatus(realEvent.id, true);
 
-          BotToastUtils.showError(
-            t.zapSplitsMessage.capitalizeFirst(),
-          );
-          return;
-        }
+            if (senderEvent == null || receiverEvent == null) {
+              _onMessageSentFailed(pubkey, tempId);
+              return;
+            }
 
-        final relays = await getDmInboxRelays(
-          pubkey,
-          forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
-        );
+            final successList = await Future.wait([
+              NostrFunctionsRepository.sendEvent(
+                event: receiverEvent,
+                relays: relays,
+                setProgress: false,
+              ),
+              NostrFunctionsRepository.sendEvent(
+                event: senderEvent,
+                relays: relays,
+                setProgress: false,
+              ),
+            ]);
 
-        searchDmRelaysPubkeys.add(pubkey);
+            if (successList.first && successList.last) {
+              _onMessageSentSuccess(pubkey);
+            } else {
+              _onMessageSentFailed(pubkey, realEvent.id);
+            }
+            _updatePendingStatus(realEvent.id, false);
+          } else {
+            final encryptedEvent = await currentSigner!.encrypt04Event(
+              text,
+              pubkey,
+              replyId: replayId,
+            );
 
-        final successList = await Future.wait(
-          [
-            NostrFunctionsRepository.sendEvent(
-              event: receiverEvent,
+            if (encryptedEvent == null) {
+              _onMessageSentFailed(pubkey, tempId);
+              return;
+            }
+
+            realEvent = encryptedEvent;
+
+            // Swap shell with real event immediately
+            _removeEventsAndEmitImmediate(pubkey, [tempId]);
+            _updatePendingStatus(tempId, false);
+            _addEventAndEmitImmediate(pubkey, realEvent);
+            _updatePendingStatus(realEvent.id, true);
+
+            final isSuccessful = await NostrFunctionsRepository.sendEvent(
+              event: realEvent,
               relays: relays,
               setProgress: false,
-            ),
-            NostrFunctionsRepository.sendEvent(
-              event: senderEvent,
-              relays: relays,
-              setProgress: false,
-            ),
-          ],
-        );
+            );
 
-        isSuccessful = successList.first && successList.last;
-        event = senderEvent;
-      } else {
-        final relays = await getDmInboxRelays(
-          pubkey,
-          forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
-        );
-
-        searchDmRelaysPubkeys.add(pubkey);
-
-        final receivedEvent = await currentSigner!.encrypt04Event(
-          text,
-          pubkey,
-          replyId: replayId,
-        );
-
-        if (receivedEvent == null) {
-          _emit(
-            state.copyWith(
-              isSendingMessage: false,
-            ),
-          );
-
-          BotToastUtils.showError(
-            t.errorSigningEvent.capitalizeFirst(),
-          );
-
-          return;
+            if (isSuccessful) {
+              _onMessageSentSuccess(pubkey);
+            } else {
+              _onMessageSentFailed(pubkey, realEvent.id);
+            }
+            _updatePendingStatus(realEvent.id, false);
+          }
+        } catch (_) {
+          _onMessageSentFailed(pubkey, tempId);
+          _updatePendingStatus(tempId, false);
         }
+      });
 
-        event = receivedEvent;
-        isSuccessful = await NostrFunctionsRepository.sendEvent(
-          event: event,
-          relays: relays,
-          setProgress: false,
-        );
-      }
-
-      if (isSuccessful) {
-        if (pubkey == yakihonneHex) {
-          HttpFunctionsRepository.sendAction(PointsActions.DMSYAKI);
-        } else {
-          HttpFunctionsRepository.sendAction(PointsActions.DMS);
-        }
-
-        addEventAndUpdateReadedTime(pubkey, event);
-        onSuccessful.call();
-      } else {
-        BotToastUtils.showError(
-          t.errorSendingEvent.capitalizeFirst(),
-        );
-      }
-
-      _emit(
-        state.copyWith(
-          isSendingMessage: false,
-        ),
-      );
+      _processSendQueue();
     } catch (_) {
       BotToastUtils.showError(
         t.errorSendingMessage.capitalizeFirst(),
       );
+    }
+  }
+
+  Future<void> _processSendQueue() async {
+    if (_isSending || _sendQueue.isEmpty) {
+      return;
+    }
+
+    _isSending = true;
+
+    final task = _sendQueue.removeFirst();
+    await task();
+
+    _isSending = false;
+    _processSendQueue();
+  }
+
+  void _updatePendingStatus(String eventId, bool isPending) {
+    final pendingEventIds = Set<String>.from(state.pendingEventIds);
+    if (isPending) {
+      pendingEventIds.add(eventId);
+    } else {
+      pendingEventIds.remove(eventId);
+    }
+    _emit(state.copyWith(pendingEventIds: pendingEventIds));
+  }
+
+  void _onMessageSentSuccess(String pubkey) {
+    if (pubkey == yakihonneHex) {
+      HttpFunctionsRepository.sendAction(PointsActions.DMSYAKI);
+    } else {
+      HttpFunctionsRepository.sendAction(PointsActions.DMS);
+    }
+  }
+
+  void _onMessageSentFailed(String pubkey, String eventId) {
+    BotToastUtils.showError(
+      t.errorSendingEvent.capitalizeFirst(),
+    );
+    _removeEventsAndEmitImmediate(pubkey, [eventId]);
+  }
+
+  void _addEventAndEmitImmediate(String pubkey, Event event) {
+    if (event.id.startsWith('temp-')) {
+      _processedEventIds.remove(event.id); // Don't block real event later
+    } else {
+      _processedEventIds.add(event.id);
+    }
+
+    final dms = Map<String, DMSessionDetail>.from(state.dmSessionDetails);
+    DMSessionDetail? dmSessionDetail = dms[pubkey];
+
+    if (dmSessionDetail == null) {
+      dmSessionDetail = DMSessionDetail(
+        dmSession: DMSession(pubkey: pubkey),
+        info: DMSessionInfo(
+          id: '${currentSigner!.getPublicKey()}+$pubkey',
+          peerPubkey: pubkey,
+          ownPubkey: currentSigner!.getPublicKey(),
+          readTime: 0,
+        ),
+        dmsType: DmsType.unknown,
+      );
+    } else {
+      dmSessionDetail = dmSessionDetail.copyWith(
+          dmSession: dmSessionDetail.dmSession.clone());
+    }
+
+    if (dmSessionDetail.dmSession.addEvent(event)) {
+      if (contactListCubit.contacts.contains(pubkey)) {
+        dms[pubkey] = dmSessionDetail.copyWith(dmsType: DmsType.followings);
+      } else if (dmSessionDetail.dmSession
+          .doesEventExist(currentSigner!.getPublicKey())) {
+        dms[pubkey] = dmSessionDetail.copyWith(dmsType: DmsType.known);
+      } else {
+        dms[pubkey] = dmSessionDetail;
+      }
 
       _emit(
         state.copyWith(
-          isSendingMessage: false,
+          dmSessionDetails: dms,
+          rebuild: !state.rebuild,
+        ),
+      );
+    }
+
+    updateReadedTime(pubkey);
+  }
+
+  Future<void> deleteMessage(String pubkey, String eventId) async {
+    await deleteMessages(pubkey, [eventId]);
+  }
+
+  Future<void> deleteMessages(String pubkey, List<String> eventIds) async {
+    final myPubkey = currentSigner?.getPublicKey();
+    if (myPubkey == null) {
+      return;
+    }
+
+    final sessionDetail = state.dmSessionDetails[pubkey];
+    if (sessionDetail == null) {
+      return;
+    }
+
+    final deletableIds = eventIds.where((id) {
+      final event = sessionDetail.dmSession.getById(id);
+      return event != null && event.pubkey == myPubkey;
+    }).toList();
+
+    if (deletableIds.isEmpty) {
+      return;
+    }
+
+    final isSuccessful = await NostrFunctionsRepository.deleteEvents(
+      eventIds: deletableIds,
+    );
+
+    if (isSuccessful) {
+      _removeEventsAndEmitImmediate(pubkey, deletableIds);
+      BotToastUtils.showSuccess(
+        t.messageDeleted.capitalizeFirst(),
+      );
+    } else {
+      BotToastUtils.showError(
+        t.errorDeletingMessage.capitalizeFirst(),
+      );
+    }
+  }
+
+  void removeEvent(String pubkey, String eventId) {
+    _removeEventsAndEmitImmediate(pubkey, [eventId]);
+  }
+
+  void _removeEventsAndEmitImmediate(String pubkey, List<String> eventIds) {
+    eventIds.forEach(_processedEventIds.remove);
+
+    final dms = Map<String, DMSessionDetail>.from(state.dmSessionDetails);
+    final sessionDetail = dms[pubkey];
+    if (sessionDetail != null) {
+      final session = sessionDetail.dmSession.clone();
+      eventIds.forEach(session.removeEvent);
+      dms[pubkey] = sessionDetail.copyWith(dmSession: session);
+      _emit(
+        state.copyWith(
+          dmSessionDetails: dms,
+          rebuild: !state.rebuild,
         ),
       );
     }
@@ -480,6 +623,7 @@ class DmsCubit extends Cubit<DmsState>
         selectedTime: 0,
         isLoadingHistory: false,
         dmDataState: DmDataState.enabled,
+        pendingEventIds: const {},
       ),
     );
 
@@ -531,6 +675,10 @@ class DmsCubit extends Cubit<DmsState>
     required int since,
     required int until,
   }) async {
+    if (!canSign()) {
+      return;
+    }
+
     final events = await NostrFunctionsRepository.getUserDmsAsync(
       since: since,
       until: until,
@@ -751,6 +899,10 @@ class DmsCubit extends Cubit<DmsState>
 
   // MODIFIED: Query only processes truly new events
   Future<void> query() async {
+    if (!canSign()) {
+      return;
+    }
+
     await Future.delayed(const Duration(seconds: 2));
 
     if (dmsSubscriptionId != null) {
@@ -963,7 +1115,9 @@ class DmsCubit extends Cubit<DmsState>
     for (final event in events) {
       final addResult = _addEventWithoutEmit(event); // Don't emit state here
       if (addResult) {
-        toSave.add(event);
+        if (!event.id.startsWith('temp-')) {
+          toSave.add(event);
+        }
         updated = true;
       }
     }
@@ -1268,6 +1422,7 @@ class DmsCubit extends Cubit<DmsState>
         selectedTime: 0,
         isLoadingHistory: false,
         dmDataState: DmDataState.enabled,
+        pendingEventIds: const {},
       ),
     );
   }

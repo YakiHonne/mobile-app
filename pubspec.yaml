@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.1+183
+version: 2.0.2+184
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -24,14 +24,14 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
-  chewie: ^1.10.0
+  chewie: ^1.13.0
   connectivity_plus: ^6.0.5
   convert: ^3.1.1
   cookie_jar: ^4.0.8
   crypto: ^3.0.6
   custom_sliding_segmented_control: ^1.8.3
   deepl_dart: ^1.5.0
-  device_info_plus: ^10.1.2
+  device_info_plus: ^12.3.0
   dio: ^5.2.1+1
   dio_cookie_manager: ^3.1.0+1
   dropdown_button2: ^2.3.9
@@ -80,7 +80,7 @@ dependencies:
   image_picker: ^1.2.1
   interactiveviewer_gallery_plus: ^0.1.0
   intl: ^0.20.2
-  just_audio: ^0.9.39
+  just_audio: ^0.10.5
   logger: ^2.4.0
   lottie: ^3.1.2
   markdown: ^7.3.0
@@ -115,7 +115,7 @@ dependencies:
   sentry_dart_plugin: ^3.1.1
   sentry_flutter: ^9.4.1
   share_handler: ^0.0.25
-  share_plus: ^10.0.2
+  share_plus: ^12.0.1
   shared_preferences: ^2.5.3
   sizer: ^2.0.14
   skeletonizer: ^2.1.0+1
@@ -151,6 +151,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/icon.png
     - assets/icons/features/
     - assets/icons/logos/
     - assets/icons/toasts/
@@ -174,3 +175,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/DMSans-Regular.ttf
           weight: 400
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf

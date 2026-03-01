@@ -30,8 +30,8 @@ import '../../../widgets/tag_container.dart';
 import '../home/dashboard_containers.dart';
 
 final dashboardArticleFilter = [
-  'Published',
-  'Drafts',
+  t.published,
+  t.drafts,
 ];
 
 class ContentDashboard extends StatefulWidget {

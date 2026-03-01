@@ -911,11 +911,15 @@ class SearchAuthorContainer extends HookWidget {
     required this.metadata,
     required this.youFollow,
     this.onClick,
+    this.hasAction = false,
+    this.isAdded = false,
   });
 
   final Metadata metadata;
   final Function()? onClick;
   final bool youFollow;
+  final bool hasAction;
+  final bool isAdded;
 
   @override
   Widget build(BuildContext context) {
@@ -959,6 +963,17 @@ class SearchAuthorContainer extends HookWidget {
               ],
             ),
           ),
+          if (hasAction)
+            CustomIconButton(
+              onClicked: onClick ?? () {},
+              icon: isAdded
+                  ? FeatureIcons.profileRemove
+                  : FeatureIcons.profileAdd,
+              size: 17,
+              backgroundColor: isAdded
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).cardColor,
+            ),
         ],
       ),
     );

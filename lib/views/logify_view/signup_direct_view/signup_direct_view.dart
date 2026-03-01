@@ -67,10 +67,11 @@ class LoginDirectView extends HookWidget {
             child: OutlinedButton(
               onPressed: () {
                 context.read<LogifyCubit>().loginWithAmber(
-                  onSuccess: () {
-                    Navigator.pop(context);
-                  },
-                );
+                      context: context,
+                      onSuccess: () {
+                        Navigator.pop(context);
+                      },
+                    );
               },
               child: Text(
                 context.t.useAmber.capitalizeFirst(),
@@ -212,6 +213,7 @@ class LoginDirectView extends HookWidget {
                     key: textEditingController.text.trim(),
                     isExternalSigner: false,
                     newKey: false,
+                    context: context,
                     onSuccess: () {
                       Navigator.pop(context);
                     },

@@ -40,6 +40,7 @@ class PullDownGlobalButton extends StatelessWidget {
     this.muteEventStatus = false,
     this.bookmarkStatus = false,
     this.secureMessagesStatus = false,
+    this.enableReschedule = false,
     this.onZap,
     this.onSecureMessage,
     this.onRefresh,
@@ -71,6 +72,8 @@ class PullDownGlobalButton extends StatelessWidget {
     this.visualDensity,
     this.onMuteActionSuccess,
     this.onRepublish,
+    this.onReschedule,
+    this.publishTitle,
   });
 
   final BaseEventModel model;
@@ -100,6 +103,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final bool enableSecureMessage;
   final bool enableRepublish;
   final bool enablePin;
+  final bool enableReschedule;
 
   final Function()? onRefresh;
   final Function()? onShowUserRelays;
@@ -126,6 +130,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Function()? onRepublish;
   final Function()? onPin;
   final Function(String, bool)? onMuteActionSuccess;
+  final Function()? onReschedule;
 
   final bool muteStatus;
   final bool muteEventStatus;
@@ -138,6 +143,7 @@ class PullDownGlobalButton extends StatelessWidget {
   final Color? buttonColor;
   final Color? iconColor;
   final double? visualDensity;
+  final String? publishTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -338,7 +344,7 @@ class PullDownGlobalButton extends StatelessWidget {
           if (canSign() && enableRepublish)
             _pullDownItem(
               context: context,
-              title: context.t.republish.capitalizeFirst(),
+              title: publishTitle ?? context.t.republish.capitalizeFirst(),
               icon: FeatureIcons.republish,
               onTap: () => onRepublish != null
                   ? onRepublish!.call()
@@ -364,6 +370,13 @@ class PullDownGlobalButton extends StatelessWidget {
               onTap: () => onShare != null
                   ? onShare!.call()
                   : PdmCommonActions.shareBaseEventModel(context, model),
+            ),
+          if (canSign() && enableReschedule)
+            _pullDownItem(
+              context: context,
+              title: context.t.reschedule.capitalizeFirst(),
+              onTap: () => onReschedule?.call(),
+              icon: FeatureIcons.calendar,
             ),
           if (canSign() && (enableMute || enableDelete))
             const PullDownMenuDivider.large(),

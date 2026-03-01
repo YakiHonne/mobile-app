@@ -9,7 +9,6 @@ import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/event.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
@@ -389,12 +388,9 @@ class CurationCubit extends Cubit<CurationState> {
       id: curation.identifier,
     );
 
-    Share.share(
-      res,
+    shareContent(
+      text: res,
       subject: 'Check out www.yakihonne.com for me more articles.',
-      sharePositionOrigin: renderBox != null
-          ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-          : null,
     );
   }
 

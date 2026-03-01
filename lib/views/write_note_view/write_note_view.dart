@@ -51,6 +51,7 @@ class AddReply extends HookWidget {
   Widget build(BuildContext context) {
     final replyId = useState<String?>(null);
     final signer = useState(currentSigner!);
+    final scheduled = useState<DateTime?>(null);
     final controller = useMemoized(() {
       replyId.value = getReplyId(replyContent);
       return MentionTagTextEditingController();
@@ -127,7 +128,7 @@ class AddReply extends HookWidget {
                             fontWeight: FontWeight.w800,
                           ),
                     ),
-                    _publishNote(controller, signer),
+                    _publishNote(controller, signer, scheduled),
                   ],
                 ),
               ),
@@ -141,6 +142,7 @@ class AddReply extends HookWidget {
                   isMention: isMention,
                   attachedEvent: attachedEvent,
                   replyId: replyId.value,
+                  scheduled: scheduled,
                   scrollController: scrollController,
                   signer: signer,
                   onSignerChanged: (s) {
@@ -157,7 +159,8 @@ class AddReply extends HookWidget {
 
   BlocBuilder<WriteNoteCubit, WriteNoteState> _publishNote(
       MentionTagTextEditingController controller,
-      ValueNotifier<EventSigner> signer) {
+      ValueNotifier<EventSigner> signer,
+      ValueNotifier<DateTime?> scheduled) {
     return BlocBuilder<WriteNoteCubit, WriteNoteState>(
       builder: (context, state) {
         return CustomIconButton(
@@ -166,6 +169,7 @@ class AddReply extends HookWidget {
                   content: getRawText(controller),
                   replyContent: replyContent,
                   signer: signer.value,
+                  scheduled: scheduled.value,
                   useSourceRelay: false,
                   isPaid: false,
                   onPaymentProcess: () {
@@ -211,6 +215,7 @@ class NoteWritingComponent extends HookWidget {
     this.isMention,
     this.isNewNote,
     this.replyId,
+    required this.scheduled,
     this.isPaid,
     this.useSourceRelay,
     required this.controller,
@@ -226,6 +231,7 @@ class NoteWritingComponent extends HookWidget {
   final String? replyId;
   final MentionTagTextEditingController controller;
   final ValueNotifier<bool>? isPaid;
+  final ValueNotifier<DateTime?> scheduled;
   final ValueNotifier<bool>? useSourceRelay;
   final ValueNotifier<EventSigner> signer;
   final Function(EventSigner) onSignerChanged;
@@ -320,6 +326,7 @@ class NoteWritingComponent extends HookWidget {
             onTextChangedDebounced();
           },
           isPaid: isPaid,
+          scheduled: scheduled,
           isNewNote: isNewNote,
           controller: controller,
           mention: mention,

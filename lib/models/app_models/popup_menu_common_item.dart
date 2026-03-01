@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:string_validator/string_validator.dart';
 
 import '../../common/media_handler/media_handler.dart';
@@ -227,23 +226,12 @@ class PdmCommonActions {
       return;
     }
 
-    RenderBox? box;
-    if (ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
-      box = context.findRenderObject() as RenderBox?;
-    }
-
     onShareUrl = () {
-      shareContent(
-        text: url,
-        renderBox: box,
-      );
+      shareContent(text: url);
     };
 
     onShareNostrScheme = () {
-      shareContent(
-        text: nostrScheme,
-        renderBox: box,
-      );
+      shareContent(text: nostrScheme);
     };
 
     showModalBottomSheet(

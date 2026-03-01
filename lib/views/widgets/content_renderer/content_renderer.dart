@@ -27,6 +27,7 @@ import '../data_providers.dart';
 import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import '../note_container.dart';
+import '../note_stats.dart';
 import '../parsed_media_container.dart';
 import '../profile_picture.dart';
 import 'hidden_media_container.dart';
@@ -63,6 +64,7 @@ class ContentRenderer extends HookWidget {
     this.disableUrlParsing,
     this.inverseNoteColor,
     this.useMouseRegion = true,
+    this.useDetailedNote = false,
     this.hideMedia,
     this.height,
   });
@@ -92,6 +94,7 @@ class ContentRenderer extends HookWidget {
   final bool? inverseNoteColor;
   final bool useMouseRegion;
   final double? height;
+  final bool? useDetailedNote;
   final bool? hideMedia;
 
   @override
@@ -460,14 +463,23 @@ class ContentRenderer extends HookWidget {
           );
         }
 
-        return NoteContainer(
-          note: note,
-          inverseNoteColor: inverseNoteColor,
-          vMargin: kDefaultPadding / 4,
-          disableVisualParsing: true,
-          scrollPhysics: scrollPhysics,
-          enableHidingMedia: hideMedia ?? true,
-        );
+        if (useDetailedNote ?? false) {
+          return DetailedNoteContainer(
+            note: note,
+            isMain: false,
+            addLine: false,
+            enableReply: true,
+          );
+        } else {
+          return NoteContainer(
+            note: note,
+            inverseNoteColor: inverseNoteColor,
+            vMargin: kDefaultPadding / 4,
+            disableVisualParsing: true,
+            scrollPhysics: scrollPhysics,
+            enableHidingMedia: hideMedia ?? true,
+          );
+        }
       },
     );
   }

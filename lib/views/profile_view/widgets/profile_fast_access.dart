@@ -490,10 +490,14 @@ class CommonUsersRow extends StatelessWidget {
     super.key,
     required this.commonPubkeys,
     this.compact = false,
+    this.useOthers = false,
+    this.mainAxisSize,
   });
 
   final Set<String> commonPubkeys;
   final bool compact;
+  final MainAxisSize? mainAxisSize;
+  final bool useOthers;
 
   @override
   Widget build(BuildContext context) {
@@ -539,6 +543,7 @@ class CommonUsersRow extends StatelessWidget {
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: mainAxisSize ?? MainAxisSize.max,
           children: [
             Stack(
               children: [
@@ -555,27 +560,30 @@ class CommonUsersRow extends StatelessWidget {
               ],
             ),
             if (!compact) ...[
-              if (usersToBeShown.length < commonPubkeys.length) ...[
+              if (commonPubkeys.length > 3) ...[
+                const SizedBox(
+                  width: kDefaultPadding / 4,
+                ),
+                Builder(builder: (context) {
+                  final number =
+                      (commonPubkeys.length - usersToBeShown.length).toString();
+                  return Text(
+                    (useOthers
+                            ? context.t.othersNumber(number: number)
+                            : context.t.mutualsNum(number: number))
+                        .capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  );
+                }),
+              ] else if (!useOthers) ...[
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
                 Text(
-                  context.t
-                      .mutualsNum(
-                        number: (commonPubkeys.length - usersToBeShown.length)
-                            .toString(),
-                      )
+                  (useOthers ? context.t.others : context.t.mutuals)
                       .capitalizeFirst(),
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                      ),
-                ),
-              ] else ...[
-                const SizedBox(
-                  width: kDefaultPadding / 4,
-                ),
-                Text(
-                  context.t.mutuals.capitalizeFirst(),
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         color: Theme.of(context).highlightColor,
                       ),

@@ -9,6 +9,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
@@ -177,6 +178,12 @@ class DiscoverCubit extends Cubit<DiscoverState> {
               final globalIds = state.content.map((e) => e.id).toSet();
               content.removeWhere((e) => globalIds.contains(e.id));
             }
+          } else if (currentSelectedSource.key == AppContentSource.packs) {
+            content = await getExploreFeedPacksEvents(
+              since: first.createdAt.toSecondsSinceEpoch() + 1,
+              limit: 20,
+              f: f,
+            );
           } else if (currentSelectedSource.key == AppContentSource.relay) {
             content = await getExploreFeedRelayEvents(
               since: first.createdAt.toSecondsSinceEpoch() + 1,
@@ -237,6 +244,11 @@ class DiscoverCubit extends Cubit<DiscoverState> {
 
     if (currentSelectedSource.key == AppContentSource.community) {
       await buildExploreFeedFromCommunity(
+        exploreType: exploreType,
+        isAdding: isAdding,
+      );
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      await buildExploreFeedFromPacks(
         exploreType: exploreType,
         isAdding: isAdding,
       );
@@ -414,41 +426,64 @@ class DiscoverCubit extends Cubit<DiscoverState> {
       until: until,
       limit: limit ?? 50,
       since: since ?? f.from,
-      kinds: [
-        if (exploreType == ExploreType.articles ||
-            exploreType == ExploreType.all)
-          EventKind.LONG_FORM,
-        if (exploreType == ExploreType.videos ||
-            exploreType == ExploreType.all) ...[
-          EventKind.VIDEO_HORIZONTAL,
-          EventKind.VIDEO_VERTICAL
-        ],
-        if (exploreType == ExploreType.curations ||
-            exploreType == ExploreType.all) ...[
-          EventKind.CURATION_ARTICLES,
-          EventKind.CURATION_VIDEOS,
-        ],
-      ],
+      kinds: [EventKind.LONG_FORM],
     );
 
     return applyDiscoverFilter(content);
   }
 
-  /// Build the explore feed from DVM (Decentralized Virtual Machine) data
-  Future<void> buildExploreFeedFromDvm() async {
-    final content = await NostrFunctionsRepository.getDiscoverDvmData(
-      pubkey: appSettingsManagerCubit.state.selectedDiscoverSource.key,
+  Future<void> buildExploreFeedFromPacks({
+    required ExploreType exploreType,
+    required bool isAdding,
+  }) async {
+    final f = appSettingsManagerCubit.getSelectedDiscoverFilter();
+
+    final until = (!isAdding && f.to != null)
+        ? f.to
+        : state.content.isNotEmpty
+            ? state.content.last.createdAt.toSecondsSinceEpoch() - 1
+            : null;
+
+    final filtered = await getExploreFeedPacksEvents(
+      f: f,
+      until: until,
     );
 
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: applyDiscoverFilter(content),
+          content: [...state.content, ...filtered],
           onLoading: false,
-          onAddingData: UpdatingState.idle,
+          showFollowingListMessage: false,
+          onAddingData:
+              filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,
         ),
       );
     }
+  }
+
+  Future<List<BaseEventModel>> getExploreFeedPacksEvents({
+    required DiscoverFilter f,
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    final val = appSettingsManagerCubit.state.selectedDiscoverSource.value;
+
+    final content = await NostrFunctionsRepository.getDiscoverAlgoData(
+      relays: val is String
+          ? [val]
+          : val is UserRelaySet
+              ? val.relays
+              : null,
+      pubkeys: val is PacksModel ? val.pubkeys.toList() : null,
+      until: until,
+      limit: limit ?? 50,
+      since: since ?? f.from,
+      kinds: [EventKind.LONG_FORM],
+    );
+
+    return applyDiscoverFilter(content);
   }
 
   // =============================================================================

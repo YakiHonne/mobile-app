@@ -29,6 +29,7 @@ import '../../widgets/data_providers.dart';
 import '../../widgets/empty_list.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/pull_down_global_button.dart';
+import '../../widgets/response_snackbar.dart';
 import 'camera_options_view.dart';
 
 /// Main DM Details screen with messaging functionality
@@ -74,13 +75,38 @@ class DmDetails extends HookWidget {
     final showNip44Message = useState<bool>(true);
     final images = useState(<String>[]);
     final isImageUploading = useState(false);
+    final isSelectionMode = useState(false);
+    final selectedEvents = useState(<String>{});
 
     useEffect(() {
       return () => nostrRepository.usersMessageNotifications.remove(pubkey);
     }, []);
 
     return Scaffold(
-      appBar: DmAppBar(pubkey: pubkey),
+      appBar: DmAppBar(
+        pubkey: pubkey,
+        isSelectionMode: isSelectionMode,
+        selectedEvents: selectedEvents,
+        onDelete: () {
+          showCupertinoDeletionDialogue(
+            context: context,
+            title: context.t.deleteMessage.capitalizeFirst(),
+            description: context.t.deleteMessageDesc.capitalizeFirst(),
+            buttonText: context.t.delete.capitalizeFirst(),
+            onDelete: () async {
+              await dmsCubit.deleteMessages(
+                pubkey,
+                selectedEvents.value.toList(),
+              );
+              isSelectionMode.value = false;
+              selectedEvents.value = {};
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          );
+        },
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -92,6 +118,8 @@ class DmDetails extends HookWidget {
                 replyPubkey,
                 replyText,
                 showNip44Message,
+                isSelectionMode,
+                selectedEvents,
               ),
             ),
             _buildMessageInput(
@@ -120,6 +148,8 @@ class DmDetails extends HookWidget {
     ValueNotifier<String?> replyPubkey,
     ValueNotifier<String?> replyText,
     ValueNotifier<bool> showNip44Message,
+    ValueNotifier<bool> isSelectionMode,
+    ValueNotifier<Set<String>> selectedEvents,
   ) {
     return BlocBuilder<DmsCubit, DmsState>(
       builder: (context, state) {
@@ -127,7 +157,14 @@ class DmDetails extends HookWidget {
           children: [
             Positioned.fill(
               child: _buildMessagesContent(
-                  context, scrollController, replyId, replyPubkey, replyText),
+                context,
+                scrollController,
+                replyId,
+                replyPubkey,
+                replyText,
+                isSelectionMode,
+                selectedEvents,
+              ),
             ),
             if (!state.isUsingNip44 && showNip44Message.value)
               _buildSecurityNotice(context, showNip44Message),
@@ -144,11 +181,14 @@ class DmDetails extends HookWidget {
     ValueNotifier<String?> replyId,
     ValueNotifier<String?> replyPubkey,
     ValueNotifier<String?> replyText,
+    ValueNotifier<bool> isSelectionMode,
+    ValueNotifier<Set<String>> selectedEvents,
   ) {
     return BlocBuilder<DmsCubit, DmsState>(
       buildWhen: (previous, current) => previous.rebuild != current.rebuild,
       builder: (context, state) {
         final dm = state.dmSessionDetails[pubkey];
+
         if (dm == null || dm.dmSession.length() == 0) {
           return _buildEmptyState(context);
         }
@@ -170,13 +210,17 @@ class DmDetails extends HookWidget {
                 replyId,
                 replyPubkey,
                 replyText,
+                isSelectionMode,
+                selectedEvents,
               ),
               childCount: dm.dmSession.length(),
               findChildIndexCallback: (Key key) {
                 final valueKey = key as GlobalObjectKey;
-                return dm.dmSession.getAll().indexWhere(
+                final index = dm.dmSession.getAll().indexWhere(
                       (message) => message.id == valueKey.value,
                     );
+
+                return index == -1 ? null : index;
               },
             ),
           ),
@@ -196,11 +240,13 @@ class DmDetails extends HookWidget {
 
   Widget _buildMessageItem(
     BuildContext context,
-    dynamic dm,
+    DMSessionDetail dm,
     int index,
     ValueNotifier<String?> replyId,
     ValueNotifier<String?> replyPubkey,
     ValueNotifier<String?> replyText,
+    ValueNotifier<bool> isSelectionMode,
+    ValueNotifier<Set<String>> selectedEvents,
   ) {
     final event = dm.dmSession.get(index);
     return BlocBuilder<MetadataCubit, MetadataState>(
@@ -209,54 +255,81 @@ class DmDetails extends HookWidget {
         final isCurrentUser = event.pubkey == currentSigner!.getPublicKey();
         final peerUserPubkey = !isCurrentUser ? event.pubkey : null;
         final ownUserPubkey = isCurrentUser ? event.pubkey : null;
+        final isSelected = selectedEvents.value.contains(event.id);
 
-        return Slidable(
-          endActionPane: ActionPane(
-            motion: const DrawerMotion(),
-            extentRatio: 0.2,
-            children: [
-              Expanded(
-                child: Builder(builder: (context) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomIconButton(
-                        onClicked: () async {
-                          final content = await dmsCubit.getMessage(event);
-                          final message = content.first.trim();
+        return GestureDetector(
+          onTap: isSelectionMode.value
+              ? () {
+                  if (!isCurrentUser) {
+                    return;
+                  }
 
-                          replyText.value = message;
-                          replyId.value = event.id;
-                          replyPubkey.value =
-                              isCurrentUser ? ownUserPubkey : peerUserPubkey;
+                  if (isSelected) {
+                    selectedEvents.value = Set.from(selectedEvents.value)
+                      ..remove(event.id);
+                  } else {
+                    selectedEvents.value = Set.from(selectedEvents.value)
+                      ..add(event.id);
+                  }
+                }
+              : null,
+          child: Slidable(
+            enabled: !isSelectionMode.value,
+            endActionPane: ActionPane(
+              motion: const DrawerMotion(),
+              extentRatio: 0.2,
+              children: [
+                Expanded(
+                  child: Builder(builder: (context) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomIconButton(
+                          onClicked: () async {
+                            final content = await dmsCubit.getMessage(event);
+                            final message = content.first.trim();
 
-                          if (context.mounted) {
-                            Slidable.of(context)?.close();
-                          }
-                        },
-                        icon: '',
-                        iconData: CupertinoIcons.reply,
-                        size: 20,
-                        backgroundColor: Theme.of(context).cardColor,
-                      ),
-                    ],
-                  );
-                }),
-              ),
-            ],
-          ),
-          child: DmChatContainer(
-            event: event,
-            dmSession: dm.dmSession,
-            isCurrentUser: isCurrentUser,
-            peerUserPubkey: peerUserPubkey,
-            ownUserPubkey: ownUserPubkey,
-            scrollToIndex: (id) => _scrollToMessage(id),
-            onMessageReply: (messageId, message, pubkey) {
-              replyId.value = messageId;
-              replyText.value = message;
-              replyPubkey.value = pubkey;
-            },
+                            replyText.value = message;
+                            replyId.value = event.id;
+                            replyPubkey.value =
+                                isCurrentUser ? ownUserPubkey : peerUserPubkey;
+
+                            if (context.mounted) {
+                              Slidable.of(context)?.close();
+                            }
+                          },
+                          icon: '',
+                          iconData: CupertinoIcons.reply,
+                          size: 20,
+                          backgroundColor: Theme.of(context).cardColor,
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+              ],
+            ),
+            child: DmChatContainer(
+              event: event,
+              dmSession: dm.dmSession,
+              isCurrentUser: isCurrentUser,
+              dmSessionDetail: dm,
+              peerUserPubkey: peerUserPubkey,
+              ownUserPubkey: ownUserPubkey,
+              scrollToIndex: (id) => _scrollToMessage(id),
+              onMessageReply: (messageId, message, pubkey) {
+                replyId.value = messageId;
+                replyText.value = message;
+                replyPubkey.value = pubkey;
+              },
+              onSelect: isCurrentUser
+                  ? () {
+                      isSelectionMode.value = true;
+                      selectedEvents.value = {event.id};
+                    }
+                  : null,
+              isSelected: isSelected,
+            ),
           ),
         );
       },
@@ -454,7 +527,6 @@ class DmTextfieldBox extends StatelessWidget {
 
   // Constants
   static const double _iconSize = 20.0;
-  static const double _sendButtonSize = 10.0;
   static const Duration _animationDuration = Duration(milliseconds: 300);
   static const Duration _scrollDuration = Duration(seconds: 1);
 
@@ -618,24 +690,15 @@ class DmTextfieldBox extends StatelessWidget {
   Widget _buildSendButton(BuildContext context, DmsState state) {
     return IconButton(
       onPressed: () => _sendMessage(context, state),
-      icon: state.isSendingMessage
-          ? SizedBox(
-              height: _iconSize,
-              width: _iconSize,
-              child: SpinKitChasingDots(
-                size: _sendButtonSize,
-                color: Theme.of(context).primaryColorDark,
-              ),
-            )
-          : SvgPicture.asset(
-              FeatureIcons.send,
-              width: _iconSize,
-              height: _iconSize,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
-            ),
+      icon: SvgPicture.asset(
+        FeatureIcons.send,
+        width: _iconSize,
+        height: _iconSize,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).primaryColorDark,
+          BlendMode.srcIn,
+        ),
+      ),
     );
   }
 
@@ -776,7 +839,7 @@ class DmTextfieldBox extends StatelessWidget {
     buttonItems.add(ContextMenuButtonItem(
       label: 'Paste',
       onPressed: () {
-        _handlePaste();
+        _handlePaste(context);
         ContextMenuController.removeAny();
       },
     ));
@@ -795,21 +858,21 @@ class DmTextfieldBox extends StatelessWidget {
     );
   }
 
-  Future<void> _handlePaste() async {
+  Future<void> _handlePaste(BuildContext context) async {
     final imageUrl = await mediaServersCubit.pasteImage(
-      _pasteText,
+      () => _pasteText(context),
       (status) => isImageUploading.value = status,
     );
 
-    if (imageUrl != null) {
+    if (imageUrl != null && context.mounted) {
       images.value = List<String>.from(images.value)..insert(0, imageUrl);
     }
   }
 
-  Future<void> _pasteText() async {
+  Future<void> _pasteText(BuildContext context) async {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-      if (clipboardData?.text != null) {
+      if (clipboardData?.text != null && context.mounted) {
         final text = clipboardData!.text!;
         final selection = textEditingController.selection;
         final currentText = textEditingController.text;
@@ -896,12 +959,52 @@ class DmImageContainer extends StatelessWidget {
 
 /// Custom app bar for DM screen
 class DmAppBar extends HookWidget implements PreferredSizeWidget {
-  const DmAppBar({super.key, required this.pubkey});
+  const DmAppBar({
+    super.key,
+    required this.pubkey,
+    required this.isSelectionMode,
+    required this.selectedEvents,
+    this.onDelete,
+  });
 
   final String pubkey;
+  final ValueNotifier<bool> isSelectionMode;
+  final ValueNotifier<Set<String>> selectedEvents;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
+    if (isSelectionMode.value) {
+      return AppBar(
+        leading: IconButton(
+          onPressed: () {
+            isSelectionMode.value = false;
+            selectedEvents.value = {};
+          },
+          icon: const Icon(Icons.close),
+        ),
+        title: Text(
+          '${selectedEvents.value.length} ${context.t.selected.capitalizeFirst()}',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        actions: [
+          IconButton(
+            onPressed: selectedEvents.value.isEmpty ? null : onDelete,
+            icon: SvgPicture.asset(
+              FeatureIcons.trash,
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                selectedEvents.value.isEmpty ? kDimGrey : kRed,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 2),
+        ],
+      );
+    }
+
     return MetadataProvider(
       pubkey: pubkey,
       child: (metadata, isNip05Valid) {
@@ -1042,19 +1145,25 @@ class DmChatContainer extends HookWidget {
     required this.event,
     required this.dmSession,
     required this.isCurrentUser,
+    required this.dmSessionDetail,
     required this.peerUserPubkey,
     required this.ownUserPubkey,
     required this.onMessageReply,
     required this.scrollToIndex,
+    this.onSelect,
+    this.isSelected = false,
   });
 
   final Event event;
   final DMSession dmSession;
   final bool isCurrentUser;
+  final DMSessionDetail dmSessionDetail;
   final String? peerUserPubkey;
   final String? ownUserPubkey;
   final Function(String, String, String) onMessageReply;
   final Function(String) scrollToIndex;
+  final VoidCallback? onSelect;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -1064,8 +1173,9 @@ class DmChatContainer extends HookWidget {
     final contentText = useState('');
 
     useMemoized(() async {
+      final content = await dmsCubit.getMessage(event);
+
       if (context.mounted) {
-        final content = await dmsCubit.getMessage(event);
         contentText.value = content.first.trim();
         replyId.value = content.last;
         copiedText.value = content.first.trim();
@@ -1084,6 +1194,14 @@ class DmChatContainer extends HookWidget {
             mainAxisAlignment:
                 isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
+              if (isSelected) ...[
+                Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: kDefaultPadding / 2),
+              ],
               if (!isCurrentUser) ...[
                 MetadataProvider(
                   pubkey: peerUserPubkey!,
@@ -1092,16 +1210,19 @@ class DmChatContainer extends HookWidget {
                 ),
                 const SizedBox(width: kDefaultPadding / 2),
               ],
-              if (isCurrentUser) _buildContextMenu(copiedText.value),
+              if (isCurrentUser) _buildContextMenu(context, copiedText.value),
               Flexible(
-                child: _buildMessageContainer(
-                  context,
-                  isTablet,
-                  contentText.value,
-                  replyId.value,
+                child: GestureDetector(
+                  onLongPress: onSelect,
+                  child: _buildMessageContainer(
+                    context,
+                    isTablet,
+                    contentText.value,
+                    replyId.value,
+                  ),
                 ),
               ),
-              if (!isCurrentUser) _buildContextMenu(copiedText.value),
+              if (!isCurrentUser) _buildContextMenu(context, copiedText.value),
               if (isCurrentUser) ...[
                 const SizedBox(width: kDefaultPadding / 2),
                 MetadataProvider(
@@ -1132,10 +1253,31 @@ class DmChatContainer extends HookWidget {
     );
   }
 
-  Widget _buildContextMenu(String? copiedText) {
+  Widget _buildContextMenu(BuildContext context, String? copiedText) {
     return ChatContainerPullDownMenu(
       eventId: event.id,
       copiedText: copiedText,
+      onDelete: isCurrentUser
+          ? () {
+              showCupertinoDeletionDialogue(
+                context: context,
+                title: context.t.deleteMessage.capitalizeFirst(),
+                description: context.t.deleteMessageDesc.capitalizeFirst(),
+                buttonText: context.t.delete.capitalizeFirst(),
+                onDelete: () async {
+                  await dmsCubit.deleteMessage(
+                    dmSessionDetail.info.peerPubkey,
+                    event.id,
+                  );
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                },
+              );
+            }
+          : null,
+      onSelect: onSelect,
       onMessageReply: () {
         if (copiedText != null) {
           onMessageReply.call(
@@ -1213,6 +1355,7 @@ class DmChatContainer extends HookWidget {
                       return ParsedText(
                         text: text,
                         color: isCurrentUser ? null : kWhite,
+                        useDetailedNote: true,
                       );
                     },
                   ),
@@ -1231,46 +1374,69 @@ class DmChatContainer extends HookWidget {
       color: isCurrentUser ? null : kWhite,
       inverseNoteColor: true,
       enableTruncation: false,
+      useDetailedNote: true,
       isDm: true,
     );
   }
 
   Widget _buildMessageFooter(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          event.kind == EventKind.DIRECT_MESSAGE
-              ? FeatureIcons.nonSecure
-              : FeatureIcons.secure,
-          width: 15,
-          height: 15,
-          colorFilter: ColorFilter.mode(
-            !isCurrentUser
-                ? kWhite
-                : event.kind == EventKind.DIRECT_MESSAGE
-                    ? Theme.of(context).primaryColorDark.withValues(alpha: 0.5)
-                    : kGreen,
-            BlendMode.srcIn,
-          ),
-        ),
-        const SizedBox(width: kDefaultPadding / 4),
-        Flexible(
-          child: Text(
-            dateFormat3.format(
-              DateTime.fromMillisecondsSinceEpoch(event.createdAt * 1000),
-            ),
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: !isCurrentUser
-                      ? kWhite
-                      : Theme.of(context)
-                          .primaryColorDark
-                          .withValues(alpha: 0.5),
+    return BlocBuilder<DmsCubit, DmsState>(
+      buildWhen: (previous, current) =>
+          previous.pendingEventIds.contains(event.id) !=
+          current.pendingEventIds.contains(event.id),
+      builder: (context, state) {
+        final isPending = state.pendingEventIds.contains(event.id);
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isPending)
+              Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding / 4),
+                child: SpinKitCircle(
+                  color: isCurrentUser
+                      ? Theme.of(context).primaryColor
+                      : kTransparent,
+                  size: 15,
                 ),
-          ),
-        ),
-      ],
+              )
+            else
+              SvgPicture.asset(
+                event.kind == EventKind.DIRECT_MESSAGE
+                    ? FeatureIcons.nonSecure
+                    : FeatureIcons.secure,
+                width: 15,
+                height: 15,
+                colorFilter: ColorFilter.mode(
+                  !isCurrentUser
+                      ? kWhite
+                      : event.kind == EventKind.DIRECT_MESSAGE
+                          ? Theme.of(context)
+                              .primaryColorDark
+                              .withValues(alpha: 0.5)
+                          : kGreen,
+                  BlendMode.srcIn,
+                ),
+              ),
+            const SizedBox(width: kDefaultPadding / 4),
+            Flexible(
+              child: Text(
+                dateFormat3.format(
+                  DateTime.fromMillisecondsSinceEpoch(event.createdAt * 1000),
+                ),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: !isCurrentUser
+                          ? kWhite
+                          : Theme.of(context)
+                              .primaryColorDark
+                              .withValues(alpha: 0.5),
+                    ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -1282,11 +1448,15 @@ class ChatContainerPullDownMenu extends StatelessWidget {
     required this.eventId,
     required this.copiedText,
     required this.onMessageReply,
+    this.onDelete,
+    this.onSelect,
   });
 
   final String eventId;
   final String? copiedText;
   final VoidCallback onMessageReply;
+  final VoidCallback? onDelete;
+  final VoidCallback? onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -1296,7 +1466,7 @@ class ChatContainerPullDownMenu extends StatelessWidget {
         backgroundColor: Theme.of(context).cardColor,
       ),
       itemBuilder: (context) {
-        final textStyle = Theme.of(context).textTheme.labelMedium;
+        final textStyle = Theme.of(context).textTheme.labelLarge;
         return [
           PullDownMenuItem(
             title: context.t.copy.capitalizeFirst(),
@@ -1318,6 +1488,30 @@ class ChatContainerPullDownMenu extends StatelessWidget {
             itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
             iconWidget: const Icon(CupertinoIcons.reply, size: 20),
           ),
+          PullDownMenuItem(
+            title: context.t.select.capitalizeFirst(),
+            onTap: onSelect,
+            itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
+            iconWidget: const Icon(CupertinoIcons.checkmark_circle, size: 20),
+          ),
+          if (onDelete != null) ...[
+            const PullDownMenuDivider.large(),
+            PullDownMenuItem(
+              title: context.t.delete.capitalizeFirst(),
+              onTap: onDelete,
+              isDestructive: true,
+              itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
+              iconWidget: SvgPicture.asset(
+                FeatureIcons.trash,
+                height: 20,
+                width: 20,
+                colorFilter: const ColorFilter.mode(
+                  kRed,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ]
         ];
       },
       buttonBuilder: (context, showMenu) => IconButton(

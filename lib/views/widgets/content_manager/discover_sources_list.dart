@@ -6,12 +6,16 @@ import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
 
 import '../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
+import '../../../logic/packs_settings_cubit/packs_settings_cubit.dart';
 import '../../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
+import '../../../models/packs_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../explore_packs_view/explore_packs_view.dart';
 import '../dotted_container.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
+import 'dicover_settings_views/set_pack_view.dart';
 import 'discover_sources_settings.dart';
 
 class AppSourcesList extends HookWidget {
@@ -56,6 +60,14 @@ class AppSourcesList extends HookWidget {
             widgets.add(sourceWidget);
           }
         }
+
+        widgets.addAll([
+          const Divider(
+            height: kDefaultPadding * 2,
+            thickness: 0.5,
+          ),
+          PacksDiscoverList(viewType: viewType)
+        ]);
 
         widgets.addAll([
           const Divider(
@@ -233,6 +245,140 @@ class NoRelaysAvailable extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PacksDiscoverList extends StatelessWidget {
+  const PacksDiscoverList({
+    super.key,
+    required this.viewType,
+  });
+
+  final ViewDataTypes viewType;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PacksSettingsCubit, PacksSettingsState>(
+      builder: (context, state) {
+        return BlocBuilder<AppSettingsManagerCubit, AppSettingsManagerState>(
+          builder: (context, aState) {
+            List<PacksModel> filteredPacks = [];
+            final packs = state.packs.entries;
+
+            if (viewType == ViewDataTypes.media) {
+              filteredPacks = packs
+                  .where(
+                    (p) => state.starterPacks[p.key] == false,
+                  )
+                  .map((e) => e.value)
+                  .toList();
+            } else {
+              filteredPacks = packs
+                  .where(
+                    (p) => state.starterPacks[p.key] ?? false,
+                  )
+                  .map((e) => e.value)
+                  .toList();
+            }
+
+            final selectedKey = viewType == ViewDataTypes.articles
+                ? aState.selectedDiscoverSource.key
+                : viewType == ViewDataTypes.notes
+                    ? aState.selectedNotesSource.key
+                    : aState.selectedMediaSource.key;
+
+            return Column(
+              spacing: kDefaultPadding / 3,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  viewType == ViewDataTypes.articles
+                      ? context.t.starterPacks
+                      : viewType == ViewDataTypes.notes
+                          ? context.t.starterPacks
+                          : context.t.mediaPacks,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                if (filteredPacks.isNotEmpty)
+                  ...filteredPacks.map(
+                    (e) => CompactPackCard(
+                      pack: e,
+                      isSelected: e.identifier == selectedKey,
+                      onTap: () {
+                        appSettingsManagerCubit.setSource(
+                          source: MapEntry(
+                            e.identifier,
+                            e,
+                          ),
+                          viewType: viewType,
+                        );
+
+                        YNavigator.pop(context);
+                      },
+                    ),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.all(kDefaultPadding / 2),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(kDefaultPadding / 1.5),
+                      color: Theme.of(context).cardColor,
+                      border: Border.all(
+                        color: Theme.of(context).dividerColor,
+                        width: 0.5,
+                      ),
+                    ),
+                    width: double.infinity,
+                    child: Column(
+                      spacing: kDefaultPadding / 4,
+                      children: [
+                        Text(
+                          context.t.noPacksFound,
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                        ),
+                        Text(
+                          context.t.noPacksFoundSettingsDesc,
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                  ),
+                          textAlign: TextAlign.center,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            doIfCanSign(
+                              func: () {
+                                YNavigator.pushPage(
+                                  context,
+                                  (context) => const SetPackView(),
+                                );
+                              },
+                              context: context,
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.comfortable,
+                          ),
+                          child: Text(
+                            context.t.addPack,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -580,6 +726,8 @@ String getSourceIcon(String name) {
     return FeatureIcons.recent;
   } else if (name == SOURCE_RECENT_WITH_REPLIES) {
     return FeatureIcons.recentWithReplies;
+  } else if (name == SOURCE_TRENDING) {
+    return FeatureIcons.trending;
   } else if (name == SOURCE_PAID) {
     return FeatureIcons.sats;
   } else if (name == SOURCE_WIDGETS) {
@@ -600,6 +748,8 @@ String getSourceName({required String name, BuildContext? context}) {
     return ctx.t.top;
   } else if (name == SOURCE_RECENT) {
     return ctx.t.recent;
+  } else if (name == SOURCE_TRENDING) {
+    return ctx.t.trending;
   } else if (name == SOURCE_RECENT_WITH_REPLIES) {
     return ctx.t.recentWithReplies;
   } else if (name == SOURCE_PAID) {

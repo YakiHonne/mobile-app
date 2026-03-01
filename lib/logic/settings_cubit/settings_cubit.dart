@@ -269,6 +269,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     appSettingsManagerCubit.loadAppSharedSettings();
     relayInfoCubit.initRelays();
+    packsSettingsCubit.initPacks();
 
     saveAndUpdate();
     c.call();
@@ -309,6 +310,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       appSettingsManagerCubit.loadAppSharedSettings();
       relayInfoCubit.initRelays();
+      packsSettingsCubit.initPacks();
     }
   }
 
@@ -336,6 +338,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         nostrRepository.setCurrentSignerState(null);
         appSettingsManagerCubit.loadAppSharedSettings();
         relayInfoCubit.initRelays();
+        packsSettingsCubit.initPacks();
       }
     }
 
@@ -369,6 +372,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     nostrRepository.setCurrentUserDraft();
     appSettingsManagerCubit.loadAppSharedSettings();
     relayInfoCubit.initRelays();
+    packsSettingsCubit.initPacks();
     c.call();
     saveAndUpdate();
   }
@@ -459,6 +463,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
         appSettingsManagerCubit.loadAppSharedSettings();
         relayInfoCubit.initRelays();
+        packsSettingsCubit.initPacks();
 
         return i;
       }

@@ -437,7 +437,7 @@ class CashuPayView extends HookWidget {
                   final amountInUsd =
                       walletManagerCubit.getBtcInFiatFromAmount(amount);
                   return Text(
-                    '~ \$${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
+                    '~ ${walletManagerCubit.getCurrencySymbol()}${amountInUsd == -1 ? 'N/A' : amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).highlightColor,
@@ -516,7 +516,7 @@ class CashuPayView extends HookWidget {
                   );
                 }
                 return Text(
-                  '~ \$${amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
+                  '~ ${walletManagerCubit.getCurrencySymbol()}${amountInUsd.toStringAsFixed(2)} ${walletManagerCubit.state.activeCurrency.toUpperCase()}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Theme.of(context).highlightColor,

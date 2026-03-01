@@ -609,11 +609,7 @@ class ShareQrCode extends HookWidget {
       cancel.call();
 
       if (img != null) {
-        await Share.shareXFiles(
-          [
-            XFile(img),
-          ],
-        );
+        await shareContent(files: [XFile(img)]);
       }
     } catch (_) {
       cancel.call();

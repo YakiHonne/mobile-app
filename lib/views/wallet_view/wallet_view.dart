@@ -55,7 +55,7 @@ class InternalWalletsView extends HookWidget {
           const Duration(seconds: 1),
         ).then(
           (value) {
-            if (controller != null) {
+            if (controller != null && context.mounted) {
               controller.reverse();
             }
           },
@@ -187,7 +187,7 @@ class InternalWalletsView extends HookWidget {
           height: animation.value,
           alignment: Alignment.center,
           child: isRefreshing.value
-              ?  SizedBox(
+              ? SizedBox(
                   height: 20,
                   width: 20,
                   child: SpinKitFadingCircle(

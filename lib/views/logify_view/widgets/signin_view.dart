@@ -74,6 +74,7 @@ class SignInView extends HookWidget {
               child: GestureDetector(
                 onTap: () {
                   context.read<LogifyCubit>().loginWithAmber(
+                        context: context,
                         onSuccess: onPop ??
                             () {
                               Navigator.pop(context);
@@ -248,8 +249,10 @@ class RemoteLogin extends HookWidget {
             bunkerUrl: textEditingController.text,
             onSuccess: onPop ??
                 () {
-                  YNavigator.popToRoot(context);
-                  isLoading.value = false;
+                  if (context.mounted) {
+                    YNavigator.popToRoot(context);
+                    isLoading.value = false;
+                  }
                 },
             context: context,
           );
@@ -361,6 +364,7 @@ class KeysLogin extends HookWidget {
                     key: textEditingController.text.trim(),
                     isExternalSigner: false,
                     newKey: false,
+                    context: context,
                     onSuccess: onPop ??
                         () {
                           Navigator.popUntil(

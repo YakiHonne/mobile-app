@@ -109,7 +109,11 @@ class SearchCubit extends Cubit<SearchState> {
         searchWithoutScheme = search.split('nostr:').last;
       }
 
-      nostrRepository.mainCubit.handleNostrEntity(searchWithoutScheme, '');
+      nostrRepository.mainCubit.handleNostrEntity(
+        nostrUri: searchWithoutScheme,
+        uriString: '',
+        skipDelay: true,
+      );
     } else {
       await _performGeneralSearch(search);
     }

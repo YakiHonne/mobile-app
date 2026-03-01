@@ -20,6 +20,7 @@ import '../../models/app_models/extended_model.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/packs_model.dart';
 import '../../models/picture_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/video_model.dart';
@@ -30,6 +31,7 @@ import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
+import '../../views/explore_packs_view/widget/pack_feed_view.dart';
 import '../../views/note_view/note_view.dart';
 import '../../views/profile_view/profile_view.dart';
 import '../../views/relay_feed_view/relay_feed_view.dart';
@@ -213,7 +215,10 @@ class MainCubit extends Cubit<MainState> {
         final entity = _extractNostrEntity(initial);
 
         if (entity.isNotEmpty) {
-          handleNostrEntity(entity, '');
+          handleNostrEntity(
+            nostrUri: entity,
+            uriString: '',
+          );
         } else {
           forwardView(
             uriString: initial,
@@ -246,7 +251,10 @@ class MainCubit extends Cubit<MainState> {
         final entity = _extractNostrEntity(uriString);
 
         if (entity.isNotEmpty) {
-          handleNostrEntity(entity, '');
+          handleNostrEntity(
+            nostrUri: entity,
+            uriString: '',
+          );
         } else {
           forwardView(
             uriString: uriString,
@@ -313,6 +321,9 @@ class MainCubit extends Cubit<MainState> {
       } else {
         await handleNaddrFromNip05(url: uriString);
       }
+    } else if (uriString.contains('yakihonne.com/pack/s') ||
+        uriString.contains('yakihonne.com/pack/m')) {
+      await _handlePackLink(uriString);
     } else if (uriString.contains('yakihonne.com/r/discover/') ||
         uriString.contains('yakihonne.com/r/notes/') ||
         uriString.contains('yakihonne.com/r/content/')) {
@@ -328,7 +339,11 @@ class MainCubit extends Cubit<MainState> {
         );
       }
     } else {
-      await handleNostrEntity(nostrUri, uriString);
+      await handleNostrEntity(
+        nostrUri: nostrUri,
+        uriString: uriString,
+        skipDelay: true,
+      );
     }
   }
 
@@ -557,7 +572,42 @@ class MainCubit extends Cubit<MainState> {
     }
   }
 
-  Future<void> handleNostrEntity(String nostrUri, String uriString) async {
+  Future<void> _handlePackLink(String uriString) async {
+    final uri = Uri.parse(uriString);
+    final identifier = uri.queryParameters['d'];
+    if (identifier == null || identifier.isEmpty) {
+      return;
+    }
+
+    final kind = uriString.contains('pack/s')
+        ? EventKind.STARTER_PACKS
+        : EventKind.MEDIA_PACKS;
+
+    final event = await getForwardedEvent(
+      kinds: [kind],
+      identifier: identifier,
+    );
+
+    if (event == null) {
+      BotToastUtils.showError(context.t.eventNotFound);
+    } else if (!isUserMuted(event.pubkey) && context.mounted) {
+      final pack = PacksModel.fromEvent(event);
+      YNavigator.pushPage(
+        context,
+        (context) => PackFeedView(pack: pack),
+      );
+    }
+  }
+
+  Future<void> handleNostrEntity({
+    required String nostrUri,
+    required String uriString,
+    bool skipDelay = false,
+  }) async {
+    if (!skipDelay) {
+      await Future.delayed(const Duration(seconds: 2));
+    }
+
     if (nostrUri.startsWith('nprofile') || nostrUri.startsWith('npub1')) {
       await _handleProfile(nostrUri);
     } else if (nostrUri.startsWith('note1')) {
@@ -634,6 +684,7 @@ class MainCubit extends Cubit<MainState> {
 
   Future<void> _handleEvent(String nostrUri, String uriString) async {
     final nostrDecode = Nip19.decodeShareableEntity(nostrUri);
+
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
 
     final ev = await getForwardedEvent(

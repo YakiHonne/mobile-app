@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/bookmark_list_model.dart';
@@ -212,12 +211,9 @@ class HorizontalVideoCubit extends Cubit<HorizontalVideoState> {
       id: state.video.id,
     );
 
-    Share.share(
-      res,
+    shareContent(
+      text: res,
       subject: 'Check out www.yakihonne.com for more videos.',
-      sharePositionOrigin: renderBox != null
-          ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-          : null,
     );
   }
 

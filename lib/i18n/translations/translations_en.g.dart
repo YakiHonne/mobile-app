@@ -3992,6 +3992,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'A safety prompt that displays the full URL before opening it in your browser.'
 	String get openUrlPromptDesc => 'A safety prompt that displays the full URL before opening it in your browser.';
 
+	/// en: 'Actions popups'
+	String get actionsPopups => 'Actions popups';
+
+	/// en: 'Enable or disable popups for success, error, and information messages.'
+	String get actionsPopupsDesc => 'Enable or disable popups for success, error, and information messages.';
+
 	/// en: 'Waiting for network...'
 	String get waitingForNetwork => 'Waiting for network...';
 
@@ -4753,6 +4759,147 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Info'
 	String get info => 'Info';
+
+	/// en: 'Follow packs'
+	String get followPacks => 'Follow packs';
+
+	/// en: 'Explore and find packs to use on Nostr'
+	String get followPacksDesc => 'Explore and find packs to use on Nostr';
+
+	/// en: 'Starter packs'
+	String get starterPacks => 'Starter packs';
+
+	/// en: 'Media packs'
+	String get mediaPacks => 'Media packs';
+
+	/// en: 'No packs found'
+	String get noPacksFound => 'No packs found';
+
+	/// en: 'You haven't followed any packs yet.'
+	String get noPacksFoundDesc => 'You haven\'t followed any packs yet.';
+
+	/// en: 'Browse pack'
+	String get browsePack => 'Browse pack';
+
+	/// en: 'In this pack ({{number}})'
+	String inThisPack({required Object number}) => 'In this pack (${number})';
+
+	/// en: 'Community'
+	String get community => 'Community';
+
+	/// en: 'Pack created successfully'
+	String get packCreated => 'Pack created successfully';
+
+	/// en: 'Error occured while creating pack'
+	String get errorOnCreatingPack => 'Error occured while creating pack';
+
+	/// en: 'Error occured while updating pack'
+	String get errorOnUpdatingPack => 'Error occured while updating pack';
+
+	/// en: 'Clone pack'
+	String get clonePack => 'Clone pack';
+
+	/// en: 'Add pack'
+	String get addPack => 'Add pack';
+
+	/// en: 'Update pack'
+	String get updatePack => 'Update pack';
+
+	/// en: 'People ({{number}})'
+	String peopleCount({required Object number}) => 'People (${number})';
+
+	/// en: 'Number of people in this pack'
+	String get peopleCountDesc => 'Number of people in this pack';
+
+	/// en: 'Pack deleted successfully'
+	String get packDeleted => 'Pack deleted successfully';
+
+	/// en: 'Error occured while deleting event'
+	String get errorDeletingEvent => 'Error occured while deleting event';
+
+	/// en: 'Pack updated successfully'
+	String get packUpdated => 'Pack updated successfully';
+
+	/// en: 'Pack cloned successfully'
+	String get packCloned => 'Pack cloned successfully';
+
+	/// en: 'Delete Pack'
+	String get deletePack => 'Delete Pack';
+
+	/// en: 'Are you sure you want to delete this pack? This action cannot be undone.'
+	String get deletePackDesc => 'Are you sure you want to delete this pack? This action cannot be undone.';
+
+	/// en: 'Pick a pack and start your feed with content from its creators'
+	String get starterPacksDesc => 'Pick a pack and start your feed with content from its creators';
+
+	/// en: '+ {{number}} others'
+	String othersNumber({required Object number}) => '+ ${number} others';
+
+	/// en: 'Add more follow packs to enjoy a tailored feed.'
+	String get noPacksFoundSettingsDesc => 'Add more follow packs to enjoy a tailored feed.';
+
+	/// en: 'Delete Message'
+	String get deleteMessage => 'Delete Message';
+
+	/// en: 'Are you sure you want to delete this message? This action cannot be undone.'
+	String get deleteMessageDesc => 'Are you sure you want to delete this message? This action cannot be undone.';
+
+	/// en: 'Error occured while deleting message'
+	String get errorDeletingMessage => 'Error occured while deleting message';
+
+	/// en: 'Message deleted successfully'
+	String get messageDeleted => 'Message deleted successfully';
+
+	/// en: 'Relay already exists'
+	String get relayAlreadyExists => 'Relay already exists';
+
+	/// en: 'selected'
+	String get selected => 'selected';
+
+	/// en: 'This note and its thread are muted, you won't get notifications or see new replies in your feed'
+	String get threadMutedDescription => 'This note and its thread are muted, you won\'t get notifications or see new replies in your feed';
+
+	/// en: 'Schedule your post'
+	String get scheduleYourPost => 'Schedule your post';
+
+	/// en: 'Schedule your post to be published at a later time'
+	String get scheduleYourPostDesc => 'Schedule your post to be published at a later time';
+
+	/// en: 'Paid note scheduled'
+	String get paidNoteScheduled => 'Paid note scheduled';
+
+	/// en: 'Note scheduled'
+	String get noteScheduled => 'Note scheduled';
+
+	/// en: 'Published'
+	String get published => 'Published';
+
+	/// en: 'Drafts'
+	String get drafts => 'Drafts';
+
+	/// en: 'Scheduled'
+	String get scheduled => 'Scheduled';
+
+	/// en: 'Schedule'
+	String get schedule => 'Schedule';
+
+	/// en: 'Scheduled on: {{date}}'
+	String scheduledOn({required Object date}) => 'Scheduled on: ${date}';
+
+	/// en: 'Delete Scheduled Note'
+	String get deleteScheduledNote => 'Delete Scheduled Note';
+
+	/// en: 'Are you sure you want to delete this scheduled note? This action cannot be undone.'
+	String get deleteScheduleNoteDesc => 'Are you sure you want to delete this scheduled note? This action cannot be undone.';
+
+	/// en: 'Reschedule'
+	String get reschedule => 'Reschedule';
+
+	/// en: 'No scheduled notes found'
+	String get noScheduledNotesFound => 'No scheduled notes found';
+
+	/// en: 'You haven't scheduled any notes yet.'
+	String get noScheduledNotesFoundDesc => 'You haven\'t scheduled any notes yet.';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -6099,6 +6246,8 @@ extension on Translations {
 			'openUrlDesc' => ({required Object url}) => 'Do you want to open "${url}"?',
 			'openUrlPrompt' => 'Open url prompt',
 			'openUrlPromptDesc' => 'A safety prompt that displays the full URL before opening it in your browser.',
+			'actionsPopups' => 'Actions popups',
+			'actionsPopupsDesc' => 'Enable or disable popups for success, error, and information messages.',
 			'waitingForNetwork' => 'Waiting for network...',
 			'whatsNew' => 'What\'s new',
 			'appCustom' => 'App custom',
@@ -6316,14 +6465,14 @@ extension on Translations {
 			'memo' => 'Memo',
 			'payingInvoice' => 'Paying invoice',
 			'addMint' => 'Add mint',
-			'gettingMintInfo' => 'Getting mint info',
-			'generatingInvoice' => 'Generating invoice',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Getting mint info',
+			'generatingInvoice' => 'Generating invoice',
 			'checkPaymentStatus' => 'Check Payment Status',
 			'depositSuccess' => 'Deposit Succeeded',
 			'sendEcash' => 'Send eCash',
@@ -6359,6 +6508,53 @@ extension on Translations {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'Pay Lightning invoice or to lightning address',
 			'info' => 'Info',
+			'followPacks' => 'Follow packs',
+			'followPacksDesc' => 'Explore and find packs to use on Nostr',
+			'starterPacks' => 'Starter packs',
+			'mediaPacks' => 'Media packs',
+			'noPacksFound' => 'No packs found',
+			'noPacksFoundDesc' => 'You haven\'t followed any packs yet.',
+			'browsePack' => 'Browse pack',
+			'inThisPack' => ({required Object number}) => 'In this pack (${number})',
+			'community' => 'Community',
+			'packCreated' => 'Pack created successfully',
+			'errorOnCreatingPack' => 'Error occured while creating pack',
+			'errorOnUpdatingPack' => 'Error occured while updating pack',
+			'clonePack' => 'Clone pack',
+			'addPack' => 'Add pack',
+			'updatePack' => 'Update pack',
+			'peopleCount' => ({required Object number}) => 'People (${number})',
+			'peopleCountDesc' => 'Number of people in this pack',
+			'packDeleted' => 'Pack deleted successfully',
+			'errorDeletingEvent' => 'Error occured while deleting event',
+			'packUpdated' => 'Pack updated successfully',
+			'packCloned' => 'Pack cloned successfully',
+			'deletePack' => 'Delete Pack',
+			'deletePackDesc' => 'Are you sure you want to delete this pack? This action cannot be undone.',
+			'starterPacksDesc' => 'Pick a pack and start your feed with content from its creators',
+			'othersNumber' => ({required Object number}) => '+ ${number} others',
+			'noPacksFoundSettingsDesc' => 'Add more follow packs to enjoy a tailored feed.',
+			'deleteMessage' => 'Delete Message',
+			'deleteMessageDesc' => 'Are you sure you want to delete this message? This action cannot be undone.',
+			'errorDeletingMessage' => 'Error occured while deleting message',
+			'messageDeleted' => 'Message deleted successfully',
+			'relayAlreadyExists' => 'Relay already exists',
+			'selected' => 'selected',
+			'threadMutedDescription' => 'This note and its thread are muted, you won\'t get notifications or see new replies in your feed',
+			'scheduleYourPost' => 'Schedule your post',
+			'scheduleYourPostDesc' => 'Schedule your post to be published at a later time',
+			'paidNoteScheduled' => 'Paid note scheduled',
+			'noteScheduled' => 'Note scheduled',
+			'published' => 'Published',
+			'drafts' => 'Drafts',
+			'scheduled' => 'Scheduled',
+			'schedule' => 'Schedule',
+			'scheduledOn' => ({required Object date}) => 'Scheduled on: ${date}',
+			'deleteScheduledNote' => 'Delete Scheduled Note',
+			'deleteScheduleNoteDesc' => 'Are you sure you want to delete this scheduled note? This action cannot be undone.',
+			'reschedule' => 'Reschedule',
+			'noScheduledNotesFound' => 'No scheduled notes found',
+			'noScheduledNotesFoundDesc' => 'You haven\'t scheduled any notes yet.',
 			_ => null,
 		};
 	}

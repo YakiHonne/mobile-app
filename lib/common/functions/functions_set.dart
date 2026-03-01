@@ -3,12 +3,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:aescryptojs/aescryptojs.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,6 +21,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_url_validator/video_url_validator.dart';
@@ -49,6 +51,7 @@ import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/search_view/search_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_display.dart';
 import '../../views/widgets/content_renderer/content_renderer.dart';
+import '../../views/widgets/dotted_container.dart';
 import '../../views/widgets/media_components/horizontal_video_view.dart';
 import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/modal_with_blur.dart';
@@ -278,7 +281,7 @@ Future<void> openApp({
     elevation: 0,
     builder: (_) {
       return SmartWidgetAppView(
-        url: url,
+        url: url.trim(),
         onCustomDataAdded: onCustomDataAdded,
         smartWidget: smartWidget,
         app: app,
@@ -434,16 +437,48 @@ Future<void> setMuteStatus({
   }
 }
 
-void shareContent({
-  required String text,
-  RenderBox? renderBox,
-}) {
-  Share.share(
-    text,
-    subject: 'Sharing: $text',
-    sharePositionOrigin: renderBox != null
-        ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-        : null,
+Future<XFile?> getLogoXFile() async {
+  try {
+    final byteData = await rootBundle.load('assets/icon.png');
+    final directory = await getTemporaryDirectory();
+    final path = '${directory.path}/icon.png';
+    final file = File(path);
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return XFile(path);
+  } catch (e) {
+    lg.e('Failed to load logo asset: $e');
+    return null;
+  }
+}
+
+RenderBox? getCurrentRenderBox() {
+  final context = nostrRepository.currentContext();
+  RenderBox? box;
+
+  if (ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
+    box = context.findRenderObject() as RenderBox?;
+  }
+
+  return box;
+}
+
+Future<void> shareContent({
+  String? text,
+  String? subject,
+  List<XFile>? files,
+}) async {
+  final renderBox = getCurrentRenderBox();
+  final logoXFile = await getLogoXFile();
+
+  await SharePlus.instance.share(
+    ShareParams(
+      text: text,
+      subject: subject ?? 'Sharing: $text',
+      previewThumbnail: logoXFile,
+      sharePositionOrigin: renderBox != null
+          ? renderBox.localToGlobal(Offset.zero) & renderBox.size
+          : null,
+    ),
   );
 }
 
@@ -459,12 +494,9 @@ Future<void> shareLink({
     id: id,
   );
 
-  Share.share(
-    res,
+  shareContent(
+    text: res,
     subject: 'Check out www.yakihonne.com for more',
-    sharePositionOrigin: renderBox != null
-        ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-        : null,
   );
 }
 
@@ -474,7 +506,9 @@ bool isReplaceable(int? kind) {
       kind == EventKind.CURATION_VIDEOS ||
       kind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
       kind == EventKind.LEGACY_VIDEO_VERTICAL ||
-      kind == EventKind.SMART_WIDGET_ENH;
+      kind == EventKind.SMART_WIDGET_ENH ||
+      kind == EventKind.MEDIA_PACKS ||
+      kind == EventKind.STARTER_PACKS;
 }
 
 bool isSupportedEvent(int? kind) {
@@ -651,6 +685,7 @@ class ParsedText extends HookWidget {
     this.maxLines,
     this.minLines,
     this.maxWords,
+    this.useDetailedNote = false,
   });
 
   final String text;
@@ -668,6 +703,7 @@ class ParsedText extends HookWidget {
   final int? maxWords;
   final int? maxLines;
   final int? minLines;
+  final bool? useDetailedNote;
   final ScrollPhysics? scrollPhysics;
   final bool isDm;
   final bool enableTruncation;
@@ -743,6 +779,7 @@ class ParsedText extends HookWidget {
             onClicked: onClicked,
             maxLines: maxLines,
             minLines: minLines,
+            useDetailedNote: useDetailedNote,
             overflow: TextOverflow.ellipsis,
             disableNoteParsing: disableNoteParsing,
             disableUrlParsing: disableUrlParsing,
@@ -753,14 +790,21 @@ class ParsedText extends HookWidget {
                 ? TextDirection.rtl
                 : TextDirection.ltr,
             inverseNoteColor: inverseNoteColor,
-            style: style ??
-                Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: color,
-                    ),
-            linkStyle: style?.copyWith(color: Theme.of(context).primaryColor) ??
-                Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Theme.of(context).primaryColor,
-                    ),
+            style: (style ??
+                    Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: color,
+                        ))
+                .copyWith(
+              fontFamilyFallback: ['NotoSans'],
+            ),
+            linkStyle:
+                (style?.copyWith(color: Theme.of(context).primaryColor) ??
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).primaryColor,
+                            ))
+                    .copyWith(
+              fontFamilyFallback: ['NotoSans'],
+            ),
             linkifiers: const [
               CustomUrlLinkifier(),
               RelayLinkifier(),
@@ -1382,4 +1426,70 @@ Future<ui.Image> getImageDimensions(File file) async {
   final codec = await ui.instantiateImageCodec(bytes);
   final frame = await codec.getNextFrame();
   return frame.image;
+}
+
+void showScheduledNoteDatePicker({
+  required BuildContext context,
+  required Function(DateTime?) onDateTimeChanged,
+  DateTime? scheduled,
+}) {
+  showCupertinoModalPopup(
+    context: context,
+    builder: (_) => Container(
+      height: 50.h,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(kDefaultPadding),
+          topRight: Radius.circular(kDefaultPadding),
+        ),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 0.5,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      child: Column(
+        children: [
+          const ModalBottomSheetHandle(),
+          Text(
+            context.t.scheduleYourPost,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          Text(
+            context.t.scheduleYourPostDesc,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+          ),
+          Expanded(
+            child: CupertinoDatePicker(
+              initialDateTime: scheduled ?? DateTime.now(),
+              minimumDate: DateTime.now().subtract(const Duration(seconds: 1)),
+              onDateTimeChanged: (value) {
+                onDateTimeChanged(value);
+              },
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  onDateTimeChanged(null);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  context.t.clear.capitalizeFirst(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

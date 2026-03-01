@@ -1462,7 +1462,9 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
       final pubkey = currentSigner!.getPublicKey();
 
       keysToKeep.add(pubkey);
-      prunedCache[pubkey] = state.metadataCache[pubkey]!;
+      if (state.metadataCache[pubkey] != null) {
+        prunedCache[pubkey] = state.metadataCache[pubkey]!;
+      }
     }
 
     // Clean up access times for removed entries

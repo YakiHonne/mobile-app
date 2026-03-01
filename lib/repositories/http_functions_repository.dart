@@ -277,35 +277,6 @@ class HttpFunctionsRepository {
     }
   }
 
-  static Future<List<Event>> getTrendingNotes() async {
-    try {
-      final response =
-          await HttpFunctionsRepository.get('$nostrBandURl${'trending/notes'}');
-
-      if (response?['notes'] != null) {
-        final notesMap = response!['notes'] as List;
-        final List<Event> events = [];
-
-        for (final note in notesMap) {
-          final evMap = note['event'];
-
-          if (evMap != null) {
-            final ev = Event.fromJson(evMap);
-            if (!isUserMuted(ev.pubkey)) {
-              events.add(ev);
-            }
-          }
-        }
-
-        return events;
-      }
-
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
-
   // ==================================================
   // REDEEM CODE
   // ==================================================

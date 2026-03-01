@@ -256,15 +256,22 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Ecash implementation.',
-  'Note deletion.',
-  'Add gesture detector on the image box when tryin to upload an image in article publishing.',
-  'Improve database indexing for faster data loading.',
-  'Fix adding relay manually is not working when creating a relay set.',
-  'Fix mute thread in search is not working.',
-  'Fix relay list is not showing on user profile.',
-  'Fix app audio taking priority over other audios from other running apps.',
-  'Bug fixes and performance improvements.',
+  'Started packs support.',
+  'Media packs support.',
+  'Relay based trending notes.',
+  'Scheduled notes.',
+  'Added messages non blocking sending & queueing.',
+  'Added messages deletion (single/multi).',
+  'Added note and its reply rendering in messages.',
+  'Added ability to enable/disable actions popups.',
+  'Fix ecash wallet creation.',
+  'Fix sharing not function on ios 26.',
+  'Fix duplication when adding relays to lists.',
+  'Fix currencies update issue.',
+  'Fix hashtags with greek language not recognized.',
+  'Fix note text display issue (unsupported fonts).',
+  'Adjusted muted thread by adding message box.',
+  'Other bug fixes and performance improvements.',
 ];
 
 const content = [

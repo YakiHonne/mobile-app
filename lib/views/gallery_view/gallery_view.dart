@@ -393,39 +393,40 @@ class OpenGalleryWidget extends HookWidget {
       };
     });
 
-    return DisplayGesture(
-      child: Stack(
-        children: [
-          _interactiveViewer(
-            context,
-            currentIndex,
-            currentSource,
-            calculateBottomPadding,
-            isRound,
-          ),
-          if (addBlackLayer)
-            Positioned.fill(
-              child: IgnorePointer(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        kBlack,
-                        kTransparent,
-                      ],
-                      stops: [0, 0.3],
-                    ),
+    return Stack(
+      children: [
+        _interactiveViewer(
+          context,
+          currentIndex,
+          currentSource,
+          calculateBottomPadding,
+          isRound,
+        ),
+        if (addBlackLayer)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      kBlack,
+                      kTransparent,
+                    ],
+                    stops: [0, 0.3],
                   ),
                 ),
               ),
             ),
-          if (media.length > 1) _count(bottomPadding, context, currentIndex),
-          _viewer(currentIndex, context, currentSource),
-        ],
-      ),
+          ),
+        if (media.length > 1) _count(bottomPadding, context, currentIndex),
+        _viewer(currentIndex, context, currentSource),
+      ],
     );
+    // return DisplayGesture(
+    //   child:
+    // );
   }
 
   Positioned _viewer(ValueNotifier<int> currentIndex, BuildContext context,

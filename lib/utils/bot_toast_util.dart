@@ -10,6 +10,11 @@ class BotToastUtils {
   static int toastDuration = 3;
 
   static void showUnreachableRelaysError() {
+    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
+        true)) {
+      return;
+    }
+
     BotToast.showText(
       text: t.relaysNotReached.capitalizeFirst(),
       contentColor: kRed,
@@ -21,6 +26,11 @@ class BotToastUtils {
   }
 
   static void showError(String message) {
+    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
+        true)) {
+      return;
+    }
+
     BotToast.showText(
       duration: Duration(seconds: toastDuration),
       text: message,
@@ -33,6 +43,11 @@ class BotToastUtils {
   }
 
   static void showInformation(String message) {
+    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
+        true)) {
+      return;
+    }
+
     BotToast.showText(
       duration: Duration(seconds: toastDuration),
       text: message,
@@ -45,6 +60,11 @@ class BotToastUtils {
   }
 
   static void showSuccess(String message) {
+    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
+        true)) {
+      return;
+    }
+
     BotToast.showText(
       text: message,
       duration: Duration(seconds: toastDuration),
@@ -57,6 +77,11 @@ class BotToastUtils {
   }
 
   static void showWarning(String message) {
+    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
+        true)) {
+      return;
+    }
+
     BotToast.showText(
       text: message,
       duration: Duration(seconds: toastDuration),
@@ -82,9 +107,13 @@ class BotToastUtils {
           builder: (context, state) {
             return UnconstrainedBox(
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: state.status.isEmpty ? 70 : 100,
-                width: state.status.isEmpty ? 70 : 100,
+                duration: const Duration(milliseconds: 200),
+                constraints: BoxConstraints(
+                  minHeight: 70,
+                  maxHeight: state.status.isEmpty ? 70 : 120,
+                  minWidth: 70,
+                  maxWidth: state.status.isEmpty ? 70 : 120,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(ctx).cardColor,
                   borderRadius: BorderRadius.circular(kDefaultPadding / 2),
@@ -93,23 +122,36 @@ class BotToastUtils {
                     width: 0.5,
                   ),
                 ),
-                child: Column(
-                  spacing: kDefaultPadding / 4,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SpinKitCircle(
-                      color: Theme.of(ctx).primaryColor,
-                      size: 25,
-                    ),
-                    if (state.status.isNotEmpty)
-                      Text(
-                        state.status,
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              color: Theme.of(context).highlightColor,
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                child: Center(
+                  child: ClipRect(
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Column(
+                        spacing: kDefaultPadding / 4,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SpinKitCircle(
+                            color: Theme.of(ctx).primaryColor,
+                            size: 25,
+                          ),
+                          if (state.status.isNotEmpty)
+                            Text(
+                              state.status,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                  ),
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                        textAlign: TextAlign.center,
+                        ],
                       ),
-                  ],
+                    ),
+                  ),
                 ),
               ),
             );

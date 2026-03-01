@@ -176,6 +176,12 @@ class EventMemBox extends Equatable {
     _idMap.clear();
   }
 
+  EventMemBox clone() {
+    final box = EventMemBox(sortAfterAdd: sortAfterAdd);
+    box.addList(_eventList);
+    return box;
+  }
+
   @override
   List<Object?> get props => [_eventList, _idMap, sortAfterAdd];
 }

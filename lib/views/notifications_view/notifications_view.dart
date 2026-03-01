@@ -216,6 +216,10 @@ class SelectedNotifications extends HookWidget {
   }
 
   List<Event> getUsedEvents(int index, List<Event> events) {
+    if (!canSign()) {
+      return [];
+    }
+
     final pubkey = currentSigner!.getPublicKey();
 
     return List<Event>.from(

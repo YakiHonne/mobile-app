@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../repositories/http_functions_repository.dart';
@@ -212,12 +211,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       id: state.user.pubkey,
     );
 
-    Share.share(
-      res,
+    shareContent(
+      text: res,
       subject: 'Check out www.yakihonne.com for me more.',
-      sharePositionOrigin: renderBox != null
-          ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-          : null,
     );
   }
 
@@ -314,7 +310,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
 
-      until = state.content.last.createdAt - 1;
+      until =
+          state.content.isNotEmpty ? null : state.content.last.createdAt - 1;
     }
 
     if (profileData == ProfileData.pinned && pinnedNotes.isEmpty) {

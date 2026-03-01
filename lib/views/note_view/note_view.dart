@@ -13,9 +13,11 @@ import '../../models/detailed_note_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/parsed_media_container.dart';
+import '../widgets/response_snackbar.dart';
 
 // Constants
 const _kScrollDuration = Duration(milliseconds: 300);
@@ -60,6 +62,10 @@ class NoteView extends HookWidget {
 
         await Future.delayed(const Duration(milliseconds: 300));
 
+        if (!context.mounted) {
+          return;
+        }
+
         if (targetKey.currentContext != null) {
           Scrollable.ensureVisible(
             targetKey.currentContext!,
@@ -92,11 +98,18 @@ class NoteView extends HookWidget {
 
     final updateNote = useCallback(
       (DetailedNoteModel newNote, {bool isRemoving = false}) async {
+        if (!context.mounted) {
+          return;
+        }
         // Start fade out
         isTransitioning.value = true;
 
         // Wait for fade out
         await Future.delayed(_kFadeDuration);
+
+        if (!context.mounted) {
+          return;
+        }
 
         // Update note and thread
         currentNote.value = newNote;
@@ -143,10 +156,12 @@ class NoteView extends HookWidget {
       buildWhen: (prev, curr) =>
           prev.previousNotes[currentNote.value.id] !=
               curr.previousNotes[currentNote.value.id] ||
-          prev.mutes != curr.mutes,
+          prev.mutes != curr.mutes ||
+          prev.mutesEvents.contains(currentNote.value.id) !=
+              curr.mutesEvents.contains(currentNote.value.id),
       builder: (context, state) {
         final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
-
+        final mutedThread = state.mutesEvents.contains(currentNote.value.id);
         return Scaffold(
           appBar: CustomAppBar(
             title: context.t.thread.capitalizeFirst(),
@@ -180,28 +195,35 @@ class NoteView extends HookWidget {
                     ),
 
                   // Main note - highlighted
-                  SliverToBoxAdapter(
-                    key: targetKey,
-                    child: DetailedNoteContainer(
-                      key: ValueKey(currentNote.value),
-                      note: currentNote.value,
-                      isMain: true,
-                      addLine: false,
-                      autoTranslate: autoTranslate,
+                  if (mutedThread)
+                    SliverToBoxAdapter(
+                      child: MutedNote(id: currentNote.value.id),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      key: targetKey,
+                      child: DetailedNoteContainer(
+                        key: ValueKey(currentNote.value),
+                        note: currentNote.value,
+                        isMain: true,
+                        addLine: false,
+                        autoTranslate: autoTranslate,
+                      ),
                     ),
-                  ),
                   const SliverToBoxAdapter(
                     child: SizedBox(
                       height: kDefaultPadding / 2,
                     ),
                   ),
                 ],
-                body: NoteRepliesList(
-                  key: ValueKey('replies_${currentNote.value.id}'),
-                  selectedNote: currentNote,
-                  setNote: updateNote,
-                  isTransitioning: isTransitioning.value,
-                ),
+                body: mutedThread
+                    ? const SizedBox.shrink()
+                    : NoteRepliesList(
+                        key: ValueKey('replies_${currentNote.value.id}'),
+                        selectedNote: currentNote,
+                        setNote: updateNote,
+                        isTransitioning: isTransitioning.value,
+                      ),
               ),
             ),
           ),
@@ -224,6 +246,67 @@ class NoteView extends HookWidget {
     } else {
       YNavigator.pop(context);
     }
+  }
+}
+
+class MutedNote extends StatelessWidget {
+  const MutedNote({super.key, required this.id});
+  final String id;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      margin: const EdgeInsets.only(top: kDefaultPadding / 2),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        border: Border.all(color: Theme.of(context).dividerColor, width: 0.5),
+        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+      ),
+      child: Row(
+        spacing: kDefaultPadding / 2,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: kDefaultPadding / 4,
+              children: [
+                Text(context.t.threadMuted),
+                Text(
+                  context.t.threadMutedDescription,
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          CustomIconButton(
+            onClicked: () {
+              showCupertinoCustomDialogue(
+                context: context,
+                title: context.t.threadMuted.capitalizeFirst(),
+                description: context.t.threadMutedDescription,
+                buttonText: context.t.unmute.capitalizeFirst(),
+                buttonTextColor: kGreen,
+                setDescriptionMaxLine: true,
+                onClicked: () => setMuteStatus(
+                  muteKey: id,
+                  isPubkey: false,
+                  onSuccess: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              );
+            },
+            icon: FeatureIcons.unmute,
+            size: 20,
+            vd: -2,
+            backgroundColor: kTransparent,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -415,10 +498,15 @@ class NoteRepliesList extends HookWidget {
     final replies = useState(<DetailedNoteModel>[]);
     final isLoading = useState(true);
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final useSingleColumn =
+        nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
     final selectedNoteId = selectedNote.value.id;
 
     final updateReplies = useCallback(
       () async {
+        if (!context.mounted) {
+          return;
+        }
         isLoading.value = true;
 
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
@@ -426,6 +514,9 @@ class NoteRepliesList extends HookWidget {
           type: NoteRelatedEventsType.replies,
         );
 
+        if (!context.mounted) {
+          return;
+        }
         replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
         isLoading.value = false;
       },
@@ -473,7 +564,8 @@ class NoteRepliesList extends HookWidget {
           else if (replies.value.isEmpty)
             ..._buildEmptyReplies(context)
           else
-            ..._buildRepliesList(context, replies.value, isTablet),
+            ..._buildRepliesList(
+                context, replies.value, isTablet, useSingleColumn),
         ],
       ),
     );
@@ -517,6 +609,7 @@ class NoteRepliesList extends HookWidget {
     BuildContext context,
     List<DetailedNoteModel> replyList,
     bool isTablet,
+    bool useSingleColumn,
   ) {
     return [
       SliverToBoxAdapter(
@@ -533,7 +626,7 @@ class NoteRepliesList extends HookWidget {
           ),
         ),
       ),
-      if (isTablet)
+      if (isTablet && !useSingleColumn)
         SliverMasonryGrid.count(
           crossAxisCount: 2,
           crossAxisSpacing: kDefaultPadding,

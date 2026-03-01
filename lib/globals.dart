@@ -19,6 +19,7 @@ import 'logic/media_servers_cubit/media_servers_cubit.dart';
 import 'logic/metadata_cubit/metadata_cubit.dart';
 import 'logic/notes_events_cubit/notes_events_cubit.dart';
 import 'logic/notifications_cubit/notifications_cubit.dart';
+import 'logic/packs_settings_cubit/packs_settings_cubit.dart';
 import 'logic/points_management_cubit/points_management_cubit.dart';
 import 'logic/relay_info_cubit/relay_info_cubit.dart';
 import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
@@ -45,6 +46,8 @@ late NostrDataRepository nostrRepository;
 late RoutingCubit routingCubit;
 
 late RelayInfoCubit relayInfoCubit;
+
+late PacksSettingsCubit packsSettingsCubit;
 
 late MetadataCubit metadataCubit;
 

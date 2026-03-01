@@ -18,6 +18,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../common/media_handler/media_handler.dart';
 import '../../initializers.dart';
 import '../../models/app_models/interests_set.dart';
+import '../../models/packs_model.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../routes/navigator.dart';
@@ -42,7 +43,9 @@ class LogifyCubit extends Cubit<LogifyState> {
             wallet: '',
             lightningAddress: '',
           ),
-        );
+        ) {
+    getPacks();
+  }
 
   RemoteEventSigner? remoteSigner;
   RemoteEventSigner? tempNC;
@@ -50,12 +53,45 @@ class LogifyCubit extends Cubit<LogifyState> {
   String? remoteSignerSubscriptionId;
   bool isFetchingPubkey = false;
   bool isLoggingIn = false;
+  List<PacksModel> packs = [];
+
+  final dTags = [
+    'streamersFollowPackh8Kz3P2q',
+    'szxs0ra5tqzu',
+    '6715ef40-2d95-4f86-8277-bd4efb0fa56b',
+    'tp9hnqpnccco',
+    'b2c75381-0335-48bd-a579-553df86903af',
+    'b56c8b24-e33b-4c32-8ca0-63a1bb7577b4',
+    '7g0zvf7gv59j',
+    'ardt92mr1e2i',
+    'm36yukpd5kts',
+    'y156932o9xfh',
+    'cioc58duuftq',
+    'cld28teq2js4',
+    'xv7j4mgavera',
+    'h308e7fzkjff',
+  ];
+
+  Future<void> getPacks() async {
+    try {
+      final events = await NostrFunctionsRepository.getEventsAsync(
+        kinds: [EventKind.STARTER_PACKS],
+        dTags: dTags,
+        source: EventsSource.relays,
+        includeIds: false,
+      );
+      packs = events.map((e) => PacksModel.fromEvent(e)).toList();
+    } catch (e) {
+      lg.i(e);
+    }
+  }
 
   Future<void> login({
     required String key,
     required bool newKey,
     required Function() onSuccess,
     required bool isExternalSigner,
+    required BuildContext context,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
   }) async {
     try {
@@ -107,9 +143,9 @@ class LogifyCubit extends Cubit<LogifyState> {
 
       if ((metadata?.isDeleted ?? false) && gc.mounted) {
         showCupertinoAccountDeletedDialogue(
-          context: nostrRepository.currentContext(),
+          context: context,
           onClicked: () {
-            YNavigator.pop(nostrRepository.currentContext());
+            YNavigator.pop(context);
           },
         );
 
@@ -174,6 +210,7 @@ class LogifyCubit extends Cubit<LogifyState> {
   }
 
   Future<void> loginWithAmber({
+    required BuildContext context,
     required Function() onSuccess,
   }) async {
     final amber = amb.Amberflutter();
@@ -231,6 +268,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         login(
           key: pubkey,
           newKey: true,
+          context: context,
           onSuccess: () {},
           isExternalSigner: true,
           externalKeyType: ExternalKeyType.Amber,
@@ -697,6 +735,7 @@ class LogifyCubit extends Cubit<LogifyState> {
 
     getNostrConnectSigner(
       onSuccess: onSuccess,
+      context: context,
       onConnectionUrlReady: (url) {
         completer.complete(url);
       },
@@ -707,6 +746,7 @@ class LogifyCubit extends Cubit<LogifyState> {
 
   Future<void> getNostrConnectSigner({
     required Function() onSuccess,
+    required BuildContext context,
     required Function(String) onConnectionUrlReady,
   }) async {
     final signer = await RemoteEventSigner.fromURI(
@@ -719,7 +759,8 @@ class LogifyCubit extends Cubit<LogifyState> {
 
     if (signer != null) {
       await signer.getPublicKeyAsync();
-      loadRemotePubkeyAndLogin(remoteSigner: signer, onSuccess: onSuccess);
+      loadRemotePubkeyAndLogin(
+          remoteSigner: signer, onSuccess: onSuccess, context: context);
     }
   }
 
@@ -748,12 +789,14 @@ class LogifyCubit extends Cubit<LogifyState> {
 
     if (signer != null) {
       await signer.getPublicKeyAsync();
-      loadRemotePubkeyAndLogin(remoteSigner: signer, onSuccess: onSuccess);
+      loadRemotePubkeyAndLogin(
+          remoteSigner: signer, onSuccess: onSuccess, context: context);
     }
   }
 
   Future<void> loadRemotePubkeyAndLogin({
     required RemoteEventSigner remoteSigner,
+    required BuildContext context,
     required Function() onSuccess,
   }) async {
     final pubkey = remoteSigner.publicKey;
@@ -774,6 +817,7 @@ class LogifyCubit extends Cubit<LogifyState> {
       login(
         key: pubkey,
         newKey: true,
+        context: context,
         onSuccess: () {},
         isExternalSigner: true,
       );

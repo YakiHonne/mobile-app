@@ -63,11 +63,15 @@ class DMSession {
   DMSession({required this.pubkey});
 
   DMSession clone() {
-    return DMSession(pubkey: pubkey).._box = _box;
+    return DMSession(pubkey: pubkey).._box = _box.clone();
   }
 
   bool addEvent(Event event) {
     return _box.add(event, returnTrueOnNewSources: false);
+  }
+
+  bool removeEvent(String id) {
+    return _box.delete(id);
   }
 
   void addEvents(List<Event> events) {

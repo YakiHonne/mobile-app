@@ -11,6 +11,7 @@ class DmsState extends Equatable {
   final int selectedTime;
   final bool isLoadingHistory;
   final DmDataState dmDataState;
+  final Set<String> pendingEventIds;
 
   const DmsState({
     required this.dmSessionDetails,
@@ -22,6 +23,7 @@ class DmsState extends Equatable {
     required this.selectedTime,
     required this.isLoadingHistory,
     required this.dmDataState,
+    required this.pendingEventIds,
   });
 
   @override
@@ -35,6 +37,7 @@ class DmsState extends Equatable {
         selectedTime,
         isLoadingHistory,
         dmDataState,
+        pendingEventIds,
       ];
 
   DmsState copyWith({
@@ -47,6 +50,7 @@ class DmsState extends Equatable {
     int? selectedTime,
     bool? isLoadingHistory,
     DmDataState? dmDataState,
+    Set<String>? pendingEventIds,
   }) {
     return DmsState(
       dmSessionDetails: dmSessionDetails ?? this.dmSessionDetails,
@@ -58,6 +62,7 @@ class DmsState extends Equatable {
       selectedTime: selectedTime ?? this.selectedTime,
       isLoadingHistory: isLoadingHistory ?? this.isLoadingHistory,
       dmDataState: dmDataState ?? this.dmDataState,
+      pendingEventIds: pendingEventIds ?? this.pendingEventIds,
     );
   }
 }

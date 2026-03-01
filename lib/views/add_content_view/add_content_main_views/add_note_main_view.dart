@@ -10,6 +10,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
 import '../../../models/flash_news_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/parsed_content_display.dart';
 import '../../write_note_view/widgets/paid_note_process.dart';
 import '../../write_note_view/write_note_view.dart';
@@ -37,6 +38,7 @@ class AddNoteMainView extends HookWidget {
     final useSourceRelay =
         useState(appSettingsManagerCubit.getNoteSourceRelay() != null);
     final controller = useMemoized(() => MentionTagTextEditingController(), []);
+    final scheduled = useState<DateTime?>(null);
     final signer = useState(currentSigner!);
 
     useEffect(() {
@@ -71,7 +73,9 @@ class AddNoteMainView extends HookWidget {
           return Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: AddContentAppbar(
-              actionButtonText: context.t.publish.capitalize(),
+              actionButtonText: scheduled.value != null
+                  ? context.t.schedule.capitalize()
+                  : context.t.publish.capitalize(),
               isActionButtonEnabled: true,
               extra: _titleRow(controller, context),
               onActionClicked: () {
@@ -81,6 +85,7 @@ class AddNoteMainView extends HookWidget {
                       isPaid: isPaid.value,
                       useSourceRelay: useSourceRelay.value,
                       selectedExternalRelay: selectedExternalRelay,
+                      scheduled: scheduled.value,
                       onPaymentProcess: () {
                         showModalBottomSheet(
                           context: context,
@@ -110,6 +115,72 @@ class AddNoteMainView extends HookWidget {
       ),
     );
 
+    if (scheduled.value != null) {
+      components.add(
+        GestureDetector(
+          onTap: () {
+            showScheduledNoteDatePicker(
+              context: context,
+              onDateTimeChanged: (value) {
+                scheduled.value = value;
+              },
+              scheduled: scheduled.value,
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding / 2,
+              vertical: kDefaultPadding / 4,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+              color: Theme.of(context).cardColor,
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
+              ),
+            ),
+            margin: const EdgeInsets.only(
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+              top: kDefaultPadding / 2,
+            ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  FeatureIcons.calendar,
+                  width: 20,
+                  height: 20,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).highlightColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding / 4),
+                Expanded(
+                  child: Text(
+                    context.t.scheduledOn(
+                      date: dateFormat3.format(scheduled.value!),
+                    ),
+                  ),
+                ),
+                CustomIconButton(
+                  onClicked: () {
+                    scheduled.value = null;
+                  },
+                  icon: FeatureIcons.closeRaw,
+                  size: 17,
+                  backgroundColor: kTransparent,
+                  vd: -2,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     components.add(
       Expanded(
         child: BlocBuilder<AddContentCubit, AddContentState>(
@@ -117,6 +188,7 @@ class AddNoteMainView extends HookWidget {
             return NoteWritingComponent(
               isPaid: isPaid,
               useSourceRelay: useSourceRelay,
+              scheduled: scheduled,
               isNewNote:
                   state.displayBottomNavigationBar && attachedEvent == null,
               controller: controller,

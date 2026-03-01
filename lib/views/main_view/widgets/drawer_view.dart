@@ -14,6 +14,7 @@ import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
 import '../../../utils/utils.dart';
 import '../../dashboard_view/dashboard_view.dart';
+import '../../explore_packs_view/explore_packs_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
 import '../../logify_view/logify_view.dart';
 import '../../points_management_view/points_management_view.dart';
@@ -370,6 +371,7 @@ class MainViewDrawer extends HookWidget {
               _profileDrawerItem(state, context),
             ],
             _articlesDrawerItem(state, context),
+            _exploreDrawerItem(state, context),
             _relaysOrbitDrawerItem(state, context),
             if (canSign()) ...[
               _smartWidgetDrawerItem(state, context),
@@ -426,6 +428,23 @@ class MainViewDrawer extends HookWidget {
       icon: FeatureIcons.article,
       selectedIcon: FeatureIcons.articleFilled,
       title: context.t.articles.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _exploreDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const ExplorePacksView(),
+        );
+
+        Scaffold.of(context).closeDrawer();
+      },
+      icon: FeatureIcons.discover,
+      selectedIcon: FeatureIcons.articleFilled,
+      title: context.t.explore.capitalizeFirst(),
     );
   }
 

@@ -46,7 +46,7 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
   Future<void> handleFrameMessage(JavaScriptMessage message) async {
     try {
       final messageData = jsonDecode(message.message);
-      lg.i(messageData);
+
       if (messageData['scope'] != 'sw-data') {
         return;
       }
@@ -81,7 +81,7 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
   // ========================
 
   void _handleAppLoaded() {
-    emit(state.copyWith(isReady: true));
+    _emit(state.copyWith(isReady: true));
 
     final responseData = _buildUserMetadataResponse();
     sendData(jsonEncode(responseData));
@@ -354,6 +354,12 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
       await controller.runJavaScript('window.postMessage($data, "*");');
     } catch (e) {
       lg.i('Error sending data to WebView: $e');
+    }
+  }
+
+  void _emit(SmartWidgetAppState state) {
+    if (!isClosed) {
+      emit(state);
     }
   }
 }

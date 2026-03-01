@@ -8,9 +8,12 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../../logic/relay_info_cubit/relay_info_cubit.dart';
 import '../../../../models/app_models/diverse_functions.dart';
+import '../../../../models/packs_model.dart';
 import '../../../../models/relays_feed.dart';
 import '../../../../routes/navigator.dart';
+import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../../explore_packs_view/widget/pack_feed_view.dart';
 import '../../../relay_feed_view/relay_feed_view.dart';
 import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
@@ -53,8 +56,14 @@ class RelaySettingsView extends HookWidget {
 
     final addRelay = useCallback(() {
       final r = getProperRelayUrl(addRelayState.value);
-      favoriteRelays.value = List<String>.from(favoriteRelays.value)
-        ..insert(0, r);
+
+      if (!favoriteRelays.value.contains(r)) {
+        favoriteRelays.value = List<String>.from(favoriteRelays.value)
+          ..insert(0, r);
+      } else {
+        BotToastUtils.showWarning(context.t.relayAlreadyExists);
+      }
+
       connect.value = RelayConnectivity.idle;
       addRelayController.clear();
     });
@@ -504,6 +513,9 @@ class RelaySettingsView extends HookWidget {
                   onlineRelays: favoriteRelays.value,
                   excludeContantRelays: false,
                   setRelay: (relay) {
+                    if (favoriteRelays.value.contains(relay)) {
+                      return;
+                    }
                     favoriteRelays.value =
                         List<String>.from(favoriteRelays.value)
                           ..insert(0, relay);
@@ -1059,6 +1071,141 @@ class ShareRelayFeed extends StatelessWidget {
               YNavigator.pushPage(
                 context,
                 (context) => RelayFeedView(relay: relay),
+              );
+            },
+            child: Text(context.t.browseRelay),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget relaySharedContainer({
+    required BuildContext context,
+    required String title,
+    required String text,
+    required Function() onCopy,
+  }) {
+    return GestureDetector(
+      onTap: onCopy,
+      behavior: HitTestBehavior.translucent,
+      child: DottedBorder(
+        color: Theme.of(context).dividerColor,
+        radius: const Radius.circular(kDefaultPadding / 2),
+        borderType: BorderType.rRect,
+        child: Padding(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          child: Row(
+            spacing: kDefaultPadding / 2,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(context).highlightColor,
+                          ),
+                    ),
+                    Text(text),
+                  ],
+                ),
+              ),
+              SvgPicture.asset(
+                FeatureIcons.shareExternal,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColorDark,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SharePackFeed extends StatelessWidget {
+  const SharePackFeed({
+    super.key,
+    required this.pack,
+  });
+
+  final PacksModel pack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 0.5,
+        ),
+      ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.60,
+        minChildSize: 0.60,
+        maxChildSize: 0.60,
+        expand: false,
+        builder: (context, scrollController) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Builder(
+            builder: (context) {
+              final feedUrl = pack.url;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: kDefaultPadding / 2,
+                children: [
+                  ModalBottomSheetAppbar(
+                    title: pack.title,
+                    isBack: false,
+                  ),
+                  _relayInfo(scrollController, context, feedUrl),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Expanded _relayInfo(
+    ScrollController scrollController,
+    BuildContext context,
+    String feedUrl,
+  ) {
+    return Expanded(
+      child: ListView(
+        controller: scrollController,
+        children: [
+          relaySharedContainer(
+            context: context,
+            onCopy: () {
+              shareContent(text: feedUrl);
+            },
+            text: feedUrl,
+            title: context.t.shareRelayContent,
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 4,
+          ),
+          TextButton(
+            onPressed: () {
+              YNavigator.pushPage(
+                context,
+                (context) => PackFeedView(pack: pack),
               );
             },
             child: Text(context.t.browseRelay),

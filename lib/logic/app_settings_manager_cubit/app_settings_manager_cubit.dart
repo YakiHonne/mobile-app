@@ -11,6 +11,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../common/common_regex.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/app_view_config.dart';
+import '../../models/packs_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -390,6 +391,8 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
 
     if (selectedSource.value is String) {
       return MapEntry(AppContentSource.relay, selectedSource);
+    } else if (selectedSource.value is PacksModel) {
+      return MapEntry(AppContentSource.packs, selectedSource);
     } else {
       return MapEntry(AppContentSource.relaySet, selectedSource);
     }
@@ -412,6 +415,8 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
 
     if (selectedSource.value is String) {
       return MapEntry(AppContentSource.relay, selectedSource);
+    } else if (selectedSource.value is PacksModel) {
+      return MapEntry(AppContentSource.packs, selectedSource);
     } else {
       return MapEntry(AppContentSource.relaySet, selectedSource);
     }
@@ -434,6 +439,8 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
 
     if (selectedSource.value is String) {
       return MapEntry(AppContentSource.relay, selectedSource);
+    } else if (selectedSource.value is PacksModel) {
+      return MapEntry(AppContentSource.packs, selectedSource);
     } else {
       return MapEntry(AppContentSource.relaySet, selectedSource);
     }

@@ -26,6 +26,7 @@ import '../models/flash_news_model.dart';
 import '../models/picture_model.dart';
 import '../models/points_system_models.dart';
 import '../models/poll_model.dart';
+import '../models/schedule_dvm.dart';
 import '../models/smart_widgets_components.dart';
 import '../models/video_model.dart';
 import '../models/vote_model.dart';
@@ -1339,6 +1340,75 @@ class NostrFunctionsRepository {
     );
 
     return controller.stream;
+  }
+
+  static Future<DvmMasterResponse?> getDvmMasterResponse() async {
+    final events = await NostrFunctionsRepository.getEventsAsync(
+      pTags: [currentSigner!.getPublicKey()],
+      tags: [DEFAULT_SCHEDULE_DVM_MASTER_TAG],
+      kinds: [EventKind.GIFT_WRAP],
+    );
+
+    if (events.isNotEmpty) {
+      final ev = events.first;
+
+      final unwrappedEvent = await currentSigner!.decrypt44Event(
+        ev,
+      );
+
+      if (unwrappedEvent != null) {
+        return DvmMasterResponse.fromJson(unwrappedEvent.content);
+      }
+
+      return null;
+    } else {
+      return requestDvmMaster();
+    }
+  }
+
+  static Future<DvmMasterResponse?> requestDvmMaster() async {
+    final event = Event.withoutSignature(
+      pubkey: currentSigner!.getPublicKey(),
+      kind: EventKind.DVM_SCHEDULE_MASTER_REQUEST,
+      tags: [
+        ['p', DEFAULT_SCHEDULE_DVM_PUBKEY],
+        ['k', '3'],
+      ],
+      content: jsonEncode({
+        't': DEFAULT_SCHEDULE_DVM_MASTER_REQUEST,
+        'v': 3,
+      }),
+    );
+
+    final ev = await currentSigner!.encrypt44Event(
+      event,
+      DEFAULT_SCHEDULE_DVM_PUBKEY,
+    );
+
+    if (ev == null) {
+      return null;
+    }
+
+    sendEvent(event: ev, setProgress: false);
+
+    final f = Filter(
+      p: [currentSigner!.getPublicKey()],
+      t: [DEFAULT_SCHEDULE_DVM_MASTER_TAG],
+      kinds: [EventKind.GIFT_WRAP],
+    );
+
+    final events = await getDvmResponseEvents(f);
+
+    if (events.isNotEmpty) {
+      final ev = events.first;
+      final unwrappedEvent = await currentSigner!.decrypt44Event(ev);
+
+      if (unwrappedEvent != null) {
+        return DvmMasterResponse.fromJson(unwrappedEvent.content);
+      }
+    }
+
+    return null;
   }
 
   static Future<List<Event>> getEventsAsync({
@@ -2853,6 +2923,7 @@ class NostrFunctionsRepository {
     NostrCore? core,
     List<String>? pubkeys,
     List<String>? tags,
+    List<String>? relays,
     int? limit,
     int? until,
     int? since,
@@ -2930,16 +3001,17 @@ class NostrFunctionsRepository {
     }
 
     final f = feedRelaySet?.urls.toList();
-    final relays = core != null
-        ? core.relays()
-        : f != null && f.isNotEmpty
-            ? f
-            : DEFAULT_BOOTSTRAP_RELAYS;
+    final rs = relays ??
+        (core != null
+            ? core.relays()
+            : f != null && f.isNotEmpty
+                ? f
+                : DEFAULT_BOOTSTRAP_RELAYS);
 
     try {
       await (core ?? nc).doQuery(
         [f1],
-        relays,
+        rs,
         timeOut: 1,
         source: EventsSource.all,
         eventCallBack: (ev, relay) {
@@ -2972,15 +3044,16 @@ class NostrFunctionsRepository {
   }) async {
     final eventsToBeEmitted = <String, Event>{};
     final fallBackEventToBeEmitted = <String, Event>{};
+    final kinds = [
+      EventKind.VIDEO_HORIZONTAL,
+      EventKind.VIDEO_VERTICAL,
+      EventKind.LEGACY_VIDEO_HORIZONTAL,
+      EventKind.LEGACY_VIDEO_VERTICAL,
+      EventKind.PICTURE,
+    ];
 
     final f1 = Filter(
-      kinds: [
-        EventKind.VIDEO_HORIZONTAL,
-        EventKind.VIDEO_VERTICAL,
-        EventKind.LEGACY_VIDEO_HORIZONTAL,
-        EventKind.LEGACY_VIDEO_VERTICAL,
-        EventKind.PICTURE,
-      ],
+      kinds: kinds,
       authors: pubkeys,
       t: tags,
       until: until,
@@ -2991,7 +3064,7 @@ class NostrFunctionsRepository {
     void setEvents(Map<String, Event> events, Event event) {
       final isMuted = isUserMuted(event.pubkey);
 
-      if (isMuted) {
+      if (isMuted || !kinds.contains(event.kind)) {
         return;
       }
 
@@ -3653,8 +3726,42 @@ class NostrFunctionsRepository {
     return completer.future;
   }
 
+  static Future<List<Event>> getDvmResponseEvents(Filter f) async {
+    final list = <Event>[];
+    final completer = Completer<List<Event>>();
+    late String id;
+    try {
+      id = await nc.doSubscribe(
+        [f],
+        [],
+        eventCallBack: (event, relay) {
+          if (f.kinds?.contains(event.kind) ?? false) {
+            list.add(event);
+          }
+        },
+        eoseCallBack: (p0, p1, p2, p3) {},
+      );
+    } catch (e) {
+      completer.complete(list);
+    }
+
+    Timer.periodic(
+      const Duration(milliseconds: 500),
+      (timer) {
+        if (list.isNotEmpty || timer.tick > 20) {
+          completer.complete(list);
+          timer.cancel();
+          nc.closeSubscriptions(id);
+        }
+      },
+    );
+
+    return completer.future;
+  }
+
   static Future<List<BaseEventModel>> getDiscoverAlgoData({
-    required List<String> relays,
+    List<String>? relays,
+    List<String>? pubkeys,
     int? until,
     int? since,
     int? limit,
@@ -3668,6 +3775,7 @@ class NostrFunctionsRepository {
       since: since,
       limit: limit,
       relays: relays,
+      pubkeys: pubkeys,
       core: nc,
     );
 
@@ -3692,6 +3800,7 @@ class NostrFunctionsRepository {
 
   static Future<List<Event>> getLeadingRelayData({
     required List<String> relays,
+    List<String>? pubkeys,
     int? until,
     int? since,
     int? limit,
@@ -3704,6 +3813,24 @@ class NostrFunctionsRepository {
       relays: relays,
       core: nc,
       source: EventsSource.all,
+      pubkeys: pubkeys,
+    );
+  }
+
+  static Future<List<Event>> getLeadingPacksData({
+    required List<String> pubkeys,
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    return getEventsAsync(
+      kinds: [EventKind.TEXT_NOTE],
+      until: until,
+      since: since,
+      limit: limit,
+      core: nc,
+      source: EventsSource.all,
+      pubkeys: pubkeys,
     );
   }
 
@@ -3727,6 +3854,29 @@ class NostrFunctionsRepository {
       relays: relays,
       core: nc,
       source: EventsSource.all,
+    );
+  }
+
+  static Future<List<Event>> getMediaPacksData({
+    required List<String> pubkeys,
+    int? until,
+    int? since,
+    int? limit,
+  }) async {
+    return getEventsAsync(
+      kinds: [
+        EventKind.VIDEO_HORIZONTAL,
+        EventKind.VIDEO_VERTICAL,
+        EventKind.LEGACY_VIDEO_HORIZONTAL,
+        EventKind.LEGACY_VIDEO_VERTICAL,
+        EventKind.PICTURE,
+      ],
+      until: until,
+      since: since,
+      limit: limit,
+      core: nc,
+      source: EventsSource.all,
+      pubkeys: pubkeys,
     );
   }
 
@@ -4805,7 +4955,11 @@ class NostrFunctionsRepository {
     final ur = currentUserRelayList.urls.toList();
 
     final targetRelays =
-        relays ?? (ur.isNotEmpty ? ur : DEFAULT_BOOTSTRAP_RELAYS);
+        (relays ?? (ur.isNotEmpty ? ur : DEFAULT_BOOTSTRAP_RELAYS))
+            .map(
+              (e) => Relay.clean(e) ?? e,
+            )
+            .toList();
     final actualTimeout = timeout ?? timerTicks;
 
     if (setProgress) {
@@ -4929,6 +5083,7 @@ class NostrFunctionsRepository {
     String? aTag,
     String? lable,
     String? type,
+    String? pTag,
     List<String>? relays,
     bool relyOnUnsentEvents = true,
   }) async {
@@ -4938,6 +5093,7 @@ class NostrFunctionsRepository {
         if (eventId.isNotEmpty) ['e', eventId],
         if (aTag != null && aTag.isNotEmpty) ['a', aTag],
         if (lable != null && lable.isNotEmpty) ['l', lable, type!],
+        if (pTag != null && pTag.isNotEmpty) ['p', pTag],
       ],
       content: 'this event is to be deleted',
       signer: currentSigner,
@@ -4970,7 +5126,6 @@ class NostrFunctionsRepository {
       signer: currentSigner,
     );
 
-    lg.i(event?.toJson());
     if (event == null) {
       return false;
     }
