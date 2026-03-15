@@ -19,6 +19,7 @@ import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/keys_view.dart';
 import 'widgets/property_account_deletion.dart';
+import 'widgets/property_namecoin.dart';
 import 'widgets/property_analytics_cache.dart';
 import 'widgets/property_appearance.dart';
 import 'widgets/property_content_moderation.dart';
@@ -215,6 +216,7 @@ class PropertiesList extends HookWidget {
         },
       ),
       const PropertyRelaySettings(),
+      const PropertyNamecoin(),
       _createPropertyBox(
         context,
         title: context.t.contentModeration.capitalizeFirst(),

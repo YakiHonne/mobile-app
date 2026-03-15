@@ -9,10 +9,12 @@ import 'package:logger/logger.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 
 import '../../common/common_regex.dart';
+import '../../globals.dart' show namecoinService;
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../services/namecoin/namecoin_name_resolver.dart';
 import '../../utils/utils.dart';
 
 part 'search_state.dart';
@@ -102,6 +104,12 @@ class SearchCubit extends Cubit<SearchState> {
   Future<void> _handleSearch(String search) async {
     checkForRelay(search);
 
+    // Route .bit / d/ / id/ identifiers to Namecoin resolution
+    if (NamecoinNameResolver.isNamecoinIdentifier(search)) {
+      await _handleNamecoinSearch(search);
+      return;
+    }
+
     if (nostrSchemeRegex.hasMatch(search)) {
       String searchWithoutScheme = search;
 
@@ -116,6 +124,68 @@ class SearchCubit extends Cubit<SearchState> {
       );
     } else {
       await _performGeneralSearch(search);
+    }
+  }
+
+  Future<void> _handleNamecoinSearch(String search) async {
+    _emit(
+      profileSearchResult: SearchResultsType.loading,
+      contentSearchResult: SearchResultsType.loading,
+      content: <BaseEventModel>[],
+      authors: <Metadata>[],
+      isSearching: true,
+    );
+
+    try {
+      final result = await namecoinService.resolve(search);
+      if (result != null) {
+        // Try to load the profile metadata for the resolved pubkey
+        final metadata = await metadataCubit.getMetadata(result.pubkey);
+        if (metadata != null) {
+          _emit(
+            authors: [metadata],
+            profileSearchResult: SearchResultsType.content,
+            contentSearchResult: SearchResultsType.content,
+            content: <BaseEventModel>[],
+            isSearching: false,
+          );
+        } else {
+          // Pubkey resolved but no metadata cached — show as hex
+          _emit(
+            authors: [Metadata(
+              pubkey: result.pubkey,
+              name: '',
+              displayName: search,
+              about: '',
+              picture: '',
+              banner: '',
+              nip05: search,
+              lud06: '',
+              lud16: '',
+              website: '',
+              isDeleted: false,
+              createdAt: 0,
+            )],
+            profileSearchResult: SearchResultsType.content,
+            contentSearchResult: SearchResultsType.content,
+            content: <BaseEventModel>[],
+            isSearching: false,
+          );
+        }
+      } else {
+        _emit(
+          profileSearchResult: SearchResultsType.content,
+          contentSearchResult: SearchResultsType.content,
+          isSearching: false,
+        );
+      }
+    } catch (e) {
+      Logger().e('Namecoin search failed: $e');
+      _emit(
+        profileSearchResult: SearchResultsType.content,
+        contentSearchResult: SearchResultsType.content,
+        isSearching: false,
+      );
     }
   }
 
@@ -145,6 +215,9 @@ class SearchCubit extends Cubit<SearchState> {
   // Relay Connectivity Check
   Future<void> checkForRelay(String search) async {
     _emit(relayConnectivity: RelayConnectivity.idle);
+
+    // Don't try relay connectivity for .bit / Namecoin identifiers
+    if (NamecoinNameResolver.isNamecoinIdentifier(search)) return;
 
     if (search.contains('.')) {
       _emit(relayConnectivity: RelayConnectivity.searching);

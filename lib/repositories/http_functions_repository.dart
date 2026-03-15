@@ -23,6 +23,7 @@ import '../models/flash_news_model.dart';
 import '../models/points_system_models.dart';
 import '../models/smart_widgets_components.dart';
 import '../models/uncensored_notes_models.dart';
+import '../services/namecoin/namecoin_name_resolver.dart';
 import '../utils/utils.dart';
 
 // ==================================================
@@ -883,6 +884,13 @@ class HttpFunctionsRepository {
     required String pubkey,
   }) async {
     try {
+      // Route .bit domains to Namecoin blockchain verification
+      final nip05Address = '$name@$domain';
+      if (NamecoinNameResolver.isNamecoinIdentifier(nip05Address) ||
+          NamecoinNameResolver.isNamecoinIdentifier(domain)) {
+        return await namecoinService.verifyNip05(nip05Address, pubkey);
+      }
+
       final link = 'https://$domain/.well-known/nostr.json?name=$name';
       final response = await get(link);
 
