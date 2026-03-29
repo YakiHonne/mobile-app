@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/localization_cubit/localization_cubit.dart';
+import '../../../logic/properties_cubit/properties_cubit.dart';
 import '../../../models/translate_services_model.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
@@ -196,6 +197,8 @@ class ContentTranslation extends HookWidget {
                 apiKeyController: apiKeyController,
               ),
             ],
+            const SizedBox(height: kDefaultPadding / 2),
+            const _AutoTranslation(),
           ],
         );
       },
@@ -209,6 +212,38 @@ class ContentTranslation extends HookWidget {
               ? tServices.customServiceName!
               : tServices.builtInService!.name] ??
           '',
+    );
+  }
+}
+
+class _AutoTranslation extends StatelessWidget {
+  const _AutoTranslation();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PropertiesCubit, PropertiesState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            Expanded(
+              child: TitleDescriptionComponent(
+                title: context.t.autoTranslation.capitalizeFirst(),
+                description: context.t.autoTranslationDesc,
+              ),
+            ),
+            Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: state.enableAutoTranslation,
+                activeTrackColor: Theme.of(context).primaryColor,
+                onChanged: (isToggled) {
+                  context.read<PropertiesCubit>().setAutoTranslation(isToggled);
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

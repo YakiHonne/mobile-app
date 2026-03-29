@@ -11,6 +11,7 @@ import '../models/filter_status.dart';
 import '../models/media_manager_data.dart';
 import '../models/relays_list.dart';
 import '../models/topic.dart';
+import '../models/unpaid_note.dart';
 import '../models/wot_configuration.dart';
 import '../utils/topics.dart';
 import '../utils/utils.dart';
@@ -75,6 +76,7 @@ class LocalDatabaseRepository {
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
   static const String _unsentEvents = 'unsent_events';
   static const String _unsentEventsPubkeys = 'unsent_events_pubkeys';
+  static const String _unpaidNotes = 'unpaid_notes';
   static const String _appViewConfig = 'app_view_config';
 
   // Features & Services
@@ -87,6 +89,8 @@ class LocalDatabaseRepository {
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
   static const String _automaticCachePurge = 'automatic_cache_purge';
+  static const String _autoTranslation = 'auto_translation';
+  static const String _nestedReplies = 'nested_replies';
 
   // Notifications & Flash News
   static const String _pendingFlashNews = 'pending_flash_news';
@@ -112,9 +116,7 @@ class LocalDatabaseRepository {
         accessibility: KeychainAccessibility.first_unlock,
       );
 
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
+  AndroidOptions _getAndroidOptions() => AndroidOptions.defaultOptions;
 
   // ==================================================
   // HELPER METHODS
@@ -586,6 +588,41 @@ class LocalDatabaseRepository {
     await prefs.remove(_dmsDrafts);
   }
 
+  Future<void> deleteDefaultReaction() async {
+    await prefs.remove(_defaultReaction);
+  }
+
+  // ==================================================
+  // UNPAID NOTES
+  // ==================================================
+
+  List<UnpaidNote> getUnpaidNotes(String pubkey) {
+    final list = _getPrefsData<List<String>>('${_unpaidNotes}_$pubkey') ?? [];
+    return list.map((e) => UnpaidNote.fromJson(jsonDecode(e))).toList();
+  }
+
+  Future<void> saveUnpaidNote(String pubkey, UnpaidNote note) async {
+    final currentNotes = getUnpaidNotes(pubkey);
+
+    final index = currentNotes.indexWhere((n) => n.event.id == note.event.id);
+    if (index != -1) {
+      currentNotes[index] = note;
+    } else {
+      currentNotes.add(note);
+    }
+
+    final encoded = currentNotes.map((n) => jsonEncode(n.toJson())).toList();
+    await _setPrefsData('${_unpaidNotes}_$pubkey', encoded);
+  }
+
+  Future<void> removeUnpaidNote(String pubkey, String eventId) async {
+    final currentNotes = getUnpaidNotes(pubkey);
+    currentNotes.removeWhere((n) => n.event.id == eventId);
+
+    final encoded = currentNotes.map((n) => jsonEncode(n.toJson())).toList();
+    await _setPrefsData('${_unpaidNotes}_$pubkey', encoded);
+  }
+
   Future<Map<String, Map<String, String>>> getDmsDrafts() async {
     try {
       final drafts = _getPrefsData<String>(_dmsDrafts);
@@ -667,6 +704,24 @@ class LocalDatabaseRepository {
 
   Future<String?> getTranslateServices() async {
     return _getPrefsData<String>(_translationServices);
+  }
+
+  /// Auto Translation
+  Future<void> setAutoTranslation(String pubkey, bool enable) async {
+    await _setPrefsData('$_autoTranslation-$pubkey', enable);
+  }
+
+  bool getAutoTranslation(String pubkey) {
+    return _getPrefsData<bool>('$_autoTranslation-$pubkey') ?? false;
+  }
+
+  /// Nested Replies
+  Future<void> setNestedRepliesStatus(String pubkey, bool enable) async {
+    await _setPrefsData('$_nestedReplies-$pubkey', enable);
+  }
+
+  bool getNestedRepliesStatus(String pubkey) {
+    return _getPrefsData<bool>('$_nestedReplies-$pubkey') ?? false;
   }
 
   /// Filter Status

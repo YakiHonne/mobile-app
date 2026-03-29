@@ -310,7 +310,7 @@ class CashuDepositView extends HookWidget {
                     if (wallet.lud16.isNotEmpty) {
                       label = wallet.lud16;
                     } else if (wallet is NostrWalletConnectModel) {
-                      label = wallet.relay.split('://').last;
+                      label = wallet.relays.isNotEmpty ? wallet.relays.first.split('://').last : 'NWC Wallet';
                     } else {
                       label = 'Alby Wallet';
                     }

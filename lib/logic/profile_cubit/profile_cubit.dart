@@ -310,8 +310,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
 
-      until =
-          state.content.isNotEmpty ? null : state.content.last.createdAt - 1;
+      until = state.content.isEmpty ? null : state.content.last.createdAt - 1;
     }
 
     if (profileData == ProfileData.pinned && pinnedNotes.isEmpty) {

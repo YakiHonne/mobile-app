@@ -16,6 +16,7 @@ import 'package:nostr_core_enhanced/nostr_core.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/media_handler/media_handler.dart';
+import '../../common/nostr_password_manager.dart';
 import '../../initializers.dart';
 import '../../models/app_models/interests_set.dart';
 import '../../models/packs_model.dart';
@@ -559,6 +560,13 @@ class LogifyCubit extends Cubit<LogifyState> {
       if (interestSetEvent != null) {
         nostrRepository.setInterestSet(interetags);
         await nc.db.saveEvent(interestSetEvent);
+      }
+
+      if (Platform.isIOS) {
+        await NostrPasswordManager.saveNsecToPasswords(
+          npub: Nip19.encodePubkey(Keychain.getPublicKey(state.private)),
+          nsec: Nip19.encodePrivkey(state.private),
+        );
       }
 
       onSuccess.call();

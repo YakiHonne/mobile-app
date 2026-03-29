@@ -177,11 +177,8 @@ class PackCard extends HookWidget {
                 context: context,
                 elevation: 0,
                 builder: (_) {
-                  return BlocProvider.value(
-                    value: context.read<ExplorePacksCubit>(),
-                    child: PackInfoView(
-                      pack: pack,
-                    ),
+                  return PackInfoView(
+                    pack: pack,
                   );
                 },
                 isScrollControlled: true,

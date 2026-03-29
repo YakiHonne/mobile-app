@@ -101,7 +101,7 @@ class AlbyConnectModel extends WalletModel {
 
 class NostrWalletConnectModel extends WalletModel {
   final String connectionString;
-  final String relay;
+  final List<String> relays;
   final String secret;
   final String walletPubkey;
   final List<String> permissions;
@@ -111,7 +111,7 @@ class NostrWalletConnectModel extends WalletModel {
     required super.kind,
     required super.lud16,
     required this.connectionString,
-    required this.relay,
+    required this.relays,
     required this.secret,
     required this.walletPubkey,
     required this.permissions,
@@ -122,7 +122,7 @@ class NostrWalletConnectModel extends WalletModel {
         id,
         kind,
         connectionString,
-        relay,
+        relays,
         secret,
         walletPubkey,
         lud16,
@@ -131,7 +131,7 @@ class NostrWalletConnectModel extends WalletModel {
 
   NostrWalletConnectModel copyWith({
     String? connectionString,
-    String? relay,
+    List<String>? relays,
     String? secret,
     String? walletPubkey,
     String? lud16,
@@ -141,7 +141,7 @@ class NostrWalletConnectModel extends WalletModel {
       id: id,
       kind: kind,
       connectionString: connectionString ?? this.connectionString,
-      relay: relay ?? this.relay,
+      relays: relays ?? this.relays,
       secret: secret ?? this.secret,
       walletPubkey: walletPubkey ?? this.walletPubkey,
       lud16: lud16 ?? this.lud16,
@@ -154,7 +154,7 @@ class NostrWalletConnectModel extends WalletModel {
       'id': id,
       'kind': kind,
       'connectionString': connectionString,
-      'relay': relay,
+      'relays': relays,
       'secret': secret,
       'walletPubkey': walletPubkey,
       'lud16': lud16,
@@ -167,7 +167,9 @@ class NostrWalletConnectModel extends WalletModel {
       id: map['id'] as String,
       kind: map['kind'] as int,
       connectionString: map['connectionString'] as String,
-      relay: map['relay'] as String,
+      relays: map['relays'] != null
+          ? List<String>.from(map['relays'] as List)
+          : (map['relay'] != null ? [map['relay'] as String] : []),
       secret: map['secret'] as String,
       walletPubkey: map['walletPubkey'] as String,
       lud16: map['lud16'] as String,

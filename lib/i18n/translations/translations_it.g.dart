@@ -1356,6 +1356,8 @@ class TranslationsIt extends Translations {
 	@override String openUrlDesc({required Object url}) => 'Vuoi aprire "${url}"?';
 	@override String get openUrlPrompt => 'Prompt apri url';
 	@override String get openUrlPromptDesc => 'Un prompt sicurezza che mostra URL completa prima di aprirla nel tuo browser.';
+	@override String get actionsPopups => 'Notifiche azioni';
+	@override String get actionsPopupsDesc => 'Abilita o disabilita notifiche per messaggi di successo, errore e informazione.';
 	@override String get waitingForNetwork => 'Attesa rete...';
 	@override String get whatsNew => 'Novità';
 	@override String get appCustom => 'Personalizzazione app';
@@ -1610,6 +1612,53 @@ class TranslationsIt extends Translations {
 	@override String get lightningNetwork => 'Lightning Network';
 	@override String get lightningNetworkDesc => 'Paga fattura Lightning o a indirizzo lightning';
 	@override String get info => 'Info';
+	@override String get followPacks => 'Pacchetti seguiti';
+	@override String get followPacksDesc => 'Esplora e trova pacchetti da usare su Nostr';
+	@override String get starterPacks => 'Pacchetti iniziali';
+	@override String get mediaPacks => 'Pacchetti multimediali';
+	@override String get noPacksFound => 'Nessun pacchetto trovato';
+	@override String get noPacksFoundDesc => 'Non hai ancora seguito alcun pacchetto.';
+	@override String get browsePack => 'Sfoglia pacchetto';
+	@override String inThisPack({required Object number}) => 'In questo pacchetto (${number})';
+	@override String get community => 'Comunità';
+	@override String get packCreated => 'Pacchetto creato con successo';
+	@override String get errorOnCreatingPack => 'Si è verificato un errore durante la creazione del pacchetto';
+	@override String get errorOnUpdatingPack => 'Si è verificato un errore durante l\'aggiornamento del pacchetto';
+	@override String get clonePack => 'Clona pacchetto';
+	@override String get addPack => 'Aggiungi pacchetto';
+	@override String get updatePack => 'Aggiorna pacchetto';
+	@override String peopleCount({required Object number}) => 'Persone (${number})';
+	@override String get peopleCountDesc => 'Numero di persone in questo pacchetto';
+	@override String get packDeleted => 'Pacchetto eliminato con successo';
+	@override String get errorDeletingEvent => 'Si è verificato un errore durante l\'eliminazione dell\'evento';
+	@override String get packUpdated => 'Pacchetto aggiornato con successo';
+	@override String get packCloned => 'Pacchetto clonato con successo';
+	@override String get deletePack => 'Elimina pacchetto';
+	@override String get deletePackDesc => 'Sei sicuro di voler eliminare questo pacchetto? Questa azione non può essere annullata.';
+	@override String get starterPacksDesc => 'Scegli un pacchetto e inizia il tuo feed con i contenuti dei suoi creatori';
+	@override String othersNumber({required Object number}) => '+ ${number} altri';
+	@override String get noPacksFoundSettingsDesc => 'Aggiungi altri pacchetti seguiti per goderti un feed personalizzato.';
+	@override String get deleteMessage => 'Elimina messaggio';
+	@override String get deleteMessageDesc => 'Sei sicuro di voler eliminare questo messaggio? Questa azione non può essere annullata.';
+	@override String get errorDeletingMessage => 'Si è verificato un errore durante l\'eliminazione del messaggio';
+	@override String get messageDeleted => 'Messaggio eliminato con successo';
+	@override String get relayAlreadyExists => 'Il relay esiste già';
+	@override String get selected => 'selezionato';
+	@override String get threadMutedDescription => 'Questa nota e il suo thread sono silenziati';
+	@override String get scheduleYourPost => 'Programma il tuo post';
+	@override String get scheduleYourPostDesc => 'Programma il tuo post per essere pubblicato in seguito';
+	@override String get paidNoteScheduled => 'Nota pagata programmata';
+	@override String get noteScheduled => 'Nota programmata';
+	@override String get published => 'Pubblicato';
+	@override String get drafts => 'Bozze';
+	@override String get scheduled => 'Programmato';
+	@override String get schedule => 'Programma';
+	@override String scheduledOn({required Object date}) => 'Programmato per il: ${date}';
+	@override String get deleteScheduledNote => 'Elimina nota programmata';
+	@override String get deleteScheduleNoteDesc => 'Sei sicuro di voler eliminare questa nota programmata? Questa azione non può essere annullata.';
+	@override String get reschedule => 'Riprogramma';
+	@override String get noScheduledNotesFound => 'Nessuna nota programmata trovata';
+	@override String get noScheduledNotesFoundDesc => 'Non hai ancora programmato alcuna nota.';
 }
 
 /// The flat map containing all translations for locale <it>.
@@ -2956,6 +3005,8 @@ extension on TranslationsIt {
 			'openUrlDesc' => ({required Object url}) => 'Vuoi aprire "${url}"?',
 			'openUrlPrompt' => 'Prompt apri url',
 			'openUrlPromptDesc' => 'Un prompt sicurezza che mostra URL completa prima di aprirla nel tuo browser.',
+			'actionsPopups' => 'Notifiche azioni',
+			'actionsPopupsDesc' => 'Abilita o disabilita notifiche per messaggi di successo, errore e informazione.',
 			'waitingForNetwork' => 'Attesa rete...',
 			'whatsNew' => 'Novità',
 			'appCustom' => 'Personalizzazione app',
@@ -3173,14 +3224,14 @@ extension on TranslationsIt {
 			'memo' => 'Promemoria',
 			'payingInvoice' => 'Pagamento fattura',
 			'addMint' => 'Aggiungi mint',
-			'gettingMintInfo' => 'Ottenimento info mint',
-			'generatingInvoice' => 'Generazione fattura',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Ottenimento info mint',
+			'generatingInvoice' => 'Generazione fattura',
 			'checkPaymentStatus' => 'Controlla Stato Pagamento',
 			'depositSuccess' => 'Deposito Riuscito',
 			'sendEcash' => 'Invia eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsIt {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'Paga fattura Lightning o a indirizzo lightning',
 			'info' => 'Info',
+			'followPacks' => 'Pacchetti seguiti',
+			'followPacksDesc' => 'Esplora e trova pacchetti da usare su Nostr',
+			'starterPacks' => 'Pacchetti iniziali',
+			'mediaPacks' => 'Pacchetti multimediali',
+			'noPacksFound' => 'Nessun pacchetto trovato',
+			'noPacksFoundDesc' => 'Non hai ancora seguito alcun pacchetto.',
+			'browsePack' => 'Sfoglia pacchetto',
+			'inThisPack' => ({required Object number}) => 'In questo pacchetto (${number})',
+			'community' => 'Comunità',
+			'packCreated' => 'Pacchetto creato con successo',
+			'errorOnCreatingPack' => 'Si è verificato un errore durante la creazione del pacchetto',
+			'errorOnUpdatingPack' => 'Si è verificato un errore durante l\'aggiornamento del pacchetto',
+			'clonePack' => 'Clona pacchetto',
+			'addPack' => 'Aggiungi pacchetto',
+			'updatePack' => 'Aggiorna pacchetto',
+			'peopleCount' => ({required Object number}) => 'Persone (${number})',
+			'peopleCountDesc' => 'Numero di persone in questo pacchetto',
+			'packDeleted' => 'Pacchetto eliminato con successo',
+			'errorDeletingEvent' => 'Si è verificato un errore durante l\'eliminazione dell\'evento',
+			'packUpdated' => 'Pacchetto aggiornato con successo',
+			'packCloned' => 'Pacchetto clonato con successo',
+			'deletePack' => 'Elimina pacchetto',
+			'deletePackDesc' => 'Sei sicuro di voler eliminare questo pacchetto? Questa azione non può essere annullata.',
+			'starterPacksDesc' => 'Scegli un pacchetto e inizia il tuo feed con i contenuti dei suoi creatori',
+			'othersNumber' => ({required Object number}) => '+ ${number} altri',
+			'noPacksFoundSettingsDesc' => 'Aggiungi altri pacchetti seguiti per goderti un feed personalizzato.',
+			'deleteMessage' => 'Elimina messaggio',
+			'deleteMessageDesc' => 'Sei sicuro di voler eliminare questo messaggio? Questa azione non può essere annullata.',
+			'errorDeletingMessage' => 'Si è verificato un errore durante l\'eliminazione del messaggio',
+			'messageDeleted' => 'Messaggio eliminato con successo',
+			'relayAlreadyExists' => 'Il relay esiste già',
+			'selected' => 'selezionato',
+			'threadMutedDescription' => 'Questa nota e il suo thread sono silenziati',
+			'scheduleYourPost' => 'Programma il tuo post',
+			'scheduleYourPostDesc' => 'Programma il tuo post per essere pubblicato in seguito',
+			'paidNoteScheduled' => 'Nota pagata programmata',
+			'noteScheduled' => 'Nota programmata',
+			'published' => 'Pubblicato',
+			'drafts' => 'Bozze',
+			'scheduled' => 'Programmato',
+			'schedule' => 'Programma',
+			'scheduledOn' => ({required Object date}) => 'Programmato per il: ${date}',
+			'deleteScheduledNote' => 'Elimina nota programmata',
+			'deleteScheduleNoteDesc' => 'Sei sicuro di voler eliminare questa nota programmata? Questa azione non può essere annullata.',
+			'reschedule' => 'Riprogramma',
+			'noScheduledNotesFound' => 'Nessuna nota programmata trovata',
+			'noScheduledNotesFoundDesc' => 'Non hai ancora programmato alcuna nota.',
 			_ => null,
 		};
 	}

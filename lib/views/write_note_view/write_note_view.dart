@@ -178,7 +178,9 @@ class AddReply extends HookWidget {
                       builder: (_) {
                         return BlocProvider.value(
                           value: context.read<WriteNoteCubit>(),
-                          child: const PaidNoteProcess(),
+                          child: const PaidNoteProcess(
+                            checkZap: false,
+                          ),
                         );
                       },
                       isScrollControlled: true,
@@ -320,7 +322,7 @@ class NoteWritingComponent extends HookWidget {
 
             appendTextToPosition(
               controller: controller,
-              textToAppend: imageLinks.join(' '),
+              textToAppend: imageLinks.map((e) => e['url']).join(' '),
             );
 
             onTextChangedDebounced();

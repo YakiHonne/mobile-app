@@ -406,8 +406,8 @@ class HttpFunctionsRepository {
       } else {
         return [];
       }
-    } catch (e) {
-      lg.i(e);
+    } catch (e, stack) {
+      lg.i(stack);
       return [];
     }
   }

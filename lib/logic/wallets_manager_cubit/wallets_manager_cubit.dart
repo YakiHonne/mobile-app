@@ -119,7 +119,8 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   }
 
   Future<Map<String, WalletModel>> _parseWallets(
-      String stringifiedWallets) async {
+    String stringifiedWallets,
+  ) async {
     final wallets = <String, WalletModel>{};
 
     if (stringifiedWallets.isEmpty) {
@@ -247,7 +248,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
           kind: 0,
           lud16: walletDetails.queryParameters['lud16'] ?? '',
           connectionString: wallet,
-          relay: '',
+          relays: walletDetails.queryParametersAll['relay'] ?? const [],
           secret: '',
           walletPubkey: '',
           permissions: const [],
@@ -295,18 +296,18 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     try {
       final details = Uri.parse(uri);
       final walletPubKey = details.host;
-      final relay = details.queryParameters['relay'] ?? '';
+      final relays = details.queryParametersAll['relay'] ?? <String>[];
       final secret = details.queryParameters['secret'] ?? '';
       String lud16 = details.queryParameters['lud16'] ?? '';
 
-      if (relay.isEmpty || secret.isEmpty) {
+      if (relays.isEmpty || secret.isEmpty) {
         BotToastUtils.showError(
             mainContext.t.invalidPairingSecret.capitalizeFirst());
         return null;
       }
 
       if (lud16.isEmpty) {
-        lud16 = _generateLud16FromWalletPubkey(walletPubKey, relay);
+        lud16 = _generateLud16FromWalletPubkey(walletPubKey, relays.first);
         if (lud16.isEmpty) {
           return null;
         }
@@ -316,7 +317,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         id: uuid.v4(),
         kind: NostrWalletConnectKind,
         connectionString: uri,
-        relay: relay,
+        relays: relays,
         secret: secret,
         walletPubkey: walletPubKey,
         lud16: lud16,
@@ -2129,11 +2130,13 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     NostrWalletConnectModel nostrWalletConnectModel,
   ) async {
     if (StringUtil.isNotBlank(nostrWalletConnectModel.walletPubkey) &&
-        StringUtil.isNotBlank(nostrWalletConnectModel.relay) &&
+        nostrWalletConnectModel.relays.isNotEmpty &&
         StringUtil.isNotBlank(nostrWalletConnectModel.secret)) {
-      final r = nostrWalletConnectModel.relay;
-      await wnc.closeConnect([r]);
-      await wnc.connect(r);
+      final relays = nostrWalletConnectModel.relays;
+      await wnc.closeConnect(relays);
+      for (final relay in relays) {
+        await wnc.connect(relay);
+      }
 
       final signer = Bip340EventSigner(
         nostrWalletConnectModel.secret,
@@ -2181,7 +2184,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
     final requestId = wnc.addSubscription(
       <Filter>[filter],
-      <String>[nostrWalletConnectModel.relay],
+      nostrWalletConnectModel.relays,
       eventCallBack: (Event event, String relay) async {
         if (event.kind == EventKind.NWC_RESPONSE) {
           final signer = Bip340EventSigner(
@@ -2205,7 +2208,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
     wnc.sendEvent(
       toBeSentEvent,
-      <String>[nostrWalletConnectModel.relay],
+      nostrWalletConnectModel.relays,
       sendCallBack: (
         OKEvent ok,
         String relay,
@@ -2219,7 +2222,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
         closeConnections(
           requestId: requestId,
-          relay: nostrWalletConnectModel.relay,
+          relays: nostrWalletConnectModel.relays,
         );
 
         if (!completer.isCompleted) {
@@ -2231,11 +2234,11 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     return completer.future;
   }
 
-  void closeConnections({String? requestId, required String relay}) {
+  void closeConnections({String? requestId, required List<String> relays}) {
     if (requestId != null) {
       wnc.closeRequests(<String>[requestId]);
     }
-    wnc.closeConnect(<String>[relay]);
+    wnc.closeConnect(relays);
   }
 
   // =============================================================================

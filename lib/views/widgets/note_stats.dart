@@ -1170,7 +1170,11 @@ class TranslationButton extends HookWidget {
         );
 
         if (autoTranslate && isMain) {
-          translateContent();
+          await Future.delayed(const Duration(seconds: 3));
+
+          if (context.mounted) {
+            translateContent();
+          }
         }
       },
     );
@@ -1783,7 +1787,7 @@ class DetailedNoteContainer extends HookWidget {
             ),
             const Expanded(
               child: VerticalDivider(
-                thickness: 1.5,
+                thickness: 2,
               ),
             ),
           ]

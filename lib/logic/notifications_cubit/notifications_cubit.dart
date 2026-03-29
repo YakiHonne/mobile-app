@@ -39,6 +39,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       <String, List<String>>{};
   late Map<String, List<String>> newNotifications = <String, List<String>>{};
 
+  Timer? _uiUpdateTimer;
+  bool _hasPendingUpdates = false;
+  final Map<String, Event> _unemittedEvents = {};
+
   void loadNotifications() {
     registredNotifications = localDatabaseRepository.getNotifications(true);
     newNotifications = localDatabaseRepository.getNotifications(false);
@@ -55,6 +59,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
 
     since = null;
+    _uiUpdateTimer?.cancel();
+    _unemittedEvents.clear();
+    _hasPendingUpdates = false;
 
     if (!isClosed) {
       emit(
@@ -100,6 +107,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
 
     if (canSign()) {
+      _uiUpdateTimer?.cancel();
+      _unemittedEvents.clear();
+      _hasPendingUpdates = false;
+
       if (!isClosed) {
         emit(
           state.copyWith(
@@ -139,27 +150,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         return;
       }
 
-      final map = {for (final e in state.events) e.id: e};
-
-      map.addAll({for (final e in filtered) e.id: e});
-
-      final newEvents = map.values.toList();
-
-      newEvents.sort(
-        (Event a, Event b) => b.createdAt.compareTo(a.createdAt),
-      );
-
-      since = newEvents.first.createdAt;
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            events: newEvents,
-            isLoading: false,
-          ),
-        );
+      for (final e in filtered) {
+        _unemittedEvents[e.id] = e;
       }
 
-      setNotification(newEvents);
+      _hasPendingUpdates = true;
+      _scheduleUIUpdate();
+      setNotification(filtered);
     } else {
       if (!isClosed) {
         emit(
@@ -169,6 +166,38 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         );
       }
     }
+  }
+
+  void _scheduleUIUpdate() {
+    if (_uiUpdateTimer?.isActive ?? false) {
+      return;
+    }
+
+    _uiUpdateTimer = Timer(const Duration(milliseconds: 1000), () {
+      if (_hasPendingUpdates && !isClosed) {
+        final map = {for (final e in state.events) e.id: e};
+        map.addAll(_unemittedEvents);
+
+        final newEvents = map.values.toList();
+        newEvents.sort(
+          (Event a, Event b) => b.createdAt.compareTo(a.createdAt),
+        );
+
+        if (newEvents.isNotEmpty) {
+          since = newEvents.first.createdAt;
+        }
+
+        emit(
+          state.copyWith(
+            events: newEvents,
+            isLoading: false,
+          ),
+        );
+
+        _unemittedEvents.clear();
+        _hasPendingUpdates = false;
+      }
+    });
   }
 
   Future<List<Event>> filteredWotEvents(List<Event> events) async {
@@ -377,5 +406,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     );
 
     NotificationHelper.sharedInstance.init();
+  }
+
+  @override
+  Future<void> close() {
+    _uiUpdateTimer?.cancel();
+    sendNotificationTimer?.cancel();
+    return super.close();
   }
 }

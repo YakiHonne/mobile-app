@@ -1356,6 +1356,8 @@ class TranslationsPt extends Translations {
 	@override String openUrlDesc({required Object url}) => 'Quer abrir "${url}"?';
 	@override String get openUrlPrompt => 'Prompt abrir url';
 	@override String get openUrlPromptDesc => 'Um prompt de segurança que mostra URL completa antes de abrí-la no seu navegador.';
+	@override String get actionsPopups => 'Popups de ações';
+	@override String get actionsPopupsDesc => 'Habilita ou desabilita popups para mensagens de sucesso, erro e informação.';
 	@override String get waitingForNetwork => 'Aguardando rede...';
 	@override String get whatsNew => 'O que há de novo';
 	@override String get appCustom => 'Personalização app';
@@ -1610,6 +1612,53 @@ class TranslationsPt extends Translations {
 	@override String get lightningNetwork => 'Rede Lightning';
 	@override String get lightningNetworkDesc => 'Pagar fatura Lightning ou para endereço lightning';
 	@override String get info => 'Info';
+	@override String get followPacks => 'Pacotes seguidos';
+	@override String get followPacksDesc => 'Explore e encontre pacotes para usar no Nostr';
+	@override String get starterPacks => 'Pacotes de início';
+	@override String get mediaPacks => 'Pacotes de mídia';
+	@override String get noPacksFound => 'Nenhum pacote encontrado';
+	@override String get noPacksFoundDesc => 'Você ainda não segue nenhum pacote.';
+	@override String get browsePack => 'Navegar no pacote';
+	@override String inThisPack({required Object number}) => 'Neste pacote (${number})';
+	@override String get community => 'Comunidade';
+	@override String get packCreated => 'Pacote criado com sucesso';
+	@override String get errorOnCreatingPack => 'Ocorreu um erro ao criar o pacote';
+	@override String get errorOnUpdatingPack => 'Ocorreu um erro ao atualizar o pacote';
+	@override String get clonePack => 'Clonar pacote';
+	@override String get addPack => 'Adicionar pacote';
+	@override String get updatePack => 'Atualizar pacote';
+	@override String peopleCount({required Object number}) => 'Pessoas (${number})';
+	@override String get peopleCountDesc => 'Número de pessoas neste pacote';
+	@override String get packDeleted => 'Pacote excluído com sucesso';
+	@override String get errorDeletingEvent => 'Ocorreu um erro ao excluir o evento';
+	@override String get packUpdated => 'Pacote atualizado com sucesso';
+	@override String get packCloned => 'Pacote clonado com sucesso';
+	@override String get deletePack => 'Excluir pacote';
+	@override String get deletePackDesc => 'Tem certeza de que deseja excluir este pacote? Esta ação não pode ser desfeita.';
+	@override String get starterPacksDesc => 'Escolha um pacote e comece seu feed com o conteúdo de seus criadores';
+	@override String othersNumber({required Object number}) => '+ ${number} outros';
+	@override String get noPacksFoundSettingsDesc => 'Adicione mais pacotes seguidos para desfrutar de um feed personalizado.';
+	@override String get deleteMessage => 'Excluir mensagem';
+	@override String get deleteMessageDesc => 'Tem certeza de que deseja excluir esta mensagem? Esta ação não pode ser desfeita.';
+	@override String get errorDeletingMessage => 'Ocorreu um erro ao excluir a mensagem';
+	@override String get messageDeleted => 'Mensagem excluída com sucesso';
+	@override String get relayAlreadyExists => 'O relay já existe';
+	@override String get selected => 'selecionado';
+	@override String get threadMutedDescription => 'Esta nota e seu tópico estão silenciados';
+	@override String get scheduleYourPost => 'Agende sua postagem';
+	@override String get scheduleYourPostDesc => 'Agende sua postagem para ser publicada em um momento posterior';
+	@override String get paidNoteScheduled => 'Nota paga agendada';
+	@override String get noteScheduled => 'Nota agendada';
+	@override String get published => 'Publicado';
+	@override String get drafts => 'Rascunhos';
+	@override String get scheduled => 'Agendado';
+	@override String get schedule => 'Agendar';
+	@override String scheduledOn({required Object date}) => 'Agendado em: ${date}';
+	@override String get deleteScheduledNote => 'Excluir nota agendada';
+	@override String get deleteScheduleNoteDesc => 'Tem certeza de que deseja excluir esta nota agendada? Esta ação não pode ser desfeita.';
+	@override String get reschedule => 'Reagendar';
+	@override String get noScheduledNotesFound => 'Nenhuma nota agendada encontrada';
+	@override String get noScheduledNotesFoundDesc => 'Você ainda não agendou nenhuma nota.';
 }
 
 /// The flat map containing all translations for locale <pt>.
@@ -2956,6 +3005,8 @@ extension on TranslationsPt {
 			'openUrlDesc' => ({required Object url}) => 'Quer abrir "${url}"?',
 			'openUrlPrompt' => 'Prompt abrir url',
 			'openUrlPromptDesc' => 'Um prompt de segurança que mostra URL completa antes de abrí-la no seu navegador.',
+			'actionsPopups' => 'Popups de ações',
+			'actionsPopupsDesc' => 'Habilita ou desabilita popups para mensagens de sucesso, erro e informação.',
 			'waitingForNetwork' => 'Aguardando rede...',
 			'whatsNew' => 'O que há de novo',
 			'appCustom' => 'Personalização app',
@@ -3173,14 +3224,14 @@ extension on TranslationsPt {
 			'memo' => 'Memorando',
 			'payingInvoice' => 'Pagando fatura',
 			'addMint' => 'Adicionar mint',
-			'gettingMintInfo' => 'Obtendo informações do mint',
-			'generatingInvoice' => 'Gerando fatura',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Obtendo informações do mint',
+			'generatingInvoice' => 'Gerando fatura',
 			'checkPaymentStatus' => 'Verificar Status do Pagamento',
 			'depositSuccess' => 'Depósito com Sucesso',
 			'sendEcash' => 'Enviar eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsPt {
 			'lightningNetwork' => 'Rede Lightning',
 			'lightningNetworkDesc' => 'Pagar fatura Lightning ou para endereço lightning',
 			'info' => 'Info',
+			'followPacks' => 'Pacotes seguidos',
+			'followPacksDesc' => 'Explore e encontre pacotes para usar no Nostr',
+			'starterPacks' => 'Pacotes de início',
+			'mediaPacks' => 'Pacotes de mídia',
+			'noPacksFound' => 'Nenhum pacote encontrado',
+			'noPacksFoundDesc' => 'Você ainda não segue nenhum pacote.',
+			'browsePack' => 'Navegar no pacote',
+			'inThisPack' => ({required Object number}) => 'Neste pacote (${number})',
+			'community' => 'Comunidade',
+			'packCreated' => 'Pacote criado com sucesso',
+			'errorOnCreatingPack' => 'Ocorreu um erro ao criar o pacote',
+			'errorOnUpdatingPack' => 'Ocorreu um erro ao atualizar o pacote',
+			'clonePack' => 'Clonar pacote',
+			'addPack' => 'Adicionar pacote',
+			'updatePack' => 'Atualizar pacote',
+			'peopleCount' => ({required Object number}) => 'Pessoas (${number})',
+			'peopleCountDesc' => 'Número de pessoas neste pacote',
+			'packDeleted' => 'Pacote excluído com sucesso',
+			'errorDeletingEvent' => 'Ocorreu um erro ao excluir o evento',
+			'packUpdated' => 'Pacote atualizado com sucesso',
+			'packCloned' => 'Pacote clonado com sucesso',
+			'deletePack' => 'Excluir pacote',
+			'deletePackDesc' => 'Tem certeza de que deseja excluir este pacote? Esta ação não pode ser desfeita.',
+			'starterPacksDesc' => 'Escolha um pacote e comece seu feed com o conteúdo de seus criadores',
+			'othersNumber' => ({required Object number}) => '+ ${number} outros',
+			'noPacksFoundSettingsDesc' => 'Adicione mais pacotes seguidos para desfrutar de um feed personalizado.',
+			'deleteMessage' => 'Excluir mensagem',
+			'deleteMessageDesc' => 'Tem certeza de que deseja excluir esta mensagem? Esta ação não pode ser desfeita.',
+			'errorDeletingMessage' => 'Ocorreu um erro ao excluir a mensagem',
+			'messageDeleted' => 'Mensagem excluída com sucesso',
+			'relayAlreadyExists' => 'O relay já existe',
+			'selected' => 'selecionado',
+			'threadMutedDescription' => 'Esta nota e seu tópico estão silenciados',
+			'scheduleYourPost' => 'Agende sua postagem',
+			'scheduleYourPostDesc' => 'Agende sua postagem para ser publicada em um momento posterior',
+			'paidNoteScheduled' => 'Nota paga agendada',
+			'noteScheduled' => 'Nota agendada',
+			'published' => 'Publicado',
+			'drafts' => 'Rascunhos',
+			'scheduled' => 'Agendado',
+			'schedule' => 'Agendar',
+			'scheduledOn' => ({required Object date}) => 'Agendado em: ${date}',
+			'deleteScheduledNote' => 'Excluir nota agendada',
+			'deleteScheduleNoteDesc' => 'Tem certeza de que deseja excluir esta nota agendada? Esta ação não pode ser desfeita.',
+			'reschedule' => 'Reagendar',
+			'noScheduledNotesFound' => 'Nenhuma nota agendada encontrada',
+			'noScheduledNotesFoundDesc' => 'Você ainda não agendou nenhuma nota.',
 			_ => null,
 		};
 	}

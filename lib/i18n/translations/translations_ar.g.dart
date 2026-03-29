@@ -1356,6 +1356,8 @@ class TranslationsAr extends Translations {
 	@override String openUrlDesc({required Object url}) => 'هل تريد فتح "${url}"؟';
 	@override String get openUrlPrompt => 'تأكيد فتح URL';
 	@override String get openUrlPromptDesc => 'تأكيد أمان يعرض URL الكامل قبل فتحه في المتصفح.';
+	@override String get actionsPopups => 'إشعارات الإجراءات';
+	@override String get actionsPopupsDesc => 'تمكين أو تعطيل الإشعارات المنبثقة للنجاح والأخطاء والمعلومات.';
 	@override String get waitingForNetwork => 'انتظار الشبكة...';
 	@override String get whatsNew => 'ما الجديد';
 	@override String get appCustom => 'تخصيص التطبيق';
@@ -1610,6 +1612,53 @@ class TranslationsAr extends Translations {
 	@override String get lightningNetwork => 'شبكة Lightning';
 	@override String get lightningNetworkDesc => 'دفع فاتورة Lightning أو لعنوان lightning';
 	@override String get info => 'معلومات';
+	@override String get followPacks => 'متابعة الحزم';
+	@override String get followPacksDesc => 'استكشف واعثر على حزم لاستخدامها على Nostr';
+	@override String get starterPacks => 'حزم البداية';
+	@override String get mediaPacks => 'حزم الوسائط';
+	@override String get noPacksFound => 'لم يتم العثور على حزم';
+	@override String get noPacksFoundDesc => 'لم تتابع أي حزم بعد.';
+	@override String get browsePack => 'تصفح الحزمة';
+	@override String inThisPack({required Object number}) => 'في هذه الحزمة (${number})';
+	@override String get community => 'المجتمع';
+	@override String get packCreated => 'تم إنشاء الحزمة بنجاح';
+	@override String get errorOnCreatingPack => 'حدث خطأ أثناء إنشاء الحزمة';
+	@override String get errorOnUpdatingPack => 'حدث خطأ أثناء تحديث الحزمة';
+	@override String get clonePack => 'تكرار الحزمة';
+	@override String get addPack => 'إضافة حزمة';
+	@override String get updatePack => 'تحديث الحزمة';
+	@override String peopleCount({required Object number}) => 'الأشخاص (${number})';
+	@override String get peopleCountDesc => 'عدد الأشخاص في هذه الحزمة';
+	@override String get packDeleted => 'تم حذف الحزمة بنجاح';
+	@override String get errorDeletingEvent => 'حدث خطأ أثناء حذف الحدث';
+	@override String get packUpdated => 'تم تحديث الحزمة بنجاح';
+	@override String get packCloned => 'تم تكرار الحزمة بنجاح';
+	@override String get deletePack => 'حذف الحزمة';
+	@override String get deletePackDesc => 'هل أنت متأكد أنك تريد حذف هذه الحزمة؟ لا يمكن التراجع عن هذا الإجراء.';
+	@override String get starterPacksDesc => 'اختر حزمة وابدأ خلاصة المحتوى من منشئيها';
+	@override String othersNumber({required Object number}) => '+ ${number} آخرون';
+	@override String get noPacksFoundSettingsDesc => 'أضف المزيد من حزم المتابعة للاستمتاع بخلاصة مخصصة.';
+	@override String get deleteMessage => 'حذف الرسالة';
+	@override String get deleteMessageDesc => 'هل أنت متأكد أنك تريد حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.';
+	@override String get errorDeletingMessage => 'حدث خطأ أثناء حذف الرسالة';
+	@override String get messageDeleted => 'تم حذف الرسالة بنجاح';
+	@override String get relayAlreadyExists => 'المرحل موجود بالفعل';
+	@override String get selected => 'محدد';
+	@override String get threadMutedDescription => 'هذه الملاحظة وسلسلة الردود الخاصة بها مكتومة، ولن تتلقى إشعارات أو ترى ردودًا جديدة مضافة إلى خلاصتك';
+	@override String get scheduleYourPost => 'جدولة منشورك';
+	@override String get scheduleYourPostDesc => 'قم بجدولة منشورك ليتم نشره في وقت لاحق';
+	@override String get paidNoteScheduled => 'تمت جدولة الملاحظة المدفوعة';
+	@override String get noteScheduled => 'تمت جدولة الملاحظة';
+	@override String get published => 'تم النشر';
+	@override String get drafts => 'المسودات';
+	@override String get scheduled => 'مجدول';
+	@override String get schedule => 'جدولة';
+	@override String scheduledOn({required Object date}) => 'مجدول في: ${date}';
+	@override String get deleteScheduledNote => 'حذف الملاحظة المجدولة';
+	@override String get deleteScheduleNoteDesc => 'هل أنت متأكد أنك تريد حذف هذه الملاحظة المجدولة؟ لا يمكن التراجع عن هذا الإجراء.';
+	@override String get reschedule => 'إعادة الجدولة';
+	@override String get noScheduledNotesFound => 'لم يتم العثور على ملاحظات مجدولة';
+	@override String get noScheduledNotesFoundDesc => 'لم تقم بجدولة أي ملاحظات بعد.';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -2956,6 +3005,8 @@ extension on TranslationsAr {
 			'openUrlDesc' => ({required Object url}) => 'هل تريد فتح "${url}"؟',
 			'openUrlPrompt' => 'تأكيد فتح URL',
 			'openUrlPromptDesc' => 'تأكيد أمان يعرض URL الكامل قبل فتحه في المتصفح.',
+			'actionsPopups' => 'إشعارات الإجراءات',
+			'actionsPopupsDesc' => 'تمكين أو تعطيل الإشعارات المنبثقة للنجاح والأخطاء والمعلومات.',
 			'waitingForNetwork' => 'انتظار الشبكة...',
 			'whatsNew' => 'ما الجديد',
 			'appCustom' => 'تخصيص التطبيق',
@@ -3173,14 +3224,14 @@ extension on TranslationsAr {
 			'memo' => 'مذكرة',
 			'payingInvoice' => 'دفع الفاتورة',
 			'addMint' => 'إضافة Mint',
-			'gettingMintInfo' => 'الحصول على معلومات Mint',
-			'generatingInvoice' => 'إنشاء فاتورة',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'الحصول على معلومات Mint',
+			'generatingInvoice' => 'إنشاء فاتورة',
 			'checkPaymentStatus' => 'التحقق من حالة الدفع',
 			'depositSuccess' => 'تم الإيداع بنجاح',
 			'sendEcash' => 'إرسال eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsAr {
 			'lightningNetwork' => 'شبكة Lightning',
 			'lightningNetworkDesc' => 'دفع فاتورة Lightning أو لعنوان lightning',
 			'info' => 'معلومات',
+			'followPacks' => 'متابعة الحزم',
+			'followPacksDesc' => 'استكشف واعثر على حزم لاستخدامها على Nostr',
+			'starterPacks' => 'حزم البداية',
+			'mediaPacks' => 'حزم الوسائط',
+			'noPacksFound' => 'لم يتم العثور على حزم',
+			'noPacksFoundDesc' => 'لم تتابع أي حزم بعد.',
+			'browsePack' => 'تصفح الحزمة',
+			'inThisPack' => ({required Object number}) => 'في هذه الحزمة (${number})',
+			'community' => 'المجتمع',
+			'packCreated' => 'تم إنشاء الحزمة بنجاح',
+			'errorOnCreatingPack' => 'حدث خطأ أثناء إنشاء الحزمة',
+			'errorOnUpdatingPack' => 'حدث خطأ أثناء تحديث الحزمة',
+			'clonePack' => 'تكرار الحزمة',
+			'addPack' => 'إضافة حزمة',
+			'updatePack' => 'تحديث الحزمة',
+			'peopleCount' => ({required Object number}) => 'الأشخاص (${number})',
+			'peopleCountDesc' => 'عدد الأشخاص في هذه الحزمة',
+			'packDeleted' => 'تم حذف الحزمة بنجاح',
+			'errorDeletingEvent' => 'حدث خطأ أثناء حذف الحدث',
+			'packUpdated' => 'تم تحديث الحزمة بنجاح',
+			'packCloned' => 'تم تكرار الحزمة بنجاح',
+			'deletePack' => 'حذف الحزمة',
+			'deletePackDesc' => 'هل أنت متأكد أنك تريد حذف هذه الحزمة؟ لا يمكن التراجع عن هذا الإجراء.',
+			'starterPacksDesc' => 'اختر حزمة وابدأ خلاصة المحتوى من منشئيها',
+			'othersNumber' => ({required Object number}) => '+ ${number} آخرون',
+			'noPacksFoundSettingsDesc' => 'أضف المزيد من حزم المتابعة للاستمتاع بخلاصة مخصصة.',
+			'deleteMessage' => 'حذف الرسالة',
+			'deleteMessageDesc' => 'هل أنت متأكد أنك تريد حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.',
+			'errorDeletingMessage' => 'حدث خطأ أثناء حذف الرسالة',
+			'messageDeleted' => 'تم حذف الرسالة بنجاح',
+			'relayAlreadyExists' => 'المرحل موجود بالفعل',
+			'selected' => 'محدد',
+			'threadMutedDescription' => 'هذه الملاحظة وسلسلة الردود الخاصة بها مكتومة، ولن تتلقى إشعارات أو ترى ردودًا جديدة مضافة إلى خلاصتك',
+			'scheduleYourPost' => 'جدولة منشورك',
+			'scheduleYourPostDesc' => 'قم بجدولة منشورك ليتم نشره في وقت لاحق',
+			'paidNoteScheduled' => 'تمت جدولة الملاحظة المدفوعة',
+			'noteScheduled' => 'تمت جدولة الملاحظة',
+			'published' => 'تم النشر',
+			'drafts' => 'المسودات',
+			'scheduled' => 'مجدول',
+			'schedule' => 'جدولة',
+			'scheduledOn' => ({required Object date}) => 'مجدول في: ${date}',
+			'deleteScheduledNote' => 'حذف الملاحظة المجدولة',
+			'deleteScheduleNoteDesc' => 'هل أنت متأكد أنك تريد حذف هذه الملاحظة المجدولة؟ لا يمكن التراجع عن هذا الإجراء.',
+			'reschedule' => 'إعادة الجدولة',
+			'noScheduledNotesFound' => 'لم يتم العثور على ملاحظات مجدولة',
+			'noScheduledNotesFoundDesc' => 'لم تقم بجدولة أي ملاحظات بعد.',
 			_ => null,
 		};
 	}

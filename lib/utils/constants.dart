@@ -9,12 +9,13 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v2.0.2+184';
+const String appVersion = 'v2.0.3+186';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
 const baseUrl2 = 'www.yakihonne.com';
+const baseUrl3 = 'yakihonne.com';
 const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const pointsUrl = 'https://api.yakihonne.com/api/v1/';
@@ -246,7 +247,7 @@ const yakihonneHex =
 const readers =
     'Readers shared extra details they thought people might find relevant.';
 
-const albyRedirectUri = 'https://yakihonne.com/wallet/alby';
+const albyRedirectUri = 'https://yakihonne.com/lightning-wallet/alby';
 
 const nostrHighlights =
     '9a500dccc084a138330a1d1b2be0d5e86394624325d25084d3eca164e7ea698a';

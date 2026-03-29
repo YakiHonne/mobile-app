@@ -80,15 +80,17 @@ class ArticleImageSelectorCubit extends Cubit<ArticleImageSelectorState> {
   }
 
   Future<void> addImage({
-    required Function(String) onSuccess,
+    required Function(Map<String, String>) onSuccess,
     required Function(String) onFailure,
   }) async {
     final cancel = BotToastUtils.showLoading();
 
     try {
-      final link = (await mediaServersCubit.uploadMedia(
+      final uploadMap = await mediaServersCubit.uploadMedia(
         file: state.localImage!,
-      ))['url'];
+      );
+      
+      final link = uploadMap['url'];
 
       if (link == null) {
         BotToastUtils.showError(
@@ -114,7 +116,7 @@ class ArticleImageSelectorCubit extends Cubit<ArticleImageSelectorState> {
       }
 
       cancel.call();
-      onSuccess.call(link);
+      onSuccess.call(uploadMap);
     } catch (_) {
       cancel.call();
       onFailure.call(

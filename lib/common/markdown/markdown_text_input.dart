@@ -60,6 +60,7 @@ class MarkdownTextInput extends StatefulWidget {
   final Widget previewWidget;
 
   final ValueNotifier<ArticleWritingState> toggleArticleContent;
+  final Function(Map<String, String>)? onMetadataInserted;
 
   /// Constructor for [MarkdownTextInput]
   const MarkdownTextInput(
@@ -84,6 +85,7 @@ class MarkdownTextInput extends StatefulWidget {
     ],
     this.textStyle,
     this.controller,
+    this.onMetadataInserted,
     this.insertLinksByDialog = true,
   });
 
@@ -699,11 +701,14 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
       context: context,
       builder: (_) {
         return ImageSelector(
-          onTap: (link) {
+          onTap: (link, {imeta}) {
             onTap(
               type,
               link: link,
             );
+            if (imeta != null) {
+              widget.onMetadataInserted?.call(imeta);
+            }
           },
         );
       },

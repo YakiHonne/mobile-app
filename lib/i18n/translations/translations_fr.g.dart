@@ -1356,6 +1356,8 @@ class TranslationsFr extends Translations {
 	@override String openUrlDesc({required Object url}) => 'Voulez-vous ouvrir "${url}" ?';
 	@override String get openUrlPrompt => 'Prompt d\'ouverture d\'url';
 	@override String get openUrlPromptDesc => 'Un prompt de sécurité qui affiche l\'URL complète avant de l\'ouvrir dans votre navigateur.';
+	@override String get actionsPopups => 'Notifications d\'actions';
+	@override String get actionsPopupsDesc => 'Activer ou désactiver les notifications pour les messages de succès, d\'erreur et d\'information.';
 	@override String get waitingForNetwork => 'Attente du réseau...';
 	@override String get whatsNew => 'Quoi de neuf';
 	@override String get appCustom => 'Personnalisation de l\'app';
@@ -1610,6 +1612,53 @@ class TranslationsFr extends Translations {
 	@override String get lightningNetwork => 'Réseau Lightning';
 	@override String get lightningNetworkDesc => 'Payer une facture Lightning ou à une adresse Lightning';
 	@override String get info => 'Info';
+	@override String get followPacks => 'Packs suivis';
+	@override String get followPacksDesc => 'Explorez et trouvez des packs';
+	@override String get starterPacks => 'Packs de démarrage';
+	@override String get mediaPacks => 'Packs de médias';
+	@override String get noPacksFound => 'Aucun pack trouvé';
+	@override String get noPacksFoundDesc => 'Vous ne suivez encore aucun pack.';
+	@override String get browsePack => 'Parcourir le pack';
+	@override String inThisPack({required Object number}) => 'Dans ce pack (${number})';
+	@override String get community => 'Communauté';
+	@override String get packCreated => 'Pack créé avec succès';
+	@override String get errorOnCreatingPack => 'Une erreur s\'est produite lors de la création du pack';
+	@override String get errorOnUpdatingPack => 'Une erreur s\'est produite lors de la mise à jour du pack';
+	@override String get clonePack => 'Cloner le pack';
+	@override String get addPack => 'Ajouter un pack';
+	@override String get updatePack => 'Mettre à jour le pack';
+	@override String peopleCount({required Object number}) => 'Personnes (${number})';
+	@override String get peopleCountDesc => 'Nombre de personnes dans ce pack';
+	@override String get packDeleted => 'Pack supprimé avec succès';
+	@override String get errorDeletingEvent => 'Une erreur s\'est produite lors de la suppression de l\'événement';
+	@override String get packUpdated => 'Pack mis à jour avec succès';
+	@override String get packCloned => 'Pack cloné avec succès';
+	@override String get deletePack => 'Supprimer le pack';
+	@override String get deletePackDesc => 'Êtes-vous sûr de vouloir supprimer ce pack ? Cette action ne peut pas être annulée.';
+	@override String get starterPacksDesc => 'Choisissez un pack et commencez votre flux';
+	@override String othersNumber({required Object number}) => '+ ${number} autres';
+	@override String get noPacksFoundSettingsDesc => 'Ajoutez plus de packs suivis pour profiter d\'un flux personnalisé.';
+	@override String get deleteMessage => 'Supprimer le message';
+	@override String get deleteMessageDesc => 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action ne peut pas être annulée.';
+	@override String get errorDeletingMessage => 'Une erreur s\'est produite lors de la suppression du message';
+	@override String get messageDeleted => 'Message supprimé avec succès';
+	@override String get relayAlreadyExists => 'Le relais existe déjà';
+	@override String get selected => 'sélectionné';
+	@override String get threadMutedDescription => 'Cette note et son fil sont mis en sourdine';
+	@override String get scheduleYourPost => 'Programmer votre publication';
+	@override String get scheduleYourPostDesc => 'Programmer votre publication pour plus tard';
+	@override String get paidNoteScheduled => 'Note payante programmée';
+	@override String get noteScheduled => 'Note programmée';
+	@override String get published => 'Publié';
+	@override String get drafts => 'Brouillons';
+	@override String get scheduled => 'Programmé';
+	@override String get schedule => 'Programmer';
+	@override String scheduledOn({required Object date}) => 'Programmé le: ${date}';
+	@override String get deleteScheduledNote => 'Supprimer la note programmée';
+	@override String get deleteScheduleNoteDesc => 'Êtes-vous sûr de vouloir supprimer cette note programmée ? Cette action ne peut pas être annulée.';
+	@override String get reschedule => 'Reprogrammer';
+	@override String get noScheduledNotesFound => 'Aucune note programmée';
+	@override String get noScheduledNotesFoundDesc => 'Vous n\'avez encore programmé aucune note.';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -2956,6 +3005,8 @@ extension on TranslationsFr {
 			'openUrlDesc' => ({required Object url}) => 'Voulez-vous ouvrir "${url}" ?',
 			'openUrlPrompt' => 'Prompt d\'ouverture d\'url',
 			'openUrlPromptDesc' => 'Un prompt de sécurité qui affiche l\'URL complète avant de l\'ouvrir dans votre navigateur.',
+			'actionsPopups' => 'Notifications d\'actions',
+			'actionsPopupsDesc' => 'Activer ou désactiver les notifications pour les messages de succès, d\'erreur et d\'information.',
 			'waitingForNetwork' => 'Attente du réseau...',
 			'whatsNew' => 'Quoi de neuf',
 			'appCustom' => 'Personnalisation de l\'app',
@@ -3173,14 +3224,14 @@ extension on TranslationsFr {
 			'memo' => 'Note',
 			'payingInvoice' => 'Paiement de la facture',
 			'addMint' => 'Ajouter un mint',
-			'gettingMintInfo' => 'Obtention des infos du mint',
-			'generatingInvoice' => 'Génération de la facture',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Obtention des infos du mint',
+			'generatingInvoice' => 'Génération de la facture',
 			'checkPaymentStatus' => 'Vérifier le Statut du Paiement',
 			'depositSuccess' => 'Dépôt Réussi',
 			'sendEcash' => 'Envoyer eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsFr {
 			'lightningNetwork' => 'Réseau Lightning',
 			'lightningNetworkDesc' => 'Payer une facture Lightning ou à une adresse Lightning',
 			'info' => 'Info',
+			'followPacks' => 'Packs suivis',
+			'followPacksDesc' => 'Explorez et trouvez des packs',
+			'starterPacks' => 'Packs de démarrage',
+			'mediaPacks' => 'Packs de médias',
+			'noPacksFound' => 'Aucun pack trouvé',
+			'noPacksFoundDesc' => 'Vous ne suivez encore aucun pack.',
+			'browsePack' => 'Parcourir le pack',
+			'inThisPack' => ({required Object number}) => 'Dans ce pack (${number})',
+			'community' => 'Communauté',
+			'packCreated' => 'Pack créé avec succès',
+			'errorOnCreatingPack' => 'Une erreur s\'est produite lors de la création du pack',
+			'errorOnUpdatingPack' => 'Une erreur s\'est produite lors de la mise à jour du pack',
+			'clonePack' => 'Cloner le pack',
+			'addPack' => 'Ajouter un pack',
+			'updatePack' => 'Mettre à jour le pack',
+			'peopleCount' => ({required Object number}) => 'Personnes (${number})',
+			'peopleCountDesc' => 'Nombre de personnes dans ce pack',
+			'packDeleted' => 'Pack supprimé avec succès',
+			'errorDeletingEvent' => 'Une erreur s\'est produite lors de la suppression de l\'événement',
+			'packUpdated' => 'Pack mis à jour avec succès',
+			'packCloned' => 'Pack cloné avec succès',
+			'deletePack' => 'Supprimer le pack',
+			'deletePackDesc' => 'Êtes-vous sûr de vouloir supprimer ce pack ? Cette action ne peut pas être annulée.',
+			'starterPacksDesc' => 'Choisissez un pack et commencez votre flux',
+			'othersNumber' => ({required Object number}) => '+ ${number} autres',
+			'noPacksFoundSettingsDesc' => 'Ajoutez plus de packs suivis pour profiter d\'un flux personnalisé.',
+			'deleteMessage' => 'Supprimer le message',
+			'deleteMessageDesc' => 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action ne peut pas être annulée.',
+			'errorDeletingMessage' => 'Une erreur s\'est produite lors de la suppression du message',
+			'messageDeleted' => 'Message supprimé avec succès',
+			'relayAlreadyExists' => 'Le relais existe déjà',
+			'selected' => 'sélectionné',
+			'threadMutedDescription' => 'Cette note et son fil sont mis en sourdine',
+			'scheduleYourPost' => 'Programmer votre publication',
+			'scheduleYourPostDesc' => 'Programmer votre publication pour plus tard',
+			'paidNoteScheduled' => 'Note payante programmée',
+			'noteScheduled' => 'Note programmée',
+			'published' => 'Publié',
+			'drafts' => 'Brouillons',
+			'scheduled' => 'Programmé',
+			'schedule' => 'Programmer',
+			'scheduledOn' => ({required Object date}) => 'Programmé le: ${date}',
+			'deleteScheduledNote' => 'Supprimer la note programmée',
+			'deleteScheduleNoteDesc' => 'Êtes-vous sûr de vouloir supprimer cette note programmée ? Cette action ne peut pas être annulée.',
+			'reschedule' => 'Reprogrammer',
+			'noScheduledNotesFound' => 'Aucune note programmée',
+			'noScheduledNotesFoundDesc' => 'Vous n\'avez encore programmé aucune note.',
 			_ => null,
 		};
 	}

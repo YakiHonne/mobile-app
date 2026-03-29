@@ -192,7 +192,7 @@ class MediaOptionsRow extends StatelessWidget {
                 isScrollControlled: true,
                 builder: (_) {
                   return SingleImageSelector(
-                    onUrlProvided: (url) {
+                    onUrlProvided: (url, {imeta}) {
                       thumbnail.value = url;
                       YNavigator.pop(context);
                     },

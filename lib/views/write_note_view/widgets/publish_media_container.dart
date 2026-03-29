@@ -28,7 +28,7 @@ class PublishingMediaContainer extends HookWidget {
     this.isPaid,
   });
 
-  final Function(List<String>) onImageAdd;
+  final Function(List<Map<String, String>>) onImageAdd;
   final Function() onTextChanged;
   final ValueNotifier<String?> mention;
   final ValueNotifier<bool>? isPaid;
@@ -208,7 +208,7 @@ class PublishingMediaContainer extends HookWidget {
           context: context,
           builder: (_) {
             return GiphyView(
-              onGifSelected: (url) => onImageAdd.call([url]),
+              onGifSelected: (url) => onImageAdd.call([{'url': url}]),
             );
           },
           isScrollControlled: true,

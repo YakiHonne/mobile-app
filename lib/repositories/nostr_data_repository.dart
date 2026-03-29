@@ -536,6 +536,26 @@ class NostrDataRepository {
   // APP CUSTOMIZATION
   // =============================================================================
 
+  bool getAutoTranslationStatus() {
+    if (canSign()) {
+      return localDatabaseRepository.getAutoTranslation(
+        currentSigner!.getPublicKey(),
+      );
+    }
+
+    return false;
+  }
+
+  bool getNestedRepliesStatus() {
+    if (canSign()) {
+      return localDatabaseRepository.getNestedRepliesStatus(
+        currentSigner!.getPublicKey(),
+      );
+    }
+
+    return false;
+  }
+
   void loadAppCustomization() {
     final ac = localDatabaseRepository.getAppCustomization();
 

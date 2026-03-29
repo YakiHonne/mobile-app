@@ -13,7 +13,7 @@ class SingleImageSelector extends HookWidget {
     this.description,
   });
 
-  final Function(String) onUrlProvided;
+  final Function(String, {Map<String, String>? imeta}) onUrlProvided;
   final String? title;
   final String? description;
 
@@ -189,7 +189,7 @@ class SingleImageChoice extends StatelessWidget {
   final String title;
   final String icon;
   final Function()? onClicked;
-  final Function(String) onUrlProvided;
+  final Function(String, {Map<String, String>? imeta}) onUrlProvided;
 
   @override
   Widget build(BuildContext context) {
@@ -197,9 +197,9 @@ class SingleImageChoice extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: onClicked ??
           () async {
-            final url = await MediaHandler.selectMediaAndUpload(mediaType);
-            if (url != null) {
-              onUrlProvided.call(url);
+            final data = await MediaHandler.selectMediaAndUploadWithData(mediaType);
+            if (data != null) {
+              onUrlProvided.call(data['url']!, imeta: data);
             }
           },
       child: Column(

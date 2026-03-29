@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.3] - 2026-03-29
+
+### Added
+
+- Added relay review.
+- Added relay join request.
+- Added expanded nested replies in notes
+- Added nsec saving to ios keychain
+- Added option to autotranslate note in 3 seconds.
+- Added support for nwc multi relays.
+- Added pending paid notes in dashboard.
+- Added imeta tag to when publishing notes and articles.
+
+### Changed
+
+- Added expired content ignore.
+
+### Fixed
+
+- Fix pasting text in private message not working.
+- Fix profile fetching issue.
+- Fix screen orientation in youtube links when trying fullscreen mode.
+- Fix paid notes not being submitted issue.
+- Fix notification refresh when switching to view.
+- Other bug fixes and performance improvements.
+
 ## [2.0.2] - 2026-03-01
 
 ### Added

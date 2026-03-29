@@ -1356,6 +1356,8 @@ class TranslationsJa extends Translations {
 	@override String openUrlDesc({required Object url}) => '"${url}"を開きますか？';
 	@override String get openUrlPrompt => 'URL開くプロンプト';
 	@override String get openUrlPromptDesc => 'ブラウザで開く前に完全URLを表示するセキュリティプロンプト。';
+	@override String get actionsPopups => 'アクションポップアップ';
+	@override String get actionsPopupsDesc => '成功、エラー、情報のメッセージに対するポップアップを有効または無効にします。';
 	@override String get waitingForNetwork => 'ネットワーク待ち...';
 	@override String get whatsNew => '新着';
 	@override String get appCustom => 'アプリカスタム';
@@ -1610,6 +1612,53 @@ class TranslationsJa extends Translations {
 	@override String get lightningNetwork => 'Lightning Network';
 	@override String get lightningNetworkDesc => 'Lightning請求書またはLightningアドレスへの支払い';
 	@override String get info => '情報';
+	@override String get followPacks => 'フォローパック';
+	@override String get followPacksDesc => 'Nostr用パックを見つける';
+	@override String get starterPacks => 'スターターパック';
+	@override String get mediaPacks => 'メディアパック';
+	@override String get noPacksFound => 'パックが見つかりません';
+	@override String get noPacksFoundDesc => 'まだパックをフォローしていません。';
+	@override String get browsePack => 'パックを見る';
+	@override String inThisPack({required Object number}) => 'このパック内 (${number})';
+	@override String get community => 'コミュニティ';
+	@override String get packCreated => 'パックを作成しました';
+	@override String get errorOnCreatingPack => 'パックの作成中にエラーが発生しました';
+	@override String get errorOnUpdatingPack => 'パックの更新中にエラーが発生しました';
+	@override String get clonePack => 'パックを複製';
+	@override String get addPack => 'パックを追加';
+	@override String get updatePack => 'パックを更新';
+	@override String peopleCount({required Object number}) => 'ユーザー (${number})';
+	@override String get peopleCountDesc => 'このパックの人数';
+	@override String get packDeleted => 'パックを削除しました';
+	@override String get errorDeletingEvent => 'イベントの削除中にエラーが発生しました';
+	@override String get packUpdated => 'パックを更新しました';
+	@override String get packCloned => 'パックを複製しました';
+	@override String get deletePack => 'パックを削除';
+	@override String get deletePackDesc => '本当によろしいですか？この操作は元に戻せません。';
+	@override String get starterPacksDesc => 'パックを選択し、クリエイターのコンテンツからフィードを開始します';
+	@override String othersNumber({required Object number}) => '他 ${number} 人';
+	@override String get noPacksFoundSettingsDesc => 'カスタムフィードを楽しむためにさらにパックを追加。';
+	@override String get deleteMessage => 'メッセージを削除';
+	@override String get deleteMessageDesc => '本当によろしいですか？この操作は元に戻せません。';
+	@override String get errorDeletingMessage => 'メッセージの削除中にエラーが発生しました';
+	@override String get messageDeleted => '削除しました';
+	@override String get relayAlreadyExists => 'リレーは既に存在します';
+	@override String get selected => '選択済み';
+	@override String get threadMutedDescription => 'このノートとそのスレッドはミュートされています';
+	@override String get scheduleYourPost => '投稿を予約する';
+	@override String get scheduleYourPostDesc => '後で投稿するように予約';
+	@override String get paidNoteScheduled => '有料ノートを予約しました';
+	@override String get noteScheduled => 'ノートを予約しました';
+	@override String get published => '公開済み';
+	@override String get drafts => '下書き';
+	@override String get scheduled => '予約済み';
+	@override String get schedule => '予約';
+	@override String scheduledOn({required Object date}) => '予約日時: ${date}';
+	@override String get deleteScheduledNote => '予約ノートを削除';
+	@override String get deleteScheduleNoteDesc => '本当によろしいですか？この操作は元に戻せません。';
+	@override String get reschedule => '再予約';
+	@override String get noScheduledNotesFound => '予約ノートがありません';
+	@override String get noScheduledNotesFoundDesc => 'まだノートを予約していません。';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -2956,6 +3005,8 @@ extension on TranslationsJa {
 			'openUrlDesc' => ({required Object url}) => '"${url}"を開きますか？',
 			'openUrlPrompt' => 'URL開くプロンプト',
 			'openUrlPromptDesc' => 'ブラウザで開く前に完全URLを表示するセキュリティプロンプト。',
+			'actionsPopups' => 'アクションポップアップ',
+			'actionsPopupsDesc' => '成功、エラー、情報のメッセージに対するポップアップを有効または無効にします。',
 			'waitingForNetwork' => 'ネットワーク待ち...',
 			'whatsNew' => '新着',
 			'appCustom' => 'アプリカスタム',
@@ -3173,14 +3224,14 @@ extension on TranslationsJa {
 			'memo' => 'メモ',
 			'payingInvoice' => 'インボイスを支払い中',
 			'addMint' => 'Mintを追加',
-			'gettingMintInfo' => 'Mint情報を取得中',
-			'generatingInvoice' => 'インボイスを生成中',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Mint情報を取得中',
+			'generatingInvoice' => 'インボイスを生成中',
 			'checkPaymentStatus' => '支払いステータスを確認',
 			'depositSuccess' => '入金成功',
 			'sendEcash' => 'eCashを送信',
@@ -3216,6 +3267,53 @@ extension on TranslationsJa {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'Lightning請求書またはLightningアドレスへの支払い',
 			'info' => '情報',
+			'followPacks' => 'フォローパック',
+			'followPacksDesc' => 'Nostr用パックを見つける',
+			'starterPacks' => 'スターターパック',
+			'mediaPacks' => 'メディアパック',
+			'noPacksFound' => 'パックが見つかりません',
+			'noPacksFoundDesc' => 'まだパックをフォローしていません。',
+			'browsePack' => 'パックを見る',
+			'inThisPack' => ({required Object number}) => 'このパック内 (${number})',
+			'community' => 'コミュニティ',
+			'packCreated' => 'パックを作成しました',
+			'errorOnCreatingPack' => 'パックの作成中にエラーが発生しました',
+			'errorOnUpdatingPack' => 'パックの更新中にエラーが発生しました',
+			'clonePack' => 'パックを複製',
+			'addPack' => 'パックを追加',
+			'updatePack' => 'パックを更新',
+			'peopleCount' => ({required Object number}) => 'ユーザー (${number})',
+			'peopleCountDesc' => 'このパックの人数',
+			'packDeleted' => 'パックを削除しました',
+			'errorDeletingEvent' => 'イベントの削除中にエラーが発生しました',
+			'packUpdated' => 'パックを更新しました',
+			'packCloned' => 'パックを複製しました',
+			'deletePack' => 'パックを削除',
+			'deletePackDesc' => '本当によろしいですか？この操作は元に戻せません。',
+			'starterPacksDesc' => 'パックを選択し、クリエイターのコンテンツからフィードを開始します',
+			'othersNumber' => ({required Object number}) => '他 ${number} 人',
+			'noPacksFoundSettingsDesc' => 'カスタムフィードを楽しむためにさらにパックを追加。',
+			'deleteMessage' => 'メッセージを削除',
+			'deleteMessageDesc' => '本当によろしいですか？この操作は元に戻せません。',
+			'errorDeletingMessage' => 'メッセージの削除中にエラーが発生しました',
+			'messageDeleted' => '削除しました',
+			'relayAlreadyExists' => 'リレーは既に存在します',
+			'selected' => '選択済み',
+			'threadMutedDescription' => 'このノートとそのスレッドはミュートされています',
+			'scheduleYourPost' => '投稿を予約する',
+			'scheduleYourPostDesc' => '後で投稿するように予約',
+			'paidNoteScheduled' => '有料ノートを予約しました',
+			'noteScheduled' => 'ノートを予約しました',
+			'published' => '公開済み',
+			'drafts' => '下書き',
+			'scheduled' => '予約済み',
+			'schedule' => '予約',
+			'scheduledOn' => ({required Object date}) => '予約日時: ${date}',
+			'deleteScheduledNote' => '予約ノートを削除',
+			'deleteScheduleNoteDesc' => '本当によろしいですか？この操作は元に戻せません。',
+			'reschedule' => '再予約',
+			'noScheduledNotesFound' => '予約ノートがありません',
+			'noScheduledNotesFoundDesc' => 'まだノートを予約していません。',
 			_ => null,
 		};
 	}

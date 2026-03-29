@@ -1356,6 +1356,8 @@ class TranslationsRu extends Translations {
 	@override String openUrlDesc({required Object url}) => 'Хотите открыть "${url}"?';
 	@override String get openUrlPrompt => 'Запрос на открытие URL';
 	@override String get openUrlPromptDesc => 'Безопасный запрос, показывающий полный URL перед открытием в браузере.';
+	@override String get actionsPopups => 'Всплывающие окна действий';
+	@override String get actionsPopupsDesc => 'Включить или отключить всплывающие окна для сообщений об успехе, ошибке и информации.';
 	@override String get waitingForNetwork => 'Ожидание сети...';
 	@override String get whatsNew => 'Что нового';
 	@override String get appCustom => 'Кастомизация приложения';
@@ -1610,6 +1612,53 @@ class TranslationsRu extends Translations {
 	@override String get lightningNetwork => 'Lightning Network';
 	@override String get lightningNetworkDesc => 'Оплатить счет Lightning или на адрес Lightning';
 	@override String get info => 'Инфо';
+	@override String get followPacks => 'Отслеживаемые пакеты';
+	@override String get followPacksDesc => 'Ищите и находите пакеты для использования в Nostr';
+	@override String get starterPacks => 'Стартовые пакеты';
+	@override String get mediaPacks => 'Медиа пакеты';
+	@override String get noPacksFound => 'Пакеты не найдены';
+	@override String get noPacksFoundDesc => 'Вы еще не отслеживаете ни одного пакета.';
+	@override String get browsePack => 'Просмотр пакета';
+	@override String inThisPack({required Object number}) => 'В этом пакете (${number})';
+	@override String get community => 'Сообщество';
+	@override String get packCreated => 'Пакет успешно создан';
+	@override String get errorOnCreatingPack => 'Произошла ошибка при создании пакета';
+	@override String get errorOnUpdatingPack => 'Произошла ошибка при обновлении пакета';
+	@override String get clonePack => 'Клонировать пакет';
+	@override String get addPack => 'Добавить пакет';
+	@override String get updatePack => 'Обновить пакет';
+	@override String peopleCount({required Object number}) => 'Люди (${number})';
+	@override String get peopleCountDesc => 'Количество людей в этом пакете';
+	@override String get packDeleted => 'Пакет успешно удален';
+	@override String get errorDeletingEvent => 'Произошла ошибка при удалении события';
+	@override String get packUpdated => 'Пакет успешно обновлен';
+	@override String get packCloned => 'Пакет успешно клонирован';
+	@override String get deletePack => 'Удалить пакет';
+	@override String get deletePackDesc => 'Вы уверены, что хотите удалить этот пакет? Это действие нельзя отменить.';
+	@override String get starterPacksDesc => 'Выберите пакет и начните свою ленту с контента ее создателей';
+	@override String othersNumber({required Object number}) => '+ ${number} других';
+	@override String get noPacksFoundSettingsDesc => 'Добавьте больше отслеживаемых пакетов, чтобы наслаждаться индивидуальной лентой.';
+	@override String get deleteMessage => 'Удалить сообщение';
+	@override String get deleteMessageDesc => 'Вы уверены, что хотите удалить это сообщение? Это действие нельзя отменить.';
+	@override String get errorDeletingMessage => 'Произошла ошибка при удалении сообщения';
+	@override String get messageDeleted => 'Сообщение успешно удалено';
+	@override String get relayAlreadyExists => 'Реле уже существует';
+	@override String get selected => 'выбрано';
+	@override String get threadMutedDescription => 'Эта заметка и ее обсуждение скрыты';
+	@override String get scheduleYourPost => 'Запланировать публикацию';
+	@override String get scheduleYourPostDesc => 'Запланируйте свою публикацию на более позднее время';
+	@override String get paidNoteScheduled => 'Платная заметка запланирована';
+	@override String get noteScheduled => 'Заметка запланирована';
+	@override String get published => 'Опубликовано';
+	@override String get drafts => 'Черновики';
+	@override String get scheduled => 'Запланировано';
+	@override String get schedule => 'Запланировать';
+	@override String scheduledOn({required Object date}) => 'Запланировано на: ${date}';
+	@override String get deleteScheduledNote => 'Удалить запланированную заметку';
+	@override String get deleteScheduleNoteDesc => 'Вы уверены, что хотите удалить эту запланированную заметку? Это действие нельзя отменить.';
+	@override String get reschedule => 'Перенести';
+	@override String get noScheduledNotesFound => 'Запланированные заметки не найдены';
+	@override String get noScheduledNotesFoundDesc => 'Вы еще не запланировали ни одной заметки.';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -2956,6 +3005,8 @@ extension on TranslationsRu {
 			'openUrlDesc' => ({required Object url}) => 'Хотите открыть "${url}"?',
 			'openUrlPrompt' => 'Запрос на открытие URL',
 			'openUrlPromptDesc' => 'Безопасный запрос, показывающий полный URL перед открытием в браузере.',
+			'actionsPopups' => 'Всплывающие окна действий',
+			'actionsPopupsDesc' => 'Включить или отключить всплывающие окна для сообщений об успехе, ошибке и информации.',
 			'waitingForNetwork' => 'Ожидание сети...',
 			'whatsNew' => 'Что нового',
 			'appCustom' => 'Кастомизация приложения',
@@ -3173,14 +3224,14 @@ extension on TranslationsRu {
 			'memo' => 'Заметка',
 			'payingInvoice' => 'Оплата счета',
 			'addMint' => 'Добавить mint',
-			'gettingMintInfo' => 'Получение информации о mint',
-			'generatingInvoice' => 'Создание счета',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'Получение информации о mint',
+			'generatingInvoice' => 'Создание счета',
 			'checkPaymentStatus' => 'Проверить статус платежа',
 			'depositSuccess' => 'Депозит успешен',
 			'sendEcash' => 'Отправить eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsRu {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'Оплатить счет Lightning или на адрес Lightning',
 			'info' => 'Инфо',
+			'followPacks' => 'Отслеживаемые пакеты',
+			'followPacksDesc' => 'Ищите и находите пакеты для использования в Nostr',
+			'starterPacks' => 'Стартовые пакеты',
+			'mediaPacks' => 'Медиа пакеты',
+			'noPacksFound' => 'Пакеты не найдены',
+			'noPacksFoundDesc' => 'Вы еще не отслеживаете ни одного пакета.',
+			'browsePack' => 'Просмотр пакета',
+			'inThisPack' => ({required Object number}) => 'В этом пакете (${number})',
+			'community' => 'Сообщество',
+			'packCreated' => 'Пакет успешно создан',
+			'errorOnCreatingPack' => 'Произошла ошибка при создании пакета',
+			'errorOnUpdatingPack' => 'Произошла ошибка при обновлении пакета',
+			'clonePack' => 'Клонировать пакет',
+			'addPack' => 'Добавить пакет',
+			'updatePack' => 'Обновить пакет',
+			'peopleCount' => ({required Object number}) => 'Люди (${number})',
+			'peopleCountDesc' => 'Количество людей в этом пакете',
+			'packDeleted' => 'Пакет успешно удален',
+			'errorDeletingEvent' => 'Произошла ошибка при удалении события',
+			'packUpdated' => 'Пакет успешно обновлен',
+			'packCloned' => 'Пакет успешно клонирован',
+			'deletePack' => 'Удалить пакет',
+			'deletePackDesc' => 'Вы уверены, что хотите удалить этот пакет? Это действие нельзя отменить.',
+			'starterPacksDesc' => 'Выберите пакет и начните свою ленту с контента ее создателей',
+			'othersNumber' => ({required Object number}) => '+ ${number} других',
+			'noPacksFoundSettingsDesc' => 'Добавьте больше отслеживаемых пакетов, чтобы наслаждаться индивидуальной лентой.',
+			'deleteMessage' => 'Удалить сообщение',
+			'deleteMessageDesc' => 'Вы уверены, что хотите удалить это сообщение? Это действие нельзя отменить.',
+			'errorDeletingMessage' => 'Произошла ошибка при удалении сообщения',
+			'messageDeleted' => 'Сообщение успешно удалено',
+			'relayAlreadyExists' => 'Реле уже существует',
+			'selected' => 'выбрано',
+			'threadMutedDescription' => 'Эта заметка и ее обсуждение скрыты',
+			'scheduleYourPost' => 'Запланировать публикацию',
+			'scheduleYourPostDesc' => 'Запланируйте свою публикацию на более позднее время',
+			'paidNoteScheduled' => 'Платная заметка запланирована',
+			'noteScheduled' => 'Заметка запланирована',
+			'published' => 'Опубликовано',
+			'drafts' => 'Черновики',
+			'scheduled' => 'Запланировано',
+			'schedule' => 'Запланировать',
+			'scheduledOn' => ({required Object date}) => 'Запланировано на: ${date}',
+			'deleteScheduledNote' => 'Удалить запланированную заметку',
+			'deleteScheduleNoteDesc' => 'Вы уверены, что хотите удалить эту запланированную заметку? Это действие нельзя отменить.',
+			'reschedule' => 'Перенести',
+			'noScheduledNotesFound' => 'Запланированные заметки не найдены',
+			'noScheduledNotesFoundDesc' => 'Вы еще не запланировали ни одной заметки.',
 			_ => null,
 		};
 	}

@@ -872,7 +872,8 @@ class DmTextfieldBox extends StatelessWidget {
   Future<void> _pasteText(BuildContext context) async {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-      if (clipboardData?.text != null && context.mounted) {
+
+      if (clipboardData?.text != null) {
         final text = clipboardData!.text!;
         final selection = textEditingController.selection;
         final currentText = textEditingController.text;

@@ -38,6 +38,8 @@ class PropertiesCubit extends Cubit<PropertiesState> {
             enableGossip: settingsCubit.settingData.gossip ?? false,
             enableUsingExternalBrowser:
                 settingsCubit.settingData.useExternalBrowser ?? true,
+            enableAutoTranslation: nostrRepository.getAutoTranslationStatus(),
+            enableNestedReplies: nostrRepository.getNestedRepliesStatus(),
             enableOneTapReaction: nostrRepository.enableOneTapReaction,
             defaultReaction: canSign()
                 ? nostrRepository
@@ -108,6 +110,36 @@ class PropertiesCubit extends Cubit<PropertiesState> {
     }
 
     settingsCubit.gossip = enableGossip;
+  }
+
+  Future<void> setAutoTranslation(bool enableAutoTranslation) async {
+    if (!isClosed) {
+      emit(
+        state.copyWith(enableAutoTranslation: enableAutoTranslation),
+      );
+    }
+
+    if (canSign()) {
+      localDatabaseRepository.setAutoTranslation(
+        currentSigner!.getPublicKey(),
+        enableAutoTranslation,
+      );
+    }
+  }
+
+  Future<void> setNestedReplies(bool enableNestedReplies) async {
+    if (!isClosed) {
+      emit(
+        state.copyWith(enableNestedReplies: enableNestedReplies),
+      );
+    }
+
+    if (canSign()) {
+      localDatabaseRepository.setNestedRepliesStatus(
+        currentSigner!.getPublicKey(),
+        enableNestedReplies,
+      );
+    }
   }
 
   Future<void> setExternalBrowser(bool enableExternalBrowser) async {

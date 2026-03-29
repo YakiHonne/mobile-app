@@ -9,7 +9,7 @@ class MediaSelector extends StatelessWidget {
     required this.onSuccess,
   });
 
-  final Function(List<String>) onSuccess;
+  final Function(List<Map<String, String>>) onSuccess;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class MediaChoice extends StatelessWidget {
   final String title;
   final String icon;
   final Function()? onClicked;
-  final Function(List<String>) onSuccess;
+  final Function(List<Map<String, String>>) onSuccess;
 
   @override
   Widget build(BuildContext context) {
@@ -140,12 +140,14 @@ class MediaChoice extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: () async {
         if (mediaType == MediaType.gallery) {
-          final medias = await MediaHandler.selectMultiMediaAndUpload();
+          final medias =
+              await MediaHandler.selectMultiMediaAndUploadWithData();
           if (medias.isNotEmpty) {
             onSuccess.call(medias);
           }
         } else {
-          final media = await MediaHandler.selectMediaAndUpload(mediaType);
+          final media =
+              await MediaHandler.selectMediaAndUploadWithData(mediaType);
 
           if (media != null) {
             onSuccess.call([media]);

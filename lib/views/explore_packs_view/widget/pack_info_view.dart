@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 
-import '../../../logic/explore_packs_cubit/explore_packs_cubit.dart';
+import '../../../logic/explore_pack_details_cubit/explore_pack_details_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/packs_model.dart';
 import '../../../routes/navigator.dart';
@@ -24,180 +24,185 @@ class PackInfoView extends StatelessWidget {
   Widget build(BuildContext context) {
     final pubkeys = pack.pubkeys.toList();
 
-    return BlocBuilder<ExplorePacksCubit, ExplorePacksState>(
-      builder: (context, state) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: DraggableScrollableSheet(
-            maxChildSize: 0.95,
-            minChildSize: 0.2,
-            initialChildSize: 0.95,
-            expand: false,
-            builder: (context, scrollController) => Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-              child: Column(
-                children: [
-                  const ModalBottomSheetHandle(),
-                  Expanded(
-                    child: ScrollShadow(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: CustomScrollView(
-                        controller: scrollController,
-                        slivers: [
-                          const SliverToBoxAdapter(
-                            child: SizedBox(height: kDefaultPadding / 2),
-                          ),
-                          _infoHeader(context),
-                          const SliverToBoxAdapter(
-                            child: Divider(
-                              height: kDefaultPadding * 2,
-                              thickness: 0.5,
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    context.t.inThisPack(
-                                      number: pubkeys.length,
-                                    ),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ),
-                                Builder(builder: (context) {
-                                  final isFollowingAll = state.ownFollowings
-                                      .toSet()
-                                      .containsAll(pack.pubkeys);
-                                  return TextButton(
-                                    onPressed: () {
-                                      context
-                                          .read<ExplorePacksCubit>()
-                                          .followPack(pack);
-                                    },
-                                    style: TextButton.styleFrom(
-                                      visualDensity: VisualDensity.comfortable,
-                                      backgroundColor: state.ownFollowings
-                                              .toSet()
-                                              .containsAll(pack.pubkeys)
-                                          ? Theme.of(context).cardColor
-                                          : Theme.of(context).primaryColor,
-                                    ),
-                                    child: Text(
-                                      isFollowingAll
-                                          ? context.t.unfollowAll
-                                              .capitalizeFirst()
-                                          : context.t.followAll
-                                              .capitalizeFirst(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .copyWith(
-                                            color: isFollowingAll
-                                                ? Theme.of(context)
-                                                    .primaryColorDark
-                                                : kWhite,
-                                          ),
-                                    ),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                          const SliverToBoxAdapter(
-                            child: SizedBox(height: kDefaultPadding),
-                          ),
-                          SliverList.separated(
-                            itemBuilder: (context, index) {
-                              final pubkey = pubkeys[index];
-                              final isFollowing =
-                                  state.ownFollowings.contains(pubkey);
-                              final isSameUser =
-                                  state.currentUserPubKey == pubkey;
-
-                              return UserProfileContainer(
-                                pubkey: pubkey,
-                                zaps: 0,
-                                currentUserPubKey: state.currentUserPubKey,
-                                isFollowing: isFollowing,
-                                isDisabled: isSameUser,
-                                isPending: state.pendings.contains(pubkey),
-                                onClicked: () {
-                                  context
-                                      .read<ExplorePacksCubit>()
-                                      .setFollowingOnStop(pubkey);
-                                },
-                              );
-                            },
-                            itemCount: pubkeys.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                              height: kDefaultPadding / 4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Row(
-                    spacing: kDefaultPadding / 4,
-                    children: [
-                      Expanded(
-                        child: SendOptionsButton(
-                          onClicked: () {
-                            doIfCanSign(
-                              func: () {
-                                YNavigator.pushPage(
-                                  context,
-                                  (context) => SetPackView(pack: pack),
-                                );
-                              },
-                              context: context,
-                            );
-                          },
-                          title: context.t.clone.capitalizeFirst(),
-                          icon: FeatureIcons.clone,
-                        ),
-                      ),
-                      Expanded(
-                        child: SendOptionsButton(
-                          onClicked: () {
-                            shareContent(
-                              text: pack.url,
-                              subject: 'Check out this pack: ${pack.title}',
-                            );
-                          },
-                          title: context.t.share.capitalizeFirst(),
-                          icon: FeatureIcons.shareExternal,
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: MediaQuery.of(context).padding.bottom),
-                ],
+    return BlocProvider(
+      create: (context) => ExplorePackDetailsCubit(),
+      child: BlocBuilder<ExplorePackDetailsCubit, ExplorePackDetailsState>(
+        builder: (context, state) {
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
               ),
             ),
-          ),
-        );
-      },
+            child: DraggableScrollableSheet(
+              maxChildSize: 0.95,
+              minChildSize: 0.2,
+              initialChildSize: 0.95,
+              expand: false,
+              builder: (context, scrollController) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                child: Column(
+                  children: [
+                    const ModalBottomSheetHandle(),
+                    Expanded(
+                      child: ScrollShadow(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: CustomScrollView(
+                          controller: scrollController,
+                          slivers: [
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: kDefaultPadding / 2),
+                            ),
+                            _infoHeader(context),
+                            const SliverToBoxAdapter(
+                              child: Divider(
+                                height: kDefaultPadding * 2,
+                                thickness: 0.5,
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      context.t.inThisPack(
+                                        number: pubkeys.length,
+                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                  ),
+                                  Builder(builder: (context) {
+                                    final isFollowingAll = state.ownFollowings
+                                        .toSet()
+                                        .containsAll(pack.pubkeys);
+                                    return TextButton(
+                                      onPressed: () {
+                                        context
+                                            .read<ExplorePackDetailsCubit>()
+                                            .followPack(pack);
+                                      },
+                                      style: TextButton.styleFrom(
+                                        visualDensity:
+                                            VisualDensity.comfortable,
+                                        backgroundColor: state.ownFollowings
+                                                .toSet()
+                                                .containsAll(pack.pubkeys)
+                                            ? Theme.of(context).cardColor
+                                            : Theme.of(context).primaryColor,
+                                      ),
+                                      child: Text(
+                                        isFollowingAll
+                                            ? context.t.unfollowAll
+                                                .capitalizeFirst()
+                                            : context.t.followAll
+                                                .capitalizeFirst(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .copyWith(
+                                              color: isFollowingAll
+                                                  ? Theme.of(context)
+                                                      .primaryColorDark
+                                                  : kWhite,
+                                            ),
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: kDefaultPadding),
+                            ),
+                            SliverList.separated(
+                              itemBuilder: (context, index) {
+                                final pubkey = pubkeys[index];
+                                final isFollowing =
+                                    state.ownFollowings.contains(pubkey);
+                                final isSameUser =
+                                    state.currentUserPubKey == pubkey;
+
+                                return UserProfileContainer(
+                                  pubkey: pubkey,
+                                  zaps: 0,
+                                  currentUserPubKey: state.currentUserPubKey,
+                                  isFollowing: isFollowing,
+                                  isDisabled: isSameUser,
+                                  isPending: state.pendings.contains(pubkey),
+                                  onClicked: () {
+                                    context
+                                        .read<ExplorePackDetailsCubit>()
+                                        .setFollowingOnStop(pubkey);
+                                  },
+                                );
+                              },
+                              itemCount: pubkeys.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: kDefaultPadding / 4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Row(
+                      spacing: kDefaultPadding / 4,
+                      children: [
+                        Expanded(
+                          child: SendOptionsButton(
+                            onClicked: () {
+                              doIfCanSign(
+                                func: () {
+                                  YNavigator.pushPage(
+                                    context,
+                                    (context) => SetPackView(pack: pack),
+                                  );
+                                },
+                                context: context,
+                              );
+                            },
+                            title: context.t.clone.capitalizeFirst(),
+                            icon: FeatureIcons.clone,
+                          ),
+                        ),
+                        Expanded(
+                          child: SendOptionsButton(
+                            onClicked: () {
+                              shareContent(
+                                text: pack.url,
+                                subject: 'Check out this pack: ${pack.title}',
+                              );
+                            },
+                            title: context.t.share.capitalizeFirst(),
+                            icon: FeatureIcons.shareExternal,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

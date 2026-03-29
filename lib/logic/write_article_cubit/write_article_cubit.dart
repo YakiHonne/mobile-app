@@ -42,6 +42,7 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
             forwardedAsDraft: false,
             suggestions: const [],
             tryToLoad: false,
+            imetas: const [],
           ),
         ) {
     setSuggestions();
@@ -137,6 +138,16 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
           ),
         );
       }
+    }
+  }
+
+  void addImeta(Map<String, String> data) {
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          imetas: List.from(state.imetas)..add(data),
+        ),
+      );
     }
   }
 
@@ -380,11 +391,8 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
 
     try {
       final content = sanitizeContent(state.content);
-      final event = await Event.genEvent(
-        content: content,
-        kind: isDraft ? EventKind.LONG_FORM_DRAFT : EventKind.LONG_FORM,
-        signer: signer,
-        tags: [
+      
+      final eventTags = <List<String>>[
           getClientTag(),
           [
             'd',
@@ -414,7 +422,37 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
                 e.percentage.toString(),
               ],
             ),
-        ],
+        ];
+
+      for (final imeta in state.imetas) {
+        if (imeta['url'] != null &&
+            (content.contains(imeta['url']!) ||
+                state.imageLink == imeta['url'])) {
+          final imetaTag = <String>['imeta'];
+
+          imeta.forEach((key, value) {
+            if (value.isNotEmpty) {
+              if (key == 'url' ||
+                  key == 'm' ||
+                  key == 'x' ||
+                  key == 'size' ||
+                  key == 'dim' ||
+                  key == 'blurhash' ||
+                  key == 'duration') {
+                imetaTag.add('$key $value');
+              }
+            }
+          });
+
+          eventTags.add(imetaTag);
+        }
+      }
+
+      final event = await Event.genEvent(
+        content: content,
+        kind: isDraft ? EventKind.LONG_FORM_DRAFT : EventKind.LONG_FORM,
+        signer: signer,
+        tags: eventTags,
       );
 
       if (event == null) {

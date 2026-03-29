@@ -167,7 +167,7 @@ enum ExploreType { all, articles, videos, curations }
 
 enum RelayContentType { notes, articles, media, curations }
 
-enum DashboardType { home, content, scheduled, smart, bookmarks, interests }
+enum DashboardType { home, content, scheduled, smart, bookmarks, interests, paidNotes }
 
 enum InterestStatus { add, delete, available }
 

@@ -38,7 +38,7 @@ class FrameContent extends HookWidget {
               context.read<WriteSmartWidgetCubit>().setTitle(desc);
             },
             imageLink: state.icon,
-            onImageLinkChanged: (url) {
+            onImageLinkChanged: (url, {imeta}) {
               context.read<WriteSmartWidgetCubit>().setImage(url);
               Navigator.pop(context);
             },

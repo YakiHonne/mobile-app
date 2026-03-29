@@ -116,7 +116,7 @@ class _ClipboardPasteMentionTextFieldState
 
     if (imageUrl != null) {
       if (mounted) {
-        context.read<WriteNoteCubit>().addImage([imageUrl]);
+        context.read<WriteNoteCubit>().addImage([{'url': imageUrl}]);
       }
 
       appendTextToPosition(

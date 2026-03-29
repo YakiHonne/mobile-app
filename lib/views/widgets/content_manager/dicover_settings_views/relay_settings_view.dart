@@ -1196,7 +1196,7 @@ class SharePackFeed extends StatelessWidget {
               shareContent(text: feedUrl);
             },
             text: feedUrl,
-            title: context.t.shareRelayContent,
+            title: context.t.sharePack,
           ),
           const SizedBox(
             height: kDefaultPadding / 4,
@@ -1208,7 +1208,7 @@ class SharePackFeed extends StatelessWidget {
                 (context) => PackFeedView(pack: pack),
               );
             },
-            child: Text(context.t.browseRelay),
+            child: Text(context.t.browsePack),
           ),
         ],
       ),
