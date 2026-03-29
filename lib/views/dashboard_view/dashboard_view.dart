@@ -14,6 +14,7 @@ import 'widgets/bookmarks/bookmarks_dashboard.dart';
 import 'widgets/content/content_dashboard.dart';
 import 'widgets/home/home_dashboard.dart';
 import 'widgets/interests/interests_dashboard.dart';
+import 'widgets/paid_notes/paid_notes_dashboard.dart';
 import 'widgets/scheduled/scheduled_dashboard.dart';
 import 'widgets/smart_widgets/smart_widgets_dashboard.dart';
 
@@ -117,6 +118,11 @@ class DashboardView extends HookWidget {
       case DashboardType.interests:
         return const InterestsDashboard(
           key: ValueKey('interests_dashboard'),
+        );
+      case DashboardType.paidNotes:
+        return PaidNotesDashboard(
+          key: const ValueKey('paid_notes_dashboard'),
+          isDraft: isDraft,
         );
     }
   }
@@ -223,6 +229,8 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         title = context.t.bookmarks.capitalizeFirst();
       case DashboardType.interests:
         title = context.t.interests.capitalizeFirst();
+      case DashboardType.paidNotes:
+        title = 'Paid notes';
     }
 
     return title;

@@ -19,7 +19,7 @@ class ImageSelector extends HookWidget {
     required this.onTap,
   });
 
-  final Function(String) onTap;
+  final Function(String, {Map<String, String>? imeta}) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +159,8 @@ class ImageSelector extends HookWidget {
                               context
                                   .read<ArticleImageSelectorCubit>()
                                   .addImage(
-                                onSuccess: (link) {
-                                  onTap.call(link);
+                                onSuccess: (imetaMap) {
+                                  onTap.call(imetaMap['url']!, imeta: imetaMap);
                                   Navigator.pop(context);
                                 },
                                 onFailure: (message) {

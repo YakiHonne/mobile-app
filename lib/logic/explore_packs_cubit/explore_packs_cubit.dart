@@ -7,7 +7,6 @@ import 'package:nostr_core_enhanced/utils/static_properties.dart';
 
 import '../../models/packs_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
-import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'explore_packs_state.dart';
@@ -23,22 +22,7 @@ class ExplorePacksCubit extends Cubit<ExplorePacksState> {
           ownFollowings: contactListCubit.contacts,
         )) {
     getPacks(isStarterPack: true);
-
-    followingsSubscription = nostrRepository.contactListStream.listen(
-      (followings) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              ownFollowings: followings,
-            ),
-          );
-        }
-      },
-    );
   }
-
-  Timer? addFollowingOnStop;
-  late StreamSubscription followingsSubscription;
 
   Future<void> getPacks({
     required bool isStarterPack,
@@ -76,98 +60,5 @@ class ExplorePacksCubit extends Cubit<ExplorePacksState> {
         packs: isAdding ? [...state.packs, ...usedPacks] : usedPacks,
       ),
     );
-  }
-
-  Future<void> followPack(PacksModel pack) async {
-    final cancel = BotToastUtils.showLoading();
-    final hasAllFollowed =
-        state.ownFollowings.toSet().containsAll(pack.pubkeys);
-
-    final contactList = await contactListCubit.setContacts(hasAllFollowed
-        ? pack.pubkeys.toList()
-        : pack.pubkeys
-            .where(
-              (element) => !state.ownFollowings.contains(element),
-            )
-            .toList());
-
-    cancel.call();
-
-    if (contactList != null) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            pendings: {},
-            ownFollowings: contactList.contacts,
-          ),
-        );
-      }
-    } else {
-      if (!isClosed) {
-        emit(
-          state.copyWith(pendings: {}),
-        );
-      }
-      BotToastUtils.showUnreachableRelaysError();
-    }
-  }
-
-  void setFollowingOnStop(String desiredAuthor) {
-    addFollowingOnStop?.cancel();
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          pendings: Set.from(state.pendings)..add(desiredAuthor),
-        ),
-      );
-    }
-
-    addFollowingOnStop = Timer(
-      const Duration(milliseconds: 800),
-      () {
-        setFollowingState();
-      },
-    );
-  }
-
-  Future<void> setFollowingState() async {
-    final cancel = BotToastUtils.showLoading();
-
-    final contactList =
-        await contactListCubit.setContacts(state.pendings.toList());
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          pendings: {},
-        ),
-      );
-    }
-
-    cancel.call();
-
-    if (contactList != null) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            pendings: {},
-            ownFollowings: contactList.contacts,
-          ),
-        );
-      }
-    } else {
-      if (!isClosed) {
-        emit(
-          state.copyWith(pendings: {}),
-        );
-      }
-      BotToastUtils.showUnreachableRelaysError();
-    }
-  }
-
-  @override
-  Future<void> close() {
-    addFollowingOnStop?.cancel();
-    followingsSubscription.cancel();
-    return super.close();
   }
 }

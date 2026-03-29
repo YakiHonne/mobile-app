@@ -92,7 +92,9 @@ class AddNoteMainView extends HookWidget {
                           builder: (_) {
                             return BlocProvider.value(
                               value: context.read<WriteNoteCubit>(),
-                              child: const PaidNoteProcess(),
+                              child: const PaidNoteProcess(
+                                checkZap: false,
+                              ),
                             );
                           },
                           isScrollControlled: true,

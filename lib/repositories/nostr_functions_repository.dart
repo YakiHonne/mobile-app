@@ -1428,6 +1428,7 @@ class NostrFunctionsRepository {
     int? since,
     bool compareById = true,
     bool relyOnLongestTags = false,
+    bool includeExpired = true,
     bool includeIds = true,
     NostrCore? core,
     EventsSource? source,
@@ -1480,6 +1481,7 @@ class NostrFunctionsRepository {
       ],
       selectedRelays,
       timeOut: timeout ?? 1,
+      includeExpired: includeExpired,
       source: source ?? EventsSource.cacheFirst,
       eventCallBack: (event, relay) {
         if (compareById) {
@@ -2927,6 +2929,7 @@ class NostrFunctionsRepository {
     int? limit,
     int? until,
     int? since,
+    bool includeExpired = true,
   }) async {
     final eventsToBeEmitted = <String, Event>{};
     final fallBackEventToBeEmitted = <String, Event>{};
@@ -3013,6 +3016,7 @@ class NostrFunctionsRepository {
         [f1],
         rs,
         timeOut: 1,
+        includeExpired: includeExpired,
         source: EventsSource.all,
         eventCallBack: (ev, relay) {
           setEvents(fallBackEventToBeEmitted, ev);
@@ -3800,6 +3804,7 @@ class NostrFunctionsRepository {
 
   static Future<List<Event>> getLeadingRelayData({
     required List<String> relays,
+    bool includeExpired = true,
     List<String>? pubkeys,
     int? until,
     int? since,
@@ -3814,6 +3819,7 @@ class NostrFunctionsRepository {
       core: nc,
       source: EventsSource.all,
       pubkeys: pubkeys,
+      includeExpired: includeExpired,
     );
   }
 
@@ -3822,12 +3828,14 @@ class NostrFunctionsRepository {
     int? until,
     int? since,
     int? limit,
+    bool includeExpired = true,
   }) async {
     return getEventsAsync(
       kinds: [EventKind.TEXT_NOTE],
       until: until,
       since: since,
       limit: limit,
+      includeExpired: includeExpired,
       core: nc,
       source: EventsSource.all,
       pubkeys: pubkeys,
@@ -4599,10 +4607,13 @@ class NostrFunctionsRepository {
   }
 
   // * flash news invoice
-  static Future<bool> checkPayment(String eventId) async {
-    await Future.delayed(
-      const Duration(seconds: 2),
-    );
+  static Future<bool> checkPayment(String eventId,
+      {bool skipDelay = false}) async {
+    if (!skipDelay) {
+      await Future.delayed(
+        const Duration(seconds: 2),
+      );
+    }
 
     final completer = Completer<bool>();
 

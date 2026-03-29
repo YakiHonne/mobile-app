@@ -1356,6 +1356,8 @@ class TranslationsTh extends Translations {
 	@override String openUrlDesc({required Object url}) => 'ต้องการเปิด "${url}" หรือไม่?';
 	@override String get openUrlPrompt => 'พรอมต์เปิด url';
 	@override String get openUrlPromptDesc => 'พรอมต์ความปลอดภัยที่แสดง URL เต็มก่อนเปิดในเบราว์เซอร์ของคุณ';
+	@override String get actionsPopups => 'ป๊อปอัปการทำงาน';
+	@override String get actionsPopupsDesc => 'เปิดหรือปิดป๊อปอัปสำหรับข้อความสำเร็จ ข้อผิดพลาด และข้อมูล';
 	@override String get waitingForNetwork => 'รอเครือข่าย...';
 	@override String get whatsNew => 'มีอะไรใหม่';
 	@override String get appCustom => 'ปรับแต่งแอป';
@@ -1610,6 +1612,53 @@ class TranslationsTh extends Translations {
 	@override String get lightningNetwork => 'Lightning Network';
 	@override String get lightningNetworkDesc => 'ชำระใบแจ้งหนี้ Lightning หรือที่อยู่ lightning';
 	@override String get info => 'ข้อมูล';
+	@override String get followPacks => 'ติดตามแพ็ก';
+	@override String get followPacksDesc => 'ตามหาแพ็กที่ใช้บน Nostr';
+	@override String get starterPacks => 'แพ็กเริ่มต้น';
+	@override String get mediaPacks => 'แพ็กสื่อ';
+	@override String get noPacksFound => 'ไม่พบแพ็ก';
+	@override String get noPacksFoundDesc => 'คุณยังไม่ได้ติดตามแพ็กใดเลย';
+	@override String get browsePack => 'เรียกดูแพ็ก';
+	@override String inThisPack({required Object number}) => 'ในแพ็กนี้ (${number})';
+	@override String get community => 'ชุมชน';
+	@override String get packCreated => 'สร้างแพ็กสำเร็จ';
+	@override String get errorOnCreatingPack => 'เกิดข้อผิดพลาดในการสร้างแพ็ก';
+	@override String get errorOnUpdatingPack => 'เกิดข้อผิดพลาดในการอัปเดตแพ็ก';
+	@override String get clonePack => 'โคลนแพ็ก';
+	@override String get addPack => 'เพิ่มแพ็ก';
+	@override String get updatePack => 'อัปเดตแพ็ก';
+	@override String peopleCount({required Object number}) => 'บุคคล (${number})';
+	@override String get peopleCountDesc => 'จำนวนคนในแพ็ก';
+	@override String get packDeleted => 'ลบแพ็กสำเร็จ';
+	@override String get errorDeletingEvent => 'เกิดข้อผิดพลาดในการลบเหตุการณ์';
+	@override String get packUpdated => 'อัปเดตแพ็กสำเร็จ';
+	@override String get packCloned => 'โคลนแพ็กสำเร็จ';
+	@override String get deletePack => 'ลบแพ็ก';
+	@override String get deletePackDesc => 'คุณแน่ใจว่าต้องการลบแพ็กนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+	@override String get starterPacksDesc => 'เลือกแพ็กแล้วเริ่มฟีดด้วยเนื้อหาจากผู้สร้างเนื้อหานั้นๆ';
+	@override String othersNumber({required Object number}) => 'อื่นๆ ${number} คย';
+	@override String get noPacksFoundSettingsDesc => 'เพิ่มแพ็กติดตามเพื่อสนุกกับฟีดของคุณ';
+	@override String get deleteMessage => 'ลบข้อความ';
+	@override String get deleteMessageDesc => 'คุณแน่ใจว่าต้องการลบข้อความนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+	@override String get errorDeletingMessage => 'เกิดข้อผิดพลาดในการลบข้อความ';
+	@override String get messageDeleted => 'ลบข้อความสำเร็จ';
+	@override String get relayAlreadyExists => 'มีรีเลย์นี้อยู่แล้ว';
+	@override String get selected => 'เลือกแล้ว';
+	@override String get threadMutedDescription => 'โน้ตนี้และเทรดถูกปิดเสียง คุณจะไม่ได้รับการแจ้งเตือน';
+	@override String get scheduleYourPost => 'กำหนดเวลาโพสต์';
+	@override String get scheduleYourPostDesc => 'กำหนดเวลาโพสต์ของคุณให้เผยแพร่ในภายหลัง';
+	@override String get paidNoteScheduled => 'กำหนดเวลาโน้ตแบบชำระเงินแล้ว';
+	@override String get noteScheduled => 'กำหนดเวลาโน้ตแล้ว';
+	@override String get published => 'เผยแพร่แล้ว';
+	@override String get drafts => 'ฉบับร่าง';
+	@override String get scheduled => 'กำหนดเวลาแล้ว';
+	@override String get schedule => 'กำหนดเวลา';
+	@override String scheduledOn({required Object date}) => 'กำหนดเวลาเมื่อ: ${date}';
+	@override String get deleteScheduledNote => 'ลบโน้ตที่กำหนดเวลา';
+	@override String get deleteScheduleNoteDesc => 'คุณแน่ใจว่าต้องการลบโน้ตที่กำหนดเวลานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+	@override String get reschedule => 'กำหนดเวลาใหม่';
+	@override String get noScheduledNotesFound => 'ไม่พบโน้ตที่กำหนดเวลา';
+	@override String get noScheduledNotesFoundDesc => 'คุณยังไม่ได้กำหนดเวลาโน้ตใดๆ';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -2956,6 +3005,8 @@ extension on TranslationsTh {
 			'openUrlDesc' => ({required Object url}) => 'ต้องการเปิด "${url}" หรือไม่?',
 			'openUrlPrompt' => 'พรอมต์เปิด url',
 			'openUrlPromptDesc' => 'พรอมต์ความปลอดภัยที่แสดง URL เต็มก่อนเปิดในเบราว์เซอร์ของคุณ',
+			'actionsPopups' => 'ป๊อปอัปการทำงาน',
+			'actionsPopupsDesc' => 'เปิดหรือปิดป๊อปอัปสำหรับข้อความสำเร็จ ข้อผิดพลาด และข้อมูล',
 			'waitingForNetwork' => 'รอเครือข่าย...',
 			'whatsNew' => 'มีอะไรใหม่',
 			'appCustom' => 'ปรับแต่งแอป',
@@ -3173,14 +3224,14 @@ extension on TranslationsTh {
 			'memo' => 'บันทึกช่วยจำ',
 			'payingInvoice' => 'กำลังชำระใบแจ้งหนี้',
 			'addMint' => 'เพิ่ม Mint',
-			'gettingMintInfo' => 'กำลังรับข้อมูล Mint',
-			'generatingInvoice' => 'กำลังสร้างใบแจ้งหนี้',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'กำลังรับข้อมูล Mint',
+			'generatingInvoice' => 'กำลังสร้างใบแจ้งหนี้',
 			'checkPaymentStatus' => 'ตรวจสอบสถานะการชำระเงิน',
 			'depositSuccess' => 'ฝากเงินสำเร็จ',
 			'sendEcash' => 'ส่ง eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsTh {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'ชำระใบแจ้งหนี้ Lightning หรือที่อยู่ lightning',
 			'info' => 'ข้อมูล',
+			'followPacks' => 'ติดตามแพ็ก',
+			'followPacksDesc' => 'ตามหาแพ็กที่ใช้บน Nostr',
+			'starterPacks' => 'แพ็กเริ่มต้น',
+			'mediaPacks' => 'แพ็กสื่อ',
+			'noPacksFound' => 'ไม่พบแพ็ก',
+			'noPacksFoundDesc' => 'คุณยังไม่ได้ติดตามแพ็กใดเลย',
+			'browsePack' => 'เรียกดูแพ็ก',
+			'inThisPack' => ({required Object number}) => 'ในแพ็กนี้ (${number})',
+			'community' => 'ชุมชน',
+			'packCreated' => 'สร้างแพ็กสำเร็จ',
+			'errorOnCreatingPack' => 'เกิดข้อผิดพลาดในการสร้างแพ็ก',
+			'errorOnUpdatingPack' => 'เกิดข้อผิดพลาดในการอัปเดตแพ็ก',
+			'clonePack' => 'โคลนแพ็ก',
+			'addPack' => 'เพิ่มแพ็ก',
+			'updatePack' => 'อัปเดตแพ็ก',
+			'peopleCount' => ({required Object number}) => 'บุคคล (${number})',
+			'peopleCountDesc' => 'จำนวนคนในแพ็ก',
+			'packDeleted' => 'ลบแพ็กสำเร็จ',
+			'errorDeletingEvent' => 'เกิดข้อผิดพลาดในการลบเหตุการณ์',
+			'packUpdated' => 'อัปเดตแพ็กสำเร็จ',
+			'packCloned' => 'โคลนแพ็กสำเร็จ',
+			'deletePack' => 'ลบแพ็ก',
+			'deletePackDesc' => 'คุณแน่ใจว่าต้องการลบแพ็กนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+			'starterPacksDesc' => 'เลือกแพ็กแล้วเริ่มฟีดด้วยเนื้อหาจากผู้สร้างเนื้อหานั้นๆ',
+			'othersNumber' => ({required Object number}) => 'อื่นๆ ${number} คย',
+			'noPacksFoundSettingsDesc' => 'เพิ่มแพ็กติดตามเพื่อสนุกกับฟีดของคุณ',
+			'deleteMessage' => 'ลบข้อความ',
+			'deleteMessageDesc' => 'คุณแน่ใจว่าต้องการลบข้อความนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+			'errorDeletingMessage' => 'เกิดข้อผิดพลาดในการลบข้อความ',
+			'messageDeleted' => 'ลบข้อความสำเร็จ',
+			'relayAlreadyExists' => 'มีรีเลย์นี้อยู่แล้ว',
+			'selected' => 'เลือกแล้ว',
+			'threadMutedDescription' => 'โน้ตนี้และเทรดถูกปิดเสียง คุณจะไม่ได้รับการแจ้งเตือน',
+			'scheduleYourPost' => 'กำหนดเวลาโพสต์',
+			'scheduleYourPostDesc' => 'กำหนดเวลาโพสต์ของคุณให้เผยแพร่ในภายหลัง',
+			'paidNoteScheduled' => 'กำหนดเวลาโน้ตแบบชำระเงินแล้ว',
+			'noteScheduled' => 'กำหนดเวลาโน้ตแล้ว',
+			'published' => 'เผยแพร่แล้ว',
+			'drafts' => 'ฉบับร่าง',
+			'scheduled' => 'กำหนดเวลาแล้ว',
+			'schedule' => 'กำหนดเวลา',
+			'scheduledOn' => ({required Object date}) => 'กำหนดเวลาเมื่อ: ${date}',
+			'deleteScheduledNote' => 'ลบโน้ตที่กำหนดเวลา',
+			'deleteScheduleNoteDesc' => 'คุณแน่ใจว่าต้องการลบโน้ตที่กำหนดเวลานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+			'reschedule' => 'กำหนดเวลาใหม่',
+			'noScheduledNotesFound' => 'ไม่พบโน้ตที่กำหนดเวลา',
+			'noScheduledNotesFoundDesc' => 'คุณยังไม่ได้กำหนดเวลาโน้ตใดๆ',
 			_ => null,
 		};
 	}

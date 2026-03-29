@@ -38,8 +38,11 @@ class ArticleDetails extends HookWidget {
               context.read<WriteArticleCubit>().setDescription(desc);
             },
             imageLink: state.imageLink,
-            onImageLinkChanged: (url) {
+            onImageLinkChanged: (url, {imeta}) {
               context.read<WriteArticleCubit>().setImage(url);
+              if (imeta != null) {
+                context.read<WriteArticleCubit>().addImeta(imeta);
+              }
               Navigator.pop(context);
             },
           );

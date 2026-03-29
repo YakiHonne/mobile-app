@@ -19,7 +19,7 @@ class PublishPreviewContainer extends HookWidget {
   final String descInitText;
   final Function(String) onDescChanged;
   final String imageLink;
-  final Function(String) onImageLinkChanged;
+  final Function(String, {Map<String, String>? imeta}) onImageLinkChanged;
   final String title;
   final bool noDescription;
 

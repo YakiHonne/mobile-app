@@ -65,6 +65,10 @@ class PropertyContentModeration extends StatelessWidget {
                 const SizedBox(
                   height: kDefaultPadding / 1.5,
                 ),
+                _enableNestedReplies(context, state),
+                const SizedBox(
+                  height: kDefaultPadding / 1.5,
+                ),
                 _enableExternalBrowser(context, state),
                 const SizedBox(
                   height: kDefaultPadding / 1.5,
@@ -146,6 +150,30 @@ class PropertyContentModeration extends StatelessWidget {
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
               context.read<PropertiesCubit>().setGossip(isToggled);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row _enableNestedReplies(BuildContext context, PropertiesState state) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.nestedReplies.capitalizeFirst(),
+            description: context.t.nestedRepliesDesc,
+          ),
+        ),
+        Transform.scale(
+          scale: 0.8,
+          child: CupertinoSwitch(
+            value: state.enableNestedReplies,
+            activeTrackColor: Theme.of(context).primaryColor,
+            onChanged: (isToggled) {
+              context.read<PropertiesCubit>().setNestedReplies(isToggled);
             },
           ),
         ),

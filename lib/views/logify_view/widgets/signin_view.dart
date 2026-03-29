@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../common/nostr_password_manager.dart';
 import '../../../logic/logify_cubit/logify_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
@@ -282,6 +283,50 @@ class KeysLogin extends HookWidget {
     final textfieldValue = useState('');
     final components = <Widget>[];
 
+    final proceed = useCallback(() async {
+      if (textEditingController.text.isEmpty) {
+        final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+        final String? clipboardText = clipboardData?.text;
+
+        if (clipboardText != null &&
+            clipboardText.isNotEmpty &&
+            context.mounted) {
+          textEditingController.value = TextEditingValue(
+            text: clipboardText,
+          );
+          textfieldValue.value = clipboardText;
+        }
+      } else {
+        if (formKey.currentState!.validate()) {
+          context.read<LogifyCubit>().login(
+                key: textEditingController.text.trim(),
+                isExternalSigner: false,
+                newKey: false,
+                context: context,
+                onSuccess: onPop ??
+                    () {
+                      Navigator.popUntil(
+                        context,
+                        (route) => route.isFirst,
+                      );
+                    },
+              );
+        }
+      }
+    });
+
+    useEffect(() {
+      Future.microtask(() async {
+        final credential = await NostrPasswordManager.requestSavedNsec();
+        if (credential != null && context.mounted) {
+          textEditingController.text = credential;
+          textfieldValue.value = credential;
+          proceed();
+        }
+      });
+      return null;
+    }, []);
+
     components.addAll(
       [
         Padding(
@@ -315,7 +360,12 @@ class KeysLogin extends HookWidget {
                 height: kDefaultPadding / 2,
               ),
               _textButton(
-                  textEditingController, context, textfieldValue, formKey),
+                textEditingController,
+                context,
+                textfieldValue,
+                formKey,
+                proceed,
+              ),
               const SizedBox(
                 height: kDefaultPadding,
               ),
@@ -338,44 +388,16 @@ class KeysLogin extends HookWidget {
   }
 
   SizedBox _textButton(
-      TextEditingController textEditingController,
-      BuildContext context,
-      ValueNotifier<String> textfieldValue,
-      GlobalKey<FormState> formKey) {
+    TextEditingController textEditingController,
+    BuildContext context,
+    ValueNotifier<String> textfieldValue,
+    GlobalKey<FormState> formKey,
+    Function() proceed,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-        onPressed: () async {
-          if (textEditingController.text.isEmpty) {
-            final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-            final String? clipboardText = clipboardData?.text;
-
-            if (clipboardText != null &&
-                clipboardText.isNotEmpty &&
-                context.mounted) {
-              textEditingController.value = TextEditingValue(
-                text: clipboardText,
-              );
-              textfieldValue.value = clipboardText;
-            }
-          } else {
-            if (formKey.currentState!.validate()) {
-              context.read<LogifyCubit>().login(
-                    key: textEditingController.text.trim(),
-                    isExternalSigner: false,
-                    newKey: false,
-                    context: context,
-                    onSuccess: onPop ??
-                        () {
-                          Navigator.popUntil(
-                            context,
-                            (route) => route.isFirst,
-                          );
-                        },
-                  );
-            }
-          }
-        },
+        onPressed: proceed,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: textfieldValue.value.isNotEmpty
@@ -419,36 +441,39 @@ class KeysLogin extends HookWidget {
       ValueNotifier<String> textfieldValue) {
     return Form(
       key: formKey,
-      child: TextFormField(
-        controller: textEditingController,
-        style: Theme.of(context).textTheme.bodyMedium,
-        validator: (value) {
-          return keyValidator.call(value, context);
-        },
-        onChanged: (value) {
-          textfieldValue.value = value;
-        },
-        decoration: InputDecoration(
-          prefixIcon: SizedBox(
-            width: 25,
-            height: 25,
-            child: Center(
-              child: SvgPicture.asset(
-                FeatureIcons.keys,
-                width: 25,
-                height: 25,
-                fit: BoxFit.scaleDown,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
+      child: AutofillGroup(
+        child: TextFormField(
+          autofillHints: const [AutofillHints.password],
+          controller: textEditingController,
+          style: Theme.of(context).textTheme.bodyMedium,
+          validator: (value) {
+            return keyValidator.call(value, context);
+          },
+          onChanged: (value) {
+            textfieldValue.value = value;
+          },
+          decoration: InputDecoration(
+            prefixIcon: SizedBox(
+              width: 25,
+              height: 25,
+              child: Center(
+                child: SvgPicture.asset(
+                  FeatureIcons.keys,
+                  width: 25,
+                  height: 25,
+                  fit: BoxFit.scaleDown,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
+            hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+            hintText: context.t.npubNsecHex,
           ),
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).highlightColor,
-              ),
-          hintText: context.t.npubNsecHex,
         ),
       ),
     );

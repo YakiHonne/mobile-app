@@ -119,7 +119,7 @@ class AddBookmarksListView extends HookWidget {
                         isScrollControlled: true,
                         builder: (_) {
                           return SingleImageSelector(
-                            onUrlProvided: (url) {
+                            onUrlProvided: (url, {imeta}) {
                               YNavigator.pop(context);
                               imageUrl.value = url;
                             },

@@ -211,7 +211,7 @@ class MainCubit extends Cubit<MainState> {
 
     if (_deepLinksSub == null && initial != null) {
       if (!initial.startsWith('nostr+walletconnect') &&
-          !initial.contains('yakihonne.com/wallet/alby')) {
+          !initial.contains('yakihonne.com/lightning-wallet/alby')) {
         final entity = _extractNostrEntity(initial);
 
         if (entity.isNotEmpty) {
@@ -243,7 +243,7 @@ class MainCubit extends Cubit<MainState> {
         if (context.mounted) {
           walletManagerCubit.addNwc(uriString);
         }
-      } else if (uriString.contains('yakihonne.com/wallet/alby')) {
+      } else if (uriString.contains('yakihonne.com/lightning-wallet/alby')) {
         if (context.mounted) {
           walletManagerCubit.addAlby(uriString);
         }

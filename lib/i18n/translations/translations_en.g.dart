@@ -2438,6 +2438,18 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Error occured while updating relays list'
 	String get errorUpdatingRelaysList => 'Error occured while updating relays list';
 
+	/// en: 'Join relay'
+	String get joinRelay => 'Join relay';
+
+	/// en: 'Leave relay'
+	String get leaveRelay => 'Leave relay';
+
+	/// en: 'Invite code'
+	String get inviteCode => 'Invite code';
+
+	/// en: 'Enter invite code'
+	String get enterInviteCode => 'Enter invite code';
+
 	/// en: 'Error occured while claimaing a reward'
 	String get errorClaimingReward => 'Error occured while claimaing a reward';
 
@@ -3397,6 +3409,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Gossip model is disabled by default. You can enable it, in Settings, under Content moderation.'
 	String get enableGossipDesc => 'Gossip model is disabled by default. You can enable it, in Settings, under Content moderation.';
+
+	/// en: 'Nested replies'
+	String get nestedReplies => 'Nested replies';
+
+	/// en: 'Display note replies in a nested tree structure instead of a flat list.'
+	String get nestedRepliesDesc => 'Display note replies in a nested tree structure instead of a flat list.';
 
 	/// en: 'Use external browser'
 	String get enableExternalBrowser => 'Use external browser';
@@ -4900,6 +4918,72 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'You haven't scheduled any notes yet.'
 	String get noScheduledNotesFoundDesc => 'You haven\'t scheduled any notes yet.';
+
+	/// en: 'Share Pack'
+	String get sharePack => 'Share Pack';
+
+	/// en: 'Error occured while submitting review'
+	String get errorSubmittingReview => 'Error occured while submitting review';
+
+	/// en: 'Review submitted successfully'
+	String get reviewSubmitted => 'Review submitted successfully';
+
+	/// en: 'Reviews'
+	String get reviews => 'Reviews';
+
+	/// en: 'No reviews'
+	String get noReviews => 'No reviews';
+
+	/// en: 'No reviews found'
+	String get noReviewsDesc => 'No reviews found';
+
+	/// en: 'Write review'
+	String get writeReview => 'Write review';
+
+	/// en: 'Write a comment...'
+	String get writeComment => 'Write a comment...';
+
+	/// en: 'Submit Review'
+	String get submitReview => 'Submit Review';
+
+	/// en: 'Loading reviews'
+	String get loadingReviews => 'Loading reviews';
+
+	/// en: '({{number}}) review(s) '
+	String reviewsCount({required Object number}) => '(${number}) review(s) ';
+
+	/// en: 'Request code'
+	String get requestCode => 'Request code';
+
+	/// en: 'No invite code found'
+	String get noInviteCodeFound => 'No invite code found';
+
+	/// en: 'Relay Invite Code'
+	String get relayInviteCode => 'Relay Invite Code';
+
+	/// en: 'Code copied to clipboard'
+	String get codeCopiedToClipboard => 'Code copied to clipboard';
+
+	/// en: 'Join request sent'
+	String get joinRequestSent => 'Join request sent';
+
+	/// en: 'Error joining relay'
+	String get errorJoiningRelay => 'Error joining relay';
+
+	/// en: 'Error leaving relay'
+	String get errorLeavingRelay => 'Error leaving relay';
+
+	/// en: 'Get invite code'
+	String get getInviteCode => 'Get invite code';
+
+	/// en: 'Enter the invite code to join the relay'
+	String get joinRelayDesc => 'Enter the invite code to join the relay';
+
+	/// en: 'Auto Translation'
+	String get autoTranslation => 'Auto Translation';
+
+	/// en: 'Automatically translate notes to your preferred language'
+	String get autoTranslationDesc => 'Automatically translate notes to your preferred language';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5722,6 +5806,10 @@ extension on Translations {
 			'relaysListUpdated' => 'Relays list has been updated',
 			'couldNotUpdateRelaysList' => 'Could not update relays list',
 			'errorUpdatingRelaysList' => 'Error occured while updating relays list',
+			'joinRelay' => 'Join relay',
+			'leaveRelay' => 'Leave relay',
+			'inviteCode' => 'Invite code',
+			'enterInviteCode' => 'Enter invite code',
 			'errorClaimingReward' => 'Error occured while claimaing a reward',
 			'errorDecodingData' => 'Error occured while decoding data',
 			'loggingIn' => 'Logging in...',
@@ -5943,16 +6031,16 @@ extension on Translations {
 			'editPicture' => 'Edit picture',
 			'exportKeys' => 'Export keys',
 			'mutedUser' => 'Muted user',
-			'unaccessibleContent' => 'Inaccessible content',
-			'mutedUserDesc' => 'You have muted this user, consider unmuting to view this content',
-			'commentHidden' => 'This comment is hidden',
-			'upcoming' => 'Upcoming',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$2(String path) {
 		return switch (path) {
+			'unaccessibleContent' => 'Inaccessible content',
+			'mutedUserDesc' => 'You have muted this user, consider unmuting to view this content',
+			'commentHidden' => 'This comment is hidden',
+			'upcoming' => 'Upcoming',
 			'exportCredentials' => 'Export credentials',
 			'loginToYakihonne' => 'Log in to Yakihonne',
 			'alreadyUser' => 'Already a user?',
@@ -6048,6 +6136,8 @@ extension on Translations {
 			'typeKeywords' => 'Type keywords (ie: Keyword1, Keyword2..)',
 			'enableGossip' => 'Gossip model',
 			'enableGossipDesc' => 'Gossip model is disabled by default. You can enable it, in Settings, under Content moderation.',
+			'nestedReplies' => 'Nested replies',
+			'nestedRepliesDesc' => 'Display note replies in a nested tree structure instead of a flat list.',
 			'enableExternalBrowser' => 'Use external browser',
 			'restartAppTakeEffect' => 'Restart the app for the action to take effect',
 			'tips' => 'Tips',
@@ -6459,18 +6549,18 @@ extension on Translations {
 			'requestingMintQuote' => 'Requesting mint quote',
 			'minting' => 'Minting',
 			'cantSwapWithWallet' => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.',
-			'selectDestination' => 'Select destination',
-			'internalWallets' => 'Internal wallets',
-			'verifyToken' => 'Verify Token',
-			'memo' => 'Memo',
-			'payingInvoice' => 'Paying invoice',
-			'addMint' => 'Add mint',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'selectDestination' => 'Select destination',
+			'internalWallets' => 'Internal wallets',
+			'verifyToken' => 'Verify Token',
+			'memo' => 'Memo',
+			'payingInvoice' => 'Paying invoice',
+			'addMint' => 'Add mint',
 			'gettingMintInfo' => 'Getting mint info',
 			'generatingInvoice' => 'Generating invoice',
 			'checkPaymentStatus' => 'Check Payment Status',
@@ -6555,6 +6645,28 @@ extension on Translations {
 			'reschedule' => 'Reschedule',
 			'noScheduledNotesFound' => 'No scheduled notes found',
 			'noScheduledNotesFoundDesc' => 'You haven\'t scheduled any notes yet.',
+			'sharePack' => 'Share Pack',
+			'errorSubmittingReview' => 'Error occured while submitting review',
+			'reviewSubmitted' => 'Review submitted successfully',
+			'reviews' => 'Reviews',
+			'noReviews' => 'No reviews',
+			'noReviewsDesc' => 'No reviews found',
+			'writeReview' => 'Write review',
+			'writeComment' => 'Write a comment...',
+			'submitReview' => 'Submit Review',
+			'loadingReviews' => 'Loading reviews',
+			'reviewsCount' => ({required Object number}) => '(${number}) review(s) ',
+			'requestCode' => 'Request code',
+			'noInviteCodeFound' => 'No invite code found',
+			'relayInviteCode' => 'Relay Invite Code',
+			'codeCopiedToClipboard' => 'Code copied to clipboard',
+			'joinRequestSent' => 'Join request sent',
+			'errorJoiningRelay' => 'Error joining relay',
+			'errorLeavingRelay' => 'Error leaving relay',
+			'getInviteCode' => 'Get invite code',
+			'joinRelayDesc' => 'Enter the invite code to join the relay',
+			'autoTranslation' => 'Auto Translation',
+			'autoTranslationDesc' => 'Automatically translate notes to your preferred language',
 			_ => null,
 		};
 	}

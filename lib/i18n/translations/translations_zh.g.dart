@@ -1356,6 +1356,8 @@ class TranslationsZh extends Translations {
 	@override String openUrlDesc({required Object url}) => '要打开"${url}"吗？';
 	@override String get openUrlPrompt => '打开url提示';
 	@override String get openUrlPromptDesc => '在您的浏览器中打开前显示完整URL的安全提示。';
+	@override String get actionsPopups => '操作弹窗';
+	@override String get actionsPopupsDesc => '启用或禁用成功、错误和信息消息的弹窗。';
 	@override String get waitingForNetwork => '等待网络...';
 	@override String get whatsNew => '有什么新';
 	@override String get appCustom => 'app自定义';
@@ -1610,6 +1612,53 @@ class TranslationsZh extends Translations {
 	@override String get lightningNetwork => '闪电网络';
 	@override String get lightningNetworkDesc => '支付闪电网络发票或支付给闪电地址';
 	@override String get info => '信息';
+	@override String get followPacks => '关注包';
+	@override String get followPacksDesc => '在Nostr上探索并寻找包';
+	@override String get starterPacks => '入门包';
+	@override String get mediaPacks => '媒体包';
+	@override String get noPacksFound => '未找到包';
+	@override String get noPacksFoundDesc => '您尚未关注任何包。';
+	@override String get browsePack => '浏览包';
+	@override String inThisPack({required Object number}) => '在此包中 (${number})';
+	@override String get community => '社区';
+	@override String get packCreated => '包创建成功';
+	@override String get errorOnCreatingPack => '创建包时出错';
+	@override String get errorOnUpdatingPack => '更新包时出错';
+	@override String get clonePack => '克隆包';
+	@override String get addPack => '添加包';
+	@override String get updatePack => '更新包';
+	@override String peopleCount({required Object number}) => '人 (${number})';
+	@override String get peopleCountDesc => '此包中的人数';
+	@override String get packDeleted => '包删除成功';
+	@override String get errorDeletingEvent => '删除事件时出错';
+	@override String get packUpdated => '包更新成功';
+	@override String get packCloned => '包克隆成功';
+	@override String get deletePack => '删除包';
+	@override String get deletePackDesc => '确定要删除吗？此操作无法撤销。';
+	@override String get starterPacksDesc => '选择一个包并开始浏览其创作者的内容';
+	@override String othersNumber({required Object number}) => '+ ${number} 其他';
+	@override String get noPacksFoundSettingsDesc => '添加更多关注包以享受定制信息流。';
+	@override String get deleteMessage => '删除消息';
+	@override String get deleteMessageDesc => '确定要删除吗？此操作无法撤销。';
+	@override String get errorDeletingMessage => '删除消息时出错';
+	@override String get messageDeleted => '消息删除成功';
+	@override String get relayAlreadyExists => '中继已存在';
+	@override String get selected => '已选择';
+	@override String get threadMutedDescription => '此笔记及其帖子已被静音，您不会在动态中收到通知或看到新回复';
+	@override String get scheduleYourPost => '安排帖子';
+	@override String get scheduleYourPostDesc => '将帖子安排在稍后发布';
+	@override String get paidNoteScheduled => '已安排付费笔记';
+	@override String get noteScheduled => '笔记已安排';
+	@override String get published => '已发布';
+	@override String get drafts => '草稿';
+	@override String get scheduled => '已安排';
+	@override String get schedule => '安排';
+	@override String scheduledOn({required Object date}) => '安排在: ${date}';
+	@override String get deleteScheduledNote => '删除安排的笔记';
+	@override String get deleteScheduleNoteDesc => '确定要删除吗？此操作无法撤销。';
+	@override String get reschedule => '重新安排';
+	@override String get noScheduledNotesFound => '未找到安排的笔记';
+	@override String get noScheduledNotesFoundDesc => '您尚未安排任何笔记。';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2956,6 +3005,8 @@ extension on TranslationsZh {
 			'openUrlDesc' => ({required Object url}) => '要打开"${url}"吗？',
 			'openUrlPrompt' => '打开url提示',
 			'openUrlPromptDesc' => '在您的浏览器中打开前显示完整URL的安全提示。',
+			'actionsPopups' => '操作弹窗',
+			'actionsPopupsDesc' => '启用或禁用成功、错误和信息消息的弹窗。',
 			'waitingForNetwork' => '等待网络...',
 			'whatsNew' => '有什么新',
 			'appCustom' => 'app自定义',
@@ -3173,14 +3224,14 @@ extension on TranslationsZh {
 			'memo' => '备注',
 			'payingInvoice' => '正在支付发票',
 			'addMint' => '添加 Mint',
-			'gettingMintInfo' => '正在获取 Mint 信息',
-			'generatingInvoice' => '正在生成发票',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => '正在获取 Mint 信息',
+			'generatingInvoice' => '正在生成发票',
 			'checkPaymentStatus' => '检查支付状态',
 			'depositSuccess' => '充值成功',
 			'sendEcash' => '发送 eCash',
@@ -3216,6 +3267,53 @@ extension on TranslationsZh {
 			'lightningNetwork' => '闪电网络',
 			'lightningNetworkDesc' => '支付闪电网络发票或支付给闪电地址',
 			'info' => '信息',
+			'followPacks' => '关注包',
+			'followPacksDesc' => '在Nostr上探索并寻找包',
+			'starterPacks' => '入门包',
+			'mediaPacks' => '媒体包',
+			'noPacksFound' => '未找到包',
+			'noPacksFoundDesc' => '您尚未关注任何包。',
+			'browsePack' => '浏览包',
+			'inThisPack' => ({required Object number}) => '在此包中 (${number})',
+			'community' => '社区',
+			'packCreated' => '包创建成功',
+			'errorOnCreatingPack' => '创建包时出错',
+			'errorOnUpdatingPack' => '更新包时出错',
+			'clonePack' => '克隆包',
+			'addPack' => '添加包',
+			'updatePack' => '更新包',
+			'peopleCount' => ({required Object number}) => '人 (${number})',
+			'peopleCountDesc' => '此包中的人数',
+			'packDeleted' => '包删除成功',
+			'errorDeletingEvent' => '删除事件时出错',
+			'packUpdated' => '包更新成功',
+			'packCloned' => '包克隆成功',
+			'deletePack' => '删除包',
+			'deletePackDesc' => '确定要删除吗？此操作无法撤销。',
+			'starterPacksDesc' => '选择一个包并开始浏览其创作者的内容',
+			'othersNumber' => ({required Object number}) => '+ ${number} 其他',
+			'noPacksFoundSettingsDesc' => '添加更多关注包以享受定制信息流。',
+			'deleteMessage' => '删除消息',
+			'deleteMessageDesc' => '确定要删除吗？此操作无法撤销。',
+			'errorDeletingMessage' => '删除消息时出错',
+			'messageDeleted' => '消息删除成功',
+			'relayAlreadyExists' => '中继已存在',
+			'selected' => '已选择',
+			'threadMutedDescription' => '此笔记及其帖子已被静音，您不会在动态中收到通知或看到新回复',
+			'scheduleYourPost' => '安排帖子',
+			'scheduleYourPostDesc' => '将帖子安排在稍后发布',
+			'paidNoteScheduled' => '已安排付费笔记',
+			'noteScheduled' => '笔记已安排',
+			'published' => '已发布',
+			'drafts' => '草稿',
+			'scheduled' => '已安排',
+			'schedule' => '安排',
+			'scheduledOn' => ({required Object date}) => '安排在: ${date}',
+			'deleteScheduledNote' => '删除安排的笔记',
+			'deleteScheduleNoteDesc' => '确定要删除吗？此操作无法撤销。',
+			'reschedule' => '重新安排',
+			'noScheduledNotesFound' => '未找到安排的笔记',
+			'noScheduledNotesFoundDesc' => '您尚未安排任何笔记。',
 			_ => null,
 		};
 	}

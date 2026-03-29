@@ -93,7 +93,9 @@ class WriteZapPollView extends HookWidget {
               PublishingMediaContainer(
                 controller: controller,
                 mention: mention,
-                onImageAdd: (imageLinks) {
+                onImageAdd: (imageMaps) {
+                  final imageLinks =
+                      imageMaps.map((e) => e['url'] ?? '').toList();
                   context.read<WriteZapPollCubit>().addImage(imageLinks);
                   appendTextToPosition(
                     controller: controller,
@@ -624,7 +626,7 @@ class PublishingMediaContainer extends HookWidget {
     required this.mention,
   });
 
-  final Function(List<String>) onImageAdd;
+  final Function(List<Map<String, String>>) onImageAdd;
   final MentionTagTextEditingController controller;
   final ValueNotifier<String?> mention;
 
@@ -744,7 +746,7 @@ class PublishingMediaContainer extends HookWidget {
                       builder: (_) {
                         return GiphyView(
                           onGifSelected: (p0) {
-                            onImageAdd.call([p0]);
+                            onImageAdd.call([{'url': p0}]);
                           },
                         );
                       },

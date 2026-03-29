@@ -28,7 +28,7 @@ class CurationSpecifications extends StatelessWidget {
               context.read<WriteCurationCubit>().setDescription(desc);
             },
             imageLink: state.imageLink,
-            onImageLinkChanged: (url) {
+            onImageLinkChanged: (url, {imeta}) {
               context.read<WriteCurationCubit>().setImage(url);
               Navigator.pop(context);
             },

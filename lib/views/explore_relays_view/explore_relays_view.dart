@@ -344,7 +344,7 @@ class RelayBox extends HookWidget {
                 thickness: 0.5,
               ),
               _browseRelay(context),
-            ]
+            ],
           ],
         ),
       ),

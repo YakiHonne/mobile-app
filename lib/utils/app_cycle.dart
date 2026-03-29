@@ -33,6 +33,7 @@ class YakihonneCycle with WidgetsBindingObserver {
           }
         }
       case AppLifecycleState.inactive:
+        break;
       case AppLifecycleState.paused:
         {
           if (!_hasGoneOffline) {

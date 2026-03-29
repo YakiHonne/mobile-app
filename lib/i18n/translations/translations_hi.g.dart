@@ -1356,6 +1356,8 @@ class TranslationsHi extends Translations {
 	@override String openUrlDesc({required Object url}) => 'क्या आप "${url}" खोलना चाहते हैं?';
 	@override String get openUrlPrompt => 'URL खोलने का प्रॉम्प्ट';
 	@override String get openUrlPromptDesc => 'एक सुरक्षा प्रॉम्प्ट जो आपके ब्राउजर में खोलने से पहले पूर्ण URL दिखाता है.';
+	@override String get actionsPopups => 'एक्शन पॉपअप्स';
+	@override String get actionsPopupsDesc => 'सफलता, त्रुटि और सूचना संदेशों के लिए पॉपअप सक्षम या अक्षम करें.';
 	@override String get waitingForNetwork => 'नेटवर्क की प्रतीक्षा...';
 	@override String get whatsNew => 'क्या नया है';
 	@override String get appCustom => 'ऐप कस्टम';
@@ -1610,6 +1612,53 @@ class TranslationsHi extends Translations {
 	@override String get lightningNetwork => 'Lightning Network';
 	@override String get lightningNetworkDesc => 'Lightning चालान या lightning पते पर भुगतान करें';
 	@override String get info => 'जानकारी';
+	@override String get followPacks => 'पैक फॉलो करें';
+	@override String get followPacksDesc => 'Nostr पर उपयोग करने के लिए पैक खोजें और पाएं';
+	@override String get starterPacks => 'स्टार्टर पैक';
+	@override String get mediaPacks => 'मीडिया पैक';
+	@override String get noPacksFound => 'कोई पैक नहीं मिला';
+	@override String get noPacksFoundDesc => 'आपने अभी तक कोई पैक फॉलो नहीं किया है।';
+	@override String get browsePack => 'पैक ब्राउज़ करें';
+	@override String inThisPack({required Object number}) => 'इस पैक में (${number})';
+	@override String get community => 'समुदाय';
+	@override String get packCreated => 'पैक सफलतापूर्वक बनाया गया';
+	@override String get errorOnCreatingPack => 'पैक बनाते समय त्रुटि हुई';
+	@override String get errorOnUpdatingPack => 'पैक अपडेट करते समय त्रुटि हुई';
+	@override String get clonePack => 'पैक क्लोन करें';
+	@override String get addPack => 'पैक जोड़ें';
+	@override String get updatePack => 'पैक अपडेट करें';
+	@override String peopleCount({required Object number}) => 'लोग (${number})';
+	@override String get peopleCountDesc => 'इस पैक में लोगों की संख्या';
+	@override String get packDeleted => 'पैक सफलतापूर्वक हटा दिया गया';
+	@override String get errorDeletingEvent => 'घटना हटाते समय त्रुटि हुई';
+	@override String get packUpdated => 'पैक सफलतापूर्वक अपडेट किया गया';
+	@override String get packCloned => 'पैक सफलतापूर्वक क्लोन किया गया';
+	@override String get deletePack => 'पैक हटाएं';
+	@override String get deletePackDesc => 'क्या आप वाकई इस पैक को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।';
+	@override String get starterPacksDesc => 'एक पैक चुनें और अपने रचनाकारों की सामग्री के साथ अपना फ़ीड शुरू करें';
+	@override String othersNumber({required Object number}) => '+ ${number} अन्य';
+	@override String get noPacksFoundSettingsDesc => 'अनुकूलित फ़ीड का आनंद लेने के लिए अधिक फॉलो पैक जोड़ें।';
+	@override String get deleteMessage => 'संदेश हटाएं';
+	@override String get deleteMessageDesc => 'क्या आप वाकई इस संदेश को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।';
+	@override String get errorDeletingMessage => 'संदेश हटाते समय त्रुटि हुई';
+	@override String get messageDeleted => 'संदेश सफलतापूर्वक हटा दिया गया';
+	@override String get relayAlreadyExists => 'रिले पहले से मौजूद है';
+	@override String get selected => 'चयनित';
+	@override String get threadMutedDescription => 'यह नोट और इसका थ्रेड म्यूट है, आपको सूचनाएं नहीं मिलेंगी या अपने फ़ीड में नए उत्तर नहीं दिखाई देंगे';
+	@override String get scheduleYourPost => 'अपनी पोस्ट शेड्यूल करें';
+	@override String get scheduleYourPostDesc => 'अपनी पोस्ट को बाद में प्रकाशित करने के लिए शेड्यूल करें';
+	@override String get paidNoteScheduled => 'भुगतान किया गया नोट शेड्यूल किया गया';
+	@override String get noteScheduled => 'नोट शेड्यूल किया गया';
+	@override String get published => 'प्रकाशित';
+	@override String get drafts => 'ड्राफ्ट';
+	@override String get scheduled => 'शेड्यूल किया गया';
+	@override String get schedule => 'शेड्यूल करें';
+	@override String scheduledOn({required Object date}) => 'शेड्यूल किया गया: ${date}';
+	@override String get deleteScheduledNote => 'शेड्यूल नोट हटाएं';
+	@override String get deleteScheduleNoteDesc => 'क्या आप वाकई इस शेड्यूल नोट को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।';
+	@override String get reschedule => 'पुनः शेड्यूल करें';
+	@override String get noScheduledNotesFound => 'कोई निर्धारित नोट नहीं मिला';
+	@override String get noScheduledNotesFoundDesc => 'आपने अभी तक कोई नोट शेड्यूल नहीं किया है।';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -2956,6 +3005,8 @@ extension on TranslationsHi {
 			'openUrlDesc' => ({required Object url}) => 'क्या आप "${url}" खोलना चाहते हैं?',
 			'openUrlPrompt' => 'URL खोलने का प्रॉम्प्ट',
 			'openUrlPromptDesc' => 'एक सुरक्षा प्रॉम्प्ट जो आपके ब्राउजर में खोलने से पहले पूर्ण URL दिखाता है.',
+			'actionsPopups' => 'एक्शन पॉपअप्स',
+			'actionsPopupsDesc' => 'सफलता, त्रुटि और सूचना संदेशों के लिए पॉपअप सक्षम या अक्षम करें.',
 			'waitingForNetwork' => 'नेटवर्क की प्रतीक्षा...',
 			'whatsNew' => 'क्या नया है',
 			'appCustom' => 'ऐप कस्टम',
@@ -3173,14 +3224,14 @@ extension on TranslationsHi {
 			'memo' => 'मेमो',
 			'payingInvoice' => 'इनवॉइस का भुगतान हो रहा है',
 			'addMint' => 'मिंट जोड़ें',
-			'gettingMintInfo' => 'मिंट जानकारी प्राप्त हो रही है',
-			'generatingInvoice' => 'इनवॉइस उत्पन्न हो रहा है',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'gettingMintInfo' => 'मिंट जानकारी प्राप्त हो रही है',
+			'generatingInvoice' => 'इनवॉइस उत्पन्न हो रहा है',
 			'checkPaymentStatus' => 'भुगतान स्थिति जांचें',
 			'depositSuccess' => 'जमा सफल',
 			'sendEcash' => 'ई-कैश भेजें',
@@ -3216,6 +3267,53 @@ extension on TranslationsHi {
 			'lightningNetwork' => 'Lightning Network',
 			'lightningNetworkDesc' => 'Lightning चालान या lightning पते पर भुगतान करें',
 			'info' => 'जानकारी',
+			'followPacks' => 'पैक फॉलो करें',
+			'followPacksDesc' => 'Nostr पर उपयोग करने के लिए पैक खोजें और पाएं',
+			'starterPacks' => 'स्टार्टर पैक',
+			'mediaPacks' => 'मीडिया पैक',
+			'noPacksFound' => 'कोई पैक नहीं मिला',
+			'noPacksFoundDesc' => 'आपने अभी तक कोई पैक फॉलो नहीं किया है।',
+			'browsePack' => 'पैक ब्राउज़ करें',
+			'inThisPack' => ({required Object number}) => 'इस पैक में (${number})',
+			'community' => 'समुदाय',
+			'packCreated' => 'पैक सफलतापूर्वक बनाया गया',
+			'errorOnCreatingPack' => 'पैक बनाते समय त्रुटि हुई',
+			'errorOnUpdatingPack' => 'पैक अपडेट करते समय त्रुटि हुई',
+			'clonePack' => 'पैक क्लोन करें',
+			'addPack' => 'पैक जोड़ें',
+			'updatePack' => 'पैक अपडेट करें',
+			'peopleCount' => ({required Object number}) => 'लोग (${number})',
+			'peopleCountDesc' => 'इस पैक में लोगों की संख्या',
+			'packDeleted' => 'पैक सफलतापूर्वक हटा दिया गया',
+			'errorDeletingEvent' => 'घटना हटाते समय त्रुटि हुई',
+			'packUpdated' => 'पैक सफलतापूर्वक अपडेट किया गया',
+			'packCloned' => 'पैक सफलतापूर्वक क्लोन किया गया',
+			'deletePack' => 'पैक हटाएं',
+			'deletePackDesc' => 'क्या आप वाकई इस पैक को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।',
+			'starterPacksDesc' => 'एक पैक चुनें और अपने रचनाकारों की सामग्री के साथ अपना फ़ीड शुरू करें',
+			'othersNumber' => ({required Object number}) => '+ ${number} अन्य',
+			'noPacksFoundSettingsDesc' => 'अनुकूलित फ़ीड का आनंद लेने के लिए अधिक फॉलो पैक जोड़ें।',
+			'deleteMessage' => 'संदेश हटाएं',
+			'deleteMessageDesc' => 'क्या आप वाकई इस संदेश को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।',
+			'errorDeletingMessage' => 'संदेश हटाते समय त्रुटि हुई',
+			'messageDeleted' => 'संदेश सफलतापूर्वक हटा दिया गया',
+			'relayAlreadyExists' => 'रिले पहले से मौजूद है',
+			'selected' => 'चयनित',
+			'threadMutedDescription' => 'यह नोट और इसका थ्रेड म्यूट है, आपको सूचनाएं नहीं मिलेंगी या अपने फ़ीड में नए उत्तर नहीं दिखाई देंगे',
+			'scheduleYourPost' => 'अपनी पोस्ट शेड्यूल करें',
+			'scheduleYourPostDesc' => 'अपनी पोस्ट को बाद में प्रकाशित करने के लिए शेड्यूल करें',
+			'paidNoteScheduled' => 'भुगतान किया गया नोट शेड्यूल किया गया',
+			'noteScheduled' => 'नोट शेड्यूल किया गया',
+			'published' => 'प्रकाशित',
+			'drafts' => 'ड्राफ्ट',
+			'scheduled' => 'शेड्यूल किया गया',
+			'schedule' => 'शेड्यूल करें',
+			'scheduledOn' => ({required Object date}) => 'शेड्यूल किया गया: ${date}',
+			'deleteScheduledNote' => 'शेड्यूल नोट हटाएं',
+			'deleteScheduleNoteDesc' => 'क्या आप वाकई इस शेड्यूल नोट को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।',
+			'reschedule' => 'पुनः शेड्यूल करें',
+			'noScheduledNotesFound' => 'कोई निर्धारित नोट नहीं मिला',
+			'noScheduledNotesFoundDesc' => 'आपने अभी तक कोई नोट शेड्यूल नहीं किया है।',
 			_ => null,
 		};
 	}

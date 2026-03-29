@@ -53,6 +53,9 @@ class ArticleContent extends HookWidget {
             title,
             state.content,
             isMenuDismissed,
+            onMetadataInserted: (imeta) {
+              context.read<WriteArticleCubit>().addImeta(imeta);
+            },
             label: context.t.whatsOnYourMind,
             toggleArticleContent: articleWritingState,
             previewWidget: Padding(

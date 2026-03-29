@@ -115,6 +115,13 @@ class ArticleView extends HookWidget {
         textDirectionality.value = getTextDirect(
           extractedContent.value['replacedString'],
         );
+
+        if (nostrRepository.getAutoTranslationStatus()) {
+          await Future.delayed(const Duration(seconds: 3));
+          if (context.mounted) {
+            translateContent();
+          }
+        }
       },
     );
 

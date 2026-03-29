@@ -10,6 +10,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/unpaid_note.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -24,6 +25,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
   }) : super(
           WriteNoteState(
             medias: const [],
+            imetas: const [],
             isQuotedContentAvailable: quotedNote != null,
             quotedContent: quotedNote,
             isMention: isMention,
@@ -34,11 +36,13 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
   DateTime? scheduledPaid;
   List<String>? relays;
 
-  void addImage(List<String> link) {
+  void addImage(List<Map<String, String>> mediaData) {
     if (!isClosed) {
+      final links = mediaData.map((e) => e['url'] ?? '').toList();
       emit(
         state.copyWith(
-          medias: List.from(state.medias)..addAll(link),
+          medias: List.from(state.medias)..addAll(links),
+          imetas: List.from(state.imetas)..addAll(mediaData),
         ),
       );
     }
@@ -49,6 +53,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       emit(
         state.copyWith(
           medias: List.from(state.medias)..removeAt(index),
+          imetas: List.from(state.imetas)..removeAt(index),
         ),
       );
     }
@@ -176,6 +181,30 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       );
     }
 
+    for (final imeta in state.imetas) {
+      if (imeta['url'] != null &&
+          (state.medias.contains(imeta['url']) ||
+              updatedContent.contains(imeta['url']!))) {
+        final imetaTag = <String>['imeta'];
+
+        imeta.forEach((key, value) {
+          if (value.isNotEmpty) {
+            if (key == 'url' ||
+                key == 'm' ||
+                key == 'x' ||
+                key == 'size' ||
+                key == 'dim' ||
+                key == 'blurhash' ||
+                key == 'duration') {
+              imetaTag.add('$key $value');
+            }
+          }
+        });
+
+        tags.add(imetaTag);
+      }
+    }
+
     final cancel = BotToastUtils.showLoading();
 
     final event = await Event.genEvent(
@@ -193,6 +222,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       return;
     }
 
+    lg.i(event.toJson());
     if (!isPaid) {
       await sendEventAndVerify(
         event: event,
@@ -204,7 +234,13 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     } else {
       toBeSubmittedEvent = event;
       scheduledPaid = scheduled;
-      relays = [relay!];
+      relays = relay != null ? [relay] : null;
+
+      localDatabaseRepository.saveUnpaidNote(
+        signer.getPublicKey(),
+        UnpaidNote(event: event, relays: relays),
+      );
+
       onPaymentProcess.call();
     }
 
@@ -294,8 +330,10 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       final rs = relays ?? currentUserRelayList.writes;
 
       if (scheduledPaid != null) {
-        isSuccessful =
-            await submitEventScheduled(event: toBeSubmittedEvent!, relays: rs);
+        isSuccessful = await submitEventScheduled(
+          event: toBeSubmittedEvent!,
+          relays: rs,
+        );
       } else {
         isSuccessful = await NostrFunctionsRepository.sendEvent(
           event: toBeSubmittedEvent!,
@@ -310,6 +348,12 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
               ? t.paidNoteScheduled.capitalizeFirst()
               : t.paidNotePublished.capitalizeFirst(),
         );
+
+        localDatabaseRepository.removeUnpaidNote(
+          currentSigner!.getPublicKey(),
+          toBeSubmittedEvent!.id,
+        );
+
         resetDraft(null);
         onSuccess.call();
       } else {

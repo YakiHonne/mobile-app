@@ -459,6 +459,7 @@ class LeadingCubit extends Cubit<LeadingState> {
       type: type,
       pubkeys: pubkeys,
       since: since ?? f.from,
+      includeExpired: false,
       relays: type == CommonFeedTypes.trending ? DEFAULT_TRENDING_RELAYS : null,
     );
 
@@ -516,6 +517,7 @@ class LeadingCubit extends Cubit<LeadingState> {
                   ? val.relays
                   : []
           : [],
+      includeExpired: false,
       until: until,
       limit: 50,
       since: since,
@@ -538,6 +540,7 @@ class LeadingCubit extends Cubit<LeadingState> {
         limit: limit,
         since: since,
         pubkeys: pubkeys,
+        includeExpired: false,
       );
 
       return applyNotesFilter(content, removeMuted: true);

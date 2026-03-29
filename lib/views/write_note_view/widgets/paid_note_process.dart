@@ -8,22 +8,52 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
+import '../../../repositories/nostr_functions_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../search_view/search_view.dart';
+import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
 
 class PaidNoteProcess extends HookWidget {
-  const PaidNoteProcess({super.key});
+  const PaidNoteProcess({
+    super.key,
+    required this.checkZap,
+  });
+
+  final bool checkZap;
 
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
+    final isZapConfirmed = useState<bool?>(null);
+
     useEffect(
       () {
+        if (!checkZap) {
+          isZapConfirmed.value = false;
+          return null;
+        }
+
+        final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
+        if (event != null) {
+          NostrFunctionsRepository.checkPayment(
+            event.id,
+            skipDelay: true,
+          ).then((value) {
+            if (context.mounted) {
+              isZapConfirmed.value = value;
+            }
+          });
+        } else {
+          isZapConfirmed.value = false;
+        }
+
         return walletManagerCubit.resetInvoice;
       },
+      [],
     );
 
     return Container(
@@ -63,7 +93,7 @@ class PaidNoteProcess extends HookWidget {
             Expanded(
               child: _informationColumn(context, isTablet),
             ),
-            _bottomNavBar(context, isTablet),
+            _bottomNavBar(context, isTablet, isZapConfirmed),
           ],
         ),
       ),
@@ -112,33 +142,6 @@ class PaidNoteProcess extends HookWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: kDefaultPadding),
-          BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
-            builder: (context, state) {
-              if (state.confirmPayment) {
-                return TextButton(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.comfortable,
-                  ),
-                  onPressed: () {
-                    context.read<WriteNoteCubit>().submitEvent(
-                      () {
-                        YNavigator.popToRoot(context);
-                      },
-                    );
-                  },
-                  child: Text(
-                    context.t.confirmPayment,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: kWhite,
-                        ),
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
         ],
       ),
     );
@@ -147,10 +150,9 @@ class PaidNoteProcess extends HookWidget {
   Widget _bottomNavBar(
     BuildContext context,
     bool isTablet,
+    ValueNotifier<bool?> isZapConfirmed,
   ) {
     return Container(
-      height:
-          kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
       padding: EdgeInsets.only(
         left: kDefaultPadding / 2,
         right: kDefaultPadding / 2,
@@ -166,33 +168,37 @@ class PaidNoteProcess extends HookWidget {
               ),
               child: Builder(
                 builder: (context) {
-                  if (!lightningState.isLnurlAvailable) {
+                  if (isZapConfirmed.value == null) {
+                    return const Center(
+                      child: SearchLoading(),
+                    );
+                  } else if (isZapConfirmed.value ?? false) {
+                    return Row(
+                      spacing: kDefaultPadding / 4,
+                      children: [
+                        _confirm(lightningState, context),
+                      ],
+                    );
+                  } else if (!lightningState.isLnurlAvailable) {
                     return SizedBox(
                       width: double.infinity,
                       child: Row(
+                        spacing: kDefaultPadding / 4,
                         children: [
                           _getInvoice(lightningState, context),
-                          const SizedBox(
-                            width: kDefaultPadding / 4,
-                          ),
                           _pay(lightningState, context),
+                          _confirm(lightningState, context),
                         ],
                       ),
                     );
                   } else {
                     return Row(
+                      spacing: kDefaultPadding / 4,
                       children: [
+                        _cancelInvoice(context),
                         _qrCode(context, lightningState),
-                        const SizedBox(
-                          width: kDefaultPadding / 4,
-                        ),
                         _copy(lightningState, context),
-                        IconButton(
-                          onPressed: () {
-                            context.read<WalletsManagerCubit>().resetInvoice();
-                          },
-                          icon: const Icon(Icons.close_rounded),
-                        ),
+                        _confirm(lightningState, context),
                       ],
                     );
                   }
@@ -205,13 +211,24 @@ class PaidNoteProcess extends HookWidget {
     );
   }
 
+  Expanded _cancelInvoice(BuildContext context) {
+    return Expanded(
+      child: SendOptionsButton(
+        onClicked: () {
+          context.read<WalletsManagerCubit>().resetInvoice();
+        },
+        title: context.t.cancel.capitalizeFirst(),
+        icon: FeatureIcons.closeRaw,
+        textColor: kRed,
+        borderColor: kRed,
+      ),
+    );
+  }
+
   Expanded _copy(WalletsManagerState lightningState, BuildContext context) {
     return Expanded(
-      child: TextButton.icon(
-        style: TextButton.styleFrom(
-          visualDensity: VisualDensity.comfortable,
-        ),
-        onPressed: () {
+      child: SendOptionsButton(
+        onClicked: () {
           Clipboard.setData(
             ClipboardData(
               text: lightningState.lnurl,
@@ -222,137 +239,125 @@ class PaidNoteProcess extends HookWidget {
             context.t.invoiceCopied.capitalizeFirst(),
           );
         },
-        icon: SvgPicture.asset(
-          FeatureIcons.copy,
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            kWhite,
-            BlendMode.srcIn,
-          ),
-        ),
-        label: Text(
-          context.t.copy.capitalizeFirst(),
-        ),
+        title: context.t.copy.capitalizeFirst(),
+        icon: FeatureIcons.copy,
+      ),
+    );
+  }
+
+  Expanded _confirm(WalletsManagerState lightningState, BuildContext context) {
+    return Expanded(
+      child: SendOptionsButton(
+        onClicked: () {
+          context.read<WriteNoteCubit>().submitEvent(
+            () {
+              YNavigator.popToRoot(context);
+            },
+          );
+        },
+        title: context.t.confirmPayment,
+        icon: FeatureIcons.zap,
+        isLoading: !lightningState.isLoading ? null : true,
       ),
     );
   }
 
   Expanded _qrCode(BuildContext context, WalletsManagerState lightningState) {
+    final width =
+        ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 50.w : 70.w;
+
     return Expanded(
-      child: TextButton.icon(
-        style: TextButton.styleFrom(
-          visualDensity: VisualDensity.comfortable,
-        ),
-        onPressed: () {
+      child: SendOptionsButton(
+        onClicked: () {
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                icon: QrImageView(
-                  data: lightningState.lnurl,
-                  dataModuleStyle: QrDataModuleStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    dataModuleShape: QrDataModuleShape.circle,
+                content: Container(
+                  width: width,
+                  height: width,
+                  padding: const EdgeInsets.all(
+                    kDefaultPadding / 4,
                   ),
-                  eyeStyle: QrEyeStyle(
-                    eyeShape: QrEyeShape.circle,
-                    color: Theme.of(context).primaryColorDark,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(kDefaultPadding),
+                    color: Theme.of(context).cardColor,
+                    border: Border.all(
+                      color: Theme.of(context).cardColor,
+                      width: 5,
+                    ),
+                  ),
+                  child: QrImageView(
+                    data: lightningState.lnurl,
+                    dataModuleStyle: QrDataModuleStyle(
+                      color: Theme.of(context).primaryColorDark,
+                      dataModuleShape: QrDataModuleShape.circle,
+                    ),
+                    eyeStyle: QrEyeStyle(
+                      eyeShape: QrEyeShape.circle,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
                   ),
                 ),
                 title: Text(
                   context.t.scanQrCode.capitalizeFirst(),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).primaryColorLight,
-                      ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: kBlack),
+                  textAlign: TextAlign.center,
                 ),
                 backgroundColor: Theme.of(context).primaryColorDark,
               );
             },
           );
         },
-        icon: SvgPicture.asset(
-          FeatureIcons.qr,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
-        ),
-        label: Text(
-          context.t.qrCode.capitalizeFirst(),
-        ),
+        title: context.t.qrCode,
+        icon: FeatureIcons.qr,
       ),
     );
   }
 
   Expanded _pay(WalletsManagerState lightningState, BuildContext context) {
     return Expanded(
-      child: AbsorbPointer(
-        absorbing: lightningState.isLoading,
-        child: TextButton.icon(
-          style: TextButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          onPressed: () async {
-            final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
+      child: SendOptionsButton(
+        onClicked: () {
+          final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
 
-            if (event != null && context.mounted) {
-              context.read<WalletsManagerCubit>().handleWalletZap(
-                    sats: nostrRepository.flashNewsPrice.toInt(),
-                    user: Metadata.empty().copyWith(
-                      lud16: nostrRepository.yakihonneWallet,
-                      pubkey: yakihonneHex,
-                    ),
-                    comment: context.t
-                        .userSubmittedPaidNote(
-                          name: nostrRepository.currentMetadata.name.isNotEmpty
-                              ? nostrRepository.currentMetadata.name
-                              : 'unknown',
-                        )
-                        .capitalizeFirst(),
-                    eventId: event.id,
-                    onFinished: (invoice) {},
-                    onSuccess: (invoice) {
-                      context.read<WriteNoteCubit>().submitEvent(
-                            () => YNavigator.popToRoot(
-                              context,
-                            ),
-                          );
-                    },
-                    onFailure: (message) {
-                      BotToastUtils.showError(
-                        message,
-                      );
-                    },
-                  );
-            }
-          },
-          icon: lightningState.isLoading
-              ? const SizedBox.shrink()
-              : SvgPicture.asset(
-                  FeatureIcons.zaps,
-                  width: 20,
-                  height: 20,
-                  colorFilter: const ColorFilter.mode(
-                    kWhite,
-                    BlendMode.srcIn,
+          if (event != null && context.mounted) {
+            context.read<WalletsManagerCubit>().handleWalletZap(
+                  sats: nostrRepository.flashNewsPrice.toInt(),
+                  user: Metadata.empty().copyWith(
+                    lud16: nostrRepository.yakihonneWallet,
+                    pubkey: yakihonneHex,
                   ),
-                ),
-          label: lightningState.isLoading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: kWhite,
-                  ),
-                )
-              : Text(
-                  context.t.pay.capitalizeFirst(),
-                ),
-        ),
+                  comment: context.t
+                      .userSubmittedPaidNote(
+                        name: nostrRepository.currentMetadata.name.isNotEmpty
+                            ? nostrRepository.currentMetadata.name
+                            : 'unknown',
+                      )
+                      .capitalizeFirst(),
+                  eventId: event.id,
+                  onFinished: (invoice) {},
+                  onSuccess: (invoice) {
+                    context.read<WriteNoteCubit>().submitEvent(
+                          () => YNavigator.popToRoot(
+                            context,
+                          ),
+                        );
+                  },
+                  onFailure: (message) {
+                    BotToastUtils.showError(
+                      message,
+                    );
+                  },
+                );
+          }
+        },
+        title: context.t.pay,
+        icon: FeatureIcons.zaps,
+        isLoading: !lightningState.isLoading ? null : true,
       ),
     );
   }
@@ -360,55 +365,36 @@ class PaidNoteProcess extends HookWidget {
   Expanded _getInvoice(
       WalletsManagerState lightningState, BuildContext context) {
     return Expanded(
-      child: AbsorbPointer(
-        absorbing: lightningState.isLoading,
-        child: TextButton(
-          style: TextButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          onPressed: () async {
-            final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
+      child: SendOptionsButton(
+        onClicked: () async {
+          final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
 
-            if (event != null && context.mounted) {
-              context.read<WalletsManagerCubit>().generateZapInvoice(
-                    sats: nostrRepository.flashNewsPrice.toInt(),
-                    user: Metadata.empty().copyWith(
-                      lud16: nostrRepository.yakihonneWallet,
-                      pubkey: yakihonneHex,
-                    ),
-                    comment: context.t
-                        .userSubmittedPaidNote(
-                          name: nostrRepository.currentMetadata.name.isNotEmpty
-                              ? nostrRepository.currentMetadata.name
-                              : 'unknown',
-                        )
-                        .capitalizeFirst(),
-                    eventId: event.id,
-                    onFailure: (message) {
-                      BotToastUtils.showError(
-                        message,
-                      );
-                    },
-                  );
-            }
-          },
-          child: lightningState.isLoading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: kWhite,
+          if (event != null && context.mounted) {
+            context.read<WalletsManagerCubit>().generateZapInvoice(
+                  sats: nostrRepository.flashNewsPrice.toInt(),
+                  user: Metadata.empty().copyWith(
+                    lud16: nostrRepository.yakihonneWallet,
+                    pubkey: yakihonneHex,
                   ),
-                )
-              : Text(
-                  context.t.getInvoice.capitalizeFirst(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: kWhite),
-                ),
-        ),
+                  comment: context.t
+                      .userSubmittedPaidNote(
+                        name: nostrRepository.currentMetadata.name.isNotEmpty
+                            ? nostrRepository.currentMetadata.name
+                            : 'unknown',
+                      )
+                      .capitalizeFirst(),
+                  eventId: event.id,
+                  onFailure: (message) {
+                    BotToastUtils.showError(
+                      message,
+                    );
+                  },
+                );
+          }
+        },
+        title: context.t.getInvoice,
+        icon: FeatureIcons.note,
+        isLoading: !lightningState.isLoading ? null : true,
       ),
     );
   }

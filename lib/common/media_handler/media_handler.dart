@@ -113,6 +113,22 @@ class MediaHandler {
     }
   }
 
+  static Future<Map<String, String>?> selectMediaAndUploadWithData(
+      MediaType mediaType) async {
+    final cancel = BotToastUtils.showLoading();
+
+    final media = await selectMedia(mediaType);
+
+    if (media != null) {
+      final res = await mediaServersCubit.uploadMedia(file: media);
+      cancel.call();
+      return res;
+    } else {
+      cancel.call();
+      return null;
+    }
+  }
+
   static Future<List<String>> selectMultiMediaAndUpload() async {
     final cancel = BotToastUtils.showLoading();
 
@@ -143,6 +159,44 @@ class MediaHandler {
     if (urls.isNotEmpty) {
       cancel.call();
       return urls;
+    } else {
+      cancel.call();
+      BotToastUtils.showError(t.errorUploadingMedia);
+      return [];
+    }
+  }
+
+  static Future<List<Map<String, String>>>
+      selectMultiMediaAndUploadWithData() async {
+    final cancel = BotToastUtils.showLoading();
+
+    final medias = await selectMultiMedia();
+
+    if (medias == null) {
+      BotToastUtils.showError(t.errorSelectingMedia);
+      cancel.call();
+      return [];
+    }
+
+    if (medias.isEmpty) {
+      cancel.call();
+      return [];
+    }
+
+    final res = await Future.wait(
+      [for (final m in medias) mediaServersCubit.uploadMedia(file: m)],
+    );
+
+    final resultList = <Map<String, String>>[];
+    for (final u in res) {
+      if (u.isNotEmpty && u['url'] != null) {
+        resultList.add(u);
+      }
+    }
+
+    if (resultList.isNotEmpty) {
+      cancel.call();
+      return resultList;
     } else {
       cancel.call();
       BotToastUtils.showError(t.errorUploadingMedia);

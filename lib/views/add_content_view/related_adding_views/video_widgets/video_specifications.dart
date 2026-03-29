@@ -38,7 +38,7 @@ class VideoSpecifications extends HookWidget {
               context.read<WriteVideoCubit>().setSummary(desc);
             },
             imageLink: state.imageLink,
-            onImageLinkChanged: (url) {
+            onImageLinkChanged: (url, {imeta}) {
               context.read<WriteVideoCubit>().setImage(url);
               Navigator.pop(context);
             },

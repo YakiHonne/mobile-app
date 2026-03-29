@@ -131,6 +131,7 @@ class StatusButton extends StatelessWidget {
     required this.isDisabled,
     required this.onClicked,
     required this.text,
+    this.color,
   });
 
   final bool isDisabled;
@@ -142,7 +143,8 @@ class StatusButton extends StatelessWidget {
     return TextButton(
       onPressed: !isDisabled ? onClicked : null,
       style: TextButton.styleFrom(
-        backgroundColor: isDisabled ? kDimGrey : Theme.of(context).primaryColor,
+        backgroundColor:
+            isDisabled ? kDimGrey : (color ?? Theme.of(context).primaryColor),
         visualDensity: VisualDensity.comfortable,
       ),
       child: Text(
@@ -153,6 +155,8 @@ class StatusButton extends StatelessWidget {
       ),
     );
   }
+
+  final Color? color;
 }
 
 //** Information rounded container */

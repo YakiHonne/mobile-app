@@ -18,6 +18,7 @@ import '../widgets/data_providers.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/parsed_media_container.dart';
 import '../widgets/response_snackbar.dart';
+import 'widgets/nested_reply_item.dart';
 
 // Constants
 const _kScrollDuration = Duration(milliseconds: 300);
@@ -207,7 +208,8 @@ class NoteView extends HookWidget {
                         note: currentNote.value,
                         isMain: true,
                         addLine: false,
-                        autoTranslate: autoTranslate,
+                        autoTranslate:
+                            nostrRepository.getAutoTranslationStatus(),
                       ),
                     ),
                   const SliverToBoxAdapter(
@@ -501,6 +503,8 @@ class NoteRepliesList extends HookWidget {
     final useSingleColumn =
         nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
     final selectedNoteId = selectedNote.value.id;
+    final cachedReplies =
+        useMemoized(() => <String, List<DetailedNoteModel>>{});
 
     final updateReplies = useCallback(
       () async {
@@ -564,8 +568,8 @@ class NoteRepliesList extends HookWidget {
           else if (replies.value.isEmpty)
             ..._buildEmptyReplies(context)
           else
-            ..._buildRepliesList(
-                context, replies.value, isTablet, useSingleColumn),
+            ..._buildRepliesList(context, replies.value, isTablet,
+                useSingleColumn, cachedReplies),
         ],
       ),
     );
@@ -610,13 +614,17 @@ class NoteRepliesList extends HookWidget {
     List<DetailedNoteModel> replyList,
     bool isTablet,
     bool useSingleColumn,
+    Map<String, List<DetailedNoteModel>> cachedReplies,
   ) {
+    final isNested = nostrRepository.getNestedRepliesStatus();
+
     return [
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.only(
             top: kDefaultPadding / 2,
             bottom: kDefaultPadding,
+            right: kDefaultPadding,
           ),
           child: Text(
             context.t.replies.capitalizeFirst(),
@@ -636,12 +644,19 @@ class NoteRepliesList extends HookWidget {
             return _AnimatedReplyItem(
               key: ValueKey(reply.id),
               index: index,
-              child: DetailedNoteContainer(
-                note: reply,
-                isMain: false,
-                addLine: false,
-                onClicked: isTransitioning ? null : () => setNote(reply),
-              ),
+              child: isNested
+                  ? NestedReplyItem(
+                      note: reply,
+                      setNote: setNote,
+                      isTransitioning: isTransitioning,
+                      cachedReplies: cachedReplies,
+                    )
+                  : DetailedNoteContainer(
+                      note: reply,
+                      isMain: false,
+                      addLine: false,
+                      onClicked: isTransitioning ? null : () => setNote(reply),
+                    ),
             );
           },
           childCount: replyList.length,
@@ -654,12 +669,19 @@ class NoteRepliesList extends HookWidget {
             return _AnimatedReplyItem(
               key: ValueKey(reply.id),
               index: index,
-              child: DetailedNoteContainer(
-                note: reply,
-                isMain: false,
-                addLine: false,
-                onClicked: isTransitioning ? null : () => setNote(reply),
-              ),
+              child: isNested
+                  ? NestedReplyItem(
+                      note: reply,
+                      setNote: setNote,
+                      isTransitioning: isTransitioning,
+                      cachedReplies: cachedReplies,
+                    )
+                  : DetailedNoteContainer(
+                      note: reply,
+                      isMain: false,
+                      addLine: false,
+                      onClicked: isTransitioning ? null : () => setNote(reply),
+                    ),
             );
           },
           separatorBuilder: (_, __) => const Divider(

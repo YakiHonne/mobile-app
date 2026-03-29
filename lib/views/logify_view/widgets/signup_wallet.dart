@@ -255,7 +255,7 @@ class SignupWallet extends HookWidget {
                                     kind: 0,
                                     lud16: la,
                                     connectionString: wallet,
-                                    relay: '',
+                                    relays: Uri.parse(wallet).queryParametersAll['relay'] ?? const [],
                                     secret: '',
                                     walletPubkey: '',
                                     permissions: const [],

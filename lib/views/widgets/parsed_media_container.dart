@@ -608,6 +608,12 @@ class YoutubeVideoPlayer extends HookWidget {
         showVideoProgressIndicator: true,
         progressIndicatorColor: kRed,
         actionsPadding: const EdgeInsetsGeometry.all(kDefaultPadding / 4),
+        bottomActions: const [
+          CurrentPosition(),
+          ProgressBar(isExpanded: true),
+          RemainingDuration(),
+          PlaybackSpeedButton(),
+        ],
         progressColors: const ProgressBarColors(
           playedColor: kRed,
           handleColor: kRed,

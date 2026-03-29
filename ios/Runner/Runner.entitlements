@@ -7,10 +7,15 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:yakihonne.com</string>
+		<string>webcredentials:yakihonne.com</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.yakihonne.ShareExtension</string>
+	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.yakihonne.appyakihonne</string>
 	</array>
 </dict>
 </plist>

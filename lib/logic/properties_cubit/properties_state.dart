@@ -14,6 +14,8 @@ class PropertiesState extends Equatable {
   final bool enableAutomaticSigning;
   final bool enableGossip;
   final bool enableUsingExternalBrowser;
+  final bool enableAutoTranslation;
+  final bool enableNestedReplies;
   final bool isUsingSigner;
   final bool enableOneTapZap;
   final bool enableOneTapReaction;
@@ -31,6 +33,8 @@ class PropertiesState extends Equatable {
     required this.isUsingNip44,
     required this.enableAutomaticSigning,
     required this.enableUsingExternalBrowser,
+    required this.enableAutoTranslation,
+    required this.enableNestedReplies,
     required this.enableGossip,
     required this.isUsingSigner,
     required this.enableOneTapZap,
@@ -52,6 +56,8 @@ class PropertiesState extends Equatable {
         isUsingSigner,
         enableAutomaticSigning,
         enableUsingExternalBrowser,
+        enableAutoTranslation,
+        enableNestedReplies,
         enableGossip,
         enableOneTapZap,
         enableOneTapReaction,
@@ -71,6 +77,8 @@ class PropertiesState extends Equatable {
     bool? enableAutomaticSigning,
     bool? enableGossip,
     bool? enableUsingExternalBrowser,
+    bool? enableAutoTranslation,
+    bool? enableNestedReplies,
     bool? isUsingSigner,
     bool? enableOneTapZap,
     bool? enableOneTapReaction,
@@ -91,6 +99,9 @@ class PropertiesState extends Equatable {
       enableGossip: enableGossip ?? this.enableGossip,
       enableUsingExternalBrowser:
           enableUsingExternalBrowser ?? this.enableUsingExternalBrowser,
+      enableAutoTranslation:
+          enableAutoTranslation ?? this.enableAutoTranslation,
+      enableNestedReplies: enableNestedReplies ?? this.enableNestedReplies,
       isUsingSigner: isUsingSigner ?? this.isUsingSigner,
       enableOneTapZap: enableOneTapZap ?? this.enableOneTapZap,
       enableOneTapReaction: enableOneTapReaction ?? this.enableOneTapReaction,

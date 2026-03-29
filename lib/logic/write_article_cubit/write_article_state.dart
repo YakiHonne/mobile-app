@@ -15,6 +15,7 @@ class WriteArticleState extends Equatable {
   final bool isZapSplitEnabled;
   final List<ZapSplit> zapsSplits;
   final bool tryToLoad;
+  final List<Map<String, String>> imetas;
 
   const WriteArticleState({
     required this.title,
@@ -30,6 +31,7 @@ class WriteArticleState extends Equatable {
     required this.isZapSplitEnabled,
     required this.zapsSplits,
     required this.tryToLoad,
+    required this.imetas,
   });
 
   @override
@@ -47,6 +49,7 @@ class WriteArticleState extends Equatable {
         tryToLoad,
         isZapSplitEnabled,
         zapsSplits,
+        imetas,
       ];
 
   WriteArticleState copyWith({
@@ -63,6 +66,7 @@ class WriteArticleState extends Equatable {
     bool? isZapSplitEnabled,
     List<ZapSplit>? zapsSplits,
     bool? tryToLoad,
+    List<Map<String, String>>? imetas,
   }) {
     return WriteArticleState(
       title: title ?? this.title,
@@ -78,6 +82,7 @@ class WriteArticleState extends Equatable {
       isZapSplitEnabled: isZapSplitEnabled ?? this.isZapSplitEnabled,
       zapsSplits: zapsSplits ?? this.zapsSplits,
       tryToLoad: tryToLoad ?? this.tryToLoad,
+      imetas: imetas ?? this.imetas,
     );
   }
 }

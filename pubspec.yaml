@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.2+184
+version: 2.0.3+186
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -61,9 +61,10 @@ dependencies:
       url: https://github.com/YakiHonne/flutter_math.git
       ref: main
   flutter_native_splash: ^2.4.1
+  flutter_rating_bar: ^4.0.1
   flutter_reorderable_grid_view: ^5.2.0
   flutter_scroll_shadow: ^1.2.3
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.0.0
   flutter_slidable: ^4.0.0
   flutter_spinkit: ^5.2.0
   flutter_staggered_grid_view: ^0.7.0

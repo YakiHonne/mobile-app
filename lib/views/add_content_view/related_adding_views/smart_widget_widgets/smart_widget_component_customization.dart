@@ -360,7 +360,7 @@ class SmartWidgetImageCustomization extends HookWidget {
                   context: context,
                   builder: (_) {
                     return ImageSelector(
-                      onTap: (link) {
+                      onTap: (link, {imeta}) {
                         url.value = link;
                         urlController.text = link;
                         t.call();
