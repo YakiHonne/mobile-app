@@ -1659,6 +1659,28 @@ class TranslationsRu extends Translations {
 	@override String get reschedule => 'Перенести';
 	@override String get noScheduledNotesFound => 'Запланированные заметки не найдены';
 	@override String get noScheduledNotesFoundDesc => 'Вы еще не запланировали ни одной заметки.';
+	@override String get sharePack => 'Поделиться пакетом';
+	@override String get errorSubmittingReview => 'Произошла ошибка при отправке отзыва';
+	@override String get reviewSubmitted => 'Отзыв успешно отправлен';
+	@override String get reviews => 'Отзывы';
+	@override String get noReviews => 'Нет отзывов';
+	@override String get noReviewsDesc => 'Отзывы не найдены';
+	@override String get writeReview => 'Написать отзыв';
+	@override String get writeComment => 'Написать комментарий...';
+	@override String get submitReview => 'Отправить отзыв';
+	@override String get loadingReviews => 'Загрузка отзывов';
+	@override String reviewsCount({required Object number}) => '(${number}) отзыв(ов) ';
+	@override String get requestCode => 'Код запроса';
+	@override String get noInviteCodeFound => 'Код приглашения не найден';
+	@override String get relayInviteCode => 'Код приглашения реле';
+	@override String get codeCopiedToClipboard => 'Код скопирован в буфер обмена';
+	@override String get joinRequestSent => 'Запрос на присоединение отправлен';
+	@override String get errorJoiningRelay => 'Ошибка при присоединении к реле';
+	@override String get errorLeavingRelay => 'Ошибка при выходе из реле';
+	@override String get getInviteCode => 'Получить код приглашения';
+	@override String get joinRelayDesc => 'Введите код приглашения, чтобы присоединиться к реле';
+	@override String get autoTranslation => 'Автоперевод';
+	@override String get autoTranslationDesc => 'Автоматически переводить заметки на ваш предпочтительный язык';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -3314,6 +3336,28 @@ extension on TranslationsRu {
 			'reschedule' => 'Перенести',
 			'noScheduledNotesFound' => 'Запланированные заметки не найдены',
 			'noScheduledNotesFoundDesc' => 'Вы еще не запланировали ни одной заметки.',
+			'sharePack' => 'Поделиться пакетом',
+			'errorSubmittingReview' => 'Произошла ошибка при отправке отзыва',
+			'reviewSubmitted' => 'Отзыв успешно отправлен',
+			'reviews' => 'Отзывы',
+			'noReviews' => 'Нет отзывов',
+			'noReviewsDesc' => 'Отзывы не найдены',
+			'writeReview' => 'Написать отзыв',
+			'writeComment' => 'Написать комментарий...',
+			'submitReview' => 'Отправить отзыв',
+			'loadingReviews' => 'Загрузка отзывов',
+			'reviewsCount' => ({required Object number}) => '(${number}) отзыв(ов) ',
+			'requestCode' => 'Код запроса',
+			'noInviteCodeFound' => 'Код приглашения не найден',
+			'relayInviteCode' => 'Код приглашения реле',
+			'codeCopiedToClipboard' => 'Код скопирован в буфер обмена',
+			'joinRequestSent' => 'Запрос на присоединение отправлен',
+			'errorJoiningRelay' => 'Ошибка при присоединении к реле',
+			'errorLeavingRelay' => 'Ошибка при выходе из реле',
+			'getInviteCode' => 'Получить код приглашения',
+			'joinRelayDesc' => 'Введите код приглашения, чтобы присоединиться к реле',
+			'autoTranslation' => 'Автоперевод',
+			'autoTranslationDesc' => 'Автоматически переводить заметки на ваш предпочтительный язык',
 			_ => null,
 		};
 	}

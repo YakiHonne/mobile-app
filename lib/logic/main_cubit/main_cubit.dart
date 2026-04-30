@@ -324,9 +324,7 @@ class MainCubit extends Cubit<MainState> {
     } else if (uriString.contains('yakihonne.com/pack/s') ||
         uriString.contains('yakihonne.com/pack/m')) {
       await _handlePackLink(uriString);
-    } else if (uriString.contains('yakihonne.com/r/discover/') ||
-        uriString.contains('yakihonne.com/r/notes/') ||
-        uriString.contains('yakihonne.com/r/content/')) {
+    } else if (uriString.contains('yakihonne.com/r/content/')) {
       final uri = Uri.parse(uriString);
       final relay = uri.queryParameters['r'];
 
@@ -766,9 +764,9 @@ class MainCubit extends Cubit<MainState> {
     final Map<String, dynamic> nostrDecode =
         Nip19.decodeShareableEntity(nostrUri);
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
-    final List<int> hexCode = hex.decode(nostrDecode['special']);
-    final String special = String.fromCharCodes(hexCode);
-    final List<String> relays = List<String>.from(nostrDecode['relays']);
+    final hexCode = hex.decode(nostrDecode['special']);
+    final special = String.fromCharCodes(hexCode);
+    final relays = List<String>.from(nostrDecode['relays'] ?? []);
 
     final event = await getForwardedEvent(
       kinds: nostrDecode['kind'] != null ? <int>[nostrDecode['kind']] : null,

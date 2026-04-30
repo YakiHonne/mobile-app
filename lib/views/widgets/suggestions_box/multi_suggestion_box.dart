@@ -160,9 +160,9 @@ class MultiSuggestionBox extends StatelessWidget {
     } else if (currentIndex == 2) {
       return !(c?.showSuggestedInterests ?? true);
     } else if (currentIndex == 3) {
-      return !(c?.showDonationBox ?? true && canSign());
+      return !(c?.showDonationBox ?? canSign());
     } else {
-      return !(c?.showShareBox ?? true && canSign());
+      return !(c?.showShareBox ?? canSign());
     }
   }
 

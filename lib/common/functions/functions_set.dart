@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 
 import 'package:aescryptojs/aescryptojs.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -473,7 +474,8 @@ Future<void> shareContent({
   await SharePlus.instance.share(
     ShareParams(
       text: text,
-      subject: subject ?? 'Sharing: $text',
+      files: files,
+      subject: subject ?? (text != null ? 'Sharing: $text' : 'Sharing'),
       previewThumbnail: logoXFile,
       sharePositionOrigin: renderBox != null
           ? renderBox.localToGlobal(Offset.zero) & renderBox.size
@@ -1492,4 +1494,48 @@ void showScheduledNoteDatePicker({
       ),
     ),
   );
+}
+
+String encodeGiftToken(Map<String, dynamic> payload) {
+  try {
+    final secret = dotenv
+        .get('NEXT_PUBLIC_ENC_SECRET', fallback: 'fallback_secret')
+        .trim();
+    final header = {'typ': 'JWT', 'alg': 'HS256'};
+
+    String base64url(List<int> source) {
+      return base64Url.encode(source).replaceAll('=', '');
+    }
+
+    final h = base64url(utf8.encode(jsonEncode(header)));
+    final p = base64url(utf8.encode(jsonEncode(payload)));
+
+    final hmac = Hmac(sha256, utf8.encode(secret));
+    final signaturePart = '$h.$p';
+    final signature = hmac.convert(utf8.encode(signaturePart));
+    final s = base64url(signature.bytes);
+
+    final token = '$h.$p.$s';
+    return token;
+  } catch (err) {
+    lg.e('JWT Encoding error: $err');
+    return '';
+  }
+}
+
+Map<String, dynamic> decodeGiftToken(String token) {
+  try {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      return {};
+    }
+
+    final payload = parts[1];
+    final normalized = base64.normalize(payload);
+    final decoded = utf8.decode(base64Url.decode(normalized));
+    return jsonDecode(decoded);
+  } catch (e) {
+    lg.e('Error decoding gift token: $e');
+    return {};
+  }
 }

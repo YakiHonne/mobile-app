@@ -9,6 +9,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../blossom_management_view.dart';
 
 class MediaUploaderSettings extends HookWidget {
   const MediaUploaderSettings({super.key});
@@ -247,7 +248,21 @@ class MediaUploaderSettings extends HookWidget {
                 },
                 itemCount: state.blossomServers.length,
               ),
-            )
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            StatusButton(
+              isDisabled: false,
+              onClicked: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlossomManagementView(
+                      blossomServers: state.blossomServers,
+                    ),
+                  ),
+                );
+              },
+              text: context.t.manageBlossomContent.capitalizeFirst(),
+            ),
           ] else if (!blossomTextFieldEnabled.value) ...[
             Text(
               context.t.noServerFound,

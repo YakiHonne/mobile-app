@@ -12,6 +12,7 @@ import '../../common/common_regex.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/app_view_config.dart';
 import '../../models/packs_model.dart';
+import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -393,8 +394,10 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return MapEntry(AppContentSource.relay, selectedSource);
     } else if (selectedSource.value is PacksModel) {
       return MapEntry(AppContentSource.packs, selectedSource);
-    } else {
+    } else if (selectedSource.value is UserRelaySet) {
       return MapEntry(AppContentSource.relaySet, selectedSource);
+    } else {
+      return MapEntry(AppContentSource.relay, selectedSource);
     }
   }
 
@@ -417,8 +420,10 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return MapEntry(AppContentSource.relay, selectedSource);
     } else if (selectedSource.value is PacksModel) {
       return MapEntry(AppContentSource.packs, selectedSource);
-    } else {
+    } else if (selectedSource.value is UserRelaySet) {
       return MapEntry(AppContentSource.relaySet, selectedSource);
+    } else {
+      return MapEntry(AppContentSource.relay, selectedSource);
     }
   }
 
@@ -441,8 +446,10 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
       return MapEntry(AppContentSource.relay, selectedSource);
     } else if (selectedSource.value is PacksModel) {
       return MapEntry(AppContentSource.packs, selectedSource);
-    } else {
+    } else if (selectedSource.value is UserRelaySet) {
       return MapEntry(AppContentSource.relaySet, selectedSource);
+    } else {
+      return MapEntry(AppContentSource.relay, selectedSource);
     }
   }
 

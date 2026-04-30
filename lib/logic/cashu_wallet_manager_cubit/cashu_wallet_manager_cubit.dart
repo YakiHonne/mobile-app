@@ -272,7 +272,9 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
 
       final activeMint = walletMints.contains(state.activeMint)
           ? state.activeMint
-          : walletMints.first;
+          : walletMints.isEmpty
+              ? ''
+              : walletMints.first;
 
       _emit(
         state.copyWith(

@@ -18,12 +18,19 @@ class WalletQrCodeView extends StatefulWidget {
   State<WalletQrCodeView> createState() => _WalletQrCodeViewState();
 }
 
-class _WalletQrCodeViewState extends State<WalletQrCodeView> with RouteAware {
+class _WalletQrCodeViewState extends State<WalletQrCodeView>
+    with RouteAware, WidgetsBindingObserver {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String invoice = '';
   bool isVisible = true;
   bool isSending = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void didChangeDependencies() {
@@ -37,13 +44,27 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView> with RouteAware {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     controller?.dispose();
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (controller == null) {
+      return;
+    }
+    if (state == AppLifecycleState.paused) {
+      controller!.pauseCamera();
+    } else if (state == AppLifecycleState.resumed && isVisible) {
+      controller!.resumeCamera();
+    }
+  }
+
+  @override
   void didPushNext() {
+    controller?.pauseCamera();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -52,6 +73,7 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView> with RouteAware {
 
   @override
   void didPopNext() {
+    controller?.resumeCamera();
     setState(() {
       isVisible = true;
     });

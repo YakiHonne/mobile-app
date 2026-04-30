@@ -47,7 +47,7 @@ class AppViewConfig {
           );
         }
 
-        return MapEntry(key, value);
+        return MapEntry(key, value ?? '');
       }
       return const MapEntry('', '');
     }

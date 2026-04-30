@@ -400,9 +400,16 @@ class NoteStats extends HookWidget {
               context: context,
               elevation: 0,
               builder: (_) {
+                final m = model;
+                bool isComment = false;
+                if (m is DetailedNoteModel) {
+                  isComment = isReplaceable(m.rootKind);
+                }
+
                 return AddReply(
                   attachedEvent: model,
                   isMention: false,
+                  isComment: isComment,
                   onSuccess: (ev) {
                     notesEventsCubit.addEventRelatedData(
                       event: ev,
@@ -493,7 +500,11 @@ class NoteStats extends HookWidget {
               builder: (_) {
                 if (model is DetailedNoteModel) {
                   final m = model as DetailedNoteModel;
+                  final isComment = isReplaceable(m.rootKind);
+
                   return AddReply(
+                    attachedEvent: isComment ? m : null,
+                    isComment: isComment,
                     onSuccess: (ev) {
                       notesEventsCubit.addEventRelatedData(
                         event: ev,

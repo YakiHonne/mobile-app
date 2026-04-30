@@ -15,6 +15,7 @@ import '../../../../models/bookmark_list_model.dart';
 import '../../../../models/detailed_note_model.dart';
 import '../../../../models/flash_news_model.dart';
 import '../../../../models/smart_widgets_components.dart';
+import '../../../../models/video_model.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../add_content_view/add_content_view.dart';
@@ -104,9 +105,6 @@ class DashboardNoteContainer extends StatelessWidget {
             children: [
               DashboardContentStats(id: note.id),
               if (note.isPaid) ...[
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
                 const PaidContainer(),
               ],
             ],
@@ -156,15 +154,21 @@ class DashboardContentStats extends HookWidget {
   const DashboardContentStats({
     super.key,
     required this.id,
+    this.includeComments = false,
   });
 
   final String id;
+  final bool includeComments;
 
   @override
   Widget build(BuildContext context) {
     useMemoized(
       () {
-        notesEventsCubit.getContentStats(id, r: true);
+        notesEventsCubit.getContentStats(
+          id,
+          r: true,
+          includeComments: includeComments,
+        );
       },
     );
 
@@ -297,7 +301,7 @@ class DashboardDraftContainer extends StatelessWidget {
             _draftInfo(context),
             if (article != null)
               PullDownGlobalButton(
-                model: article!,
+                model: article,
                 enableEdit: true,
                 enableDelete: true,
                 onDelete: () {
@@ -574,7 +578,12 @@ class DashboardContentContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                if (enableStats) DashboardContentStats(id: id),
+                if (enableStats)
+                  DashboardContentStats(
+                    id: id,
+                    includeComments:
+                        kind == EventKind.LONG_FORM || VideoModel.isVideo(kind),
+                  ),
                 if (isHiddenType == null || !isHiddenType!) ...[
                   const SizedBox(
                     width: kDefaultPadding / 4,
@@ -584,9 +593,6 @@ class DashboardContentContainer extends StatelessWidget {
                   ),
                 ],
                 if (isPaid ?? false) ...[
-                  const SizedBox(
-                    width: kDefaultPadding / 2,
-                  ),
                   const PaidContainer(),
                 ],
                 if (isRepost ?? false) ...[

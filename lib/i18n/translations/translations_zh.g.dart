@@ -1659,6 +1659,28 @@ class TranslationsZh extends Translations {
 	@override String get reschedule => '重新安排';
 	@override String get noScheduledNotesFound => '未找到安排的笔记';
 	@override String get noScheduledNotesFoundDesc => '您尚未安排任何笔记。';
+	@override String get sharePack => '分享包';
+	@override String get errorSubmittingReview => '提交评价时出错';
+	@override String get reviewSubmitted => '评价提交成功';
+	@override String get reviews => '评价';
+	@override String get noReviews => '暂无评价';
+	@override String get noReviewsDesc => '未找到评价';
+	@override String get writeReview => '写评价';
+	@override String get writeComment => '写评论...';
+	@override String get submitReview => '提交评价';
+	@override String get loadingReviews => '正在加载评价';
+	@override String reviewsCount({required Object number}) => '(${number}) 条评价 ';
+	@override String get requestCode => '请求代码';
+	@override String get noInviteCodeFound => '未找到邀请码';
+	@override String get relayInviteCode => '中继邀请码';
+	@override String get codeCopiedToClipboard => '代码已复制到剪贴板';
+	@override String get joinRequestSent => '加入请求已发送';
+	@override String get errorJoiningRelay => '加入中继时出错';
+	@override String get errorLeavingRelay => '离开中继时出错';
+	@override String get getInviteCode => '获取邀请码';
+	@override String get joinRelayDesc => '输入邀请码以加入中继';
+	@override String get autoTranslation => '自动翻译';
+	@override String get autoTranslationDesc => '自动将笔记翻译为您首选的语言';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -3314,6 +3336,28 @@ extension on TranslationsZh {
 			'reschedule' => '重新安排',
 			'noScheduledNotesFound' => '未找到安排的笔记',
 			'noScheduledNotesFoundDesc' => '您尚未安排任何笔记。',
+			'sharePack' => '分享包',
+			'errorSubmittingReview' => '提交评价时出错',
+			'reviewSubmitted' => '评价提交成功',
+			'reviews' => '评价',
+			'noReviews' => '暂无评价',
+			'noReviewsDesc' => '未找到评价',
+			'writeReview' => '写评价',
+			'writeComment' => '写评论...',
+			'submitReview' => '提交评价',
+			'loadingReviews' => '正在加载评价',
+			'reviewsCount' => ({required Object number}) => '(${number}) 条评价 ',
+			'requestCode' => '请求代码',
+			'noInviteCodeFound' => '未找到邀请码',
+			'relayInviteCode' => '中继邀请码',
+			'codeCopiedToClipboard' => '代码已复制到剪贴板',
+			'joinRequestSent' => '加入请求已发送',
+			'errorJoiningRelay' => '加入中继时出错',
+			'errorLeavingRelay' => '离开中继时出错',
+			'getInviteCode' => '获取邀请码',
+			'joinRelayDesc' => '输入邀请码以加入中继',
+			'autoTranslation' => '自动翻译',
+			'autoTranslationDesc' => '自动将笔记翻译为您首选的语言',
 			_ => null,
 		};
 	}

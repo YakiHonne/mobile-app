@@ -31,6 +31,8 @@ import '../../widgets/profile_picture.dart';
 import '../../widgets/pull_down_global_button.dart';
 import '../../widgets/response_snackbar.dart';
 import 'camera_options_view.dart';
+import 'dm_gift_widget.dart';
+import 'send_gift_view.dart';
 
 /// Main DM Details screen with messaging functionality
 class DmDetails extends HookWidget {
@@ -617,6 +619,8 @@ class DmTextfieldBox extends StatelessWidget {
   Widget _buildExpandedMediaButtons(BuildContext context) {
     return Row(
       children: [
+        _buildGiftButton(context),
+        const SizedBox(width: kDefaultPadding / 2),
         _buildGiphyButton(context),
         const SizedBox(width: kDefaultPadding / 2),
         _buildCameraButton(context),
@@ -631,6 +635,24 @@ class DmTextfieldBox extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
         child: SvgPicture.asset(
           FeatureIcons.gif,
+          width: _iconSize,
+          height: _iconSize,
+          colorFilter: ColorFilter.mode(
+            Theme.of(context).primaryColorDark,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGiftButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showGiftView(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
+        child: SvgPicture.asset(
+          FeatureIcons.dmGift,
           width: _iconSize,
           height: _iconSize,
           colorFilter: ColorFilter.mode(
@@ -740,6 +762,18 @@ class DmTextfieldBox extends StatelessWidget {
       useRootNavigator: true,
       elevation: 0,
       useSafeArea: true,
+    );
+  }
+
+  void _showGiftView(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SendGiftView(receiverPubkey: pubkey),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      elevation: 0,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -1319,7 +1353,10 @@ class DmChatContainer extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (replyId != null) _buildReplySection(context, replyId),
-          _buildMessageContent(context, contentText),
+          if (_isGift(contentText))
+            DMGiftWidget(token: contentText, isCurrentUser: isCurrentUser)
+          else
+            _buildMessageContent(context, contentText),
           const SizedBox(height: kDefaultPadding / 4),
           _buildMessageFooter(context),
         ],
@@ -1439,6 +1476,14 @@ class DmChatContainer extends HookWidget {
         );
       },
     );
+  }
+
+  bool _isGift(String text) {
+    if (text.isEmpty) {
+      return false;
+    }
+    final parts = text.split('.');
+    return parts.length == 3 && !text.contains(' ');
   }
 }
 

@@ -83,7 +83,7 @@ class WotConfigurationCubit extends Cubit<WotConfigurationState> {
     );
 
     if (conf.notifications != state.notifications) {
-      notificationsCubit.initNotifications();
+      notificationsCubit.initNotifications(isRefresh: true);
     }
 
     return super.close();

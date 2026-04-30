@@ -1195,6 +1195,87 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     }
   }
 
+  Future<void> payInvoiceAndGetPreimage({
+    required String invoice,
+    required Function(String) onSuccess,
+    Function(String)? onFailure,
+    bool useDefaultWallet = false,
+  }) async {
+    if (invoice.isEmpty || !invoice.toLowerCase().startsWith('lnbc')) {
+      final message = mainContext.t.submitValidInvoice.capitalizeFirst();
+      _handlePaymentFailure(onFailure, message);
+      return;
+    }
+
+    if (state.selectedWalletId.isEmpty) {
+      return;
+    }
+
+    _setPaymentLoadingState();
+
+    if (useDefaultWallet) {
+      final isSuccess = await ZapAction.forwardInvoice(
+        invoice: invoice,
+        specifiedWallet: wallets[state.defaultExternalWallet]!['deeplink']!,
+      );
+
+      if (!isSuccess) {
+        onFailure?.call(
+          mainContext.t.unreachableExternalWallet.capitalizeFirst(),
+        );
+      } else {
+        onSuccess.call('');
+      }
+    } else {
+      final selectedWallet = state.wallets[state.selectedWalletId];
+
+      if (selectedWallet is NostrWalletConnectModel) {
+        final data = await performNwcAction(
+          jsonEncode({
+            'method': NWC_PAY_INVOICE,
+            'params': {
+              'invoice': invoice,
+            },
+          }),
+          selectedWallet,
+        );
+
+        if (data['result'] != null &&
+            data['result']['preimage'] != null &&
+            (data['result']['preimage'] as String).isNotEmpty) {
+          onSuccess.call(data['result']['preimage'] as String);
+          requestBalance();
+        } else {
+          final message = mainContext.t.paymentFailedInvoice.capitalizeFirst();
+          _handlePaymentFailure(onFailure, message);
+        }
+      } else if (selectedWallet is AlbyConnectModel) {
+        final token = await checkAlbyWalletBeforeRequest(
+            albyConnectModel: selectedWallet);
+        if (token != null) {
+          final data = await HttpFunctionsRepository.sendAlbyPayment(
+            token: token,
+            invoice: invoice,
+          );
+
+          if (data.isNotEmpty) {
+            requestBalance();
+            onSuccess.call(data['preimage'] ?? '');
+          } else {
+            final message =
+                mainContext.t.paymentFailedInvoice.capitalizeFirst();
+            _handlePaymentFailure(onFailure, message);
+          }
+        } else {
+          final message = mainContext.t.errorUsingWallet.capitalizeFirst();
+          _handlePaymentFailure(onFailure, message);
+        }
+      }
+    }
+
+    _setPaymentLoadingState(false);
+  }
+
   // =============================================================================
   // ZAP SPLITS & INVOICE GENERATION
   // =============================================================================

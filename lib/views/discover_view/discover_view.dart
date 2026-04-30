@@ -267,18 +267,20 @@ class SourceButton extends HookWidget {
                         : appSettingsManagerCubit.getMediaSelectedSource();
 
                 final title = source.key == AppContentSource.relay
-                    ? Relay.removeSocket(source.value.value) ??
-                        source.value.value
+                    ? Relay.removeSocket(source.value.value?.toString() ?? '') ??
+                        source.value.value?.toString() ??
+                        ''
                     : source.key == AppContentSource.packs
-                        ? (source.value.value as PacksModel).title
+                        ? (source.value.value as PacksModel?)?.title ?? ''
                         : source.key == AppContentSource.relaySet
-                            ? (source.value.value as UserRelaySet).getTitle()
+                            ? (source.value.value as UserRelaySet?)?.getTitle() ??
+                                ''
                             : getSourceName(
                                 name: viewType == ViewDataTypes.articles
-                                    ? state.selectedDiscoverSource.value
+                                    ? state.selectedDiscoverSource.value ?? ''
                                     : viewType == ViewDataTypes.notes
-                                        ? state.selectedNotesSource.value
-                                        : state.selectedMediaSource.value,
+                                        ? state.selectedNotesSource.value ?? ''
+                                        : state.selectedMediaSource.value ?? '',
                               ).capitalizeFirst();
 
                 return Text(
@@ -335,10 +337,13 @@ class SourceImage extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: source.key == AppContentSource.community
-                  ? getCommunityImage(context: context, url: source.value.value)
+                  ? getCommunityImage(
+                      context: context,
+                      url: source.value.value?.toString() ?? '',
+                    )
                   : source.key == AppContentSource.packs
                       ? CommonThumbnail(
-                          image: (source.value.value as PacksModel).image,
+                          image: (source.value.value as PacksModel?)?.image ?? '',
                           width: 26,
                           height: 26,
                           isRound: true,
@@ -347,11 +352,12 @@ class SourceImage extends StatelessWidget {
                       : source.key == AppContentSource.relaySet
                           ? getRelaySetImage(
                               context: context,
-                              url: (source.value.value as UserRelaySet).image,
+                              url: (source.value.value as UserRelaySet?)?.image ??
+                                  '',
                             )
                           : getRelayImage(
                               context: context,
-                              url: source.value.value,
+                              url: source.value.value?.toString() ?? '',
                             ),
             ),
           ),

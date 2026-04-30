@@ -40,11 +40,13 @@ class AddReply extends HookWidget {
     this.replyContent,
     this.onSuccess,
     this.isMention,
+    this.isComment,
   });
 
   final Map<String, dynamic>? replyContent;
   final BaseEventModel? attachedEvent;
   final bool? isMention;
+  final bool? isComment;
   final Function(Event)? onSuccess;
 
   @override
@@ -165,37 +167,50 @@ class AddReply extends HookWidget {
       builder: (context, state) {
         return CustomIconButton(
           onClicked: () {
-            context.read<WriteNoteCubit>().postNote(
-                  content: getRawText(controller),
-                  replyContent: replyContent,
-                  signer: signer.value,
-                  scheduled: scheduled.value,
-                  useSourceRelay: false,
-                  isPaid: false,
-                  onPaymentProcess: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return BlocProvider.value(
-                          value: context.read<WriteNoteCubit>(),
-                          child: const PaidNoteProcess(
-                            checkZap: false,
-                          ),
-                        );
-                      },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      elevation: 0,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                    );
-                  },
-                  onSuccess: (ev) {
-                    Navigator.pop(nostrRepository.currentContext());
-                    onSuccess?.call(ev);
-                  },
-                );
+            if (isComment ?? false) {
+              context.read<WriteNoteCubit>().postComment(
+                    content: getRawText(controller),
+                    signer: signer.value,
+                    replyContent: replyContent,
+                    scheduled: scheduled.value,
+                    onSuccess: (ev) {
+                      Navigator.pop(nostrRepository.currentContext());
+                      onSuccess?.call(ev);
+                    },
+                  );
+            } else {
+              context.read<WriteNoteCubit>().postNote(
+                    content: getRawText(controller),
+                    replyContent: replyContent,
+                    signer: signer.value,
+                    scheduled: scheduled.value,
+                    useSourceRelay: false,
+                    isPaid: false,
+                    onPaymentProcess: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) {
+                          return BlocProvider.value(
+                            value: context.read<WriteNoteCubit>(),
+                            child: const PaidNoteProcess(
+                              checkZap: false,
+                            ),
+                          );
+                        },
+                        isScrollControlled: true,
+                        useRootNavigator: true,
+                        useSafeArea: true,
+                        elevation: 0,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                      );
+                    },
+                    onSuccess: (ev) {
+                      Navigator.pop(nostrRepository.currentContext());
+                      onSuccess?.call(ev);
+                    },
+                  );
+            }
           },
           icon: FeatureIcons.send,
           size: 20,
@@ -217,6 +232,7 @@ class NoteWritingComponent extends HookWidget {
     this.isMention,
     this.isNewNote,
     this.replyId,
+    this.selectedExternalRelay,
     required this.scheduled,
     this.isPaid,
     this.useSourceRelay,
@@ -230,6 +246,7 @@ class NoteWritingComponent extends HookWidget {
   final BaseEventModel? attachedEvent;
   final bool? isMention;
   final bool? isNewNote;
+  final String? selectedExternalRelay;
   final String? replyId;
   final MentionTagTextEditingController controller;
   final ValueNotifier<bool>? isPaid;
@@ -303,8 +320,11 @@ class NoteWritingComponent extends HookWidget {
             ),
           ),
         ),
-        if (useSourceRelay != null) ...[
-          NoteSelectedRelay(useSourceRelay: useSourceRelay),
+        if (useSourceRelay != null || selectedExternalRelay != null) ...[
+          NoteSelectedRelay(
+            useSourceRelay: useSourceRelay,
+            selectedExternalRelay: selectedExternalRelay,
+          ),
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
@@ -342,16 +362,25 @@ class NoteWritingComponent extends HookWidget {
 class NoteSelectedRelay extends StatelessWidget {
   const NoteSelectedRelay({
     super.key,
-    required this.useSourceRelay,
+    this.selectedExternalRelay,
+    this.useSourceRelay,
   });
 
+  final String? selectedExternalRelay;
   final ValueNotifier<bool>? useSourceRelay;
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final snc = appSettingsManagerCubit.getNoteSourceRelay();
+        final isExternal = selectedExternalRelay != null;
+        String? snc;
+
+        if (selectedExternalRelay != null) {
+          snc = selectedExternalRelay;
+        } else {
+          snc = appSettingsManagerCubit.getNoteSourceRelay();
+        }
 
         if (snc != null) {
           return Container(
@@ -373,16 +402,18 @@ class NoteSelectedRelay extends StatelessWidget {
             child: Row(
               children: [
                 _relayInfo(context, snc),
-                Transform.scale(
-                  scale: 0.7,
-                  child: CupertinoSwitch(
-                    value: useSourceRelay!.value,
-                    onChanged: (isToggled) {
-                      useSourceRelay!.value = !useSourceRelay!.value;
-                    },
-                    activeTrackColor: Theme.of(context).primaryColor,
+                if (!isExternal) ...[
+                  Transform.scale(
+                    scale: 0.7,
+                    child: CupertinoSwitch(
+                      value: useSourceRelay!.value,
+                      onChanged: (isToggled) {
+                        useSourceRelay!.value = !useSourceRelay!.value;
+                      },
+                      activeTrackColor: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           );

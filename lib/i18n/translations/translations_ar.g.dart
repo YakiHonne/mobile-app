@@ -1659,6 +1659,28 @@ class TranslationsAr extends Translations {
 	@override String get reschedule => 'إعادة الجدولة';
 	@override String get noScheduledNotesFound => 'لم يتم العثور على ملاحظات مجدولة';
 	@override String get noScheduledNotesFoundDesc => 'لم تقم بجدولة أي ملاحظات بعد.';
+	@override String get sharePack => 'مشاركة الحزمة';
+	@override String get errorSubmittingReview => 'حدث خطأ أثناء تقديم المراجعة';
+	@override String get reviewSubmitted => 'تم تقديم المراجعة بنجاح';
+	@override String get reviews => 'المراجعات';
+	@override String get noReviews => 'لا توجد مراجعات';
+	@override String get noReviewsDesc => 'لم يتم العثور على مراجعات';
+	@override String get writeReview => 'كتابة مراجعة';
+	@override String get writeComment => 'اكتب تعليقاً...';
+	@override String get submitReview => 'تقديم المراجعة';
+	@override String get loadingReviews => 'جاري تحميل المراجعات';
+	@override String reviewsCount({required Object number}) => '(${number}) مراجعة ';
+	@override String get requestCode => 'طلب الكود';
+	@override String get noInviteCodeFound => 'لم يتم العثور على كود دعوة';
+	@override String get relayInviteCode => 'كود دعوة المرحل';
+	@override String get codeCopiedToClipboard => 'تم نسخ الكود إلى الحافظة';
+	@override String get joinRequestSent => 'تم إرسال طلب الانضمام';
+	@override String get errorJoiningRelay => 'خطأ في الانضمام إلى المرحل';
+	@override String get errorLeavingRelay => 'خطأ في مغادرة المرحل';
+	@override String get getInviteCode => 'الحصول على كود الدعوة';
+	@override String get joinRelayDesc => 'أدخل كود الدعوة للانضمام إلى المرحل';
+	@override String get autoTranslation => 'الترجمة التلقائية';
+	@override String get autoTranslationDesc => 'ترجمة الملاحظات تلقائيًا إلى لغتك المفضلة';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -3314,6 +3336,28 @@ extension on TranslationsAr {
 			'reschedule' => 'إعادة الجدولة',
 			'noScheduledNotesFound' => 'لم يتم العثور على ملاحظات مجدولة',
 			'noScheduledNotesFoundDesc' => 'لم تقم بجدولة أي ملاحظات بعد.',
+			'sharePack' => 'مشاركة الحزمة',
+			'errorSubmittingReview' => 'حدث خطأ أثناء تقديم المراجعة',
+			'reviewSubmitted' => 'تم تقديم المراجعة بنجاح',
+			'reviews' => 'المراجعات',
+			'noReviews' => 'لا توجد مراجعات',
+			'noReviewsDesc' => 'لم يتم العثور على مراجعات',
+			'writeReview' => 'كتابة مراجعة',
+			'writeComment' => 'اكتب تعليقاً...',
+			'submitReview' => 'تقديم المراجعة',
+			'loadingReviews' => 'جاري تحميل المراجعات',
+			'reviewsCount' => ({required Object number}) => '(${number}) مراجعة ',
+			'requestCode' => 'طلب الكود',
+			'noInviteCodeFound' => 'لم يتم العثور على كود دعوة',
+			'relayInviteCode' => 'كود دعوة المرحل',
+			'codeCopiedToClipboard' => 'تم نسخ الكود إلى الحافظة',
+			'joinRequestSent' => 'تم إرسال طلب الانضمام',
+			'errorJoiningRelay' => 'خطأ في الانضمام إلى المرحل',
+			'errorLeavingRelay' => 'خطأ في مغادرة المرحل',
+			'getInviteCode' => 'الحصول على كود الدعوة',
+			'joinRelayDesc' => 'أدخل كود الدعوة للانضمام إلى المرحل',
+			'autoTranslation' => 'الترجمة التلقائية',
+			'autoTranslationDesc' => 'ترجمة الملاحظات تلقائيًا إلى لغتك المفضلة',
 			_ => null,
 		};
 	}

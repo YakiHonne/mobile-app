@@ -197,8 +197,9 @@ class SingleImageChoice extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: onClicked ??
           () async {
-            final data = await MediaHandler.selectMediaAndUploadWithData(mediaType);
-            if (data != null) {
+            final data =
+                await MediaHandler.selectMediaAndUploadWithData(mediaType);
+            if (data != null && data['url'] != null) {
               onUrlProvided.call(data['url']!, imeta: data);
             }
           },

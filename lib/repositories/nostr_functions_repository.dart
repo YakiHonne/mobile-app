@@ -585,114 +585,6 @@ class NostrFunctionsRepository {
   }
 
   // =============================================================================
-  // UNSENT EVENTS
-  // =============================================================================
-
-  // =============================================================================
-  // NOTES FUNCTIONS
-  // =============================================================================
-
-  static Future<void> getDetailedNotes({
-    required Function(List<Event>) onNotesFunc,
-    required Function() onDone,
-    required List<int> kinds,
-    required bool isReplies,
-    List<String>? pubkeys,
-    List<String>? tags,
-    List<String>? lTags,
-    List<String>? ids,
-    int? since,
-    int? until,
-    int? limit,
-    bool? isFeed,
-  }) async {
-    List<String> currentUncompletedRelays = nc.activeRelays();
-    final Map<String, Event> notesToBeEmitted = {};
-
-    final f1 = Filter(
-      kinds: kinds,
-      authors: pubkeys,
-      t: tags,
-      l: lTags,
-      ids: ids,
-      until: until,
-      limit: limit,
-    );
-
-    final id = await nc.doSubscribe(
-      [f1],
-      [],
-      eventCallBack: (event, relay) {
-        if (event.kind == EventKind.TEXT_NOTE) {
-          final ev = ExtendedEvent.fromEv(event);
-
-          if (isReplies && ev.root != null) {
-            if (ev.isSimpleNote()) {
-              final note = DetailedNoteModel.fromEvent(event);
-              final oldNote = notesToBeEmitted[note.id];
-
-              if (!isUserMuted(note.pubkey)) {
-                if (oldNote == null || event.createdAt > oldNote.createdAt) {
-                  notesToBeEmitted[note.id] = event;
-                }
-              }
-            }
-          } else if (!isReplies && event.root == null) {
-            if (ev.isSimpleNote()) {
-              final note = DetailedNoteModel.fromEvent(event);
-              final oldNote = notesToBeEmitted[note.id];
-
-              if (!isUserMuted(note.pubkey)) {
-                if (oldNote == null || event.createdAt > oldNote.createdAt) {
-                  notesToBeEmitted[note.id] = event;
-                }
-              }
-            }
-          }
-        } else if (event.kind == EventKind.REPOST) {
-          if (!isUserMuted(event.pubkey)) {
-            final oldRepost = notesToBeEmitted[event.id];
-            if (oldRepost == null || event.createdAt > oldRepost.createdAt) {
-              notesToBeEmitted[event.id] = event;
-            }
-          }
-        }
-      },
-      eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
-        currentUncompletedRelays = unCompletedRelays;
-        if (ok.status && notesToBeEmitted.isNotEmpty) {
-          final Set<String> authors = {};
-
-          for (final element in notesToBeEmitted.values) {
-            authors.add(element.pubkey);
-          }
-
-          final updatedNotes = notesToBeEmitted.values.toList();
-
-          updatedNotes.sort(
-            (a, b) => b.createdAt.compareTo(a.createdAt),
-          );
-
-          onNotesFunc.call(updatedNotes);
-        }
-
-        nc.closeSubscription(curationRequestId, relay);
-      },
-    );
-
-    Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) {
-        if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
-          timer.cancel();
-          onDone.call();
-          nc.closeRequests([id]);
-        }
-      },
-    );
-  }
-
-  // =============================================================================
   // VIDEOS FUNCTIONS
   // =============================================================================
 
@@ -1577,6 +1469,7 @@ class NostrFunctionsRepository {
     List<String>? pubkeys,
     int? since,
     int? until,
+    bool includeComments = false,
   }) {
     final controller = StreamController<Event>();
     List<String> currentUncompletedRelays = nc.activeRelays();
@@ -1589,7 +1482,12 @@ class NostrFunctionsRepository {
       final f1 = Filter(
         e: nds,
         authors: pubkeys,
-        kinds: [EventKind.TEXT_NOTE, EventKind.REACTION, EventKind.REPOST],
+        kinds: [
+          EventKind.TEXT_NOTE,
+          EventKind.REACTION,
+          EventKind.REPOST,
+          if (includeComments) EventKind.COMMENT,
+        ],
         since: since,
         until: until,
       );
@@ -1618,7 +1516,12 @@ class NostrFunctionsRepository {
       final f1 = Filter(
         a: atgs,
         authors: pubkeys,
-        kinds: [EventKind.TEXT_NOTE, EventKind.REACTION, EventKind.REPOST],
+        kinds: [
+          EventKind.TEXT_NOTE,
+          EventKind.REACTION,
+          EventKind.REPOST,
+          if (includeComments) EventKind.COMMENT,
+        ],
         since: since,
         until: until,
       );

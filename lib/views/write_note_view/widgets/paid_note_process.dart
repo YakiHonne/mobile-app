@@ -32,28 +32,29 @@ class PaidNoteProcess extends HookWidget {
 
     useEffect(
       () {
-        if (!checkZap) {
-          isZapConfirmed.value = false;
-          return null;
-        }
+        final walletsCubit = context.read<WalletsManagerCubit>();
 
-        final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
-        if (event != null) {
-          NostrFunctionsRepository.checkPayment(
-            event.id,
-            skipDelay: true,
-          ).then((value) {
-            if (context.mounted) {
-              isZapConfirmed.value = value;
-            }
-          });
+        if (checkZap) {
+          final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
+          if (event != null) {
+            NostrFunctionsRepository.checkPayment(
+              event.id,
+              skipDelay: true,
+            ).then((value) {
+              if (context.mounted) {
+                isZapConfirmed.value = value;
+              }
+            });
+          } else {
+            isZapConfirmed.value = false;
+          }
         } else {
           isZapConfirmed.value = false;
         }
 
-        return walletManagerCubit.resetInvoice;
+        return walletsCubit.resetInvoice;
       },
-      [],
+      [checkZap],
     );
 
     return Container(

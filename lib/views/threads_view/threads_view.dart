@@ -30,6 +30,9 @@ class ContentThreadsView extends HookWidget {
 
     final f = useCallback(
       () async {
+        notesEventsCubit.getSpecificContentStats(aTag,
+            r: true, includeComments: true);
+
         final events = await notesEventsCubit.loadNoteRelatedEvents(
           id: aTag,
           type: NoteRelatedEventsType.replies,

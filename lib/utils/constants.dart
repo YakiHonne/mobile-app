@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v2.0.3+186';
+const String appVersion = 'v2.0.4+188';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -839,3 +839,17 @@ const Map<String, String> currenciesSymbols = {
   'uah': '₴',
   'bdt': '৳',
 };
+
+const giftCovers = [
+  '',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-1.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-7.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-2.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-8.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-3.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-9.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-4.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-5.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-10.jpg',
+  'https://yakihonne.s3.ap-east-1.amazonaws.com/redpacket/cover-6.jpg',
+];

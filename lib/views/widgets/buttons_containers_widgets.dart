@@ -140,17 +140,20 @@ class StatusButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: !isDisabled ? onClicked : null,
-      style: TextButton.styleFrom(
-        backgroundColor:
-            isDisabled ? kDimGrey : (color ?? Theme.of(context).primaryColor),
-        visualDensity: VisualDensity.comfortable,
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: kWhite,
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: !isDisabled ? onClicked : null,
+        style: TextButton.styleFrom(
+          backgroundColor:
+              isDisabled ? kDimGrey : (color ?? Theme.of(context).primaryColor),
+          visualDensity: VisualDensity.comfortable,
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: kWhite,
+          ),
         ),
       ),
     );

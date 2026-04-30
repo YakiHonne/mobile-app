@@ -9,8 +9,13 @@ import 'package:nostr_core_enhanced/nostr_core.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
+import '../../models/article_model.dart';
+import '../../models/curation_model.dart';
+import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/smart_widgets_components.dart';
 import '../../models/unpaid_note.dart';
+import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -125,11 +130,13 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     String? qTag;
 
     if (state.isQuotedContentAvailable) {
-      qTag = getBaseEventModelId(ae!);
+      if (state.isMention) {
+        qTag = getBaseEventModelId(ae!);
 
-      updatedContent = '$updatedContent \nnostr:${ae.getScheme()}';
+        updatedContent = '$updatedContent \nnostr:${ae.getScheme()}';
+      }
 
-      if (!pTags.contains(ae.pubkey)) {
+      if (!pTags.contains(ae!.pubkey)) {
         pTags.add(ae.pubkey);
       }
     }
@@ -205,10 +212,25 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       }
     }
 
+    int kind = EventKind.TEXT_NOTE;
+    if (replyContent != null && replyContent['parentKind'] != null) {
+      final pKind = replyContent['parentKind'] as int;
+      if (pKind == EventKind.LONG_FORM ||
+          pKind == EventKind.VIDEO_HORIZONTAL ||
+          pKind == EventKind.VIDEO_VERTICAL ||
+          pKind == EventKind.VIDEO_VIEW ||
+          pKind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
+          pKind == EventKind.LEGACY_VIDEO_VERTICAL ||
+          pKind == EventKind.COMMENT) {
+        kind = EventKind.COMMENT;
+        tags.add(['k', pKind.toString()]);
+      }
+    }
+
     final cancel = BotToastUtils.showLoading();
 
     final event = await Event.genEvent(
-      kind: EventKind.TEXT_NOTE,
+      kind: kind,
       tags: tags,
       content: updatedContent,
       signer: signer,
@@ -222,7 +244,6 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       return;
     }
 
-    lg.i(event.toJson());
     if (!isPaid) {
       await sendEventAndVerify(
         event: event,
@@ -249,7 +270,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
 
   Future<void> sendEventAndVerify({
     required Event event,
-    required Function(Event) onSuccess,
+    Function(Event)? onSuccess,
     Map<String, dynamic>? replyContent,
     String? relay,
     DateTime? scheduled,
@@ -299,7 +320,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
             : t.notePublished.capitalizeFirst(),
       );
       resetDraft(replyContent);
-      onSuccess.call(event);
+      onSuccess?.call(event);
     } else {
       BotToastUtils.showError(
         t.errorSendingEvent.capitalizeFirst(),
@@ -406,5 +427,189 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     );
 
     return isSuccessful;
+  }
+
+  Future<void> postComment({
+    required String content,
+    required EventSigner signer,
+    Map<String, dynamic>? replyContent,
+    String? relay,
+    DateTime? scheduled,
+    Function(Event)? onSuccess,
+  }) async {
+    final t = nostrRepository.currentContext().t;
+    final ae = state.quotedContent;
+    if (ae == null) {
+      return;
+    }
+
+    final updatedContent = sanitizeContent(content);
+
+    final tags = <List<String>>[];
+
+    // NIP-22 tags
+    String? rootId;
+    String? rootAddress;
+    int? rootKind;
+    String? rootPubkey;
+
+    String? parentId;
+    String? parentAddress;
+    int? parentKind;
+    String? parentPubkey;
+
+    if (ae is DetailedNoteModel) {
+      rootId = ae.rootId;
+      rootAddress = ae.rootAddress;
+      rootKind = ae.rootKind;
+      rootPubkey = ae.rootPubkey;
+
+      parentId = ae.id;
+      parentKind = ae.kind;
+      parentPubkey = ae.pubkey;
+    } else {
+      rootId = ae.id;
+      rootPubkey = ae.pubkey;
+
+      if (ae is Article) {
+        rootKind = EventKind.LONG_FORM;
+        rootAddress = '$rootKind:${ae.pubkey}:${ae.identifier}';
+      } else if (ae is VideoModel) {
+        rootKind = ae.kind;
+        rootAddress = '${ae.kind}:${ae.pubkey}:${ae.identifier}';
+      } else if (ae is Curation) {
+        rootKind = ae.kind;
+        rootAddress = '${ae.kind}:${ae.pubkey}:${ae.identifier}';
+      } else if (ae is SmartWidget) {
+        rootKind = EventKind.SMART_WIDGET_ENH;
+        rootAddress = ae.aTag();
+      }
+
+      parentAddress = rootAddress;
+      parentId = rootId;
+      parentKind = rootKind;
+      parentPubkey = rootPubkey;
+    }
+
+    if (rootAddress != null) {
+      tags.add(['A', rootAddress, '']);
+    } else if (rootId != null) {
+      tags.add(['E', rootId, '', rootPubkey ?? '']);
+    }
+
+    if (rootKind != null) {
+      tags.add(['K', rootKind.toString()]);
+    }
+    if (rootPubkey != null) {
+      tags.add(['P', rootPubkey, '']);
+    }
+
+    if (parentAddress != null) {
+      tags.add(['a', parentAddress, '']);
+    }
+
+    tags.add(['e', parentId, '', parentPubkey]);
+
+    if (parentKind != null) {
+      tags.add(['k', parentKind.toString()]);
+    }
+
+    tags.add(['p', parentPubkey, '']);
+
+    final hashtags = getTtags(content);
+    final nadresses = getNaddr(content);
+    String? qTag;
+    bool hasSmartWidget = false;
+
+    if (state.isQuotedContentAvailable) {
+      qTag = getBaseEventModelId(ae);
+    }
+
+    for (final naddr in nadresses) {
+      if (naddr.kind == EventKind.SMART_WIDGET_ENH) {
+        hasSmartWidget = true;
+      }
+    }
+
+    // Only add q tag if it's NOT the article/video or parent comment we are replying to
+    // (since they are already in NIP-22 tags)
+    if (qTag != null &&
+        qTag != rootAddress &&
+        qTag != rootId &&
+        qTag != parentAddress &&
+        qTag != parentId) {
+      tags.add(['q', qTag]);
+    }
+
+    if (hasSmartWidget) {
+      tags.add(['l', 'smart-widget']);
+    }
+
+    if (hashtags.isNotEmpty) {
+      tags.addAll(hashtags.map((t) => ['t', t.split('#')[1]]));
+    }
+
+    if (nadresses.isNotEmpty) {
+      tags.addAll(Nip33.coordinatesToTagsWithMentions(nadresses));
+    }
+
+    if (replyContent != null && replyContent['pTags'] != null) {
+      final pTags = (replyContent['pTags'] as List<String>?)
+              ?.where((e) => e.isNotEmpty) ??
+          [];
+      tags.addAll(pTags
+          .where((p) => p != signer.getPublicKey())
+          .map((p) => ['p', p, '', 'mention']));
+    }
+
+    // Add imeta
+    for (final imeta in state.imetas) {
+      if (imeta['url'] != null &&
+          (state.medias.contains(imeta['url']) ||
+              updatedContent.contains(imeta['url']!))) {
+        final imetaTag = <String>['imeta'];
+        imeta.forEach((key, value) {
+          if (value.isNotEmpty &&
+              (key == 'url' ||
+                  key == 'm' ||
+                  key == 'x' ||
+                  key == 'size' ||
+                  key == 'dim' ||
+                  key == 'blurhash' ||
+                  key == 'duration')) {
+            imetaTag.add('$key $value');
+          }
+        });
+        tags.add(imetaTag);
+      }
+    }
+
+    final cancel = BotToastUtils.showLoading();
+
+    final event = await Event.genEvent(
+      kind: EventKind.COMMENT,
+      tags: tags,
+      content: updatedContent,
+      signer: signer,
+      createdAt: scheduled?.toSecondsSinceEpoch() ?? 0,
+    );
+
+    if (event == null) {
+      BotToastUtils.showError(t.errorGeneratingEvent.capitalizeFirst());
+      cancel.call();
+      return;
+    }
+
+    lg.i(event.toJson());
+
+    await sendEventAndVerify(
+      event: event,
+      onSuccess: onSuccess,
+      replyContent: replyContent,
+      relay: relay,
+      scheduled: scheduled,
+    );
+
+    cancel.call();
   }
 }

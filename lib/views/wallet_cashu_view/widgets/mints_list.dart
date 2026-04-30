@@ -369,7 +369,10 @@ class ActiveMintsList extends HookWidget {
           const SizedBox(height: kDefaultPadding / 3),
       itemBuilder: (context, index) {
         final wm = mints[index];
-        final mint = state.mints[wm]!;
+        final mint = state.mints[wm];
+        if (mint == null) {
+          return const SizedBox.shrink();
+        }
 
         return MintContainer(
           isAvailableInMintList: true,

@@ -256,21 +256,19 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Add relay review.',
-  'Add relay join request.',
-  'Add expanded nested replies in notes',
-  'Add nsec saving to ios keychain',
-  'Add option to autotranslate note in 3 seconds.',
-  'Add support for nwc multi relays.',
-  'Add pending paid notes in dashboard.',
-  'Add expired content ignore.',
-  'Fix pasting text in private message not working.',
-  'Fix profile fetching issue.',
-  'Fix screen orientation in youtube links when trying fullscreen mode.',
-  'Fix paid notes not being submitted issue.',
-  'Fix notification refresh when switching to view.',
-  'Add imeta tag to when publishing notes and articles.',
-  'Other bug fixes and performance improvements.',
+  'Launched interactive DM Gifts.',
+  'Introduced Blossom server management.',
+  'Added NIP-22 comment support for articles and videos.',
+  'Optimized relay sharing links with direct content parameters.',
+  'Simplified relay invitation UI to "Share".',
+  'Unified feed settings by moving nested replies configuration.',
+  'Improved relay browsing experience from the homefeed.',
+  'Added relay sharing capability within the Orbits view.',
+  'Improved relay joining with automated connection timers.',
+  'Fixed relay filtering when posting notes in Relay Orbits.',
+  'Added automatic state reset for paid note progress.',
+  'Resolved layout and keyboard overlap on relay join requests.',
+  'General bug fixes and performance enhancements.',
 ];
 
 const content = [

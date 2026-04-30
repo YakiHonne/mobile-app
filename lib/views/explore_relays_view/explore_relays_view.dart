@@ -343,7 +343,18 @@ class RelayBox extends HookWidget {
               const Divider(
                 thickness: 0.5,
               ),
-              _browseRelay(context),
+              IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _browseRelay(context),
+                    const VerticalDivider(
+                      width: kDefaultPadding,
+                    ),
+                    _shareRelay(context),
+                  ],
+                ),
+              ),
             ],
           ],
         ),
@@ -367,6 +378,38 @@ class RelayBox extends HookWidget {
           children: [
             Text(
               context.t.browseRelay,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: Theme.of(context).primaryColorDark,
+                  ),
+            ),
+            SvgPicture.asset(
+              FeatureIcons.shareExternal,
+              width: 15,
+              height: 15,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColorDark,
+                BlendMode.srcIn,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _shareRelay(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        shareContent(text: 'https://www.yakihonne.com/r/content?r=$relay');
+      },
+      behavior: HitTestBehavior.translucent,
+      child: SizedBox(
+        child: Row(
+          spacing: kDefaultPadding / 4,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              context.t.share.capitalize(),
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Theme.of(context).primaryColorDark,
                   ),

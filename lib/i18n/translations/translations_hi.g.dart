@@ -1659,6 +1659,28 @@ class TranslationsHi extends Translations {
 	@override String get reschedule => 'पुनः शेड्यूल करें';
 	@override String get noScheduledNotesFound => 'कोई निर्धारित नोट नहीं मिला';
 	@override String get noScheduledNotesFoundDesc => 'आपने अभी तक कोई नोट शेड्यूल नहीं किया है।';
+	@override String get sharePack => 'पैक साझा करें';
+	@override String get errorSubmittingReview => 'समीक्षा सबमिट करते समय त्रुटि हुई';
+	@override String get reviewSubmitted => 'समीक्षा सफलतापूर्वक सबमिट की गई';
+	@override String get reviews => 'समीक्षाएं';
+	@override String get noReviews => 'कोई समीक्षा नहीं';
+	@override String get noReviewsDesc => 'कोई समीक्षा नहीं मिली';
+	@override String get writeReview => 'समीक्षा लिखें';
+	@override String get writeComment => 'एक टिप्पणी लिखें...';
+	@override String get submitReview => 'समीक्षा सबमिट करें';
+	@override String get loadingReviews => 'समीक्षाएं लोड हो रही हैं';
+	@override String reviewsCount({required Object number}) => '(${number}) समीक्षा(एं) ';
+	@override String get requestCode => 'अनुरोध कोड';
+	@override String get noInviteCodeFound => 'कोई आमंत्रण कोड नहीं मिला';
+	@override String get relayInviteCode => 'रिले आमंत्रण कोड';
+	@override String get codeCopiedToClipboard => 'कोड क्लिपबोर्ड पर कॉपी किया गया';
+	@override String get joinRequestSent => 'शामिल होने का अनुरोध भेजा गया';
+	@override String get errorJoiningRelay => 'रिले में शामिल होने में त्रुटि';
+	@override String get errorLeavingRelay => 'रिले छोड़ने में त्रुटि';
+	@override String get getInviteCode => 'आमंत्रण कोड प्राप्त करें';
+	@override String get joinRelayDesc => 'रिले में शामिल होने के लिए आमंत्रण कोड दर्ज करें';
+	@override String get autoTranslation => 'ऑटो अनुवाद';
+	@override String get autoTranslationDesc => 'नोट्स को अपनी पसंदीदा भाषा में स्वचालित रूप से अनुवाद करें';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -3314,6 +3336,28 @@ extension on TranslationsHi {
 			'reschedule' => 'पुनः शेड्यूल करें',
 			'noScheduledNotesFound' => 'कोई निर्धारित नोट नहीं मिला',
 			'noScheduledNotesFoundDesc' => 'आपने अभी तक कोई नोट शेड्यूल नहीं किया है।',
+			'sharePack' => 'पैक साझा करें',
+			'errorSubmittingReview' => 'समीक्षा सबमिट करते समय त्रुटि हुई',
+			'reviewSubmitted' => 'समीक्षा सफलतापूर्वक सबमिट की गई',
+			'reviews' => 'समीक्षाएं',
+			'noReviews' => 'कोई समीक्षा नहीं',
+			'noReviewsDesc' => 'कोई समीक्षा नहीं मिली',
+			'writeReview' => 'समीक्षा लिखें',
+			'writeComment' => 'एक टिप्पणी लिखें...',
+			'submitReview' => 'समीक्षा सबमिट करें',
+			'loadingReviews' => 'समीक्षाएं लोड हो रही हैं',
+			'reviewsCount' => ({required Object number}) => '(${number}) समीक्षा(एं) ',
+			'requestCode' => 'अनुरोध कोड',
+			'noInviteCodeFound' => 'कोई आमंत्रण कोड नहीं मिला',
+			'relayInviteCode' => 'रिले आमंत्रण कोड',
+			'codeCopiedToClipboard' => 'कोड क्लिपबोर्ड पर कॉपी किया गया',
+			'joinRequestSent' => 'शामिल होने का अनुरोध भेजा गया',
+			'errorJoiningRelay' => 'रिले में शामिल होने में त्रुटि',
+			'errorLeavingRelay' => 'रिले छोड़ने में त्रुटि',
+			'getInviteCode' => 'आमंत्रण कोड प्राप्त करें',
+			'joinRelayDesc' => 'रिले में शामिल होने के लिए आमंत्रण कोड दर्ज करें',
+			'autoTranslation' => 'ऑटो अनुवाद',
+			'autoTranslationDesc' => 'नोट्स को अपनी पसंदीदा भाषा में स्वचालित रूप से अनुवाद करें',
 			_ => null,
 		};
 	}

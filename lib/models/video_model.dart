@@ -28,7 +28,7 @@ class VideoModel extends Equatable implements BaseEventModel {
   final num duration;
   final String mimeType;
   final List<String> tags;
-  final List<String> participants;
+  final List<String> pTags;
   final List<ZapSplit> zapsSplits;
   final List<String> fallbackUrls;
   final bool contentWarning;
@@ -51,7 +51,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     required this.duration,
     required this.mimeType,
     required this.tags,
-    required this.participants,
+    required this.pTags,
     required this.zapsSplits,
     required this.fallbackUrls,
     required this.contentWarning,
@@ -116,7 +116,7 @@ class VideoModel extends Equatable implements BaseEventModel {
 
     final List<String> tags = [];
     bool contentWarning = false;
-    final List<String> participants = [];
+    final List<String> pTags = [];
     final List<ZapSplit> zaps = [];
     final List<String> fallbackUrls = [];
 
@@ -139,7 +139,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       } else if (tag.first == 't' && tag.length > 1) {
         tags.add(tag[1]);
       } else if (tag.first == 'p' && tag.length > 1) {
-        participants.add(tag[1]);
+        pTags.add(tag[1]);
       } else if (tag.first == 'zap' && tag.length > 1) {
         zaps.add(
           ZapSplit(pubkey: tag[1], percentage: int.tryParse(tag[3]) ?? 0),
@@ -187,7 +187,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       duration: duration,
       mimeType: mimeType,
       tags: tags,
-      participants: participants,
+      pTags: pTags,
       zapsSplits: zaps,
       fallbackUrls: fallbackUrls,
       contentWarning: contentWarning,
@@ -212,7 +212,7 @@ class VideoModel extends Equatable implements BaseEventModel {
     num? duration,
     String? mimeType,
     List<String>? tags,
-    List<String>? participants,
+    List<String>? pTags,
     List<ZapSplit>? zapsSplits,
     bool? contentWarning,
     Set<String>? relays,
@@ -235,7 +235,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       duration: duration ?? this.duration,
       mimeType: mimeType ?? this.mimeType,
       tags: tags ?? this.tags,
-      participants: participants ?? this.participants,
+      pTags: pTags ?? this.pTags,
       zapsSplits: zapsSplits ?? this.zapsSplits,
       contentWarning: contentWarning ?? this.contentWarning,
       relays: relays ?? this.relays,
@@ -260,7 +260,7 @@ class VideoModel extends Equatable implements BaseEventModel {
         duration,
         mimeType,
         tags,
-        participants,
+        pTags,
         isHorizontal,
         zapsSplits,
         contentWarning,
@@ -285,7 +285,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       'duration': duration,
       'mimeType': mimeType,
       'tags': tags,
-      'participants': participants,
+      'pTags': pTags,
       'zapsSplits': zapsSplits.map((x) => x.toMap()).toList(),
       'contentWarning': contentWarning,
       'relays': relays.toList(),
@@ -314,7 +314,7 @@ class VideoModel extends Equatable implements BaseEventModel {
       duration: map['duration'] as num,
       mimeType: map['mimeType'] as String,
       tags: List<String>.from(map['tags']),
-      participants: List<String>.from(map['participants']),
+      pTags: List<String>.from(map['pTags'] ?? []),
       zapsSplits: List<ZapSplit>.from(
         map['zapsSplits'].map<ZapSplit>(
           (x) => ZapSplit.fromMap(x as Map<String, dynamic>),
@@ -372,5 +372,43 @@ class VideoModel extends Equatable implements BaseEventModel {
       pubkey,
       kind,
     );
+  }
+
+  List<String> cleanPtags() {
+    return pTags;
+  }
+
+  List<List<String>> replyData() {
+    if (isRepleaceableVideo()) {
+      return [
+        ['a', '$kind:$pubkey:$identifier', '', 'root'],
+      ];
+    } else {
+      return [
+        ['e', id, '', 'root'],
+      ];
+    }
+  }
+
+  List<List<String>> commentData() {
+    if (isRepleaceableVideo()) {
+      return [
+        ['a', '$kind:$pubkey:$identifier', '', 'root'],
+        ['a', '$kind:$pubkey:$identifier', '', 'reply'],
+        ['e', id, '', 'root'],
+        ['e', id, '', 'reply'],
+        ['k', kind.toString(), '', 'parentKind'],
+        ['K', kind.toString(), '', 'rootKind'],
+        ['P', pubkey, '', 'rootPubkey'],
+      ];
+    } else {
+      return [
+        ['e', id, '', 'root'],
+        ['e', id, '', 'reply'],
+        ['k', kind.toString(), '', 'parentKind'],
+        ['K', kind.toString(), '', 'rootKind'],
+        ['P', pubkey, '', 'rootPubkey'],
+      ];
+    }
   }
 }

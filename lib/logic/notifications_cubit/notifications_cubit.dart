@@ -82,14 +82,14 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
   }
 
-  Future<void> initNotifications() async {
+  Future<void> initNotifications({bool isRefresh = false}) async {
     final c = nostrRepository.currentAppCustomization;
-    if (c?.enablePushNotification ?? false) {
+    if (!isRefresh && (c?.enablePushNotification ?? false)) {
       PushCore.sharedInstance.setup();
     }
 
     await checkNotificationAllowed();
-    await queryAndSubscribe();
+    await queryAndSubscribe(isRefresh: isRefresh);
   }
 
   void cleanAndSubscribe() {
@@ -101,14 +101,16 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     canShowNotification = await AwesomeNotifications().isNotificationAllowed();
   }
 
-  Future<void> queryAndSubscribe() async {
+  Future<void> queryAndSubscribe({bool isRefresh = false}) async {
     if (notificationsSubscriptionId != null) {
       nc.closeRequests(<String>[notificationsSubscriptionId!]);
     }
 
     if (canSign()) {
       _uiUpdateTimer?.cancel();
-      _unemittedEvents.clear();
+      if (!isRefresh) {
+        _unemittedEvents.clear();
+      }
       _hasPendingUpdates = false;
 
       if (!isClosed) {
@@ -116,7 +118,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           state.copyWith(
             isRead: newNotifications[currentSigner!.getPublicKey()]?.isEmpty ??
                 true,
-            events: [],
+            events: isRefresh ? state.events : [],
             isLoading: true,
           ),
         );

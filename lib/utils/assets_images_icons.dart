@@ -330,6 +330,9 @@ class FeatureIcons {
   static const String restore = 'assets/icons/features/restore.svg';
   static const String inactiveMints =
       'assets/icons/features/inactive-mints.svg';
+  static const String dmGift = 'assets/icons/features/dm-gift.svg';
+  static const String grid = 'assets/icons/features/grid.svg';
+  static const String list = 'assets/icons/features/list.svg';
 }
 
 class RandomCovers {
@@ -384,6 +387,7 @@ class WalletsLogos {
   static const String phoenix = 'assets/images/phoenix.png';
   static const String albyGo = 'assets/images/albygo.webp';
   static const String blitz = 'assets/images/blitz.jpeg';
+  static const String minibits = 'assets/images/minibits.png';
 }
 
 class ReactionsIcons {

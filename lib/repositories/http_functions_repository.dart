@@ -1365,6 +1365,42 @@ class HttpFunctionsRepository {
   // ==================================================
   // RESOURCE MANAGEMENT
   // ==================================================
+  // RED PACKET METHODS
+  // ==================================================
+
+  static Future<Map<String, dynamic>?> checkRedPacket(String preimage) async {
+    try {
+      final response = await getSpecified(
+        '${apiBaseUrl}check-redpacket',
+        {'preimage': preimage},
+      );
+      return response is Map<String, dynamic> ? response : null;
+    } catch (e) {
+      lg.e('Error checking red packet: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> claimRedPacket({
+    required String pubkey,
+    required String token,
+  }) async {
+    try {
+      final response = await post(
+        '${apiBaseUrl}claim-redpacket',
+        {
+          'pubkey': pubkey,
+          'token': token,
+        },
+      );
+      return response;
+    } catch (e) {
+      lg.e('Error claiming red packet: $e');
+      return null;
+    }
+  }
+
+  // ==================================================
 
   /// Dispose of all Dio instances to free resources
   static void dispose() {

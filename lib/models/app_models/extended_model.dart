@@ -60,7 +60,11 @@ class ExtendedEvent extends Event {
           selectedTag = tag[1];
         }
       } else {
-        if (tag.first == 'e' && tag.length > 1) {
+        if ((tag.first == 'e' ||
+                tag.first == 'a' ||
+                tag.first == 'E' ||
+                tag.first == 'A') &&
+            tag.length > 1) {
           selectedTag = tag[1];
         }
       }
@@ -181,13 +185,16 @@ class ExtendedEvent extends Event {
     bool hasETag = false;
 
     for (final tag in tags) {
-      if ((tag.first == 'e' && tag.length > 1) ||
-          (tag.first == 'a' && tag.length > 1)) {
+      if ((tag.first == 'e' ||
+              tag.first == 'a' ||
+              tag.first == 'E' ||
+              tag.first == 'A') &&
+          tag.length > 1) {
         hasETag = true;
       }
     }
 
-    return isSimpleNote() && hasETag;
+    return (isSimpleNote() || kind == EventKind.COMMENT) && hasETag;
   }
 
   @override

@@ -480,7 +480,7 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                       Expanded(
                         child: SendOptionsButton(
                           onClicked: () => shareContent(text: code),
-                          title: context.t.joinRelay.capitalizeFirst(),
+                          title: context.t.share.capitalizeFirst(),
                           icon: FeatureIcons.shareExternal,
                         ),
                       ),
@@ -622,6 +622,9 @@ class RequestRelayJoin extends HookWidget {
           color: Theme.of(context).dividerColor,
           width: 0.5,
         ),
+      ),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: DraggableScrollableSheet(
         maxChildSize: 0.5,
