@@ -27,6 +27,27 @@ class RedeemCodeOptions extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final controller = useState<QRViewController?>(null);
 
+    final appState = useAppLifecycleState();
+
+    useEffect(() {
+      if (!isQrCode.value) {
+        controller.value?.pauseCamera();
+      }
+      return null;
+    }, [isQrCode.value]);
+
+    useEffect(() {
+      if (controller.value == null) {
+        return null;
+      }
+      if (appState == AppLifecycleState.paused) {
+        controller.value!.pauseCamera();
+      } else if (appState == AppLifecycleState.resumed && isQrCode.value) {
+        controller.value!.resumeCamera();
+      }
+      return null;
+    }, [appState]);
+
     useEffect(() {
       return () {
         controller.value?.dispose();

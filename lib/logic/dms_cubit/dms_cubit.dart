@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -368,6 +369,156 @@ class DmsCubit extends Cubit<DmsState>
       BotToastUtils.showError(
         t.errorSendingMessage.capitalizeFirst(),
       );
+    }
+  }
+
+  Future<void> sendGift({
+    required String receiverPubkey,
+    required String cover,
+    required int amount,
+    required String message,
+    required String refundAddress,
+    required ZapPaymentMethod paymentMethod,
+    String? replyId,
+    required Function() onSuccess,
+  }) async {
+    final cancelLoading = BotToastUtils.showLoading();
+
+    try {
+      final senderPubkey = currentSigner!.getPublicKey();
+      final createdAt = Helpers.now;
+
+      // 1. Initial Token Construction
+      final initialPayload = {
+        's': senderPubkey,
+        's_addr': refundAddress,
+        'r': receiverPubkey,
+        'a': amount,
+        'c_at': createdAt,
+      };
+
+      final encodedToken = encodeGiftToken(initialPayload);
+      lg.i('Encoded Gift Token: $encodedToken');
+
+      // 2. Invoice Generation
+      final bridgeMetadata = Metadata.empty().copyWith(
+        lud16: 'giftbridge@wallet.yakihonne.com',
+      );
+
+      final result = await ZapAction.genInvoiceCode(
+        amount,
+        bridgeMetadata,
+        currentSigner!,
+        currentUserRelayList.relays.keys.toList(),
+        comment: encodedToken,
+      );
+
+      if (result == null || result.key.isEmpty) {
+        return;
+      }
+
+      final invoice = result.key;
+
+      // 3. Payment
+      await walletManagerCubit.payInvoiceAndGetPreimage(
+        invoice: invoice,
+        onSuccess: (preimage) async {
+          // 4. Final Token Construction
+          final finalPayload = {
+            ...initialPayload,
+            'pi': preimage,
+            'm': message.substring(0, message.length.clamp(0, 32)),
+            'img': cover,
+          };
+
+          final finalEncodedToken = encodeGiftToken(finalPayload);
+
+          // 5. Send DM
+          await sendEvent(
+            receiverPubkey,
+            finalEncodedToken,
+            replyId,
+            onSuccess,
+          );
+
+          BotToastUtils.showSuccess(t.giftSentSuccessfully);
+        },
+        onFailure: (err) {
+          BotToastUtils.showError(err);
+        },
+        useDefaultWallet: paymentMethod == ZapPaymentMethod.external,
+      );
+    } catch (e) {
+      BotToastUtils.showError('Error: $e');
+    } finally {
+      cancelLoading();
+    }
+  }
+
+  Future<void> claimGift({
+    required String preimage,
+    required String receiverAddress,
+    required Function() onSuccess,
+  }) async {
+    final cancelLoading = BotToastUtils.showLoading();
+
+    try {
+      final userPubkey = currentSigner!.getPublicKey();
+      const targetPubkey =
+          'db48fbfb9f89b2870bcfd96cb1d283af6da999dde248b9bed6660f3c1e591380';
+
+      // 1. Simulate fake invoice for validation
+      final mockMetadata = Metadata.empty().copyWith(lud16: receiverAddress);
+      final mockInvoiceResult = await ZapAction.genInvoiceCode(
+        1,
+        mockMetadata,
+        currentSigner!,
+        currentUserRelayList.relays.keys.toList(),
+      );
+
+      if (mockInvoiceResult == null || mockInvoiceResult.key.isEmpty) {
+        BotToastUtils.showError(t.invalidLightningAddress.capitalizeFirst());
+        return;
+      }
+
+      // 2. Encrypt payload with NIP-44
+      final payload = {
+        'pubkey': userPubkey,
+        'preimage': preimage,
+        'addr': receiverAddress,
+      };
+
+      final encryptedToken = await currentSigner!.encrypt44(
+        jsonEncode(payload),
+        targetPubkey,
+      );
+
+      if (encryptedToken == null) {
+        BotToastUtils.showError(t.encryptionFailed.capitalizeFirst());
+        return;
+      }
+
+      // 3. Claim red packet via API
+      final result = await HttpFunctionsRepository.claimRedPacket(
+        pubkey: userPubkey,
+        token: encryptedToken,
+      );
+
+      lg.i(result);
+
+      if (result != null && result['isRedeemed'] == true) {
+        onSuccess();
+        BotToastUtils.showSuccess(t.giftClaimedSuccessfully);
+      } else if (result != null && result['isExpired'] == true) {
+        BotToastUtils.showError(t.expired.capitalizeFirst());
+      } else {
+        BotToastUtils.showError(result?['message'] ?? t.errorClaimingGift);
+      }
+    } catch (e) {
+      lg.e('Error claiming gift: $e');
+      BotToastUtils.showError('Error: $e');
+    } finally {
+      cancelLoading();
     }
   }
 

@@ -191,6 +191,7 @@ class AddNoteMainView extends HookWidget {
               isPaid: isPaid,
               useSourceRelay: useSourceRelay,
               scheduled: scheduled,
+              selectedExternalRelay: selectedExternalRelay,
               isNewNote:
                   state.displayBottomNavigationBar && attachedEvent == null,
               controller: controller,

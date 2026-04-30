@@ -623,8 +623,8 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'reposted'
 	String get reposted => 'reposted';
 
-	/// en: 'Post in note'
-	String get postInNote => 'Post in note';
+	/// en: 'Post in a note'
+	String get postInNote => 'Post in a note';
 
 	/// en: 'clone'
 	String get clone => 'clone';
@@ -4984,6 +4984,156 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Automatically translate notes to your preferred language'
 	String get autoTranslationDesc => 'Automatically translate notes to your preferred language';
+
+	/// en: 'Pending'
+	String get pending => 'Pending';
+
+	/// en: 'Send gift'
+	String get sendGift => 'Send gift';
+
+	/// en: 'Send sats as gifts, the receiver will get a notification to claim it'
+	String get sendGiftDesc => 'Send sats as gifts, the receiver will get a notification to claim it';
+
+	/// en: 'Choose cover'
+	String get chooseCover => 'Choose cover';
+
+	/// en: 'Gift sent successfully!'
+	String get giftSentSuccessfully => 'Gift sent successfully!';
+
+	/// en: 'Sats'
+	String get sats => 'Sats';
+
+	/// en: 'Write a message (optional)'
+	String get writeMessageOptional => 'Write a message (optional)';
+
+	/// en: 'Refund wallet'
+	String get refundWallet => 'Refund wallet';
+
+	/// en: 'previous'
+	String get previous => 'previous';
+
+	/// en: 'Failed to generate invoice from gift bridge'
+	String get errorGeneratingBridgeInvoice => 'Failed to generate invoice from gift bridge';
+
+	/// en: 'Gift claimed successfully!'
+	String get giftClaimedSuccessfully => 'Gift claimed successfully!';
+
+	/// en: 'Error claiming gift. Please try again later.'
+	String get errorClaimingGift => 'Error claiming gift. Please try again later.';
+
+	/// en: 'Claim before'
+	String get claimBefore => 'Claim before';
+
+	/// en: 'Expired'
+	String get expired => 'Expired';
+
+	/// en: 'Gift sent'
+	String get giftSent => 'Gift sent';
+
+	/// en: 'You received a gift'
+	String get youReceivedGift => 'You received a gift';
+
+	/// en: 'Enter lightning address'
+	String get enterLightningAddress => 'Enter lightning address';
+
+	/// en: 'Encryption failed'
+	String get encryptionFailed => 'Encryption failed';
+
+	/// en: 'Refunded'
+	String get refunded => 'Refunded';
+
+	/// en: 'Blossom management'
+	String get blossomManagement => 'Blossom management';
+
+	/// en: 'Manage all your files in your prefered BLOSSOM servers'
+	String get blossomManagementDesc => 'Manage all your files in your prefered BLOSSOM servers';
+
+	/// en: 'Manage blossom content'
+	String get manageBlossomContent => 'Manage blossom content';
+
+	/// en: 'All servers'
+	String get allServers => 'All servers';
+
+	/// en: 'Copy URL'
+	String get copyUrl => 'Copy URL';
+
+	/// en: 'Are you sure you want to delete this media from the server?'
+	String get confirmDeleteMedia => 'Are you sure you want to delete this media from the server?';
+
+	/// en: 'Upload'
+	String get upload => 'Upload';
+
+	/// en: 'Media deleted successfully'
+	String get deleteSuccessful => 'Media deleted successfully';
+
+	/// en: 'Failed to delete media'
+	String get deleteFailed => 'Failed to delete media';
+
+	/// en: 'content found'
+	String get contentFound => 'content found';
+
+	/// en: 'no content found'
+	String get noContentFound => 'no content found';
+
+	/// en: 'Download file'
+	String get downloadFile => 'Download file';
+
+	/// en: 'Copy hash'
+	String get copyHash => 'Copy hash';
+
+	/// en: 'Mirror'
+	String get mirror => 'Mirror';
+
+	/// en: 'Mirroring media...'
+	String get mirroring => 'Mirroring media...';
+
+	/// en: 'Media mirrored successfully'
+	String get mirrorSuccessful => 'Media mirrored successfully';
+
+	/// en: 'Failed to mirror media'
+	String get mirrorFailed => 'Failed to mirror media';
+
+	/// en: 'File downloaded successfully'
+	String get downloadSuccessful => 'File downloaded successfully';
+
+	/// en: 'Failed to download file'
+	String get downloadFailed => 'Failed to download file';
+
+	/// en: 'Downloading file...'
+	String get downloading => 'Downloading file...';
+
+	/// en: 'No file chosen'
+	String get noFileChosen => 'No file chosen';
+
+	/// en: 'Upload file'
+	String get uploadFile => 'Upload file';
+
+	/// en: 'Servers'
+	String get servers => 'Servers';
+
+	/// en: 'Drag and drop or select a file'
+	String get dragAndDropOrSelectFile => 'Drag and drop or select a file';
+
+	/// en: 'File uploaded successfully'
+	String get uploadSuccessful => 'File uploaded successfully';
+
+	/// en: 'Failed to upload file'
+	String get uploadFailed => 'Failed to upload file';
+
+	/// en: 'Video selected'
+	String get videoSelected => 'Video selected';
+
+	/// en: 'MIME'
+	String get mime => 'MIME';
+
+	/// en: 'Hash'
+	String get hashLabel => 'Hash';
+
+	/// en: 'Date'
+	String get dateLabel => 'Date';
+
+	/// en: 'Size'
+	String get sizeLabel => 'Size';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5195,7 +5345,7 @@ extension on Translations {
 			'noteIdCopied' => 'Note id was copied! 👏',
 			'confirmDeleteDraft' => 'You\'re about to delete this draft, do you wish to proceed?',
 			'reposted' => 'reposted',
-			'postInNote' => 'Post in note',
+			'postInNote' => 'Post in a note',
 			'clone' => 'clone',
 			'checkValidity' => 'Check validity',
 			'copyNaddr' => 'copy naddr',
@@ -6667,6 +6817,56 @@ extension on Translations {
 			'joinRelayDesc' => 'Enter the invite code to join the relay',
 			'autoTranslation' => 'Auto Translation',
 			'autoTranslationDesc' => 'Automatically translate notes to your preferred language',
+			'pending' => 'Pending',
+			'sendGift' => 'Send gift',
+			'sendGiftDesc' => 'Send sats as gifts, the receiver will get a notification to claim it',
+			'chooseCover' => 'Choose cover',
+			'giftSentSuccessfully' => 'Gift sent successfully!',
+			'sats' => 'Sats',
+			'writeMessageOptional' => 'Write a message (optional)',
+			'refundWallet' => 'Refund wallet',
+			'previous' => 'previous',
+			'errorGeneratingBridgeInvoice' => 'Failed to generate invoice from gift bridge',
+			'giftClaimedSuccessfully' => 'Gift claimed successfully!',
+			'errorClaimingGift' => 'Error claiming gift. Please try again later.',
+			'claimBefore' => 'Claim before',
+			'expired' => 'Expired',
+			'giftSent' => 'Gift sent',
+			'youReceivedGift' => 'You received a gift',
+			'enterLightningAddress' => 'Enter lightning address',
+			'encryptionFailed' => 'Encryption failed',
+			'refunded' => 'Refunded',
+			'blossomManagement' => 'Blossom management',
+			'blossomManagementDesc' => 'Manage all your files in your prefered BLOSSOM servers',
+			'manageBlossomContent' => 'Manage blossom content',
+			'allServers' => 'All servers',
+			'copyUrl' => 'Copy URL',
+			'confirmDeleteMedia' => 'Are you sure you want to delete this media from the server?',
+			'upload' => 'Upload',
+			'deleteSuccessful' => 'Media deleted successfully',
+			'deleteFailed' => 'Failed to delete media',
+			'contentFound' => 'content found',
+			'noContentFound' => 'no content found',
+			'downloadFile' => 'Download file',
+			'copyHash' => 'Copy hash',
+			'mirror' => 'Mirror',
+			'mirroring' => 'Mirroring media...',
+			'mirrorSuccessful' => 'Media mirrored successfully',
+			'mirrorFailed' => 'Failed to mirror media',
+			'downloadSuccessful' => 'File downloaded successfully',
+			'downloadFailed' => 'Failed to download file',
+			'downloading' => 'Downloading file...',
+			'noFileChosen' => 'No file chosen',
+			'uploadFile' => 'Upload file',
+			'servers' => 'Servers',
+			'dragAndDropOrSelectFile' => 'Drag and drop or select a file',
+			'uploadSuccessful' => 'File uploaded successfully',
+			'uploadFailed' => 'Failed to upload file',
+			'videoSelected' => 'Video selected',
+			'mime' => 'MIME',
+			'hashLabel' => 'Hash',
+			'dateLabel' => 'Date',
+			'sizeLabel' => 'Size',
 			_ => null,
 		};
 	}

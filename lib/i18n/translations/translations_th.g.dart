@@ -1659,6 +1659,28 @@ class TranslationsTh extends Translations {
 	@override String get reschedule => 'กำหนดเวลาใหม่';
 	@override String get noScheduledNotesFound => 'ไม่พบโน้ตที่กำหนดเวลา';
 	@override String get noScheduledNotesFoundDesc => 'คุณยังไม่ได้กำหนดเวลาโน้ตใดๆ';
+	@override String get sharePack => 'แชร์แพ็ก';
+	@override String get errorSubmittingReview => 'เกิดข้อผิดพลาดขณะส่งบทวิจารณ์';
+	@override String get reviewSubmitted => 'ส่งบทวิจารณ์สำเร็จแล้ว';
+	@override String get reviews => 'บทวิจารณ์';
+	@override String get noReviews => 'ไม่มีบทวิจารณ์';
+	@override String get noReviewsDesc => 'ไม่พบบทวิจารณ์';
+	@override String get writeReview => 'เขียนบทวิจารณ์';
+	@override String get writeComment => 'เขียนความคิดเห็น...';
+	@override String get submitReview => 'ส่งบทวิจารณ์';
+	@override String get loadingReviews => 'กำลังโหลดบทวิจารณ์';
+	@override String reviewsCount({required Object number}) => '(${number}) บทวิจารณ์ ';
+	@override String get requestCode => 'รหัสคำขอ';
+	@override String get noInviteCodeFound => 'ไม่พบรหัสเชิญ';
+	@override String get relayInviteCode => 'รหัสเชิญรีเลย์';
+	@override String get codeCopiedToClipboard => 'คัดลอกรหัสไปยังคลิปบอร์ดแล้ว';
+	@override String get joinRequestSent => 'ส่งคำขอเข้าร่วมแล้ว';
+	@override String get errorJoiningRelay => 'เกิดข้อผิดพลาดในการเข้าร่วมรีเลย์';
+	@override String get errorLeavingRelay => 'เกิดข้อผิดพลาดในการออกจากรีเลย์';
+	@override String get getInviteCode => 'รับรหัสเชิญ';
+	@override String get joinRelayDesc => 'ป้อนรหัสเชิญเพื่อเข้าร่วมรีเลย์';
+	@override String get autoTranslation => 'การแปลอัตโนมัติ';
+	@override String get autoTranslationDesc => 'แปลบันทึกเป็นภาษาที่คุณต้องการโดยอัตโนมัติ';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -3314,6 +3336,28 @@ extension on TranslationsTh {
 			'reschedule' => 'กำหนดเวลาใหม่',
 			'noScheduledNotesFound' => 'ไม่พบโน้ตที่กำหนดเวลา',
 			'noScheduledNotesFoundDesc' => 'คุณยังไม่ได้กำหนดเวลาโน้ตใดๆ',
+			'sharePack' => 'แชร์แพ็ก',
+			'errorSubmittingReview' => 'เกิดข้อผิดพลาดขณะส่งบทวิจารณ์',
+			'reviewSubmitted' => 'ส่งบทวิจารณ์สำเร็จแล้ว',
+			'reviews' => 'บทวิจารณ์',
+			'noReviews' => 'ไม่มีบทวิจารณ์',
+			'noReviewsDesc' => 'ไม่พบบทวิจารณ์',
+			'writeReview' => 'เขียนบทวิจารณ์',
+			'writeComment' => 'เขียนความคิดเห็น...',
+			'submitReview' => 'ส่งบทวิจารณ์',
+			'loadingReviews' => 'กำลังโหลดบทวิจารณ์',
+			'reviewsCount' => ({required Object number}) => '(${number}) บทวิจารณ์ ',
+			'requestCode' => 'รหัสคำขอ',
+			'noInviteCodeFound' => 'ไม่พบรหัสเชิญ',
+			'relayInviteCode' => 'รหัสเชิญรีเลย์',
+			'codeCopiedToClipboard' => 'คัดลอกรหัสไปยังคลิปบอร์ดแล้ว',
+			'joinRequestSent' => 'ส่งคำขอเข้าร่วมแล้ว',
+			'errorJoiningRelay' => 'เกิดข้อผิดพลาดในการเข้าร่วมรีเลย์',
+			'errorLeavingRelay' => 'เกิดข้อผิดพลาดในการออกจากรีเลย์',
+			'getInviteCode' => 'รับรหัสเชิญ',
+			'joinRelayDesc' => 'ป้อนรหัสเชิญเพื่อเข้าร่วมรีเลย์',
+			'autoTranslation' => 'การแปลอัตโนมัติ',
+			'autoTranslationDesc' => 'แปลบันทึกเป็นภาษาที่คุณต้องการโดยอัตโนมัติ',
 			_ => null,
 		};
 	}

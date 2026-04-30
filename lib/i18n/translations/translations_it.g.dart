@@ -1659,6 +1659,28 @@ class TranslationsIt extends Translations {
 	@override String get reschedule => 'Riprogramma';
 	@override String get noScheduledNotesFound => 'Nessuna nota programmata trovata';
 	@override String get noScheduledNotesFoundDesc => 'Non hai ancora programmato alcuna nota.';
+	@override String get sharePack => 'Condividi pacchetto';
+	@override String get errorSubmittingReview => 'Errore durante l\'invio della recensione';
+	@override String get reviewSubmitted => 'Recensione inviata con successo';
+	@override String get reviews => 'Recensioni';
+	@override String get noReviews => 'Nessuna recensione';
+	@override String get noReviewsDesc => 'Nessuna recensione trovata';
+	@override String get writeReview => 'Scrivi una recensione';
+	@override String get writeComment => 'Scrivi un commento...';
+	@override String get submitReview => 'Invia recensione';
+	@override String get loadingReviews => 'Caricamento recensioni';
+	@override String reviewsCount({required Object number}) => '(${number}) recensione/i ';
+	@override String get requestCode => 'Codice di richiesta';
+	@override String get noInviteCodeFound => 'Nessun codice di invito trovato';
+	@override String get relayInviteCode => 'Codice invito relay';
+	@override String get codeCopiedToClipboard => 'Codice copiato negli appunti';
+	@override String get joinRequestSent => 'Richiesta di adesione inviata';
+	@override String get errorJoiningRelay => 'Errore durante l\'adesione al relay';
+	@override String get errorLeavingRelay => 'Errore durante l\'uscita dal relay';
+	@override String get getInviteCode => 'Ottieni codice invito';
+	@override String get joinRelayDesc => 'Inserisci il codice invito per unirti al relay';
+	@override String get autoTranslation => 'Traduzione automatica';
+	@override String get autoTranslationDesc => 'Traduci automaticamente le note nella tua lingua preferita';
 }
 
 /// The flat map containing all translations for locale <it>.
@@ -3314,6 +3336,28 @@ extension on TranslationsIt {
 			'reschedule' => 'Riprogramma',
 			'noScheduledNotesFound' => 'Nessuna nota programmata trovata',
 			'noScheduledNotesFoundDesc' => 'Non hai ancora programmato alcuna nota.',
+			'sharePack' => 'Condividi pacchetto',
+			'errorSubmittingReview' => 'Errore durante l\'invio della recensione',
+			'reviewSubmitted' => 'Recensione inviata con successo',
+			'reviews' => 'Recensioni',
+			'noReviews' => 'Nessuna recensione',
+			'noReviewsDesc' => 'Nessuna recensione trovata',
+			'writeReview' => 'Scrivi una recensione',
+			'writeComment' => 'Scrivi un commento...',
+			'submitReview' => 'Invia recensione',
+			'loadingReviews' => 'Caricamento recensioni',
+			'reviewsCount' => ({required Object number}) => '(${number}) recensione/i ',
+			'requestCode' => 'Codice di richiesta',
+			'noInviteCodeFound' => 'Nessun codice di invito trovato',
+			'relayInviteCode' => 'Codice invito relay',
+			'codeCopiedToClipboard' => 'Codice copiato negli appunti',
+			'joinRequestSent' => 'Richiesta di adesione inviata',
+			'errorJoiningRelay' => 'Errore durante l\'adesione al relay',
+			'errorLeavingRelay' => 'Errore durante l\'uscita dal relay',
+			'getInviteCode' => 'Ottieni codice invito',
+			'joinRelayDesc' => 'Inserisci il codice invito per unirti al relay',
+			'autoTranslation' => 'Traduzione automatica',
+			'autoTranslationDesc' => 'Traduci automaticamente le note nella tua lingua preferita',
 			_ => null,
 		};
 	}

@@ -99,6 +99,7 @@ class LocalDatabaseRepository {
   static const String _cashuTokens = 'cashu_tokens';
   static const String _userWalletType = 'user_wallet_type';
   static const String _userActiveMint = 'user_active_mint';
+  static const String _openedGifts = 'opened_gifts';
 
   // ==================================================
   // INITIALIZATION
@@ -799,6 +800,18 @@ class LocalDatabaseRepository {
 
   Future<void> setUsedNip(bool isUsingNip44) async {
     await _setPrefsData(_messagingNip, isUsingNip44);
+  }
+
+  List<String> getOpenedGifts() {
+    return _getPrefsData<List<String>>(_openedGifts) ?? [];
+  }
+
+  Future<void> addOpenedGift(String preimage) async {
+    final current = getOpenedGifts();
+    if (!current.contains(preimage)) {
+      current.add(preimage);
+      await _setPrefsData(_openedGifts, current);
+    }
   }
 
   /// Media Manager

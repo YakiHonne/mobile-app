@@ -49,6 +49,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
   Timer? _pendingEventsTimer;
   Map<String, Event>? _pendingEventsBuffer;
+  bool _includeCommentsInLaterSearch = false;
 
   void pruneCache({bool isStats = true}) {
     if (isStats) {
@@ -130,7 +131,11 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     emit(state.copyWith(bookmarks: getBookmarkIds(bookmarks).toSet()));
   }
 
-  Future<void> getSpecificContentStats(String id, {bool r = false}) async {
+  Future<void> getSpecificContentStats(
+    String id, {
+    bool r = false,
+    bool includeComments = false,
+  }) async {
     EventStats? eventStats = state.eventsStats[id];
     eventStats ??= await nc.db.loadEventStats(id);
 
@@ -150,9 +155,10 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     final searchedEvents = <Event>[];
 
     NostrFunctionsRepository.getContentStats(
-      noteIds: [id],
-      aTags: _aTags,
+      noteIds: r ? [] : [id],
+      aTags: r ? [id] : [],
       since: eventStats != null ? eventStats.newestCreatedAt + 1 : null,
+      includeComments: includeComments,
     ).listen(
       (event) {
         searchedEvents.add(event);
@@ -368,8 +374,16 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     return map;
   }
 
-  void getContentStats(String id, {bool r = false}) {
+  void getContentStats(
+    String id, {
+    bool r = false,
+    bool includeComments = false,
+  }) {
     _statsAccessTimes[id] = Helpers.now;
+
+    if (includeComments) {
+      _includeCommentsInLaterSearch = true;
+    }
 
     if (alreadySearchedContentIds.contains(id)) {
       return;
@@ -458,7 +472,21 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     final Map<String, List<Event>> eventsByParent = {};
     for (final ev in events) {
-      final id = ev.getEventParent();
+      String? id = ev.getEventParent();
+
+      // Fallback for Kind 1111 or articles/videos where getEventParent might fail
+      if (id == null || id.isEmpty) {
+        for (final tag in ev.tags) {
+          if ((tag.first == 'A' ||
+                  tag.first == 'E' ||
+                  tag.first == 'a' ||
+                  tag.first == 'e') &&
+              tag.length > 1) {
+            id = tag[1];
+            break;
+          }
+        }
+      }
 
       if (id != null) {
         (eventsByParent[id] ??= []).add(ev);
@@ -510,9 +538,32 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     final updatedNStats = nStats.addEvents(events);
 
-    currentEventStats[id] = updatedNStats;
+    // Manually ensure Kind 1111 events are in the replies map if not already added
+    final newReplies = Map<String, String>.from(updatedNStats.replies);
+    bool changed = false;
+
+    for (final e in events) {
+      if (e.kind == EventKind.COMMENT && !newReplies.containsKey(e.id)) {
+        newReplies[e.id] = e.pubkey;
+        changed = true;
+      }
+    }
+
+    final finalStats = changed
+        ? EventStats(
+            eventId: updatedNStats.eventId,
+            reactions: updatedNStats.reactions,
+            replies: newReplies,
+            quotes: updatedNStats.quotes,
+            reposts: updatedNStats.reposts,
+            zaps: updatedNStats.zaps,
+            newestCreatedAt: updatedNStats.newestCreatedAt,
+          )
+        : updatedNStats;
+
+    currentEventStats[id] = finalStats;
     await nc.db.saveEvents(events);
-    await nc.db.saveEventStats(updatedNStats);
+    await nc.db.saveEventStats(finalStats);
   }
 
   Future<List<DetailedNoteModel>> getNotePrevious(
@@ -582,11 +633,11 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       <Filter>[
         Filter(
           e: <String>[previousEventId],
-          kinds: <int>[EventKind.TEXT_NOTE],
+          kinds: <int>[EventKind.TEXT_NOTE, EventKind.COMMENT],
         ),
         Filter(
           ids: <String>[previousEventId],
-          kinds: <int>[EventKind.TEXT_NOTE],
+          kinds: <int>[EventKind.TEXT_NOTE, EventKind.COMMENT],
         ),
       ],
       <String>[],
@@ -627,7 +678,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     final e = await nc.db.loadEventById(previousEventId, false);
 
-    if (e == null || e.kind != EventKind.TEXT_NOTE) {
+    if (e == null ||
+        (e.kind != EventKind.TEXT_NOTE && e.kind != EventKind.COMMENT)) {
       return thread;
     }
 
@@ -651,10 +703,12 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     NostrFunctionsRepository.getContentStats(
       noteIds: List.from(_notesIds),
       aTags: List.from(_aTags),
+      includeComments: _includeCommentsInLaterSearch,
     ).listen(_onContentEvent);
 
     _notesIds.clear();
     _aTags.clear();
+    _includeCommentsInLaterSearch = false;
   }
 
   Future<void> repostNote(DetailedNoteModel note) async {
@@ -979,9 +1033,30 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     final eventStats = stats[replyNoteId] ??= EventStats.empty(replyNoteId);
 
     nc.db.saveEvent(event);
-    final ns = eventStats.addEvent(event);
-    stats[ns.eventId] = ns;
-    nc.db.saveEventStats(ns);
+    final updatedNStats = eventStats.addEvent(event);
+
+    // Manually ensure Kind 1111 event is in the replies map
+    if (event.kind == EventKind.COMMENT &&
+        !updatedNStats.replies.containsKey(event.id)) {
+      final newReplies = Map<String, String>.from(updatedNStats.replies);
+      newReplies[event.id] = event.pubkey;
+
+      final finalStats = EventStats(
+        eventId: updatedNStats.eventId,
+        reactions: updatedNStats.reactions,
+        replies: newReplies,
+        quotes: updatedNStats.quotes,
+        reposts: updatedNStats.reposts,
+        zaps: updatedNStats.zaps,
+        newestCreatedAt: updatedNStats.newestCreatedAt,
+      );
+
+      stats[finalStats.eventId] = finalStats;
+      nc.db.saveEventStats(finalStats);
+    } else {
+      stats[updatedNStats.eventId] = updatedNStats;
+      nc.db.saveEventStats(updatedNStats);
+    }
 
     updateEventStats(stats);
   }
@@ -999,11 +1074,16 @@ extension OptimizedBatching on NotesEventsCubit {
   static final Set<String> _batchQueue = {};
   static Timer? _batchTimer;
 
-  void getContentStatsOptimized(String id, {bool r = false}) {
+  void getContentStatsOptimized(String id,
+      {bool r = false, bool includeComments = false}) {
     // Check if already processed recently
 
     if (alreadySearchedContentIds.contains(id)) {
       return;
+    }
+
+    if (includeComments) {
+      _includeCommentsInLaterSearch = true;
     }
 
     // Add to batch queue instead of immediate processing

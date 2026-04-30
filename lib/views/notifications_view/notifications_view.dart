@@ -165,7 +165,7 @@ class SelectedNotifications extends HookWidget {
           return SmartRefresher(
             controller: controller,
             onRefresh: () =>
-                context.read<NotificationsCubit>().queryAndSubscribe(),
+                context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
             child: EmptyList(
               description: context.t.noNotificationCanBeFound.capitalizeFirst(),
               icon: FeatureIcons.notification,
@@ -179,7 +179,7 @@ class SelectedNotifications extends HookWidget {
           enablePullUp: true,
           header: const RefresherClassicHeader(),
           onRefresh: () =>
-              context.read<NotificationsCubit>().queryAndSubscribe(),
+              context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
           child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             separatorBuilder: (context, index) => const Divider(

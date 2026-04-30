@@ -1659,6 +1659,28 @@ class TranslationsFr extends Translations {
 	@override String get reschedule => 'Reprogrammer';
 	@override String get noScheduledNotesFound => 'Aucune note programmée';
 	@override String get noScheduledNotesFoundDesc => 'Vous n\'avez encore programmé aucune note.';
+	@override String get sharePack => 'Partager le pack';
+	@override String get errorSubmittingReview => 'Une erreur s\'est produite lors de l\'envoi de l\'avis';
+	@override String get reviewSubmitted => 'Avis envoyé avec succès';
+	@override String get reviews => 'Avis';
+	@override String get noReviews => 'Aucun avis';
+	@override String get noReviewsDesc => 'Aucun avis trouvé';
+	@override String get writeReview => 'Écrire un avis';
+	@override String get writeComment => 'Écrire un commentaire...';
+	@override String get submitReview => 'Envoyer l\'avis';
+	@override String get loadingReviews => 'Chargement des avis';
+	@override String reviewsCount({required Object number}) => '(${number}) avis ';
+	@override String get requestCode => 'Code de demande';
+	@override String get noInviteCodeFound => 'Aucun code d\'invitation trouvé';
+	@override String get relayInviteCode => 'Code d\'invitation du relais';
+	@override String get codeCopiedToClipboard => 'Code copié dans le presse-papiers';
+	@override String get joinRequestSent => 'Demande d\'adhésion envoyée';
+	@override String get errorJoiningRelay => 'Erreur lors de l\'adhésion au relais';
+	@override String get errorLeavingRelay => 'Erreur lors de la sortie du relais';
+	@override String get getInviteCode => 'Obtenir le code d\'invitation';
+	@override String get joinRelayDesc => 'Entrez le code d\'invitation pour rejoindre le relais';
+	@override String get autoTranslation => 'Traduction automatique';
+	@override String get autoTranslationDesc => 'Traduire automatiquement les notes dans votre langue préférée';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -3314,6 +3336,28 @@ extension on TranslationsFr {
 			'reschedule' => 'Reprogrammer',
 			'noScheduledNotesFound' => 'Aucune note programmée',
 			'noScheduledNotesFoundDesc' => 'Vous n\'avez encore programmé aucune note.',
+			'sharePack' => 'Partager le pack',
+			'errorSubmittingReview' => 'Une erreur s\'est produite lors de l\'envoi de l\'avis',
+			'reviewSubmitted' => 'Avis envoyé avec succès',
+			'reviews' => 'Avis',
+			'noReviews' => 'Aucun avis',
+			'noReviewsDesc' => 'Aucun avis trouvé',
+			'writeReview' => 'Écrire un avis',
+			'writeComment' => 'Écrire un commentaire...',
+			'submitReview' => 'Envoyer l\'avis',
+			'loadingReviews' => 'Chargement des avis',
+			'reviewsCount' => ({required Object number}) => '(${number}) avis ',
+			'requestCode' => 'Code de demande',
+			'noInviteCodeFound' => 'Aucun code d\'invitation trouvé',
+			'relayInviteCode' => 'Code d\'invitation du relais',
+			'codeCopiedToClipboard' => 'Code copié dans le presse-papiers',
+			'joinRequestSent' => 'Demande d\'adhésion envoyée',
+			'errorJoiningRelay' => 'Erreur lors de l\'adhésion au relais',
+			'errorLeavingRelay' => 'Erreur lors de la sortie du relais',
+			'getInviteCode' => 'Obtenir le code d\'invitation',
+			'joinRelayDesc' => 'Entrez le code d\'invitation pour rejoindre le relais',
+			'autoTranslation' => 'Traduction automatique',
+			'autoTranslationDesc' => 'Traduire automatiquement les notes dans votre langue préférée',
 			_ => null,
 		};
 	}

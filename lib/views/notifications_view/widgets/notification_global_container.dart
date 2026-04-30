@@ -165,7 +165,11 @@ class _NotificationGlobalContainerState
             context: context,
             elevation: 0,
             builder: (_) {
+              final isComment = isReplaceable(note.rootKind);
+
               return AddReply(
+                attachedEvent: note,
+                isComment: isComment,
                 onSuccess: (ev) {
                   notesEventsCubit.addEventRelatedData(
                     event: ev,

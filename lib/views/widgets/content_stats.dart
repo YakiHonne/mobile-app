@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nostr_core_enhanced/nostr/nostr.dart';
+
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -69,8 +69,12 @@ class ContentStats extends HookWidget {
         // Add small delay to avoid loading during fast scrolling
         final timer = Timer(const Duration(milliseconds: 300), () {
           if (context.mounted && isInViewport.value) {
-            hasRequestedStats.value = true;
-            notesEventsCubit.getContentStats(aTag, r: !isVideo);
+            final isATag = !isVideo || (attachedEvent as VideoModel).isRepleaceableVideo();
+            notesEventsCubit.getContentStats(
+              aTag,
+              r: isATag,
+              includeComments: true,
+            );
           }
         });
 
@@ -80,11 +84,16 @@ class ContentStats extends HookWidget {
     }, [isInViewport.value]);
 
     return VisibilityDetector(
-      key: ValueKey(aTag),
+      key: Key(aTag),
       onVisibilityChanged: (info) {
         if (context.mounted) {
           if (info.visibleFraction == 0.5) {
-            notesEventsCubit.getContentStats(aTag, r: !isVideo);
+            final isATag = !isVideo || (attachedEvent as VideoModel).isRepleaceableVideo();
+            notesEventsCubit.getContentStats(
+              aTag,
+              r: isATag,
+              includeComments: true,
+            );
           }
 
           if (!isInViewport.value) {
@@ -409,38 +418,23 @@ class ContentStats extends HookWidget {
       elevation: 0,
       builder: (_) {
         return AddReply(
-          replyContent: {
-            'pubkey': pubkey,
-            'date': createdAt,
-            'content': title,
-            'replyData': isVideo
-                ? [
-                    [
-                      if ((attachedEvent as VideoModel).isRepleaceableVideo())
-                        'a'
-                      else
-                        'e',
-                      identifier,
-                      '',
-                      'root'
-                    ]
-                  ]
-                : [
-                    Nip33.coordinatesToTag(
-                      EventCoordinates(
-                        kind,
-                        pubkey,
-                        identifier,
-                        '',
-                      ),
-                    )..add('root'),
-                  ],
-          },
+          isComment: true,
           onSuccess: (ev) {
             notesEventsCubit.addEventRelatedData(
               event: ev,
               replyNoteId: aTag,
             );
+          },
+          attachedEvent: attachedEvent,
+          replyContent: {
+            'pubkey': pubkey,
+            'pTags': attachedEvent is Article
+                ? (attachedEvent as Article).cleanPtags()
+                : attachedEvent is VideoModel
+                    ? (attachedEvent as VideoModel).cleanPtags()
+                    : [],
+            'date': createdAt,
+            'content': title,
           },
         );
       },

@@ -222,7 +222,7 @@ class CommonMetadataBox extends StatelessWidget {
                 ),
                 Nip05Component(
                   metadata: metadata,
-                  useNip05: true,
+                  removeSpace: true,
                 ),
               ],
             ),

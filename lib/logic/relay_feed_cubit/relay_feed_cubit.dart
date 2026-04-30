@@ -146,21 +146,33 @@ class RelayFeedCubit extends Cubit<RelayFeedState> {
       setProgress: true,
     );
 
-    if (isSuccess) {
-      await Future.delayed(const Duration(seconds: 2));
-      final isMember = await checkMembership();
+    _handleJoinRelayResponse(isSuccess: isSuccess, onSuccess: onSuccess);
 
-      if (isMember) {
-        BotToastUtils.showSuccess(t.joinRequestSent);
-        onSuccess.call();
-      } else {
-        BotToastUtils.showError(t.errorJoiningRelay);
+    cancel();
+  }
+
+  Future<void> _handleJoinRelayResponse({
+    required bool isSuccess,
+    required Function() onSuccess,
+  }) async {
+    if (isSuccess) {
+      bool isMember = false;
+
+      for (int i = 0; i < 3; i++) {
+        await Future.delayed(const Duration(seconds: 2));
+        isMember = await checkMembership();
+
+        if (isMember) {
+          BotToastUtils.showSuccess(t.joinRequestSent);
+          onSuccess.call();
+          return;
+        }
       }
+
+      BotToastUtils.showError(t.errorJoiningRelay);
     } else {
       BotToastUtils.showError(t.errorJoiningRelay);
     }
-
-    cancel();
   }
 
   Future<void> leaveRelay() async {

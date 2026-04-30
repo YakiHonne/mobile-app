@@ -29,6 +29,7 @@ class Article extends Equatable implements BaseEventModel {
   final String placeholder;
   final Set<String> relays;
   final List<ZapSplit> zapsSplits;
+  final List<String> pTags;
   final String stringifiedEvent;
 
   const Article({
@@ -48,6 +49,7 @@ class Article extends Equatable implements BaseEventModel {
     this.placeholder = '',
     required this.relays,
     required this.zapsSplits,
+    required this.pTags,
     required this.stringifiedEvent,
   });
 
@@ -63,12 +65,15 @@ class Article extends Equatable implements BaseEventModel {
     DateTime publishedAt = createdAt;
     final List<String> hashTags = [];
     final List<ZapSplit> zaps = [];
+    final List<String> pTags = [];
 
     for (final tag in event.tags) {
       if (tag.first == 'd' && tag.length > 1 && identifier.isEmpty) {
         identifier = tag[1].trim();
       } else if (tag.first == 't' && tag.length > 1) {
         hashTags.add(tag[1]);
+      } else if (tag.first == 'p' && tag.length > 1) {
+        pTags.add(tag[1]);
       } else if (tag.first == 'client' && tag.length > 1) {
         client = tag[1];
       } else if (tag.first == 'image' && tag.length > 1) {
@@ -113,6 +118,7 @@ class Article extends Equatable implements BaseEventModel {
       isDraft: isDraft ?? false,
       isSensitive: isSensitive,
       zapsSplits: zaps,
+      pTags: pTags,
       stringifiedEvent: event.toJsonString(),
       relays: relay != null ? {relay} : {},
     );
@@ -161,6 +167,7 @@ class Article extends Equatable implements BaseEventModel {
       'hashTags': hashTags,
       'isSensitive': isSensitive,
       'isDraft': isDraft,
+      'pTags': pTags,
       'stringifiedEvent': stringifiedEvent,
     };
   }
@@ -183,6 +190,7 @@ class Article extends Equatable implements BaseEventModel {
       isSensitive: map['isSensitive'] as bool,
       isDraft: map['isDraft'] as bool,
       relays: const {},
+      pTags: List<String>.from(map['pTags'] as List? ?? []),
       stringifiedEvent: map['stringifiedEvent'] as String? ?? '',
     );
   }
@@ -209,6 +217,7 @@ class Article extends Equatable implements BaseEventModel {
         isDraft,
         relays,
         zapsSplits,
+        pTags,
       ];
 
   @override
@@ -239,6 +248,16 @@ class Article extends Equatable implements BaseEventModel {
       pubkey,
       EventKind.LONG_FORM,
     );
+  }
+
+  List<String> cleanPtags() {
+    return pTags;
+  }
+
+  List<List<String>> replyData() {
+    return [
+      ['a', '${EventKind.LONG_FORM}:$pubkey:$identifier', '', 'root'],
+    ];
   }
 }
 

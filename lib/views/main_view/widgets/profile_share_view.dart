@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -374,25 +372,32 @@ class ConnectedUserProfileShareView extends StatefulWidget {
 }
 
 class _ConnectedUserProfileShareViewState
-    extends State<ConnectedUserProfileShareView> {
+    extends State<ConnectedUserProfileShareView> with WidgetsBindingObserver {
   bool isQRcodeShown = true;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
 
   @override
-  void reassemble() {
-    super.reassemble();
-    if (controller != null) {
-      if (Platform.isAndroid) {
-        controller!.pauseCamera();
-      } else if (Platform.isIOS) {
-        controller!.resumeCamera();
-      }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (controller == null) {
+      return;
+    }
+    if (state == AppLifecycleState.paused) {
+      controller!.pauseCamera();
+    } else if (state == AppLifecycleState.resumed && !isQRcodeShown) {
+      controller!.resumeCamera();
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller?.dispose();
     super.dispose();
   }
@@ -451,6 +456,11 @@ class _ConnectedUserProfileShareViewState
               width: double.infinity,
               child: TextButton(
                 onPressed: () {
+                  if (isQRcodeShown) {
+                    controller?.resumeCamera();
+                  } else {
+                    controller?.pauseCamera();
+                  }
                   setState(() {
                     isQRcodeShown = !isQRcodeShown;
                   });

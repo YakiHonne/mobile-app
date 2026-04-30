@@ -1659,6 +1659,28 @@ class TranslationsEs extends Translations {
 	@override String get reschedule => 'Reprogramar';
 	@override String get noScheduledNotesFound => 'No se encontraron notas programadas';
 	@override String get noScheduledNotesFoundDesc => 'Aún no has programado ninguna nota.';
+	@override String get sharePack => 'Compartir Paquete';
+	@override String get errorSubmittingReview => 'Se produjo un error al enviar la reseña';
+	@override String get reviewSubmitted => 'Reseña enviada con éxito';
+	@override String get reviews => 'Reseñas';
+	@override String get noReviews => 'Sin reseñas';
+	@override String get noReviewsDesc => 'No se encontraron reseñas';
+	@override String get writeReview => 'Escribir reseña';
+	@override String get writeComment => 'Escribe un comentario...';
+	@override String get submitReview => 'Enviar reseña';
+	@override String get loadingReviews => 'Cargando reseñas';
+	@override String reviewsCount({required Object number}) => '(${number}) reseña(s) ';
+	@override String get requestCode => 'Código de solicitud';
+	@override String get noInviteCodeFound => 'No se encontró ningún código de invitación';
+	@override String get relayInviteCode => 'Código de invitación del relé';
+	@override String get codeCopiedToClipboard => 'Código copiado al portapapeles';
+	@override String get joinRequestSent => 'Solicitud de unión enviada';
+	@override String get errorJoiningRelay => 'Error al unirse al relé';
+	@override String get errorLeavingRelay => 'Error al salir del relé';
+	@override String get getInviteCode => 'Obtener código de invitación';
+	@override String get joinRelayDesc => 'Ingresa el código de invitación para unirte al relé';
+	@override String get autoTranslation => 'Traducción automática';
+	@override String get autoTranslationDesc => 'Traducir notas automáticamente a tu idioma preferido';
 }
 
 /// The flat map containing all translations for locale <es>.
@@ -3314,6 +3336,28 @@ extension on TranslationsEs {
 			'reschedule' => 'Reprogramar',
 			'noScheduledNotesFound' => 'No se encontraron notas programadas',
 			'noScheduledNotesFoundDesc' => 'Aún no has programado ninguna nota.',
+			'sharePack' => 'Compartir Paquete',
+			'errorSubmittingReview' => 'Se produjo un error al enviar la reseña',
+			'reviewSubmitted' => 'Reseña enviada con éxito',
+			'reviews' => 'Reseñas',
+			'noReviews' => 'Sin reseñas',
+			'noReviewsDesc' => 'No se encontraron reseñas',
+			'writeReview' => 'Escribir reseña',
+			'writeComment' => 'Escribe un comentario...',
+			'submitReview' => 'Enviar reseña',
+			'loadingReviews' => 'Cargando reseñas',
+			'reviewsCount' => ({required Object number}) => '(${number}) reseña(s) ',
+			'requestCode' => 'Código de solicitud',
+			'noInviteCodeFound' => 'No se encontró ningún código de invitación',
+			'relayInviteCode' => 'Código de invitación del relé',
+			'codeCopiedToClipboard' => 'Código copiado al portapapeles',
+			'joinRequestSent' => 'Solicitud de unión enviada',
+			'errorJoiningRelay' => 'Error al unirse al relé',
+			'errorLeavingRelay' => 'Error al salir del relé',
+			'getInviteCode' => 'Obtener código de invitación',
+			'joinRelayDesc' => 'Ingresa el código de invitación para unirte al relé',
+			'autoTranslation' => 'Traducción automática',
+			'autoTranslationDesc' => 'Traducir notas automáticamente a tu idioma preferido',
 			_ => null,
 		};
 	}

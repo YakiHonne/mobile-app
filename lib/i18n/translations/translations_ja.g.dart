@@ -1659,6 +1659,28 @@ class TranslationsJa extends Translations {
 	@override String get reschedule => '再予約';
 	@override String get noScheduledNotesFound => '予約ノートがありません';
 	@override String get noScheduledNotesFoundDesc => 'まだノートを予約していません。';
+	@override String get sharePack => 'パックを共有';
+	@override String get errorSubmittingReview => 'レビューの送信中にエラーが発生しました';
+	@override String get reviewSubmitted => 'レビューが正常に送信されました';
+	@override String get reviews => 'レビュー';
+	@override String get noReviews => 'レビューなし';
+	@override String get noReviewsDesc => 'レビューが見つかりません';
+	@override String get writeReview => 'レビューを書く';
+	@override String get writeComment => 'コメントを書く...';
+	@override String get submitReview => 'レビューを送信';
+	@override String get loadingReviews => 'レビューを読み込み中';
+	@override String reviewsCount({required Object number}) => '(${number}) 件のレビュー ';
+	@override String get requestCode => 'リクエストコード';
+	@override String get noInviteCodeFound => '招待コードが見つかりません';
+	@override String get relayInviteCode => 'リレー招待コード';
+	@override String get codeCopiedToClipboard => 'コードをクリップボードにコピーしました';
+	@override String get joinRequestSent => '参加リクエストを送信しました';
+	@override String get errorJoiningRelay => 'リレーへの参加中にエラーが発生しました';
+	@override String get errorLeavingRelay => 'リレーからの退出中にエラーが発生しました';
+	@override String get getInviteCode => '招待コードを取得';
+	@override String get joinRelayDesc => 'リレーに参加するための招待コードを入力してください';
+	@override String get autoTranslation => '自動翻訳';
+	@override String get autoTranslationDesc => 'ノートを優先言語に自動的に翻訳します';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -3314,6 +3336,28 @@ extension on TranslationsJa {
 			'reschedule' => '再予約',
 			'noScheduledNotesFound' => '予約ノートがありません',
 			'noScheduledNotesFoundDesc' => 'まだノートを予約していません。',
+			'sharePack' => 'パックを共有',
+			'errorSubmittingReview' => 'レビューの送信中にエラーが発生しました',
+			'reviewSubmitted' => 'レビューが正常に送信されました',
+			'reviews' => 'レビュー',
+			'noReviews' => 'レビューなし',
+			'noReviewsDesc' => 'レビューが見つかりません',
+			'writeReview' => 'レビューを書く',
+			'writeComment' => 'コメントを書く...',
+			'submitReview' => 'レビューを送信',
+			'loadingReviews' => 'レビューを読み込み中',
+			'reviewsCount' => ({required Object number}) => '(${number}) 件のレビュー ',
+			'requestCode' => 'リクエストコード',
+			'noInviteCodeFound' => '招待コードが見つかりません',
+			'relayInviteCode' => 'リレー招待コード',
+			'codeCopiedToClipboard' => 'コードをクリップボードにコピーしました',
+			'joinRequestSent' => '参加リクエストを送信しました',
+			'errorJoiningRelay' => 'リレーへの参加中にエラーが発生しました',
+			'errorLeavingRelay' => 'リレーからの退出中にエラーが発生しました',
+			'getInviteCode' => '招待コードを取得',
+			'joinRelayDesc' => 'リレーに参加するための招待コードを入力してください',
+			'autoTranslation' => '自動翻訳',
+			'autoTranslationDesc' => 'ノートを優先言語に自動的に翻訳します',
 			_ => null,
 		};
 	}

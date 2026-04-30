@@ -7,6 +7,10 @@ extension StringExtension on String {
     return length >= 10 ? substring(0, 9) : this;
   }
 
+  String sixCharacters() {
+    return length >= 7 ? substring(0, 6) : this;
+  }
+
   String capitalize() {
     return isNotEmpty
         ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}'

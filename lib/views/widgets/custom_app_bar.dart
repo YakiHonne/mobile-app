@@ -13,6 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBackClicked,
     this.onLogoClicked,
     this.color,
+    this.actions,
   });
 
   final String? title;
@@ -21,6 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function()? onBackClicked;
   final Function()? onLogoClicked;
   final Color? color;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: notElevated != null ? 0 : null,
       scrolledUnderElevation: notElevated != null ? 0 : null,
       title: title != null || description != null ? _column(context) : null,
-      actions: [
-        _logoClicked(context),
-        const SizedBox(
-          width: kDefaultPadding,
-        ),
-      ],
+      actions: actions ??
+          [
+            _logoClicked(context),
+            const SizedBox(
+              width: kDefaultPadding,
+            ),
+          ],
     );
   }
 

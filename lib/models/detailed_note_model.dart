@@ -24,6 +24,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
   final bool isPaid;
   final String? originId;
   final bool? isOriginEtag;
+  final int kind;
+  final int? rootKind;
+  final String? rootPubkey;
+  final String? rootId;
+  final String? rootAddress;
 
   const DetailedNoteModel({
     required this.id,
@@ -38,6 +43,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     required this.isPaid,
     this.originId,
     this.isOriginEtag,
+    required this.kind,
+    this.rootKind,
+    this.rootPubkey,
+    this.rootId,
+    this.rootAddress,
   });
 
   String getYakiHonneUrl() {
@@ -58,6 +68,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       'pTags': pTags,
       'isPaid': isPaid,
       'isOriginEtag': isOriginEtag,
+      'kind': kind,
+      'rootKind': rootKind,
+      'rootPubkey': rootPubkey,
+      'rootId': rootId,
+      'rootAddress': rootAddress,
     };
   }
 
@@ -75,6 +90,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       originId: map['originId'],
       isOriginEtag: map['isOriginEtag'],
       isPaid: map['isPaid'],
+      kind: map['kind'] ?? EventKind.TEXT_NOTE,
+      rootKind: map['rootKind'],
+      rootPubkey: map['rootPubkey'],
+      rootId: map['rootId'],
+      rootAddress: map['rootAddress'],
     );
   }
 
@@ -85,6 +105,10 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     String? originEventId;
     bool? isOriginEtag;
     bool isPaid = false;
+    int? rootKind;
+    String? rootPubkey;
+    String? rootId;
+    String? rootAddress;
 
     for (final tag in event.tags) {
       if (tag.isNotEmpty) {
@@ -101,11 +125,37 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
           root = false;
           isOriginEtag = false;
           originEventId = tag[1];
+        } else if (tag.first == 'K') {
+          rootKind = int.tryParse(tag[1]);
+        } else if (tag.first == 'P') {
+          rootPubkey = tag[1];
+        } else if (tag.first == 'A') {
+          rootAddress = tag[1];
+        } else if (tag.first == 'E') {
+          rootId = tag[1];
+          if (tag.length > 3) {
+            rootPubkey = tag[3];
+          }
         } else if (tag.first == 'q') {
           isQuote = true;
         } else if (tag.first == FN_ENCRYPTION && tag.length > 1) {
           isPaid = true;
         }
+      }
+    }
+
+    // Fallback for legacy comments or partial NIP-22
+    if (rootKind == null && originEventId != null) {
+      if (isOriginEtag != null && !isOriginEtag) {
+        // originEventId is a coordinate string: "kind:pubkey:identifier"
+        final parts = originEventId.split(':');
+        if (parts.length >= 2) {
+          rootKind = int.tryParse(parts[0]);
+          rootPubkey = parts[1];
+          rootAddress = originEventId;
+        }
+      } else if (isOriginEtag ?? false) {
+        rootId = originEventId;
       }
     }
 
@@ -133,6 +183,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
           .toList(),
       isPaid: isPaid,
       isOriginEtag: isOriginEtag,
+      kind: event.kind,
+      rootKind: rootKind,
+      rootPubkey: rootPubkey,
+      rootId: rootId,
+      rootAddress: rootAddress,
     );
   }
 
@@ -178,6 +233,11 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
         pTags,
         isPaid,
         isOriginEtag,
+        kind,
+        rootKind,
+        rootPubkey,
+        rootId,
+        rootAddress,
       ];
 
   @override
@@ -187,7 +247,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       id,
       [],
       pubkey,
-      EventKind.TEXT_NOTE,
+      kind,
     );
   }
 
@@ -200,7 +260,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       id,
       relays,
       pubkey,
-      EventKind.TEXT_NOTE,
+      kind,
     );
   }
 }

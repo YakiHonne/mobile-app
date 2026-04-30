@@ -66,6 +66,7 @@ class _QrScannerModalState extends State<QrScannerModal> {
                               scanData.code!.isNotEmpty &&
                               qrValue == null) {
                             qrValue = scanData.code;
+                            controller.pauseCamera();
                             YNavigator.pop(context);
                             widget.onValue(scanData.code!);
                           }

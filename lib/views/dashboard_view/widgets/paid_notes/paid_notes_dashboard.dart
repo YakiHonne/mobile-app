@@ -105,7 +105,11 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
           currentSigner!.getPublicKey(),
           event.id,
         );
-        YNavigator.pop(context);
+
+        if (context.mounted) {
+          YNavigator.pop(context);
+        }
+
         _loadNotes();
       },
       onRefresh: () {},

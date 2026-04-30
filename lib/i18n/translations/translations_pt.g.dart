@@ -1659,6 +1659,28 @@ class TranslationsPt extends Translations {
 	@override String get reschedule => 'Reagendar';
 	@override String get noScheduledNotesFound => 'Nenhuma nota agendada encontrada';
 	@override String get noScheduledNotesFoundDesc => 'Você ainda não agendou nenhuma nota.';
+	@override String get sharePack => 'Compartilhar pacote';
+	@override String get errorSubmittingReview => 'Ocorreu um erro ao enviar a avaliação';
+	@override String get reviewSubmitted => 'Avaliação enviada com sucesso';
+	@override String get reviews => 'Avaliações';
+	@override String get noReviews => 'Sem avaliações';
+	@override String get noReviewsDesc => 'Nenhuma avaliação encontrada';
+	@override String get writeReview => 'Escrever avaliação';
+	@override String get writeComment => 'Escreva um comentário...';
+	@override String get submitReview => 'Enviar avaliação';
+	@override String get loadingReviews => 'Carregando avaliações';
+	@override String reviewsCount({required Object number}) => '(${number}) avaliação(ões) ';
+	@override String get requestCode => 'Código de solicitação';
+	@override String get noInviteCodeFound => 'Nenhum código de convite encontrado';
+	@override String get relayInviteCode => 'Código de convite do relay';
+	@override String get codeCopiedToClipboard => 'Código copiado para a área de transferência';
+	@override String get joinRequestSent => 'Pedido de adesão enviado';
+	@override String get errorJoiningRelay => 'Erro ao ingressar no relay';
+	@override String get errorLeavingRelay => 'Erro ao sair do relay';
+	@override String get getInviteCode => 'Obter código de convite';
+	@override String get joinRelayDesc => 'Insira o código de convite para ingressar no relay';
+	@override String get autoTranslation => 'Tradução automática';
+	@override String get autoTranslationDesc => 'Traduzir notas automaticamente para o seu idioma preferido';
 }
 
 /// The flat map containing all translations for locale <pt>.
@@ -3314,6 +3336,28 @@ extension on TranslationsPt {
 			'reschedule' => 'Reagendar',
 			'noScheduledNotesFound' => 'Nenhuma nota agendada encontrada',
 			'noScheduledNotesFoundDesc' => 'Você ainda não agendou nenhuma nota.',
+			'sharePack' => 'Compartilhar pacote',
+			'errorSubmittingReview' => 'Ocorreu um erro ao enviar a avaliação',
+			'reviewSubmitted' => 'Avaliação enviada com sucesso',
+			'reviews' => 'Avaliações',
+			'noReviews' => 'Sem avaliações',
+			'noReviewsDesc' => 'Nenhuma avaliação encontrada',
+			'writeReview' => 'Escrever avaliação',
+			'writeComment' => 'Escreva um comentário...',
+			'submitReview' => 'Enviar avaliação',
+			'loadingReviews' => 'Carregando avaliações',
+			'reviewsCount' => ({required Object number}) => '(${number}) avaliação(ões) ',
+			'requestCode' => 'Código de solicitação',
+			'noInviteCodeFound' => 'Nenhum código de convite encontrado',
+			'relayInviteCode' => 'Código de convite do relay',
+			'codeCopiedToClipboard' => 'Código copiado para a área de transferência',
+			'joinRequestSent' => 'Pedido de adesão enviado',
+			'errorJoiningRelay' => 'Erro ao ingressar no relay',
+			'errorLeavingRelay' => 'Erro ao sair do relay',
+			'getInviteCode' => 'Obter código de convite',
+			'joinRelayDesc' => 'Insira o código de convite para ingressar no relay',
+			'autoTranslation' => 'Tradução automática',
+			'autoTranslationDesc' => 'Traduzir notas automaticamente para o seu idioma preferido',
 			_ => null,
 		};
 	}

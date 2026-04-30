@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
-import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:nostr_core_enhanced/utils/relay.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../../logic/relay_info_cubit/relay_info_cubit.dart';
@@ -1017,15 +1017,14 @@ class ShareRelayFeed extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: Builder(
             builder: (context) {
-              final feedUrl =
-                  'https://www.yakihonne.com/r/${viewType == ViewDataTypes.articles ? 'discover' : viewType == ViewDataTypes.notes ? 'notes' : 'media'}?r=$relay';
+              final feedUrl = 'https://www.yakihonne.com/r/content?r=$relay';
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: kDefaultPadding / 2,
                 children: [
                   ModalBottomSheetAppbar(
-                    title: Relay.removeSocket(relay) ?? relay,
+                    title: context.t.shareRelayUrl,
                     isBack: false,
                   ),
                   _relayInfo(scrollController, context, feedUrl),
@@ -1044,6 +1043,31 @@ class ShareRelayFeed extends StatelessWidget {
       child: ListView(
         controller: scrollController,
         children: [
+          RelayInfoProvider(
+            relay: relay,
+            child: (info) => Center(
+              child: CommonThumbnail(
+                image: info?.icon ?? '',
+                width: 70,
+                height: 70,
+                isRound: true,
+                radius: 300,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Text(
+            Relay.removeSocket(relay) ?? relay,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: kDefaultPadding,
+          ),
           relaySharedContainer(
             context: context,
             onCopy: () {

@@ -326,15 +326,60 @@ class ReorderSettingsView extends HookWidget {
 
         final ns = NotesCommunityFeed(
           index: feed.index,
-          recent: options.firstWhere((option) => option.name == SOURCE_RECENT),
+          recent: options.firstWhere(
+            (option) => option.name == SOURCE_RECENT,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_RECENT,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
           recentWithReplies: options.firstWhere(
-              (option) => option.name == SOURCE_RECENT_WITH_REPLIES),
-          trending:
-              options.firstWhere((option) => option.name == SOURCE_TRENDING),
-          global: options.firstWhere((option) => option.name == SOURCE_GLOBAL),
-          paid: options.firstWhere((option) => option.name == SOURCE_PAID),
-          widgets:
-              options.firstWhere((option) => option.name == SOURCE_WIDGETS),
+            (option) => option.name == SOURCE_RECENT_WITH_REPLIES,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_RECENT_WITH_REPLIES,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
+          trending: options.firstWhere(
+            (option) => option.name == SOURCE_TRENDING,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_TRENDING,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
+          global: options.firstWhere(
+            (option) => option.name == SOURCE_GLOBAL,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_GLOBAL,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
+          paid: options.firstWhere(
+            (option) => option.name == SOURCE_PAID,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_PAID,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
+          widgets: options.firstWhere(
+            (option) => option.name == SOURCE_WIDGETS,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_WIDGETS,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
         );
 
         currentAppSettings.value = c.copyWith(

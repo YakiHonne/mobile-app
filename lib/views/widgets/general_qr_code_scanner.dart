@@ -13,12 +13,19 @@ class GeneralQrCodeView extends StatefulWidget {
   State<GeneralQrCodeView> createState() => _GeneralQrCodeViewState();
 }
 
-class _GeneralQrCodeViewState extends State<GeneralQrCodeView> with RouteAware {
+class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
+    with RouteAware, WidgetsBindingObserver {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String invoice = '';
   bool isVisible = true;
   bool isSending = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void didChangeDependencies() {
@@ -32,13 +39,27 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView> with RouteAware {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     controller?.dispose();
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (controller == null) {
+      return;
+    }
+    if (state == AppLifecycleState.paused) {
+      controller!.pauseCamera();
+    } else if (state == AppLifecycleState.resumed && isVisible) {
+      controller!.resumeCamera();
+    }
+  }
+
+  @override
   void didPushNext() {
+    controller?.pauseCamera();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -47,6 +68,7 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView> with RouteAware {
 
   @override
   void didPopNext() {
+    controller?.resumeCamera();
     setState(() {
       isVisible = true;
     });
@@ -55,10 +77,14 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.qrCode,
-        ),
-        body: _qrCodeScan(context));
+      appBar: CustomAppBar(
+        title: context.t.qrCode,
+      ),
+      body: Visibility(
+        visible: isVisible,
+        child: _qrCodeScan(context),
+      ),
+    );
   }
 
   Column _qrCodeScan(BuildContext context) {
