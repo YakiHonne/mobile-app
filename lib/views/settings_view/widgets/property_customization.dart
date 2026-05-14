@@ -163,10 +163,6 @@ class PropertyCustomization extends HookWidget {
                 const SizedBox(
                   height: kDefaultPadding,
                 ),
-                _enableNestedReplies(context, state),
-                const SizedBox(
-                  height: kDefaultPadding,
-                ),
                 _openUrlPrompt(context, openPromptedUrl),
                 const SizedBox(
                   height: kDefaultPadding,
@@ -450,29 +446,7 @@ class PropertyCustomization extends HookWidget {
     );
   }
 
-  Row _enableNestedReplies(BuildContext context, PropertiesState state) {
-    return Row(
-      spacing: kDefaultPadding / 4,
-      children: [
-        Expanded(
-          child: TitleDescriptionComponent(
-            title: context.t.nestedReplies.capitalizeFirst(),
-            description: context.t.nestedRepliesDesc,
-          ),
-        ),
-        Transform.scale(
-          scale: 0.8,
-          child: CupertinoSwitch(
-            value: state.enableNestedReplies,
-            activeTrackColor: Theme.of(context).primaryColor,
-            onChanged: (isToggled) {
-              context.read<PropertiesCubit>().setNestedReplies(isToggled);
-            },
-          ),
-        ),
-      ],
-    );
-  }
+
 
   Row _feedCustomization(BuildContext context) {
     return Row(

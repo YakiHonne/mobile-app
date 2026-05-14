@@ -27,6 +27,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
   WriteNoteCubit(
     BaseEventModel? quotedNote, {
     required bool isMention,
+    required bool isQuote,
   }) : super(
           WriteNoteState(
             medias: const [],
@@ -34,6 +35,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
             isQuotedContentAvailable: quotedNote != null,
             quotedContent: quotedNote,
             isMention: isMention,
+            isQuote: isQuote,
           ),
         );
 
@@ -129,14 +131,12 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
 
     String? qTag;
 
-    if (state.isQuotedContentAvailable) {
-      if (state.isMention) {
-        qTag = getBaseEventModelId(ae!);
+    if (state.isQuotedContentAvailable && state.isQuote) {
+      qTag = getBaseEventModelId(ae!);
 
-        updatedContent = '$updatedContent \nnostr:${ae.getScheme()}';
-      }
+      updatedContent = '$updatedContent \nnostr:${ae.getScheme()}';
 
-      if (!pTags.contains(ae!.pubkey)) {
+      if (!pTags.contains(ae.pubkey)) {
         pTags.add(ae.pubkey);
       }
     }

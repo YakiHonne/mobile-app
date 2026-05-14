@@ -44,6 +44,29 @@ class NostrFunctionsRepository {
   // =============================================================================
   static const uuid = UuidV4();
 
+  // Cache repost content → parsed Event to avoid re-parsing the same JSON
+  // when the same event arrives from multiple relays simultaneously.
+  static final _repostEventCache = <String, Event?>{};
+  static const _repostCacheMaxSize = 500;
+
+  static Event? _parseRepostContent(String content) {
+    if (_repostEventCache.containsKey(content)) {
+      return _repostEventCache[content];
+    }
+    Event? event;
+    try {
+      event = Event.fromJson(jsonDecode(content));
+    } catch (_) {}
+    if (_repostEventCache.length >= _repostCacheMaxSize) {
+      _repostEventCache.remove(_repostEventCache.keys.first);
+    }
+    _repostEventCache[content] = event;
+    return event;
+  }
+
+  static String? _getRepostPubkey(String content) =>
+      _parseRepostContent(content)?.pubkey;
+
   // =============================================================================
   // CACHE MANAGEMENT
   // =============================================================================
@@ -1187,6 +1210,8 @@ class NostrFunctionsRepository {
             ? []
             : [];
 
+    final seenIds = <String>{};
+
     nc.addSubscription(
       [
         if (dTags != null && dTags.isNotEmpty)
@@ -1211,7 +1236,7 @@ class NostrFunctionsRepository {
       ],
       selectedRelays,
       eventCallBack: (event, relay) {
-        if (!controller.isClosed) {
+        if (!controller.isClosed && seenIds.add(event.id)) {
           controller.add(event);
         }
       },
@@ -1546,11 +1571,13 @@ class NostrFunctionsRepository {
       filters.addAll([f1, f2, f3]);
     }
 
+    final seenIds = <String>{};
+
     nc.addSubscription(
       filters,
       [],
       eventCallBack: (event, relay) {
-        if (!controller.isClosed) {
+        if (!controller.isClosed && seenIds.add(event.id)) {
           if (cleanEvent(event: event, noteIds: nds, aTags: atgs)) {
             if ((event.kind == EventKind.TEXT_NOTE &&
                     !event.isUncensoredNote()) ||
@@ -1617,13 +1644,15 @@ class NostrFunctionsRepository {
 
     final filter = Filter(d: dTags, authors: pubkeys, ids: ids, kinds: kinds);
 
+    final seenIds = <String>{};
+
     nc.addSubscription(
       [
         filter,
       ],
       relays ?? [],
       eventCallBack: (event, relay) {
-        if (!controller.isClosed) {
+        if (!controller.isClosed && seenIds.add(event.id)) {
           controller.add(event);
         }
       },
@@ -2869,10 +2898,10 @@ class NostrFunctionsRepository {
       }
 
       if (event.kind == EventKind.REPOST) {
-        try {
-          final ev = Event.fromJson(jsonDecode(event.content));
-          isMuted = isUserMuted(ev.pubkey);
-        } catch (_) {}
+        final innerPubkey = _getRepostPubkey(event.content);
+        if (innerPubkey != null) {
+          isMuted = isUserMuted(innerPubkey);
+        }
       }
 
       if (isMuted) {
@@ -3393,8 +3422,10 @@ class NostrFunctionsRepository {
           try {
             if (ev.content.isNotEmpty && ev.kind == EventKind.GENERIC_REPOST) {
               if (ev.content.isNotEmpty) {
-                final event = Event.fromJson(jsonDecode(ev.content));
-                setEvent(event, relay);
+                final event = _parseRepostContent(ev.content);
+                if (event != null) {
+                  setEvent(event, relay);
+                }
               } else {
                 for (final tag in ev.aTags) {
                   if (tag.startsWith('${EventKind.LONG_FORM}') ||

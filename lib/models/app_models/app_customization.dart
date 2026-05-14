@@ -52,7 +52,7 @@ class AppCustomization {
     this.openPromptedUrl = true,
     this.hideNonFollowingMedia = true,
     this.enableLinkPreview = true,
-    this.notifFollowings = true,
+    this.notifFollowings = false,
     this.notifMaxMentions = true,
     this.enableActionsPopups = true,
     this.writingContentType = 'note',

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:deepl_dart/deepl_dart.dart';
@@ -34,6 +33,11 @@ class HttpFunctionsRepository {
   static Dio? _dio;
   static Dio? _smDio;
 
+  // Shared timeout constants
+  static const _kConnectTimeout = Duration(seconds: 10);
+  static const _kReceiveTimeout = Duration(seconds: 15);
+  static const _kSendTimeout = Duration(seconds: 15);
+
   // ==================================================
   // DIO FACTORY METHODS (PRESERVED EXACTLY)
   // ==================================================
@@ -42,20 +46,17 @@ class HttpFunctionsRepository {
     Map<String, dynamic>? headers,
   }) async {
     if (_dio == null) {
-      PersistCookieJar? cookieJar;
-      Directory appDocDir;
-      appDocDir = await getApplicationDocumentsDirectory();
-      final appDocPath = appDocDir.path;
-      cookieJar = PersistCookieJar(
+      final appDocPath = (await getApplicationDocumentsDirectory()).path;
+      final cookieJar = PersistCookieJar(
         storage: FileStorage('$appDocPath/cookies'),
       );
 
       _dio = Dio(
         BaseOptions(
-          headers: headers ??
-              {
-                'yakihonne-api-key': dotenv.env['API_KEY'],
-              },
+          connectTimeout: _kConnectTimeout,
+          receiveTimeout: _kReceiveTimeout,
+          sendTimeout: _kSendTimeout,
+          headers: headers ?? {'yakihonne-api-key': dotenv.env['API_KEY']},
         ),
       );
 
@@ -69,31 +70,24 @@ class HttpFunctionsRepository {
 
   static Future<Dio> getSmDio() async {
     if (_smDio == null) {
-      PersistCookieJar? cookieJar;
-      Directory appDocDir;
-      appDocDir = await getApplicationDocumentsDirectory();
-      final String appDocPath = appDocDir.path;
-      cookieJar = PersistCookieJar(
+      final appDocPath = (await getApplicationDocumentsDirectory()).path;
+      final cookieJar = PersistCookieJar(
         storage: FileStorage('$appDocPath/cookies'),
       );
 
-      _smDio = Dio();
+      _smDio = Dio(
+        BaseOptions(
+          connectTimeout: _kConnectTimeout,
+          receiveTimeout: _kReceiveTimeout,
+          sendTimeout: _kSendTimeout,
+        ),
+      );
 
       _smDio!.options.headers['user-agent'] = 'Yakihonne';
       _smDio!.options.headers['accept-encoding'] = 'gzip';
       _smDio!.interceptors.add(CookieManager(cookieJar));
     }
     return _smDio!;
-  }
-
-  /// Create form data Dio for file uploads
-
-  static Dio getDio2() {
-    final dio = Dio();
-    dio.options.headers['accept-encoding'] = 'gzip, deflate, br';
-    dio.options.headers['accept'] =
-        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7';
-    return dio;
   }
 
   // ==================================================
@@ -223,17 +217,20 @@ class HttpFunctionsRepository {
 
   static Future<UrlType> getUrlType(String link) async {
     try {
-      final dio = await getDio();
+      final dio = await _getHeadDio();
 
-      final Response resp = await dio.get(link);
-      if (resp.statusCode == 200) {
-        final contentType = resp.headers.map['content-Type']?.first ?? '';
+      final Response resp = await dio.head(link);
+      if (resp.statusCode == 200 || resp.statusCode == 204) {
+        final contentType = (resp.headers.map['content-type'] ??
+                    resp.headers.map['Content-Type'])
+                ?.first ??
+            '';
 
         if (contentType.toLowerCase().startsWith('image')) {
           return UrlType.image;
-        } else if (contentType.startsWith('video')) {
+        } else if (contentType.toLowerCase().startsWith('video')) {
           return UrlType.video;
-        } else if (contentType.startsWith('audio')) {
+        } else if (contentType.toLowerCase().startsWith('audio')) {
           return UrlType.audio;
         } else {
           return UrlType.text;
@@ -244,6 +241,24 @@ class HttpFunctionsRepository {
     } catch (_) {
       return UrlType.text;
     }
+  }
+
+  static Dio? _headDio;
+
+  static Future<Dio> _getHeadDio() async {
+    if (_headDio == null) {
+      _headDio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 3),
+          receiveTimeout: const Duration(seconds: 3),
+          sendTimeout: const Duration(seconds: 3),
+          followRedirects: true,
+          maxRedirects: 3,
+        ),
+      );
+      _headDio!.options.headers['user-agent'] = 'Yakihonne';
+    }
+    return _headDio!;
   }
 
   // ==================================================
@@ -318,7 +333,8 @@ class HttpFunctionsRepository {
           'resultCode': 'paymentFailed',
         };
       }
-    } catch (_) {
+    } catch (e) {
+      lg.i(e);
       return {
         'status': false,
         'resultCode': 'paymentFailed',

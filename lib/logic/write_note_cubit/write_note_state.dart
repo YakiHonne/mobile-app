@@ -7,6 +7,7 @@ class WriteNoteState extends Equatable {
   final BaseEventModel? quotedContent;
   final bool isQuotedContentAvailable;
   final bool isMention;
+  final bool isQuote;
 
   const WriteNoteState({
     required this.medias,
@@ -14,6 +15,7 @@ class WriteNoteState extends Equatable {
     this.quotedContent,
     required this.isQuotedContentAvailable,
     required this.isMention,
+    required this.isQuote,
   });
 
   @override
@@ -22,6 +24,7 @@ class WriteNoteState extends Equatable {
         imetas,
         isQuotedContentAvailable,
         isMention,
+        isQuote,
       ];
 
   WriteNoteState copyWith({
@@ -30,6 +33,7 @@ class WriteNoteState extends Equatable {
     BaseEventModel? quotedContent,
     bool? isQuotedContentAvailable,
     bool? isMention,
+    bool? isQuote,
   }) {
     return WriteNoteState(
       medias: medias ?? this.medias,
@@ -38,6 +42,7 @@ class WriteNoteState extends Equatable {
       isQuotedContentAvailable:
           isQuotedContentAvailable ?? this.isQuotedContentAvailable,
       isMention: isMention ?? this.isMention,
+      isQuote: isQuote ?? this.isQuote,
     );
   }
 }

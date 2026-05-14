@@ -46,17 +46,20 @@ class NotificationGlobalContainer extends StatefulWidget {
 class _NotificationGlobalContainerState
     extends State<NotificationGlobalContainer> {
   Event? relatedEvent;
+  late ExtendedEvent _ev;
+  late EventRelation _eventRelation;
 
   @override
   void initState() {
     super.initState();
-
+    _ev = ExtendedEvent.fromEv(widget.mainEvent);
+    _eventRelation = EventRelation.fromEvent(widget.mainEvent);
     metadataCubit.requestMetadata(getPubkey(widget.mainEvent));
   }
 
   @override
   Widget build(BuildContext context) {
-    final ev = ExtendedEvent.fromEv(widget.mainEvent);
+    final ev = _ev;
 
     return Slidable(
       key: ValueKey(widget.mainEvent.id),
@@ -82,14 +85,12 @@ class _NotificationGlobalContainerState
         child: MetadataProvider(
           pubkey: getPubkey(widget.mainEvent),
           child: (metadata, isNip05Valid) {
-            final eventRelation = EventRelation.fromEvent(widget.mainEvent);
-
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 NotificationImageContainer(
                   metadata: metadata,
-                  event: eventRelation,
+                  event: _eventRelation,
                 ),
                 const SizedBox(
                   width: kDefaultPadding / 2,
@@ -119,7 +120,7 @@ class _NotificationGlobalContainerState
                         height: kDefaultPadding / 8,
                       ),
                       NotificationEventQuote(
-                        eventRelation: eventRelation,
+                        eventRelation: _eventRelation,
                         metadata: metadata,
                         onRelatedEvent: (event) {
                           relatedEvent = event;

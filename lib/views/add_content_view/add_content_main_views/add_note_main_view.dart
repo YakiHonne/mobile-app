@@ -211,6 +211,7 @@ class AddNoteMainView extends HookWidget {
       create: (context) => WriteNoteCubit(
         attachedEvent,
         isMention: isMention ?? false,
+        isQuote: false,
       ),
       child: Column(
         children: components,

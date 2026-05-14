@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import 'utils.dart';
 
 // ** App version
-const String appVersion = 'v2.0.4+188';
+const String appVersion = 'v2.0.5+189';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -19,6 +19,7 @@ const baseUrl3 = 'yakihonne.com';
 const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const pointsUrl = 'https://api.yakihonne.com/api/v1/';
+const compressImageUrl = 'https://api.yakihonne.com/api/img';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
 const searchRelaysUrl = 'https://api.nostr.watch/v2/relays/by/nip';
@@ -141,12 +142,20 @@ final containerBorder = OutlineInputBorder(
   ),
 );
 
-//** cacheManager
+//** cacheManagers
 final imagesCacheManager = CacheManager(
   Config(
-    'yakihonneCacheKey',
-    stalePeriod: const Duration(days: 3),
-    //one week cache period
+    'yakihonneFeedCache',
+    stalePeriod: const Duration(days: 7),
+    maxNrOfCacheObjects: 500,
+  ),
+);
+
+final avatarCacheManager = CacheManager(
+  Config(
+    'yakiHonneAvatarCache',
+    stalePeriod: const Duration(days: 30),
+    maxNrOfCacheObjects: 200,
   ),
 );
 

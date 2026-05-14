@@ -40,11 +40,13 @@ class RedeemCodeOptions extends HookWidget {
       if (controller.value == null) {
         return null;
       }
+
       if (appState == AppLifecycleState.paused) {
         controller.value!.pauseCamera();
       } else if (appState == AppLifecycleState.resumed && isQrCode.value) {
         controller.value!.resumeCamera();
       }
+
       return null;
     }, [appState]);
 
@@ -117,9 +119,11 @@ class RedeemCodeOptions extends HookWidget {
               if (value == null || value.isEmpty) {
                 return context.t.redeemCodeRequired;
               }
+
               if (!value.startsWith('YR-')) {
                 return context.t.redeemCodeInvalid;
               }
+
               return null;
             },
           ),
@@ -202,6 +206,7 @@ class RedeemCodeOptions extends HookWidget {
             code.value.isEmpty;
 
         if (setCode) {
+          lg.i(res);
           code.value = res;
           onRedeem();
         }

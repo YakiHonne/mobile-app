@@ -410,6 +410,7 @@ class NoteStats extends HookWidget {
                   attachedEvent: model,
                   isMention: false,
                   isComment: isComment,
+                  isQuote: true,
                   onSuccess: (ev) {
                     notesEventsCubit.addEventRelatedData(
                       event: ev,
@@ -1482,6 +1483,11 @@ class RepostNoteContainer extends HookWidget {
   BlocBuilder<NotesEventsCubit, NotesEventsState> _fetchedNote(
       ValueNotifier<dynamic> originalEvent) {
     return BlocBuilder<NotesEventsCubit, NotesEventsState>(
+      buildWhen: (previous, current) =>
+          previous.eventsStats[originalEvent.value] !=
+              current.eventsStats[originalEvent.value] ||
+          previous.previousNotes[originalEvent.value] !=
+              current.previousNotes[originalEvent.value],
       builder: (context, state) {
         return SingleEventProvider(
           id: originalEvent.value,

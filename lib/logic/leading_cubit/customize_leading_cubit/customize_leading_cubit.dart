@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 
@@ -17,6 +18,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
             showPeopleToFollow: true,
             showRelatedContent: true,
             useSingleColumnFeed: false,
+            enableNestedReplies: false,
             enableAutoPlay: true,
             collapseNote: true,
             hideNonFollowedMedia: true,
@@ -50,6 +52,7 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
           showPeopleToFollow: c.showTrendingUsers,
           showRelatedContent: c.showRelatedContent,
           useSingleColumnFeed: c.useSingleColumnFeed,
+          enableNestedReplies: nostrRepository.getNestedRepliesStatus(),
           collapseNote: c.collapsedNote,
           actionsArrangement: c.actionsArrangement,
           hideNonFollowedMedia: c.hideNonFollowingMedia,
@@ -110,6 +113,17 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
       emit(
         state.copyWith(
           useSingleColumnFeed: !state.useSingleColumnFeed,
+        ),
+      );
+    }
+  }
+
+  void setNestedRepliesStatus() {
+    isUpdated = true;
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          enableNestedReplies: !state.enableNestedReplies,
         ),
       );
     }
@@ -249,6 +263,13 @@ class CustomizeLeadingCubit extends Cubit<CustomizeLeadingState> {
 
       nostrRepository.broadcastCurrentAppCustomization();
       nostrRepository.saveAppCustomization();
+
+      if (canSign()) {
+        localDatabaseRepository.setNestedRepliesStatus(
+          currentSigner!.getPublicKey(),
+          state.enableNestedReplies,
+        );
+      }
     }
 
     return super.close();

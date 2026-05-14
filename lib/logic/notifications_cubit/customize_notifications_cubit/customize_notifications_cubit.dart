@@ -12,7 +12,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
   CustomizeNotificationsCubit()
       : super(
           const CustomizeNotificationsState(
-            notifFollowings: true,
+            notifFollowings: false,
             notifMentionsReplies: true,
             notifReactions: true,
             notifReposts: true,
