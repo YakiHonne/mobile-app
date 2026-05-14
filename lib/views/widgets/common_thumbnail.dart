@@ -24,6 +24,7 @@ class CommonThumbnail extends StatelessWidget {
     this.isLeftRound,
     this.fit,
     this.useDefaultNoMedia = true,
+    this.compressImage = false,
     this.isPfp = false,
   });
 
@@ -38,6 +39,7 @@ class CommonThumbnail extends StatelessWidget {
   final bool? isLeftRound;
   final BoxFit? fit;
   final bool useDefaultNoMedia;
+  final bool compressImage;
   final bool isPfp;
 
   // Cache for base64 decoded data to avoid repeated decoding
@@ -64,7 +66,10 @@ class CommonThumbnail extends StatelessWidget {
       return _buildBase64Image();
     }
 
-    return _buildNetworkImage(context, cleanImage);
+    return _buildNetworkImage(
+      context,
+      cleanImage,
+    );
   }
 
   ExtendedImage _buildFileImage(BuildContext context, File file) {

@@ -98,7 +98,7 @@ class BlossomMediaUploader extends HookWidget {
                           ),
                           const SizedBox(height: kDefaultPadding),
                           Text(
-                            context.t.uploadFile,
+                            context.t.media,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -108,7 +108,7 @@ class BlossomMediaUploader extends HookWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            context.t.dragAndDropOrSelectFile,
+                            context.t.pickYourMedia,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!

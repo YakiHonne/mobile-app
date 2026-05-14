@@ -124,6 +124,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         );
       }
 
+      lg.i(state.isLoading);
+
       final events = await NostrFunctionsRepository.queryNotifications(
         pubkey: currentSigner!.getPublicKey(),
         limit: 40,
@@ -277,22 +279,23 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   bool shouldBeNotified(List<Event> events, {String? pubkey}) {
-    final userNewNotifications =
-        newNotifications[pubkey ?? currentSigner?.getPublicKey() ?? ''];
-    final userRegistredNotifications =
-        registredNotifications[pubkey ?? currentSigner?.getPublicKey() ?? ''];
+    final key = pubkey ?? currentSigner?.getPublicKey() ?? '';
+    final userNewNotifications = newNotifications[key];
+    final userRegistredNotifications = registredNotifications[key];
 
-    final doesNotContainNew = userNewNotifications == null ||
-        userNewNotifications.isEmpty ||
-        events.where((Event e) => userNewNotifications.contains(e.id)).length !=
-            events.length;
+    final newIds =
+        userNewNotifications != null && userNewNotifications.isNotEmpty
+            ? userNewNotifications.toSet()
+            : null;
+    final registredIds = userRegistredNotifications != null &&
+            userRegistredNotifications.isNotEmpty
+        ? userRegistredNotifications.toSet()
+        : null;
 
-    final doesNotContainRegistred = userRegistredNotifications == null ||
-        userRegistredNotifications.isEmpty ||
-        events
-                .where((Event e) => userRegistredNotifications.contains(e.id))
-                .length !=
-            events.length;
+    final doesNotContainNew =
+        newIds == null || events.any((e) => !newIds.contains(e.id));
+    final doesNotContainRegistred =
+        registredIds == null || events.any((e) => !registredIds.contains(e.id));
 
     return !isNotificationView &&
         events.isNotEmpty &&

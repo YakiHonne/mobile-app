@@ -13,6 +13,7 @@ class CustomizeLeadingState extends Equatable {
   final bool refresh;
   final bool collapseNote;
   final bool useSingleColumnFeed;
+  final bool enableNestedReplies;
   final Map<String, bool> actionsArrangement;
 
   const CustomizeLeadingState({
@@ -27,6 +28,7 @@ class CustomizeLeadingState extends Equatable {
     required this.refresh,
     required this.collapseNote,
     required this.useSingleColumnFeed,
+    required this.enableNestedReplies,
     required this.actionsArrangement,
   });
 
@@ -43,6 +45,7 @@ class CustomizeLeadingState extends Equatable {
         refresh,
         collapseNote,
         useSingleColumnFeed,
+        enableNestedReplies,
         actionsArrangement,
       ];
 
@@ -58,6 +61,7 @@ class CustomizeLeadingState extends Equatable {
     bool? refresh,
     bool? collapseNote,
     bool? useSingleColumnFeed,
+    bool? enableNestedReplies,
     Map<String, bool>? actionsArrangement,
   }) {
     return CustomizeLeadingState(
@@ -72,6 +76,7 @@ class CustomizeLeadingState extends Equatable {
       refresh: refresh ?? this.refresh,
       collapseNote: collapseNote ?? this.collapseNote,
       useSingleColumnFeed: useSingleColumnFeed ?? this.useSingleColumnFeed,
+      enableNestedReplies: enableNestedReplies ?? this.enableNestedReplies,
       actionsArrangement: actionsArrangement ?? this.actionsArrangement,
     );
   }

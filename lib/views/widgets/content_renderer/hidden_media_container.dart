@@ -130,7 +130,10 @@ class _AnimatedImage extends StatelessWidget {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
       child: ExtendedImage.network(
-        mediaServersCubit.makeSignedUrl(sourceUrl: url),
+        mediaServersCubit.getImageProxyUrl(
+          sourceUrl: url,
+          blur: 30,
+        ),
         fit: BoxFit.cover,
         loadStateChanged: (state) {
           switch (state.extendedImageLoadState) {

@@ -622,10 +622,10 @@ packages:
     dependency: transitive
     description:
       name: drift
-      sha256: "055c249d1f91be5a47fe447f88afc24c4ca6f4cd6c5ed66767b4797d48acc2e5"
+      sha256: "8033500116b24398fba0cca0369cc31678cd627c01e41753a61186911cea743e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.32.1"
+    version: "2.33.0"
   drift_flutter:
     dependency: transitive
     description:
@@ -1653,7 +1653,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: de60e09733c72e49764b1a84d8b1cc9ede1ef63a
+      resolved-ref: "4d4daf081d56ec4e8ac1f212dcb0b2be7a7b38c0"
       url: "https://github.com/YakiHonne/nostr_core_enhanced.git"
     source: git
     version: "1.0.0+1"
@@ -1866,13 +1866,13 @@ packages:
     source: hosted
     version: "2.1.8"
   pointycastle:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: pointycastle
-      sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
+      sha256: "92aa3841d083cc4b0f4709b5c74fd6409a3e6ba833ffc7dc6a8fee096366acf5"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.1"
+    version: "4.0.0"
   pool:
     dependency: transitive
     description:

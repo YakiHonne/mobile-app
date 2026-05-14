@@ -1127,4 +1127,12 @@ class MediaServersCubit extends Cubit<MediaServersState> {
 
     return url;
   }
+
+  String getImageProxyUrl({
+    required String sourceUrl,
+    int? blur,
+    int? quality,
+  }) {
+    return '$compressImageUrl?${'url=$sourceUrl'}${blur != null ? '&b=$blur' : ''}${quality != null ? '&q=$quality' : ''}';
+  }
 }

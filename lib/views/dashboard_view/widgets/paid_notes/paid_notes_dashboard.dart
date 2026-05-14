@@ -68,7 +68,8 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
         builder: (_) {
           return BlocProvider(
             create: (_) {
-              final cubit = WriteNoteCubit(null, isMention: false);
+              final cubit =
+                  WriteNoteCubit(null, isMention: false, isQuote: false);
               cubit.toBeSubmittedEvent = unpaidNote.event;
               cubit.relays = unpaidNote.relays;
               return cubit;

@@ -134,75 +134,73 @@ class SelectedNotifications extends HookWidget {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
     final controller = useMemoized(() => RefreshController());
 
-    return BlocConsumer<NotificationsCubit, NotificationsState>(
-      listenWhen: (previous, current) =>
-          previous.isLoading != current.isLoading,
-      listener: (context, state) {
-        if (!state.isLoading) {
-          controller.refreshCompleted();
-        }
-      },
-      buildWhen: (previous, current) =>
-          previous.events != current.events ||
-          previous.isLoading != current.isLoading,
-      builder: (context, state) {
-        if (enableNotifications()) {
-          return const EnableTypeNotifications();
-        }
+    final state = context.watch<NotificationsCubit>().state;
 
-        if (state.isLoading && state.events.isEmpty) {
-          return Center(
-            child: SpinKitCircle(
-              size: 30,
-              color: Theme.of(context).primaryColorDark,
-            ),
+    useEffect(() {
+      if (!state.isLoading) {
+        controller.refreshCompleted();
+      }
+      return null;
+    }, [state.isLoading]);
+
+    if (enableNotifications()) {
+      return const EnableTypeNotifications();
+    }
+
+    if (state.isLoading && state.events.isEmpty) {
+      return Center(
+        child: SpinKitCircle(
+          size: 30,
+          color: Theme.of(context).primaryColorDark,
+        ),
+      );
+    }
+
+    final usedEvents = useMemoized(
+      () => getUsedEvents(index, state.events),
+      [index, state.events],
+    );
+
+    if (usedEvents.isEmpty) {
+      return SmartRefresher(
+        controller: controller,
+        onRefresh: () =>
+            context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
+        child: EmptyList(
+          description: context.t.noNotificationCanBeFound.capitalizeFirst(),
+          icon: FeatureIcons.notification,
+        ),
+      );
+    }
+
+    return SmartRefresher(
+      controller: controller,
+      scrollController: scrollController,
+      enablePullUp: true,
+      header: const RefresherClassicHeader(),
+      onRefresh: () =>
+          context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        separatorBuilder: (context, index) => const Divider(
+          thickness: 0.5,
+          height: 0,
+        ),
+        padding: EdgeInsets.only(
+          bottom: kDefaultPadding,
+          top: kDefaultPadding / 2,
+          left: isMobile ? kDefaultPadding / 2 : 20.w,
+          right: isMobile ? kDefaultPadding / 2 : 20.w,
+        ),
+        itemBuilder: (context, index) {
+          final ev = usedEvents[index];
+          return NotificationGlobalContainer(
+            key: ValueKey(ev.id),
+            mainEvent: ev,
           );
-        }
-
-        final usedEvents = getUsedEvents(index, state.events);
-
-        if (usedEvents.isEmpty) {
-          return SmartRefresher(
-            controller: controller,
-            onRefresh: () =>
-                context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
-            child: EmptyList(
-              description: context.t.noNotificationCanBeFound.capitalizeFirst(),
-              icon: FeatureIcons.notification,
-            ),
-          );
-        }
-
-        return SmartRefresher(
-          controller: controller,
-          scrollController: scrollController,
-          enablePullUp: true,
-          header: const RefresherClassicHeader(),
-          onRefresh: () =>
-              context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
-          child: ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => const Divider(
-              thickness: 0.5,
-              height: 0,
-            ),
-            padding: EdgeInsets.only(
-              bottom: kDefaultPadding,
-              top: kDefaultPadding / 2,
-              left: isMobile ? kDefaultPadding / 2 : 20.w,
-              right: isMobile ? kDefaultPadding / 2 : 20.w,
-            ),
-            itemBuilder: (context, index) {
-              final ev = usedEvents[index];
-              return NotificationGlobalContainer(
-                key: ValueKey(ev.id),
-                mainEvent: ev,
-              );
-            },
-            itemCount: usedEvents.length,
-          ),
-        );
-      },
+        },
+        itemCount: usedEvents.length,
+      ),
     );
   }
 

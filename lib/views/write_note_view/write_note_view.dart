@@ -41,12 +41,14 @@ class AddReply extends HookWidget {
     this.onSuccess,
     this.isMention,
     this.isComment,
+    this.isQuote,
   });
 
   final Map<String, dynamic>? replyContent;
   final BaseEventModel? attachedEvent;
   final bool? isMention;
   final bool? isComment;
+  final bool? isQuote;
   final Function(Event)? onSuccess;
 
   @override
@@ -86,8 +88,11 @@ class AddReply extends HookWidget {
     }, []);
 
     return BlocProvider(
-      create: (context) =>
-          WriteNoteCubit(attachedEvent, isMention: isMention ?? false),
+      create: (context) => WriteNoteCubit(
+        attachedEvent,
+        isMention: isMention ?? false,
+        isQuote: isQuote ?? false,
+      ),
       child: Container(
         width: double.infinity,
         padding:

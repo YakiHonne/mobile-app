@@ -11,7 +11,6 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../common/functions/queue_manager.dart';
 import '../../../logic/profile_cubit/profile_cubit.dart';
-import '../../../logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import '../../../models/picture_model.dart';
 import '../../../models/video_model.dart';
 import '../../../routes/navigator.dart';
@@ -56,24 +55,14 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   late String _ownerId;
   late String _usedUrl;
   bool _isVisible = false;
+  bool _acquired = false;
 
   @override
   void initState() {
     super.initState();
     _ownerId = '${widget.link}_${DateTime.now().microsecondsSinceEpoch}';
     _usedUrl = widget.link;
-
-    videoControllerManagerCubit.acquireVideo(
-      _usedUrl,
-      _ownerId,
-      removeControls: true,
-      looping: true,
-      enableSound: false,
-      fallbackUrls: widget.fallbackUrls,
-      onFallbackUrlCalled: (url) {
-        _usedUrl = url;
-      },
-    );
+    // acquireVideo is deferred to the visibility callback
   }
 
   @override
@@ -110,20 +99,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   @override
   void dispose() {
-    videoControllerManagerCubit.releaseVideo(url: _usedUrl, id: _ownerId);
+    if (_acquired) {
+      videoControllerManagerCubit.releaseVideo(url: _usedUrl, id: _ownerId);
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VideoControllerManagerCubit,
-        VideoControllerManagerState>(
-      buildWhen: (previous, current) =>
-          current.chewieControllers[_usedUrl] !=
-              previous.chewieControllers[_usedUrl] ||
-          current.videoControllers[_usedUrl] !=
-              previous.videoControllers[_usedUrl],
-      builder: (context, state) {
+    return StreamBuilder<void>(
+      stream: videoControllerManagerCubit.watchUrl(_usedUrl),
+      builder: (context, _) {
         final chewieController =
             videoControllerManagerCubit.getChewieController(_usedUrl);
 
@@ -155,13 +141,37 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           },
           behavior: HitTestBehavior.opaque,
           child: VisibilityDetector(
-            key: ValueKey(widget.link),
+            // Use _ownerId so two widgets playing the same URL get distinct keys
+            key: ValueKey(_ownerId),
             onVisibilityChanged: (info) {
               if (!mounted) {
                 return;
               }
 
-              _isVisible = info.visibleFraction > 0.5;
+              final fraction = info.visibleFraction;
+
+              if (fraction > 0.5 && !_acquired) {
+                _acquired = true;
+                videoControllerManagerCubit.acquireVideo(
+                  _usedUrl,
+                  _ownerId,
+                  removeControls: true,
+                  looping: true,
+                  enableSound: false,
+                  fallbackUrls: widget.fallbackUrls,
+                  onFallbackUrlCalled: (url) {
+                    _usedUrl = url;
+                  },
+                );
+              } else if (fraction <= 0.1 && _acquired) {
+                _acquired = false;
+                videoControllerManagerCubit.releaseVideo(
+                  url: _usedUrl,
+                  id: _ownerId,
+                );
+              }
+
+              _isVisible = fraction > 0.5;
               _handlePlaybackState();
             },
             child: LayoutBuilder(
@@ -171,7 +181,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 final containerAspect =
                     constraints.maxWidth / constraints.maxHeight;
 
-                // Calculate scale to cover container
                 final scale = containerAspect > videoAspect
                     ? containerAspect / videoAspect
                     : videoAspect / containerAspect;
@@ -183,9 +192,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     child: Transform.scale(
                       scale: scale,
                       child: AbsorbPointer(
-                        child: Chewie(
-                          controller: chewieController,
-                        ),
+                        child: Chewie(controller: chewieController),
                       ),
                     ),
                   ),
@@ -523,9 +530,13 @@ class VideoThumbnailCard extends HookWidget {
     super.key,
     required this.url,
     required this.onTap,
+    this.useIcon = true,
+    this.radius,
   });
 
   final String url;
+  final bool useIcon;
+  final double? radius;
   final Function() onTap;
 
   @override
@@ -563,7 +574,7 @@ class VideoThumbnailCard extends HookWidget {
               CommonThumbnail(
                 image: '',
                 memoryUrl: memThumbnail.value,
-                radius: kDefaultPadding / 2,
+                radius: radius ?? kDefaultPadding / 2,
                 isRound: true,
                 fit: BoxFit.contain,
               )
@@ -579,22 +590,23 @@ class VideoThumbnailCard extends HookWidget {
                   ),
                 ),
               ),
-            Positioned(
-              top: kDefaultPadding / 2,
-              right: kDefaultPadding / 2,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: kWhite.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                  size: 16,
+            if (useIcon)
+              Positioned(
+                top: kDefaultPadding / 2,
+                right: kDefaultPadding / 2,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: kWhite.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

@@ -363,6 +363,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       limit: 100,
       relays: userWriteRelays.toList(),
       source: EventsSource.all,
+      timeout: 1,
     );
 
     if (fetchId == id) {

@@ -498,13 +498,22 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
 
     final currentEventStats = Map<String, EventStats>.from(state.eventsStats);
+    final statsBatch = <EventStats>[];
 
-    eventsByParent.forEach((id, events) {
-      processEvents(id, events, currentEventStats);
+    eventsByParent.forEach((id, eventsForParent) {
+      final stats = processEvents(id, eventsForParent, currentEventStats);
+      statsBatch.add(stats);
       _statsAccessTimes[id] = Helpers.now;
     });
 
     updateEventStats(currentEventStats);
+
+    // Defer DB writes until after the current frame — keeps the main thread free
+    // during the burst of stat updates that happens on startup and feed load.
+    Future.microtask(() {
+      nc.db.saveEvents(events);
+      nc.db.saveEventStatsList(statsBatch);
+    });
   }
 
   void _onContentEvent(Event event) {
@@ -518,11 +527,12 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
   }
 
-  Future<void> processEvents(
+  // Returns the computed EventStats so the caller can batch-write all stats at once.
+  EventStats processEvents(
     String id,
     List<Event> events,
     Map<String, EventStats> currentEventStats,
-  ) async {
+  ) {
     alreadySearchedContentIds.add(id);
 
     final nStats = currentEventStats[id] ??
@@ -562,8 +572,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         : updatedNStats;
 
     currentEventStats[id] = finalStats;
-    await nc.db.saveEvents(events);
-    await nc.db.saveEventStats(finalStats);
+    return finalStats;
   }
 
   Future<List<DetailedNoteModel>> getNotePrevious(
@@ -688,7 +697,6 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     if (!n.isRoot) {
       final cached = await getCachedPreviousNotes(n);
-
       thread = [...cached, ...thread];
     }
 

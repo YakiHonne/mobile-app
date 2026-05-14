@@ -256,18 +256,14 @@ class _VersionNewsState extends State<VersionNews> {
 }
 
 final List<String> releaseNotes = [
-  'Launched interactive DM Gifts.',
-  'Introduced Blossom server management.',
-  'Added NIP-22 comment support for articles and videos.',
-  'Optimized relay sharing links with direct content parameters.',
-  'Simplified relay invitation UI to "Share".',
-  'Unified feed settings by moving nested replies configuration.',
-  'Improved relay browsing experience from the homefeed.',
-  'Added relay sharing capability within the Orbits view.',
-  'Improved relay joining with automated connection timers.',
-  'Fixed relay filtering when posting notes in Relay Orbits.',
-  'Added automatic state reset for paid note progress.',
-  'Resolved layout and keyboard overlap on relay join requests.',
+  'Moved nested comments to Feed customization.',
+  'Disabled followings notifications by default.',
+  'Updated description in Blossom management upload view.',
+  'Enabled internal view opening for Blossom management items.',
+  'Adjusted mirror functionality in Blossom management options.',
+  'Optimized videos prefetching.',
+  'Fixed videos thumbnails not loading in Blossom management.',
+  'Fixed quote functionality.',
   'General bug fixes and performance enhancements.',
 ];
 

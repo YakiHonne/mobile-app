@@ -104,45 +104,84 @@ class ContentRenderer extends HookWidget {
       return const SizedBox.shrink();
     }
 
-    // Memoize parsed elements to avoid re-parsing
-    final elements = _getLinkifyElements(text.trim());
+    // Memoize parsed elements — linkify runs multiple regex passes so we only
+    // recompute when the text content actually changes, not on every rebuild.
+    final trimmed = text.trim();
+    final elements = useMemoized(
+      () => _getLinkifyElements(trimmed),
+      [trimmed],
+    );
 
     if (elements.isEmpty) {
       return _buildEmptyContent(context);
     }
 
-    // Memoize instant URL types
-    final instantUrlTypes =
-        UrlTypeChecker.getInstantUrlTypes(elements, disableUrlParsing);
+    // Memoize instant URL types — cheap extension scan, but stable reference
+    // matters so the async future key stays the same across rebuilds.
+    final instantUrlTypes = useMemoized(
+      () => UrlTypeChecker.getInstantUrlTypes(elements, disableUrlParsing),
+      [trimmed, disableUrlParsing],
+    );
 
-    return FutureBuilder<Map<int, UrlType>>(
-      initialData: instantUrlTypes,
-      future: UrlTypeChecker.getUrlTypesAsync(
+    // Stable future — only recomputed when text or disableUrlParsing changes.
+    // Without useMemoized, every parent rebuild creates a new Future causing
+    // FutureBuilder to flash through loading→done on every scroll frame.
+    final urlTypesFuture = useMemoized(
+      () => UrlTypeChecker.getUrlTypesAsync(
         elements,
         instantUrlTypes,
         disableUrlParsing,
       ),
-      builder: (context, snapshot) {
-        final urlTypes = snapshot.data ?? {};
+      [trimmed, disableUrlParsing],
+    );
 
-        return _OptimizedSelectableText(
-          textSpan: _buildMainTextSpan(
-            elements,
-            urlTypes,
-            context,
-            scrollPhysics,
-          ),
-          textAlign: textAlign,
-          textDirection: textDirection,
-          maxLines: maxLines,
-          minLines: minLines,
-          strutStyle: strutStyle,
-          textWidthBasis: textWidthBasis,
-          textHeightBehavior: textHeightBehavior,
-          onTap: onClicked,
-          scrollPhysics: scrollPhysics,
-        );
-      },
+    // Tracks resolved url types — starts with instant (extension-based) results,
+    // then upgrades to async results when the future completes. All hooks are
+    // called here at the top level of build(), never inside nested builders.
+    final resolvedUrlTypes = useState(instantUrlTypes);
+
+    // Reset to the new instant types whenever the text changes so a reused
+    // widget doesn't keep stale URL types from its previous content.
+    useEffect(() {
+      resolvedUrlTypes.value = instantUrlTypes;
+      return null;
+    }, [instantUrlTypes]);
+
+    useEffect(() {
+      var cancelled = false;
+      urlTypesFuture.then((result) {
+        if (!cancelled && !_mapsEqual(result, resolvedUrlTypes.value)) {
+          resolvedUrlTypes.value = result;
+        }
+      });
+      return () {
+        cancelled = true;
+      };
+    }, [urlTypesFuture]);
+
+    // Span is memoized at build() level — only rebuilt when text changes or
+    // async url types resolve. Never recreated due to unrelated parent rebuilds.
+    final textSpan = useMemoized(
+      () => _buildMainTextSpan(
+        elements,
+        resolvedUrlTypes.value,
+        context,
+        scrollPhysics,
+      ),
+      [trimmed, resolvedUrlTypes.value],
+    );
+
+    return _OptimizedSelectableText(
+      textSpan: textSpan,
+      textAlign: textAlign,
+      textDirection: textDirection,
+      maxLines: maxLines,
+      minLines: minLines,
+      strutStyle: strutStyle,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+      onTap: onClicked,
+      scrollPhysics: scrollPhysics,
     );
   }
 
@@ -197,11 +236,14 @@ class ContentRenderer extends HookWidget {
       return [_buildNoContentSpan(context)];
     }
 
+    // Both filteredData and the index→group map are memoized together.
+    // _FilteredElementsData.fromElements is O(n²) due to index shifting, and
+    // _buildIndexToGroupMap replaces the O(groups×n) _findMediaGroup scan with
+    // O(1) lookups — both are expensive to recompute on every rebuild.
     final filteredData = _FilteredElementsData.fromElements(elements, urlTypes);
-    final consecutiveMedia = _groupConsecutiveMedia(filteredData.urlTypes);
+    final indexToGroup = _buildIndexToGroupMap(filteredData.urlTypes);
     final spans = <InlineSpan>[];
 
-    // Process elements in batches to avoid blocking UI
     for (int i = 0; i < filteredData.elements.length; i++) {
       final element = filteredData.elements[i];
 
@@ -209,7 +251,7 @@ class ContentRenderer extends HookWidget {
         _processOptimizedLinkableElement(
           element,
           i,
-          consecutiveMedia,
+          indexToGroup,
           filteredData,
           spans,
           context,
@@ -223,17 +265,31 @@ class ContentRenderer extends HookWidget {
     return spans;
   }
 
+  /// Build a flat index→group map so each element's media group is O(1) to find.
+  /// Replaces the previous O(groups×n) linear scan per element.
+  Map<int, Map<int, UrlType>> _buildIndexToGroupMap(
+      Map<int, UrlType> urlTypes) {
+    final groups = _groupConsecutiveMedia(urlTypes);
+    final result = <int, Map<int, UrlType>>{};
+    for (final group in groups) {
+      for (final index in group.keys) {
+        result[index] = group;
+      }
+    }
+    return result;
+  }
+
   /// Process linkable elements with optimization
   void _processOptimizedLinkableElement(
     LinkableElement element,
     int index,
-    List<Map<int, UrlType>> consecutiveMedia,
+    Map<int, Map<int, UrlType>> indexToGroup,
     _FilteredElementsData filteredData,
     List<InlineSpan> spans,
     BuildContext context,
     ScrollPhysics? scrollPhysics,
   ) {
-    final mediaGroup = _findMediaGroup(consecutiveMedia, index);
+    final mediaGroup = indexToGroup[index];
 
     if (mediaGroup != null && mediaGroup.keys.first == index) {
       _addOptimizedMediaContainer(
@@ -252,19 +308,6 @@ class ContentRenderer extends HookWidget {
         scrollPhysics,
       );
     }
-  }
-
-  /// Find media group for given index
-  Map<int, UrlType>? _findMediaGroup(
-    List<Map<int, UrlType>> consecutiveMedia,
-    int index,
-  ) {
-    for (final group in consecutiveMedia) {
-      if (group.keys.contains(index)) {
-        return group;
-      }
-    }
-    return null;
   }
 
   /// Add optimized media container widget
@@ -884,6 +927,21 @@ class ContentRenderer extends HookWidget {
       }
     }
   }
+
+  bool _mapsEqual(Map<int, UrlType> a, Map<int, UrlType> b) {
+    if (identical(a, b)) {
+      return true;
+    }
+    if (a.length != b.length) {
+      return false;
+    }
+    for (final entry in a.entries) {
+      if (b[entry.key] != entry.value) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 /// Optimized SelectableText wrapper
@@ -1018,7 +1076,7 @@ class _OptimizedTappableTextState extends State<_OptimizedTappableText> {
 }
 
 /// Optimized Nevent widget
-class _OptimizedNeventWidget extends StatelessWidget {
+class _OptimizedNeventWidget extends HookWidget {
   const _OptimizedNeventWidget({
     super.key,
     required this.element,
@@ -1030,7 +1088,12 @@ class _OptimizedNeventWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entity = Nip19.decodeShareableEntity(element.text);
+    // Nip19.decodeShareableEntity involves bech32 decoding — memoize so it
+    // only runs once per unique element text, not on every parent rebuild.
+    final entity = useMemoized(
+      () => Nip19.decodeShareableEntity(element.text),
+      [element.text],
+    );
     final id = entity['special'];
     final kind = entity['kind'];
 
@@ -1785,6 +1848,7 @@ class MediaImage extends HookWidget {
             radius: kDefaultPadding / 2,
             isRound: true,
             useDefaultNoMedia: false,
+            compressImage: true,
           ),
           if (hideImageStatus.value)
             HiddenMediaContainer(

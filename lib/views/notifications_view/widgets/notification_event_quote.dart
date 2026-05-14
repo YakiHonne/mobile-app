@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -102,7 +103,7 @@ class _NotificationEventQuoteState extends State<NotificationEventQuote> {
   }
 }
 
-class NotificationEventMain extends StatelessWidget {
+class NotificationEventMain extends HookWidget {
   const NotificationEventMain({
     super.key,
     required this.event,
@@ -118,13 +119,18 @@ class NotificationEventMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return getWidget(event, mainEvent, context);
+    final cachedOriginContent = useMemoized(
+      () => getEventContent(mainEvent.origin),
+      [mainEvent.origin.id],
+    );
+    return getWidget(event, mainEvent, context, cachedOriginContent);
   }
 
   Widget getWidget(
     Event? event,
     EventRelation mainEvent,
     BuildContext context,
+    String cachedEventContent,
   ) {
     final isAuthor =
         event != null && event.pubkey == currentSigner!.getPublicKey();
@@ -365,7 +371,7 @@ class NotificationEventMain extends StatelessWidget {
         ),
         WidgetSpan(
           child: ParsedText(
-            text: getEventContent(mainEvent.origin),
+            text: cachedEventContent,
             scrollPhysics: const NeverScrollableScrollPhysics(),
             disableNoteParsing: false,
             enableHidingMedia: true,

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:just_audio/just_audio.dart' as ja;
@@ -13,7 +12,6 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../common/media_handler/media_handler.dart';
-import '../../logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
@@ -642,23 +640,17 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VideoControllerManagerCubit,
-        VideoControllerManagerState>(
-      buildWhen: (previous, current) =>
-          current.chewieControllers[_usedUrl] !=
-              previous.chewieControllers[_usedUrl] ||
-          current.videoControllers[_usedUrl] !=
-              previous.videoControllers[_usedUrl],
-      builder: (context, state) {
+    return StreamBuilder<void>(
+      stream: videoControllerManagerCubit.watchUrl(_usedUrl),
+      builder: (context, _) {
         final chewieController =
             videoControllerManagerCubit.getChewieController(_usedUrl);
 
         return VisibilityDetector(
-          key: ValueKey(widget.link),
+          // Use _ownerId so two widgets playing the same URL get distinct keys
+          key: ValueKey(_ownerId),
           onVisibilityChanged: (info) {
-            final isVisible = info.visibleFraction > 0.5;
-
-            if (!isVisible) {
+            if (info.visibleFraction <= 0.5) {
               videoControllerManagerCubit.pauseVideo(widget.link);
             }
           },

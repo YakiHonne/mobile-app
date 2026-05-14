@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../logic/blossom_cubit/blossom_state.dart';
@@ -17,6 +16,8 @@ import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
+import '../gallery_view/gallery_view.dart';
+import '../profile_view/widgets/profile_media.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/custom_app_bar.dart';
@@ -253,20 +254,31 @@ class _BlossomMediaGridItem extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  CommonThumbnail(
-                    image: item.media.url,
-                    radius: kDefaultPadding / 2,
-                  ),
                   if (isVideo)
-                    Center(
-                      child: SvgPicture.asset(
-                        FeatureIcons.video,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white70,
-                          BlendMode.srcIn,
+                    VideoThumbnailCard(
+                      url: item.media.url,
+                      onTap: () {},
+                      useIcon: false,
+                    )
+                  else
+                    CommonThumbnail(
+                      image: item.media.url,
+                      radius: kDefaultPadding / 2,
+                    ),
+                  if (isVideo)
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(
+                          FeatureIcons.video,
+                          colorFilter: const ColorFilter.mode(
+                            kWhite,
+                            BlendMode.srcIn,
+                          ),
+                          width: 30,
+                          height: 30,
                         ),
-                        width: 40,
-                        height: 40,
                       ),
                     ),
                 ],
@@ -452,12 +464,22 @@ class _MediaPullDownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final servers = context.watch<BlossomCubit>().state.servers;
+    final enableMirror =
+        servers.length > 1 && item.serverUrls.length < servers.length;
+
     return PullDownGlobalButton(
       enableView: true,
-      onView: () => launchUrl(
-        Uri.parse(item.media.url),
-        mode: LaunchMode.externalApplication,
-      ),
+      onView: () {
+        final isVideo = item.media.type.startsWith('video/');
+
+        openGallery(
+          source:
+              MapEntry(item.media.url, isVideo ? UrlType.video : UrlType.image),
+          index: 0,
+          context: context,
+        );
+      },
       enableDownload: !item.media.type.startsWith('video/'),
       onDownload: () => _downloadFile(context, item.media),
       enablePostInNote: true,
@@ -478,7 +500,7 @@ class _MediaPullDownButton extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: item.media.url));
         BotToastUtils.showSuccess(context.t.textSuccesfulyCopied);
       },
-      enableMirror: true,
+      enableMirror: enableMirror,
       onMirror: () => context.read<BlossomCubit>().mirrorMedia(item),
       enableDelete: true,
       onDelete: () => _confirmDelete(context, item.media.sha256),
@@ -625,11 +647,12 @@ class BlossomMediaDetails extends StatelessWidget {
 }
 
 void _showMediaDetails(BuildContext context, BlossomAggregatedMedia item) {
-  showModalBottomSheet(
+  final isVideo = item.media.type.startsWith('video/');
+
+  openGallery(
+    source: MapEntry(item.media.url, isVideo ? UrlType.video : UrlType.image),
+    index: 0,
     context: context,
-    isScrollControlled: true,
-    backgroundColor: kTransparent,
-    builder: (_) => BlossomMediaDetails(item: item),
   );
 }
 

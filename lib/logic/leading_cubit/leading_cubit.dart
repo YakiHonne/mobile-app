@@ -62,7 +62,7 @@ class LeadingCubit extends Cubit<LeadingState> {
   void _initializeStreams() {
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
-      (appCustom) {
+      (appCustom) async {
         if (!isClosed) {
           emit(
             state.copyWith(
@@ -73,6 +73,8 @@ class LeadingCubit extends Cubit<LeadingState> {
             ),
           );
         }
+
+        await Future.delayed(const Duration(seconds: 1));
 
         buildLeadingFeed(
           isAdding: false,

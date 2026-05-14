@@ -44,7 +44,7 @@ class MediaCubit extends Cubit<MediaState> {
   void _initializeStreams() {
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
-      (appCustom) {
+      (appCustom) async {
         if (!isClosed) {
           emit(
             state.copyWith(
@@ -52,6 +52,8 @@ class MediaCubit extends Cubit<MediaState> {
             ),
           );
         }
+
+        await Future.delayed(const Duration(seconds: 1));
 
         buildMediaFeed(
           isAdding: false,
@@ -73,20 +75,6 @@ class MediaCubit extends Cubit<MediaState> {
             ),
           );
         }
-      },
-    );
-  }
-
-  Future<void> init() async {
-    Future.delayed(const Duration(seconds: 1)).then(
-      (_) {
-        // Initialize suggestions
-        suggestionsBoxCubit.initDiscover();
-
-        // Build initial feed
-        buildMediaFeed(
-          isAdding: false,
-        );
       },
     );
   }
