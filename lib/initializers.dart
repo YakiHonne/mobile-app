@@ -46,6 +46,8 @@ import 'models/filter_status.dart';
 import 'repositories/connectivity_repository.dart';
 import 'repositories/localdatabase_repository.dart';
 import 'repositories/nostr_data_repository.dart';
+import 'services/namecoin/namecoin_name_service.dart';
+import 'services/namecoin/namecoin_shared_preferences.dart';
 import 'utils/utils.dart';
 
 class AppInitializer {
@@ -95,7 +97,9 @@ class AppInitializer {
   static Future<void> _initializeNostrCore() async {
     nc = NostrCore(loadRemoteCache: false);
     await Future.wait([
-      _initRemoteCache().timeout(const Duration(seconds: 2)),
+      _initRemoteCache().timeout(const Duration(seconds: 2)).catchError((_) {
+        // Remote cache init can fail (e.g. no network); continue startup.
+      }),
       nc.db.init(),
     ]);
   }
@@ -153,6 +157,11 @@ class AppInitializer {
     settingsCubit = SettingsCubit();
     await settingsCubit.init();
     initCameras();
+
+    // Initialize Namecoin name resolution service
+    namecoinPreferences = NamecoinSharedPreferences(prefs);
+    namecoinService = NamecoinNameService();
+    namecoinService.updateSettings(namecoinPreferences.load());
   }
 
   static Future<void> initCameras() async {
