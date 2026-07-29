@@ -7,6 +7,7 @@ import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
+import '../../app_icon.dart';
 import '../../common_thumbnail.dart';
 import '../../custom_app_bar.dart';
 import '../../custom_icon_buttons.dart';
@@ -309,14 +310,10 @@ class ImageSelectorWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: kDefaultPadding / 4,
                         children: [
-                          SvgPicture.asset(
+                          AppIcon(
                             FeatureIcons.imageAttachment,
-                            width: 25,
-                            height: 25,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).primaryColorDark,
-                              BlendMode.srcIn,
-                            ),
+                            size: 25,
+                            color: Theme.of(context).primaryColorDark,
                           ),
                           Text(
                             context.t.uploadImage.capitalizeFirst(),

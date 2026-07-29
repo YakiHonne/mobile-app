@@ -3,13 +3,16 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:numeral/numeral.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../models/app_models/extended_model.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'data_providers.dart';
 import 'profile_picture.dart';
 
@@ -79,6 +82,7 @@ class UserProfileContainer extends HookWidget {
                 child: TextButton(
                   onPressed: onClicked,
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: VisualDensity.comfortable,
                     backgroundColor: isDisabled
                         ? Theme.of(context).highlightColor
@@ -172,14 +176,10 @@ class UserProfileContainer extends HookWidget {
       width: 55,
       child: Row(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.zapAmount,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(nostrRepository.currentContext()).primaryColor,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(nostrRepository.currentContext()).primaryColor,
           ),
           const SizedBox(
             width: kDefaultPadding / 4,
@@ -235,24 +235,19 @@ class UserNoteStatContainer extends HookWidget {
               if (event.kind == EventKind.REACTION)
                 ReactionIcon(event: event)
               else if (event.kind == EventKind.REPOST)
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.repost,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 )
               else
-                SvgPicture.asset(
-                  FeatureIcons.quote,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                AppIcon(
+                  // ponytail: quote notes carry a q tag, everything else here is a comment
+                  ExtendedEvent.fromEv(event).isQuote()
+                      ? FeatureIcons.quote
+                      : FeatureIcons.comments,
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               const SizedBox(
                 width: kDefaultPadding / 2,
@@ -292,6 +287,7 @@ class UserNoteStatContainer extends HookWidget {
       child: TextButton(
         onPressed: onClicked,
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: isDisabled
               ? Theme.of(context).highlightColor
@@ -371,15 +367,11 @@ class ReactionIcon extends StatelessWidget {
     }
   }
 
-  SvgPicture _svgImage(String icon) {
-    return SvgPicture.asset(
+  AppIcon _svgImage(IconData icon) {
+    return AppIcon(
       icon,
-      width: 20,
-      height: 20,
-      colorFilter: ColorFilter.mode(
-        Theme.of(nostrRepository.currentContext()).primaryColor,
-        BlendMode.srcIn,
-      ),
+      size: 20,
+      color: Theme.of(nostrRepository.currentContext()).primaryColor,
     );
   }
 
@@ -400,34 +392,31 @@ class ReactionIcon extends StatelessWidget {
     );
   }
 
-  ExtendedImage _extendedImage(String imageUrl, String icon) {
+  ExtendedImage _extendedImage(String imageUrl, IconData icon) {
     return ExtendedImage.network(
       imageUrl,
       width: 20,
       height: 20,
+      // ponytail: 20 logical px capped at 3x DPR. Without this a 1024px
+      // reaction icon decodes ~4MB to paint 20px, per feed row.
+      cacheWidth: 60,
       fit: BoxFit.cover,
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
-            return const Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 0.5,
-                ),
+            return Center(
+              child: SpinKitCircle(
+                color: Theme.of(nostrRepository.currentContext())
+                    .primaryColorDark,
+                size: 20,
               ),
             );
 
           case LoadState.failed:
-            return SvgPicture.asset(
+            return AppIcon(
               icon,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(nostrRepository.currentContext()).primaryColor,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(nostrRepository.currentContext()).primaryColor,
             );
 
           case LoadState.completed:
@@ -437,7 +426,7 @@ class ReactionIcon extends StatelessWidget {
     );
   }
 
-  String getIcon(Event? reactionEvent) {
+  IconData getIcon(Event? reactionEvent) {
     return reactionEvent != null
         ? FeatureIcons.heartFilled
         : FeatureIcons.heart;

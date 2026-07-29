@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class CodeWrapperWidget extends StatefulWidget {
   final Widget child;
@@ -25,7 +26,7 @@ class _PreWrapperState extends State<CodeWrapperWidget> {
   @override
   void initState() {
     super.initState();
-    _switchWidget = Icon(Icons.copy_rounded, key: UniqueKey());
+    _switchWidget = Icon(LucideIcons.copy, key: UniqueKey());
   }
 
   @override
@@ -47,11 +48,11 @@ class _PreWrapperState extends State<CodeWrapperWidget> {
                   return;
                 }
                 await Clipboard.setData(ClipboardData(text: widget.text));
-                _switchWidget = Icon(Icons.check, key: UniqueKey());
+                _switchWidget = Icon(LucideIcons.check, key: UniqueKey());
                 refresh();
                 Future.delayed(const Duration(seconds: 2), () {
                   hasCopied = false;
-                  _switchWidget = Icon(Icons.copy_rounded, key: UniqueKey());
+                  _switchWidget = Icon(LucideIcons.copy, key: UniqueKey());
                   refresh();
                 });
               },

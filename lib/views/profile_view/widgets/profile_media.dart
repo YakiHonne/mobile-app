@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../common/functions/queue_manager.dart';
@@ -16,6 +18,7 @@ import '../../../models/video_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../gallery_view/gallery_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/empty_list.dart';
@@ -218,57 +221,70 @@ class ProfileMedia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fluid = isFluid();
+
     return SliverMainAxisGroup(
       slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
-          sliver: SliverAppBar(
-            floating: true,
-            toolbarHeight: 45,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            elevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: SizedBox(
-              height: 36,
-              width: double.infinity,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) => const SizedBox(
-                  width: kDefaultPadding / 4,
-                ),
-                itemBuilder: (context, index) {
-                  final type = profileDataList[index];
+        if (!fluid)
+          SliverPadding(
+            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            sliver: SliverAppBar(
+              floating: true,
+              toolbarHeight: 45,
+              automaticallyImplyLeading: false,
+              titleSpacing: 0,
+              elevation: 0,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: SizedBox(
+                height: 36,
+                width: double.infinity,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => const SizedBox(
+                    width: kDefaultPadding / 4,
+                  ),
+                  itemBuilder: (context, index) {
+                    final type = profileDataList[index];
 
-                  return TagContainer(
-                    title: type.getDisplayName(context),
-                    isActive: type == profileData,
-                    style: Theme.of(context).textTheme.labelLarge,
-                    backgroundColor: type == profileData
-                        ? Theme.of(context).cardColor
-                        : Colors.transparent,
-                    textColor: Theme.of(context).primaryColorDark,
-                    onClick: () {
-                      onProfileDataChanged(type);
-                      HapticFeedback.lightImpact();
-                    },
-                  );
-                },
-                itemCount: profileDataList.length,
+                    return TagContainer(
+                      title: type.getDisplayName(context),
+                      isActive: type == profileData,
+                      style: Theme.of(context).textTheme.labelLarge,
+                      backgroundColor: type == profileData
+                          ? Theme.of(context).cardColor
+                          : Colors.transparent,
+                      textColor: Theme.of(context).primaryColorDark,
+                      onClick: () {
+                        onProfileDataChanged(type);
+                        HapticFeedback.lightImpact();
+                      },
+                    );
+                  },
+                  itemCount: profileDataList.length,
+                ),
               ),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: kDefaultPadding / 2),
-        ),
-        _mediaGridDelegate(context: context),
+        if (!fluid)
+          const SliverToBoxAdapter(
+            child: SizedBox(height: kDefaultPadding / 2),
+          ),
+        if (fluid)
+          const SliverToBoxAdapter(
+            child: SizedBox(height: kDefaultPadding / 4),
+          ),
+        _mediaGridDelegate(context: context, fluid: fluid),
+        if (fluid)
+          const SliverToBoxAdapter(
+            child: SizedBox(height: kDefaultPadding * 4),
+          ),
       ],
     );
   }
 
   Widget _mediaGridDelegate({
     required BuildContext context,
+    required bool fluid,
   }) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
@@ -513,7 +529,7 @@ class VideoCard extends HookWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Icon(
-                  Icons.play_arrow,
+                  LucideIcons.play,
                   color: Colors.white,
                   size: 16,
                 ),
@@ -579,15 +595,11 @@ class VideoThumbnailCard extends HookWidget {
                 fit: BoxFit.contain,
               )
             else
-              Center(
-                child: SvgPicture.asset(
+              const Center(
+                child: AppIcon(
                   FeatureIcons.videoLink,
-                  width: 30,
-                  height: 30,
-                  colorFilter: const ColorFilter.mode(
-                    kWhite,
-                    BlendMode.srcIn,
-                  ),
+                  size: 30,
+                  color: kWhite,
                 ),
               ),
             if (useIcon)
@@ -601,13 +613,78 @@ class VideoThumbnailCard extends HookWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: const Icon(
-                    Icons.play_arrow,
+                    LucideIcons.play,
                     color: Colors.white,
                     size: 16,
                   ),
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileMediaFilter extends StatelessWidget {
+  const ProfileMediaFilter({
+    super.key,
+    required this.profileData,
+    required this.onChanged,
+  });
+
+  final ProfileData profileData;
+  final Function(ProfileData) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return PullDownButton(
+      animationBuilder: (context, state, child) => child,
+      routeTheme: PullDownMenuRouteTheme(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      itemBuilder: (context) {
+        return profileDataList.map((type) {
+          return PullDownMenuItem.selectable(
+            title: type.getDisplayName(context).capitalizeFirst(),
+            selected: profileData == type,
+            onTap: () => onChanged(type),
+            itemTheme: PullDownMenuItemTheme(
+              textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          );
+        }).toList();
+      },
+      buttonBuilder: (context, showMenu) => GestureDetector(
+        onTap: showMenu,
+        behavior: HitTestBehavior.translucent,
+        child: SizedBox(
+          width: 50.w,
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    profileData.getDisplayName(context).capitalizeFirst(),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Icon(LucideIcons.chevronDown),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

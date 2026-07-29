@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../repositories/http_functions_repository.dart';
 import '../../../repositories/nostr_functions_repository.dart';
 import '../../../utils/bot_toast_util.dart';
@@ -66,6 +67,7 @@ class ProfileFastAccessCubit extends Cubit<ProfileFastAccessState> {
 
     if (pubkeys.isNotEmpty) {
       nostrRepository.mutuals[pubkey] = pubkeys;
+      nostrRepository.mutuals.capSize(100);
     }
 
     int followers = info['followers'];

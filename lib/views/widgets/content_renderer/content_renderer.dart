@@ -21,9 +21,11 @@ import '../../gallery_view/gallery_view.dart';
 import '../../note_view/note_view.dart';
 import '../../smart_widgets_view/widgets/smart_widget_container.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../app_icon.dart';
 import '../common_thumbnail.dart';
 import '../custom_icon_buttons.dart';
 import '../data_providers.dart';
+import '../fluid_blur_container.dart';
 import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import '../note_container.dart';
@@ -168,7 +170,7 @@ class ContentRenderer extends HookWidget {
         context,
         scrollPhysics,
       ),
-      [trimmed, resolvedUrlTypes.value],
+      [trimmed, resolvedUrlTypes.value, Theme.of(context)],
     );
 
     return _OptimizedSelectableText(
@@ -512,6 +514,7 @@ class ContentRenderer extends HookWidget {
             isMain: false,
             addLine: false,
             enableReply: true,
+            isExtended: true,
           );
         } else {
           return NoteContainer(
@@ -1153,14 +1156,10 @@ class _OptimizedTagContainer extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.shareExternal,
-                  width: 12,
-                  height: 12,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 12,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ],
             ),
@@ -1215,14 +1214,10 @@ class _OptimizedRelayContainer extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.shareExternal,
-                  width: 12,
-                  height: 12,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 12,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ],
             ),
@@ -1326,8 +1321,22 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
     return _invoiceContainer(context, amount);
   }
 
-  Container _lightningAddressContainer(BuildContext context, String lud16) {
+  Widget _fluidWrap(
+    BuildContext context, {
+    required Widget child,
+    double? width,
+  }) {
+    if (isFluid()) {
+      return FluidBlurContainer(
+        width: width,
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        borderRadius: kDefaultPadding / 2,
+        child: child,
+      );
+    }
+
     return Container(
+      width: width,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kDefaultPadding / 2),
@@ -1335,6 +1344,13 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
             ? Theme.of(context).scaffoldBackgroundColor
             : Theme.of(context).cardColor,
       ),
+      child: child,
+    );
+  }
+
+  Widget _lightningAddressContainer(BuildContext context, String lud16) {
+    return _fluidWrap(
+      context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1377,6 +1393,7 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
             child: TextButton(
               onPressed: () => _performZap(context, lud16: lud16),
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.comfortable,
               ),
               child: Text(context.t.zap.capitalizeFirst()),
@@ -1387,15 +1404,9 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
     );
   }
 
-  Container _invoiceContainer(BuildContext context, int amount) {
-    return Container(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-        color: inverseNoteColor != null
-            ? Theme.of(context).scaffoldBackgroundColor
-            : Theme.of(context).cardColor,
-      ),
+  Widget _invoiceContainer(BuildContext context, int amount) {
+    return _fluidWrap(
+      context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1413,14 +1424,10 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
                     const SizedBox(height: kDefaultPadding / 8),
                     Row(
                       children: [
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.zapAmount,
-                          height: 20,
-                          width: 20,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).primaryColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 20,
+                          color: Theme.of(context).primaryColor,
                         ),
                         const SizedBox(width: kDefaultFontSize / 2),
                         Expanded(
@@ -1457,9 +1464,6 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () => _performZap(context),
-              style: TextButton.styleFrom(
-                visualDensity: VisualDensity.comfortable,
-              ),
               child: Text(context.t.pay),
             ),
           ),
@@ -1468,16 +1472,10 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
     );
   }
 
-  Container _errorWidget(BuildContext context, String message) {
-    return Container(
+  Widget _errorWidget(BuildContext context, String message) {
+    return _fluidWrap(
+      context,
       width: double.infinity,
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-        color: inverseNoteColor != null
-            ? Theme.of(context).scaffoldBackgroundColor
-            : Theme.of(context).cardColor,
-      ),
       child: Row(
         spacing: kDefaultPadding / 2,
         children: [
@@ -1679,14 +1677,10 @@ class InvoiceContainer extends StatelessWidget {
                     const SizedBox(height: kDefaultPadding / 8),
                     Row(
                       children: [
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.zapAmount,
-                          height: 20,
-                          width: 20,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).primaryColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 20,
+                          color: Theme.of(context).primaryColor,
                         ),
                         const SizedBox(width: kDefaultFontSize / 2),
                         Text(
@@ -1718,6 +1712,7 @@ class InvoiceContainer extends StatelessWidget {
             child: TextButton(
               onPressed: () => _payInvoice(context),
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.comfortable,
               ),
               child: Text(context.t.pay),
@@ -1780,14 +1775,16 @@ class MediaContainer extends HookWidget {
 
     return RepaintBoundary(
       child: media.length > 1
-          ? GalleryImageView(
-              media: {for (final e in media) e.key: e.value},
-              seperatorColor: Theme.of(context).scaffoldBackgroundColor,
-              width: MediaQuery.of(context).size.width,
-              onDownload: MediaUtils.shareImage,
-              height: 180,
-              isHidden: hideMedia,
-              invertColor: invertColor,
+          ? LayoutBuilder(
+              builder: (context, constraints) => GalleryImageView(
+                media: {for (final e in media) e.key: e.value},
+                seperatorColor: Theme.of(context).scaffoldBackgroundColor,
+                width: constraints.maxWidth,
+                onDownload: MediaUtils.shareImage,
+                height: 180,
+                isHidden: hideMedia,
+                invertColor: invertColor,
+              ),
             )
           : _buildSingleMedia(context),
     );
@@ -1848,7 +1845,6 @@ class MediaImage extends HookWidget {
             radius: kDefaultPadding / 2,
             isRound: true,
             useDefaultNoMedia: false,
-            compressImage: true,
           ),
           if (hideImageStatus.value)
             HiddenMediaContainer(

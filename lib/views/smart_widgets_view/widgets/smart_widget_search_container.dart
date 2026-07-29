@@ -6,7 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../../logic/smart_widget_search_cubit/smart_widget_search_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/buttons_containers_widgets.dart';
 
 class SmartWidgetSearchContainer extends HookWidget {
   const SmartWidgetSearchContainer({
@@ -95,10 +96,13 @@ class SmartWidgetSearchContainer extends HookWidget {
         ),
         AbsorbPointer(
           absorbing: !isSendingEnabled.value,
-          child: CustomIconButton(
+          child: AppIconButton(
             onClicked: () => onSearch(),
             icon: FeatureIcons.send,
-            size: 20,
+            iconSize: 20,
+            size: 35,
+            enableFluid: false,
+            buttonRadius: 100,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
         ),
@@ -159,7 +163,7 @@ class SmartWidgetSearchOptionBox extends StatelessWidget {
 
   final bool isActive;
   final String title;
-  final String icon;
+  final IconData icon;
   final bool includIcon;
   final Function() onClicked;
   final bool reverse;
@@ -196,14 +200,10 @@ class SmartWidgetSearchOptionBox extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (includIcon)
-              SvgPicture.asset(
+              AppIcon(
                 icon,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             Flexible(
               child: Text(

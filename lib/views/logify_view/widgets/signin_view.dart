@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -12,7 +13,9 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../wallet_view/send_zaps_view/send_tips_invoice.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
+import 'google_login_sheet.dart';
 import 'signup_appbar.dart';
 
 class SignInView extends HookWidget {
@@ -103,6 +106,50 @@ class SignInView extends HookWidget {
               ),
             ),
           ],
+          if (!Platform.isIOS)
+            SizedBox(
+              width: double.infinity,
+              child: GestureDetector(
+                onTap: () {
+                  showGoogleLoginSheet(
+                    context,
+                    onSuccess: onPop ??
+                        () {
+                          Navigator.pop(context);
+                        },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                    color: Theme.of(context).cardColor,
+                    border: Border.all(
+                      color: Theme.of(context).dividerColor,
+                      width: 0.5,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding / 2,
+                    vertical: kDefaultPadding / 2,
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        FeatureIcons.google,
+                        width: 18,
+                        height: 18,
+                      ),
+                      const SizedBox(width: kDefaultPadding / 2),
+                      Text(
+                        context.t.loginWithGoogle,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -285,8 +332,7 @@ class KeysLogin extends HookWidget {
 
     final proceed = useCallback(() async {
       if (textEditingController.text.isEmpty) {
-        final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-        final String? clipboardText = clipboardData?.text;
+        final clipboardText = await getClipboardTextSafely();
 
         if (clipboardText != null &&
             clipboardText.isNotEmpty &&
@@ -327,31 +373,10 @@ class KeysLogin extends HookWidget {
       return null;
     }, []);
 
-    components.addAll(
-      [
-        Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              context.t.heyWelcomeBack,
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontWeight: FontWeight.w900,
-                    height: 1.3,
-                  ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: kDefaultPadding,
-        )
-      ],
-    );
-
     components.add(
       Center(
         child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Column(
             children: [
               _textfield(
@@ -411,16 +436,12 @@ class KeysLogin extends HookWidget {
                     const SizedBox(
                       width: kDefaultPadding / 2,
                     ),
-                    RotatedBox(
+                    const RotatedBox(
                       quarterTurns: 1,
-                      child: SvgPicture.asset(
+                      child: AppIcon(
                         FeatureIcons.arrowUp,
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          kWhite,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: kWhite,
                       ),
                     ),
                   ],
@@ -457,15 +478,10 @@ class KeysLogin extends HookWidget {
               width: 25,
               height: 25,
               child: Center(
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.keys,
-                  width: 25,
-                  height: 25,
-                  fit: BoxFit.scaleDown,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 25,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ),

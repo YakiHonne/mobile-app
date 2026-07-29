@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
+import '../app_icon.dart';
 import 'donations.dart';
 import 'interests.dart';
 import 'related_content.dart';
@@ -83,12 +85,9 @@ class MultiSuggestionBox extends StatelessWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: Theme.of(context).textTheme.labelMedium,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.notVisible,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
@@ -107,7 +106,7 @@ class MultiSuggestionBox extends StatelessWidget {
             padding: EdgeInsets.zero,
           ),
           icon: Icon(
-            Icons.more_vert_rounded,
+            LucideIcons.moreVertical,
             color: Theme.of(context).primaryColorDark,
             size: 18,
           ),

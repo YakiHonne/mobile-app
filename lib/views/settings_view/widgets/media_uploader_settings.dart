@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/media_servers_cubit/media_servers_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
@@ -340,7 +342,7 @@ class MediaUploaderSettings extends HookWidget {
                       width: kDefaultPadding / 4,
                     ),
                     const Icon(
-                      CupertinoIcons.chevron_up_chevron_down,
+                      LucideIcons.chevronsUpDown,
                       size: 18,
                     ),
                   ],
@@ -412,7 +414,7 @@ class MediaUploaderSettings extends HookWidget {
                         width: kDefaultPadding / 4,
                       ),
                       const Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
+                        LucideIcons.chevronsUpDown,
                         size: 18,
                       ),
                     ],
@@ -467,14 +469,10 @@ class MediaSettingsContainer extends StatelessWidget {
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   isToggled ? FeatureIcons.arrowUp : FeatureIcons.arrowDown,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 18,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ],
             ),

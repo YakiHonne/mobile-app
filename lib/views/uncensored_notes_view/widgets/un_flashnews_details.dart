@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -16,6 +17,7 @@ import '../../../models/uncensored_notes_models.dart';
 import '../../../utils/utils.dart';
 import '../../add_bookmark_view/add_bookmark_view.dart';
 import '../../search_view/search_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
@@ -262,17 +264,13 @@ class UnFlashNewsDetails extends HookWidget {
           },
           tabs: [
             Tab(
-              icon: SvgPicture.asset(
+              icon: AppIcon(
                 FeatureIcons.uncensoredNote,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  getColor(
-                    context: context,
-                    index: 0,
-                    selectedIndex: index.value,
-                  ),
-                  BlendMode.srcIn,
+                size: 20,
+                color: getColor(
+                  context: context,
+                  index: 0,
+                  selectedIndex: index.value,
                 ),
               ),
               text: context.t.ongoing.capitalizeFirst(),
@@ -280,7 +278,7 @@ class UnFlashNewsDetails extends HookWidget {
             ),
             Tab(
               icon: const Icon(
-                CupertinoIcons.clear_circled,
+                LucideIcons.circleX,
                 size: 18,
               ),
               text: context.t.notHelpful.capitalizeFirst(),
@@ -338,7 +336,7 @@ class UnFlashNewsDetails extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    Icons.check_circle,
+                    LucideIcons.circleCheck,
                     color: kGreen,
                     size: 20,
                   ),
@@ -455,7 +453,7 @@ class UnFlashNewsDetails extends HookWidget {
                       );
                     },
                     icon: Icon(
-                      Icons.add,
+                      LucideIcons.plus,
                       size: 17,
                       color: Theme.of(context).primaryColorLight,
                     ),
@@ -466,6 +464,7 @@ class UnFlashNewsDetails extends HookWidget {
                           ),
                     ),
                     style: TextButton.styleFrom(
+                      backgroundBuilder: (_, __, child) => child!,
                       backgroundColor: Theme.of(context).primaryColorDark,
                     ),
                   ),
@@ -577,7 +576,9 @@ class UnFlashNewsDetails extends HookWidget {
                   isScrollControlled: true,
                   useRootNavigator: true,
                   useSafeArea: true,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: isFluid()
+                      ? kTransparent
+                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
               itemTheme: PullDownMenuItemTheme(
@@ -587,7 +588,7 @@ class UnFlashNewsDetails extends HookWidget {
                 builder: (context) {
                   final isDark = themeCubit.isDark;
 
-                  return SvgPicture.asset(
+                  return AppIcon(
                     unState.isBookmarked
                         ? isDark
                             ? FeatureIcons.bookmarkFilledWhite
@@ -605,14 +606,10 @@ class UnFlashNewsDetails extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.link,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
@@ -624,7 +621,7 @@ class UnFlashNewsDetails extends HookWidget {
           backgroundColor: Theme.of(context).primaryColorLight,
         ),
         icon: Icon(
-          Icons.more_vert_rounded,
+          LucideIcons.moreVertical,
           color: Theme.of(context).primaryColorDark,
         ),
       ),

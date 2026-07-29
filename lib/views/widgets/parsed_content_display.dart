@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/flash_news_model.dart';
 import '../../utils/utils.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 
 class ParsedContentDisplay extends StatelessWidget {
   const ParsedContentDisplay({
@@ -16,21 +17,9 @@ class ParsedContentDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       child: DraggableScrollableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,

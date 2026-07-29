@@ -1,11 +1,13 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_cashu_view/widgets/create_cashu_wallet.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../send_view/send_using_invoice.dart';
@@ -100,8 +102,6 @@ class MultiWalletSelector extends StatelessWidget {
   ) {
     final selectedMethod = zapPaymentMethod.value;
     final selectedAsset = _getAssetForMethod(selectedMethod, state);
-    final isSvg = selectedAsset.endsWith('.svg');
-    final isExternalWallet = selectedMethod == ZapPaymentMethod.external;
 
     return GestureDetector(
       onTap: () {
@@ -120,36 +120,35 @@ class MultiWalletSelector extends StatelessWidget {
           ),
         ),
         child: Center(
-          child: isSvg
-              ? SvgPicture.asset(
+          child: selectedAsset is IconData
+              ? AppIcon(
                   selectedAsset,
-                  width: 22,
-                  height: 22,
-                  colorFilter: isExternalWallet
-                      ? ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        )
-                      : null,
+                  size: 22,
+                  color: Theme.of(context).primaryColorDark,
                 )
-              : Container(
-                  height: 22,
-                  width: 22,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kDefaultPadding / 4),
-                    image: DecorationImage(
-                      image: AssetImage(
-                        selectedAsset,
+              : (selectedAsset as String).endsWith('.svg')
+                  ? SvgPicture.asset(
+                      selectedAsset,
+                      width: 22,
+                      height: 22,
+                    )
+                  : Container(
+                      height: 22,
+                      width: 22,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(kDefaultPadding / 4),
+                        image: DecorationImage(
+                          image: AssetImage(selectedAsset),
+                        ),
                       ),
                     ),
-                  ),
-                ),
         ),
       ),
     );
   }
 
-  String _getAssetForMethod(
+  Object _getAssetForMethod(
       ZapPaymentMethod method, WalletsManagerState state) {
     switch (method) {
       case ZapPaymentMethod.internal:
@@ -318,14 +317,12 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay>
     BuildContext context,
     WalletsManagerState state,
     ZapPaymentMethod method,
-    String asset,
+    Object asset,
     String label,
     VoidCallback onTap,
     ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   ) {
     final isSelected = zapPaymentMethod.value == method;
-    final isSvg = asset.endsWith('.svg');
-    final isExternalWallet = method == ZapPaymentMethod.external;
 
     return GestureDetector(
       onTap: onTap,
@@ -349,17 +346,17 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay>
                     )
                   : const SizedBox.shrink(),
             ),
-            if (isSvg)
+            if (asset is IconData)
+              AppIcon(
+                asset,
+                size: 22,
+                color: isSelected ? kWhite : Theme.of(context).hintColor,
+              )
+            else if ((asset as String).endsWith('.svg'))
               SvgPicture.asset(
                 asset,
                 width: 22,
                 height: 22,
-                colorFilter: isExternalWallet
-                    ? ColorFilter.mode(
-                        isSelected ? kWhite : Theme.of(context).hintColor,
-                        BlendMode.srcIn,
-                      )
-                    : null,
               )
             else
               Container(
@@ -368,9 +365,7 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(kDefaultPadding / 4),
                   image: DecorationImage(
-                    image: AssetImage(
-                      asset,
-                    ),
+                    image: AssetImage(asset),
                   ),
                 ),
               ),
@@ -403,12 +398,10 @@ class CreateWalletPrompt extends StatelessWidget {
 
   final VoidCallback onTap;
   final String label;
-  final String icon;
+  final Object icon;
 
   @override
   Widget build(BuildContext context) {
-    final isSvg = icon.endsWith('.svg');
-
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
@@ -428,22 +421,24 @@ class CreateWalletPrompt extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isSvg)
-              SvgPicture.asset(
-                icon,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+            if (icon case final IconData iconData)
+              AppIcon(
+                iconData,
+                size: 15,
+                color: Theme.of(context).primaryColor,
               )
-            else
-              Image.asset(
-                icon,
-                width: 15,
-                height: 15,
-              ),
+            else if (icon case final String iconPath)
+              iconPath.endsWith('.svg')
+                  ? SvgPicture.asset(
+                      iconPath,
+                      width: 15,
+                      height: 15,
+                    )
+                  : Image.asset(
+                      iconPath,
+                      width: 15,
+                      height: 15,
+                    ),
             const SizedBox(width: kDefaultPadding / 4),
             Flexible(
               child: Text(
@@ -526,7 +521,7 @@ class CashuWalletSelector extends StatelessWidget {
                   width: 25,
                   height: 25,
                   child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
+                    LucideIcons.chevronUp,
                   ),
                 ),
               ],

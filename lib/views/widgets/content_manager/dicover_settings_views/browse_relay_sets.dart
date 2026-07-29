@@ -6,6 +6,7 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../dotted_container.dart';
 import '../../empty_list.dart';
+import '../../modal_sheet_container.dart';
 import 'relay_settings_view.dart';
 import 'set_relay_set.dart';
 
@@ -20,25 +21,13 @@ class BrowseRelaySets extends StatelessWidget {
       builder: (context, state) {
         final list = state.userRelaySets.entries.toList();
 
-        return DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) => Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 0.5,
-              ),
-            ),
-            child: Column(
+        return ModalSheetContainer(
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.95,
+            minChildSize: 0.60,
+            maxChildSize: 0.95,
+            expand: false,
+            builder: (context, scrollController) => Column(
               children: [
                 const Center(child: ModalBottomSheetHandle()),
                 Expanded(

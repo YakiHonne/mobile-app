@@ -260,7 +260,7 @@ class ContentList extends StatelessWidget {
           return SliverToBoxAdapter(
             child: EmptyList(
               description: context.t.noResultsNoFilterMessage,
-              icon: LogosIcons.logoMarkWhite,
+              icon: FeatureIcons.search,
               title: context.t.noResults,
             ),
           );
@@ -300,10 +300,10 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  Padding _itemsGrid(List<BaseEventModel> content) {
-    return Padding(
+  SliverPadding _itemsGrid(List<BaseEventModel> content) {
+    return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      child: SliverMasonryGrid.count(
+      sliver: SliverMasonryGrid.count(
         crossAxisCount: 2,
         childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
@@ -384,6 +384,7 @@ class ContentList extends StatelessWidget {
         isMain: false,
         addLine: false,
         enableReply: true,
+        isExtended: true,
       );
     } else {
       return const SizedBox.shrink();

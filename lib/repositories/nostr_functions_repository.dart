@@ -1792,7 +1792,6 @@ class NostrFunctionsRepository {
       return;
     }
 
-    lg.i(bookmarksEvent.toJson());
     final isSuccessful = await sendEvent(
       event: bookmarksEvent,
       relays: currentUserRelayList.urls.toList(),
@@ -2936,12 +2935,15 @@ class NostrFunctionsRepository {
     }
 
     final f = feedRelaySet?.urls.toList();
+    final userRelays = currentUserRelayList.relays.keys.toList();
     final rs = relays ??
         (core != null
             ? core.relays()
             : f != null && f.isNotEmpty
-                ? f
-                : DEFAULT_BOOTSTRAP_RELAYS);
+                ? [...f, ...userRelays]
+                : userRelays.isNotEmpty
+                    ? userRelays
+                    : DEFAULT_BOOTSTRAP_RELAYS);
 
     try {
       await (core ?? nc).doQuery(

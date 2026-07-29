@@ -17,10 +17,12 @@ import 'package:path_provider/path_provider.dart';
 import '../common/common_regex.dart';
 import '../models/app_models/diverse_functions.dart';
 import '../models/app_models/extended_model.dart';
+import '../models/app_models/pricing_plan_model.dart';
 import '../models/article_model.dart';
 import '../models/flash_news_model.dart';
 import '../models/points_system_models.dart';
 import '../models/smart_widgets_components.dart';
+import '../models/subscription_models.dart';
 import '../models/uncensored_notes_models.dart';
 import '../utils/utils.dart';
 
@@ -1193,7 +1195,7 @@ class HttpFunctionsRepository {
   // POINTS SYSTEM METHODS
   // ==================================================
 
-  static Future<Map<String, dynamic>?> loginPointsSystem() async {
+  static Future<Map<String, dynamic>?> loginToAppSystem() async {
     try {
       final currentUserPubkey = currentSigner?.getPublicKey();
 
@@ -1212,38 +1214,29 @@ class HttpFunctionsRepository {
       );
 
       final response = await post(
-        '${pointsUrl}login',
+        '${apiUrl}login',
         {
           'pubkey': currentUserPubkey,
           'password': encryptedContent,
         },
       );
 
+      if (response == null) {
+        return null;
+      }
+
       final actions =
-          List<PointAction>.from((response?['actions'] as List? ?? []).map(
+          List<PointAction>.from((response['actions'] as List? ?? []).map(
         (e) => PointAction.fromMap(e),
       ));
 
-      final Map<String, PointStandard> standards = {};
-      (response?['platform_standards'] as Map? ?? {}).forEach(
-        (key, value) => standards[key] =
-            PointStandard.fromMap(mapEntry: MapEntry(key, value)),
-      );
+      final xp = response['xp'];
 
-      final xp = response?['xp'];
-
-      if (response?['is_new'] ?? false) {
-        return {
-          'isNew': true,
-          'actions': actions,
-          'standards': standards,
-          'xp': xp,
-        };
-      } else if ((response?['message'] as String?)?.isNotEmpty ?? false) {
-        return {};
-      } else {
-        return null;
-      }
+      return {
+        'isNew': response['is_new'] ?? false,
+        'actions': actions,
+        'xp': xp,
+      };
     } on DioException catch (e) {
       lg.i(e.response);
       return null;
@@ -1297,7 +1290,7 @@ class HttpFunctionsRepository {
 
   static Future<bool> sendAction(String action) async {
     try {
-      final resp = await post('${pointsUrl}yaki-chest', {
+      final resp = await post('${apiUrl}yaki-chest', {
         'action_key': action,
       });
 
@@ -1321,9 +1314,9 @@ class HttpFunctionsRepository {
     }
   }
 
-  static Future<bool> logoutPointsSystem() async {
+  static Future<bool> logoutAppSystem() async {
     try {
-      await post('${pointsUrl}logout', {});
+      await post('${apiUrl}logout', {});
       return true;
     } catch (e) {
       return false;
@@ -1332,13 +1325,26 @@ class HttpFunctionsRepository {
 
   static Future<UserGlobalStats?> getUserStats() async {
     try {
-      final response = await get('${pointsUrl}yaki-chest/stats');
+      final response = await get('${apiUrl}yaki-chest/stats');
 
       if (response != null) {
         return UserGlobalStats.fromMap(response);
       } else {
         return null;
       }
+    } catch (e, s) {
+      lg.i(s);
+      return null;
+    }
+  }
+
+  static Future<UserOnlineStats?> getUserOnlineStats() async {
+    try {
+      final response = await get('${apiUrl}online');
+      if (response != null) {
+        return UserOnlineStats.fromJson(response);
+      }
+      return null;
     } catch (e, s) {
       lg.i(s);
       return null;
@@ -1424,5 +1430,368 @@ class HttpFunctionsRepository {
     _smDio?.close();
     _dio = null;
     _smDio = null;
+  }
+
+  // ==================================================
+  // SUBSCRIPTION BACKEND API
+  // Reuses the points-system session (getDio + pointsUrl cookie jar).
+  // ==================================================
+
+  static Future<UsageData?> subscriptionGetUsage() async {
+    final data = await get('${apiUrl}usage');
+    if (data == null) {
+      return null;
+    }
+    return UsageData.fromJson(data);
+  }
+
+  static Future<Map<String, dynamic>?> subscriptionGetStatus() async {
+    try {
+      final res = await get('${apiUrl}subscription-status');
+
+      return res;
+    } catch (e) {
+      lg.i(e);
+      return null;
+    }
+  }
+
+  static Future<bool> subscriptionCancel() async {
+    try {
+      await post('${apiUrl}subscription-cancel', {});
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<bool> subscriptionResume() async {
+    try {
+      await post('${apiUrl}subscription-resume', {});
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<bool> subscriptionChangePlan({
+    required String newPlan,
+    required String newPriceId,
+  }) async {
+    try {
+      await post('${apiUrl}subscription-change', {
+        'new_plan': newPlan,
+        'new_price_id': newPriceId,
+      });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<bool> subscriptionCancelPendingChange() async {
+    try {
+      await post('${apiUrl}subscription-change-cancel', {});
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<String?> subscriptionGetLink({
+    required String planId,
+  }) async {
+    try {
+      final data = await post(
+        '${apiUrl}subscription-link',
+        {'plan': planId, 'main': true},
+      );
+
+      return data?['url'] as String?;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> subscriptionValidateIap({
+    required String platform,
+    required String receipt,
+    required String productId,
+    required String pubkey,
+  }) async {
+    try {
+      return await post('${apiUrl}iap/validate', {
+        'platform': platform,
+        'receipt': receipt,
+        'product_id': productId,
+        'pubkey': pubkey,
+      });
+    } catch (e) {
+      if (e is DioException) {
+        lg.i(
+            '[IAP] validate failed: status=${e.response?.statusCode} body=${e.response?.data}');
+      } else {
+        lg.i('[IAP] validate failed: $e');
+      }
+      return null;
+    }
+  }
+
+  static Future<String?> creatorGetSubscriptionLink({
+    required String creatorPubkey,
+    required String subscriberPubkey,
+    required String priceId,
+  }) async {
+    try {
+      final dio = await getDio();
+      final resp = await dio.post(
+        '${apiUrl}subscribe',
+        data: {
+          'creator_pubkey': creatorPubkey,
+          'subscriber_pubkey': subscriberPubkey,
+          'price_id': priceId,
+        },
+      );
+      if (resp.statusCode == 200 && resp.data is String) {
+        return resp.data as String;
+      }
+      return null;
+    } on DioException catch (ex) {
+      if (kDebugMode) {
+        print(ex.error);
+      }
+      return null;
+    }
+  }
+
+  // -- Points API --
+
+  static Future<PointsConfig?> getPointsConfig() async {
+    final data = await get('${apiUrl}points/config');
+    if (data == null) {
+      return null;
+    }
+    return PointsConfig.fromJson(data);
+  }
+
+  static Future<PointsEligibility?> getSubscriptionEligibility() async {
+    final data = await get('${apiUrl}points/subscription-eligibility');
+    if (data == null) {
+      return null;
+    }
+    return PointsEligibility.fromJson(data);
+  }
+
+  static Future<List<PricingPlan>> getSubscriptionPlans() async {
+    final data = await get('${apiUrl}plans');
+    final raw =
+        (data?['plans'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+    if (raw.isEmpty) {
+      return [];
+    }
+
+    final mostExpensivePlan = raw.reduce(
+      (a, b) => (a['usd_price'] as num) >= (b['usd_price'] as num) ? a : b,
+    )['plan'] as String;
+
+    return raw.map((p) {
+      final plan = p['plan'] as String;
+      final perks = (p['perks'] as List<dynamic>? ?? [])
+          .map((e) => (text: e as String, dim: false))
+          .toList();
+      return (
+        id: p['id'] as String? ?? '',
+        plan: plan,
+        priceId: p['price_id'] as String? ?? '',
+        productId: p['product_id'] as String? ?? '',
+        iapProductId: p['yakiv5_iap_prod_id'] as String? ?? '',
+        yakiproIapProductId: p['yakipro_iap_prod_id'] as String? ?? '',
+        paymentProvider: p['payment_provider'] as String? ?? '',
+        name: p['name'] as String? ?? '',
+        price: '\$${(p['usd_price'] as num).toStringAsFixed(2)}',
+        satsRaw: (p['sats_price'] as num?)?.toInt() ?? 0,
+        sats: formatSatsPrice((p['sats_price'] as num?)?.toInt() ?? 0),
+        period: kPricingPeriod,
+        desc: '',
+        highlighted: plan == mostExpensivePlan,
+        features: perks,
+      );
+    }).toList();
+  }
+
+  static Future<bool> redeemSubscriptionWithPoints(String plan) async {
+    final data =
+        await post('${apiUrl}points/subscription-redeem', {'plan': plan});
+    return data?['success'] == true;
+  }
+
+  static Future<bool> publishPaidNoteWithPoints() async {
+    final data = await post('${apiUrl}points/publish-paid-note', {});
+    return data?['success'] == true;
+  }
+
+  static Future<List<PointsRedeemCode>> getRedeemCodes() async {
+    final data = await get('${apiUrl}points/codes');
+    if (data == null) {
+      return [];
+    }
+    final list = data['codes'] as List<dynamic>? ?? [];
+    return list
+        .map((e) => PointsRedeemCode.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  static Future<void> requestRedeemCode() async {
+    await post('${apiUrl}points/codes/request', {});
+  }
+
+  static Future<void> redeemPointsCode({
+    required String code,
+    required String lightningAddress,
+  }) async {
+    await post('${apiUrl}points/codes/redeem', {
+      'code': code,
+      'lightning_address': lightningAddress,
+    });
+  }
+
+  // ==================================================
+  // WORKSHOPS
+  // ==================================================
+
+  /// Returns the `/workshops/<id>` payload, or null on failure.
+  /// The backend session is a cookie, so `authenticated: false` means the
+  /// yaki-chest login never ran (or expired) — log in once and refetch.
+  static Future<Map<String, dynamic>?> getWorkshop(String id) async {
+    final res = await get('${apiUrl}workshops/$id');
+
+    if (res == null || res['authenticated'] != true) {
+      final login = await loginToAppSystem();
+      if (login != null) {
+        return get('${apiUrl}workshops/$id');
+      }
+    }
+
+    return res;
+  }
+
+  static Future<bool> registerToWorkshop(String id) async {
+    try {
+      final res = await post('${apiUrl}workshops/$id/register', {});
+      return res?['success'] == true;
+    } catch (e) {
+      lg.i(e);
+      return false;
+    }
+  }
+
+  // -- Lightning / LNURLP helpers --
+
+  static Future<Map<String, dynamic>?> lnurlpFetch(
+    String lightningAddress,
+  ) async {
+    try {
+      final parts = lightningAddress.split('@');
+      if (parts.length != 2) {
+        return null;
+      }
+      final username = parts[0];
+      final domain = parts[1];
+      final dio = Dio();
+      final resp = await dio.get(
+        'https://$domain/.well-known/lnurlp/$username',
+      );
+      return resp.data as Map<String, dynamic>?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<String?> lnurlpInvoice({
+    required String callback,
+    required int amountSats,
+    required String comment,
+  }) async {
+    try {
+      final dio = Dio();
+      final resp = await dio.get(
+        callback,
+        queryParameters: {'amount': amountSats * 1000, 'comment': comment},
+      );
+      return (resp.data as Map<String, dynamic>?)?['pr'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Stream<Map<String, dynamic>> subscriptionLightningPaymentStream(
+    String pubkey,
+  ) async* {
+    try {
+      final dio = await getDio();
+      final apiKey = dotenv.env['API_KEY'] ?? '';
+      final response = await dio.get<ResponseBody>(
+        '${apiUrl}lightning/payment-stream/$pubkey',
+        queryParameters: {'api_key': apiKey},
+        options: Options(responseType: ResponseType.stream),
+      );
+      await for (final chunk in response.data!.stream) {
+        final text = utf8.decode(chunk);
+        for (final line in text.split('\n')) {
+          final trimmed = line.trim();
+          if (trimmed.startsWith('data:')) {
+            final jsonStr = trimmed.substring(5).trim();
+            if (jsonStr.isEmpty) {
+              continue;
+            }
+            try {
+              final parsed = jsonDecode(jsonStr) as Map<String, dynamic>;
+              yield parsed;
+            } catch (_) {}
+          }
+        }
+      }
+    } catch (_) {}
+  }
+
+  // -- AI article chat --
+
+  static Future<Map<String, dynamic>?> articleChatAI({
+    required String message,
+    required String article,
+  }) async {
+    final data = await post(
+      '${apiUrl}chat/articles',
+      {'message': message, 'article': article},
+    );
+    if (data == null || data['success'] == false) {
+      return null;
+    }
+    return data['data'] as Map<String, dynamic>?;
+  }
+
+  static Future<Map<String, dynamic>?> energyMapper(String note) async {
+    final data = await post(
+      '${apiUrl}chat/energy-mapper',
+      {'note': note},
+    );
+    if (data == null || data['success'] == false) {
+      return null;
+    }
+    return data['data'] as Map<String, dynamic>?;
+  }
+
+  static Future<Map<String, dynamic>?> secondReaderAnalyze({
+    required String article,
+    required String personaId,
+  }) async {
+    final data = await post(
+      '${apiUrl}chat/second-reader/full',
+      {'article': article, 'personaId': personaId},
+    );
+    if (data == null || data['success'] == false) {
+      return null;
+    }
+    return data['data'] as Map<String, dynamic>?;
   }
 }

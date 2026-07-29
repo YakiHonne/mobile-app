@@ -252,8 +252,9 @@ class ManagaeInterests extends HookWidget {
                     () => YNavigator.pop(context),
                   );
             },
-            style:
-                TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+            style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
+                visualDensity: VisualDensity.comfortable),
             child: Text(
               context.t.updateInterests.capitalizeFirst(),
               style: Theme.of(context).textTheme.labelMedium!.copyWith(

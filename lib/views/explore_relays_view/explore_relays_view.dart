@@ -13,9 +13,11 @@ import '../profile_view/widgets/profile_fast_access.dart';
 import '../relay_feed_view/relay_feed_view.dart';
 import '../settings_view/widgets/properties_relay_list.dart';
 import '../settings_view/widgets/relay_info_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
+import '../widgets/fluid_blur_container.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/tag_container.dart';
 
@@ -160,14 +162,10 @@ class ShowEngagementMessageBox extends StatelessWidget {
             thickness: 0.5,
             height: kDefaultPadding,
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.globe,
-            width: 30,
-            height: 30,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 30,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             height: kDefaultPadding / 4,
@@ -321,45 +319,54 @@ class RelayBox extends HookWidget {
     final expandRelayInfo = useState(false);
 
     return RelayInfoProvider(
-      key: ValueKey(relay),
-      relay: relay,
-      child: (relayInfo) => Container(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            kDefaultPadding / 2,
-          ),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Column(
-          children: [
-            _relayHeader(relayInfo, context, expandRelayInfo),
-            _relayInfo(relayInfo, expandRelayInfo),
-            if (enableBrowse) ...[
-              const Divider(
-                thickness: 0.5,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _browseRelay(context),
-                    const VerticalDivider(
-                      width: kDefaultPadding,
-                    ),
-                    _shareRelay(context),
-                  ],
+        key: ValueKey(relay),
+        relay: relay,
+        child: (relayInfo) {
+          final column = Column(
+            children: [
+              _relayHeader(relayInfo, context, expandRelayInfo),
+              _relayInfo(relayInfo, expandRelayInfo),
+              if (enableBrowse) ...[
+                const Divider(
+                  thickness: 0.5,
                 ),
-              ),
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _browseRelay(context),
+                      const VerticalDivider(
+                        width: kDefaultPadding,
+                      ),
+                      _shareRelay(context),
+                    ],
+                  ),
+                ),
+              ],
             ],
-          ],
-        ),
-      ),
-    );
+          );
+
+          if (isFluid()) {
+            return FluidCardContainer(
+              borderRadius: kDefaultPadding / 1.5,
+              child: column,
+            );
+          } else {
+            return Container(
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    kDefaultPadding / 2,
+                  ),
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
+                ),
+                child: column);
+          }
+        });
   }
 
   GestureDetector _browseRelay(BuildContext context) {
@@ -382,14 +389,10 @@ class RelayBox extends HookWidget {
                     color: Theme.of(context).primaryColorDark,
                   ),
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.shareExternal,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ],
         ),
@@ -414,14 +417,10 @@ class RelayBox extends HookWidget {
                     color: Theme.of(context).primaryColorDark,
                   ),
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.shareExternal,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ],
         ),
@@ -552,14 +551,10 @@ class RelayBox extends HookWidget {
         ),
         child: RotatedBox(
           quarterTurns: expandRelayInfo.value ? 2 : 4,
-          child: SvgPicture.asset(
+          child: AppIcon(
             FeatureIcons.arrowDown,
-            width: 17,
-            height: 17,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).highlightColor,
-              BlendMode.srcIn,
-            ),
+            size: 17,
+            color: Theme.of(context).highlightColor,
           ),
         ),
       ),
@@ -789,7 +784,7 @@ class ImageTooltip extends StatelessWidget {
   });
 
   final String message;
-  final String icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -809,14 +804,10 @@ class ImageTooltip extends StatelessWidget {
           )
         ],
       ),
-      child: SvgPicture.asset(
+      child: AppIcon(
         icon,
-        width: 20,
-        height: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

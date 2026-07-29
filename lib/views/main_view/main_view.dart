@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../logic/discover_cubit/discover_cubit.dart';
+import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/main_cubit/main_cubit.dart';
+import '../../logic/media_cubit/media_cubit.dart';
+import '../../logic/theme_cubit/theme_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/app_cycle.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../add_content_view/add_media_view.dart';
-import '../discover_view/discover_view.dart';
+import '../discover_view/discover_view.dart' hide LeadingNewContentBox;
+import '../discover_view/discover_view.dart' as discover;
 import '../dm_view/dm_view.dart';
 import '../leading_view/leading_view.dart';
 import '../media_view/media_view.dart';
@@ -18,10 +24,12 @@ import '../notifications_view/notifications_view.dart';
 import '../smart_widgets_view/smart_widgets_search.dart';
 import '../wallet_cashu_view/cashu_view.dart';
 import '../wallet_view/wallet_view.dart';
+import '../widgets/app_icon.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'widgets/drawer_view.dart';
+import 'widgets/feature_tour.dart';
+import 'widgets/flip_to_share_wrapper.dart';
 import 'widgets/main_view_appbar.dart';
-import 'widgets/wallet_switcher_fab.dart';
 
 final indexMap = {
   MainViews.leading: 0,
@@ -41,6 +49,8 @@ class MainView extends HookWidget {
     // Initialize hooks at the top level of build
     final mainScrollControllers = useMemoized(
         () => [
+              ScrollController(),
+              ScrollController(),
               ScrollController(),
               ScrollController(),
               ScrollController(),
@@ -66,8 +76,10 @@ class MainView extends HookWidget {
 
         return nostrRepository.mainCubit;
       },
-      child: MainViewContent(
-        mainScrollControllers: mainScrollControllers,
+      child: FlipToShareWrapper(
+        child: MainViewContent(
+          mainScrollControllers: mainScrollControllers,
+        ),
       ),
     );
   }
@@ -83,90 +95,207 @@ class MainViewContent extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final barsVisible = useState(true);
+    final isGlass = context.watch<ThemeCubit>().state.isFluid;
+
+    // The tour pins these on screen while it measures its targets.
+    useEffect(() {
+      mainBarsVisible = barsVisible;
+      return () => mainBarsVisible = null;
+    }, [barsVisible]);
+
+    // Read current view index at hook level (outside BlocBuilder)
+    final mainState = context.watch<MainCubit>().state;
+    final currentIndex = indexMap[mainState.mainView] ?? 0;
+
+    // Scroll listener — valid here since we're inside a HookWidget.build
+    useEffect(() {
+      if (!isGlass) {
+        return null;
+      }
+      final safeIndex = currentIndex.clamp(0, mainScrollControllers.length - 1);
+      final controller = mainScrollControllers[safeIndex];
+
+      void listener() {
+        if (!controller.hasClients) {
+          return;
+        }
+        final dir = controller.position.userScrollDirection;
+        if (dir == ScrollDirection.reverse && barsVisible.value) {
+          barsVisible.value = false;
+        } else if (dir == ScrollDirection.forward && !barsVisible.value) {
+          barsVisible.value = true;
+        }
+      }
+
+      controller.addListener(listener);
+      barsVisible.value = true;
+      return () => controller.removeListener(listener);
+    }, [currentIndex, isGlass]);
+
     return BlocBuilder<MainCubit, MainState>(
       buildWhen: (previous, current) =>
           previous.isConnected != current.isConnected ||
-          previous.mainView != current.mainView, // also rebuild on tab change
+          previous.mainView != current.mainView,
       builder: (context, state) {
         final currentIndex = indexMap[state.mainView] ?? 0;
+        final isGlass = context.read<ThemeCubit>().state.isFluid;
+
+        void onScrollTop() {
+          if (mainScrollControllers[currentIndex].hasClients) {
+            mainScrollControllers[currentIndex].animateTo(
+              0.0,
+              duration: const Duration(seconds: 1),
+              curve: Curves.easeOut,
+            );
+          }
+        }
+
+        final showFab = state.mainView == MainViews.leading ||
+            state.mainView == MainViews.media;
+
+        final body = SafeArea(
+          top: !isGlass,
+          bottom: !isGlass,
+          child: IndexedStack(
+            index: currentIndex,
+            children: [
+              LeadingView(
+                key: const PageStorageKey('leading'),
+                scrollController: mainScrollControllers[0],
+                barsVisible: barsVisible,
+              ),
+              MediaView(
+                key: const PageStorageKey('media'),
+                scrollController: mainScrollControllers[1],
+                barsVisible: barsVisible,
+              ),
+              BlocBuilder<MainCubit, MainState>(
+                builder: (context, state) => _walletWidget(state),
+              ),
+              DmsView(
+                key: const PageStorageKey('dms'),
+                scrollController: mainScrollControllers[2],
+              ),
+              NotificationsView(
+                key: const PageStorageKey('notifications'),
+                barsVisible: barsVisible,
+                scrollController: mainScrollControllers[4],
+              ),
+              SmartWidgetsSearch(
+                key: const PageStorageKey('smartwidgets'),
+              ),
+              DiscoverView(
+                key: const PageStorageKey('discover'),
+                barsVisible: barsVisible,
+                scrollController: mainScrollControllers[6],
+              ),
+            ],
+          ),
+        );
 
         return Scaffold(
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: MainViewBottomNavigationBar(
-            onClicked: () {
-              if (mainScrollControllers[currentIndex].hasClients) {
-                mainScrollControllers[currentIndex].animateTo(
-                  0.0,
-                  duration: const Duration(seconds: 1),
-                  curve: Curves.easeOut,
-                );
-              }
-            },
-          ),
-          floatingActionButton: state.mainView != MainViews.leading &&
-                  state.mainView != MainViews.media
-              ? const SizedBox()
-              : _createContent(context, state.mainView),
-          appBar: MainViewAppBar(
-            isConnected: state.isConnected,
-            scrollControllers: mainScrollControllers,
-            onClicked: () {
-              if (mainScrollControllers[currentIndex].hasClients) {
-                mainScrollControllers[currentIndex].animateTo(
-                  0.0,
-                  duration: const Duration(seconds: 1),
-                  curve: Curves.easeOut,
-                );
-              }
-            },
-          ),
+          drawerScrimColor: isGlass ? Colors.transparent : null,
+          bottomNavigationBar: isGlass
+              ? null
+              : MainViewBottomNavigationBar(onClicked: onScrollTop),
+          floatingActionButton: isGlass
+              ? null
+              : (showFab
+                  ? _createContent(context, state.mainView)
+                  : const SizedBox()),
+          appBar: isGlass
+              ? null
+              : MainViewAppBar(
+                  isConnected: state.isConnected,
+                  scrollControllers: mainScrollControllers,
+                  onClicked: onScrollTop,
+                ),
           drawer: const MainViewDrawer(),
-          extendBody: true,
-          body: SafeArea(
-            child: IndexedStack(
-              index: currentIndex,
-              children: [
-                LeadingView(
-                  key: const PageStorageKey('leading'),
-                  scrollController: mainScrollControllers[0],
-                ),
-                MediaView(
-                  key: const PageStorageKey('media'),
-                  scrollController: mainScrollControllers[1],
-                ),
-                BlocBuilder<MainCubit, MainState>(
-                  builder: (context, state) {
-                    return Stack(
-                      children: [
-                        _walletWidget(state),
-                        Positioned(
-                          top: kDefaultPadding / 2,
-                          left: kDefaultPadding / 2,
-                          child: WalletSwitcherFAB(
-                            isCashuWallet: state.isCashuWallet,
+          extendBody: isGlass,
+          body: isGlass
+              ? Stack(
+                  children: [
+                    body,
+                    // App bar — slides up off-screen
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: ClipRect(
+                        child: IgnorePointer(
+                          ignoring: !barsVisible.value,
+                          child: AnimatedSlide(
+                            offset: barsVisible.value
+                                ? Offset.zero
+                                : const Offset(0, -1),
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: FluidMainViewAppBar(
+                              isConnected: state.isConnected,
+                              scrollControllers: mainScrollControllers,
+                              onClicked: onScrollTop,
+                            ),
                           ),
-                        )
-                      ],
-                    );
-                  },
-                ),
-                DmsView(
-                  key: const PageStorageKey('dms'),
-                  scrollController: mainScrollControllers[2],
-                ),
-                NotificationsView(
-                  key: const PageStorageKey('notifications'),
-                  scrollController: mainScrollControllers[4],
-                ),
-                SmartWidgetsSearch(
-                  key: const PageStorageKey('smartwidgets'),
-                ),
-                DiscoverView(
-                  key: const PageStorageKey('discover'),
-                ),
-              ],
-            ),
-          ),
+                        ),
+                      ),
+                    ),
+                    // New content overlay — floats above nav bar when visible,
+                    // drops to above safe area when nav bar is hidden.
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      left: 0,
+                      right: 0,
+                      bottom: barsVisible.value
+                          ? MediaQuery.of(context).padding.bottom / 2 +
+                              kDefaultPadding / 4 +
+                              kBottomNavigationBarHeight +
+                              kDefaultPadding
+                          : MediaQuery.of(context).padding.bottom +
+                              kDefaultPadding / 2,
+                      child: _FluidNewContentOverlay(
+                        key: ValueKey(state.mainView),
+                        mainView: state.mainView,
+                        scrollController: mainScrollControllers[
+                            (indexMap[state.mainView] ?? 0).clamp(
+                                0, mainScrollControllers.length - 1)],
+                        barsVisible: barsVisible,
+                      ),
+                    ),
+                    // Nav bar — slides down off-screen, clipped at screen edge
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ClipRect(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).padding.bottom / 2 +
+                                kDefaultPadding / 4,
+                          ),
+                          child: IgnorePointer(
+                            ignoring: !barsVisible.value,
+                            child: AnimatedSlide(
+                              offset: barsVisible.value
+                                  ? Offset.zero
+                                  : const Offset(0, 2),
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: Center(
+                                child: FluidBottomNavigationBar(
+                                  onClicked: onScrollTop,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : body,
         );
       },
     );
@@ -189,6 +318,7 @@ class MainViewContent extends HookWidget {
 
     return RepaintBoundary(
       child: GestureDetector(
+        key: TourKeys.create,
         onLongPress: () {
           doIfCanSign(
             func: () {
@@ -218,14 +348,10 @@ class MainViewContent extends HookWidget {
           backgroundColor: Theme.of(context).primaryColor,
           shape: const CircleBorder(),
           heroTag: 'content_creation',
-          child: SvgPicture.asset(
+          child: AppIcon(
             isMedia ? FeatureIcons.mediaAdd : FeatureIcons.addRaw,
-            width: isMedia ? 25 : 22,
-            height: isMedia ? 25 : 22,
-            colorFilter: const ColorFilter.mode(
-              kWhite,
-              BlendMode.srcIn,
-            ),
+            size: isMedia ? 25 : 22,
+            color: kWhite,
           ),
           onPressed: () {
             doIfCanSign(
@@ -248,5 +374,89 @@ class MainViewContent extends HookWidget {
         ),
       ),
     );
+  }
+}
+
+class _FluidNewContentOverlay extends HookWidget {
+  const _FluidNewContentOverlay({
+    super.key,
+    required this.mainView,
+    required this.scrollController,
+    required this.barsVisible,
+  });
+
+  final MainViews mainView;
+  final ScrollController scrollController;
+  final ValueNotifier<bool> barsVisible;
+
+  @override
+  Widget build(BuildContext context) {
+    if (mainView == MainViews.leading) {
+      final isShowing = useState(leadingCubit.state.extraContent.isNotEmpty);
+
+      return BlocConsumer<LeadingCubit, LeadingState>(
+        listenWhen: (p, c) => p.extraContent != c.extraContent,
+        listener: (context, state) {
+          isShowing.value = state.extraContent.isNotEmpty;
+        },
+        builder: (context, state) {
+          return LeadingNewContentBox(
+            extraContent: state.extraContent,
+            isShowing: isShowing,
+            onClicked: () {
+              barsVisible.value = true;
+              leadingCubit.appendExtra(() {
+                scrollController.jumpTo(0);
+              });
+            },
+          );
+        },
+      );
+    }
+
+    if (mainView == MainViews.media) {
+      final isShowing = useState(mediaCubit.state.extraContent.isNotEmpty);
+
+      return BlocConsumer<MediaCubit, MediaState>(
+        listenWhen: (p, c) => p.extraContent != c.extraContent,
+        listener: (context, state) {
+          isShowing.value = state.extraContent.isNotEmpty;
+        },
+        builder: (context, state) {
+          return discover.LeadingNewContentBox(
+            extraContent: state.extraContent,
+            isShowing: isShowing,
+            onClicked: () {
+              barsVisible.value = true;
+              mediaCubit.appendExtra();
+              scrollController.jumpTo(0);
+            },
+          );
+        },
+      );
+    }
+
+    if (mainView == MainViews.articles) {
+      final isShowing = useState(discoverCubit.state.extraContent.isNotEmpty);
+
+      return BlocConsumer<DiscoverCubit, DiscoverState>(
+        listenWhen: (p, c) => p.extraContent != c.extraContent,
+        listener: (context, state) {
+          isShowing.value = state.extraContent.isNotEmpty;
+        },
+        builder: (context, state) {
+          return discover.LeadingNewContentBox(
+            extraContent: state.extraContent,
+            isShowing: isShowing,
+            onClicked: () {
+              barsVisible.value = true;
+              discoverCubit.appendExtra();
+            },
+          );
+        },
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

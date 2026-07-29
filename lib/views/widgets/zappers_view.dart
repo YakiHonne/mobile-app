@@ -10,6 +10,7 @@ import '../../utils/utils.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
 import 'loading_indicators.dart';
+import 'modal_sheet_container.dart';
 import 'user_profile_container.dart';
 
 class ZappersView extends StatelessWidget {
@@ -30,19 +31,7 @@ class ZappersView extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        child: ModalSheetContainer(
           child: DraggableScrollableSheet(
             initialChildSize: 0.9,
             minChildSize: 0.60,

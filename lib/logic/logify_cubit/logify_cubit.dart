@@ -359,6 +359,9 @@ class LogifyCubit extends Cubit<LogifyState> {
     required Function() onNameFailure,
   }) async {
     try {
+      pointsManagementCubit.login(
+        onSuccess: () {},
+      );
       final data = await HttpFunctionsRepository.post(walletsUrl, {
         'username': name,
       });
@@ -776,6 +779,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required String bunkerUrl,
     required Function() onSuccess,
     required BuildContext context,
+    ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
   }) async {
     final bunkerPointer = RemoteEventSigner.parseBunkerInput(bunkerUrl);
 
@@ -798,7 +802,11 @@ class LogifyCubit extends Cubit<LogifyState> {
     if (signer != null) {
       await signer.getPublicKeyAsync();
       loadRemotePubkeyAndLogin(
-          remoteSigner: signer, onSuccess: onSuccess, context: context);
+        remoteSigner: signer,
+        onSuccess: onSuccess,
+        context: context,
+        externalKeyType: externalKeyType,
+      );
     }
   }
 
@@ -806,6 +814,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required RemoteEventSigner remoteSigner,
     required BuildContext context,
     required Function() onSuccess,
+    ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
   }) async {
     final pubkey = remoteSigner.publicKey;
     remoteSigner.close();
@@ -828,6 +837,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         context: context,
         onSuccess: () {},
         isExternalSigner: true,
+        externalKeyType: externalKeyType,
       );
 
       BotToastUtils.showSuccess(
@@ -835,6 +845,25 @@ class LogifyCubit extends Cubit<LogifyState> {
       );
 
       onSuccess.call();
+    }
+  }
+
+  Future<void> loginWithGoogle({
+    required BuildContext context,
+    required Function() onSuccess,
+    required String bunkerUrl,
+    required String pubkey,
+  }) async {
+    try {
+      await initRemoteSignerFromBunkerUrl(
+        bunkerUrl: bunkerUrl,
+        context: context,
+        onSuccess: onSuccess,
+        externalKeyType: ExternalKeyType.Google,
+      );
+    } catch (e) {
+      lg.i(e);
+      BotToastUtils.showError(t.somethingWentWrong.capitalizeFirst());
     }
   }
 

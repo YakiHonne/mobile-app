@@ -9,6 +9,7 @@ import '../../../smart_widgets_view/widgets/smart_widget_container.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/modal_sheet_container.dart';
 
 class SmartWidgetsDrafts extends HookWidget {
   const SmartWidgetsDrafts({
@@ -28,19 +29,7 @@ class SmartWidgetsDrafts extends HookWidget {
         sw.key: SWAutoSaveModel.fromJson(sw.value)
     });
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.85,
         minChildSize: 0.40,
@@ -140,6 +129,7 @@ class SmartWidgetsDrafts extends HookWidget {
                 onSmartWidgetPublished.call(sw);
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: const VisualDensity(
                   vertical: -0.5,
                 ),

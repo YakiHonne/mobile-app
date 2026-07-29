@@ -12,6 +12,7 @@ import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'send_success_view.dart';
 import 'send_using_invoice.dart';
@@ -89,6 +90,7 @@ class SendUsingLightningAddress extends HookWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: Theme.of(context).cardColor,
             side: BorderSide(
               color: Theme.of(context).dividerColor,
@@ -103,14 +105,10 @@ class SendUsingLightningAddress extends HookWidget {
                     key: const ValueKey(1),
                     spacing: kDefaultPadding / 4,
                     children: [
-                      SvgPicture.asset(
+                      AppIcon(
                         FeatureIcons.zapFilled,
-                        width: 15,
-                        height: 15,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 15,
+                        color: Theme.of(context).primaryColorDark,
                       ),
                       Text(
                         key: const ValueKey(1),
@@ -319,14 +317,10 @@ class SendUsingLightningAddress extends HookWidget {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.repost,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
         ],
       ),

@@ -17,6 +17,7 @@ import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/dotted_container.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 
 class ZapPollSelection extends StatefulWidget {
@@ -63,41 +64,34 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
 
     return BlocProvider(
       create: (context) => PollsCubit(),
-      child: BlocConsumer<PollsCubit, PollsState>(
-        listener: (context, state) {
-          if (state.loadingState == UpdatingState.success) {
-            refreshController.loadComplete();
-          } else if (state.loadingState == UpdatingState.idle) {
-            refreshController.loadNoData();
-          }
-        },
-        builder: (context, state) {
-          return DraggableScrollableSheet(
-            initialChildSize: 0.80,
-            minChildSize: 0.40,
-            maxChildSize: 0.80,
-            expand: false,
-            builder: (context, scrollController) => ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(kDefaultPadding),
-                topRight: Radius.circular(kDefaultPadding),
+      child: ModalSheetContainer(
+        child: BlocConsumer<PollsCubit, PollsState>(
+          listener: (context, state) {
+            if (state.loadingState == UpdatingState.success) {
+              refreshController.loadComplete();
+            } else if (state.loadingState == UpdatingState.idle) {
+              refreshController.loadNoData();
+            }
+          },
+          builder: (context, state) {
+            return DraggableScrollableSheet(
+              initialChildSize: 0.80,
+              minChildSize: 0.40,
+              maxChildSize: 0.80,
+              expand: false,
+              builder: (context, scrollController) => NestedScrollView(
+                controller: scrollController,
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    _appbar(context),
+                  ];
+                },
+                body: _body(state, isTablet, scrollController),
               ),
-              child: ColoredBox(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: NestedScrollView(
-                  controller: scrollController,
-                  floatHeaderSlivers: true,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      _appbar(context),
-                    ];
-                  },
-                  body: _body(state, isTablet, scrollController),
-                ),
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

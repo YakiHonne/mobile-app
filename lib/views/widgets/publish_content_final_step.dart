@@ -13,10 +13,12 @@ import '../add_content_view/add_content_view.dart';
 import '../article_view/article_view.dart';
 import '../curation_view/curation_view.dart';
 import '../smart_widgets_view/widgets/smart_widget_checker.dart';
+import 'app_icon.dart';
 import 'dotted_container.dart';
 import 'media_components/horizontal_video_view.dart';
 import 'media_components/picture_view.dart';
 import 'media_components/vertical_video_view.dart';
+import 'modal_sheet_container.dart';
 
 class PublishContentFinalStep extends StatelessWidget {
   const PublishContentFinalStep({
@@ -30,19 +32,7 @@ class PublishContentFinalStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-      ),
+    return ModalSheetContainer(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         child: Column(
@@ -52,10 +42,9 @@ class PublishContentFinalStep extends StatelessWidget {
             const SizedBox(
               height: kDefaultPadding / 1.5,
             ),
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.widgetCorrect,
-              width: 55,
-              height: 55,
+              size: 55,
             ),
             const SizedBox(
               height: kDefaultPadding / 2,
@@ -208,7 +197,7 @@ class PublishFinalStepOption extends StatelessWidget {
     required this.onClicked,
   });
 
-  final String icon;
+  final IconData icon;
   final String title;
   final Function() onClicked;
 
@@ -224,14 +213,10 @@ class PublishFinalStepOption extends StatelessWidget {
               color: Theme.of(context).cardColor,
             ),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: SvgPicture.asset(
+            child: AppIcon(
               icon,
-              width: 25,
-              height: 25,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 25,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           const SizedBox(

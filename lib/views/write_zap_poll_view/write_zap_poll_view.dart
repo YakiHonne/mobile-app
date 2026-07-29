@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mention_tag_text_field/mention_tag_text_field.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -18,12 +19,14 @@ import '../../utils/bot_toast_util.dart';
 import '../../utils/global_keys.dart';
 import '../../utils/utils.dart';
 import '../giphy_view/giphy_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/curation_container.dart';
 import '../widgets/custom_date_picker.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
 import '../widgets/media_selector.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/profile_picture.dart';
 import '../write_note_view/widgets/publish_media_container.dart';
 import '../write_note_view/write_note_view.dart';
@@ -52,21 +55,9 @@ class WriteZapPollView extends HookWidget {
 
     return BlocProvider(
       create: (context) => WriteZapPollCubit(),
-      child: Container(
-        width: double.infinity,
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
         child: DraggableScrollableSheet(
           initialChildSize: 0.95,
           minChildSize: 0.60,
@@ -307,14 +298,10 @@ class WriteZapPollView extends HookWidget {
       style: IconButton.styleFrom(
         backgroundColor: Theme.of(context).cardColor,
       ),
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.calendar,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 22,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -388,39 +375,43 @@ class WriteZapPollView extends HookWidget {
 
         return AspectRatio(
           aspectRatio: 16 / 9,
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: image,
-            cacheManager: imagesCacheManager,
-            memCacheWidth: MediaQuery.of(context).size.width.toInt(),
-            imageBuilder: (context, imageProvider) {
-              return Container(
-                alignment: Alignment.topRight,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
+          child: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Positioned.fill(
+                child: ExtendedImage.network(
+                  image,
+                  fit: BoxFit.cover,
+                  cacheWidth: MediaQuery.of(context).size.width.toInt(),
+                  shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(
                     kDefaultPadding / 2,
                   ),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    context.read<WriteNoteCubit>().removeImage(index);
+                  loadStateChanged: (state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return const ImageLoadingPlaceHolder();
+                      case LoadState.failed:
+                        return const NoImagePlaceHolder();
+                      case LoadState.completed:
+                        return null;
+                    }
                   },
-                  icon: const Icon(
-                    Icons.close,
-                    color: kWhite,
-                  ),
-                  style: IconButton.styleFrom(
-                    backgroundColor: kBlack.withValues(alpha: 0.5),
-                  ),
                 ),
-              );
-            },
-            placeholder: (context, url) => const ImageLoadingPlaceHolder(),
-            errorWidget: (context, url, error) => const NoImagePlaceHolder(),
+              ),
+              IconButton(
+                onPressed: () {
+                  context.read<WriteNoteCubit>().removeImage(index);
+                },
+                icon: const Icon(
+                  LucideIcons.x,
+                  color: kWhite,
+                ),
+                style: IconButton.styleFrom(
+                  backgroundColor: kBlack.withValues(alpha: 0.5),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -729,14 +720,10 @@ class PublishingMediaContainer extends HookWidget {
                       useSafeArea: true,
                     );
                   },
-                  icon: SvgPicture.asset(
+                  icon: AppIcon(
                     FeatureIcons.imageLink,
-                    width: 25,
-                    height: 25,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 25,
+                    color: Theme.of(context).primaryColorDark,
                   ),
                 ),
                 IconButton(
@@ -746,7 +733,9 @@ class PublishingMediaContainer extends HookWidget {
                       builder: (_) {
                         return GiphyView(
                           onGifSelected: (p0) {
-                            onImageAdd.call([{'url': p0}]);
+                            onImageAdd.call([
+                              {'url': p0}
+                            ]);
                           },
                         );
                       },

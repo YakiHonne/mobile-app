@@ -15,6 +15,7 @@ import '../note_view/note_view.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
 import 'loading_indicators.dart';
+import 'modal_sheet_container.dart';
 import 'user_profile_container.dart';
 
 class NetStatsView extends HookWidget {
@@ -22,14 +23,17 @@ class NetStatsView extends HookWidget {
     super.key,
     required this.id,
     required this.type,
+    this.embedded = false,
   });
 
   final String id;
   final NoteRelatedEventsType type;
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
     final events = useState(<Event>[]);
+    final embeddedController = useScrollController();
 
     final f = useCallback(
       () async {
@@ -45,6 +49,20 @@ class NetStatsView extends HookWidget {
       f.call();
     });
 
+    if (embedded) {
+      return BlocProvider(
+        create: (context) => UsersInfoListCubit(
+          nostrRepository: context.read<NostrDataRepository>(),
+        ),
+        child: BlocBuilder<UsersInfoListCubit, UsersInfoListState>(
+          buildWhen: (previous, current) =>
+              previous.isLoading != current.isLoading,
+          builder: (context, state) =>
+              getView(state.isLoading, events.value, embeddedController),
+        ),
+      );
+    }
+
     return BlocProvider(
       create: (context) => UsersInfoListCubit(
         nostrRepository: context.read<NostrDataRepository>(),
@@ -52,19 +70,7 @@ class NetStatsView extends HookWidget {
       child: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        child: ModalSheetContainer(
           child: _content(context, events),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../logic/relays_progress_cubit/relays_progress_cubit.dart';
@@ -107,7 +108,7 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
           context.read<RelaysProgressCubit>().dismissProgressBar();
         },
         icon: const Icon(
-          Icons.close,
+          LucideIcons.x,
           size: 20,
         ),
         style: IconButton.styleFrom(
@@ -216,6 +217,7 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
                                 .setRelaysListVisibility(false);
                           },
                           style: TextButton.styleFrom(
+                            backgroundBuilder: (_, __, child) => child!,
                             backgroundColor: Theme.of(context).primaryColorDark,
                             visualDensity: VisualDensity.compact,
                           ),

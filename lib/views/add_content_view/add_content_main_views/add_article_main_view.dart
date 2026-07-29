@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/amber_event_signer.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/bip340_event_signer.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
@@ -11,11 +12,11 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../models/article_model.dart';
+import '../../../repositories/localdatabase_repository.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/profile_picture.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../add_content_specification_views/add_article_specification_view.dart';
 import '../related_adding_views/article_widgets/article_content.dart';
 import '../widgets/add_content_appbar.dart';
@@ -32,6 +33,10 @@ class AddArticleMainView extends HookWidget {
   Widget build(BuildContext context) {
     final components = <Widget>[];
     final signer = useState(currentSigner!);
+    final isSubscriber = subscriptionCubit.isPaid;
+    final editorAdvanced = useState(
+      isSubscriber && (prefs.getBool('yh-editor-advanced') ?? false),
+    );
 
     components.add(
       BlocBuilder<WriteArticleCubit, WriteArticleState>(
@@ -45,38 +50,76 @@ class AddArticleMainView extends HookWidget {
               isActionButtonEnabled: enabled,
               extraRight: Padding(
                 padding: const EdgeInsets.only(left: kDefaultPadding / 3),
-                child: ContentAccountsSwitcher(
-                  signer: signer,
-                ),
+                child: ContentAccountsSwitcher(signer: signer),
               ),
-              extra: PullDownButton(
-                animationBuilder: (context, state, child) {
-                  return child;
-                },
-                routeTheme: PullDownMenuRouteTheme(
-                  backgroundColor: Theme.of(context).cardColor,
-                ),
-                itemBuilder: (context) {
-                  final textStyle = Theme.of(context).textTheme.labelMedium;
+              extra: isSubscriber
+                  ? PullDownButton(
+                      animationBuilder: (context, state, child) {
+                        return child;
+                      },
+                      routeTheme: PullDownMenuRouteTheme(
+                        backgroundColor: Theme.of(context).cardColor,
+                      ),
+                      itemBuilder: (context) {
+                        final textStyle =
+                            Theme.of(context).textTheme.labelMedium;
 
-                  return [
-                    if (enabled) _saveDraft(context, signer, textStyle),
-                    _deleteDraft(context, textStyle),
-                  ];
-                },
-                buttonBuilder: (context, showMenu) => IconButton(
-                  onPressed: showMenu,
-                  padding: EdgeInsets.zero,
-                  style: IconButton.styleFrom(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  icon: Icon(
-                    Icons.more_horiz_rounded,
-                    color: Theme.of(context).primaryColorDark,
-                  ),
-                ),
-              ),
+                        return [
+                          PullDownMenuItem.selectable(
+                            title: context.t.editor_classic,
+                            selected: !editorAdvanced.value,
+                            onTap: () {
+                              prefs.setBool('yh-editor-advanced', false);
+                              editorAdvanced.value = false;
+                            },
+                            itemTheme:
+                                PullDownMenuItemTheme(textStyle: textStyle),
+                          ),
+                          PullDownMenuItem.selectable(
+                            title: context.t.editor_advanced,
+                            selected: editorAdvanced.value,
+                            onTap: () {
+                              prefs.setBool('yh-editor-advanced', true);
+                              editorAdvanced.value = true;
+                            },
+                            itemTheme:
+                                PullDownMenuItemTheme(textStyle: textStyle),
+                          ),
+                        ];
+                      },
+                      buttonBuilder: (context, showMenu) => Padding(
+                        padding:
+                            const EdgeInsets.only(right: kDefaultPadding / 4),
+                        child: TextButton(
+                          onPressed: showMenu,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding / 2,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                            foregroundColor: Theme.of(context).primaryColorDark,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                editorAdvanced.value
+                                    ? context.t.editor_advanced
+                                    : context.t.editor_classic,
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              const SizedBox(width: kDefaultPadding / 6),
+                              Icon(
+                                LucideIcons.chevronDown,
+                                size: 16,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
               onActionClicked: () {
                 context.read<WriteArticleCubit>().setContentKeywords();
 
@@ -94,7 +137,9 @@ class AddArticleMainView extends HookWidget {
                   useRootNavigator: true,
                   useSafeArea: true,
                   elevation: 0,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: isFluid()
+                      ? kTransparent
+                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
             ),
@@ -110,6 +155,9 @@ class AddArticleMainView extends HookWidget {
             return ArticleContent(
               isMenuDismissed:
                   !state.displayBottomNavigationBar || article != null,
+              useAdvanced: editorAdvanced.value,
+              signer: signer,
+              isSubscriber: isSubscriber,
             );
           },
         ),
@@ -133,72 +181,72 @@ class AddArticleMainView extends HookWidget {
     );
   }
 
-  PullDownMenuItem _deleteDraft(BuildContext context, TextStyle? textStyle) {
-    return PullDownMenuItem(
-      title: context.t.deleteDraft.capitalize(),
-      onTap: () {
-        context.read<WriteArticleCubit>().deleteDraft();
-      },
-      itemTheme: PullDownMenuItemTheme(
-        textStyle: textStyle,
-      ),
-      isDestructive: true,
-      iconWidget: SvgPicture.asset(
-        FeatureIcons.trash,
-        height: 20,
-        width: 20,
-        colorFilter: const ColorFilter.mode(
-          kRed,
-          BlendMode.srcIn,
-        ),
-      ),
-    );
-  }
+//   PullDownMenuItem _deleteDraft(BuildContext context, TextStyle? textStyle) {
+//     return PullDownMenuItem(
+//       title: context.t.deleteDraft.capitalize(),
+//       onTap: () {
+//         context.read<WriteArticleCubit>().deleteDraft();
+//       },
+//       itemTheme: PullDownMenuItemTheme(
+//         textStyle: textStyle,
+//       ),
+//       isDestructive: true,
+//       iconWidget: SvgPicture.asset(
+//         FeatureIcons.trash,
+//         height: 20,
+//         width: 20,
+//         colorFilter: const ColorFilter.mode(
+//           kRed,
+//           BlendMode.srcIn,
+//         ),
+//       ),
+//     );
+//   }
 
-  PullDownMenuItem _saveDraft(BuildContext context,
-      ValueNotifier<EventSigner> signer, TextStyle? textStyle) {
-    return PullDownMenuItem(
-      title: context.t.saveDraft.capitalize(),
-      onTap: () {
-        context.read<WriteArticleCubit>().setArticle(
-              isDraft: true,
-              signer: signer.value,
-              onSuccess: (article) {
-                Navigator.pop(context);
+//   PullDownMenuItem _saveDraft(BuildContext context,
+//       ValueNotifier<EventSigner> signer, TextStyle? textStyle) {
+//     return PullDownMenuItem(
+//       title: context.t.saveDraft.capitalize(),
+//       onTap: () {
+//         context.read<WriteArticleCubit>().setArticle(
+//               isDraft: true,
+//               signer: signer.value,
+//               onSuccess: (article) {
+//                 Navigator.pop(context);
 
-                if (article != null) {
-                  showModalBottomSheet(
-                    context: context,
-                    elevation: 0,
-                    builder: (_) {
-                      return PublishContentFinalStep(
-                        appContentType: AppContentType.article,
-                        event: article,
-                      );
-                    },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  );
-                }
-              },
-            );
-      },
-      itemTheme: PullDownMenuItemTheme(
-        textStyle: textStyle,
-      ),
-      iconWidget: SvgPicture.asset(
-        FeatureIcons.upload,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
-      ),
-    );
-  }
+//                 if (article != null) {
+//                   showModalBottomSheet(
+//                     context: context,
+//                     elevation: 0,
+//                     builder: (_) {
+//                       return PublishContentFinalStep(
+//                         appContentType: AppContentType.article,
+//                         event: article,
+//                       );
+//                     },
+//                     isScrollControlled: true,
+//                     useRootNavigator: true,
+//                     useSafeArea: true,
+//                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//                   );
+//                 }
+//               },
+//             );
+//       },
+//       itemTheme: PullDownMenuItemTheme(
+//         textStyle: textStyle,
+//       ),
+//       iconWidget: SvgPicture.asset(
+//         FeatureIcons.upload,
+//         height: 20,
+//         width: 20,
+//         colorFilter: ColorFilter.mode(
+//           Theme.of(context).primaryColorDark,
+//           BlendMode.srcIn,
+//         ),
+//       ),
+//     );
+//   }
 }
 
 class ContentAccountsSwitcher extends HookWidget {

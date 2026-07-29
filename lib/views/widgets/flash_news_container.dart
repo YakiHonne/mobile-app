@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
@@ -16,6 +17,7 @@ import '../add_bookmark_view/add_bookmark_view.dart';
 import '../uncensored_notes_view/widgets/un_flashnews_container.dart';
 import '../uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../uncensored_notes_view/widgets/uncensored_note_component.dart';
+import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
 import 'data_providers.dart';
 import 'flash_tags_row.dart';
@@ -180,6 +182,7 @@ class FlashNewsContainer extends HookWidget {
                 child: TextButton(
                   onPressed: onPayWithAlby,
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Row(
@@ -218,6 +221,7 @@ class FlashNewsContainer extends HookWidget {
         Expanded(
           child: TextButton(
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             onPressed: onCopyInvoice,
@@ -232,6 +236,7 @@ class FlashNewsContainer extends HookWidget {
         Expanded(
           child: TextButton(
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             onPressed: onConfirmPayment,
@@ -297,7 +302,7 @@ class FlashNewsContainer extends HookWidget {
                 visualDensity: VisualDensity.compact,
               ),
               icon: const Icon(
-                Icons.arrow_forward_ios_rounded,
+                LucideIcons.chevronRight,
               ),
             ),
           ],
@@ -323,14 +328,16 @@ class FlashNewsContainer extends HookWidget {
           isScrollControlled: true,
           useRootNavigator: true,
           useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: isFluid()
+              ? kTransparent
+              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       icon: Builder(
         builder: (context) {
           final isDark = themeCubit.isDark;
 
-          return SvgPicture.asset(
+          return AppIcon(
             isBookmarked!
                 ? isDark
                     ? FeatureIcons.bookmarkFilledWhite

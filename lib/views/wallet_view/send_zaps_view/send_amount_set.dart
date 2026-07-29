@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:numeral/numeral.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -15,6 +16,7 @@ import '../../../models/article_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/profile_picture.dart';
 import '../send_view/send_main_view.dart';
@@ -38,6 +40,7 @@ class SendAmountSet extends HookWidget {
     this.valMin,
     this.initialVal,
     this.lnbc,
+    this.extraTags,
   });
 
   final Metadata metadata;
@@ -54,6 +57,7 @@ class SendAmountSet extends HookWidget {
   final num? valMax;
   final num? valMin;
   final num? initialVal;
+  final List<List<String>>? extraTags;
 
   @override
   Widget build(BuildContext context) {
@@ -314,14 +318,10 @@ class SendAmountSet extends HookWidget {
 
   /// Build currency toggle icon
   Widget _buildCurrencyToggleIcon(BuildContext context) {
-    return SvgPicture.asset(
+    return AppIcon(
       FeatureIcons.repost,
-      width: 15,
-      height: 15,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
-      ),
+      size: 15,
+      color: Theme.of(context).primaryColorDark,
     );
   }
 
@@ -646,14 +646,10 @@ class SendAmountSet extends HookWidget {
 
   /// Build QR code icon
   Widget _buildQrCodeIcon(BuildContext context) {
-    return SvgPicture.asset(
+    return AppIcon(
       FeatureIcons.qr,
-      width: 20,
-      height: 20,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
-      ),
+      size: 20,
+      color: Theme.of(context).primaryColorDark,
     );
   }
 
@@ -679,6 +675,7 @@ class SendAmountSet extends HookWidget {
   /// Get invoice button style
   ButtonStyle _getInvoiceButtonStyle(BuildContext context) {
     return TextButton.styleFrom(
+      backgroundBuilder: (_, __, child) => child!,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       visualDensity: VisualDensity.compact,
     );
@@ -967,6 +964,7 @@ class SendAmountSet extends HookWidget {
       onInvoiceGenerated: onInvoiceGenerated,
       isZapSplit: isZapSplit,
       onFailure: onFailure,
+      extraTags: extraTags,
     );
 
     isSending.value = WalletSendingType.none;
@@ -1058,6 +1056,7 @@ class SendAmountSet extends HookWidget {
       onFailure: onFailure,
       zapPaymentMethod: zapPaymentMethod,
       initialVal: initialVal,
+      extraTags: extraTags,
     );
 
     isSending.value = WalletSendingType.none;
@@ -1075,6 +1074,7 @@ class SendAmountSet extends HookWidget {
     required bool isZapSplit,
     required Function(String)? onInvoiceGenerated,
     required Function(String)? onFailure,
+    List<List<String>>? extraTags,
   }) async {
     HapticFeedback.mediumImpact();
 
@@ -1106,6 +1106,7 @@ class SendAmountSet extends HookWidget {
             user: metadata,
             comment: commentTextEditingController.text,
             eventId: eventId,
+            extraTags: extraTags,
             onSuccess: (invoice) {
               onInvoiceGenerated?.call(invoice);
               completer.complete();
@@ -1130,6 +1131,7 @@ class SendAmountSet extends HookWidget {
     required Function(Map<String, dynamic> p1) onSuccess,
     required Function(String p1) onFailure,
     required num? initialVal,
+    List<List<String>>? extraTags,
   }) async {
     final completer = Completer<void>();
     HapticFeedback.mediumImpact();
@@ -1187,6 +1189,7 @@ class SendAmountSet extends HookWidget {
             pollOption: pollOption,
             comment: comment,
             useExternalWallet: zapPaymentMethod == ZapPaymentMethod.external,
+            extraTags: extraTags,
             onFinished: (_) {
               if (!completer.isCompleted) {
                 completer.complete();
@@ -1385,17 +1388,17 @@ class ArrowAnimation extends HookWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(
-                Icons.arrow_forward_ios_rounded,
+                LucideIcons.chevronRight,
                 size: 5,
                 color: kDimGrey,
               ),
               Icon(
-                Icons.arrow_forward_ios_rounded,
+                LucideIcons.chevronRight,
                 size: 8,
                 color: Theme.of(context).primaryColorDark,
               ),
               const Icon(
-                Icons.arrow_forward_ios_rounded,
+                LucideIcons.chevronRight,
                 size: 5,
                 color: kDimGrey,
               ),

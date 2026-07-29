@@ -106,6 +106,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     return _externalKeysType[index.toString()] == ExternalKeyType.Amber;
   }
 
+  bool isExternalGoogle(int index) {
+    return _externalKeysType[index.toString()] == ExternalKeyType.Google;
+  }
+
   bool get isPrivateKey {
     return _keyIsPrivateMap[_settingData!.privateKeyIndex.toString()] ?? false;
   }
@@ -440,7 +444,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         final publicKey = isPrivate ? getPublicKey(key) : key;
 
         currentSigner = isExternalSignerKey
-            ? externalKeyType == ExternalKeyType.Bunker
+            ? (externalKeyType == ExternalKeyType.Bunker ||
+                    externalKeyType == ExternalKeyType.Google)
                 ? remoteSigner
                 : AmberEventSigner(publicKey)
             : Bip340EventSigner(
@@ -459,6 +464,9 @@ class SettingsCubit extends Cubit<SettingsState> {
           nostrRepository.loadCurrentUserRelatedData();
           walletManagerCubit.switchWallets();
           cashuWalletManagerCubit.init();
+          if (currentSigner?.canSign() ?? false) {
+            pointsManagementCubit.login(onSuccess: () {});
+          }
         }
 
         appSettingsManagerCubit.loadAppSharedSettings();

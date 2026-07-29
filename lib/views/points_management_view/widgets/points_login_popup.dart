@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_blur_container.dart';
 
 class PointsLoginPopup extends HookWidget {
   const PointsLoginPopup({super.key});
@@ -14,28 +16,31 @@ class PointsLoginPopup extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final fluid = isFluid();
 
     return Container(
       width: isTablet ? 50.w : double.infinity,
       margin: const EdgeInsets.all(kDefaultPadding),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-      ),
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: BlocBuilder<PointsManagementCubit, PointsManagementState>(
-        builder: (context, state) {
-          if (state.isNew && state.standards.isNotEmpty) {
-            return YakiHonneFirstRewards(
-              level: state.currentLevel,
-              percentage: state.percentage,
-              standards: state.standards,
-              xp: state.currentXp,
-            );
-          } else {
-            return const YakiLoginChest();
-          }
-        },
+      child: FluidBlurContainer(
+        blur: fluid,
+        sigma: 20,
+        backgroundAlpha: fluid ? 0.55 : 1.0,
+        borderRadius: kDefaultPadding,
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: BlocBuilder<PointsManagementCubit, PointsManagementState>(
+          builder: (context, state) {
+            if (state.isNew && state.standards.isNotEmpty) {
+              return YakiHonneFirstRewards(
+                level: state.currentLevel,
+                percentage: state.percentage,
+                standards: state.standards,
+                xp: state.currentXp,
+              );
+            } else {
+              return const YakiLoginChest();
+            }
+          },
+        ),
       ),
     );
   }
@@ -141,7 +146,7 @@ class YakiHonneFirstRewards extends HookWidget {
                         width: kDefaultPadding / 4,
                       ),
                       const Icon(
-                        Icons.check_circle,
+                        LucideIcons.circleCheck,
                         color: kGreen,
                         size: 15,
                       ),
@@ -290,6 +295,7 @@ class YakiLoginChest extends StatelessWidget {
             Navigator.pop(context);
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(

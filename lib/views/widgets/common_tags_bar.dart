@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'managae_interests.dart';
 import 'tag_container.dart';
 
@@ -116,14 +118,10 @@ class CommonTagsBar extends HookWidget {
             const SizedBox(
               width: kDefaultPadding / 3,
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.addRaw,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
-              width: 13,
-              height: 13,
+              color: Theme.of(context).primaryColorDark,
+              size: 13,
             ),
           ],
         ),
@@ -164,7 +162,7 @@ class CommonTagsBar extends HookWidget {
               iconWidget:
                   selectedMainType.value == getCommonFeedTypesText(t, context)
                       ? const Icon(
-                          Icons.check_rounded,
+                          LucideIcons.check,
                         )
                       : null,
             ),

@@ -12,6 +12,7 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/nostr_core.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common/notifications/local_notification_manager.dart';
@@ -37,6 +38,8 @@ import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
 import 'logic/routing_cubit/routing_cubit.dart';
 import 'logic/settings_cubit/settings_cubit.dart';
 import 'logic/single_event_cubit/single_event_cubit.dart';
+import 'logic/subscription_badge_cubit/subscription_badge_cubit.dart';
+import 'logic/subscription_cubit/subscription_cubit.dart';
 import 'logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import 'logic/theme_cubit/theme_cubit.dart';
 import 'logic/unsent_events_cubit/unsent_events_cubit.dart';
@@ -52,7 +55,7 @@ class AppInitializer {
   AppInitializer._();
 
   static Future<void> initApp() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    SentryWidgetsFlutterBinding.ensureInitialized();
 
     // Initialize core dependencies
     await _initializeCoreDependencies();
@@ -200,6 +203,8 @@ class AppInitializer {
     walletManagerCubit = WalletsManagerCubit();
     cashuWalletManagerCubit = CashuWalletManagerCubit();
     pointsManagementCubit = PointsManagementCubit();
+    subscriptionCubit = SubscriptionCubit();
+    subscriptionBadgeCubit = SubscriptionBadgeCubit();
     relaysProgressCubit = RelaysProgressCubit();
     suggestionsBoxCubit = SuggestionsBoxCubit();
     contactListCubit = ContactListCubit();

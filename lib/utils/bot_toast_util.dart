@@ -4,14 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../logic/bot_utils_loading_progress_cubit/bot_utils_loading_progress_cubit.dart';
+import '../views/widgets/fluid_toast.dart';
 import 'utils.dart';
 
 class BotToastUtils {
   static int toastDuration = 3;
 
+  static bool get _popupsEnabled =>
+      nostrRepository.currentAppCustomization?.enableActionsPopups ?? true;
+
   static void showUnreachableRelaysError() {
-    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
-        true)) {
+    if (!_popupsEnabled) {
+      return;
+    }
+
+    if (themeCubit.state.isFluid) {
+      FluidToast.show(
+        message: t.relaysNotReached.capitalizeFirst(),
+        type: FluidToastType.error,
+      );
       return;
     }
 
@@ -26,8 +37,16 @@ class BotToastUtils {
   }
 
   static void showError(String message) {
-    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
-        true)) {
+    if (!_popupsEnabled) {
+      return;
+    }
+
+    if (themeCubit.state.isFluid) {
+      FluidToast.show(
+        message: message,
+        type: FluidToastType.error,
+        duration: Duration(seconds: toastDuration),
+      );
       return;
     }
 
@@ -43,8 +62,16 @@ class BotToastUtils {
   }
 
   static void showInformation(String message) {
-    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
-        true)) {
+    if (!_popupsEnabled) {
+      return;
+    }
+
+    if (themeCubit.state.isFluid) {
+      FluidToast.show(
+        message: message,
+        type: FluidToastType.info,
+        duration: Duration(seconds: toastDuration),
+      );
       return;
     }
 
@@ -60,8 +87,16 @@ class BotToastUtils {
   }
 
   static void showSuccess(String message) {
-    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
-        true)) {
+    if (!_popupsEnabled) {
+      return;
+    }
+
+    if (themeCubit.state.isFluid) {
+      FluidToast.show(
+        message: message,
+        type: FluidToastType.success,
+        duration: Duration(seconds: toastDuration),
+      );
       return;
     }
 
@@ -77,8 +112,16 @@ class BotToastUtils {
   }
 
   static void showWarning(String message) {
-    if (!(nostrRepository.currentAppCustomization?.enableActionsPopups ??
-        true)) {
+    if (!_popupsEnabled) {
+      return;
+    }
+
+    if (themeCubit.state.isFluid) {
+      FluidToast.show(
+        message: message,
+        type: FluidToastType.warning,
+        duration: Duration(seconds: toastDuration),
+      );
       return;
     }
 

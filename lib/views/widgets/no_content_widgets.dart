@@ -6,6 +6,7 @@ import '../../routes/navigator.dart';
 import '../../routes/pages_router.dart';
 import '../../utils/utils.dart';
 import '../logify_view/logify_view.dart';
+import 'app_icon.dart';
 
 class HorizontalViewModeWidget extends StatelessWidget {
   const HorizontalViewModeWidget({
@@ -45,7 +46,9 @@ class HorizontalViewModeWidget extends StatelessWidget {
 
   TextButton _login(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+      style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
+          visualDensity: VisualDensity.comfortable),
       onPressed: () {
         YNavigator.push(
           context,
@@ -108,14 +111,10 @@ class RelayLoginHorizontalViewModeWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.relaysOrbit,
-            width: 12.w,
-            height: 12.w,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 12.w,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             width: kDefaultPadding / 2,
@@ -132,7 +131,9 @@ class RelayLoginHorizontalViewModeWidget extends StatelessWidget {
 
   TextButton _login(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+      style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
+          visualDensity: VisualDensity.comfortable),
       onPressed: () {
         YNavigator.push(
           context,
@@ -221,7 +222,9 @@ class VerticalViewModeWidget extends StatelessWidget {
 
   TextButton _login(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+      style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
+          visualDensity: VisualDensity.comfortable),
       onPressed: () {
         YNavigator.push(
           context,
@@ -378,6 +381,7 @@ class MutedUserContent extends StatelessWidget {
   TextButton _unmute(BuildContext context) {
     return TextButton(
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         visualDensity: VisualDensity.comfortable,
       ),
       onPressed: () {
@@ -447,7 +451,9 @@ class MutedUserActionBox extends StatelessWidget {
 
   TextButton _unmute(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.comfortable),
+      style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
+          visualDensity: VisualDensity.comfortable),
       onPressed: () {
         doIfCanSign(
           func: () {

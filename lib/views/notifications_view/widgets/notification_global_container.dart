@@ -22,6 +22,7 @@ import '../../note_view/note_view.dart';
 import '../../smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../wallet_cashu_view/widgets/cashu_history.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/picture_view.dart';
@@ -331,7 +332,7 @@ class SlidableButton extends StatelessWidget {
   final Color backgroundColor;
   final Color effectiveForegroundColor;
   final double borderRadius;
-  final String icon;
+  final IconData icon;
   final String label;
   final Function() onClick;
 
@@ -360,14 +361,10 @@ class SlidableButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: kDefaultPadding / 4,
           children: [
-            SvgPicture.asset(
+            AppIcon(
               icon,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                effectiveForegroundColor,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: effectiveForegroundColor,
             ),
             Text(
               label.capitalizeFirst(),

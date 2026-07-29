@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nested_scroll_view_plus/nested_scroll_view_plus.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -26,6 +27,7 @@ import '../../../curation_view/curation_view.dart';
 import '../../../gallery_view/gallery_view.dart';
 import '../../../note_view/note_view.dart';
 import '../../../search_view/search_view.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -294,14 +296,10 @@ class BookmarksListDetails extends HookWidget {
                 style: IconButton.styleFrom(
                   backgroundColor: Theme.of(context).cardColor,
                 ),
-                icon: SvgPicture.asset(
+                icon: AppIcon(
                   FeatureIcons.properties,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ),
@@ -467,7 +465,7 @@ class BookmarksListDetailsAppbar extends HookWidget {
                       .primaryColorLight
                       .withValues(alpha: 0.7),
                   child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
+                    LucideIcons.chevronLeft,
                     size: 20,
                   ),
                 ),
@@ -640,12 +638,11 @@ class DashboardBookmarkContainer extends StatelessWidget {
             _bookmarkInfo(context),
             GestureDetector(
               onTap: onBookmark,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 isBookmarked
                     ? FeatureIcons.bookmarkFilledWhite
                     : FeatureIcons.bookmarkEmptyWhite,
-                width: 25,
-                height: 25,
+                size: 25,
               ),
             ),
           ],
@@ -716,7 +713,7 @@ class DashboardBookmarkContainer extends StatelessWidget {
     );
   }
 
-  String getIcon() {
+  IconData getIcon() {
     if (item is BookmarkOtherType) {
       return (item as BookmarkOtherType).isTag
           ? FeatureIcons.hashtag

@@ -272,7 +272,7 @@ class ModalBottomSheetAppbar extends StatelessWidget {
 
   final Function()? onClicked;
   final Function()? onSecondClick;
-  final String? secondIcon;
+  final IconData? secondIcon;
   final bool isBack;
   final String title;
   final double? padding;
@@ -323,6 +323,7 @@ class ModalBottomSheetAppbar extends StatelessWidget {
                   size: 18,
                   vd: -1,
                   backgroundColor: Theme.of(context).cardColor,
+                  isGlass: isFluid(),
                 ),
               ),
             ),

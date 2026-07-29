@@ -13,12 +13,14 @@ import '../../models/packs_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../profile_view/widgets/profile_fast_access.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_blur_container.dart';
 import '../widgets/tag_container.dart';
 import 'widget/pack_feed_view.dart';
 import 'widget/pack_info_view.dart';
@@ -169,6 +171,22 @@ class PackCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final column = Column(
+      children: [
+        _packHeader(context),
+        const Divider(
+          thickness: 0.5,
+        ),
+        _packFollows(),
+        if (enableBrowse) ...[
+          const Divider(
+            thickness: 0.5,
+          ),
+          _browsePack(context),
+        ]
+      ],
+    );
+
     return GestureDetector(
       onTap: hasActions
           ? null
@@ -184,37 +202,30 @@ class PackCard extends HookWidget {
                 isScrollControlled: true,
                 useRootNavigator: true,
                 useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: isFluid()
+                    ? kTransparent
+                    : Theme.of(context).scaffoldBackgroundColor,
               );
             },
-      child: Container(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            kDefaultPadding / 2,
-          ),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Column(
-          children: [
-            _packHeader(context),
-            const Divider(
-              thickness: 0.5,
-            ),
-            _packFollows(),
-            if (enableBrowse) ...[
-              const Divider(
-                thickness: 0.5,
+      child: isFluid()
+          ? FluidCardContainer(
+              borderRadius: 15,
+              child: column,
+            )
+          : Container(
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  kDefaultPadding / 2,
+                ),
+                color: Theme.of(context).cardColor,
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
               ),
-              _browsePack(context),
-            ]
-          ],
-        ),
-      ),
+              child: column,
+            ),
     );
   }
 
@@ -241,14 +252,10 @@ class PackCard extends HookWidget {
                     color: Theme.of(context).primaryColorDark,
                   ),
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.shareExternal,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ],
         ),
@@ -325,12 +332,9 @@ class PackCard extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.editArticle,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           PullDownMenuItem(
@@ -340,12 +344,9 @@ class PackCard extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: const AppIcon(
               FeatureIcons.trash,
-              colorFilter: const ColorFilter.mode(
-                kRed,
-                BlendMode.srcIn,
-              ),
+              color: kRed,
             ),
           ),
         ];
@@ -376,14 +377,10 @@ class PackCard extends HookWidget {
       ),
       child: RotatedBox(
         quarterTurns: 4,
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.arrowRight,
-          width: 17,
-          height: 17,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).highlightColor,
-            BlendMode.srcIn,
-          ),
+          size: 17,
+          color: Theme.of(context).highlightColor,
         ),
       ),
     );
@@ -396,11 +393,13 @@ class CompactPackCard extends StatelessWidget {
     required this.pack,
     required this.isSelected,
     required this.onTap,
+    this.useIsFluid = false,
   });
 
   final PacksModel pack;
   final bool isSelected;
   final Function() onTap;
+  final bool useIsFluid;
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +411,9 @@ class CompactPackCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           color: isSelected
               ? Theme.of(context).cardColor
-              : Theme.of(context).scaffoldBackgroundColor,
+              : useIsFluid && isFluid()
+                  ? kTransparent
+                  : Theme.of(context).scaffoldBackgroundColor,
           border: isSelected
               ? Border.all(
                   color: Theme.of(context).dividerColor,

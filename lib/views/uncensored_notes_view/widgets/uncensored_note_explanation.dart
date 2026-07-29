@@ -61,6 +61,7 @@ class UncensoredNoteExplanation extends StatelessWidget {
                     );
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: const VisualDensity(
                       vertical: -2,
                     ),
@@ -140,6 +141,7 @@ class UncensoredNoteExplanation extends StatelessWidget {
                     );
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: const VisualDensity(
                       vertical: -2,
                     ),

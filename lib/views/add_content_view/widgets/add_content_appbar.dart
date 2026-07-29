@@ -44,6 +44,7 @@ class AddContentAppbar extends StatelessWidget {
                 size: 18,
                 vd: -1,
                 backgroundColor: Theme.of(context).cardColor,
+                isGlass: isFluid(),
               ),
               Row(
                 children: [
@@ -65,9 +66,6 @@ class AddContentAppbar extends StatelessWidget {
       child: TextButton(
         onPressed: onActionClicked,
         style: TextButton.styleFrom(
-          backgroundColor: isActionButtonEnabled
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor,
           padding: const EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 2,
           ),
@@ -144,9 +142,6 @@ class AddMediaAppbar extends StatelessWidget {
       child: TextButton(
         onPressed: onActionClicked,
         style: TextButton.styleFrom(
-          backgroundColor: isActionButtonEnabled
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor,
           padding: const EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 2,
           ),

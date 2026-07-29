@@ -10,6 +10,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
 import '../../../models/flash_news_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/parsed_content_display.dart';
 import '../../write_note_view/widgets/paid_note_process.dart';
@@ -150,14 +151,10 @@ class AddNoteMainView extends HookWidget {
             ),
             child: Row(
               children: [
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.calendar,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).highlightColor,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).highlightColor,
                 ),
                 const SizedBox(width: kDefaultPadding / 4),
                 Expanded(
@@ -247,7 +244,6 @@ class AddNoteMainView extends HookWidget {
             }
           },
           style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).cardColor,
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),

@@ -410,6 +410,7 @@ class NostrDataRepository {
     loadDmsDrafts();
 
     pointsManagementCubit.getRecentStats();
+    subscriptionCubit.refreshStatus();
 
     final localData = await Future.wait(
       [
@@ -1209,6 +1210,7 @@ class NostrDataRepository {
     localDatabaseRepository.removeTopicsStatus();
     localDatabaseRepository.clearPendingFlashNews();
     pointsManagementCubit.logout();
+    subscriptionCubit.reset();
     isUsingExternalSigner = false;
     pendingFlashNews.clear();
     userTopics.clear();

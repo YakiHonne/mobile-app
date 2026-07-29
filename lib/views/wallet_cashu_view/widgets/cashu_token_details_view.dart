@@ -10,6 +10,7 @@ import '../../../utils/utils.dart';
 import '../../settings_view/widgets/keys_view.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/response_snackbar.dart';
 
 class CashuTokenDetailsView extends HookWidget {
@@ -27,19 +28,7 @@ class CashuTokenDetailsView extends HookWidget {
     final status = useState<String?>(token.status);
     final isRedeeming = useState(false);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

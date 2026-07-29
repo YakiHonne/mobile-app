@@ -13,6 +13,7 @@ import '../../../logic/properties_cubit/mute_list_cubit/mute_list_cubit.dart';
 import '../../../models/detailed_note_model.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/profile_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/empty_list.dart';
@@ -383,20 +384,17 @@ class MutedUserContainer extends StatelessWidget {
       child: TextButton.icon(
         onPressed: () => onUnmute.call(metadata.name),
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kRed.withValues(alpha: 0.2),
           visualDensity: const VisualDensity(
             horizontal: -4,
             vertical: -2,
           ),
         ),
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.unmute,
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            kRed,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: kRed,
         ),
         label: Text(
           context.t.unmute.capitalizeFirst(),
@@ -469,20 +467,17 @@ class MutedEventContainer extends StatelessWidget {
       child: TextButton.icon(
         onPressed: () => onUnmute.call(),
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kRed.withValues(alpha: 0.2),
           visualDensity: const VisualDensity(
             horizontal: -4,
             vertical: -2,
           ),
         ),
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.unmute,
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            kRed,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: kRed,
         ),
         label: Text(
           context.t.unmuteThread.capitalizeFirst(),

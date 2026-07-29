@@ -6,8 +6,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 
 class UnFlashNewsAddNote extends HookWidget {
@@ -24,19 +26,7 @@ class UnFlashNewsAddNote extends HookWidget {
     final source = useTextEditingController();
     final isCorrect = useState(false);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
@@ -52,6 +42,7 @@ class UnFlashNewsAddNote extends HookWidget {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kRed,
                   ),
                   child: Text(
@@ -76,15 +67,10 @@ class UnFlashNewsAddNote extends HookWidget {
                       );
                     }
                   },
-                  label: SvgPicture.asset(
+                  label: AppIcon(
                     FeatureIcons.add,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorLight,
-                      BlendMode.srcIn,
-                    ),
-                    fit: BoxFit.scaleDown,
+                    size: 20,
+                    color: Theme.of(context).primaryColorLight,
                   ),
                   icon: Text(
                     context.t.post.capitalizeFirst(),
@@ -93,6 +79,7 @@ class UnFlashNewsAddNote extends HookWidget {
                         ),
                   ),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: Theme.of(context).primaryColorDark,
                   ),
                 ),

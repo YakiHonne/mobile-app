@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'cashu_deposit_view.dart';
 import 'cashu_redeem_view.dart';
 
@@ -15,19 +18,7 @@ class CashuReceiveView extends HookWidget {
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(kDefaultPadding),
-              topRight: Radius.circular(kDefaultPadding),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        ModalSheetContainer(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -81,7 +72,7 @@ class CashuReceiveView extends HookWidget {
     BuildContext context, {
     required String title,
     required String description,
-    required String icon,
+    required IconData icon,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -107,14 +98,10 @@ class CashuReceiveView extends HookWidget {
                 shape: BoxShape.circle,
                 color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               ),
-              child: SvgPicture.asset(
+              child: AppIcon(
                 icon,
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 24,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(width: kDefaultPadding / 2),
@@ -139,7 +126,7 @@ class CashuReceiveView extends HookWidget {
               ),
             ),
             Icon(
-              Icons.chevron_right_rounded,
+              LucideIcons.chevronRight,
               color: Theme.of(context).highlightColor,
             ),
           ],

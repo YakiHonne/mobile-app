@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../repositories/nostr_data_repository.dart';
 import '../../utils/utils.dart';
@@ -37,7 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pop(context);
               },
           icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
+            LucideIcons.chevronLeft,
           ),
         ),
       ),

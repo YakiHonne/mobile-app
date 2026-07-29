@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: flutter_style_todos, constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -8,8 +8,13 @@ import 'package:logger/logger.dart';
 
 import 'utils.dart';
 
+// APK/sideload builds pass --dart-define=IAP_ENABLED=false to fall back to
+// Stripe + Lightning; defaults to true (IAP) so the toggle lives in the
+// build command instead of a source edit someone has to remember to revert.
+const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
+
 // ** App version
-const String appVersion = 'v2.0.5+189';
+const String appVersion = 'v2.0.6+196';
 
 //** network
 const uploadUrl = 'api/v1/file-upload';
@@ -18,7 +23,10 @@ const baseUrl2 = 'www.yakihonne.com';
 const baseUrl3 = 'yakihonne.com';
 const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
-const pointsUrl = 'https://api.yakihonne.com/api/v1/';
+const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
+
+//TODO: [REVERT TO LIVE]
+// const apiUrl = 'https://api.yakihonne.com/api/v1/';
 const compressImageUrl = 'https://api.yakihonne.com/api/img';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
@@ -85,6 +93,7 @@ const kYellow = Color(0xffFFE604);
 const kYellowSide = Color(0xfffcd452);
 const kGreen = Color(0xff00C04D);
 const kGreenSide = Color(0xffF2FDF6);
+const kPremiumColor = Color(0xffffed4b);
 const kBlue = Color(0xff504DFF);
 const kNavyBlue = Color(0xff1d9bf0);
 const kBlueSide = Color(0xffF6F6FF);
@@ -102,6 +111,20 @@ const kCreamDark = Color(0xffF8F6F4);
 const kCreamCard = Color(0xffF0ECE8);
 const kCreamOutline = Color(0xffE6E4E2);
 const kCreamHint = Color(0xffB8B6B4);
+
+// Glass — graphite variant (deep navy-dark)
+const kGlassTheme = Color(0xff0D1117);
+const kGlassCard = Color(0x26FFFFFF);
+const kGlassCardSolid = Color(0xff1A2235);
+const kGlassSurface = Color(0x14FFFFFF);
+const kGlassOutline = Color(0x33FFFFFF);
+const kGlassHint = Color(0x99FFFFFF);
+const kGlassText = Color(0xFFE8F0FE);
+
+// Glass — noir variant (pure black)
+const kGlassNoir = Color(0xff000000);
+const kGlassNoirCard = Color(0xff0D0D0D);
+const kGlassNoirOutline = Color(0x26FFFFFF);
 
 const kElPerPage = 20;
 const kElPerPage2 = 10;
@@ -143,19 +166,13 @@ final containerBorder = OutlineInputBorder(
 );
 
 //** cacheManagers
+/// Backing store for video thumbnail snapshots (see [VideoUtils]). Network
+/// image caching is handled by extended_image, not this.
 final imagesCacheManager = CacheManager(
   Config(
     'yakihonneFeedCache',
     stalePeriod: const Duration(days: 7),
     maxNrOfCacheObjects: 500,
-  ),
-);
-
-final avatarCacheManager = CacheManager(
-  Config(
-    'yakiHonneAvatarCache',
-    stalePeriod: const Duration(days: 30),
-    maxNrOfCacheObjects: 200,
   ),
 );
 

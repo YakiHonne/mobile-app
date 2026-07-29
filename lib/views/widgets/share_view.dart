@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -17,10 +18,13 @@ import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../logify_view/logify_view.dart';
+import 'app_icon.dart';
+import 'buttons_containers_widgets.dart';
 import 'content_manager/add_discover_filter.dart';
 import 'custom_icon_buttons.dart';
 import 'data_providers.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 import 'profile_picture.dart';
 
 class ShareView extends HookWidget {
@@ -47,21 +51,9 @@ class ShareView extends HookWidget {
         color: color,
         url: url,
       ),
-      child: Container(
+      child: ModalSheetContainer(
         padding: EdgeInsets.symmetric(
           horizontal: isTablet ? 15.w : kDefaultPadding / 2,
-        ),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
         ),
         child: _content(),
       ),
@@ -213,14 +205,10 @@ class SendToFollowings extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: kDefaultPadding,
         children: [
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.user,
-            width: 70,
-            height: 70,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 70,
+            color: Theme.of(context).primaryColorDark,
           ),
           Text(
             context.t.shareEmptyUsers,
@@ -321,14 +309,10 @@ class SendToFollowings extends HookWidget {
           ),
         ),
         alignment: Alignment.center,
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.closeRaw,
-          width: 25,
-          height: 25,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 25,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -437,8 +421,8 @@ class ShareContentUser extends StatelessWidget {
     final icon = status == ShareContentUserStatus.idle
         ? FeatureIcons.closeRaw
         : status == ShareContentUserStatus.success
-            ? ToastsIcons.check
-            : ToastsIcons.error;
+            ? LucideIcons.check
+            : LucideIcons.x;
     final iconColor = status == ShareContentUserStatus.success ||
             status == ShareContentUserStatus.failure
         ? kTransparent
@@ -486,20 +470,16 @@ class ShareContentUser extends StatelessWidget {
           ),
         ),
         if (n05)
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.verified,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColor,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColor,
           ),
       ],
     );
   }
 
-  Stack _thumbnail(Metadata m, String icon, SpinKitCircle? widget,
+  Stack _thumbnail(Metadata m, IconData icon, SpinKitCircle? widget,
       Color? iconColor, BuildContext context) {
     return Stack(
       children: [
@@ -751,7 +731,7 @@ class IconButtonWithText extends StatelessWidget {
 
   final Function() onClicked;
   final String text;
-  final String icon;
+  final IconData icon;
   final bool isSelected;
 
   @override
@@ -761,10 +741,11 @@ class IconButtonWithText extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: Column(
         children: [
-          CustomIconButton(
-            onClicked: onClicked,
+          AppIconButton(
             icon: icon,
-            size: 20,
+            onClicked: onClicked,
+            iconSize: 20,
+            size: 36,
             backgroundColor: isSelected
                 ? Theme.of(context).primaryColor
                 : Theme.of(context).cardColor,

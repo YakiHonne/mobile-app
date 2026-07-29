@@ -5,6 +5,7 @@ import '../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/curation_widgets/curation_specifications.dart';
 
@@ -15,21 +16,9 @@ class AddCurationSpecificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WriteCurationCubit, WriteCurationState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
+        return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
           child: DraggableScrollableSheet(
             initialChildSize: 0.95,
             minChildSize: 0.60,

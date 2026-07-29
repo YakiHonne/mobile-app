@@ -698,6 +698,15 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Our app guarantees the utmost privacy by securely storing sensitive data locally on users' devices, employing stringent encryption. Rest assured, we uphold a strict no-sharing policy, ensuring that sensitive information remains confidential and never leaves the user's device.'
 	String get privacyNote => 'Our app guarantees the utmost privacy by securely storing sensitive data locally on users\' devices, employing stringent encryption. Rest assured, we uphold a strict no-sharing policy, ensuring that sensitive information remains confidential and never leaves the user\'s device.';
 
+	/// en: 'Privacy policies'
+	String get privacyPolicies => 'Privacy policies';
+
+	/// en: 'Terms & conditions'
+	String get termsAndConditions => 'Terms & conditions';
+
+	/// en: 'Refund policy'
+	String get refundPolicy => 'Refund policy';
+
 	/// en: 'Pick your media'
 	String get pickYourMedia => 'Pick your media';
 
@@ -814,6 +823,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'paid'
 	String get paid => 'paid';
+
+	/// en: 'Premium'
+	String get premium => 'Premium';
 
 	/// en: 'others'
 	String get others => 'others';
@@ -1034,23 +1046,32 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'No notifications can be found'
 	String get noNotificationCanBeFound => 'No notifications can be found';
 
-	/// en: '1- Submit your content for attestation'
-	String get consumablePointsPerks1 => '1- Submit your content for attestation';
+	/// en: 'Redeem a subscription plan'
+	String get consumablePointsPerks1 => 'Redeem a subscription plan';
 
-	/// en: '2- Redeem points to publish paid notes'
-	String get consumablePointsPerks2 => '2- Redeem points to publish paid notes';
+	/// en: 'Publish paid notes'
+	String get consumablePointsPerks2 => 'Publish paid notes';
 
-	/// en: '3- Redeem points for SATs (Random thresholds are selected and you will be notified whenever redemption is available)'
-	String get consumablePointsPerks3 => '3- Redeem points for SATs (Random thresholds are selected and you will be notified whenever redemption is available)';
+	/// en: 'Redeem points for SATs'
+	String get consumablePointsPerks3 => 'Redeem points for SATs';
 
-	/// en: 'YakiHonne's Consumable points'
-	String get yakihonneConsPoints => 'YakiHonne\'s Consumable points';
+	/// en: 'Spend your points to unlock Basic or Premium subscription plans and their perks.'
+	String get consumablePointsPerksDesc1 => 'Spend your points to unlock Basic or Premium subscription plans and their perks.';
 
-	/// en: 'Soon users will be able to use the consumable points in the following set of activities:'
-	String get soonUsers => 'Soon users will be able to use the consumable points in the following set of activities:';
+	/// en: 'Cover the fee for a paid note with your points instead of paying in SATs.'
+	String get consumablePointsPerksDesc2 => 'Cover the fee for a paid note with your points instead of paying in SATs.';
 
-	/// en: 'Start earning and make the most of your Yaki Points! 🎉'
-	String get startEarningPoints => 'Start earning and make the most of your Yaki Points! 🎉';
+	/// en: 'Request a redeem code once you're eligible and cash it out to your lightning address.'
+	String get consumablePointsPerksDesc3 => 'Request a redeem code once you\'re eligible and cash it out to your lightning address.';
+
+	/// en: 'Yakihonne's Consumable Points'
+	String get yakihonneConsPoints => 'Yakihonne\'s Consumable Points';
+
+	/// en: 'Your points are consumable and can be spent across the platform. Here's what you can do with them:'
+	String get soonUsers => 'Your points are consumable and can be spent across the platform. Here\'s what you can do with them:';
+
+	/// en: 'Start earning and make the most of your Yaki Points 🎉'
+	String get startEarningPoints => 'Start earning and make the most of your Yaki Points 🎉';
 
 	/// en: 'Got it!'
 	String get gotIt => 'Got it!';
@@ -1103,6 +1124,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Consumable points'
 	String get consumablePoints => 'Consumable points';
 
+	/// en: 'Consumed points'
+	String get consumedPoints => 'Consumed points';
+
 	/// en: '{{number}} remaining'
 	String pointsRemaining({required Object number}) => '${number} remaining';
 
@@ -1129,6 +1153,15 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Edit profile'
 	String get editProfile => 'Edit profile';
+
+	/// en: 'Relay list required'
+	String get relayListRequiredTitle => 'Relay list required';
+
+	/// en: 'To update your profile, you need to set up a relay list first.'
+	String get relayListRequiredDesc => 'To update your profile, you need to set up a relay list first.';
+
+	/// en: 'Go to relay settings'
+	String get goToRelaySettings => 'Go to relay settings';
 
 	/// en: 'Uploading image...'
 	String get uploadingImage => 'Uploading image...';
@@ -1762,6 +1795,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Recent transactions'
 	String get recentTransactions => 'Recent transactions';
+
+	/// en: 'Transactions'
+	String get transactions => 'Transactions';
 
 	/// en: 'No transactions can be found'
 	String get noTransactionCanBeFound => 'No transactions can be found';
@@ -2918,6 +2954,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Reposts'
 	String get reposts => 'Reposts';
 
+	/// en: 'Repost'
+	String get repost => 'Repost';
+
 	/// en: 'Notifications are disabled!'
 	String get notifDisabled => 'Notifications are disabled!';
 
@@ -4016,6 +4055,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Enable or disable popups for success, error, and information messages.'
 	String get actionsPopupsDesc => 'Enable or disable popups for success, error, and information messages.';
 
+	/// en: 'Content cards'
+	String get contentCards => 'Content cards';
+
+	/// en: 'Wrap feed items in a bordered card. Available in fluid mode only.'
+	String get contentCardsDesc => 'Wrap feed items in a bordered card. Available in fluid mode only.';
+
 	/// en: 'Waiting for network...'
 	String get waitingForNetwork => 'Waiting for network...';
 
@@ -4186,6 +4231,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Quotes'
 	String get quotes => 'Quotes';
+
+	/// en: 'Quote'
+	String get quote => 'Quote';
 
 	/// en: 'Event loading...'
 	String get eventLoading => 'Event loading...';
@@ -5134,6 +5182,804 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Size'
 	String get sizeLabel => 'Size';
+
+	/// en: 'Glass Mode'
+	String get appThemeMode => 'Glass Mode';
+
+	/// en: 'Enable glass theme for a frosted, translucent design.'
+	String get appThemeModeDesc => 'Enable glass theme for a frosted, translucent design.';
+
+	/// en: 'Switch to Cashu'
+	String get switchToCashu => 'Switch to Cashu';
+
+	/// en: 'Switch to NWC'
+	String get switchToNwc => 'Switch to NWC';
+
+	/// en: 'Quick post'
+	String get quickPost => 'Quick post';
+
+	/// en: 'Long-form'
+	String get longForm => 'Long-form';
+
+	/// en: 'Photo or clip'
+	String get photoOrClip => 'Photo or clip';
+
+	/// en: 'Smart embed'
+	String get smartEmbed => 'Smart embed';
+
+	/// en: 'Lightning'
+	String get lightning => 'Lightning';
+
+	/// en: 'Subscription'
+	String get subscription => 'Subscription';
+
+	/// en: 'Keep'
+	String get keep => 'Keep';
+
+	/// en: '/ month'
+	String get settings_plan_period => '/ month';
+
+	/// en: 'Lightning'
+	String get settings_payment_method_lightning => 'Lightning';
+
+	/// en: 'Card'
+	String get settings_payment_method_card => 'Card';
+
+	/// en: 'Current plan'
+	String get sub_current_plan => 'Current plan';
+
+	/// en: 'Current plan'
+	String get sub_current => 'Current plan';
+
+	/// en: 'Plan'
+	String get sub_plan_label => 'Plan';
+
+	/// en: 'Status'
+	String get sub_status_label => 'Status';
+
+	/// en: 'Active'
+	String get sub_status_active => 'Active';
+
+	/// en: 'Trial'
+	String get sub_status_trial => 'Trial';
+
+	/// en: 'Cancelling'
+	String get sub_status_cancelling => 'Cancelling';
+
+	/// en: 'Inactive'
+	String get sub_status_inactive => 'Inactive';
+
+	/// en: 'Billing details'
+	String get sub_billing_details => 'Billing details';
+
+	/// en: 'Next renewal'
+	String get sub_next_renewal => 'Next renewal';
+
+	/// en: 'Payment method'
+	String get sub_payment_method => 'Payment method';
+
+	/// en: 'Last payment'
+	String get sub_last_payment => 'Last payment';
+
+	/// en: 'Trial active — ends {{date}}'
+	String sub_trial_active({required Object date}) => 'Trial active — ends ${date}';
+
+	/// en: 'Subscription ending on {{date}} — will revert to Free'
+	String sub_ending_on({required Object date}) => 'Subscription ending on ${date} — will revert to Free';
+
+	/// en: 'Pending plan change'
+	String get sub_pending_change => 'Pending plan change';
+
+	/// en: 'Change'
+	String get sub_change_label => 'Change';
+
+	/// en: 'Takes effect on'
+	String get sub_takes_effect => 'Takes effect on';
+
+	/// en: 'Scheduled on'
+	String get sub_scheduled_on => 'Scheduled on';
+
+	/// en: 'Cancel this change'
+	String get sub_cancel_change => 'Cancel this change';
+
+	/// en: 'Pending plan change cancelled.'
+	String get sub_cancel_change_success => 'Pending plan change cancelled.';
+
+	/// en: 'Manage plans'
+	String get sub_manage_plans => 'Manage plans';
+
+	/// en: 'Switch'
+	String get sub_switch => 'Switch';
+
+	/// en: 'You can upgrade your plan or switch payment methods once your current billing cycle ends.'
+	String get sub_note_lightning => 'You can upgrade your plan or switch payment methods once your current billing cycle ends.';
+
+	/// en: 'Changing your payment method requires a cancellation of your current subscription.'
+	String get sub_note_stripe => 'Changing your payment method requires a cancellation of your current subscription.';
+
+	/// en: 'Actions'
+	String get sub_actions => 'Actions';
+
+	/// en: 'Upgrade now'
+	String get sub_upgrade_now => 'Upgrade now';
+
+	/// en: 'Manage subscription'
+	String get sub_manage_subscription => 'Manage subscription';
+
+	/// en: 'Cancel subscription'
+	String get sub_cancel => 'Cancel subscription';
+
+	/// en: 'Yes, cancel'
+	String get sub_cancel_confirm => 'Yes, cancel';
+
+	/// en: 'Subscription will end at the current period.'
+	String get sub_cancel_success => 'Subscription will end at the current period.';
+
+	/// en: 'Resume subscription'
+	String get sub_resume => 'Resume subscription';
+
+	/// en: 'Subscription resumed successfully.'
+	String get sub_resume_success => 'Subscription resumed successfully.';
+
+	/// en: 'Plan change scheduled for next cycle.'
+	String get sub_change_success => 'Plan change scheduled for next cycle.';
+
+	/// en: 'Action failed. Please try again.'
+	String get sub_action_failed => 'Action failed. Please try again.';
+
+	/// en: 'Payment history'
+	String get sub_payment_history => 'Payment history';
+
+	/// en: 'No payments recorded yet'
+	String get sub_no_payments => 'No payments recorded yet';
+
+	/// en: 'Failed to load subscription data. Please try again.'
+	String get sub_load_error => 'Failed to load subscription data. Please try again.';
+
+	/// en: 'Retry'
+	String get sub_retry => 'Retry';
+
+	/// en: 'Usage'
+	String get sub_usage => 'Usage';
+
+	/// en: 'Subscription'
+	String get sub_subscription_tab => 'Subscription';
+
+	/// en: 'Usage'
+	String get sub_usage_tab => 'Usage';
+
+	/// en: 'Unlimited'
+	String get sub_usage_unlimited => 'Unlimited';
+
+	/// en: 'Locked'
+	String get sub_usage_locked => 'Locked';
+
+	/// en: 'Upgrade to unlock this feature'
+	String get sub_usage_upgrade_prompt => 'Upgrade to unlock this feature';
+
+	/// en: 'Resets in {{time}}'
+	String sub_usage_resets_in({required Object time}) => 'Resets in ${time}';
+
+	/// en: 'Resets soon'
+	String get sub_usage_resets_soon => 'Resets soon';
+
+	/// en: 'Could not load usage data'
+	String get sub_usage_load_error => 'Could not load usage data';
+
+	/// en: 'Log in to view your subscription and usage details.'
+	String get sub_login_required => 'Log in to view your subscription and usage details.';
+
+	/// en: 'Connect to Yaki to view your subscription and usage details.'
+	String get sub_connect_required => 'Connect to Yaki to view your subscription and usage details.';
+
+	/// en: 'Connect to Yaki'
+	String get sub_connect_btn => 'Connect to Yaki';
+
+	/// en: 'daily'
+	String get sub_usage_period_daily => 'daily';
+
+	/// en: 'monthly'
+	String get sub_usage_period_monthly => 'monthly';
+
+	/// en: '$ USD'
+	String get pricing_toggle_usd => '\$ USD';
+
+	/// en: '⚡ Sats'
+	String get pricing_toggle_sats => '⚡ Sats';
+
+	/// en: 'sats / month'
+	String get pricing_sats_period => 'sats / month';
+
+	/// en: '≈ {{price}} / month'
+	String pricing_approx_usd({required Object price}) => '≈ ${price} / month';
+
+	/// en: '≈ {{sats}} sats / month'
+	String pricing_approx_sats({required Object sats}) => '≈ ${sats} sats / month';
+
+	/// en: '≈ {{sats}} sats / month · 10% off with ⚡'
+	String pricing_approx_sats_discount({required Object sats}) => '≈ ${sats} sats / month · 10% off with ⚡';
+
+	/// en: '{{plan}} plan'
+	String pricing_plan_label({required Object plan}) => '${plan} plan';
+
+	/// en: 'WELCOME BACK,'
+	String get pricing_welcome_back => 'WELCOME BACK,';
+
+	/// en: 'You're one plan away from'
+	String get pricing_headline_1 => 'You\'re one plan away from';
+
+	/// en: 'owning your creative future.'
+	String get pricing_headline_2 => 'owning your creative future.';
+
+	/// en: 'Your keys, your content, your revenue. Join thousands of creators publishing on Nostr — censorship-resistant, Lightning-native, and fully yours.'
+	String get pricing_body => 'Your keys, your content, your revenue. Join thousands of creators publishing on Nostr — censorship-resistant, Lightning-native, and fully yours.';
+
+	/// en: 'No commission on earnings'
+	String get pricing_pill_no_commission => 'No commission on earnings';
+
+	/// en: 'Cancel anytime'
+	String get pricing_pill_cancel => 'Cancel anytime';
+
+	/// en: 'Pay in sats or fiat'
+	String get pricing_pill_pay => 'Pay in sats or fiat';
+
+	/// en: 'Self-sovereign identity'
+	String get pricing_pill_sovereign => 'Self-sovereign identity';
+
+	/// en: 'Pay with Bitcoin Lightning and get 10% off any plan.'
+	String get pricing_ln_discount_off => 'Pay with Bitcoin Lightning and get 10% off any plan.';
+
+	/// en: 'Sats prices already include a 10% Lightning discount.'
+	String get pricing_ln_discount_on => 'Sats prices already include a 10% Lightning discount.';
+
+	/// en: 'Most popular'
+	String get pricing_most_popular => 'Most popular';
+
+	/// en: 'Cancel anytime from settings. Billed monthly.'
+	String get pricing_footer => 'Cancel anytime from settings. Billed monthly.';
+
+	/// en: 'Pay with Lightning'
+	String get pricing_pay_lightning => 'Pay with Lightning';
+
+	/// en: 'Waiting for payment…'
+	String get pricing_waiting => 'Waiting for payment…';
+
+	/// en: 'Cancel'
+	String get pricing_cancel => 'Cancel';
+
+	/// en: 'Invoice copied!'
+	String get pricing_invoice_copied => 'Invoice copied!';
+
+	/// en: 'Payment confirmed!'
+	String get pricing_payment_confirmed => 'Payment confirmed!';
+
+	/// en: '{{plan}} plan activated'
+	String pricing_plan_activated({required Object plan}) => '${plan} plan activated';
+
+	/// en: '· renews {{date}}'
+	String pricing_renews({required Object date}) => '· renews ${date}';
+
+	/// en: 'Refreshing your session…'
+	String get pricing_refreshing => 'Refreshing your session…';
+
+	/// en: 'Connection lost. Please refresh if payment was sent.'
+	String get pricing_connection_lost => 'Connection lost. Please refresh if payment was sent.';
+
+	/// en: 'Failed to get checkout link. Please try again.'
+	String get pricing_error_checkout => 'Failed to get checkout link. Please try again.';
+
+	/// en: 'You already have an active web subscription. Manage it from the web to switch plans.'
+	String get pricing_error_stripe_active => 'You already have an active web subscription. Manage it from the web to switch plans.';
+
+	/// en: 'You already have an active subscription. Manage or cancel it from Settings before paying here to avoid being charged twice.'
+	String get pricing_error_other_active => 'You already have an active subscription. Manage or cancel it from Settings before paying here to avoid being charged twice.';
+
+	/// en: 'Lightning payments are not configured.'
+	String get pricing_error_ln_not_configured => 'Lightning payments are not configured.';
+
+	/// en: 'Failed to fetch Lightning address.'
+	String get pricing_error_ln_fetch => 'Failed to fetch Lightning address.';
+
+	/// en: 'Invalid Lightning address response.'
+	String get pricing_error_ln_invalid => 'Invalid Lightning address response.';
+
+	/// en: 'Failed to generate Lightning invoice.'
+	String get pricing_error_ln_invoice => 'Failed to generate Lightning invoice.';
+
+	/// en: 'Current Plan'
+	String get pricing_current_plan => 'Current Plan';
+
+	/// en: 'Upgrade to Premium'
+	String get pricing_upgrade_to_pro => 'Upgrade to Premium';
+
+	/// en: 'Subscribe'
+	String get pricing_cta_subscribe => 'Subscribe';
+
+	/// en: 'This is paid content'
+	String get paid_note_sheet_title => 'This is paid content';
+
+	/// en: 'Subscribe to Premium to stop seeing paid notes like this in your feed.'
+	String get paid_note_sheet_body_subscribe => 'Subscribe to Premium to stop seeing paid notes like this in your feed.';
+
+	/// en: 'Upgrade to Premium to stop seeing paid notes like this in your feed.'
+	String get paid_note_sheet_body_upgrade => 'Upgrade to Premium to stop seeing paid notes like this in your feed.';
+
+	/// en: 'Basic'
+	String get pricing_plan_creator_name => 'Basic';
+
+	/// en: '\$11.99'
+	String get pricing_plan_creator_price => '\$11.99';
+
+	/// en: 'Get Basic'
+	String get pricing_plan_creator_cta => 'Get Basic';
+
+	/// en: 'For writers who want to publish, monetize, and understand their audience.'
+	String get pricing_plan_creator_desc => 'For writers who want to publish, monetize, and understand their audience.';
+
+	/// en: 'Premium'
+	String get pricing_plan_pro_name => 'Premium';
+
+	/// en: '\$22.99'
+	String get pricing_plan_pro_price => '\$22.99';
+
+	/// en: 'Get Premium'
+	String get pricing_plan_pro_cta => 'Get Premium';
+
+	/// en: 'For serious creators who want AI in their corner and the full analytics picture.'
+	String get pricing_plan_pro_desc => 'For serious creators who want AI in their corner and the full analytics picture.';
+
+	/// en: 'Unlimited articles & notes publishing'
+	String get pricing_feature_unlimited_publishing => 'Unlimited articles & notes publishing';
+
+	/// en: 'Nostr-native identity (npub / nsec)'
+	String get pricing_feature_nostr_identity => 'Nostr-native identity (npub / nsec)';
+
+	/// en: 'Premium content gating (NIP-63)'
+	String get pricing_feature_content_gating => 'Premium content gating (NIP-63)';
+
+	/// en: 'Subscriber management'
+	String get pricing_feature_subscriber_mgmt => 'Subscriber management';
+
+	/// en: 'Lightning paywall — no commission'
+	String get pricing_feature_ln_paywall => 'Lightning paywall — no commission';
+
+	/// en: 'Creator Analytics — up to 3 months'
+	String get pricing_feature_analytics_3m => 'Creator Analytics — up to 3 months';
+
+	/// en: '50 GB Blossom media storage'
+	String get pricing_feature_storage_50 => '50 GB Blossom media storage';
+
+	/// en: 'AI Writing Assistant'
+	String get pricing_feature_ai_writing => 'AI Writing Assistant';
+
+	/// en: 'Second Reader AI'
+	String get pricing_feature_second_reader => 'Second Reader AI';
+
+	/// en: 'Energy Mapper'
+	String get pricing_feature_energy_mapper => 'Energy Mapper';
+
+	/// en: 'Everything in Basic'
+	String get pricing_feature_everything_creator => 'Everything in Basic';
+
+	/// en: 'AI Writing Assistant — unlimited'
+	String get pricing_feature_ai_writing_unlimited => 'AI Writing Assistant — unlimited';
+
+	/// en: 'Second Reader AI (all personas)'
+	String get pricing_feature_second_reader_all => 'Second Reader AI (all personas)';
+
+	/// en: 'Energy Mapper — per-sentence emotion graph'
+	String get pricing_feature_energy_mapper_full => 'Energy Mapper — per-sentence emotion graph';
+
+	/// en: 'Inline diff viewer — accept / reject changes'
+	String get pricing_feature_diff_viewer => 'Inline diff viewer — accept / reject changes';
+
+	/// en: 'Analytics — up to 3 years of history'
+	String get pricing_feature_analytics_3y => 'Analytics — up to 3 years of history';
+
+	/// en: 'Click-through bar drill-down per note/article'
+	String get pricing_feature_bar_drilldown => 'Click-through bar drill-down per note/article';
+
+	/// en: '100 GB Blossom media storage'
+	String get pricing_feature_storage_100 => '100 GB Blossom media storage';
+
+	/// en: 'Early access to new features'
+	String get pricing_feature_early_access => 'Early access to new features';
+
+	/// en: 'Premium AI Features'
+	String get aiPanel_upgrade_title => 'Premium AI Features';
+
+	/// en: 'Chat with your article'
+	String get aiPanel_feature1 => 'Chat with your article';
+
+	/// en: 'AI writing suggestions'
+	String get aiPanel_feature2 => 'AI writing suggestions';
+
+	/// en: 'Second reader AI review'
+	String get aiPanel_feature3 => 'Second reader AI review';
+
+	/// en: 'Ask AI'
+	String get ask_ai_title => 'Ask AI';
+
+	/// en: 'Ask anything…'
+	String get ask_ai_placeholder => 'Ask anything…';
+
+	/// en: 'Ask me to improve your article, rewrite a section, add an introduction, adjust tone, or anything else.'
+	String get ask_ai_empty_hint => 'Ask me to improve your article, rewrite a section, add an introduction, adjust tone, or anything else.';
+
+	/// en: 'Failed to get AI response'
+	String get ask_ai_error => 'Failed to get AI response';
+
+	/// en: 'Fix paragraph {{index}}: {{comment}}'
+	String ask_ai_prefill_fix({required Object index, required Object comment}) => 'Fix paragraph ${index}: ${comment}';
+
+	/// en: 'Review changes ({{count}})'
+	String ask_ai_review_changes({required Object count}) => 'Review changes (${count})';
+
+	/// en: 'Changes applied'
+	String get ask_ai_changes_applied => 'Changes applied';
+
+	/// en: 'AI Suggestions'
+	String get diff_viewer_title => 'AI Suggestions';
+
+	/// en: 'Accept all'
+	String get diff_viewer_accept_all => 'Accept all';
+
+	/// en: 'Reject all'
+	String get diff_viewer_reject_all => 'Reject all';
+
+	/// en: 'Accept'
+	String get diff_viewer_accept => 'Accept';
+
+	/// en: 'Reject'
+	String get diff_viewer_reject => 'Reject';
+
+	/// en: 'Accepted'
+	String get diff_viewer_accepted => 'Accepted';
+
+	/// en: 'Rejected'
+	String get diff_viewer_rejected => 'Rejected';
+
+	/// en: 'Premium'
+	String get ai_upsell_badge => 'Premium';
+
+	/// en: 'Upgrade to Premium to unlock AI-powered article tools.'
+	String get ai_upsell_description => 'Upgrade to Premium to unlock AI-powered article tools.';
+
+	/// en: 'Upgrade to Premium'
+	String get ai_upsell_upgrade => 'Upgrade to Premium';
+
+	/// en: 'Unlock Energy Mapper'
+	String get energy_upsell_title => 'Unlock Energy Mapper';
+
+	/// en: 'Energy Mapper'
+	String get energy_mapper_title => 'Energy Mapper';
+
+	/// en: 'Analyzing...'
+	String get energy_mapper_loading => 'Analyzing...';
+
+	/// en: 'No sentences could be analyzed. Try writing more content.'
+	String get energy_mapper_empty => 'No sentences could be analyzed. Try writing more content.';
+
+	/// en: 'Tap a dot or chip to explore'
+	String get energy_mapper_tap_hint => 'Tap a dot or chip to explore';
+
+	/// en: 'Low'
+	String get energy_mapper_label_low => 'Low';
+
+	/// en: 'Medium'
+	String get energy_mapper_label_medium => 'Medium';
+
+	/// en: 'High'
+	String get energy_mapper_label_high => 'High';
+
+	/// en: 'Second Reader'
+	String get second_reader_title => 'Second Reader';
+
+	/// en: 'Choose a reader persona'
+	String get second_reader_choose => 'Choose a reader persona';
+
+	/// en: 'Reading your article...'
+	String get second_reader_loading => 'Reading your article...';
+
+	/// en: 'Failed to analyze. Please try again.'
+	String get second_reader_error => 'Failed to analyze. Please try again.';
+
+	/// en: 'Article needs at least 50 words.'
+	String get second_reader_min_words => 'Article needs at least 50 words.';
+
+	/// en: 'No reactions from this persona.'
+	String get second_reader_no_reactions => 'No reactions from this persona.';
+
+	/// en: 'Last used'
+	String get second_reader_last_used => 'Last used';
+
+	/// en: 'Resolved ({{count}})'
+	String second_reader_resolved({required Object count}) => 'Resolved (${count})';
+
+	/// en: 'Paragraph {{index}}'
+	String second_reader_paragraph({required Object index}) => 'Paragraph ${index}';
+
+	/// en: 'Fixed with AI'
+	String get second_reader_fixed_with_ai => 'Fixed with AI';
+
+	/// en: 'Marked as read'
+	String get second_reader_marked_read => 'Marked as read';
+
+	/// en: 'Fix with AI'
+	String get second_reader_fix_with_ai => 'Fix with AI';
+
+	/// en: 'Ignore'
+	String get second_reader_ignore => 'Ignore';
+
+	/// en: 'Switch'
+	String get second_reader_switch => 'Switch';
+
+	/// en: 'Classic'
+	String get editor_classic => 'Classic';
+
+	/// en: 'Premium'
+	String get editor_advanced => 'Premium';
+
+	/// en: 'Subscribe'
+	String get creator_subscribe => 'Subscribe';
+
+	/// en: 'Payment providers'
+	String get creator_payment_providers => 'Payment providers';
+
+	/// en: 'Choose a gateway to pay for your subscription'
+	String get creator_choose_gateway => 'Choose a gateway to pay for your subscription';
+
+	/// en: 'Subscription Plans'
+	String get creator_subscription_plans => 'Subscription Plans';
+
+	/// en: 'Subscribe Now'
+	String get creator_subscribe_now => 'Subscribe Now';
+
+	/// en: 'Could not initiate subscription'
+	String get creator_subscribe_error => 'Could not initiate subscription';
+
+	/// en: 'No subscription plans available'
+	String get creator_no_plans => 'No subscription plans available';
+
+	/// en: 'Lightning address not available'
+	String get creator_lightning_unavailable => 'Lightning address not available';
+
+	/// en: '/ {{interval}}'
+	String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
+
+	/// en: 'Login with Google'
+	String get loginWithGoogle => 'Login with Google';
+
+	/// en: 'Recover via Google'
+	String get recoverWithGoogle => 'Recover via Google';
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	/// en: 'Sign in with Google'
+	String get pomSignInWithGoogle => 'Sign in with Google';
+
+	/// en: 'Sign in using your Google account via the Pomegranate protocol'
+	String get pomLoginDesc => 'Sign in using your Google account via the Pomegranate protocol';
+
+	/// en: 'Authenticating with Google…'
+	String get pomAuthenticating => 'Authenticating with Google…';
+
+	/// en: 'Checking account…'
+	String get pomCheckingAccount => 'Checking account…';
+
+	/// en: 'Creating account…'
+	String get pomCreatingAccount => 'Creating account…';
+
+	/// en: 'Save your private key'
+	String get pomNewAccountTitle => 'Save your private key';
+
+	/// en: 'Your private key has been generated. Save it securely before creating your account.'
+	String get pomSaveKeyDesc => 'Your private key has been generated. Save it securely before creating your account.';
+
+	/// en: 'Create Account'
+	String get pomCreateAccount => 'Create Account';
+
+	/// en: 'Google session expired. Please try again.'
+	String get pomTokenExpired => 'Google session expired. Please try again.';
+
+	/// en: 'Account confirmation timed out. Please try again.'
+	String get pomAccountTimeout => 'Account confirmation timed out. Please try again.';
+
+	/// en: 'Recover Private Key'
+	String get pomRecoverTitle => 'Recover Private Key';
+
+	/// en: 'Connect to operator servers to recover your private key. You need {{threshold}} of {{total}} shards.'
+	String pomRecoverDesc({required Object threshold, required Object total}) => 'Connect to operator servers to recover your private key. You need ${threshold} of ${total} shards.';
+
+	/// en: 'Recover shard'
+	String get pomRecoverShard => 'Recover shard';
+
+	/// en: 'Shard collected'
+	String get pomShardCollected => 'Shard collected';
+
+	/// en: '{{collected}}/{{threshold}} shards collected'
+	String pomShardsProgress({required Object collected, required Object threshold}) => '${collected}/${threshold} shards collected';
+
+	/// en: 'Private key recovered'
+	String get pomRecoverSuccess => 'Private key recovered';
+
+	/// en: 'Download key'
+	String get pomDownloadKey => 'Download key';
+
+	/// en: 'Restore purchases'
+	String get pricing_restore_purchases => 'Restore purchases';
+
+	/// en: 'Manage subscription'
+	String get pricing_manage_on_store => 'Manage subscription';
+
+	/// en: 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.'
+	String get pricing_web_managed => 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.';
+
+	/// en: 'Your subscription is active.'
+	String get sub_managed_via_web => 'Your subscription is active.';
+
+	/// en: '🛍️ Store'
+	String get pricing_toggle_store => '🛍️ Store';
+
+	/// en: '🏆 Points'
+	String get pricing_toggle_points => '🏆 Points';
+
+	/// en: 'pts / month'
+	String get pricing_points_period => 'pts / month';
+
+	/// en: '{{points}} points'
+	String pricing_points_cost({required Object points}) => '${points} points';
+
+	/// en: 'Redeem with Points'
+	String get pricing_redeem_with_points => 'Redeem with Points';
+
+	/// en: 'Not enough points'
+	String get pricing_points_not_eligible => 'Not enough points';
+
+	/// en: 'Subscription activated with points'
+	String get pricing_points_success => 'Subscription activated with points';
+
+	/// en: 'Points'
+	String get settings_payment_method_points => 'Points';
+
+	/// en: 'Pay with Points'
+	String get points_pay_with_points => 'Pay with Points';
+
+	/// en: 'Note published with points'
+	String get points_publish_success => 'Note published with points';
+
+	/// en: 'Insufficient points'
+	String get points_insufficient => 'Insufficient points';
+
+	/// en: 'Redeem Codes'
+	String get points_redeem_codes => 'Redeem Codes';
+
+	/// en: 'Request Code'
+	String get points_request_code => 'Request Code';
+
+	/// en: 'No codes yet'
+	String get points_no_codes => 'No codes yet';
+
+	/// en: 'Redeemed'
+	String get points_code_redeemed => 'Redeemed';
+
+	/// en: 'Pending'
+	String get points_code_pending => 'Pending';
+
+	/// en: 'Enter lightning address to receive sats'
+	String get points_enter_lightning => 'Enter lightning address to receive sats';
+
+	/// en: 'Sats sent successfully'
+	String get points_redeem_success => 'Sats sent successfully';
+
+	/// en: 'Code requested'
+	String get points_request_success => 'Code requested';
+
+	/// en: 'Receive Sats'
+	String get points_redeem_action => 'Receive Sats';
+
+	/// en: 'Promoted'
+	String get points_ad_label => 'Promoted';
+
+	/// en: 'Failed to redeem code'
+	String get points_redeem_error => 'Failed to redeem code';
+
+	/// en: 'Failed to request code'
+	String get points_request_error => 'Failed to request code';
+
+	/// en: 'Skip'
+	String get skip => 'Skip';
+
+	/// en: 'Your identity, settings and connected accounts live here.'
+	String get tourProfile => 'Your identity, settings and connected accounts live here.';
+
+	/// en: 'Feed'
+	String get tourFeedTitle => 'Feed';
+
+	/// en: 'Switch between your sources and customize what you see.'
+	String get tourFeed => 'Switch between your sources and customize what you see.';
+
+	/// en: 'Find notes, profiles and topics instantly.'
+	String get tourSearch => 'Find notes, profiles and topics instantly.';
+
+	/// en: 'Your main feed — notes and updates from people you follow.'
+	String get tourHome => 'Your main feed — notes and updates from people you follow.';
+
+	/// en: 'Browse videos and media shared across the network.'
+	String get tourMedia => 'Browse videos and media shared across the network.';
+
+	/// en: 'Create'
+	String get tourCreateTitle => 'Create';
+
+	/// en: 'Post a note, write an article, share media or build a widget.'
+	String get tourCreate => 'Post a note, write an article, share media or build a widget.';
+
+	/// en: 'Send and receive sats, and track your balance.'
+	String get tourWallet => 'Send and receive sats, and track your balance.';
+
+	/// en: 'Messages'
+	String get tourMessagesTitle => 'Messages';
+
+	/// en: 'Chat privately with anyone on Nostr.'
+	String get tourMessages => 'Chat privately with anyone on Nostr.';
+
+	/// en: 'Stay up to date with replies, zaps and mentions.'
+	String get tourNotifications => 'Stay up to date with replies, zaps and mentions.';
+
+	/// en: 'New in YakiHonne'
+	String get newInYakihonne => 'New in YakiHonne';
+
+	/// en: 'Fluid mode'
+	String get fluidModeTitle => 'Fluid mode';
+
+	/// en: 'A new translucent look with bars that get out of the way as you scroll.'
+	String get fluidModeDesc => 'A new translucent look with bars that get out of the way as you scroll.';
+
+	/// en: 'AI tools & Premium'
+	String get aiToolsTitle => 'AI tools & Premium';
+
+	/// en: 'Ask AI, Second Reader and Energy Mapper for your writing — plus creator subscriptions.'
+	String get aiToolsDesc => 'Ask AI, Second Reader and Energy Mapper for your writing — plus creator subscriptions.';
+
+	/// en: 'Redesigned navigation'
+	String get redesignedNavTitle => 'Redesigned navigation';
+
+	/// en: 'A faster bottom bar with create always within reach.'
+	String get redesignedNavDesc => 'A faster bottom bar with create always within reach.';
+
+	/// en: 'Take the tour'
+	String get takeTheTour => 'Take the tour';
+
+	/// en: 'Maybe later'
+	String get maybeLater => 'Maybe later';
+
+	/// en: 'Done'
+	String get tourDone => 'Done';
+
+	/// en: 'Register'
+	String get register => 'Register';
+
+	/// en: 'Registration closed'
+	String get registrationClosed => 'Registration closed';
+
+	/// en: '{{number}} registered'
+	String nRegistered({required Object number}) => '${number} registered';
+
+	/// en: 'You're registered'
+	String get youAreRegistered => 'You\'re registered';
+
+	/// en: 'You're all set. See you at the workshop!'
+	String get youAreRegisteredDesc => 'You\'re all set. See you at the workshop!';
+
+	/// en: 'Open workshop link'
+	String get openWorkshopLink => 'Open workshop link';
+
+	/// en: 'Unable to load this workshop'
+	String get errorLoadingWorkshop => 'Unable to load this workshop';
+
+	/// en: 'Registration failed, please try again'
+	String get errorRegisteringWorkshop => 'Registration failed, please try again';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -5370,6 +6216,9 @@ extension on Translations {
 			'yakihonneImprovements' => 'YakiHonne\'s improvements',
 			'yakihonneNote' => 'YakiHonne\'s note',
 			'privacyNote' => 'Our app guarantees the utmost privacy by securely storing sensitive data locally on users\' devices, employing stringent encryption. Rest assured, we uphold a strict no-sharing policy, ensuring that sensitive information remains confidential and never leaves the user\'s device.',
+			'privacyPolicies' => 'Privacy policies',
+			'termsAndConditions' => 'Terms & conditions',
+			'refundPolicy' => 'Refund policy',
 			'pickYourMedia' => 'Pick your media',
 			'uploadSendMedia' => 'You can upload and send media right after your selection or taking them.',
 			'noMessagesToDisplay' => 'No messages to be displayed.',
@@ -5409,6 +6258,7 @@ extension on Translations {
 			'trending' => 'trending',
 			'highlights' => 'highlights',
 			'paid' => 'paid',
+			'premium' => 'Premium',
 			'others' => 'others',
 			'suggestionsBox' => 'Suggestions box',
 			'showSuggestions' => 'Show suggestions',
@@ -5482,12 +6332,15 @@ extension on Translations {
 			'mentions' => 'mentions',
 			'zaps' => 'zaps',
 			'noNotificationCanBeFound' => 'No notifications can be found',
-			'consumablePointsPerks1' => '1- Submit your content for attestation',
-			'consumablePointsPerks2' => '2- Redeem points to publish paid notes',
-			'consumablePointsPerks3' => '3- Redeem points for SATs (Random thresholds are selected and you will be notified whenever redemption is available)',
-			'yakihonneConsPoints' => 'YakiHonne\'s Consumable points',
-			'soonUsers' => 'Soon users will be able to use the consumable points in the following set of activities:',
-			'startEarningPoints' => 'Start earning and make the most of your Yaki Points! 🎉',
+			'consumablePointsPerks1' => 'Redeem a subscription plan',
+			'consumablePointsPerks2' => 'Publish paid notes',
+			'consumablePointsPerks3' => 'Redeem points for SATs',
+			'consumablePointsPerksDesc1' => 'Spend your points to unlock Basic or Premium subscription plans and their perks.',
+			'consumablePointsPerksDesc2' => 'Cover the fee for a paid note with your points instead of paying in SATs.',
+			'consumablePointsPerksDesc3' => 'Request a redeem code once you\'re eligible and cash it out to your lightning address.',
+			'yakihonneConsPoints' => 'Yakihonne\'s Consumable Points',
+			'soonUsers' => 'Your points are consumable and can be spent across the platform. Here\'s what you can do with them:',
+			'startEarningPoints' => 'Start earning and make the most of your Yaki Points 🎉',
 			'gotIt' => 'Got it!',
 			'engagementChart' => 'Engagement chart',
 			'lastGained' => ({required Object date}) => 'Last gained: ${date}',
@@ -5505,6 +6358,7 @@ extension on Translations {
 			'oneTimeRewards' => 'One time rewards',
 			'repeatedRewards' => 'Repeated rewards',
 			'consumablePoints' => 'Consumable points',
+			'consumedPoints' => 'Consumed points',
 			'pointsRemaining' => ({required Object number}) => '${number} remaining',
 			'gain' => 'Gain',
 			'forName' => ({required Object name}) => 'for ${name}',
@@ -5514,6 +6368,9 @@ extension on Translations {
 			'deleteCoverPic' => 'Delete cover picture!',
 			'deleteCoverPicDesc' => 'You\'re about to delete your cover picture, do you wish to proceed?',
 			'editProfile' => 'Edit profile',
+			'relayListRequiredTitle' => 'Relay list required',
+			'relayListRequiredDesc' => 'To update your profile, you need to set up a relay list first.',
+			'goToRelaySettings' => 'Go to relay settings',
 			'uploadingImage' => 'Uploading image...',
 			'updateProfile' => 'Update Profile',
 			'userName' => 'User name',
@@ -5652,6 +6509,12 @@ extension on Translations {
 			'pollClosesAt' => ({required Object date}) => 'Closes at: ${date}',
 			'pollClosedAt' => ({required Object date}) => 'Closed at: ${date}',
 			'checkSmartWidget' => 'Check a smart widget',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'emptyVerifiedNote' => 'Empty verified note content!',
 			'post' => 'Post',
 			'seeAnything' => 'See anything you want to improve?',
@@ -5663,12 +6526,6 @@ extension on Translations {
 			'selectOneReason' => 'Select at least one reason',
 			'rateHelpful' => 'Rate helpful',
 			'rateNotHelpful' => 'Rate not helpful',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'ratedHelpful' => 'Rated helpful',
 			'ratedNotHelpful' => 'Rated not helpful',
 			'youRatedHelpful' => 'you rated this as helpful',
@@ -5731,6 +6588,7 @@ extension on Translations {
 			'sendSats' => 'Send sats',
 			'send' => 'Send',
 			'recentTransactions' => 'Recent transactions',
+			'transactions' => 'Transactions',
 			'noTransactionCanBeFound' => 'No transactions can be found',
 			'selectWalletTransactions' => 'Select a wallet to obtain latest transactions.',
 			'noUserCanBeFound' => 'No users can be found.',
@@ -6116,6 +6974,7 @@ extension on Translations {
 			'collapseNote' => 'Collapse note',
 			'reactions' => 'Reactions',
 			'reposts' => 'Reposts',
+			'repost' => 'Repost',
 			'notifDisabled' => 'Notifications are disabled!',
 			'notifDisabledMessage' => 'Notifications are disabled for this type, you can enable it in the notifications settings.',
 			'oneNotifOptionAvailable' => 'There should be at least one notification option available.',
@@ -6168,6 +7027,12 @@ extension on Translations {
 			'zkProofs' => 'ZK proofs',
 			'downloadZkProofs' => 'Download proofs',
 			'walletConnectionString' => 'Wallet Connection String',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'walletConnectionStringDesc' => 'Please make sure to securely copy or export your wallet connection string. We do not store this information, and if lost, it cannot be recovered.',
 			'export' => 'Export',
 			'logout' => 'Log out',
@@ -6181,12 +7046,6 @@ extension on Translations {
 			'editPicture' => 'Edit picture',
 			'exportKeys' => 'Export keys',
 			'mutedUser' => 'Muted user',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'unaccessibleContent' => 'Inaccessible content',
 			'mutedUserDesc' => 'You have muted this user, consider unmuting to view this content',
 			'commentHidden' => 'This comment is hidden',
@@ -6488,6 +7347,8 @@ extension on Translations {
 			'openUrlPromptDesc' => 'A safety prompt that displays the full URL before opening it in your browser.',
 			'actionsPopups' => 'Actions popups',
 			'actionsPopupsDesc' => 'Enable or disable popups for success, error, and information messages.',
+			'contentCards' => 'Content cards',
+			'contentCardsDesc' => 'Wrap feed items in a bordered card. Available in fluid mode only.',
 			'waitingForNetwork' => 'Waiting for network...',
 			'whatsNew' => 'What\'s new',
 			'appCustom' => 'App custom',
@@ -6545,6 +7406,7 @@ extension on Translations {
 			'contentActionsOrder' => 'Content actions order',
 			'contentActionsOrderDesc' => 'Easily rearrange your post interactions to match your preferred order.',
 			'quotes' => 'Quotes',
+			'quote' => 'Quote',
 			'eventLoading' => 'Event loading...',
 			'loadMessages' => 'Load messages',
 			'messagesNotLoaded' => 'Messages Not Loaded',
@@ -6683,6 +7545,12 @@ extension on Translations {
 			'inactiveMints' => 'Inactive mints',
 			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
 			'errorAddingMint' => 'Error occured while adding mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'restoreWallet' => 'Restore wallet',
 			'restoreWalletDesc' => 'Restore proofs of your wallet in this mint to save them on NOSTR',
 			'seedPhraseLocallyOnly' => 'Your seed phrase is only used locally to derive your wallet keys.',
@@ -6699,12 +7567,6 @@ extension on Translations {
 			'requestingMintQuote' => 'Requesting mint quote',
 			'minting' => 'Minting',
 			'cantSwapWithWallet' => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'selectDestination' => 'Select destination',
 			'internalWallets' => 'Internal wallets',
 			'verifyToken' => 'Verify Token',
@@ -6867,6 +7729,272 @@ extension on Translations {
 			'hashLabel' => 'Hash',
 			'dateLabel' => 'Date',
 			'sizeLabel' => 'Size',
+			'appThemeMode' => 'Glass Mode',
+			'appThemeModeDesc' => 'Enable glass theme for a frosted, translucent design.',
+			'switchToCashu' => 'Switch to Cashu',
+			'switchToNwc' => 'Switch to NWC',
+			'quickPost' => 'Quick post',
+			'longForm' => 'Long-form',
+			'photoOrClip' => 'Photo or clip',
+			'smartEmbed' => 'Smart embed',
+			'lightning' => 'Lightning',
+			'subscription' => 'Subscription',
+			'keep' => 'Keep',
+			'settings_plan_period' => '/ month',
+			'settings_payment_method_lightning' => 'Lightning',
+			'settings_payment_method_card' => 'Card',
+			'sub_current_plan' => 'Current plan',
+			'sub_current' => 'Current plan',
+			'sub_plan_label' => 'Plan',
+			'sub_status_label' => 'Status',
+			'sub_status_active' => 'Active',
+			'sub_status_trial' => 'Trial',
+			'sub_status_cancelling' => 'Cancelling',
+			'sub_status_inactive' => 'Inactive',
+			'sub_billing_details' => 'Billing details',
+			'sub_next_renewal' => 'Next renewal',
+			'sub_payment_method' => 'Payment method',
+			'sub_last_payment' => 'Last payment',
+			'sub_trial_active' => ({required Object date}) => 'Trial active — ends ${date}',
+			'sub_ending_on' => ({required Object date}) => 'Subscription ending on ${date} — will revert to Free',
+			'sub_pending_change' => 'Pending plan change',
+			'sub_change_label' => 'Change',
+			'sub_takes_effect' => 'Takes effect on',
+			'sub_scheduled_on' => 'Scheduled on',
+			'sub_cancel_change' => 'Cancel this change',
+			'sub_cancel_change_success' => 'Pending plan change cancelled.',
+			'sub_manage_plans' => 'Manage plans',
+			'sub_switch' => 'Switch',
+			'sub_note_lightning' => 'You can upgrade your plan or switch payment methods once your current billing cycle ends.',
+			'sub_note_stripe' => 'Changing your payment method requires a cancellation of your current subscription.',
+			'sub_actions' => 'Actions',
+			'sub_upgrade_now' => 'Upgrade now',
+			'sub_manage_subscription' => 'Manage subscription',
+			'sub_cancel' => 'Cancel subscription',
+			'sub_cancel_confirm' => 'Yes, cancel',
+			'sub_cancel_success' => 'Subscription will end at the current period.',
+			'sub_resume' => 'Resume subscription',
+			'sub_resume_success' => 'Subscription resumed successfully.',
+			'sub_change_success' => 'Plan change scheduled for next cycle.',
+			'sub_action_failed' => 'Action failed. Please try again.',
+			'sub_payment_history' => 'Payment history',
+			'sub_no_payments' => 'No payments recorded yet',
+			'sub_load_error' => 'Failed to load subscription data. Please try again.',
+			'sub_retry' => 'Retry',
+			'sub_usage' => 'Usage',
+			'sub_subscription_tab' => 'Subscription',
+			'sub_usage_tab' => 'Usage',
+			'sub_usage_unlimited' => 'Unlimited',
+			'sub_usage_locked' => 'Locked',
+			'sub_usage_upgrade_prompt' => 'Upgrade to unlock this feature',
+			'sub_usage_resets_in' => ({required Object time}) => 'Resets in ${time}',
+			'sub_usage_resets_soon' => 'Resets soon',
+			'sub_usage_load_error' => 'Could not load usage data',
+			'sub_login_required' => 'Log in to view your subscription and usage details.',
+			'sub_connect_required' => 'Connect to Yaki to view your subscription and usage details.',
+			'sub_connect_btn' => 'Connect to Yaki',
+			'sub_usage_period_daily' => 'daily',
+			'sub_usage_period_monthly' => 'monthly',
+			'pricing_toggle_usd' => '\$ USD',
+			'pricing_toggle_sats' => '⚡ Sats',
+			'pricing_sats_period' => 'sats / month',
+			'pricing_approx_usd' => ({required Object price}) => '≈ ${price} / month',
+			'pricing_approx_sats' => ({required Object sats}) => '≈ ${sats} sats / month',
+			'pricing_approx_sats_discount' => ({required Object sats}) => '≈ ${sats} sats / month · 10% off with ⚡',
+			'pricing_plan_label' => ({required Object plan}) => '${plan} plan',
+			'pricing_welcome_back' => 'WELCOME BACK,',
+			'pricing_headline_1' => 'You\'re one plan away from',
+			'pricing_headline_2' => 'owning your creative future.',
+			'pricing_body' => 'Your keys, your content, your revenue. Join thousands of creators publishing on Nostr — censorship-resistant, Lightning-native, and fully yours.',
+			'pricing_pill_no_commission' => 'No commission on earnings',
+			'pricing_pill_cancel' => 'Cancel anytime',
+			'pricing_pill_pay' => 'Pay in sats or fiat',
+			'pricing_pill_sovereign' => 'Self-sovereign identity',
+			'pricing_ln_discount_off' => 'Pay with Bitcoin Lightning and get 10% off any plan.',
+			'pricing_ln_discount_on' => 'Sats prices already include a 10% Lightning discount.',
+			'pricing_most_popular' => 'Most popular',
+			'pricing_footer' => 'Cancel anytime from settings. Billed monthly.',
+			'pricing_pay_lightning' => 'Pay with Lightning',
+			'pricing_waiting' => 'Waiting for payment…',
+			'pricing_cancel' => 'Cancel',
+			'pricing_invoice_copied' => 'Invoice copied!',
+			'pricing_payment_confirmed' => 'Payment confirmed!',
+			'pricing_plan_activated' => ({required Object plan}) => '${plan} plan activated',
+			'pricing_renews' => ({required Object date}) => '· renews ${date}',
+			'pricing_refreshing' => 'Refreshing your session…',
+			'pricing_connection_lost' => 'Connection lost. Please refresh if payment was sent.',
+			'pricing_error_checkout' => 'Failed to get checkout link. Please try again.',
+			'pricing_error_stripe_active' => 'You already have an active web subscription. Manage it from the web to switch plans.',
+			'pricing_error_other_active' => 'You already have an active subscription. Manage or cancel it from Settings before paying here to avoid being charged twice.',
+			'pricing_error_ln_not_configured' => 'Lightning payments are not configured.',
+			'pricing_error_ln_fetch' => 'Failed to fetch Lightning address.',
+			'pricing_error_ln_invalid' => 'Invalid Lightning address response.',
+			'pricing_error_ln_invoice' => 'Failed to generate Lightning invoice.',
+			'pricing_current_plan' => 'Current Plan',
+			'pricing_upgrade_to_pro' => 'Upgrade to Premium',
+			'pricing_cta_subscribe' => 'Subscribe',
+			'paid_note_sheet_title' => 'This is paid content',
+			'paid_note_sheet_body_subscribe' => 'Subscribe to Premium to stop seeing paid notes like this in your feed.',
+			'paid_note_sheet_body_upgrade' => 'Upgrade to Premium to stop seeing paid notes like this in your feed.',
+			'pricing_plan_creator_name' => 'Basic',
+			'pricing_plan_creator_price' => '\$11.99',
+			'pricing_plan_creator_cta' => 'Get Basic',
+			'pricing_plan_creator_desc' => 'For writers who want to publish, monetize, and understand their audience.',
+			'pricing_plan_pro_name' => 'Premium',
+			'pricing_plan_pro_price' => '\$22.99',
+			'pricing_plan_pro_cta' => 'Get Premium',
+			'pricing_plan_pro_desc' => 'For serious creators who want AI in their corner and the full analytics picture.',
+			'pricing_feature_unlimited_publishing' => 'Unlimited articles & notes publishing',
+			'pricing_feature_nostr_identity' => 'Nostr-native identity (npub / nsec)',
+			'pricing_feature_content_gating' => 'Premium content gating (NIP-63)',
+			'pricing_feature_subscriber_mgmt' => 'Subscriber management',
+			'pricing_feature_ln_paywall' => 'Lightning paywall — no commission',
+			'pricing_feature_analytics_3m' => 'Creator Analytics — up to 3 months',
+			'pricing_feature_storage_50' => '50 GB Blossom media storage',
+			'pricing_feature_ai_writing' => 'AI Writing Assistant',
+			'pricing_feature_second_reader' => 'Second Reader AI',
+			'pricing_feature_energy_mapper' => 'Energy Mapper',
+			'pricing_feature_everything_creator' => 'Everything in Basic',
+			'pricing_feature_ai_writing_unlimited' => 'AI Writing Assistant — unlimited',
+			'pricing_feature_second_reader_all' => 'Second Reader AI (all personas)',
+			'pricing_feature_energy_mapper_full' => 'Energy Mapper — per-sentence emotion graph',
+			'pricing_feature_diff_viewer' => 'Inline diff viewer — accept / reject changes',
+			'pricing_feature_analytics_3y' => 'Analytics — up to 3 years of history',
+			'pricing_feature_bar_drilldown' => 'Click-through bar drill-down per note/article',
+			'pricing_feature_storage_100' => '100 GB Blossom media storage',
+			'pricing_feature_early_access' => 'Early access to new features',
+			'aiPanel_upgrade_title' => 'Premium AI Features',
+			'aiPanel_feature1' => 'Chat with your article',
+			'aiPanel_feature2' => 'AI writing suggestions',
+			'aiPanel_feature3' => 'Second reader AI review',
+			'ask_ai_title' => 'Ask AI',
+			'ask_ai_placeholder' => 'Ask anything…',
+			'ask_ai_empty_hint' => 'Ask me to improve your article, rewrite a section, add an introduction, adjust tone, or anything else.',
+			'ask_ai_error' => 'Failed to get AI response',
+			'ask_ai_prefill_fix' => ({required Object index, required Object comment}) => 'Fix paragraph ${index}: ${comment}',
+			'ask_ai_review_changes' => ({required Object count}) => 'Review changes (${count})',
+			'ask_ai_changes_applied' => 'Changes applied',
+			'diff_viewer_title' => 'AI Suggestions',
+			'diff_viewer_accept_all' => 'Accept all',
+			'diff_viewer_reject_all' => 'Reject all',
+			'diff_viewer_accept' => 'Accept',
+			'diff_viewer_reject' => 'Reject',
+			'diff_viewer_accepted' => 'Accepted',
+			'diff_viewer_rejected' => 'Rejected',
+			'ai_upsell_badge' => 'Premium',
+			'ai_upsell_description' => 'Upgrade to Premium to unlock AI-powered article tools.',
+			'ai_upsell_upgrade' => 'Upgrade to Premium',
+			'energy_upsell_title' => 'Unlock Energy Mapper',
+			'energy_mapper_title' => 'Energy Mapper',
+			'energy_mapper_loading' => 'Analyzing...',
+			'energy_mapper_empty' => 'No sentences could be analyzed. Try writing more content.',
+			'energy_mapper_tap_hint' => 'Tap a dot or chip to explore',
+			'energy_mapper_label_low' => 'Low',
+			'energy_mapper_label_medium' => 'Medium',
+			'energy_mapper_label_high' => 'High',
+			'second_reader_title' => 'Second Reader',
+			'second_reader_choose' => 'Choose a reader persona',
+			'second_reader_loading' => 'Reading your article...',
+			'second_reader_error' => 'Failed to analyze. Please try again.',
+			'second_reader_min_words' => 'Article needs at least 50 words.',
+			'second_reader_no_reactions' => 'No reactions from this persona.',
+			'second_reader_last_used' => 'Last used',
+			'second_reader_resolved' => ({required Object count}) => 'Resolved (${count})',
+			'second_reader_paragraph' => ({required Object index}) => 'Paragraph ${index}',
+			'second_reader_fixed_with_ai' => 'Fixed with AI',
+			'second_reader_marked_read' => 'Marked as read',
+			'second_reader_fix_with_ai' => 'Fix with AI',
+			'second_reader_ignore' => 'Ignore',
+			'second_reader_switch' => 'Switch',
+			'editor_classic' => 'Classic',
+			'editor_advanced' => 'Premium',
+			'creator_subscribe' => 'Subscribe',
+			'creator_payment_providers' => 'Payment providers',
+			'creator_choose_gateway' => 'Choose a gateway to pay for your subscription',
+			'creator_subscription_plans' => 'Subscription Plans',
+			'creator_subscribe_now' => 'Subscribe Now',
+			'creator_subscribe_error' => 'Could not initiate subscription',
+			'creator_no_plans' => 'No subscription plans available',
+			'creator_lightning_unavailable' => 'Lightning address not available',
+			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
+			'loginWithGoogle' => 'Login with Google',
+			'recoverWithGoogle' => 'Recover via Google',
+			'retry' => 'Retry',
+			'pomSignInWithGoogle' => 'Sign in with Google',
+			'pomLoginDesc' => 'Sign in using your Google account via the Pomegranate protocol',
+			'pomAuthenticating' => 'Authenticating with Google…',
+			'pomCheckingAccount' => 'Checking account…',
+			'pomCreatingAccount' => 'Creating account…',
+			'pomNewAccountTitle' => 'Save your private key',
+			'pomSaveKeyDesc' => 'Your private key has been generated. Save it securely before creating your account.',
+			'pomCreateAccount' => 'Create Account',
+			'pomTokenExpired' => 'Google session expired. Please try again.',
+			'pomAccountTimeout' => 'Account confirmation timed out. Please try again.',
+			'pomRecoverTitle' => 'Recover Private Key',
+			'pomRecoverDesc' => ({required Object threshold, required Object total}) => 'Connect to operator servers to recover your private key. You need ${threshold} of ${total} shards.',
+			'pomRecoverShard' => 'Recover shard',
+			'pomShardCollected' => 'Shard collected',
+			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} shards collected',
+			'pomRecoverSuccess' => 'Private key recovered',
+			'pomDownloadKey' => 'Download key',
+			'pricing_restore_purchases' => 'Restore purchases',
+			'pricing_manage_on_store' => 'Manage subscription',
+			'pricing_web_managed' => 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.',
+			'sub_managed_via_web' => 'Your subscription is active.',
+			'pricing_toggle_store' => '🛍️ Store',
+			'pricing_toggle_points' => '🏆 Points',
+			'pricing_points_period' => 'pts / month',
+			'pricing_points_cost' => ({required Object points}) => '${points} points',
+			'pricing_redeem_with_points' => 'Redeem with Points',
+			'pricing_points_not_eligible' => 'Not enough points',
+			'pricing_points_success' => 'Subscription activated with points',
+			'settings_payment_method_points' => 'Points',
+			'points_pay_with_points' => 'Pay with Points',
+			'points_publish_success' => 'Note published with points',
+			'points_insufficient' => 'Insufficient points',
+			'points_redeem_codes' => 'Redeem Codes',
+			'points_request_code' => 'Request Code',
+			'points_no_codes' => 'No codes yet',
+			'points_code_redeemed' => 'Redeemed',
+			'points_code_pending' => 'Pending',
+			'points_enter_lightning' => 'Enter lightning address to receive sats',
+			'points_redeem_success' => 'Sats sent successfully',
+			'points_request_success' => 'Code requested',
+			'points_redeem_action' => 'Receive Sats',
+			'points_ad_label' => 'Promoted',
+			'points_redeem_error' => 'Failed to redeem code',
+			'points_request_error' => 'Failed to request code',
+			'skip' => 'Skip',
+			'tourProfile' => 'Your identity, settings and connected accounts live here.',
+			'tourFeedTitle' => 'Feed',
+			'tourFeed' => 'Switch between your sources and customize what you see.',
+			'tourSearch' => 'Find notes, profiles and topics instantly.',
+			'tourHome' => 'Your main feed — notes and updates from people you follow.',
+			'tourMedia' => 'Browse videos and media shared across the network.',
+			'tourCreateTitle' => 'Create',
+			'tourCreate' => 'Post a note, write an article, share media or build a widget.',
+			'tourWallet' => 'Send and receive sats, and track your balance.',
+			'tourMessagesTitle' => 'Messages',
+			'tourMessages' => 'Chat privately with anyone on Nostr.',
+			'tourNotifications' => 'Stay up to date with replies, zaps and mentions.',
+			'newInYakihonne' => 'New in YakiHonne',
+			'fluidModeTitle' => 'Fluid mode',
+			'fluidModeDesc' => 'A new translucent look with bars that get out of the way as you scroll.',
+			'aiToolsTitle' => 'AI tools & Premium',
+			'aiToolsDesc' => 'Ask AI, Second Reader and Energy Mapper for your writing — plus creator subscriptions.',
+			'redesignedNavTitle' => 'Redesigned navigation',
+			'redesignedNavDesc' => 'A faster bottom bar with create always within reach.',
+			'takeTheTour' => 'Take the tour',
+			'maybeLater' => 'Maybe later',
+			'tourDone' => 'Done',
+			'register' => 'Register',
+			'registrationClosed' => 'Registration closed',
+			'nRegistered' => ({required Object number}) => '${number} registered',
+			'youAreRegistered' => 'You\'re registered',
+			'youAreRegisteredDesc' => 'You\'re all set. See you at the workshop!',
+			'openWorkshopLink' => 'Open workshop link',
+			'errorLoadingWorkshop' => 'Unable to load this workshop',
+			'errorRegisteringWorkshop' => 'Registration failed, please try again',
 			_ => null,
 		};
 	}

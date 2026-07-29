@@ -152,8 +152,6 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       updateEventStats(stats);
     }
 
-    final searchedEvents = <Event>[];
-
     NostrFunctionsRepository.getContentStats(
       noteIds: r ? [] : [id],
       aTags: r ? [id] : [],
@@ -161,11 +159,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       includeComments: includeComments,
     ).listen(
       (event) {
-        searchedEvents.add(event);
-        later(
-          () => _handleContentStats(searchedEvents),
-          null,
-        );
+        // _handleContentStats batches internally (300ms buffer), so events
+        // can be handed over one by one.
+        _handleContentStats([event]);
       },
     );
   }
@@ -398,7 +394,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
 
     loadCachedContentStats(id);
-    later(() => _laterContentSearch(), null);
+    // Tearoff, not a fresh closure: later() dedupes on the callback, and
+    // tearoffs of the same method compare equal while closures never do.
+    later(_laterContentSearch, null);
   }
 
   void updateEventStats(Map<String, EventStats> stats) {
@@ -1124,9 +1122,6 @@ extension OptimizedBatching on NotesEventsCubit {
       _aTags.addAll(batch);
     }
 
-    later(
-      () => _laterContentSearch(),
-      null,
-    );
+    later(_laterContentSearch, null);
   }
 }

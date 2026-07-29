@@ -5,25 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/crashlytics_cubit/crashlytics_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class SetAnalyticsStatus extends StatelessWidget {
   const SetAnalyticsStatus({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_editor_plus/options.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mention_tag_text_field/mention_tag_text_field.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
@@ -15,8 +16,10 @@ import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/single_image_selector.dart';
 import '../../write_note_view/widgets/mention_text_field.dart';
 import '../../write_note_view/widgets/publish_media_container.dart';
@@ -228,16 +231,12 @@ class MediaOptionsRow extends StatelessWidget {
                       isRound: true,
                     ),
                   )
-                : SvgPicture.asset(
+                : AppIcon(
                     isVideo.value
                         ? FeatureIcons.imageAttachment
                         : FeatureIcons.imageFilter,
-                    width: 22,
-                    height: 22,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 22,
+                    color: Theme.of(context).primaryColorDark,
                   ),
           ),
         ),
@@ -272,7 +271,7 @@ class MediaOptionsRow extends StatelessWidget {
         //           ),
         //         ),
         //         child: Icon(
-        //           CupertinoIcons.text_quote,
+        //           LucideIcons.quote,
         //           color: hasText
         //               ? Theme.of(context).scaffoldBackgroundColor
         //               : Theme.of(context).primaryColorDark,
@@ -299,18 +298,14 @@ class MediaOptionsRow extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
+            child: AppIcon(
               !isSensitive.value
                   ? FeatureIcons.visible
                   : FeatureIcons.notVisible,
-              width: 22,
-              height: 22,
-              colorFilter: ColorFilter.mode(
-                isSensitive.value
-                    ? Theme.of(context).primaryColorLight
-                    : Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 22,
+              color: isSensitive.value
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).primaryColorDark,
             ),
           ),
         ),
@@ -332,7 +327,7 @@ class MediaOptionsRow extends StatelessWidget {
               ),
             ),
             child: Icon(
-              Icons.close,
+              LucideIcons.x,
               color: Theme.of(context).primaryColorDark,
             ),
           ),
@@ -359,21 +354,9 @@ class MediaDescription extends HookWidget {
 
     final mention = useState<String?>(null);
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       child: DraggableScrollableSheet(
         initialChildSize: 0.90,
         minChildSize: 0.40,
@@ -513,14 +496,10 @@ class MediaDataRow extends HookWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.image,
-              width: 22,
-              height: 22,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 22,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ),

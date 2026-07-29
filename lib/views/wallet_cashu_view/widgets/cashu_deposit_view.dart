@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -13,6 +14,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
 
@@ -139,6 +141,7 @@ class CashuDepositView extends HookWidget {
     final walletMints = cashuState.walletMints;
 
     final secondaryButtonStyle = TextButton.styleFrom(
+      backgroundBuilder: (_, __, child) => child!,
       backgroundColor: Theme.of(context).cardColor,
       side: BorderSide(
         color: Theme.of(context).dividerColor,
@@ -149,20 +152,8 @@ class CashuDepositView extends HookWidget {
     final showWalletSelection =
         availableWallets.isNotEmpty && generatedInvoice.value == null;
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       height: 90.h,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       child: Column(
         children: [
           ModalBottomSheetAppbar(
@@ -310,7 +301,9 @@ class CashuDepositView extends HookWidget {
                     if (wallet.lud16.isNotEmpty) {
                       label = wallet.lud16;
                     } else if (wallet is NostrWalletConnectModel) {
-                      label = wallet.relays.isNotEmpty ? wallet.relays.first.split('://').last : 'NWC Wallet';
+                      label = wallet.relays.isNotEmpty
+                          ? wallet.relays.first.split('://').last
+                          : 'NWC Wallet';
                     } else {
                       label = 'Alby Wallet';
                     }
@@ -416,7 +409,7 @@ class CashuDepositView extends HookWidget {
                   );
                 },
                 icon: Icon(
-                  Icons.copy_rounded,
+                  LucideIcons.copy,
                   color: Theme.of(context).primaryColor,
                 ),
               ),

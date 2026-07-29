@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../utils/utils.dart';
@@ -13,7 +15,7 @@ class RefresherClassicFooter extends StatelessWidget {
     return ClassicFooter(
       loadStyle: LoadStyle.ShowWhenLoading,
       noMoreIcon: Icon(
-        Icons.data_object_rounded,
+        LucideIcons.braces,
         color: Theme.of(context).primaryColor,
         size: 15,
       ),
@@ -23,17 +25,13 @@ class RefresherClassicFooter extends StatelessWidget {
       idleText: context.t.finished.capitalizeFirst(),
       noDataText: context.t.noMoreData.capitalizeFirst(),
       idleIcon: Icon(
-        Icons.done,
+        LucideIcons.check,
         color: Theme.of(context).primaryColor,
         size: 15,
       ),
-      loadingIcon: SizedBox(
-        height: 15.0,
-        width: 15.0,
-        child: CircularProgressIndicator(
-          color: Theme.of(context).primaryColor,
-          strokeWidth: 1,
-        ),
+      loadingIcon: SpinKitCircle(
+        color: Theme.of(context).primaryColor,
+        size: 15,
       ),
     );
   }
@@ -52,14 +50,14 @@ class RefresherClassicHeader extends StatelessWidget {
       completeDuration: const Duration(milliseconds: 500),
       completeText: context.t.refreshed.capitalizeFirst(),
       completeIcon: Icon(
-        Icons.done,
+        LucideIcons.check,
         color: Theme.of(context).primaryColor,
         size: 15,
       ),
       refreshingText: context.t.refreshing.capitalizeFirst(),
       idleText: context.t.pullToRefresh.capitalizeFirst(),
       idleIcon: Icon(
-        Icons.arrow_downward_rounded,
+        LucideIcons.arrowDown,
         color: Theme.of(context).primaryColor,
         size: 15,
       ),

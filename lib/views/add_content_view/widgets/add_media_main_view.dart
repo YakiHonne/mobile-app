@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
@@ -274,7 +275,12 @@ class _VideoWidgetState extends State<VideoWidget> {
                       child: VideoPlayer(_videoController!),
                     ),
                   )
-                : const Center(child: CircularProgressIndicator()),
+                : Center(
+                    child: SpinKitCircle(
+                      color: Theme.of(context).primaryColorDark,
+                      size: 32,
+                    ),
+                  ),
           ),
         ),
       ),
@@ -491,7 +497,7 @@ class _MediaPickerState extends State<MediaPicker> {
                       ),
                     ),
                     child: const Icon(
-                      Icons.cameraswitch,
+                      LucideIcons.switchCamera,
                       color: Colors.white,
                       size: 28,
                     ),

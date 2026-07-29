@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:numeral/numeral.dart';
@@ -21,7 +21,9 @@ import '../../dm_view/widgets/dm_details.dart';
 import '../../main_view/widgets/profile_share_view.dart';
 import '../../profile_settings_view/profile_settings_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
+import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/no_content_widgets.dart';
@@ -131,6 +133,7 @@ class ProfileFastAccess extends HookWidget {
                 );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
               icon: Text(
@@ -140,7 +143,7 @@ class ProfileFastAccess extends HookWidget {
                     ),
               ),
               label: Icon(
-                Icons.arrow_outward_rounded,
+                LucideIcons.arrowUpRight,
                 size: 20,
                 color: Theme.of(context).primaryColorDark,
               ),
@@ -164,20 +167,17 @@ class ProfileFastAccess extends HookWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 icon: Text(
                   context.t.editProfile.capitalizeFirst(),
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
-                label: SvgPicture.asset(
+                label: AppIcon(
                   FeatureIcons.editArticle,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             )
@@ -196,20 +196,17 @@ class ProfileFastAccess extends HookWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 icon: Text(
                   context.t.copyNpub.capitalizeFirst(),
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
-                label: SvgPicture.asset(
+                label: AppIcon(
                   FeatureIcons.copy,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ),
@@ -241,6 +238,7 @@ class ProfileFastAccess extends HookWidget {
                       }
                     },
                     style: TextButton.styleFrom(
+                      backgroundBuilder: (_, __, child) => child!,
                       visualDensity: const VisualDensity(
                         vertical: -1,
                       ),
@@ -275,7 +273,7 @@ class ProfileFastAccess extends HookWidget {
 
             return AbsorbPointer(
               absorbing: !canBeZapped,
-              child: NewBorderedIconButton(
+              child: CustomizedIconButton(
                 onClicked: () {
                   walletManagerCubit.resetInvoice();
 
@@ -307,7 +305,7 @@ class ProfileFastAccess extends HookWidget {
           width: kDefaultPadding / 4,
         ),
         if (canSign()) ...[
-          NewBorderedIconButton(
+          CustomizedIconButton(
             onClicked: () {
               context.read<DmsCubit>().updateReadedTime(
                     metadata.pubkey,
@@ -331,7 +329,7 @@ class ProfileFastAccess extends HookWidget {
             ),
             MutedUserProvider(
               pubkey: pubkey,
-              child: (isMuted) => NewBorderedIconButton(
+              child: (isMuted) => CustomizedIconButton(
                 onClicked: () {
                   doIfCanSign(
                     func: () {
@@ -352,7 +350,7 @@ class ProfileFastAccess extends HookWidget {
             width: kDefaultPadding / 4,
           ),
         ],
-        NewBorderedIconButton(
+        CustomizedIconButton(
           onClicked: () {
             Navigator.push(
               context,
@@ -363,8 +361,7 @@ class ProfileFastAccess extends HookWidget {
               ),
             );
           },
-          icon: '',
-          iconData: CupertinoIcons.qrcode,
+          icon: FeatureIcons.qr,
           buttonStatus: ButtonStatus.inactive,
         ),
       ],
@@ -597,6 +594,400 @@ class CommonUsersRow extends StatelessWidget {
   }
 }
 
+// ─── Fluid mode card ─────────────────────────────────────────────────────────
+
+class ProfileFastAccessFluid extends HookWidget {
+  const ProfileFastAccessFluid({super.key, required this.pubkey});
+
+  final String pubkey;
+
+  @override
+  Widget build(BuildContext context) {
+    useMemoized(() => metadataCubit.requestMetadata(pubkey));
+
+    return BlocProvider(
+      create: (_) => ProfileFastAccessCubit(pubkey: pubkey),
+      child: MetadataProvider(
+        pubkey: pubkey,
+        child: (metadata, isNip05Valid) {
+          return BlocBuilder<ProfileFastAccessCubit, ProfileFastAccessState>(
+            builder: (context, state) => SlideInDown(
+              duration: const Duration(milliseconds: 200),
+              child: _FluidProfileCard(
+                pubkey: pubkey,
+                metadata: metadata,
+                isNip05Valid: isNip05Valid,
+                state: state,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _FluidProfileCard extends StatelessWidget {
+  const _FluidProfileCard({
+    required this.pubkey,
+    required this.metadata,
+    required this.isNip05Valid,
+    required this.state,
+  });
+
+  final String pubkey;
+  final Metadata metadata;
+  final bool isNip05Valid;
+  final ProfileFastAccessState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasLightning = metadata.lud16.isNotEmpty || metadata.lud06.isNotEmpty;
+    final showStats = state.followersCount > 0 ||
+        state.commonPubkeys.isNotEmpty ||
+        hasLightning;
+
+    return Center(
+      child: SizedBox(
+        width: 75.w,
+        child: AspectRatio(
+          aspectRatio: 3 / 4,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Gradient: bottom black → top transparent
+              CommonThumbnail(image: metadata.picture),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  gradient: const LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    stops: [0.0, 1],
+                    colors: [
+                      kBlack,
+                      kTransparent,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
+                ),
+              ),
+              // Content pinned to bottom
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(kDefaultPadding / 2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name + verified badge
+                      Row(
+                        spacing: kDefaultPadding / 4,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              metadata.getName(),
+                              style: const TextStyle(
+                                color: kWhite,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (isNip05Valid) ...[
+                            const SizedBox(width: kDefaultPadding / 4),
+                            const AppIcon(
+                              FeatureIcons.verified,
+                              size: 18,
+                              color: kMainColor,
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (metadata.about.isNotEmpty) ...[
+                        const SizedBox(height: kDefaultPadding / 4),
+                        Text(
+                          metadata.about,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+                      ],
+                      if (showStats) ...[
+                        const SizedBox(height: kDefaultPadding),
+                        _FluidStatsRow(
+                          state: state,
+                          hasLightning: hasLightning,
+                        ),
+                      ],
+                      const SizedBox(height: kDefaultPadding / 2),
+                      _FluidActionButtons(
+                        pubkey: pubkey,
+                        metadata: metadata,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FluidStatsRow extends StatelessWidget {
+  const _FluidStatsRow({
+    required this.state,
+    required this.hasLightning,
+  });
+
+  final ProfileFastAccessState state;
+  final bool hasLightning;
+
+  Widget _divider(BuildContext context) => VerticalDivider(
+        width: 1,
+        thickness: 0.5,
+        color: Theme.of(context).highlightColor,
+      );
+
+  Widget _label(BuildContext context, String text) => Text(
+        text,
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+              color: Theme.of(context).highlightColor,
+            ),
+      );
+
+  Widget _placeholder(BuildContext context) => Text(
+        '-',
+        style: Theme.of(context)
+            .textTheme
+            .labelLarge!
+            .copyWith(fontWeight: FontWeight.w700, color: kWhite),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final followersSection = Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (state.followersCount > 0)
+            SizedBox(
+              height: 25,
+              child: Center(
+                child: Text(
+                  state.followersCount.numeral(digits: 2),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .copyWith(fontWeight: FontWeight.w700, color: kWhite),
+                ),
+              ),
+            )
+          else
+            _placeholder(context),
+          const SizedBox(height: 2),
+          _label(context, context.t.followers.capitalizeFirst()),
+        ],
+      ),
+    );
+
+    final mutualsSection = Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (state.commonPubkeys.isNotEmpty)
+            CommonUsersRow(
+              commonPubkeys: state.commonPubkeys,
+              compact: true,
+              useOthers: true,
+            )
+          else
+            _placeholder(context),
+          const SizedBox(height: 2),
+          _label(context, context.t.mutuals.capitalizeFirst()),
+        ],
+      ),
+    );
+
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          followersSection,
+          _divider(context),
+          mutualsSection,
+          if (hasLightning) ...[
+            _divider(context),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 25,
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.check,
+                        size: 16,
+                        color: kWhite,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  _label(context, context.t.lightning),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _FluidActionButtons extends StatelessWidget {
+  const _FluidActionButtons({
+    required this.pubkey,
+    required this.metadata,
+  });
+
+  final String pubkey;
+  final Metadata metadata;
+
+  @override
+  Widget build(BuildContext context) {
+    final canBeFollowed = canUserBeFollowed(metadata);
+    final canBeZapped = canUserBeZapped(metadata);
+    final isOwnProfile = canSign() && currentSigner!.getPublicKey() == pubkey;
+
+    return Row(
+      children: [
+        Expanded(
+          child: isOwnProfile
+              ? TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    YNavigator.push(
+                      context,
+                      SlideupPageRoute(
+                        builder: (_) => ProfileSettingsView(),
+                        settings: const RouteSettings(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    context.t.editProfile.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                )
+              : BlocBuilder<ProfileFastAccessCubit, ProfileFastAccessState>(
+                  buildWhen: (p, c) => p.isFollowing != c.isFollowing,
+                  builder: (context, state) {
+                    return AbsorbPointer(
+                      absorbing: !canBeFollowed,
+                      child: TextButton(
+                        onPressed: canBeFollowed
+                            ? () => context
+                                .read<ProfileFastAccessCubit>()
+                                .setFollowingState()
+                            : null,
+                        child: Text(
+                          state.isFollowing
+                              ? context.t.unfollow.capitalizeFirst()
+                              : context.t.follow.capitalizeFirst(),
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+        if (canSign() && !isOwnProfile) ...[
+          const SizedBox(width: kDefaultPadding / 4),
+          AppIconButton(
+            onClicked: () {
+              context.read<DmsCubit>().updateReadedTime(metadata.pubkey);
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                DmDetails.routeName,
+                arguments: [metadata.pubkey],
+              );
+            },
+            icon: FeatureIcons.startDms,
+            buttonStatus:
+                canBeFollowed ? ButtonStatus.inactive : ButtonStatus.disabled,
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
+          AbsorbPointer(
+            absorbing: !canBeZapped,
+            child: AppIconButton(
+              onClicked: () {
+                walletManagerCubit.resetInvoice();
+                showModalBottomSheet(
+                  context: context,
+                  elevation: 0,
+                  builder: (_) => SendZapsView(
+                    metadata: metadata,
+                    isZapSplit: false,
+                    zapSplits: const [],
+                  ),
+                  isScrollControlled: true,
+                  useRootNavigator: true,
+                  useSafeArea: true,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                );
+              },
+              icon: FeatureIcons.zaps,
+              buttonStatus:
+                  canBeZapped ? ButtonStatus.inactive : ButtonStatus.disabled,
+            ),
+          ),
+        ],
+        const SizedBox(width: kDefaultPadding / 4),
+        AppIconButton(
+          onClicked: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(
+              context,
+              ProfileView.routeName,
+              arguments: [metadata.pubkey],
+            );
+          },
+          icon: FeatureIcons.shareExternal,
+          buttonStatus: ButtonStatus.inactive,
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 class AdditionalInformationRow extends StatelessWidget {
   const AdditionalInformationRow({
     super.key,
@@ -605,7 +996,7 @@ class AdditionalInformationRow extends StatelessWidget {
     required this.onClick,
   });
 
-  final String icon;
+  final IconData icon;
   final String text;
   final Function() onClick;
 
@@ -617,14 +1008,10 @@ class AdditionalInformationRow extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            width: 20,
-            height: 20,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 20,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             width: kDefaultPadding / 4,

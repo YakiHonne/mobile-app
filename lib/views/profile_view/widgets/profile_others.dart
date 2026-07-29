@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
@@ -13,6 +15,7 @@ import '../../smart_widgets_view/widgets/global_smart_widget_container.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_content_card.dart';
 import '../../widgets/tag_container.dart';
 
 final profileDataList = [
@@ -36,50 +39,58 @@ class ProfileOthers extends StatelessWidget {
     final useSingleColumn =
         nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
     final isCuration = profileData == ProfileData.curations;
+    final fluid = isFluid();
 
     return SliverPadding(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      padding: EdgeInsets.only(
+        left: kDefaultPadding / 2,
+        right: kDefaultPadding / 2,
+        top: kDefaultPadding / 2,
+        bottom: fluid ? kDefaultPadding * 4 : kDefaultPadding / 2,
+      ),
       sliver: SliverMainAxisGroup(
         slivers: [
-          SliverAppBar(
-            toolbarHeight: 45,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: SizedBox(
-              height: 36,
-              width: double.infinity,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) => const SizedBox(
-                  width: kDefaultPadding / 4,
-                ),
-                itemBuilder: (context, index) {
-                  final type = profileDataList[index];
+          if (!fluid)
+            SliverAppBar(
+              toolbarHeight: 45,
+              automaticallyImplyLeading: false,
+              titleSpacing: 0,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: SizedBox(
+                height: 36,
+                width: double.infinity,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => const SizedBox(
+                    width: kDefaultPadding / 4,
+                  ),
+                  itemBuilder: (context, index) {
+                    final type = profileDataList[index];
 
-                  return TagContainer(
-                    title: type.getDisplayName(context),
-                    isActive: type == profileData,
-                    style: Theme.of(context).textTheme.labelLarge,
-                    backgroundColor: type == profileData
-                        ? Theme.of(context).cardColor
-                        : Colors.transparent,
-                    textColor: Theme.of(context).primaryColorDark,
-                    onClick: () {
-                      onProfileDataChanged(type);
-                      HapticFeedback.lightImpact();
-                    },
-                  );
-                },
-                itemCount: profileDataList.length,
+                    return TagContainer(
+                      title: type.getDisplayName(context),
+                      isActive: type == profileData,
+                      style: Theme.of(context).textTheme.labelLarge,
+                      backgroundColor: type == profileData
+                          ? Theme.of(context).cardColor
+                          : Colors.transparent,
+                      textColor: Theme.of(context).primaryColorDark,
+                      onClick: () {
+                        onProfileDataChanged(type);
+                        HapticFeedback.lightImpact();
+                      },
+                    );
+                  },
+                  itemCount: profileDataList.length,
+                ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: kDefaultPadding / 2),
-          ),
+          if (!fluid)
+            const SliverToBoxAdapter(
+              child: SizedBox(height: kDefaultPadding / 2),
+            ),
           BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state.isLoading) {
@@ -129,27 +140,31 @@ class ProfileOthers extends StatelessWidget {
 
   SliverList _curationsItemsList(ProfileState state) {
     return SliverList.separated(
-      separatorBuilder: (context, index) => const Divider(
-        height: kDefaultPadding * 1.5,
-        thickness: 0.5,
-      ),
+      separatorBuilder: (context, index) => useFluidCards()
+          ? const SizedBox(height: kDefaultPadding / 2)
+          : const Divider(
+              height: kDefaultPadding * 1.5,
+              thickness: 0.5,
+            ),
       itemBuilder: (context, index) {
         final event = state.content.elementAt(index);
         final curation = Curation.fromEvent(event, '');
 
-        return CurationContainer(
-          curation: curation,
-          isFollowing: contactListCubit.contacts.contains(curation.pubkey),
-          isBookmarked: state.bookmarks.contains(curation.identifier),
-          isProfileAccessible: false,
-          onClicked: () {
-            Navigator.pushNamed(
-              context,
-              CurationView.routeName,
-              arguments: curation,
-            );
-          },
-          padding: 0,
+        return FluidContentCard(
+          child: CurationContainer(
+            curation: curation,
+            isFollowing: contactListCubit.contacts.contains(curation.pubkey),
+            isBookmarked: state.bookmarks.contains(curation.identifier),
+            isProfileAccessible: false,
+            onClicked: () {
+              Navigator.pushNamed(
+                context,
+                CurationView.routeName,
+                arguments: curation,
+              );
+            },
+            padding: 0,
+          ),
         );
       },
       itemCount: state.content.length,
@@ -165,19 +180,21 @@ class ProfileOthers extends StatelessWidget {
         final event = state.content.elementAt(index);
         final curation = Curation.fromEvent(event, '');
 
-        return CurationContainer(
-          curation: curation,
-          isFollowing: contactListCubit.contacts.contains(curation.pubkey),
-          isProfileAccessible: false,
-          isBookmarked: state.bookmarks.contains(curation.identifier),
-          onClicked: () {
-            Navigator.pushNamed(
-              context,
-              CurationView.routeName,
-              arguments: curation,
-            );
-          },
-          padding: 0,
+        return FluidContentCard(
+          child: CurationContainer(
+            curation: curation,
+            isFollowing: contactListCubit.contacts.contains(curation.pubkey),
+            isProfileAccessible: false,
+            isBookmarked: state.bookmarks.contains(curation.identifier),
+            onClicked: () {
+              Navigator.pushNamed(
+                context,
+                CurationView.routeName,
+                arguments: curation,
+              );
+            },
+            padding: 0,
+          ),
         );
       },
       childCount: state.content.length,
@@ -217,6 +234,71 @@ class ProfileOthers extends StatelessWidget {
         );
       },
       childCount: state.content.length,
+    );
+  }
+}
+
+class ProfileOthersFilter extends StatelessWidget {
+  const ProfileOthersFilter({
+    super.key,
+    required this.profileData,
+    required this.onChanged,
+  });
+
+  final ProfileData profileData;
+  final Function(ProfileData) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return PullDownButton(
+      animationBuilder: (context, state, child) => child,
+      routeTheme: PullDownMenuRouteTheme(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      itemBuilder: (context) {
+        return profileDataList.map((type) {
+          return PullDownMenuItem.selectable(
+            title: type.getDisplayName(context).capitalizeFirst(),
+            selected: profileData == type,
+            onTap: () => onChanged(type),
+            itemTheme: PullDownMenuItemTheme(
+              textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          );
+        }).toList();
+      },
+      buttonBuilder: (context, showMenu) => GestureDetector(
+        onTap: showMenu,
+        behavior: HitTestBehavior.translucent,
+        child: SizedBox(
+          width: 50.w,
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    profileData.getDisplayName(context).capitalizeFirst(),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Icon(LucideIcons.chevronDown),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

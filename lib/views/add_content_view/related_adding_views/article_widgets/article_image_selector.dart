@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../logic/write_article_cubit/image_selector_cubit/article_image_selector_cubit.dart';
@@ -8,6 +9,7 @@ import '../../../../repositories/localdatabase_repository.dart';
 import '../../../../repositories/nostr_data_repository.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/curation_container.dart';
@@ -74,10 +76,9 @@ class ImageSelector extends HookWidget {
                                           .removeImage();
                                       imageUrlController.clear();
                                     },
-                                    icon: SvgPicture.asset(
+                                    icon: const AppIcon(
                                       FeatureIcons.trash,
-                                      width: 25,
-                                      height: 25,
+                                      size: 25,
                                     ),
                                   ),
                                 ),
@@ -132,6 +133,7 @@ class ImageSelector extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                     side: BorderSide(
                       color: Theme.of(context).primaryColor,
@@ -172,6 +174,7 @@ class ImageSelector extends HookWidget {
                             }
                           },
                           style: TextButton.styleFrom(
+                            backgroundBuilder: (_, __, child) => child!,
                             backgroundColor:
                                 state.isImageSelected ? kPurple : kDimGrey,
                           ),
@@ -239,7 +242,7 @@ class ImageSelector extends HookWidget {
                       child: CircleAvatar(
                         backgroundColor: kWhite.withValues(alpha: 0.8),
                         child: const Icon(
-                          Icons.add,
+                          LucideIcons.plus,
                           color: kBlack,
                         ),
                       ),
@@ -338,15 +341,10 @@ class ImageSelector extends HookWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(
+                  const AppIcon(
                     FeatureIcons.image,
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.scaleDown,
-                    colorFilter: const ColorFilter.mode(
-                      kDimGrey,
-                      BlendMode.srcIn,
-                    ),
+                    size: 30,
+                    color: kDimGrey,
                   ),
                   const SizedBox(
                     height: kDefaultPadding / 2,

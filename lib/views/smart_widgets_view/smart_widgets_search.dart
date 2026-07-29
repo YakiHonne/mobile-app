@@ -15,6 +15,7 @@ import '../../logic/smart_widget_search_cubit/smart_widget_search_cubit.dart';
 import '../../models/ai_chat_model.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/custom_icon_buttons.dart';
 import 'widgets/smart_widget_search_container.dart';
 import 'widgets/smart_widget_search_suggestion.dart';
@@ -47,8 +48,17 @@ class SmartWidgetsSearch extends HookWidget {
                 ),
               ),
               Positioned(
-                top: isSearchEnabled.value ? 0 : null,
-                bottom: !isSearchEnabled.value ? 0 : null,
+                top: isSearchEnabled.value
+                    ? isFluid()
+                        ? MediaQuery.of(context).padding.top + kToolbarHeight
+                        : 0
+                    : null,
+                bottom: !isSearchEnabled.value
+                    ? isFluid()
+                        ? MediaQuery.of(context).padding.bottom +
+                            kBottomNavigationBarHeight
+                        : 0
+                    : null,
                 left: 0,
                 right: 0,
                 child: SmartWidgetSearchContainer(
@@ -77,7 +87,11 @@ class WidgetSearch extends HookWidget {
       duration: const Duration(milliseconds: 200),
       child: Column(
         children: [
-          const SizedBox(height: 120),
+          SizedBox(
+            height: isFluid()
+                ? 120 + MediaQuery.of(context).padding.top + kToolbarHeight
+                : 120,
+          ),
           Expanded(
             child: ScrollShadow(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -94,9 +108,11 @@ class WidgetSearch extends HookWidget {
                   _smartWidgetTypeBox(isTools, context),
                   const SmartWidgetsList(),
                   _seeMore(isTools),
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: SizedBox(
-                      height: kDefaultPadding / 2,
+                      height: isFluid()
+                          ? kBottomNavigationBarHeight
+                          : kDefaultPadding / 2,
                     ),
                   ),
                 ],
@@ -122,6 +138,7 @@ class WidgetSearch extends HookWidget {
           return SliverToBoxAdapter(
             child: TextButton(
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: kTransparent,
                 visualDensity: VisualDensity.compact,
               ),
@@ -142,14 +159,10 @@ class WidgetSearch extends HookWidget {
                           color: Theme.of(context).highlightColor,
                         ),
                   ),
-                  SvgPicture.asset(
+                  AppIcon(
                     FeatureIcons.arrowDown,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).highlightColor,
-                      BlendMode.srcIn,
-                    ),
+                    size: 20,
+                    color: Theme.of(context).highlightColor,
                   ),
                 ],
               ),

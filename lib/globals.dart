@@ -26,6 +26,8 @@ import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
 import 'logic/routing_cubit/routing_cubit.dart';
 import 'logic/settings_cubit/settings_cubit.dart';
 import 'logic/single_event_cubit/single_event_cubit.dart';
+import 'logic/subscription_badge_cubit/subscription_badge_cubit.dart';
+import 'logic/subscription_cubit/subscription_cubit.dart';
 import 'logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import 'logic/theme_cubit/theme_cubit.dart';
 import 'logic/unsent_events_cubit/unsent_events_cubit.dart';
@@ -52,6 +54,10 @@ late PacksSettingsCubit packsSettingsCubit;
 late MetadataCubit metadataCubit;
 
 late PointsManagementCubit pointsManagementCubit;
+
+late SubscriptionCubit subscriptionCubit;
+
+late SubscriptionBadgeCubit subscriptionBadgeCubit;
 
 late ThemeCubit themeCubit;
 

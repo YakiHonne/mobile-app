@@ -104,9 +104,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   Future<void> queryAndSubscribe({bool isRefresh = false}) async {
     if (notificationsSubscriptionId != null) {
       nc.closeRequests(<String>[notificationsSubscriptionId!]);
+      notificationsSubscriptionId = null;
     }
 
     if (canSign()) {
+      final pubkey = currentSigner!.getPublicKey();
+
       _uiUpdateTimer?.cancel();
       if (!isRefresh) {
         _unemittedEvents.clear();
@@ -116,39 +119,57 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       if (!isClosed) {
         emit(
           state.copyWith(
-            isRead: newNotifications[currentSigner!.getPublicKey()]?.isEmpty ??
-                true,
+            isRead: newNotifications[pubkey]?.isEmpty ?? true,
             events: isRefresh ? state.events : [],
             isLoading: true,
           ),
         );
       }
 
-      lg.i(state.isLoading);
-
       final events = await NostrFunctionsRepository.queryNotifications(
-        pubkey: currentSigner!.getPublicKey(),
+        pubkey: pubkey,
         limit: 40,
       );
 
-      await eventLaterHandle(events);
+      // ponytail: the query above can resolve after the account has already
+      // switched (no cancellation support upstream); drop stale results
+      // instead of leaking the old account's notifications into the new one.
+      if (currentSigner?.getPublicKey() != pubkey) {
+        return;
+      }
 
-      notificationsSubscriptionId =
+      await eventLaterHandle(events, pubkey: pubkey);
+
+      final subscriptionId =
           await NostrFunctionsRepository.subscribeToNotifications(
-        pubkey: currentSigner!.getPublicKey(),
-        onEvents: onEvent,
+        pubkey: pubkey,
+        onEvents: (event) => onEvent(event, pubkey),
         since: since != null ? since! + 1 : null,
       );
+
+      if (currentSigner?.getPublicKey() != pubkey) {
+        nc.closeRequests(<String>[subscriptionId]);
+      } else {
+        notificationsSubscriptionId = subscriptionId;
+      }
     }
   }
 
-  void onEvent(Event event) {
-    eventLaterHandle([event]);
+  void onEvent(Event event, String pubkey) {
+    if (currentSigner?.getPublicKey() != pubkey) {
+      return;
+    }
+
+    eventLaterHandle([event], pubkey: pubkey);
   }
 
-  Future<void> eventLaterHandle(List<Event> events) async {
+  Future<void> eventLaterHandle(List<Event> events, {String? pubkey}) async {
     if (events.isNotEmpty) {
       final filtered = await filteredWotEvents(events);
+
+      if (pubkey != null && currentSigner?.getPublicKey() != pubkey) {
+        return;
+      }
 
       if (filtered.isEmpty) {
         return;

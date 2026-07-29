@@ -13,16 +13,20 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_source_filter_row.dart';
 import '../widgets/media_components/picture_view.dart';
 
 class MediaView extends StatefulWidget {
-  const MediaView({super.key, required this.scrollController});
+  const MediaView(
+      {super.key, required this.scrollController, this.barsVisible});
 
   final ScrollController scrollController;
+  final ValueNotifier<bool>? barsVisible;
 
   @override
   State<MediaView> createState() => _MediaViewState();
@@ -69,34 +73,92 @@ class _MediaViewState extends State<MediaView> {
             }
           },
           builder: (context, state) {
-            return SmartRefresher(
-              controller: refreshController,
-              scrollController: widget.scrollController,
-              enablePullUp: true,
-              header: const RefresherClassicHeader(),
-              footer: const RefresherClassicFooter(),
-              onLoading: () => buildExploreFeed.call(context, true),
-              onRefresh: () => onRefresh(),
-              child: CustomScrollView(
-                slivers: [
-                  if (state.onLoading)
-                    const SliverToBoxAdapter(
-                      child: MediaPlaceholder(),
-                    )
-                  else if (state.content.isEmpty)
-                    SliverToBoxAdapter(
-                      child: EmptyList(
-                        description: context.t.media,
-                        icon: FeatureIcons.videoGallery,
+            final refresher = Padding(
+              padding: EdgeInsets.zero,
+              child: SmartRefresher(
+                controller: refreshController,
+                scrollController: widget.scrollController,
+                enablePullUp: true,
+                header: const RefresherClassicHeader(),
+                footer: const RefresherClassicFooter(),
+                onLoading: () => buildExploreFeed.call(context, true),
+                onRefresh: () => onRefresh(),
+                child: CustomScrollView(
+                  slivers: [
+                    if (isFluid())
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).padding.top +
+                              kToolbarHeight,
+                        ),
                       ),
-                    )
-                  else
-                    MediaGrid(
-                      content: state.content,
-                      loadVideos: mainState.mainView == MainViews.media,
-                    ),
-                ],
+                    if (state.onLoading)
+                      const SliverToBoxAdapter(
+                        child: MediaPlaceholder(),
+                      )
+                    else if (state.content.isEmpty)
+                      SliverToBoxAdapter(
+                        child: EmptyList(
+                          description: context.t.media,
+                          icon: FeatureIcons.videoGallery,
+                        ),
+                      )
+                    else
+                      MediaGrid(
+                        content: state.content,
+                        loadVideos: mainState.mainView == MainViews.media,
+                      ),
+                    if (themeCubit.state.isFluid)
+                      SliverPadding(
+                        padding: EdgeInsets.only(
+                          bottom: kBottomNavigationBarHeight +
+                              kDefaultPadding * 2 +
+                              MediaQuery.of(context).padding.bottom / 2,
+                        ),
+                      ),
+                  ],
+                ),
               ),
+            );
+            if (!isFluid()) {
+              return refresher;
+            }
+            return Stack(
+              children: [
+                refresher,
+                Positioned(
+                  left: kDefaultPadding / 2,
+                  right: kDefaultPadding / 2,
+                  top: MediaQuery.of(context).padding.top +
+                      kToolbarHeight +
+                      kDefaultPadding / 2,
+                  child: Align(
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable:
+                          widget.barsVisible ?? ValueNotifier(true),
+                      builder: (context, visible, child) => IgnorePointer(
+                        ignoring: !visible,
+                        child: AnimatedSlide(
+                          offset: visible ? Offset.zero : const Offset(0, -1),
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: AnimatedOpacity(
+                            opacity: visible ? 1 : 0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: child,
+                          ),
+                        ),
+                      ),
+                      child: FluidSourceFilterRow(
+                        viewType: ViewDataTypes.media,
+                        onSourceChanged: () =>
+                            mediaCubit.buildMediaFeed(isAdding: false),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         );
@@ -221,14 +283,10 @@ class VideoWidget extends HookWidget {
                 color: Theme.of(context).cardColor,
               ),
               alignment: Alignment.center,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.notVisible,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
     );
@@ -279,14 +337,10 @@ class PictureWidget extends HookWidget {
                 color: Theme.of(context).cardColor,
               ),
               alignment: Alignment.center,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.notVisible,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
     );

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/wallet_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../widgets/external_wallets_list_view.dart';
 import '../widgets/internal_wallets_list_view.dart';
@@ -45,6 +47,7 @@ class SendUsingInvoice extends HookWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: Theme.of(context).cardColor,
             side: BorderSide(
               color: Theme.of(context).dividerColor,
@@ -59,14 +62,10 @@ class SendUsingInvoice extends HookWidget {
                     key: const ValueKey(1),
                     spacing: kDefaultPadding / 4,
                     children: [
-                      SvgPicture.asset(
+                      AppIcon(
                         FeatureIcons.zapFilled,
-                        width: 15,
-                        height: 15,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 15,
+                        color: Theme.of(context).primaryColorDark,
                       ),
                       Text(
                         key: const ValueKey(1),
@@ -230,12 +229,18 @@ class InternalWalletSelector extends StatelessWidget {
                   width: 25,
                   height: 25,
                   child: Center(
-                    child: SvgPicture.asset(
-                      isNwc ? FeatureIcons.nwc : FeatureIcons.alby,
-                      width: 20,
-                      height: 20,
-                      fit: BoxFit.scaleDown,
-                    ),
+                    child: isNwc
+                        ? SvgPicture.asset(
+                            FeatureIcons.nwc,
+                            width: 20,
+                            height: 20,
+                          )
+                        : SvgPicture.asset(
+                            FeatureIcons.alby,
+                            width: 20,
+                            height: 20,
+                            fit: BoxFit.scaleDown,
+                          ),
                   ),
                 ),
                 const SizedBox(
@@ -257,7 +262,7 @@ class InternalWalletSelector extends StatelessWidget {
                   width: 25,
                   height: 25,
                   child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
+                    LucideIcons.chevronUp,
                   ),
                 ),
               ],
@@ -342,7 +347,7 @@ class ExternalWalletSelector extends StatelessWidget {
                   width: 25,
                   height: 25,
                   child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
+                    LucideIcons.chevronUp,
                   ),
                 ),
               ],

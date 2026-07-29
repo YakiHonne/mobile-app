@@ -11,6 +11,7 @@ import '../../logic/giphy_cubit/giphy_cubit.dart';
 import '../../utils/utils.dart';
 import '../search_view/search_view.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/no_content_widgets.dart';
 
 class GiphyView extends HookWidget {
@@ -30,46 +31,31 @@ class GiphyView extends HookWidget {
 
     return BlocProvider(
       create: (context) => GiphyCubit(),
-      child: Material(
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.9,
-            expand: false,
-            builder: (context, scrollController) => Column(
-              children: [
-                _tabBar(tabController, textController, context),
-                Expanded(
-                  child: TabBarView(
-                    controller: tabController,
-                    children: [
-                      SelectedGifType(
-                        gifType: GiphyType.gifs,
-                        onGifSelected: onGifSelected,
-                        scrollController: scrollController,
-                      ),
-                      SelectedGifType(
-                        gifType: GiphyType.stickers,
-                        onGifSelected: onGifSelected,
-                        scrollController: scrollController,
-                      ),
-                    ],
-                  ),
+      child: ModalSheetContainer(
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              _tabBar(tabController, textController, context),
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    SelectedGifType(
+                      gifType: GiphyType.gifs,
+                      onGifSelected: onGifSelected,
+                      scrollController: scrollController,
+                    ),
+                    SelectedGifType(
+                      gifType: GiphyType.stickers,
+                      onGifSelected: onGifSelected,
+                      scrollController: scrollController,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

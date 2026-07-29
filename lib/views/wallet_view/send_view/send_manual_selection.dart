@@ -56,6 +56,7 @@ class SendManualSelection extends HookWidget {
           }
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
           side: BorderSide(
             color: Theme.of(context).dividerColor,

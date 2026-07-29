@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:async';
+
 import 'package:aescryptojs/aescryptojs.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,6 +19,7 @@ import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../models/unpaid_note.dart';
 import '../../models/video_model.dart';
+import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -244,7 +248,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       return;
     }
 
-    if (!isPaid) {
+    if (!isPaid || subscriptionCubit.isPremium) {
       await sendEventAndVerify(
         event: event,
         onSuccess: onSuccess,
@@ -389,6 +393,66 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       BotToastUtils.showError(
         t.invoiceNotPayed.capitalizeFirst(),
       );
+    }
+  }
+
+  // Redeems points then publishes — no invoice check needed.
+  Future<void> redeemPointsAndPublish(
+    Function() onSuccess,
+    Function(String) onError,
+  ) async {
+    if (toBeSubmittedEvent == null) {
+      return;
+    }
+    final cancel = BotToastUtils.showLoading();
+    try {
+      final redeemed =
+          await HttpFunctionsRepository.publishPaidNoteWithPoints();
+
+      if (!redeemed) {
+        onError(t.points_insufficient);
+        return;
+      }
+
+      unawaited(pointsManagementCubit.getRecentStats());
+
+      final rs = relays ?? currentUserRelayList.writes;
+      bool isSuccessful;
+      if (scheduledPaid != null) {
+        isSuccessful = await submitEventScheduled(
+          event: toBeSubmittedEvent!,
+          relays: rs,
+        );
+      } else {
+        isSuccessful = await NostrFunctionsRepository.sendEvent(
+          event: toBeSubmittedEvent!,
+          relays: rs,
+          setProgress: true,
+        );
+      }
+
+      if (isSuccessful) {
+        BotToastUtils.showSuccess(
+          scheduledPaid != null
+              ? t.paidNoteScheduled.capitalizeFirst()
+              : t.paidNotePublished.capitalizeFirst(),
+        );
+        localDatabaseRepository.removeUnpaidNote(
+          currentSigner!.getPublicKey(),
+          toBeSubmittedEvent!.id,
+        );
+        resetDraft(null);
+        onSuccess.call();
+      } else {
+        BotToastUtils.showError(t.errorSendingEvent.capitalizeFirst());
+      }
+    } on DioException catch (e) {
+      onError(
+        (e.response?.data as Map<String, dynamic>?)?['message'] as String? ??
+            t.points_insufficient,
+      );
+    } finally {
+      cancel.call();
     }
   }
 

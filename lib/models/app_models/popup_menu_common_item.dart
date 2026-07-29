@@ -150,7 +150,8 @@ class PdmCommonActions {
       isScrollControlled: true,
       useRootNavigator: true,
       useSafeArea: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor:
+          isFluid() ? kTransparent : Theme.of(context).scaffoldBackgroundColor,
     );
   }
 

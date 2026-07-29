@@ -223,6 +223,7 @@ class GlobalSmartWidgetHeader extends StatelessWidget {
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
           visualDensity: VisualDensity.compact,
         ),

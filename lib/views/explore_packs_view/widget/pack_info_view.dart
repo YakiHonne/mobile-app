@@ -12,6 +12,7 @@ import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_manager/dicover_settings_views/set_pack_view.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/user_profile_container.dart';
 
@@ -28,19 +29,7 @@ class PackInfoView extends StatelessWidget {
       create: (context) => ExplorePackDetailsCubit(),
       child: BlocBuilder<ExplorePackDetailsCubit, ExplorePackDetailsState>(
         builder: (context, state) {
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 0.5,
-              ),
-            ),
+          return ModalSheetContainer(
             child: DraggableScrollableSheet(
               maxChildSize: 0.95,
               minChildSize: 0.2,
@@ -97,6 +86,8 @@ class PackInfoView extends StatelessWidget {
                                             .followPack(pack);
                                       },
                                       style: TextButton.styleFrom(
+                                        backgroundBuilder: (_, __, child) =>
+                                            child!,
                                         visualDensity:
                                             VisualDensity.comfortable,
                                         backgroundColor: state.ownFollowings

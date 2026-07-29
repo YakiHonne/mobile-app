@@ -11,6 +11,7 @@ import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/modal_sheet_container.dart';
 
 class SmartWidgetTemplatesView extends StatelessWidget {
   const SmartWidgetTemplatesView({
@@ -25,19 +26,7 @@ class SmartWidgetTemplatesView extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           SmartWidgetTemplatesCubit()..getSmartWidgetsTemplates(),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
+      child: ModalSheetContainer(
         child:
             BlocBuilder<SmartWidgetTemplatesCubit, SmartWidgetTemplatesState>(
           builder: (context, state) {

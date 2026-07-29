@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:just_audio/just_audio.dart' as ja;
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:override_text_scale_factor/override_text_scale_factor.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -16,6 +17,7 @@ import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
 import 'content_renderer/url_type_checker.dart';
+import 'fluid_blur_container.dart';
 import 'media_components/video_download.dart';
 import 'seek_bar.dart';
 
@@ -248,36 +250,50 @@ class _AudioDisplayerState extends State<AudioDisplayer>
 
   @override
   Widget build(BuildContext context) {
+    final fluid = isFluid();
+    final content = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ControlButtons(_player),
+        StreamBuilder<PositionData>(
+          stream: combinedController.stream,
+          builder: (context, snapshot) {
+            final positionData = snapshot.data;
+            return SeekBar(
+              duration: positionData?.duration ?? Duration.zero,
+              position: positionData?.position ?? Duration.zero,
+              bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
+              onChangeEnd: _player.seek,
+            );
+          },
+        ),
+      ],
+    );
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-        color: widget.inverseNoteColor != null
-            ? Theme.of(context).scaffoldBackgroundColor
-            : Theme.of(context).cardColor,
-      ),
       margin: const EdgeInsets.symmetric(
         vertical: kDefaultPadding / 4,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ControlButtons(_player),
-          StreamBuilder<PositionData>(
-            stream: combinedController.stream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              return SeekBar(
-                duration: positionData?.duration ?? Duration.zero,
-                position: positionData?.position ?? Duration.zero,
-                bufferedPosition:
-                    positionData?.bufferedPosition ?? Duration.zero,
-                onChangeEnd: _player.seek,
-              );
-            },
-          ),
-        ],
-      ),
+      child: fluid
+          ? FluidBlurContainer(
+              borderRadius: kDefaultPadding / 2,
+              padding: const EdgeInsets.symmetric(
+                vertical: kDefaultPadding / 2,
+              ),
+              child: content,
+            )
+          : Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: kDefaultPadding / 2,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                color: widget.inverseNoteColor != null
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Theme.of(context).cardColor,
+              ),
+              child: content,
+            ),
     );
   }
 }
@@ -295,7 +311,7 @@ class ControlButtons extends StatelessWidget {
         // Opens volume slider dialog
         IconButton(
           icon: const Icon(
-            Icons.volume_up,
+            LucideIcons.volume2,
           ),
           iconSize: 25,
           visualDensity: const VisualDensity(vertical: -2),
@@ -325,28 +341,29 @@ class ControlButtons extends StatelessWidget {
                 margin: const EdgeInsets.all(8.0),
                 width: 20,
                 height: 20,
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2,
+                child: SpinKitCircle(
+                  color: Theme.of(context).primaryColorDark,
+                  size: 20,
                 ),
               );
             } else if (playing != true) {
               return IconButton(
                 visualDensity: const VisualDensity(vertical: -2),
-                icon: const Icon(Icons.play_arrow),
+                icon: const Icon(LucideIcons.play),
                 iconSize: 25,
                 onPressed: player.play,
               );
             } else if (processingState != ja.ProcessingState.completed) {
               return IconButton(
                 visualDensity: const VisualDensity(vertical: -2),
-                icon: const Icon(Icons.pause),
+                icon: const Icon(LucideIcons.pause),
                 iconSize: 25,
                 onPressed: player.pause,
               );
             } else {
               return IconButton(
                 visualDensity: const VisualDensity(vertical: -2),
-                icon: const Icon(Icons.replay),
+                icon: const Icon(LucideIcons.rotateCcw),
                 iconSize: 25,
                 onPressed: () => player.seek(Duration.zero),
               );
@@ -724,8 +741,8 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
               duration: const Duration(milliseconds: 300),
               child: Icon(
                 _isPlaying
-                    ? Icons.pause_circle_filled
-                    : Icons.play_circle_filled,
+                    ? LucideIcons.circlePause
+                    : LucideIcons.circlePlay,
                 color: Colors.white.withValues(alpha: 0.8),
                 size: 65,
               ),

@@ -17,6 +17,7 @@ class SendSuccessView extends StatelessWidget {
         YNavigator.popToRoot(context);
       },
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: Theme.of(context).cardColor,
         side: BorderSide(
           color: Theme.of(context).dividerColor,

@@ -198,6 +198,7 @@ class PropertyContentModeration extends StatelessWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: VisualDensity.comfortable,
           ),
@@ -230,6 +231,7 @@ class PropertyContentModeration extends StatelessWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: VisualDensity.comfortable,
           ),
@@ -262,6 +264,7 @@ class PropertyContentModeration extends StatelessWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: VisualDensity.comfortable,
           ),

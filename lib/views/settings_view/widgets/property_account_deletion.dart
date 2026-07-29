@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/properties_cubit/properties_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
@@ -36,7 +36,7 @@ class PropertyAccountDeletion extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(
-                CupertinoIcons.delete,
+                LucideIcons.trash2,
                 color: kRed,
               ),
               const SizedBox(

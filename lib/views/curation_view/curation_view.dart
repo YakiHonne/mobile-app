@@ -16,6 +16,7 @@ import '../../repositories/nostr_data_repository.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/article_container.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/content_placeholder.dart';
@@ -540,9 +541,9 @@ class CurationHeader extends HookWidget {
     );
   }
 
-  NewBorderedIconButton _zapButton(
+  CustomizedIconButton _zapButton(
       BuildContext context, Metadata metadata, CurationState state) {
-    return NewBorderedIconButton(
+    return CustomizedIconButton(
       onClicked: () {
         showModalBottomSheet(
           elevation: 0,
@@ -585,6 +586,7 @@ class CurationHeader extends HookWidget {
                   }
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: const VisualDensity(
                     vertical: -1,
                   ),
@@ -646,14 +648,10 @@ class CurationHeader extends HookWidget {
                     const SizedBox(
                       width: kDefaultPadding / 4,
                     ),
-                    SvgPicture.asset(
+                    AppIcon(
                       FeatureIcons.verified,
-                      width: 15,
-                      height: 15,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColor,
-                        BlendMode.srcIn,
-                      ),
+                      size: 15,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ],
                 )

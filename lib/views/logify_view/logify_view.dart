@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../logic/logify_cubit/logify_cubit.dart';
 import '../../utils/utils.dart';
+import 'widgets/fluid_logify_view.dart';
 import 'widgets/logify_views_page_builder.dart';
 
 class LogifyView extends HookWidget {
@@ -21,6 +22,7 @@ class LogifyView extends HookWidget {
   Widget build(BuildContext context) {
     final pageController = usePageController();
     final logifySelection = useState(false);
+    final fluid = isFluid();
 
     return BlocProvider(
       create: (context) => LogifyCubit(),
@@ -28,25 +30,31 @@ class LogifyView extends HookWidget {
         extendBodyBehindAppBar: true,
         body: Stack(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Theme.of(context).primaryColorLight,
-                    Theme.of(context).primaryColorLight.withValues(alpha: 0.1),
-                    Theme.of(context).primaryColorLight,
-                  ],
+            if (fluid)
+              FluidLogifyView(onPop: onPop)
+            else ...[
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Theme.of(context).primaryColorLight,
+                      Theme.of(context)
+                          .primaryColorLight
+                          .withValues(alpha: 0.1),
+                      Theme.of(context).primaryColorLight,
+                    ],
+                  ),
+                  color: kScaffoldDark,
                 ),
-                color: kScaffoldDark,
               ),
-            ),
-            LogifyViewPageBuilder(
-              controller: pageController,
-              logifySelection: logifySelection,
-              onPop: onPop,
-            ),
+              LogifyViewPageBuilder(
+                controller: pageController,
+                logifySelection: logifySelection,
+                onPop: onPop,
+              ),
+            ],
           ],
         ),
       ),

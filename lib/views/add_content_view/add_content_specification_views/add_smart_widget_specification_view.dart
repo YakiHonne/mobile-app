@@ -6,6 +6,7 @@ import '../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/smart_widget_widgets/smart_widget_content.dart';
 
@@ -18,21 +19,9 @@ class AddSmartWidgetSpecificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WriteSmartWidgetCubit, WriteSmartWidgetState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
+        return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
           child: DraggableScrollableSheet(
             initialChildSize: 0.85,
             minChildSize: 0.60,

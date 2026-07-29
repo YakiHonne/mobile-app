@@ -12,6 +12,7 @@ import '../../../repositories/nostr_functions_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_success_view.dart';
@@ -106,6 +107,7 @@ class ReceiveGenerateInvoice extends HookWidget {
               invoice.value = '';
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kRed.withValues(alpha: 0.2),
               side: const BorderSide(
                 color: kRed,
@@ -372,6 +374,7 @@ class ReceiveGenInvoice extends HookWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: Theme.of(context).cardColor,
             side: BorderSide(
               color: Theme.of(context).dividerColor,
@@ -525,14 +528,10 @@ class ReceiveGenInvoice extends HookWidget {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.repost,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
         ],
       ),

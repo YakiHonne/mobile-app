@@ -11,6 +11,7 @@ import '../../../repositories/http_functions_repository.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/tools_view/tools_view.dart';
 import '../../giphy_view/giphy_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/media_selector.dart';
 import '../../widgets/nip05_component.dart';
@@ -50,7 +51,6 @@ class PublishingMediaContainer extends HookWidget {
           children: [
             _image(context),
             _gif(context),
-            _mention(),
             _smartWidgets(context),
             _scheduledNote(context),
             if (isPaid != null) _paidNote(context),
@@ -147,14 +147,10 @@ class PublishingMediaContainer extends HookWidget {
           useSafeArea: true,
         );
       },
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.menu,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 22,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -170,33 +166,12 @@ class PublishingMediaContainer extends HookWidget {
           scheduled: scheduled.value,
         );
       },
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.calendar,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          scheduled.value == null
-              ? Theme.of(context).primaryColorDark
-              : Theme.of(context).primaryColor,
-          BlendMode.srcIn,
-        ),
-      ),
-    );
-  }
-
-  IconButton _mention() {
-    return IconButton(
-      onPressed: () {
-        appendTextToPosition(controller: controller, textToAppend: '@');
-        onTextChanged();
-      },
-      icon: const Text(
-        '@',
-        style: TextStyle(
-          fontSize: 20,
-          height: 0.5,
-          fontWeight: FontWeight.w500,
-        ),
+        size: 22,
+        color: scheduled.value == null
+            ? Theme.of(context).primaryColorDark
+            : Theme.of(context).primaryColor,
       ),
     );
   }
@@ -208,14 +183,18 @@ class PublishingMediaContainer extends HookWidget {
           context: context,
           builder: (_) {
             return GiphyView(
-              onGifSelected: (url) => onImageAdd.call([{'url': url}]),
+              onGifSelected: (url) => onImageAdd.call([
+                {'url': url}
+              ]),
             );
           },
           isScrollControlled: true,
           useRootNavigator: true,
           useSafeArea: true,
           elevation: 0,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: isFluid()
+              ? kTransparent
+              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       icon: SvgPicture.asset(
@@ -250,14 +229,10 @@ class PublishingMediaContainer extends HookWidget {
           useSafeArea: true,
         );
       },
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.imageLink,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 22,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

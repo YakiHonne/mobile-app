@@ -5,11 +5,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
-import 'package:nostr_core_enhanced/nostr/event_signer/remote_event_signer.dart';
 import 'package:nostr_core_enhanced/utils/string_utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -19,14 +18,17 @@ import '../../models/dm_models.dart';
 import '../../routes/navigator.dart';
 import '../../routes/pages_router.dart';
 import '../../utils/utils.dart';
+import '../main_view/widgets/app_bar_widgets.dart' show DmOptionsButton;
 import '../settings_view/widgets/relays_update.dart';
 import '../widgets/animated_components/animated_line.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_blur_container.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
+import '../widgets/subscription_badge_view.dart';
 import 'widgets/dm_details.dart';
 import 'widgets/dm_user_search.dart';
 
@@ -86,16 +88,10 @@ class DmsView extends HookWidget {
       return const _DisconnectedView();
     }
 
-    return Stack(
-      children: [
-        _DmsTabView(
-          textController: textController,
-          tabController: tabController,
-          scrollController: scrollController,
-        ),
-        if (canSign() && currentSigner is! RemoteEventSigner)
-          _FloatingNewDmButton(),
-      ],
+    return _DmsTabView(
+      textController: textController,
+      tabController: tabController,
+      scrollController: scrollController,
     );
   }
 }
@@ -146,7 +142,7 @@ class _DmsTabView extends StatelessWidget {
           return const LoadDmsWidget();
         }
 
-        return DefaultTabController(
+        final nestedView = DefaultTabController(
           length: 3,
           child: NestedScrollView(
             controller: scrollController,
@@ -198,7 +194,82 @@ class _DmsTabView extends StatelessWidget {
             ),
           ),
         );
+
+        if (!isFluid()) {
+          return nestedView;
+        }
+
+        return Stack(
+          children: [
+            nestedView,
+            Positioned(
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+              bottom: kBottomNavigationBarHeight +
+                  MediaQuery.of(context).padding.bottom +
+                  kDefaultPadding / 2,
+              child: Align(
+                child: _FluidFloatingTabBar(
+                  tabController: tabController,
+                ),
+              ),
+            ),
+          ],
+        );
       },
+    );
+  }
+}
+
+// ==================================================
+// GLASS FLOATING TAB BAR (bottom)
+// ==================================================
+
+class _FluidFloatingTabBar extends StatelessWidget {
+  const _FluidFloatingTabBar({required this.tabController});
+
+  final TabController tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 70.w,
+      child: FluidBlurContainer(
+        padding: const EdgeInsets.all(3),
+        backgroundAlpha: 0.5,
+        child: TabBar(
+          controller: tabController,
+          dividerHeight: 0,
+          indicatorSize: TabBarIndicatorSize.tab,
+          padding: EdgeInsets.zero,
+          labelPadding: const EdgeInsets.all(3),
+          indicator: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(300),
+          ),
+          labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+          unselectedLabelStyle:
+              Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+          tabs: [
+            Tab(
+              height: 28,
+              text: context.t.followings.capitalizeFirst(),
+            ),
+            Tab(
+              height: 28,
+              text: context.t.known.capitalizeFirst(),
+            ),
+            Tab(
+              height: 28,
+              text: context.t.unknown.capitalizeFirst(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -218,14 +289,35 @@ class _DmsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      automaticallyImplyLeading: false,
-      leadingWidth: 0,
-      elevation: 5,
-      floating: true,
-      actions: const [SizedBox.shrink()],
-      titleSpacing: 0,
-      title: _SearchAndFilterRow(textController: textController),
+    if (!isFluid()) {
+      return SliverAppBar(
+        automaticallyImplyLeading: false,
+        leadingWidth: 0,
+        elevation: 5,
+        floating: true,
+        actions: const [SizedBox.shrink()],
+        titleSpacing: 0,
+        title: _SearchAndFilterRow(textController: textController),
+      );
+    }
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 2,
+          vertical: kDefaultPadding / 4,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: kDefaultPadding / 2,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).padding.top + kToolbarHeight,
+            ),
+            _SearchAndFilterRow(textController: textController),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -241,10 +333,36 @@ class _SearchAndFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      child: _SearchTextField(textController: textController),
-    );
+    return isFluid()
+        ? Row(
+            spacing: kDefaultPadding / 4,
+            children: [
+              Expanded(
+                child: _SearchTextField(textController: textController),
+              ),
+              CustomIconButton(
+                onClicked: () => doIfCanSign(
+                  func: () => YNavigator.pushPage(
+                    context,
+                    (_) => DmUserSearch(),
+                  ),
+                  context: context,
+                ),
+                icon: FeatureIcons.startDms,
+                size: 20,
+                backgroundColor: Theme.of(context).cardColor,
+                borderColor: Theme.of(context).dividerColor,
+                isGlass: isFluid(),
+                vd: -1,
+              ),
+              const DmOptionsButton(),
+            ],
+          )
+        : Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: _SearchTextField(textController: textController),
+          );
   }
 }
 
@@ -264,7 +382,7 @@ class _SearchTextField extends StatelessWidget {
       prefix: const Padding(
         padding: EdgeInsets.only(left: 10.0),
         child: Icon(
-          CupertinoIcons.search,
+          LucideIcons.search,
           color: CupertinoColors.systemGrey,
           size: 20,
         ),
@@ -317,36 +435,6 @@ class _DmsTabBarView extends StatelessWidget {
           search: textController.value.trim(),
         ),
       ],
-    );
-  }
-}
-
-// ==================================================
-// FLOATING ACTION BUTTON
-// ==================================================
-
-class _FloatingNewDmButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: kDefaultPadding - 4,
-      right: kDefaultPadding - 4,
-      child: ZoomIn(
-        duration: const Duration(milliseconds: 300),
-        child: FloatingActionButton(
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            YNavigator.pushPage(context, (context) => DmUserSearch());
-          },
-          heroTag: 'dms',
-          backgroundColor: Theme.of(context).primaryColor,
-          shape: const CircleBorder(),
-          child: SvgPicture.asset(
-            FeatureIcons.startDms,
-            colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -495,9 +583,16 @@ class _DmsListView extends StatelessWidget {
       child: ListView.separated(
         separatorBuilder: (context, index) =>
             const SizedBox(height: kDefaultPadding / 1.5),
-        padding: EdgeInsets.symmetric(
-          vertical: kDefaultPadding / 2,
-          horizontal: isMobile ? kDefaultPadding / 1.5 : 20.w,
+        padding: EdgeInsets.only(
+          top: kDefaultPadding / 2,
+          left: isMobile ? kDefaultPadding / 1.5 : 20.w,
+          right: isMobile ? kDefaultPadding / 1.5 : 20.w,
+          bottom: themeCubit.state.isFluid
+              ? kBottomNavigationBarHeight +
+                  kDefaultPadding * 2 +
+                  MediaQuery.of(context).padding.bottom / 2 +
+                  40 // floating tab bar height clearance
+              : kDefaultPadding / 2,
         ),
         itemBuilder: (context, index) => DmContainer(
           dmSessionDetail: dmsSessions[index],
@@ -754,22 +849,30 @@ class _UserNameRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(
-            metadata.getName(),
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontWeight: FontWeight.w700,
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  metadata.getName(),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(width: kDefaultPadding / 4),
+              SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
+            ],
           ),
         ),
-        const Spacer(),
-        if (dmSessionDetail.hasNewMessage())
+        if (dmSessionDetail.hasNewMessage()) ...[
           const DotContainer(
             color: kRed,
             isNotMarging: true,
-            size: 8,
+            size: 7,
           ),
+        ],
       ],
     );
   }

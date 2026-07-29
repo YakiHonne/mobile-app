@@ -16,6 +16,7 @@ import '../../../../utils/utils.dart';
 import '../../../add_content_view/add_content_view.dart';
 import '../../../add_content_view/tools_view/tools_view.dart';
 import '../../../smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/content_placeholder.dart';
 import '../../../widgets/custom_drop_down.dart';
@@ -257,12 +258,9 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
               );
             },
             title: context.t.postNote.capitalizeFirst(),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addNote,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: style,
@@ -278,12 +276,9 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
               );
             },
             title: context.t.postArticle.capitalizeFirst(),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addArticle,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: style,
@@ -298,12 +293,9 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
                 ),
               );
             },
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addSmartWidget,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             title: context.t.postSmartWidget.capitalizeFirst(),
             itemTheme: PullDownMenuItemTheme(
@@ -318,14 +310,10 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
         style: IconButton.styleFrom(
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.addRaw,
-          width: 15,
-          height: 15,
-          colorFilter: const ColorFilter.mode(
-            kWhite,
-            BlendMode.srcIn,
-          ),
+          size: 15,
+          color: kWhite,
         ),
       ),
     );

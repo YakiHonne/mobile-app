@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/properties_cubit/properties_cubit.dart';
+import '../../../logic/theme_cubit/theme_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
 import '../../leading_view/widgets/leading_customization.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'settings_text.dart';
 
@@ -171,6 +174,12 @@ class PropertyCustomization extends HookWidget {
                 const SizedBox(
                   height: kDefaultPadding,
                 ),
+                if (isFluid()) ...[
+                  _contentCards(context),
+                  const SizedBox(
+                    height: kDefaultPadding,
+                  ),
+                ],
                 _defaultReaction(context, reactionButtonKey, state),
                 const SizedBox(
                   height: kDefaultPadding,
@@ -256,14 +265,10 @@ class PropertyCustomization extends HookWidget {
             ),
             alignment: Alignment.center,
             child: state.defaultReaction == '+'
-                ? SvgPicture.asset(
+                ? AppIcon(
                     FeatureIcons.heartFilled,
-                    width: 25,
-                    height: 25,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 25,
+                    color: Theme.of(context).primaryColorDark,
                   )
                 : Container(
                     padding: const EdgeInsets.only(
@@ -310,6 +315,30 @@ class PropertyCustomization extends HookWidget {
             onChanged: (isToggled) {
               openPromptedUrl.value = isToggled;
             },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row _contentCards(BuildContext context) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.contentCards.capitalizeFirst(),
+            description: context.t.contentCardsDesc,
+          ),
+        ),
+        BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (context, themeState) => Transform.scale(
+            scale: 0.8,
+            child: CupertinoSwitch(
+              value: themeState.fluidCards,
+              activeTrackColor: Theme.of(context).primaryColor,
+              onChanged: themeCubit.setFluidCards,
+            ),
           ),
         ),
       ],
@@ -434,7 +463,7 @@ class PropertyCustomization extends HookWidget {
                     width: kDefaultPadding / 4,
                   ),
                   const Icon(
-                    CupertinoIcons.chevron_up_chevron_down,
+                    LucideIcons.chevronsUpDown,
                     size: 18,
                   ),
                 ],
@@ -445,8 +474,6 @@ class PropertyCustomization extends HookWidget {
       ],
     );
   }
-
-
 
   Row _feedCustomization(BuildContext context) {
     return Row(
@@ -473,6 +500,7 @@ class PropertyCustomization extends HookWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: VisualDensity.comfortable,
           ),

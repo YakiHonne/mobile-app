@@ -25,6 +25,11 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   // url → set of ownerIds currently using it (O(1) ref-count, replaces containsValue scan)
   final _urlOwners = <String, Set<String>>{};
 
+  // original url → fallback url that actually holds the controller. Without
+  // this, a widget releasing with its original url leaves the fallback's
+  // ExoPlayer instance (and its native buffers) alive forever.
+  final _urlAliases = <String, String>{};
+
   // Per-URL broadcast streams — only that URL's StreamBuilder is woken up
   final _urlStreams = <String, StreamController<void>>{};
 
@@ -40,7 +45,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   /// Returns a stream that emits whenever [url]'s controller changes.
   /// Each widget subscribes only to its own URL — no cross-video rebuilds.
   Stream<void> watchUrl(String url) {
-    return (_urlStreams[url] ??= StreamController<void>.broadcast(sync: true))
+    return (_urlStreams[url] ??= StreamController<void>.broadcast())
         .stream;
   }
 
@@ -172,7 +177,13 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       // Update owner registration to the resolved URL (may differ via fallback)
       if (usedUrl != url) {
-        _urlOwners.putIfAbsent(usedUrl, () => {}).add(id);
+        _urlAliases[url] = usedUrl;
+        // Move all owners registered under the original url, not just this
+        // one — they all render the fallback controller now.
+        final originalOwners = _urlOwners.remove(url);
+        _urlOwners.putIfAbsent(usedUrl, () => {})
+          ..addAll(originalOwners ?? const {})
+          ..add(id);
       }
 
       // Notify only this URL's subscriber — zero impact on other videos
@@ -187,7 +198,10 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   void releaseVideo({required String url, required String id}) {
     _toBeAdded.remove(id);
 
-    final owners = _urlOwners[url];
+    // The controller may live under a fallback url (see _urlAliases)
+    final resolvedUrl = _urlAliases[url] ?? url;
+
+    final owners = _urlOwners[resolvedUrl];
     if (owners == null) {
       return;
     }
@@ -199,15 +213,16 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       return;
     }
 
-    _urlOwners.remove(url);
-    _chewieControllers.remove(url)?.dispose();
-    _videoControllers.remove(url)?.dispose();
+    _urlOwners.remove(resolvedUrl);
+    _urlAliases.removeWhere((_, target) => target == resolvedUrl);
+    _chewieControllers.remove(resolvedUrl)?.dispose();
+    _videoControllers.remove(resolvedUrl)?.dispose();
 
     // Notify before closing so the widget can show the loading placeholder
-    _notifyUrl(url);
+    _notifyUrl(resolvedUrl);
 
     // Close and remove the per-URL stream — no more listeners needed
-    _urlStreams.remove(url)?.close();
+    _urlStreams.remove(resolvedUrl)?.close();
   }
 
   // ── Playback helpers ──────────────────────────────────────────────────────

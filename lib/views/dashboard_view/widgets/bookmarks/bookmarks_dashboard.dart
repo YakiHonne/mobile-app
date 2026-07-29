@@ -9,6 +9,7 @@ import '../../../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_c
 import '../../../../models/bookmark_list_model.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/empty_list.dart';
@@ -258,14 +259,10 @@ class BookmarksHeader extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: Theme.of(context).cardColor,
       ),
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.addRaw,
-        width: 15,
-        height: 15,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 15,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

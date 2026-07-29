@@ -4,13 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/dotted_container.dart';
+import 'google_key_recovery_sheet.dart';
 import 'settings_text.dart';
 
 class KeysView extends HookWidget {
@@ -99,7 +102,7 @@ class KeysView extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                Icons.warning_amber_rounded,
+                LucideIcons.triangleAlert,
                 color: Theme.of(context).primaryColor,
               ),
               const SizedBox(
@@ -119,6 +122,46 @@ class KeysView extends HookWidget {
             height: kDefaultPadding,
           ),
           _textButton(context),
+          if (settingsCubit.privateKeyIndex != null &&
+              settingsCubit
+                  .isExternalGoogle(settingsCubit.privateKeyIndex!)) ...[
+            const Divider(
+              thickness: 0.5,
+              height: kDefaultPadding * 2,
+            ),
+            GestureDetector(
+              onTap: () => showGoogleKeyRecoverySheet(context),
+              behavior: HitTestBehavior.translucent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.t.pomRecoverTitle,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        context.t.recoverWithGoogle,
+                        style:
+                            Theme.of(context).textTheme.labelMedium!.copyWith(
+                                  color: Theme.of(context).highlightColor,
+                                ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    LucideIcons.chevronRight,
+                    color: Theme.of(context).highlightColor,
+                  ),
+                ],
+              ),
+            ),
+          ],
           const Divider(
             thickness: 0.5,
             height: kDefaultPadding * 2,
@@ -173,6 +216,7 @@ class KeysView extends HookWidget {
                     secretKey.value = true;
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -187,6 +231,7 @@ class KeysView extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -285,14 +330,10 @@ class DottedContainer extends StatelessWidget {
               IconButton(
                 onPressed: onClicked,
                 icon: isShown == null || isShown!
-                    ? SvgPicture.asset(
+                    ? AppIcon(
                         FeatureIcons.copy,
-                        width: 20,
-                        height: 20,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: Theme.of(context).primaryColorDark,
                       )
                     : Text(
                         context.t.show.capitalizeFirst(),

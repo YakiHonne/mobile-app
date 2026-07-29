@@ -12,6 +12,7 @@ import '../../../profile_view/widgets/profile_connections_view.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/place_holders.dart';
 import 'curation_content.dart';
 
@@ -43,53 +44,42 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WriteCurationCubit, WriteCurationState>(
-      listener: (context, state) {
-        if (state.relaysAddingData == UpdatingState.success) {
-          refreshController.loadComplete();
-        } else if (state.relaysAddingData == UpdatingState.idle) {
-          refreshController.loadNoData();
-        }
-      },
-      builder: (context, state) {
-        final searchTextField = TextField(
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            hintText: context.t.searchContentByTitle(
-              type: state.isArticlesCuration
-                  ? context.t.articles
-                  : context.t.videos,
+    return ModalSheetContainer(
+      child: BlocConsumer<WriteCurationCubit, WriteCurationState>(
+        listener: (context, state) {
+          if (state.relaysAddingData == UpdatingState.success) {
+            refreshController.loadComplete();
+          } else if (state.relaysAddingData == UpdatingState.idle) {
+            refreshController.loadNoData();
+          }
+        },
+        builder: (context, state) {
+          final searchTextField = TextField(
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              hintText: context.t.searchContentByTitle(
+                type: state.isArticlesCuration
+                    ? context.t.articles
+                    : context.t.videos,
+              ),
             ),
-          ),
-          controller: textEditingController,
-          style: Theme.of(context).textTheme.bodyMedium,
-          onChanged: (text) {
-            context.read<WriteCurationCubit>().setSearchText(text);
-          },
-        );
+            controller: textEditingController,
+            style: Theme.of(context).textTheme.bodyMedium,
+            onChanged: (text) {
+              context.read<WriteCurationCubit>().setSearchText(text);
+            },
+          );
 
-        return DraggableScrollableSheet(
-          initialChildSize: 0.9,
-          minChildSize: 0.40,
-          maxChildSize: 0.9,
-          expand: false,
-          builder: (context, scrollController) => Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 0.5,
-              ),
-            ),
-            child: _curationColumn(scrollController, context, searchTextField),
-          ),
-        );
-      },
+          return DraggableScrollableSheet(
+            initialChildSize: 0.9,
+            minChildSize: 0.40,
+            maxChildSize: 0.9,
+            expand: false,
+            builder: (context, scrollController) =>
+                _curationColumn(scrollController, context, searchTextField),
+          );
+        },
+      ),
     );
   }
 

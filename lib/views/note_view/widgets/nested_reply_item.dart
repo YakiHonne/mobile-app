@@ -32,11 +32,11 @@ class NestedReplyItem extends HookWidget {
   Widget build(BuildContext context) {
     final cached = cachedReplies[note.id];
     final replies = useState<List<DetailedNoteModel>>(cached ?? []);
-    final isLoading = useState(cached == null && depth < 3);
+    final isLoading = useState(cached == null && depth < 2);
 
     final updateReplies = useCallback(
       () async {
-        if (!context.mounted || depth >= 3) {
+        if (!context.mounted || depth >= 2) {
           isLoading.value = false;
           return;
         }

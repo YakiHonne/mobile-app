@@ -12,6 +12,7 @@ import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
 
@@ -55,20 +56,8 @@ class CashuSwapView extends HookWidget {
       return val > 0 && val <= (fromMint?.balance ?? 0);
     }, [amountText, fromMint?.balance]);
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       height: 90.h,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       child: Column(
         children: [
           ModalBottomSheetAppbar(
@@ -295,11 +284,13 @@ class CashuSwapView extends HookWidget {
                           }
                         },
                         iconColor: kTransparent,
-                        icon: !isWalletMode.value
-                            ? FeatureIcons.nwc
-                            : FeatureIcons.zap,
+                        icon: FeatureIcons.zap,
                         widget: !isWalletMode.value
-                            ? null
+                            ? SvgPicture.asset(
+                                FeatureIcons.nwc,
+                                width: 20,
+                                height: 20,
+                              )
                             : Image.asset(
                                 Images.cashu,
                                 width: 20,

@@ -53,6 +53,8 @@ class LocalDatabaseRepository {
   static const String _appTheme = 'app_theme';
   static const String _appMainColor = 'app_main_color';
   static const String _textScaleFactor = 'text_scale_factor';
+  static const String _fluidMode = 'fluid_mode';
+  static const String _fluidCards = 'fluid_cards';
   static const String _crashlyticsData = 'collect_data';
 
   // User Interface & Experience
@@ -62,6 +64,7 @@ class LocalDatabaseRepository {
   static const String _showNewSettingPopup = 'show_new_setting_popup';
   static const String _showCachePopup = 'show_cache_popup';
   static const String _versionNews = 'version_news';
+  static const String _featureTour = 'feature_tour_v2';
   static const String _pointsSystem = 'points_system';
 
   // Content & Communication
@@ -85,6 +88,7 @@ class LocalDatabaseRepository {
   static const String _wotConfigurations = 'wot_configurations';
   static const String _filterStatus = 'filter_status';
   static const String _defaultZapAmounts = 'default_zap_amounts';
+  static const String _paidNoteAdsSeenCounts = 'paid_note_ads_seen_counts';
   static const String _defaultReaction = 'default_reaction';
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
@@ -375,6 +379,27 @@ class LocalDatabaseRepository {
     _setPrefsData(_textScaleFactor, textScaleFactor);
   }
 
+  /// Text Scale Factor
+  bool getFluidMode() {
+    final isFluidMode = _getPrefsData<bool>(_fluidMode);
+    if (isFluidMode != null) {
+      return isFluidMode;
+    }
+
+    setFluidMode(true);
+    return true;
+  }
+
+  void setFluidMode(bool isFluidMode) {
+    _setPrefsData(_fluidMode, isFluidMode);
+  }
+
+  bool getFluidCards() => _getPrefsData<bool>(_fluidCards) ?? true;
+
+  void setFluidCards(bool useFluidCards) {
+    _setPrefsData(_fluidCards, useFluidCards);
+  }
+
   /// Analytics and Cache Configuration
   Future<void> setAutomaticCachePurge(bool enable) async {
     await _setPrefsData(_automaticCachePurge, enable);
@@ -474,6 +499,12 @@ class LocalDatabaseRepository {
     _setPrefsData(_versionNews, version);
     return version != currentVersion;
   }
+
+  /// Feature tour — new features intro + spotlight tour, shown once.
+  bool canDisplayFeatureTour() =>
+      !(_getPrefsData<bool>(_featureTour, defaultValue: false) ?? false);
+
+  Future<void> setFeatureTourSeen() => _setPrefsData(_featureTour, true);
 
   // ==================================================
   // CONTENT & COMMUNICATION
@@ -786,6 +817,24 @@ class LocalDatabaseRepository {
 
   Future<bool> getOneTapZap() async {
     return _getPrefsData<bool>(_enableOneTapZap, defaultValue: false) ?? false;
+  }
+
+  /// Paid Note Ads Configuration
+  Future<void> setPaidNoteAdsSeenCounts({required Map<String, int> counts}) async {
+    await _setPrefsData(_paidNoteAdsSeenCounts, jsonEncode(counts));
+  }
+
+  Future<Map<String, int>> getPaidNoteAdsSeenCounts() async {
+    final data = _getPrefsData<String>(_paidNoteAdsSeenCounts);
+    if (data == null) {
+      return {};
+    }
+    try {
+      return Map<String, int>.from(jsonDecode(data));
+    } catch (e) {
+      lg.i('Error parsing paid note ads seen counts: $e');
+      return {};
+    }
   }
 
   /// Messaging Configuration

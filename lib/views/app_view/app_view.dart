@@ -11,7 +11,9 @@ import '../../common/animations/heartbeat_fade.dart';
 import '../../logic/smart_widget_app_cubit/smart_widget_app_cubit.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
-import '../widgets/custom_icon_buttons.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import 'widgets/signer_view.dart';
 
@@ -67,31 +69,13 @@ class SmartWidgetAppView extends StatelessWidget {
           return onSign;
         },
       ),
-      child: Material(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: Column(
-            children: [
-              _contentContainer(context, uri),
-              _webViewContent(),
-              if (app != null) _infoRow(context, uri)
-            ],
-          ),
+      child: ModalSheetContainer(
+        child: Column(
+          children: [
+            _contentContainer(context, uri),
+            _webViewContent(),
+            if (app != null) _infoRow(context, uri)
+          ],
         ),
       ),
     );
@@ -179,13 +163,15 @@ class SmartWidgetAppView extends StatelessWidget {
         child: Row(
           spacing: kDefaultPadding / 2,
           children: [
-            CustomIconButton(
+            AppIconButton(
               onClicked: () {
                 Navigator.pop(context);
               },
               icon: FeatureIcons.closeRaw,
-              size: 15,
-              vd: -2,
+              size: 30,
+              iconSize: 20,
+              enableFluid: false,
+              buttonRadius: 300,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             _hostInfoRow(uri),
@@ -218,14 +204,10 @@ class SmartWidgetAppView extends StatelessWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.copy,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           PullDownMenuItem(
@@ -236,23 +218,21 @@ class SmartWidgetAppView extends StatelessWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.refresh,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
       },
-      buttonBuilder: (context, showMenu) => CustomIconButton(
-        onClicked: showMenu,
+      buttonBuilder: (context, showMenu) => AppIconButton(
+        onClicked: () => showMenu,
         icon: FeatureIcons.more,
-        size: 15,
-        vd: -2,
+        iconSize: 20,
+        size: 30,
+        enableFluid: false,
+        buttonRadius: 300,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
     );

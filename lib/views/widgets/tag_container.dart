@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 
 class TagContainer extends StatelessWidget {
   const TagContainer({
@@ -97,14 +98,10 @@ class DropdownTag extends StatelessWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.arrowDown,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColorDark,
               ),
             ]
           ],

@@ -146,4 +146,76 @@ class AppPreferredThemes {
       ),
     );
   }
+
+// GLASS THEME — graphite base
+  static ThemeData fluidGraphite({Color primaryColor = kMainColor}) =>
+      dark(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kCardDark,
+          borderColor: kOutlineDark,
+          foregroundColor: kWhite,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — noir base
+  static ThemeData fluidNoir({Color primaryColor = kMainColor}) =>
+      black(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kBlackCard,
+          borderColor: kBlackOutline,
+          foregroundColor: kWhite,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — neige base
+  static ThemeData fluidNeige({Color primaryColor = kMainColor}) =>
+      light(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kPaleGrey2,
+          borderColor: kOutlineLight,
+          foregroundColor: kBlack,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — ivory base
+  static ThemeData fluidIvory({Color primaryColor = kMainColor}) =>
+      cream(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kCreamCard,
+          borderColor: kCreamOutline,
+          foregroundColor: kBlack,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
 }

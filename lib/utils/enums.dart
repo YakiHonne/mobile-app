@@ -221,9 +221,9 @@ enum PlaceholderType { loading, error }
 
 enum RelayConnectivity { idle, searching, found, notFound }
 
-enum AppSigner { nSec, nPub, Amber, Bunker }
+enum AppSigner { nSec, nPub, Amber, Bunker, Google }
 
-enum ExternalKeyType { Amber, Bunker }
+enum ExternalKeyType { Amber, Bunker, Google }
 
 enum SendZapViewType {
   invoice,

@@ -204,30 +204,36 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   }) async {
     final cancel = BotToastUtils.showLoading();
 
-    try {
-      final wallet = await _createWalletOnServer(name);
+    final wallet = await _createWalletOnServer(name);
 
-      if (wallet != null && context.mounted) {
-        addNwc(wallet);
-        _showWalletCreatedSuccess(context);
-        await _showExportWalletModal(context, wallet);
-      } else {
-        _showWalletCreationError(context);
-      }
-    } catch (e) {
-      _handleWalletCreationError(e, context, onNameFailure);
-    } finally {
-      cancel.call();
+    if (wallet != null && context.mounted) {
+      addNwc(wallet);
+      _showWalletCreatedSuccess(context);
+      await _showExportWalletModal(context, wallet);
+    } else {
+      _showWalletCreationError(context);
     }
+
+    cancel();
   }
 
   Future<String?> _createWalletOnServer(String name) async {
-    final data = await HttpFunctionsRepository.post(
-      walletsUrl,
-      {'username': name},
-    ).timeout(const Duration(seconds: 5));
+    try {
+      final data = await HttpFunctionsRepository.post(
+        '${apiUrl}wallet',
+        {
+          'username': name,
+          'pubkey': currentSigner!.getPublicKey(),
+        },
+      ).timeout(const Duration(seconds: 5));
 
-    return data?['connectionSecret'];
+      return data?['connectionSecret'];
+    } on DioException catch (e) {
+      lg.i(e.response?.data['message']);
+      BotToastUtils.showError(
+          e.response?.data['message'] ?? t.errorCreatingWallet);
+      return null;
+    }
   }
 
   void _showWalletCreatedSuccess(BuildContext context) {
@@ -258,15 +264,6 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   }
 
   void _showWalletCreationError(BuildContext context) {
-    BotToastUtils.showError(context.t.errorCreatingWallet.capitalizeFirst());
-  }
-
-  void _handleWalletCreationError(
-      dynamic e, BuildContext context, Function() onNameFailure) {
-    if (e is DioException && e.type == DioExceptionType.badResponse) {
-      onNameFailure.call();
-      return;
-    }
     BotToastUtils.showError(context.t.errorCreatingWallet.capitalizeFirst());
   }
 
@@ -1809,6 +1806,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? pollOption,
     String? invoice,
     bool useExternalWallet = false,
+    List<List<String>>? extraTags,
   }) {
     if (state.selectedWalletId.isNotEmpty && !useExternalWallet) {
       final selectedWallet = state.wallets[state.selectedWalletId];
@@ -1827,6 +1825,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
           onSuccess: onSuccess,
           walletModel: selectedWallet,
           pollOption: pollOption,
+          extraTags: extraTags,
         );
       } else {
         onFailure.call(mainContext.t.errorUsingWallet.capitalizeFirst());
@@ -1841,6 +1840,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         onFailure: onFailure,
         onFinished: onFinished,
         pollOption: pollOption,
+        extraTags: extraTags,
       );
     }
   }
@@ -1870,6 +1870,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? aTag,
     String? pollOption,
     String? externalInvoice,
+    List<List<String>>? extraTags,
   }) async {
     _setZapLoadingState();
 
@@ -1890,6 +1891,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
               eventId: eventId,
               aTag: aTag,
               pollOption: pollOption,
+              extraTags: extraTags,
             );
 
     if (invoice != null) {
@@ -1989,6 +1991,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? aTag,
     String? pollOption,
     String? externalInvoice,
+    List<List<String>>? extraTags,
   }) async {
     if (state.defaultExternalWallet.isEmpty) {
       onFailure.call(mainContext.t.selectDefaultWallet.capitalizeFirst());
@@ -2004,6 +2007,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       eventId: eventId,
       aTag: aTag,
       pollOption: pollOption,
+      extraTags: extraTags,
       currentSigner!,
       currentUserRelayList.reads,
       specifiedWallet: wallets[state.defaultExternalWallet]!['deeplink'],
@@ -2129,6 +2133,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     Function(String)? onSuccess,
     String? eventId,
     bool? removeNostrEvent,
+    List<List<String>>? extraTags,
   }) async {
     if (sats == 0) {
       BotToastUtils.showError(
@@ -2154,6 +2159,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       comment: comment.isEmpty ? null : comment,
       relays,
       removeNostrEvent: removeNostrEvent,
+      extraTags: extraTags,
     );
 
     _setInvoiceGenerationLoadingState(false);
@@ -2436,6 +2442,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     _sub.cancel();
     _userStatusStream.cancel();
     _appLifeCycle?.cancel();
+    // wnc.dispose();
     return super.close();
   }
 }

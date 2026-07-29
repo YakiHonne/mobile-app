@@ -92,7 +92,7 @@ class PointSystemTier {
   }
 
   Map<String, dynamic> getStats() {
-    final isUnlocked = level >= min && (max == -1 || level <= max);
+    final isUnlocked = level >= min;
 
     return {
       'isUnlocked': isUnlocked,
@@ -169,6 +169,7 @@ class UserGlobalStats {
     }
 
     for (final e in map['tiers']) {
+      lg.i(map['tiers']);
       final tier = PointSystemTier.fromMap(
         e as Map<String, dynamic>,
         getCurrentLevel(userStat['xp'] as int? ?? 0),
@@ -233,4 +234,124 @@ class ZapsToPoints {
   bool shouldBeDeleted() {
     return (DateTime.now().toSecondsSinceEpoch() - actionTimeStamp) >= 120;
   }
+}
+
+// ── Points API response models ─────────────────────────────────────────────────
+
+class PointsConfig {
+  final int subscriptionBasicCost;
+  final int subscriptionPremiumCost;
+  final int paidNoteFree;
+  final int paidNoteBasic;
+  final int redeemCodeCost;
+  final int redeemCodeLimit;
+  final int redeemCodePeriodDays;
+  final int redeemCodeMonthlyLimit;
+
+  const PointsConfig({
+    required this.subscriptionBasicCost,
+    required this.subscriptionPremiumCost,
+    required this.paidNoteFree,
+    required this.paidNoteBasic,
+    required this.redeemCodeCost,
+    required this.redeemCodeLimit,
+    required this.redeemCodePeriodDays,
+    required this.redeemCodeMonthlyLimit,
+  });
+
+  factory PointsConfig.fromJson(Map<String, dynamic> j) {
+    final sub = j['subscription'] as Map<String, dynamic>? ?? {};
+    final pn = j['paid_note'] as Map<String, dynamic>? ?? {};
+    final rc = j['redeem_code'] as Map<String, dynamic>? ?? {};
+    return PointsConfig(
+      subscriptionBasicCost: (sub['basic'] as num?)?.toInt() ?? 10000,
+      subscriptionPremiumCost: (sub['premium'] as num?)?.toInt() ?? 20000,
+      paidNoteFree: (pn['free'] as num?)?.toInt() ?? 800,
+      paidNoteBasic: (pn['basic'] as num?)?.toInt() ?? 400,
+      redeemCodeCost: (rc['cost'] as num?)?.toInt() ?? 1000,
+      redeemCodeLimit: (rc['limit'] as num?)?.toInt() ?? 1,
+      redeemCodePeriodDays: (rc['period_days'] as num?)?.toInt() ?? 7,
+      redeemCodeMonthlyLimit: (rc['monthly_limit'] as num?)?.toInt() ?? 4,
+    );
+  }
+}
+
+class PointsPlanEligibility {
+  final int cost;
+  final bool eligible;
+
+  const PointsPlanEligibility({required this.cost, required this.eligible});
+
+  factory PointsPlanEligibility.fromJson(Map<String, dynamic> j) =>
+      PointsPlanEligibility(
+        cost: (j['cost'] as num?)?.toInt() ?? 0,
+        eligible: j['eligible'] as bool? ?? false,
+      );
+}
+
+class PointsEligibility {
+  final int points;
+  final PointsPlanEligibility basic;
+  final PointsPlanEligibility premium;
+
+  const PointsEligibility({
+    required this.points,
+    required this.basic,
+    required this.premium,
+  });
+
+  factory PointsEligibility.fromJson(Map<String, dynamic> j) {
+    final elig = j['eligibility'] as Map<String, dynamic>? ?? {};
+    return PointsEligibility(
+      points: (j['points'] as num?)?.toInt() ?? 0,
+      basic: PointsPlanEligibility.fromJson(
+          elig['basic'] as Map<String, dynamic>? ?? {}),
+      premium: PointsPlanEligibility.fromJson(
+          elig['premium'] as Map<String, dynamic>? ?? {}),
+    );
+  }
+
+  bool eligibleFor(String planId) {
+    if (planId == 'basic') {
+      return basic.eligible;
+    }
+    if (planId == 'premium') {
+      return premium.eligible;
+    }
+    return false;
+  }
+
+  int costFor(String planId) {
+    if (planId == 'basic') {
+      return basic.cost;
+    }
+    if (planId == 'premium') {
+      return premium.cost;
+    }
+    return 0;
+  }
+}
+
+class PointsRedeemCode {
+  final String code;
+  final int amount;
+  final bool status;
+  final String preImage;
+  final int reservedAt;
+
+  const PointsRedeemCode({
+    required this.code,
+    required this.amount,
+    required this.status,
+    required this.preImage,
+    required this.reservedAt,
+  });
+
+  factory PointsRedeemCode.fromJson(Map<String, dynamic> j) => PointsRedeemCode(
+        code: j['code'] as String? ?? '',
+        amount: (j['amount'] as num?)?.toInt() ?? 0,
+        status: j['status'] as bool? ?? false,
+        preImage: j['preImage'] as String? ?? '',
+        reservedAt: (j['reserved_at'] as num?)?.toInt() ?? 0,
+      );
 }

@@ -32,6 +32,7 @@ void showCupertinoAccountDeletedDialogue({
         TextButton(
           onPressed: onClicked,
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(
@@ -75,14 +76,14 @@ void showCupertinoDeletionDialogue({
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
-            _dotterContainer(context, toBeCopied),
+            _dotterContainer(alertContext, toBeCopied),
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
             Text(
-              context.t.deleteWalletConfirmation.capitalizeFirst(),
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                    color: Theme.of(context).primaryColor,
+              alertContext.t.deleteWalletConfirmation.capitalizeFirst(),
+              style: Theme.of(alertContext).textTheme.labelSmall!.copyWith(
+                    color: Theme.of(alertContext).primaryColor,
                   ),
             ),
           ],
@@ -92,6 +93,7 @@ void showCupertinoDeletionDialogue({
         TextButton(
           onPressed: onDelete,
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(
@@ -103,15 +105,16 @@ void showCupertinoDeletionDialogue({
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(alertContext);
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(
-            context.t.cancel.capitalizeFirst(),
+            alertContext.t.cancel.capitalizeFirst(),
             style: TextStyle(
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(alertContext).primaryColorDark,
             ),
           ),
         ),
@@ -185,6 +188,7 @@ Future<void> showCupertinoCustomDialogue({
         TextButton(
           onPressed: onClicked,
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(
@@ -201,6 +205,7 @@ Future<void> showCupertinoCustomDialogue({
             }
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
           ),
           child: Text(
@@ -246,6 +251,7 @@ TextButton _cancelButton(BuildContext context) {
       Navigator.pop(context);
     },
     style: TextButton.styleFrom(
+      backgroundBuilder: (_, __, child) => child!,
       backgroundColor: kTransparent,
     ),
     child: Text(
@@ -263,6 +269,7 @@ TextButton _deleteButton(
       }
     },
     style: TextButton.styleFrom(
+      backgroundBuilder: (_, __, child) => child!,
       backgroundColor: kTransparent,
     ),
     child: Text(
@@ -331,6 +338,7 @@ void showDeletedAccountDialogue({
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kTransparent,
               side: BorderSide(
                 color: Theme.of(context).primaryColorDark,

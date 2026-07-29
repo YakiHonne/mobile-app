@@ -65,6 +65,7 @@ class ProfileNotes extends StatelessWidget {
           return RepostNoteContainer(
             key: ValueKey(event.id),
             event: event,
+            isExtended: true,
             onMuteActionSuccess: (pubkey, status) {
               context.read<ProfileCubit>().onRemoveMutedContent(
                     pubkey,
@@ -79,6 +80,7 @@ class ProfileNotes extends StatelessWidget {
             isMain: false,
             addLine: false,
             enableReply: true,
+            isExtended: true,
             onMuteActionSuccess: (pubkey, status) {
               context.read<ProfileCubit>().onRemoveMutedContent(
                     pubkey,
@@ -104,6 +106,7 @@ class ProfileNotes extends StatelessWidget {
           return RepostNoteContainer(
             key: ValueKey(event.id),
             event: event,
+            isExtended: true,
             onMuteActionSuccess: (pubkey, status) {
               context.read<ProfileCubit>().onRemoveMutedContent(
                     pubkey,
@@ -118,6 +121,7 @@ class ProfileNotes extends StatelessWidget {
             isMain: false,
             addLine: false,
             enableReply: true,
+            isExtended: true,
             onMuteActionSuccess: (pubkey, status) {
               context.read<ProfileCubit>().onRemoveMutedContent(
                     pubkey,

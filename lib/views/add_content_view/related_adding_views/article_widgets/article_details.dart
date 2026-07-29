@@ -7,6 +7,7 @@ import '../../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/auto_complete_textfield.dart';
 import '../../../widgets/content_zap_splits.dart';
+import '../../../widgets/fluid_blur_container.dart';
 import '../../widgets/publish_preview_container.dart';
 
 class ArticleDetailsKey {
@@ -234,16 +235,9 @@ class ArticleCheckBoxListTile extends StatelessWidget {
     return GestureDetector(
       onTap: onToggle,
       behavior: HitTestBehavior.translucent,
-      child: Container(
+      child: FluidCardContainer(
         padding: const EdgeInsets.all(kDefaultPadding / 6),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
+        borderRadius: kDefaultPadding / 2,
         child: Row(
           children: [
             Checkbox(

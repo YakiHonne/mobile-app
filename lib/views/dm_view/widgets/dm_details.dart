@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
@@ -22,6 +23,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../giphy_view/giphy_view.dart';
 import '../../profile_view/profile_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
@@ -32,6 +34,7 @@ import '../../widgets/pull_down_global_button.dart';
 import '../../widgets/response_snackbar.dart';
 import 'camera_options_view.dart';
 import 'dm_gift_widget.dart';
+import 'dm_redeem_widget.dart';
 import 'send_gift_view.dart';
 
 /// Main DM Details screen with messaging functionality
@@ -300,8 +303,7 @@ class DmDetails extends HookWidget {
                               Slidable.of(context)?.close();
                             }
                           },
-                          icon: '',
-                          iconData: CupertinoIcons.reply,
+                          icon: FeatureIcons.reply,
                           size: 20,
                           backgroundColor: Theme.of(context).cardColor,
                         ),
@@ -368,7 +370,7 @@ class DmDetails extends HookWidget {
           ),
           child: Row(
             children: [
-              Icon(Icons.warning_amber_rounded,
+              Icon(LucideIcons.triangleAlert,
                   color: Theme.of(context).primaryColor),
               const SizedBox(width: kDefaultPadding / 2),
               Expanded(
@@ -484,7 +486,7 @@ class DmDetails extends HookWidget {
           ),
           IconButton(
             onPressed: () => _clearReply(replyId, replyPubkey, replyText),
-            icon: const Icon(Icons.close),
+            icon: const Icon(LucideIcons.x),
           ),
         ],
       ),
@@ -651,14 +653,10 @@ class DmTextfieldBox extends StatelessWidget {
       onTap: () => _showGiftView(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.dmGift,
-          width: _iconSize,
-          height: _iconSize,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: _iconSize,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -669,14 +667,10 @@ class DmTextfieldBox extends StatelessWidget {
       onTap: () => _showCameraOptions(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.camera,
-          width: _iconSize,
-          height: _iconSize,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: _iconSize,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -688,7 +682,7 @@ class DmTextfieldBox extends StatelessWidget {
       child: AnimatedRotation(
         duration: _animationDuration,
         turns: isShrinked.value ? 0 : 0.5,
-        child: const Icon(Icons.arrow_forward_ios_rounded, size: _iconSize),
+        child: const Icon(LucideIcons.chevronRight, size: _iconSize),
       ),
     );
   }
@@ -712,14 +706,10 @@ class DmTextfieldBox extends StatelessWidget {
   Widget _buildSendButton(BuildContext context, DmsState state) {
     return IconButton(
       onPressed: () => _sendMessage(context, state),
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         FeatureIcons.send,
-        width: _iconSize,
-        height: _iconSize,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: _iconSize,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -905,10 +895,10 @@ class DmTextfieldBox extends StatelessWidget {
 
   Future<void> _pasteText(BuildContext context) async {
     try {
-      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      final clipboardText = await getClipboardTextSafely();
 
-      if (clipboardData?.text != null) {
-        final text = clipboardData!.text!;
+      if (clipboardText != null) {
+        final text = clipboardText;
         final selection = textEditingController.selection;
         final currentText = textEditingController.text;
 
@@ -1016,7 +1006,7 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
             isSelectionMode.value = false;
             selectedEvents.value = {};
           },
-          icon: const Icon(Icons.close),
+          icon: const Icon(LucideIcons.x),
         ),
         title: Text(
           '${selectedEvents.value.length} ${context.t.selected.capitalizeFirst()}',
@@ -1025,14 +1015,10 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
         actions: [
           IconButton(
             onPressed: selectedEvents.value.isEmpty ? null : onDelete,
-            icon: SvgPicture.asset(
+            icon: AppIcon(
               FeatureIcons.trash,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                selectedEvents.value.isEmpty ? kDimGrey : kRed,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: selectedEvents.value.isEmpty ? kDimGrey : kRed,
             ),
           ),
           const SizedBox(width: kDefaultPadding / 2),
@@ -1068,7 +1054,7 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           iconSize: 20,
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(LucideIcons.chevronLeft),
         ),
       ),
     );
@@ -1157,12 +1143,10 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
           maxLines: 1,
         ),
         const SizedBox(width: kDefaultPadding / 4),
-        SvgPicture.asset(
+        AppIcon(
           FeatureIcons.verified,
-          width: 15,
-          height: 15,
-          colorFilter:
-              ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+          size: 15,
+          color: Theme.of(context).primaryColor,
         ),
         const SizedBox(width: kDefaultPadding / 4),
       ],
@@ -1231,7 +1215,7 @@ class DmChatContainer extends HookWidget {
             children: [
               if (isSelected) ...[
                 Icon(
-                  Icons.check_circle,
+                  LucideIcons.circleCheck,
                   color: Theme.of(context).primaryColor,
                   size: 20,
                 ),
@@ -1331,6 +1315,8 @@ class DmChatContainer extends HookWidget {
     String contentText,
     String? replyId,
   ) {
+    final redeemCode = _redeemCode(contentText);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(kDefaultPadding / 2),
@@ -1355,6 +1341,8 @@ class DmChatContainer extends HookWidget {
           if (replyId != null) _buildReplySection(context, replyId),
           if (_isGift(contentText))
             DMGiftWidget(token: contentText, isCurrentUser: isCurrentUser)
+          else if (redeemCode != null)
+            DMRedeemWidget(text: contentText, code: redeemCode)
           else
             _buildMessageContent(context, contentText),
           const SizedBox(height: kDefaultPadding / 4),
@@ -1439,22 +1427,18 @@ class DmChatContainer extends HookWidget {
                 ),
               )
             else
-              SvgPicture.asset(
+              AppIcon(
                 event.kind == EventKind.DIRECT_MESSAGE
                     ? FeatureIcons.nonSecure
                     : FeatureIcons.secure,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  !isCurrentUser
-                      ? kWhite
-                      : event.kind == EventKind.DIRECT_MESSAGE
-                          ? Theme.of(context)
-                              .primaryColorDark
-                              .withValues(alpha: 0.5)
-                          : kGreen,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: !isCurrentUser
+                    ? kWhite
+                    : event.kind == EventKind.DIRECT_MESSAGE
+                        ? Theme.of(context)
+                            .primaryColorDark
+                            .withValues(alpha: 0.5)
+                        : kGreen,
               ),
             const SizedBox(width: kDefaultPadding / 4),
             Flexible(
@@ -1476,6 +1460,16 @@ class DmChatContainer extends HookWidget {
         );
       },
     );
+  }
+
+  /// Redeem codes are only trusted from the YakiHonne gateway, never from
+  /// arbitrary peers — the card is the app vouching for the message.
+  String? _redeemCode(String text) {
+    if (isCurrentUser || event.pubkey != redeemTrustedSender) {
+      return null;
+    }
+
+    return extractRedeemCode(text);
   }
 
   bool _isGift(String text) {
@@ -1518,27 +1512,23 @@ class ChatContainerPullDownMenu extends StatelessWidget {
             title: context.t.copy.capitalizeFirst(),
             onTap: () => _handleCopy(context),
             itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.copy,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           PullDownMenuItem(
             title: context.t.reply.capitalizeFirst(),
             onTap: onMessageReply,
             itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-            iconWidget: const Icon(CupertinoIcons.reply, size: 20),
+            iconWidget: const Icon(LucideIcons.reply, size: 20),
           ),
           PullDownMenuItem(
             title: context.t.select.capitalizeFirst(),
             onTap: onSelect,
             itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-            iconWidget: const Icon(CupertinoIcons.checkmark_circle, size: 20),
+            iconWidget: const Icon(LucideIcons.circleCheck, size: 20),
           ),
           if (onDelete != null) ...[
             const PullDownMenuDivider.large(),
@@ -1547,14 +1537,10 @@ class ChatContainerPullDownMenu extends StatelessWidget {
               onTap: onDelete,
               isDestructive: true,
               itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-              iconWidget: SvgPicture.asset(
+              iconWidget: const AppIcon(
                 FeatureIcons.trash,
-                height: 20,
-                width: 20,
-                colorFilter: const ColorFilter.mode(
-                  kRed,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: kRed,
               ),
             ),
           ]
@@ -1568,7 +1554,7 @@ class ChatContainerPullDownMenu extends StatelessWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
         icon: Icon(
-          Icons.more_vert_rounded,
+          LucideIcons.moreVertical,
           color: Theme.of(context).primaryColorDark,
           size: 20,
         ),

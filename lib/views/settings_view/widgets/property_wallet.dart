@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/zaps/zap.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -17,6 +18,7 @@ import '../../../utils/global_keys.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/widgets/export_wallets.dart';
 import '../../wallet_view/widgets/wallet_options_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/modal_with_blur.dart';
@@ -173,14 +175,10 @@ class PropertyWallets extends HookWidget {
                     const SizedBox(
                       width: kDefaultPadding / 4,
                     ),
-                    SvgPicture.asset(
+                    AppIcon(
                       FeatureIcons.arrowDown,
-                      width: 15,
-                      height: 15,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColorDark,
-                        BlendMode.srcIn,
-                      ),
+                      size: 15,
+                      color: Theme.of(context).primaryColorDark,
                     ),
                   ],
                 ),
@@ -300,6 +298,7 @@ class PropertyWallets extends HookWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: VisualDensity.comfortable,
                   backgroundColor: Theme.of(context).cardColor,
                 ),
@@ -377,11 +376,18 @@ class PropertyWallets extends HookWidget {
           ),
           child: Row(
             children: [
-              SvgPicture.asset(
-                wallet.value.kind == 1 ? FeatureIcons.nwc : FeatureIcons.alby,
-                width: 20,
-                height: 20,
-              ),
+              if (wallet.value.kind == 1)
+                SvgPicture.asset(
+                  FeatureIcons.nwc,
+                  width: 20,
+                  height: 20,
+                )
+              else
+                SvgPicture.asset(
+                  FeatureIcons.alby,
+                  width: 20,
+                  height: 20,
+                ),
               const SizedBox(
                 width: kDefaultPadding / 2,
               ),
@@ -409,14 +415,10 @@ class PropertyWallets extends HookWidget {
                       vertical: -4,
                     ),
                   ),
-                  icon: SvgPicture.asset(
+                  icon: AppIcon(
                     FeatureIcons.repost,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 20,
+                    color: Theme.of(context).primaryColorDark,
                   ),
                 ),
               ],
@@ -434,7 +436,7 @@ class PropertyWallets extends HookWidget {
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: const Icon(
-                      Icons.check_rounded,
+                      LucideIcons.check,
                       size: 15,
                     ),
                   ),
@@ -491,14 +493,10 @@ class PropertyWallets extends HookWidget {
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,
               ),
-              iconWidget: SvgPicture.asset(
+              iconWidget: AppIcon(
                 FeatureIcons.link,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           PullDownMenuItem(
@@ -519,14 +517,10 @@ class PropertyWallets extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.copy,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           if (!isAlby) ...[
@@ -548,14 +542,10 @@ class PropertyWallets extends HookWidget {
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,
               ),
-              iconWidget: SvgPicture.asset(
+              iconWidget: AppIcon(
                 FeatureIcons.copy,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
             PullDownMenuItem(
@@ -573,14 +563,10 @@ class PropertyWallets extends HookWidget {
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,
               ),
-              iconWidget: SvgPicture.asset(
+              iconWidget: AppIcon(
                 FeatureIcons.export,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           ],
@@ -609,14 +595,10 @@ class PropertyWallets extends HookWidget {
               textStyle: textStyle,
             ),
             isDestructive: true,
-            iconWidget: SvgPicture.asset(
+            iconWidget: const AppIcon(
               FeatureIcons.trash,
-              height: 20,
-              width: 20,
-              colorFilter: const ColorFilter.mode(
-                kRed,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: kRed,
             ),
           ),
         ];

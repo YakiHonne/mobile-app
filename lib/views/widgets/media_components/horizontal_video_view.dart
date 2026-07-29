@@ -14,13 +14,16 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/video_model.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../app_icon.dart';
 import '../buttons_containers_widgets.dart';
 import '../content_stats.dart';
 import '../custom_app_bar.dart';
 import '../data_providers.dart';
+import '../fluid_blur_container.dart';
 import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import '../profile_picture.dart';
+import '../subscription_badge_view.dart';
 import 'horizontal_video_container.dart';
 
 class HorizontalVideoView extends HookWidget {
@@ -62,14 +65,54 @@ class HorizontalVideoView extends HookWidget {
             appBar: CustomAppBar(
               title: context.t.video.capitalizeFirst(),
             ),
-            bottomNavigationBar: _bottomNavBar(context),
+            bottomNavigationBar:
+                isFluid() ? null : _bottomNavBar(context),
             body: isUserMuted(video.pubkey)
                 ? Center(
                     child: MutedUserContent(
                       pubkey: video.pubkey,
                     ),
                   )
-                : _content(videoSuggestions),
+                : isFluid()
+                    ? Stack(
+                        children: [
+                          _content(videoSuggestions),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Builder(
+                              builder: (context) => Padding(
+                                padding: EdgeInsets.only(
+                                  left: kDefaultPadding / 2,
+                                  right: kDefaultPadding / 2,
+                                  bottom:
+                                      MediaQuery.of(context).padding.bottom +
+                                          kDefaultPadding / 4,
+                                  top: kDefaultPadding / 4,
+                                ),
+                                child: FluidBlurContainer(
+                                  customBorderRadius: BorderRadius.circular(
+                                      kDefaultPadding * 1.5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: kDefaultPadding / 2,
+                                    vertical: kDefaultPadding / 2,
+                                  ),
+                                  child: ContentStats(
+                                    attachedEvent: video,
+                                    pubkey: video.pubkey,
+                                    kind: video.kind,
+                                    identifier: video.id,
+                                    createdAt: video.createdAt,
+                                    title: video.title,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : _content(videoSuggestions),
           );
         },
       ),
@@ -387,9 +430,9 @@ class HorizontalVideoView extends HookWidget {
     );
   }
 
-  NewBorderedIconButton _sendZap(
+  CustomizedIconButton _sendZap(
       BuildContext context, HorizontalVideoState state) {
-    return NewBorderedIconButton(
+    return CustomizedIconButton(
       onClicked: () {
         showModalBottomSheet(
           elevation: 0,
@@ -429,6 +472,7 @@ class HorizontalVideoView extends HookWidget {
               }
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               visualDensity: const VisualDensity(
                 vertical: -1,
               ),
@@ -473,19 +517,17 @@ class HorizontalVideoView extends HookWidget {
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.verified,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColor,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: Theme.of(context).primaryColor,
                 ),
               ],
             )
           else
             const SizedBox.shrink(),
+          const SizedBox(width: kDefaultPadding / 4),
+          SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
         ],
       ),
     );

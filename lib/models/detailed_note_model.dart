@@ -22,6 +22,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
   final String stringifiedEvent;
   final List<String> pTags;
   final bool isPaid;
+  final bool isPremium;
   final String? originId;
   final bool? isOriginEtag;
   final int kind;
@@ -41,6 +42,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     required this.stringifiedEvent,
     required this.pTags,
     required this.isPaid,
+    this.isPremium = false,
     this.originId,
     this.isOriginEtag,
     required this.kind,
@@ -67,6 +69,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       'stringifiedEvent': stringifiedEvent,
       'pTags': pTags,
       'isPaid': isPaid,
+      'isPremium': isPremium,
       'isOriginEtag': isOriginEtag,
       'kind': kind,
       'rootKind': rootKind,
@@ -90,6 +93,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
       originId: map['originId'],
       isOriginEtag: map['isOriginEtag'],
       isPaid: map['isPaid'],
+      isPremium: map['isPremium'] ?? false,
       kind: map['kind'] ?? EventKind.TEXT_NOTE,
       rootKind: map['rootKind'],
       rootPubkey: map['rootPubkey'],
@@ -105,6 +109,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     String? originEventId;
     bool? isOriginEtag;
     bool isPaid = false;
+    bool isPremium = false;
     int? rootKind;
     String? rootPubkey;
     String? rootId;
@@ -140,6 +145,8 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
           isQuote = true;
         } else if (tag.first == FN_ENCRYPTION && tag.length > 1) {
           isPaid = true;
+        } else if (tag.first == 'nip63') {
+          isPremium = true;
         }
       }
     }
@@ -182,6 +189,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
           )
           .toList(),
       isPaid: isPaid,
+      isPremium: isPremium,
       isOriginEtag: isOriginEtag,
       kind: event.kind,
       rootKind: rootKind,
@@ -232,6 +240,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
         stringifiedEvent,
         pTags,
         isPaid,
+        isPremium,
         isOriginEtag,
         kind,
         rootKind,

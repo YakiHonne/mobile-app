@@ -1,6 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,9 +19,6 @@ import 'utils/utils.dart';
 import 'views/widgets/relay_progress_bar.dart';
 
 class AppConstants {
-  static const String sentryDsn =
-      'https://d6e3ba87d6dfb18e7dc4dc75ff028eda@o4508401650565120.ingest.de.sentry.io/4508401653317712';
-
   // Pre-defined breakpoints to avoid recreation
   static const List<Breakpoint> responsiveBreakpoints = [
     Breakpoint(start: 0, end: 719, name: MOBILE),
@@ -49,9 +47,11 @@ void main() async {
 
   if (nostrRepository.isCrashlyticsEnabled) {
     await SentryFlutter.init(
-      (options) {
-        options.dsn = AppConstants.sentryDsn;
-      },
+      (options) => options
+        ..dsn = dotenv.env['GLITCH_TIP_DSN']
+        ..tracesSampleRate = 0.01
+        ..enableAppHangTracking = false
+        ..enableAutoSessionTracking = false,
       appRunner: () async {
         runnerApp();
       },
@@ -97,6 +97,8 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: themeCubit),
         BlocProvider.value(value: settingsCubit),
         BlocProvider.value(value: pointsManagementCubit),
+        BlocProvider.value(value: subscriptionCubit),
+        BlocProvider.value(value: subscriptionBadgeCubit),
         BlocProvider.value(value: routingCubit),
         BlocProvider.value(value: walletManagerCubit),
         BlocProvider.value(value: cashuWalletManagerCubit),

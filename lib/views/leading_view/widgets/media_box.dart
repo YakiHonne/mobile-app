@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/leading_cubit/leading_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
@@ -259,7 +260,7 @@ class LeadingMediaContainer extends HookWidget {
                   color: kBlack.withValues(alpha: 0.7),
                 ),
                 child: const Icon(
-                  Icons.play_arrow_rounded,
+                  LucideIcons.play,
                   color: kWhite,
                 ),
               ),

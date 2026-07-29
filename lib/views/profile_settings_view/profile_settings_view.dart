@@ -1,14 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../logic/profile_settings_cubit/profile_settings_cubit.dart';
+import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../settings_view/widgets/relays_update.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/dotted_container.dart';
+import '../widgets/modal_sheet_container.dart';
 import 'widgets/profile_settings_media.dart';
 
 class ProfileSettingsView extends HookWidget {
@@ -83,7 +88,24 @@ class ProfileSettingsView extends HookWidget {
             return AbsorbPointer(
               absorbing: state.isUploading,
               child: TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  final hasNoIdentity =
+                      name.text.trim().isEmpty && picture.text.trim().isEmpty;
+
+                  if (hasNoIdentity) {
+                    final relayListEvent = await nc.db
+                        .loadUserRelayList(currentUserRelayList.pubkey);
+
+                    if (!context.mounted) {
+                      return;
+                    }
+
+                    if (relayListEvent == null) {
+                      _showRelayListRequiredSheet(context);
+                      return;
+                    }
+                  }
+
                   context.read<ProfileSettingsCubit>().updateMetadata(
                     data: {
                       'about': description.text.trim(),
@@ -103,11 +125,6 @@ class ProfileSettingsView extends HookWidget {
                     },
                   );
                 },
-                style: TextButton.styleFrom(
-                  backgroundColor: state.isUploading
-                      ? Theme.of(context).cardColor
-                      : Theme.of(context).primaryColor,
-                ),
                 child: Text(
                   state.isUploading ? 'Uploading image...' : 'Update Profile',
                 ),
@@ -115,6 +132,74 @@ class ProfileSettingsView extends HookWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _showRelayListRequiredSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => const _RelayListRequiredSheet(),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      elevation: 0,
+      backgroundColor: kTransparent,
+    );
+  }
+}
+
+class _RelayListRequiredSheet extends StatelessWidget {
+  const _RelayListRequiredSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalSheetContainer(
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding,
+        vertical: kDefaultPadding / 1.5,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const ModalBottomSheetHandle(),
+          AppIcon(
+            FeatureIcons.relays,
+            size: 40,
+            color: Theme.of(context).primaryColorDark,
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            context.t.relayListRequiredTitle.capitalizeFirst(),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: kDefaultPadding / 4),
+          Text(
+            context.t.relayListRequiredDesc.capitalizeFirst(),
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: kDefaultPadding),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                YNavigator.pushPage(
+                  context,
+                  (context) => RelayUpdateView(),
+                );
+              },
+              child: Text(context.t.goToRelaySettings.capitalizeFirst()),
+            ),
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+        ],
       ),
     );
   }
@@ -195,7 +280,7 @@ class ProfileSettingsMetadata extends HookWidget {
               style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
                 hintText: context.t.yourName.capitalizeFirst(),
-                prefixIcon: const Icon(CupertinoIcons.at),
+                prefixIcon: const Icon(LucideIcons.atSign),
               ),
             ),
             spacer,
@@ -277,6 +362,7 @@ class ProfileSettingsMetadata extends HookWidget {
                         isExpanded.value = !isExpanded.value;
                       },
                       style: TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
                         backgroundColor: kTransparent,
                       ),
                       icon: Text(
@@ -287,14 +373,12 @@ class ProfileSettingsMetadata extends HookWidget {
                               color: Theme.of(context).primaryColor,
                             ),
                       ),
-                      label: SvgPicture.asset(
+                      label: AppIcon(
                         isExpanded.value
                             ? FeatureIcons.arrowUp
                             : FeatureIcons.arrowDown,
-                        colorFilter: ColorFilter.mode(
-                            Theme.of(context).primaryColor, BlendMode.srcIn),
-                        width: 20,
-                        height: 20,
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
                       ),
                     ),
                   ),

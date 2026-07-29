@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'tooltip_with_text.dart';
 
 class MutedMark extends StatelessWidget {
@@ -19,14 +20,10 @@ class MutedMark extends StatelessWidget {
       child: CircleAvatar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         radius: 12,
-        child: SvgPicture.asset(
+        child: const AppIcon(
           FeatureIcons.mute,
-          width: 15,
-          height: 15,
-          colorFilter: const ColorFilter.mode(
-            kRed,
-            BlendMode.srcIn,
-          ),
+          size: 15,
+          color: kRed,
         ),
       ),
     );

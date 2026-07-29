@@ -16,6 +16,8 @@ class ThemeCubit extends Cubit<ThemeState> {
           ThemeState(
             textScaleFactor: localDatabaseRepository.getTextScaleFactor(),
             mode: AppThemeMode.graphite,
+            isFluid: localDatabaseRepository.getFluidMode(),
+            fluidCards: localDatabaseRepository.getFluidCards(),
             theme: AppPreferredThemes.dark(),
             primaryColor: kMainColor,
           ),
@@ -34,6 +36,26 @@ class ThemeCubit extends Cubit<ThemeState> {
     );
   }
 
+  void setFluidMode(bool isFluidMode) {
+    localDatabaseRepository.setFluidMode(isFluidMode);
+    if (!isClosed) {
+      emit(state.copyWith(isFluid: isFluidMode));
+
+      setTheme(
+        mode: state.mode,
+        primaryColor: state.primaryColor,
+        saveLocally: false,
+      );
+    }
+  }
+
+  void setFluidCards(bool enabled) {
+    localDatabaseRepository.setFluidCards(enabled);
+    if (!isClosed) {
+      emit(state.copyWith(fluidCards: enabled));
+    }
+  }
+
   void setTextScaleFactor(double tsf) {
     localDatabaseRepository.setTextScaleFactor(tsf);
     if (!isClosed) {
@@ -47,19 +69,28 @@ class ThemeCubit extends Cubit<ThemeState> {
     bool saveLocally = true,
   }) {
     ThemeData theme;
+    final isGlass = state.isFluid;
 
     switch (mode) {
       case AppThemeMode.graphite:
-        theme = AppPreferredThemes.dark(primaryColor: primaryColor);
+        theme = isGlass
+            ? AppPreferredThemes.fluidGraphite(primaryColor: primaryColor)
+            : AppPreferredThemes.dark(primaryColor: primaryColor);
         enableDarkEasyLoading();
       case AppThemeMode.noir:
-        theme = AppPreferredThemes.black(primaryColor: primaryColor);
+        theme = isGlass
+            ? AppPreferredThemes.fluidNoir(primaryColor: primaryColor)
+            : AppPreferredThemes.black(primaryColor: primaryColor);
         enableDarkEasyLoading();
       case AppThemeMode.neige:
-        theme = AppPreferredThemes.light(primaryColor: primaryColor);
+        theme = isGlass
+            ? AppPreferredThemes.fluidNeige(primaryColor: primaryColor)
+            : AppPreferredThemes.light(primaryColor: primaryColor);
         enableLightEasyLoading();
       case AppThemeMode.ivory:
-        theme = AppPreferredThemes.cream(primaryColor: primaryColor);
+        theme = isGlass
+            ? AppPreferredThemes.fluidIvory(primaryColor: primaryColor)
+            : AppPreferredThemes.cream(primaryColor: primaryColor);
         enableLightEasyLoading();
     }
 

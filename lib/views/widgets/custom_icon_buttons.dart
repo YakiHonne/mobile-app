@@ -2,9 +2,11 @@
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../utils/utils.dart';
 import 'animated_flip_counter.dart';
+import 'app_icon.dart';
 
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
@@ -15,7 +17,6 @@ class CustomIconButton extends StatelessWidget {
     required this.backgroundColor,
     this.iconColor,
     this.textColor,
-    this.iconData,
     this.imageUrl,
     this.widget,
     this.emoji,
@@ -27,16 +28,15 @@ class CustomIconButton extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.fontSize,
-    this.blendMode,
+    this.isGlass = false,
   });
 
   final Function() onClicked;
   final Function()? onLongPress;
   final Function()? onDoubleTap;
-  final String icon;
+  final IconData icon;
   final double size;
   final Color backgroundColor;
-  final IconData? iconData;
   final String? imageUrl;
   final Widget? widget;
   final String? emoji;
@@ -48,7 +48,7 @@ class CustomIconButton extends StatelessWidget {
   final String? value;
   final double? vd;
   final double? fontSize;
-  final BlendMode? blendMode;
+  final bool isGlass;
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +65,12 @@ class CustomIconButton extends StatelessWidget {
             children: [
               if (widget != null)
                 widget!
-              else if (iconData != null)
-                Icon(
-                  iconData,
-                  size: size,
-                  color: iconColor ?? Theme.of(context).primaryColorDark,
-                )
               else if (emoji != null)
                 _emoji(context)
               else if (imageUrl != null)
                 _image(context)
               else
-                _svg(context),
+                _icon(context),
               if (value != null) ...[
                 _text(context),
               ],
@@ -88,6 +82,44 @@ class CustomIconButton extends StatelessWidget {
   }
 
   ButtonStyle _style() {
+    if (isGlass) {
+      return ButtonStyle(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: const WidgetStatePropertyAll(StadiumBorder()),
+        visualDensity:
+            vd != null ? VisualDensity(vertical: vd!, horizontal: vd!) : null,
+        backgroundBuilder: (context, states, child) {
+          final bs = BorderSide(
+            color: borderColor ?? Theme.of(context).dividerColor,
+            width: borderWidth ?? 0.5,
+          );
+
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                top: bs.copyWith(width: 1),
+                left: bs,
+                right: bs,
+                bottom: bs,
+              ),
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  backgroundColor.withValues(alpha: 0.95),
+                  backgroundColor,
+                  backgroundColor.withValues(alpha: 0.85),
+                ],
+                stops: const [0.0, 0.15, 1.0],
+              ),
+            ),
+            child: child,
+          );
+        },
+      );
+    }
+
     return IconButton.styleFrom(
       backgroundColor: backgroundColor,
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -131,17 +163,13 @@ class CustomIconButton extends StatelessWidget {
     );
   }
 
-  SvgPicture _svg(BuildContext context) {
-    return SvgPicture.asset(
+  AppIcon _icon(BuildContext context) {
+    return AppIcon(
       icon,
-      width: size,
-      height: size,
-      colorFilter: iconColor == kTransparent
+      size: size,
+      color: iconColor == kTransparent
           ? null
-          : ColorFilter.mode(
-              iconColor ?? Theme.of(context).primaryColorDark,
-              blendMode ?? BlendMode.srcIn,
-            ),
+          : iconColor ?? Theme.of(context).primaryColorDark,
     );
   }
 
@@ -150,28 +178,21 @@ class CustomIconButton extends StatelessWidget {
       imageUrl!,
       width: size,
       height: size,
+      // ponytail: decode at display size, not source size.
+      cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
       fit: BoxFit.cover,
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             return Center(
-              child: SizedBox(
-                width: size,
-                height: size,
-                child: const CircularProgressIndicator(),
+              child: SpinKitCircle(
+                color: Theme.of(context).primaryColorDark,
+                size: size,
               ),
             );
 
           case LoadState.failed:
-            return SvgPicture.asset(
-              icon,
-              width: size,
-              height: size,
-              colorFilter: ColorFilter.mode(
-                iconColor ?? Theme.of(context).primaryColorDark,
-                blendMode ?? BlendMode.srcIn,
-              ),
-            );
+            return _icon(context);
 
           case LoadState.completed:
             return null;
@@ -213,7 +234,7 @@ class CustomIconButtonWithTooltip extends StatelessWidget {
 
   final Function() onClicked;
   final String message;
-  final String icon;
+  final IconData icon;
   final double size;
   final Color backgroundColor;
   final Color? iconColor;
@@ -236,7 +257,11 @@ class CustomIconButtonWithTooltip extends StatelessWidget {
         icon: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _svg(context),
+            AppIcon(
+              icon,
+              size: size,
+              color: iconColor ?? Theme.of(context).primaryColorDark,
+            ),
             if (value != null) ...[
               _text(context),
             ],
@@ -255,18 +280,6 @@ class CustomIconButtonWithTooltip extends StatelessWidget {
             .textTheme
             .labelLarge!
             .copyWith(fontWeight: FontWeight.w500),
-      ),
-    );
-  }
-
-  SvgPicture _svg(BuildContext context) {
-    return SvgPicture.asset(
-      icon,
-      width: size,
-      height: size,
-      colorFilter: ColorFilter.mode(
-        iconColor ?? Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
       ),
     );
   }

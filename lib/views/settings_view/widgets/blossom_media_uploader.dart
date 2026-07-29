@@ -10,6 +10,7 @@ import 'package:path_drawing/path_drawing.dart';
 import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class BlossomMediaUploader extends HookWidget {
   const BlossomMediaUploader({super.key});
@@ -86,14 +87,10 @@ class BlossomMediaUploader extends HookWidget {
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: SvgPicture.asset(
+                            child: AppIcon(
                               FeatureIcons.media,
-                              width: 40,
-                              height: 40,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).primaryColorDark,
-                                BlendMode.srcIn,
-                              ),
+                              size: 40,
+                              color: Theme.of(context).primaryColorDark,
                             ),
                           ),
                           const SizedBox(height: kDefaultPadding),
@@ -132,14 +129,10 @@ class BlossomMediaUploader extends HookWidget {
                       color: Theme.of(context).colorScheme.error,
                       shape: BoxShape.circle,
                     ),
-                    child: SvgPicture.asset(
+                    child: const AppIcon(
                       FeatureIcons.closeRaw,
-                      colorFilter: const ColorFilter.mode(
-                        kWhite,
-                        BlendMode.srcIn,
-                      ),
-                      width: 16,
-                      height: 16,
+                      color: kWhite,
+                      size: 16,
                     ),
                   ),
                 ),
@@ -169,14 +162,10 @@ class BlossomMediaUploader extends HookWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.video,
-                          width: 40,
-                          height: 40,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).hintColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 40,
+                          color: Theme.of(context).hintColor,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -332,6 +321,7 @@ class BlossomMediaUploader extends HookWidget {
               }
             : null,
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: canUpload
               ? Theme.of(context).cardColor
               : Theme.of(context).disabledColor,

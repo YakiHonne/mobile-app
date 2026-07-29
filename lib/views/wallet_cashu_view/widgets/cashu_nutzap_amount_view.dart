@@ -10,6 +10,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
@@ -84,20 +85,8 @@ class CashuNutZapAmountView extends HookWidget {
       }
     }
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       height: 85.h,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       child: Column(
         children: [
           ModalBottomSheetAppbar(

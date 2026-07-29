@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -152,29 +152,21 @@ class HorizontalVideoContainer extends StatelessWidget {
   AspectRatio _videoThumbnail(BuildContext context) {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: CachedNetworkImage(
-        imageUrl: video.thumbnail,
+      child: ExtendedImage.network(
+        video.thumbnail,
         fit: BoxFit.cover,
-        cacheManager: imagesCacheManager,
-        memCacheWidth: MediaQuery.of(context).size.width.toInt(),
-        imageBuilder: (context, imageProvider) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                kDefaultPadding / 2,
-              ),
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-        errorWidget: (context, url, error) => const NoThumbnailPlaceHolder(
-          isError: true,
-          isMonoColor: true,
-          icon: '',
+        cacheWidth: MediaQuery.of(context).size.width.toInt(),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(
+          kDefaultPadding / 2,
         ),
+        loadStateChanged: (state) =>
+            state.extendedImageLoadState == LoadState.failed
+                ? const NoThumbnailPlaceHolder(
+                    isError: true,
+                    isMonoColor: true,
+                  )
+                : null,
       ),
     );
   }

@@ -9,7 +9,8 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
-import '../widgets/custom_icon_buttons.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/dotted_container.dart';
 import 'widgets/relay_content_feed.dart';
 
@@ -41,35 +42,36 @@ class RelayFeedView extends StatelessWidget {
         floatingActionButton: canSign()
             ? Builder(
                 builder: (context) {
-                  return FloatingActionButton(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    shape: const CircleBorder(),
-                    heroTag: 'content_creation',
-                    child: SvgPicture.asset(
-                      FeatureIcons.addRaw,
-                      width: 20,
-                      height: 20,
-                      colorFilter: const ColorFilter.mode(
-                        kWhite,
-                        BlendMode.srcIn,
+                  return Padding(
+                    padding: isFluid()
+                        ? const EdgeInsets.only(bottom: kDefaultPadding * 2 + 4)
+                        : EdgeInsets.zero,
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: const CircleBorder(),
+                      heroTag: 'content_creation',
+                      child: const AppIcon(
+                        FeatureIcons.addRaw,
+                        size: 20,
+                        color: kWhite,
                       ),
+                      onPressed: () {
+                        doIfCanSign(
+                          func: () {
+                            HapticFeedback.mediumImpact();
+                            YNavigator.pushPage(
+                              context,
+                              (_) => AddContentView(
+                                contentType: AppContentType.note,
+                                selectedExternalRelay:
+                                    context.read<RelayFeedCubit>().relay,
+                              ),
+                            );
+                          },
+                          context: context,
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      doIfCanSign(
-                        func: () {
-                          HapticFeedback.mediumImpact();
-                          YNavigator.pushPage(
-                            context,
-                            (_) => AddContentView(
-                              contentType: AppContentType.note,
-                              selectedExternalRelay:
-                                  context.read<RelayFeedCubit>().relay,
-                            ),
-                          );
-                        },
-                        context: context,
-                      );
-                    },
                   );
                 },
               )
@@ -89,7 +91,7 @@ class RelayFeedView extends StatelessWidget {
           relay,
         );
 
-        return CustomIconButton(
+        return AppIconButton(
           onClicked: () {
             relayInfoCubit.setAndUpdateFavoriteRelay(
               relay,
@@ -101,8 +103,8 @@ class RelayFeedView extends StatelessWidget {
           iconColor: isAvailable
               ? Theme.of(context).primaryColor
               : Theme.of(context).primaryColorDark,
-          size: 18,
-          vd: -1,
+          size: 40,
+          iconSize: 20,
         );
       },
     );

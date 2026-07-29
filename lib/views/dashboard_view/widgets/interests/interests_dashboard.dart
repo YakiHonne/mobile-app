@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
@@ -58,6 +59,7 @@ class InterestsDashboard extends HookWidget {
                 );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.comfortable,
               ),
               label: Text(
@@ -68,7 +70,7 @@ class InterestsDashboard extends HookWidget {
                     ),
               ),
               icon: const Icon(
-                Icons.add,
+                LucideIcons.plus,
                 size: 15,
               ),
             ),
@@ -135,6 +137,7 @@ class InterestsDashboard extends HookWidget {
                 );
               },
               style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: VisualDensity.comfortable),
               child: Text(
                 context.t.manageInterests.capitalize(),
@@ -226,7 +229,7 @@ class DashboardInterestContainer extends StatelessWidget {
                   ? FeatureIcons.addRaw
                   : interestStatus == InterestStatus.delete
                       ? FeatureIcons.trash
-                      : ToastsIcons.check,
+                      : LucideIcons.check,
               size: 17,
               iconColor: interestStatus == InterestStatus.delete
                   ? Theme.of(context).primaryColorDark
@@ -243,7 +246,7 @@ class DashboardInterestContainer extends StatelessWidget {
               width: kDefaultPadding / 2,
             ),
             const Icon(
-              Icons.drag_indicator_rounded,
+              LucideIcons.gripVertical,
               size: 20,
             ),
           ],

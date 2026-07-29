@@ -16,46 +16,67 @@ class WalletSwitcherFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         HapticFeedback.mediumImpact();
         context.read<MainCubit>().changeWalletType();
       },
-      shape: CircleBorder(
-        side: BorderSide(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 1.5,
+          vertical: kDefaultPadding / 3,
         ),
-      ),
-      elevation: 2,
-      backgroundColor: Theme.of(context).cardColor,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        reverseDuration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeOutBack,
-        switchOutCurve: Curves.easeInBack,
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return ScaleTransition(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: const Duration(milliseconds: 300),
+          switchInCurve: Curves.easeOutBack,
+          switchOutCurve: Curves.easeInBack,
+          transitionBuilder: (child, animation) => ScaleTransition(
             scale: animation,
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-        child: !isCashuWallet
-            ? ExtendedImage.asset(
-                key: const ValueKey('cashu'),
-                Images.cashu,
-                width: 24,
-                height: 24,
-              )
-            : SvgPicture.asset(
-                key: const ValueKey('nwc'),
-                FeatureIcons.nwc,
-                width: 24,
-                height: 24,
-              ),
+            child: FadeTransition(opacity: animation, child: child),
+          ),
+          child: Row(
+            key: ValueKey(isCashuWallet),
+            mainAxisSize: MainAxisSize.min,
+            spacing: kDefaultPadding / 2,
+            children: isCashuWallet
+                ? [
+                    SvgPicture.asset(
+                      FeatureIcons.nwc,
+                      width: 18,
+                      height: 18,
+                    ),
+                    Text(
+                      context.t.switchToNwc,
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ]
+                : [
+                    ExtendedImage.asset(
+                      Images.cashu,
+                      width: 18,
+                      height: 18,
+                    ),
+                    Text(
+                      context.t.switchToCashu,
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ],
+          ),
+        ),
       ),
     );
   }

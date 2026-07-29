@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/theme_cubit/theme_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'settings_text.dart';
 
@@ -15,6 +18,7 @@ class PropertyAppearance extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = useState(themeCubit.state.textScaleFactor);
+    final fluidMode = useState(themeCubit.state.isFluid);
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -33,6 +37,10 @@ class PropertyAppearance extends HookWidget {
             height: kDefaultPadding * 1.5,
             thickness: 0.5,
           ),
+          _fluidMode(context, fluidMode),
+          const SizedBox(
+            height: kDefaultPadding,
+          ),
           const AppThemeModeBox(),
           const SizedBox(
             height: kDefaultPadding,
@@ -44,6 +52,31 @@ class PropertyAppearance extends HookWidget {
           _options(context, textScaleFactor),
         ],
       ),
+    );
+  }
+
+  Row _fluidMode(BuildContext context, ValueNotifier<bool> fluidMode) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.appThemeMode.capitalizeFirst(),
+            description: context.t.appThemeModeDesc,
+          ),
+        ),
+        Transform.scale(
+          scale: 0.8,
+          child: CupertinoSwitch(
+            value: fluidMode.value,
+            activeTrackColor: Theme.of(context).primaryColor,
+            onChanged: (isToggled) {
+              themeCubit.setFluidMode(isToggled);
+              fluidMode.value = isToggled;
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -102,7 +135,7 @@ class PropertyAppearance extends HookWidget {
           ),
         ),
         const Icon(
-          Icons.font_download_outlined,
+          LucideIcons.type,
           size: kDefaultPadding,
         ),
       ],
@@ -215,11 +248,10 @@ class AppThemeModeBox extends StatelessWidget {
               left: 5,
               child: FadeIn(
                 duration: const Duration(milliseconds: 200),
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.verified,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                  size: 20,
+                  color: primaryColor,
                 ),
               ),
             ),

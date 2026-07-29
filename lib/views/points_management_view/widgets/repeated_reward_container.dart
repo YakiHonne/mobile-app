@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../models/points_system_models.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_blur_container.dart';
 
 class RepeatedReward extends StatelessWidget {
   const RepeatedReward({
@@ -17,30 +19,37 @@ class RepeatedReward extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          kDefaultPadding / 2,
-        ),
-        color: Theme.of(context).cardColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            _standartColumn(context),
-            _cooldown(context),
-            const VerticalDivider(
-              width: 0,
-            ),
-            _points(context)
-          ],
-        ),
+    final content = IntrinsicHeight(
+      child: Row(
+        children: [
+          _standartColumn(context),
+          _cooldown(context),
+          const VerticalDivider(
+            width: 0,
+          ),
+          _points(context)
+        ],
       ),
     );
+    return isFluid()
+        ? FluidCardContainer(
+            borderRadius: kDefaultPadding / 2,
+            padding: EdgeInsets.zero,
+            child: content,
+          )
+        : Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                kDefaultPadding / 2,
+              ),
+              color: Theme.of(context).cardColor,
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
+              ),
+            ),
+            child: content,
+          );
   }
 
   Padding _points(BuildContext context) {
@@ -94,14 +103,10 @@ class RepeatedReward extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (cooldownVal == -1)
-                    SvgPicture.asset(
+                    AppIcon(
                       FeatureIcons.infinity,
-                      width: 20,
-                      height: 20,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColorDark,
-                        BlendMode.srcIn,
-                      ),
+                      size: 20,
+                      color: Theme.of(context).primaryColorDark,
                     )
                   else ...[
                     Text(

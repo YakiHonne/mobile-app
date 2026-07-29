@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 
 import '../../../logic/search_user_cubit/search_user_cubit.dart';
@@ -15,6 +15,7 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import 'send_using_lightning_address.dart';
 
@@ -81,7 +82,7 @@ class SendByUserSearch extends HookWidget {
               decoration: InputDecoration(
                 hintText: context.t.searchNameNpub.capitalizeFirst(),
                 prefixIcon: const Icon(
-                  CupertinoIcons.search,
+                  LucideIcons.search,
                   size: 20,
                 ),
                 suffixIcon: searchText.value.isNotEmpty
@@ -91,7 +92,7 @@ class SendByUserSearch extends HookWidget {
                           searchText.value = '';
                           context.read<SearchUserCubit>().emptyAuthorsList();
                         },
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(LucideIcons.x),
                       )
                     : null,
               ),
@@ -205,21 +206,10 @@ class SendByUserSearch extends HookWidget {
     );
 
     if (isModal) {
-      return Container(
+      return ModalSheetContainer(
         height: MediaQuery.of(context).size.height * 0.9,
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
         ),
         child: BlocProvider(
           create: (context) => SearchUserCubit(),

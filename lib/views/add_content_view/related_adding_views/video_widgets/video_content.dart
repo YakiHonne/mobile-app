@@ -9,6 +9,7 @@ import '../../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../../logic/write_video_cubit/write_video_cubit.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/link_previewer.dart';
 
@@ -191,6 +192,7 @@ class VideoSelectionContainer extends HookWidget {
           child: TextButton(
             onPressed: () => videoSourceType.value = null,
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kRed,
             ),
             child: Text(
@@ -221,6 +223,7 @@ class VideoSelectionContainer extends HookWidget {
               }
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: Theme.of(context).primaryColorDark,
             ),
             child: Text(
@@ -299,7 +302,7 @@ class VideoPickChoice extends StatelessWidget {
   });
 
   final String title;
-  final String icon;
+  final IconData icon;
   final Function() onClicked;
 
   @override
@@ -309,14 +312,10 @@ class VideoPickChoice extends StatelessWidget {
       onTap: onClicked,
       child: Column(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 30,
-            height: 30,
+            color: Theme.of(context).primaryColorDark,
+            size: 30,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

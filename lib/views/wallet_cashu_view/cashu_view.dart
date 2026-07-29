@@ -8,6 +8,8 @@ import '../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../logic/main_cubit/main_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../utils/utils.dart';
+import '../main_view/widgets/app_bar_widgets.dart' show SelectedWalletContainer;
+import '../widgets/app_icon.dart';
 import '../widgets/no_content_widgets.dart';
 import 'widgets/cashu_no_wallet.dart';
 import 'widgets/cashu_wallet_balance_container.dart';
@@ -24,7 +26,13 @@ class CashuWalletView extends StatelessWidget {
           nostrRepository.mainCubit.updateIndex(MainViews.leading);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          padding: EdgeInsets.only(
+            left: kDefaultPadding / 2,
+            right: kDefaultPadding / 2,
+            top: isFluid()
+                ? MediaQuery.of(context).padding.top + kToolbarHeight
+                : kDefaultPadding,
+          ),
           child: BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
             builder: (context, state) {
               if (isDisconnected() || canRoam()) {
@@ -68,13 +76,23 @@ class CashuWalletView extends StatelessWidget {
   }
 
   Widget _buildWalletContent(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        Expanded(
+        // ponytail: fluid appbar has no title slot, so the mint selector
+        // lives at the top of the view.
+        if (isFluid()) ...[
+          const SizedBox(height: kDefaultPadding / 2),
+          const SelectedWalletContainer(),
+        ],
+        const Expanded(
           child: CashuWallatBalanceContainer(),
         ),
         SizedBox(
-          height: kDefaultPadding,
+          height: themeCubit.state.isFluid
+              ? kBottomNavigationBarHeight +
+                  kDefaultPadding * 2 +
+                  MediaQuery.of(context).padding.bottom / 2
+              : kDefaultPadding,
         ),
       ],
     );
@@ -143,14 +161,9 @@ class WalletSwitchContainer extends StatelessWidget {
           spacing: kDefaultPadding / 2,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.refresh,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
             ),
             Text(
               isCashuWallet

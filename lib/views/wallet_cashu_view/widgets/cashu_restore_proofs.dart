@@ -5,6 +5,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class CashuRestoreProofs extends HookWidget {
   const CashuRestoreProofs({
@@ -40,25 +41,8 @@ class CashuRestoreProofs extends HookWidget {
       };
     }, []);
 
-    return Material(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
           expand: false,
           maxChildSize: 0.9,
           minChildSize: 0.5,
@@ -88,7 +72,6 @@ class CashuRestoreProofs extends HookWidget {
             ),
           ),
         ),
-      ),
     );
   }
 

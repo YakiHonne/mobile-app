@@ -18,6 +18,7 @@ import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/custom_app_bar.dart';
@@ -266,18 +267,14 @@ class _BlossomMediaGridItem extends StatelessWidget {
                       radius: kDefaultPadding / 2,
                     ),
                   if (isVideo)
-                    Align(
+                    const Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(
+                        padding: EdgeInsets.all(8.0),
+                        child: AppIcon(
                           FeatureIcons.video,
-                          colorFilter: const ColorFilter.mode(
-                            kWhite,
-                            BlendMode.srcIn,
-                          ),
-                          width: 30,
-                          height: 30,
+                          color: kWhite,
+                          size: 30,
                         ),
                       ),
                     ),
@@ -373,16 +370,12 @@ class _BlossomMediaListItem extends StatelessWidget {
                   radius: 4,
                 ),
                 if (isVideo)
-                  Positioned.fill(
+                  const Positioned.fill(
                     child: Center(
-                      child: SvgPicture.asset(
+                      child: AppIcon(
                         FeatureIcons.video,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white70,
-                          BlendMode.srcIn,
-                        ),
-                        width: 20,
-                        height: 20,
+                        color: Colors.white70,
+                        size: 20,
                       ),
                     ),
                   ),
@@ -542,6 +535,7 @@ class BlossomMediaDetails extends StatelessWidget {
                 child: TextButton(
                   onPressed: () => _downloadFile(context, item.media),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kMainColor,
                     foregroundColor: kWhite,
                     minimumSize: const Size(double.infinity, 44),
@@ -552,14 +546,10 @@ class BlossomMediaDetails extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
+                      const AppIcon(
                         FeatureIcons.download,
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          kWhite,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: kWhite,
                       ),
                       const SizedBox(width: 8),
                       Text(

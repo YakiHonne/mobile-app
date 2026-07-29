@@ -71,7 +71,10 @@ class DmsCubit extends Cubit<DmsState>
   Timer? sendNotificationTimer;
   bool canShowNotification = true;
   Map<String, DMSessionInfo> infoMap = {};
-  Map<String, Event> giftWraps = {};
+
+  // Only ids are needed for dedupe — keeping the full gift-wrap events here
+  // held every encrypted DM payload in memory for the whole session.
+  Set<String> giftWrapIds = {};
   int _currentBatchIndex = 0;
   int _currentBatchUntil = Helpers.now;
   int _initSince = 0;
@@ -269,6 +272,7 @@ class DmsCubit extends Cubit<DmsState>
             pubkey,
             forceRefresh: !searchDmRelaysPubkeys.contains(pubkey),
           );
+
           searchDmRelaysPubkeys.add(pubkey);
 
           if (state.isUsingNip44) {
@@ -984,15 +988,12 @@ class DmsCubit extends Cubit<DmsState>
     Event? newest;
 
     for (final gwe in events) {
-      if (_processedEventIds.contains(gwe.id) || giftWraps[gwe.id] != null) {
+      if (_processedEventIds.contains(gwe.id) || !giftWrapIds.add(gwe.id)) {
         continue;
       }
 
-      if (giftWraps[gwe.id] == null) {
-        giftWraps[gwe.id] = gwe;
-        _processedEventIds.add(gwe.id);
-        toBeProcessedEvents.add(gwe);
-      }
+      _processedEventIds.add(gwe.id);
+      toBeProcessedEvents.add(gwe);
     }
 
     if (toBeProcessedEvents.isNotEmpty) {
@@ -1016,34 +1017,31 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   Future<void> handleGiftWraps(Event gwe) async {
-    if (_processedEventIds.contains(gwe.id) || giftWraps[gwe.id] != null) {
+    if (_processedEventIds.contains(gwe.id) || !giftWrapIds.add(gwe.id)) {
       return;
     }
 
-    if (giftWraps[gwe.id] == null) {
-      giftWraps[gwe.id] = gwe;
-      _processedEventIds.add(gwe.id);
+    _processedEventIds.add(gwe.id);
 
-      if (_isStreamingMode) {
-        queueEvent(gwe);
-      } else {
-        onEvent(gwe);
-      }
+    if (_isStreamingMode) {
+      queueEvent(gwe);
+    } else {
+      onEvent(gwe);
+    }
 
-      final event = await currentSigner!.decrypt44Event(gwe);
+    final event = await currentSigner!.decrypt44Event(gwe);
 
-      if (event != null && event.kind == EventKind.PRIVATE_DIRECT_MESSAGE) {
-        if (!_processedEventIds.contains(event.id)) {
-          _processedEventIds.add(event.id);
+    if (event != null && event.kind == EventKind.PRIVATE_DIRECT_MESSAGE) {
+      if (!_processedEventIds.contains(event.id)) {
+        _processedEventIds.add(event.id);
 
-          if (_isStreamingMode) {
-            queueEvent(event);
-          } else {
-            onEvent(event);
-          }
-
-          setGiftWrapOldestDateTime(event);
+        if (_isStreamingMode) {
+          queueEvent(event);
+        } else {
+          onEvent(event);
         }
+
+        setGiftWrapOldestDateTime(event);
       }
     }
   }
@@ -1110,7 +1108,7 @@ class DmsCubit extends Cubit<DmsState>
     );
 
     if (localGiftWraps.isNotEmpty) {
-      giftWraps = {for (final v in localGiftWraps) v.id: v};
+      giftWrapIds = {for (final v in localGiftWraps) v.id};
     }
 
     events.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -1554,7 +1552,7 @@ class DmsCubit extends Cubit<DmsState>
     clearEventQueue();
 
     infoMap = {};
-    giftWraps = {};
+    giftWrapIds = {};
     _initSince = 0;
     giftWrapNewestDateTime = null;
     selectedDmSessionDetail = null;
@@ -1605,6 +1603,7 @@ class DmsCubit extends Cubit<DmsState>
         }
 
         nostrRepository.nip04Dms[event.id] = decryptedMessage;
+        nostrRepository.nip04Dms.capSize(1000);
         return [decryptedMessage, replyId];
       } else if (event.kind == EventKind.PRIVATE_DIRECT_MESSAGE) {
         String replyId = '';

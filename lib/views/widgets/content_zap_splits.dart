@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../models/article_model.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/related_adding_views/article_widgets/article_details.dart';
+import 'app_icon.dart';
 import 'data_providers.dart';
 import 'profile_picture.dart';
 import 'zap_split_user.dart';
@@ -140,15 +142,10 @@ class ContentZapSplits extends StatelessWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
-      label: SvgPicture.asset(
+      label: AppIcon(
         FeatureIcons.user,
-        width: 18,
-        height: 18,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
-        fit: BoxFit.scaleDown,
+        size: 18,
+        color: Theme.of(context).primaryColorDark,
       ),
       icon: Text(
         context.t.addUser.capitalizeFirst(),
@@ -157,6 +154,7 @@ class ContentZapSplits extends StatelessWidget {
             ),
       ),
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: Theme.of(context).cardColor,
       ),
     );
@@ -261,7 +259,7 @@ class ZapSplitUser extends StatelessWidget {
                 onRemove.call();
               },
               icon: const Icon(
-                Icons.close,
+                LucideIcons.x,
                 color: kRed,
               ),
             ),

@@ -662,7 +662,7 @@ class MediaServersCubit extends Cubit<MediaServersState> {
           continue;
         }
 
-        lg.i('Trying mirror server: $mirrorUrl');
+        // lg.i('Trying mirror server: $mirrorUrl');
         final response = await _fetchFromUrl(dio, mirrorUrl);
 
         if (response.success && response.data != null) {
@@ -1128,11 +1128,32 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     return url;
   }
 
+  /// Build a URL that serves [sourceUrl] through the compression proxy.
+  ///
+  /// Opt-in per call site. Do NOT route general feed or avatar imagery through
+  /// this: the proxy has proven unreliable in production, and a hung request
+  /// leaves [ExtendedImage] stuck in `LoadState.loading` forever — the image
+  /// never resolves and never reports failure, so there is nothing to fall
+  /// back from. Use it only where a broken image is acceptable, as the blurred
+  /// sensitive-content placeholder does.
+  ///
+  /// [width] resizes server-side and is the biggest saving when it works — a
+  /// 1.05MB original returns ~64KB at `width: 640`. The proxy has no height
+  /// param; `h` is accepted but ignored.
+  ///
+  /// Callers must not pass animated media here: the proxy re-encodes to JPEG,
+  /// so a GIF comes back as a single static frame.
   String getImageProxyUrl({
     required String sourceUrl,
     int? blur,
     int? quality,
+    int? width,
   }) {
-    return '$compressImageUrl?${'url=$sourceUrl'}${blur != null ? '&b=$blur' : ''}${quality != null ? '&q=$quality' : ''}';
+    final url = '$compressImageUrl?url=${Uri.encodeComponent(sourceUrl)}'
+        '${blur != null ? '&b=$blur' : ''}'
+        '${quality != null ? '&q=$quality' : ''}'
+        '${width != null ? '&w=$width' : ''}';
+
+    return url;
   }
 }

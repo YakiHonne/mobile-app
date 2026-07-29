@@ -4,15 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/wallet_switcher_fab.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/currency_selector_button.dart';
 import '../../widgets/qr_scanner_modal.dart';
+import 'cashu_history.dart';
 import 'cashu_pay_view.dart';
 import 'cashu_receive_view.dart';
 import 'cashu_redeem_view.dart';
+import 'cashu_restore_proofs.dart';
 import 'cashu_send_view.dart';
 import 'cashu_swap_view.dart';
 
@@ -33,6 +39,22 @@ class CashuWallatBalanceContainer extends StatelessWidget {
           child: Column(
             children: [
               _content(context, state),
+              const SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              BlocBuilder<MainCubit, MainState>(
+                builder: (context, mainState) {
+                  return Center(
+                    child: WalletSwitcherFAB(
+                      isCashuWallet: mainState.isCashuWallet,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              if (isFluid()) _cashuActions(context, state),
               const SizedBox(
                 height: kDefaultPadding / 4,
               ),
@@ -138,7 +160,7 @@ class CashuWallatBalanceContainer extends StatelessWidget {
   Widget _actionButton({
     required BuildContext context,
     required String title,
-    required String icon,
+    required IconData icon,
     required VoidCallback onTap,
     bool setColor = false,
   }) {
@@ -162,14 +184,10 @@ class CashuWallatBalanceContainer extends StatelessWidget {
         child: Column(
           spacing: kDefaultPadding / 4,
           children: [
-            SvgPicture.asset(
+            AppIcon(
               icon,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                setColor ? kWhite : Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: setColor ? kWhite : Theme.of(context).primaryColorDark,
             ),
             Text(
               title,
@@ -204,6 +222,8 @@ class CashuWallatBalanceContainer extends StatelessWidget {
               ),
               _buildMintBalance(context, state),
               _buildCopyMintUrl(context, state),
+              // ponytail: fluid appbar drops per-view actions, so history &
+              // restore sit under the mint url.
             ],
           ),
         ],
@@ -346,18 +366,86 @@ class CashuWallatBalanceContainer extends StatelessWidget {
             const SizedBox(
               width: kDefaultPadding / 2,
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.copy,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _cashuActions(BuildContext context, CashuWalletManagerState state) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 4,
+      children: [
+        if (state.activeMint.isNotEmpty)
+          Expanded(
+            child: _labeledButton(
+              context: context,
+              title: context.t.restoreWallet.capitalizeFirst(),
+              icon: FeatureIcons.restore,
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (_) => CashuRestoreProofs(
+                  mintUrl: state.activeMint,
+                ),
+                isScrollControlled: true,
+                useRootNavigator: true,
+                useSafeArea: true,
+                elevation: 0,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              ),
+            ),
+          ),
+        Expanded(
+          child: _labeledButton(
+            context: context,
+            title: context.t.history.capitalizeFirst(),
+            icon: FeatureIcons.transactions,
+            onTap: () => doIfCanSign(
+              func: () => showModalBottomSheet(
+                context: context,
+                builder: (_) => const CashuHistory(),
+                isScrollControlled: true,
+                useRootNavigator: true,
+                useSafeArea: true,
+                elevation: 0,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              context: context,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _labeledButton({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return TextButton.icon(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 2,
+          vertical: kDefaultPadding / 4,
+        ),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
+      icon: AppIcon(
+        icon,
+        size: 15,
+      ),
+      label: Text(title),
     );
   }
 }

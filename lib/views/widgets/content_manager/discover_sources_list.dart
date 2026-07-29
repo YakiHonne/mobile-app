@@ -13,7 +13,9 @@ import '../../../models/packs_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
+import '../app_icon.dart';
 import '../dotted_container.dart';
+import '../modal_sheet_container.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
 import 'dicover_settings_views/set_pack_view.dart';
 import 'discover_sources_settings.dart';
@@ -82,25 +84,11 @@ class AppSourcesList extends HookWidget {
             ),
         ]);
 
-        return Padding(
+        return ModalSheetContainer(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 0.5,
-              ),
-            ),
-            child: _content(widgets),
-          ),
+          child: _content(widgets),
         );
       },
     );
@@ -235,6 +223,7 @@ class NoRelaysAvailable extends StatelessWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: VisualDensity.comfortable,
                 ),
                 child: Text(
@@ -308,6 +297,7 @@ class PacksDiscoverList extends StatelessWidget {
                     (e) => CompactPackCard(
                       pack: e,
                       isSelected: e.identifier == selectedKey,
+                      useIsFluid: true,
                       onTap: () {
                         appSettingsManagerCubit.setSource(
                           source: MapEntry(
@@ -365,6 +355,7 @@ class PacksDiscoverList extends StatelessWidget {
                             );
                           },
                           style: TextButton.styleFrom(
+                            backgroundBuilder: (_, __, child) => child!,
                             visualDensity: VisualDensity.comfortable,
                           ),
                           child: Text(
@@ -471,6 +462,7 @@ class RelaysDiscoverList extends StatelessWidget {
             key: ValueKey(event.identifier + index.toString()),
             relaySet: relaySet,
             isSelected: selectedKey == event.identifier,
+            useIsFluid: true,
             onClick: () {
               appSettingsManagerCubit.setSource(
                 source: MapEntry(
@@ -524,6 +516,7 @@ class RelaysDiscoverList extends StatelessWidget {
     return RelayContainer(
       url: r,
       isSelected: selectedKey == r,
+      useIsFluid: true,
       onShareRelay: () {
         showModalBottomSheet(
           context: context,
@@ -619,6 +612,7 @@ class CommunityDiscoverList extends StatelessWidget {
             (communityOption) => CommunityOptionContainer(
               communityOption: communityOption,
               isSelected: communityOption.value.name == selectedKey,
+              useIsFluid: true,
               onClick: () {
                 appSettingsManagerCubit.setSource(
                   source: MapEntry(
@@ -643,11 +637,13 @@ class CommunityOptionContainer extends StatelessWidget {
     required this.communityOption,
     required this.isSelected,
     this.onClick,
+    this.useIsFluid = false,
   });
 
   final MapEntry<String, CommunityFeedOption> communityOption;
   final bool isSelected;
   final Function()? onClick;
+  final bool useIsFluid;
 
   @override
   Widget build(BuildContext context) {
@@ -656,7 +652,9 @@ class CommunityOptionContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(kDefaultPadding / 2),
         color: isSelected
             ? Theme.of(context).cardColor
-            : Theme.of(context).scaffoldBackgroundColor,
+            : useIsFluid && isFluid()
+                ? kTransparent
+                : Theme.of(context).scaffoldBackgroundColor,
         border: isSelected
             ? Border.all(
                 color: Theme.of(context).dividerColor,
@@ -702,20 +700,16 @@ class CommunityOptionContainer extends StatelessWidget {
         ),
       ),
       alignment: Alignment.center,
-      child: SvgPicture.asset(
+      child: AppIcon(
         getSourceIcon(communityOption.value.name),
-        width: 25,
-        height: 25,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 25,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
 }
 
-String getSourceIcon(String name) {
+IconData getSourceIcon(String name) {
   if (name == SOURCE_GLOBAL) {
     return FeatureIcons.globe;
   } else if (name == SOURCE_NETWORK) {

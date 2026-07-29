@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -10,6 +11,7 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/uncensored_notes_models.dart';
 import '../../../utils/utils.dart';
 import '../../add_bookmark_view/add_bookmark_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/flash_tags_row.dart';
@@ -307,7 +309,9 @@ class UnFlashNewsContainer extends StatelessWidget {
                   isScrollControlled: true,
                   useRootNavigator: true,
                   useSafeArea: true,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: isFluid()
+                      ? kTransparent
+                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
               itemTheme: PullDownMenuItemTheme(
@@ -317,7 +321,7 @@ class UnFlashNewsContainer extends StatelessWidget {
                 builder: (context) {
                   final isDark = themeCubit.isDark;
 
-                  return SvgPicture.asset(
+                  return AppIcon(
                     isBookmarked
                         ? isDark
                             ? FeatureIcons.bookmarkFilledWhite
@@ -335,14 +339,10 @@ class UnFlashNewsContainer extends StatelessWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.link,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
@@ -358,7 +358,7 @@ class UnFlashNewsContainer extends StatelessWidget {
           ),
         ),
         icon: Icon(
-          Icons.more_vert_rounded,
+          LucideIcons.moreVertical,
           color: Theme.of(context).primaryColorDark,
           size: 20,
         ),
@@ -392,9 +392,10 @@ class RoundedTextButtonWithArrow extends StatelessWidget {
             ),
       ),
       label: const Icon(
-        Icons.keyboard_arrow_right_rounded,
+        LucideIcons.chevronRight,
       ),
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         visualDensity: const VisualDensity(
           vertical: -2,
         ),

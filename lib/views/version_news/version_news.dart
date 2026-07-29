@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 
@@ -155,28 +155,20 @@ class _VersionNewsState extends State<VersionNews> {
   AspectRatio _thumbnail(Map<String, Object> e, BuildContext context) {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: CachedNetworkImage(
-        imageUrl: e['thumbnail'].toString(),
-        cacheManager: imagesCacheManager,
-        memCacheWidth: MediaQuery.of(context).size.width.toInt(),
-        imageBuilder: (context, imageProvider) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                kDefaultPadding,
-              ),
-              border: Border.all(
-                color: (e['new']! as bool)
-                    ? Theme.of(context).primaryColor
-                    : kTransparent,
-                width: 1.5,
-              ),
-              image: DecorationImage(
-                image: imageProvider,
-              ),
-            ),
-          );
-        },
+      child: ExtendedImage.network(
+        e['thumbnail'].toString(),
+        fit: BoxFit.scaleDown,
+        cacheWidth: MediaQuery.of(context).size.width.toInt(),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(
+          kDefaultPadding,
+        ),
+        border: Border.all(
+          color: (e['new']! as bool)
+              ? Theme.of(context).primaryColor
+              : kTransparent,
+          width: 1.5,
+        ),
       ),
     );
   }

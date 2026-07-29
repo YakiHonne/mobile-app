@@ -2,12 +2,14 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.5+189
+version: 2.0.6+196
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
 
 dependencies:
+  appflowy_editor:
+    path: ../appflowy_editor
   aescryptojs: ^1.0.0
   amberflutter:
     git:
@@ -20,7 +22,6 @@ dependencies:
   bolt11_decoder: ^1.0.2
   bot_toast: ^4.1.3
   buttons_tabbar: ^1.3.8
-  cached_network_image: ^3.2.3
   calendar_date_picker2: ^1.1.7
   camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
@@ -84,17 +85,18 @@ dependencies:
   just_audio: ^0.10.5
   logger: ^2.4.0
   lottie: ^3.1.2
+  lucide_icons_flutter: ^3.1.15
   markdown: ^7.3.0
   markdown_widget: ^2.3.2+6
   mention_tag_text_field: ^0.0.8
   modal_bottom_sheet: ^3.0.0
   nested_scroll_view_plus: ^2.0.0
-  # nostr_core_enhanced:
-  #   path: ../nostr_core_enhanced/
   nostr_core_enhanced:
-    git:
-      url: https://github.com/YakiHonne/nostr_core_enhanced.git
-      ref: main
+    path: ../nostr_core_enhanced/
+  # nostr_core_enhanced:
+  #   git:
+  #     url: https://github.com/YakiHonne/nostr_core_enhanced.git
+  #     ref: main
   numeral: ^3.0.0
   open_filex: ^4.7.0
   override_text_scale_factor: ^1.0.2
@@ -113,6 +115,7 @@ dependencies:
   qr_flutter: ^4.1.0
   responsive_framework: ^1.1.0
   screenshot: ^3.0.0
+  sensors_plus: ^4.0.2
   sentry_dart_plugin: ^3.1.1
   sentry_flutter: ^9.4.1
   share_handler: ^0.0.25
@@ -125,6 +128,8 @@ dependencies:
   string_validator: ^1.0.2
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
+  in_app_purchase: ^3.2.0
+  in_app_purchase_android: ^0.5.0
   url_launcher: ^6.1.14
   uuid: ^4.3.3
   video_player: ^2.9.2
@@ -133,10 +138,20 @@ dependencies:
   visibility_detector: ^0.4.0+2
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.3
+  pointycastle: ^4.0.0
+  tutorial_coach_mark: ^1.2.13
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: false
+  upload_sources: false
+  project: yakihonne
+  org: yakihonne
 
 dependency_overrides:
   pointycastle: ^4.0.0
-  
+  device_info_plus: ^11.5.0
+
 flutter_launcher_icons:
   android: true
   # ios: true
@@ -157,6 +172,7 @@ flutter:
   assets:
     - assets/icon.png
     - assets/icons/features/
+    - assets/icons/features-fluid/
     - assets/icons/logos/
     - assets/icons/toasts/
     - assets/images/

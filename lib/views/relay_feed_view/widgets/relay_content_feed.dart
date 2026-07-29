@@ -26,6 +26,7 @@ import '../../explore_relays_view/explore_relays_view.dart';
 import '../../media_view/media_view.dart';
 import '../../settings_view/widgets/keys_view.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/classic_footer.dart';
 import '../../widgets/content_placeholder.dart';
@@ -33,6 +34,8 @@ import '../../widgets/curation_container.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_content_card.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/note_stats.dart';
@@ -49,10 +52,34 @@ class RelayContentFeed extends StatefulWidget {
   State<RelayContentFeed> createState() => _RelayContentFeedState();
 }
 
-class _RelayContentFeedState extends State<RelayContentFeed> {
+class _RelayContentFeedState extends State<RelayContentFeed>
+    with SingleTickerProviderStateMixin {
   RelayContentType selectedExploreType = RelayContentType.notes;
   final scrollController = ScrollController();
   final refreshController = RefreshController();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: RelayContentType.values.length,
+      vsync: this,
+      initialIndex: RelayContentType.values.indexOf(selectedExploreType),
+    );
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    final type = RelayContentType.values[_tabController.index];
+    if (selectedExploreType == type) {
+      return;
+    }
+    setState(() {
+      selectedExploreType = type;
+    });
+    buildRelayFeed(context, false);
+  }
 
   void onRefresh({required Function onInit}) {
     refreshController.resetNoData();
@@ -62,6 +89,8 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
     refreshController.dispose();
     super.dispose();
   }
@@ -94,53 +123,59 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
           builder: (context, state) {
             final relay = context.read<RelayFeedCubit>().relay;
 
-            return SmartRefresher(
-                controller: refreshController,
-                scrollController: scrollController,
-                enablePullUp: true,
-                header: const RefresherClassicHeader(),
-                footer: const RefresherClassicFooter(),
-                onLoading: () => buildRelayFeed.call(context, true),
-                onRefresh: () => buildRelayFeed.call(context, false),
-                child: CustomScrollView(
-                  slivers: [
-                    if (relayInfoCubit.state.relayInfos[relay] != null)
-                      _relayBox(context),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: kDefaultPadding / 4,
-                      ),
+            final scrollBody = SmartRefresher(
+              controller: refreshController,
+              scrollController: scrollController,
+              enablePullUp: true,
+              header: const RefresherClassicHeader(),
+              footer: const RefresherClassicFooter(),
+              onLoading: () => buildRelayFeed.call(context, true),
+              onRefresh: () => buildRelayFeed.call(context, false),
+              child: CustomScrollView(
+                slivers: [
+                  if (relayInfoCubit.state.relayInfos[relay] != null)
+                    _relayBox(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: kDefaultPadding / 4,
                     ),
-                    _relayReviews(context),
-                    _nip43Action(context),
-                    _appbar(context),
-                    if (state.onLoading)
-                      SliverToBoxAdapter(
-                        child: selectedExploreType == RelayContentType.media
-                            ? const MediaPlaceholder()
-                            : const ContentPlaceholder(),
-                      )
-                    else
-                      ContentList(
-                        type: selectedExploreType,
-                        scrollController: scrollController,
-                      ),
-                  ],
-                )
+                  ),
+                  _relayReviews(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: kDefaultPadding),
+                  ),
+                  _nip43Action(context),
+                  if (!isFluid()) _appbar(context),
+                  if (state.onLoading)
+                    SliverToBoxAdapter(
+                      child: selectedExploreType == RelayContentType.media
+                          ? const MediaPlaceholder()
+                          : const ContentPlaceholder(),
+                    )
+                  else
+                    ContentList(
+                      type: selectedExploreType,
+                      scrollController: scrollController,
+                    ),
+                ],
+              ),
+            );
 
-                // ScrollShadow(
-                //   color: Theme.of(context).scaffoldBackgroundColor,
-                //   child: CustomScrollView(
-                //     controller: scrollController,
-                //     slivers: [
-                //       if (state.onLoading)
-                //         const SliverToBoxAdapter(child: ContentPlaceholder())
-                //       else
-                //         const ContentList(),
-                //     ],
-                //   ),
-                // ),
-                );
+            if (isFluid()) {
+              return Stack(
+                children: [
+                  scrollBody,
+                  Positioned(
+                    bottom: MediaQuery.of(context).padding.bottom +
+                        kDefaultPadding / 2,
+                    left: kDefaultPadding / 2,
+                    right: kDefaultPadding / 2,
+                    child: Align(child: _buildFluidRelayTabBar(context)),
+                  ),
+                ],
+              );
+            }
+            return scrollBody;
           },
         );
       },
@@ -173,6 +208,9 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                 isActive: selectedExploreType == type,
                 style: Theme.of(context).textTheme.labelLarge,
                 onClick: () {
+                  _tabController.animateTo(
+                    RelayContentType.values.indexOf(type),
+                  );
                   setState(
                     () {
                       selectedExploreType = type;
@@ -237,32 +275,15 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                           BotToastUtils.showError(context.t.noInviteCodeFound);
                         }
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius:
-                              BorderRadius.circular(kDefaultPadding / 2),
-                          border: Border.all(
-                            color: Theme.of(context).dividerColor,
-                            width: 0.5,
-                          ),
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                          vertical: kDefaultPadding / 4,
-                        ),
-                        padding: const EdgeInsets.all(kDefaultPadding / 2),
-                        child: Row(
+                      child: Builder(builder: (context) {
+                        final inviteRow = Row(
                           spacing: kDefaultPadding / 4,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
+                            AppIcon(
                               FeatureIcons.codeText,
-                              width: 20,
-                              height: 20,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).primaryColorDark,
-                                BlendMode.srcIn,
-                              ),
+                              size: 20,
+                              color: Theme.of(context).primaryColorDark,
                             ),
                             Flexible(
                               child: Text(
@@ -275,8 +296,38 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                               ),
                             ),
                           ],
-                        ),
-                      ),
+                        );
+                        return isFluid()
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: kDefaultPadding / 4,
+                                ),
+                                child: FluidCardContainer(
+                                  borderRadius: kDefaultPadding / 2,
+                                  padding:
+                                      const EdgeInsets.all(kDefaultPadding / 2),
+                                  child: inviteRow,
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius: BorderRadius.circular(
+                                    kDefaultPadding / 2,
+                                  ),
+                                  border: Border.all(
+                                    color: Theme.of(context).dividerColor,
+                                    width: 0.5,
+                                  ),
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: kDefaultPadding / 4,
+                                ),
+                                padding:
+                                    const EdgeInsets.all(kDefaultPadding / 2),
+                                child: inviteRow,
+                              );
+                      }),
                     ),
                   ),
                 Expanded(
@@ -302,21 +353,8 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                         );
                       }
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius:
-                            BorderRadius.circular(kDefaultPadding / 2),
-                        border: Border.all(
-                          color: Theme.of(context).dividerColor,
-                          width: 0.5,
-                        ),
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                        vertical: kDefaultPadding / 4,
-                      ),
-                      padding: const EdgeInsets.all(kDefaultPadding / 2),
-                      child: Row(
+                    child: Builder(builder: (context) {
+                      final joinLeaveRow = Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (state.checkMembership)
@@ -334,14 +372,10 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        SvgPicture.asset(
+                                        const AppIcon(
                                           FeatureIcons.log,
-                                          width: 20,
-                                          height: 20,
-                                          colorFilter: const ColorFilter.mode(
-                                            kRed,
-                                            BlendMode.srcIn,
-                                          ),
+                                          size: 20,
+                                          color: kRed,
                                         ),
                                         Flexible(
                                           child: Text(
@@ -357,14 +391,11 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        SvgPicture.asset(
+                                        AppIcon(
                                           FeatureIcons.log,
-                                          width: 20,
-                                          height: 20,
-                                          colorFilter: ColorFilter.mode(
-                                            Theme.of(context).primaryColorDark,
-                                            BlendMode.srcIn,
-                                          ),
+                                          size: 20,
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
                                         ),
                                         Flexible(
                                           child: Text(
@@ -382,8 +413,38 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                                     ),
                             ),
                         ],
-                      ),
-                    ),
+                      );
+                      return isFluid()
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: kDefaultPadding / 4,
+                              ),
+                              child: FluidCardContainer(
+                                borderRadius: kDefaultPadding / 2,
+                                padding:
+                                    const EdgeInsets.all(kDefaultPadding / 2),
+                                child: joinLeaveRow,
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(
+                                  kDefaultPadding / 2,
+                                ),
+                                border: Border.all(
+                                  color: Theme.of(context).dividerColor,
+                                  width: 0.5,
+                                ),
+                              ),
+                              margin: const EdgeInsets.symmetric(
+                                vertical: kDefaultPadding / 4,
+                              ),
+                              padding:
+                                  const EdgeInsets.all(kDefaultPadding / 2),
+                              child: joinLeaveRow,
+                            );
+                    }),
                   ),
                 ),
               ],
@@ -499,6 +560,58 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
     return BlocBuilder<RelayFeedCubit, RelayFeedState>(
       buildWhen: (previous, current) => previous.reviews != current.reviews,
       builder: (context, state) {
+        final reviewsRow = Row(
+          children: [
+            Expanded(
+              child: state.onLoadingReviews
+                  ? Row(
+                      spacing: kDefaultPadding / 4,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            context.t.loadingReviews.capitalizeFirst(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ),
+                        SpinKitCircle(
+                          color: Theme.of(context).primaryColorDark,
+                          size: 15,
+                        ),
+                      ],
+                    )
+                  : Row(
+                      spacing: kDefaultPadding / 2,
+                      children: [
+                        Flexible(
+                          child: ReviewsTotalRating(
+                            reviews: state.reviews,
+                          ),
+                        ),
+                        Text(
+                          context.t.reviewsCount(
+                            number: state.reviews.length.toString(),
+                          ),
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                  ),
+                        ),
+                      ],
+                    ),
+            ),
+            AppIcon(
+              FeatureIcons.arrowRight,
+              size: 17,
+              color: Theme.of(context).highlightColor,
+            ),
+          ],
+        );
+
         return SliverToBoxAdapter(
           child: GestureDetector(
             onTap: () {
@@ -514,80 +627,74 @@ class _RelayContentFeedState extends State<RelayContentFeed> {
                 ),
               );
             },
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-                border: Border.all(
-                  color: Theme.of(context).dividerColor,
-                  width: 0.5,
-                ),
-              ),
-              margin: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2,
-              ),
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: state.onLoadingReviews
-                        ? Row(
-                            spacing: kDefaultPadding / 4,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  context.t.loadingReviews.capitalizeFirst(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                              ),
-                              SpinKitCircle(
-                                color: Theme.of(context).primaryColorDark,
-                                size: 15,
-                              ),
-                            ],
-                          )
-                        : Row(
-                            spacing: kDefaultPadding / 2,
-                            children: [
-                              Flexible(
-                                child: ReviewsTotalRating(
-                                  reviews: state.reviews,
-                                ),
-                              ),
-                              Text(
-                                context.t.reviewsCount(
-                                  number: state.reviews.length.toString(),
-                                ),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: Theme.of(context).highlightColor,
-                                    ),
-                              ),
-                            ],
-                          ),
-                  ),
-                  SvgPicture.asset(
-                    FeatureIcons.arrowRight,
-                    width: 17,
-                    height: 17,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).highlightColor,
-                      BlendMode.srcIn,
+            child: isFluid()
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
                     ),
+                    child: FluidCardContainer(
+                      borderRadius: kDefaultPadding / 2,
+                      padding: const EdgeInsets.all(kDefaultPadding / 2),
+                      child: reviewsRow,
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                      border: Border.all(
+                        color: Theme.of(context).dividerColor,
+                        width: 0.5,
+                      ),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                    padding: const EdgeInsets.all(kDefaultPadding / 2),
+                    child: reviewsRow,
                   ),
-                ],
-              ),
-            ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildFluidRelayTabBar(BuildContext context) {
+    return FluidBlurContainer(
+      padding: const EdgeInsets.all(3),
+      backgroundAlpha: 0.5,
+      child: TabBar(
+        controller: _tabController,
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
+        dividerHeight: 0,
+        indicatorSize: TabBarIndicatorSize.tab,
+        padding: EdgeInsets.zero,
+        labelPadding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 1.5,
+          vertical: 3,
+        ),
+        indicator: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(300),
+        ),
+        labelStyle: Theme.of(context)
+            .textTheme
+            .labelMedium!
+            .copyWith(fontWeight: FontWeight.w700),
+        unselectedLabelStyle: Theme.of(context)
+            .textTheme
+            .labelMedium!
+            .copyWith(fontWeight: FontWeight.w500),
+        tabs: RelayContentType.values
+            .map(
+              (type) => Tab(
+                height: 28,
+                text: typeName(type: type, context: context).capitalizeFirst(),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -720,7 +827,7 @@ class ContentList extends StatelessWidget {
           return SliverToBoxAdapter(
             child: EmptyList(
               description: context.t.noResultsNoFilterMessage,
-              icon: LogosIcons.logoMarkWhite,
+              icon: FeatureIcons.search,
               title: context.t.noResults,
             ),
           );
@@ -747,10 +854,12 @@ class ContentList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       sliver: SliverList.separated(
         itemCount: content.length,
-        separatorBuilder: (context, index) => const Divider(
-          height: kDefaultPadding,
-          thickness: 0.5,
-        ),
+        separatorBuilder: (context, index) => useFluidCards()
+            ? const SizedBox(height: kDefaultPadding / 2)
+            : const Divider(
+                height: kDefaultPadding,
+                thickness: 0.5,
+              ),
         itemBuilder: (context, index) {
           final item = content[index];
 
@@ -760,10 +869,10 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  Padding _itemsGrid(List<BaseEventModel> content) {
-    return Padding(
+  SliverPadding _itemsGrid(List<BaseEventModel> content) {
+    return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      child: SliverMasonryGrid.count(
+      sliver: SliverMasonryGrid.count(
         crossAxisCount: 2,
         childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
@@ -778,6 +887,10 @@ class ContentList extends StatelessWidget {
   }
 
   Widget getItem(BaseEventModel item, BuildContext context) {
+    return FluidContentCard(child: _content(item, context));
+  }
+
+  Widget _content(BaseEventModel item, BuildContext context) {
     if (item is Article) {
       return MutedUserProvider(
         pubkey: item.pubkey,
@@ -844,6 +957,7 @@ class ContentList extends StatelessWidget {
         isMain: false,
         addLine: false,
         enableReply: true,
+        isExtended: true,
       );
     } else {
       return const SizedBox.shrink();

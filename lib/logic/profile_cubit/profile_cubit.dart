@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
+import '../../models/creator_subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -149,6 +150,66 @@ class ProfileCubit extends Cubit<ProfileState> {
   void initView() {
     establishRequiredData();
     getUserInfos();
+    subscriptionBadgeCubit.fetchPlan(pubkey);
+    fetchCreatorSubscriptionPlans();
+  }
+
+  Future<void> fetchCreatorSubscriptionPlans() async {
+    if (isClosed) {
+      return;
+    }
+
+    _emit(state.copyWith(isCreatorSubscriptionLoading: true));
+
+    final events = await NostrFunctionsRepository.getEventsAsync(
+      kinds: [30164],
+      pubkeys: [pubkey],
+      relays: constantRelays.toList(),
+      source: EventsSource.all,
+    );
+
+    if (isClosed) {
+      return;
+    }
+
+    final seenPubkeys = <String>{};
+    final providers = <CreatorProvider>[];
+
+    for (final event in events) {
+      final hasGateway =
+          event.tags.any((t) => t.isNotEmpty && t[0] == 'gateway');
+      final hasMethod = event.tags.any((t) => t.isNotEmpty && t[0] == 'method');
+
+      if (!hasGateway || !hasMethod) {
+        continue;
+      }
+
+      final gatewayTag =
+          event.tags.firstWhere((t) => t.isNotEmpty && t[0] == 'gateway');
+      final uTag = event.tags
+          .firstWhere((t) => t.isNotEmpty && t[0] == 'u', orElse: () => []);
+
+      if (gatewayTag.length < 2) {
+        continue;
+      }
+
+      final gatewayPubkey = gatewayTag[1];
+      final url = uTag.length >= 2 ? uTag[1] : '';
+
+      if (seenPubkeys.contains(gatewayPubkey)) {
+        continue;
+      }
+
+      seenPubkeys.add(gatewayPubkey);
+      providers.add(CreatorProvider(pubkey: gatewayPubkey, url: url));
+    }
+
+    _emit(
+      state.copyWith(
+        creatorProviders: providers,
+        isCreatorSubscriptionLoading: false,
+      ),
+    );
   }
 
   void onRemoveMutedContent(

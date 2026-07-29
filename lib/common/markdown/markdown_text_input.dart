@@ -1,17 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, no_default_cases
 import 'package:expandable/expandable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../utils/utils.dart';
 import '../../views/add_content_view/related_adding_views/article_widgets/article_image_selector.dart';
-import '../../views/add_content_view/related_adding_views/article_widgets/gpt_chat.dart';
+import '../../views/widgets/app_icon.dart';
 import '../../views/widgets/custom_icon_buttons.dart';
+import '../../views/widgets/fluid_blur_container.dart';
 import '../../views/widgets/smart_widget_selection.dart';
 import '../common_regex.dart';
 import 'format_markdown.dart';
@@ -61,6 +61,9 @@ class MarkdownTextInput extends StatefulWidget {
 
   final ValueNotifier<ArticleWritingState> toggleArticleContent;
   final Function(Map<String, String>)? onMetadataInserted;
+  final VoidCallback? onDeleteDraft;
+
+  final bool removeBottomPadding;
 
   /// Constructor for [MarkdownTextInput]
   const MarkdownTextInput(
@@ -87,6 +90,8 @@ class MarkdownTextInput extends StatefulWidget {
     this.controller,
     this.onMetadataInserted,
     this.insertLinksByDialog = true,
+    this.onDeleteDraft,
+    this.removeBottomPadding = false,
   });
 
   @override
@@ -106,12 +111,13 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     String? link,
     String? selectedText,
   }) {
-    final basePosition = textSelection.baseOffset;
+    final textLength = _controller.text.length;
+    final basePosition = textSelection.baseOffset.clamp(0, textLength);
     final noTextSelected =
         (textSelection.baseOffset - textSelection.extentOffset) == 0;
 
-    final fromIndex = textSelection.baseOffset;
-    final toIndex = textSelection.extentOffset;
+    final fromIndex = textSelection.baseOffset.clamp(0, textLength);
+    final toIndex = textSelection.extentOffset.clamp(0, textLength);
 
     final result = FormatMarkdown.convertToMarkdown(
       type,
@@ -193,13 +199,15 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                           ],
                         ),
             ),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            const Divider(
-              thickness: 0.3,
-              height: 0,
-            ),
+            if (!isFluid())
+              const SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+            if (!isFluid())
+              const Divider(
+                thickness: 0.3,
+                height: 0,
+              ),
             markdownMenu(isTablet),
           ],
         ),
@@ -342,176 +350,192 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Widget markdownMenu(bool isTablet) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+    final inner = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding / 2,
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: kDefaultPadding / 2,
-          right: kDefaultPadding / 2,
-          bottom: MediaQuery.of(context).viewInsets.bottom == 0 &&
-                  widget.isMenuDismissed
-              ? MediaQuery.of(context).viewPadding.bottom
-              : 0,
-        ),
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            children: [
-              Expanded(
-                child: ScrollShadow(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: AbsorbPointer(
-                    absorbing: widget.toggleArticleContent.value ==
-                        ArticleWritingState.preview,
-                    child: Opacity(
-                      opacity: widget.toggleArticleContent.value ==
-                              ArticleWritingState.preview
-                          ? 1
-                          : 0.5,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          ...widget.actions.map(
-                            (type) {
-                              switch (type) {
-                                case MarkdownType.title:
-                                  return ExpandableNotifier(
-                                    child: Expandable(
-                                      key: const Key('H#_button'),
-                                      collapsed: ExpandableButton(
-                                        child: const Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Text(
-                                              'H#',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          children: [
+            Expanded(
+              child: ScrollShadow(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: AbsorbPointer(
+                  absorbing: widget.toggleArticleContent.value ==
+                      ArticleWritingState.preview,
+                  child: Opacity(
+                    opacity: widget.toggleArticleContent.value ==
+                            ArticleWritingState.preview
+                        ? 1
+                        : 0.5,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        ...widget.actions.map(
+                          (type) {
+                            switch (type) {
+                              case MarkdownType.title:
+                                return ExpandableNotifier(
+                                  child: Expandable(
+                                    key: const Key('H#_button'),
+                                    collapsed: ExpandableButton(
+                                      child: const Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Text(
+                                            'H#',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ),
                                       ),
-                                      expanded: ColoredBox(
-                                        color: Colors.white10,
-                                        child: Row(
-                                          children: [
-                                            for (int i = 1; i <= 6; i++)
-                                              InkWell(
-                                                key: Key('H${i}_button'),
-                                                onTap: () => onTap(
-                                                  MarkdownType.title,
-                                                  titleSize: i,
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  child: Text(
-                                                    'H$i',
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                          (18 - i).toDouble(),
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
+                                    ),
+                                    expanded: ColoredBox(
+                                      color: Colors.white10,
+                                      child: Row(
+                                        children: [
+                                          for (int i = 1; i <= 6; i++)
+                                            InkWell(
+                                              key: Key('H${i}_button'),
+                                              onTap: () => onTap(
+                                                MarkdownType.title,
+                                                titleSize: i,
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Text(
+                                                  'H$i',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        (18 - i).toDouble(),
+                                                    fontWeight: FontWeight.w700,
                                                   ),
                                                 ),
                                               ),
-                                            ExpandableButton(
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child: Icon(
-                                                  Icons.close,
-                                                ),
+                                            ),
+                                          ExpandableButton(
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                LucideIcons.x,
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                case MarkdownType.link:
-                                  return _basicInkwell(
-                                    type,
-                                    customOnTap: !widget.insertLinksByDialog
-                                        ? null
-                                        : () => setLink(type),
-                                  );
-                                case MarkdownType.uploadedImage:
-                                  return _basicInkwell(
-                                    type,
-                                    customOnTap: !widget.insertLinksByDialog
-                                        ? null
-                                        : () => selectImage(type, context),
-                                  );
-                                case MarkdownType.smartWidgets:
-                                  return _basicInkwell(
-                                    type,
-                                    customOnTap: !widget.insertLinksByDialog
-                                        ? null
-                                        : () =>
-                                            selectSmartWidget(type, context),
-                                  );
-                                case MarkdownType.gpt:
-                                  return _basicInkwell(
-                                    type,
-                                    customOnTap: () =>
-                                        addGptPrompt(type, context),
-                                  );
-                                default:
-                                  return _basicInkwell(type);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                                  ),
+                                );
+                              case MarkdownType.link:
+                                return _basicInkwell(
+                                  type,
+                                  customOnTap: !widget.insertLinksByDialog
+                                      ? null
+                                      : () => setLink(type),
+                                );
+                              case MarkdownType.uploadedImage:
+                                return _basicInkwell(
+                                  type,
+                                  customOnTap: !widget.insertLinksByDialog
+                                      ? null
+                                      : () => selectImage(type, context),
+                                );
+                              case MarkdownType.smartWidgets:
+                                return _basicInkwell(
+                                  type,
+                                  customOnTap: !widget.insertLinksByDialog
+                                      ? null
+                                      : () => selectSmartWidget(type, context),
+                                );
+                              default:
+                                return _basicInkwell(type);
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const VerticalDivider(
-                endIndent: 10,
-                indent: 10,
-              ),
-              if (isTablet)
-                _writingState(context)
-              else
-                CustomIconButton(
-                  onClicked: () {
-                    widget.toggleArticleContent.value =
-                        widget.toggleArticleContent.value ==
-                                ArticleWritingState.edit
-                            ? ArticleWritingState.preview
-                            : ArticleWritingState.edit;
-                  },
-                  icon: widget.toggleArticleContent.value ==
-                          ArticleWritingState.edit
-                      ? FeatureIcons.visible
-                      : FeatureIcons.notVisible,
-                  size: 25,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  vd: -2,
-                ),
-              IconButton(
-                onPressed: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
+            ),
+            const VerticalDivider(
+              endIndent: 10,
+              indent: 10,
+            ),
+            if (isTablet)
+              _writingState(context)
+            else
+              CustomIconButton(
+                onClicked: () {
+                  widget.toggleArticleContent.value =
+                      widget.toggleArticleContent.value ==
+                              ArticleWritingState.edit
+                          ? ArticleWritingState.preview
+                          : ArticleWritingState.edit;
                 },
-                icon: Icon(
-                  CupertinoIcons.keyboard_chevron_compact_down,
-                  color: Theme.of(context).primaryColorDark,
-                  size: 25,
-                ),
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  padding: const EdgeInsets.all(2),
-                ),
+                icon: widget.toggleArticleContent.value ==
+                        ArticleWritingState.edit
+                    ? FeatureIcons.visible
+                    : FeatureIcons.notVisible,
+                size: 25,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                vd: -2,
               ),
-            ],
-          ),
+            IconButton(
+              onPressed: widget.onDeleteDraft,
+              icon: Icon(
+                LucideIcons.trash2,
+                color: Theme.of(context).primaryColorDark,
+                size: 22,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                padding: const EdgeInsets.all(2),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              icon: Icon(
+                LucideIcons.chevronDown,
+                color: Theme.of(context).primaryColorDark,
+                size: 25,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                padding: const EdgeInsets.all(2),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+
+    if (isFluid()) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 2,
+          vertical: kDefaultPadding / 2,
+        ),
+        child: FluidBlurContainer(
+          blur: false,
+          backgroundAlpha: 0.7,
+          customBorderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          child: inner,
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: inner,
     );
   }
 
@@ -526,15 +550,12 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                 },
                 title: getStateTitle(e, context),
                 selected: e == widget.toggleArticleContent.value,
-                iconWidget: SvgPicture.asset(
+                iconWidget: AppIcon(
                   getStateIcon(
                     e,
                     context,
                   ),
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             )
@@ -560,7 +581,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     }
   }
 
-  String getStateIcon(ArticleWritingState state, BuildContext context) {
+  IconData getStateIcon(ArticleWritingState state, BuildContext context) {
     switch (state) {
       case ArticleWritingState.edit:
         return FeatureIcons.editCode;
@@ -572,11 +593,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Future<String> getPastableString() async {
-    String pastableText = '';
-
-    await Clipboard.getData('text/plain').then(
-      (data) => pastableText = data?.text?.trim() ?? '',
-    );
+    String pastableText = (await getClipboardTextSafely())?.trim() ?? '';
 
     if (pastableText.startsWith('http')) {
       if (pastableText.endsWith(Pastables.IMAGE_FORMAT_JPEG) ||
@@ -629,7 +646,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                  child: const Icon(Icons.close),
+                  child: const Icon(LucideIcons.x),
                   onTap: () => Navigator.pop(context))
             ],
           ),
@@ -740,30 +757,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     );
   }
 
-  Future<void> addGptPrompt(MarkdownType type, BuildContext context) async {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return ChatGpt(
-          insertText: (text) {
-            onTap(
-              type,
-              link: text,
-            );
-          },
-        );
-      },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    );
-  }
-
   Widget _basicInkwell(MarkdownType type, {Function? customOnTap}) {
     final isSvg = type == MarkdownType.uploadedImage ||
-        type == MarkdownType.gpt ||
         type == MarkdownType.image ||
         type == MarkdownType.smartWidgets;
 
@@ -773,27 +768,19 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: isSvg
-            ? SvgPicture.asset(
+            ? AppIcon(
                 getSvgIcon(type),
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  type == MarkdownType.gpt
-                      ? Colors.green.shade400
-                      : Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 22,
+                color: Theme.of(context).primaryColorDark,
               )
             : Icon(type.icon),
       ),
     );
   }
 
-  String getSvgIcon(MarkdownType type) {
+  IconData getSvgIcon(MarkdownType type) {
     if (type == MarkdownType.uploadedImage) {
       return FeatureIcons.imageUpload;
-    } else if (type == MarkdownType.gpt) {
-      return FeatureIcons.gpt;
     } else if (type == MarkdownType.image) {
       return FeatureIcons.imageLink;
     } else {

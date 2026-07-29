@@ -10,9 +10,11 @@ import '../../../models/smart_widgets_components.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/note_container.dart';
 
 class ToolsView extends StatelessWidget {
@@ -27,25 +29,8 @@ class ToolsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ToolsCubit(),
-      child: Material(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: DraggableScrollableSheet(
+      child: ModalSheetContainer(
+        child: DraggableScrollableSheet(
             expand: false,
             maxChildSize: 0.95,
             minChildSize: 0.7,
@@ -63,7 +48,6 @@ class ToolsView extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 
@@ -265,14 +249,10 @@ class ToolList extends HookWidget {
           hintText: context.t.searchSmartWidgets.capitalizeFirst(),
           prefixIcon: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.search,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           prefixIconConstraints: const BoxConstraints(
@@ -417,6 +397,7 @@ class ToolContainer extends StatelessWidget {
                 TextButton(
                   onPressed: () => onView(context),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     visualDensity: VisualDensity.comfortable,
                   ),
@@ -428,6 +409,7 @@ class ToolContainer extends StatelessWidget {
                 TextButton(
                   onPressed: onBookmarkSet,
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: VisualDensity.comfortable,
                   ),
                   child: Text(
@@ -438,6 +420,7 @@ class ToolContainer extends StatelessWidget {
                 OutlinedButton(
                   onPressed: onBookmarkSet,
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: VisualDensity.comfortable,
                   ),
                   child: Text(

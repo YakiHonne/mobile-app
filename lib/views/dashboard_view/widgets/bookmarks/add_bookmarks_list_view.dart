@@ -10,6 +10,7 @@ import '../../../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_c
 import '../../../../models/bookmark_list_model.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/single_image_selector.dart';
@@ -249,14 +250,10 @@ class AddBookmarksListView extends HookWidget {
         ),
         child: url.value.isEmpty
             ? Center(
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.imageAttachment,
-                  width: 25,
-                  height: 25,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 25,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               )
             : LayoutBuilder(

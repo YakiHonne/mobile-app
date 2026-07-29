@@ -8,6 +8,7 @@ import '../../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart
 import '../../../../models/smart_widgets_components.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import 'smart_widget_component_customization.dart';
 
 class SmartWidgetButtonPulldownButton extends StatelessWidget {
@@ -58,14 +59,10 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
                 );
               },
               title: context.t.edit.capitalizeFirst(),
-              iconWidget: SvgPicture.asset(
+              iconWidget: AppIcon(
                 FeatureIcons.editArticle,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,
@@ -81,14 +78,10 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
               title: context.t.moveLeft.capitalizeFirst(),
               iconWidget: RotatedBox(
                 quarterTurns: 3,
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.arrowUp,
-                  height: 20,
-                  width: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               itemTheme: PullDownMenuItemTheme(
@@ -105,14 +98,10 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
               title: context.t.moveRight.capitalizeFirst(),
               iconWidget: RotatedBox(
                 quarterTurns: 3,
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.arrowDown,
-                  height: 20,
-                  width: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               itemTheme: PullDownMenuItemTheme(
@@ -139,14 +128,10 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
               },
               title: context.t.delete.capitalizeFirst(),
               isDestructive: true,
-              iconWidget: SvgPicture.asset(
+              iconWidget: const AppIcon(
                 FeatureIcons.trash,
-                height: 20,
-                width: 20,
-                colorFilter: const ColorFilter.mode(
-                  kRed,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: kRed,
               ),
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,
@@ -175,7 +160,7 @@ class SmallRectangularButton extends StatelessWidget {
   });
 
   final Color? backgroundColor;
-  final String icon;
+  final IconData icon;
   final int? turns;
   final Function() onClick;
 
@@ -195,14 +180,10 @@ class SmallRectangularButton extends StatelessWidget {
         ),
         child: RotatedBox(
           quarterTurns: turns ?? 1,
-          child: SvgPicture.asset(
+          child: AppIcon(
             icon,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
         ),
       ),

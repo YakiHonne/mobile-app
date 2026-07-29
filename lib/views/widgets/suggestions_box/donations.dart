@@ -99,9 +99,6 @@ class SuggestedDonations extends StatelessWidget {
             );
           }
         },
-        style: TextButton.styleFrom(
-          visualDensity: VisualDensity.comfortable,
-        ),
         child: Text(
           context.t.supportUs.capitalizeFirst(),
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(

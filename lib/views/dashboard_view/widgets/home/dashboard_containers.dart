@@ -20,7 +20,9 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../add_content_view/add_content_view.dart';
 import '../../../note_view/note_view.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
+import '../../../widgets/fluid_blur_container.dart';
 import '../../../widgets/note_stats.dart';
 import '../../../widgets/pull_down_global_button.dart';
 import '../../../widgets/response_snackbar.dart';
@@ -36,6 +38,24 @@ class DashboardNoteContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final noteRow = Row(
+      children: [
+        const ContentTypeIconBox(
+          icon: FeatureIcons.uncensoredNote,
+        ),
+        const SizedBox(
+          width: kDefaultPadding / 2,
+        ),
+        _noteContent(context),
+        PullDownGlobalButton(
+          model: note,
+          enableShare: true,
+          enableCopyId: true,
+          enableShowRawEvent: true,
+        ),
+      ],
+    );
+
     return GestureDetector(
       onTap: () {
         YNavigator.pushPage(
@@ -43,34 +63,24 @@ class DashboardNoteContainer extends StatelessWidget {
           (context) => NoteView(note: note),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        child: Row(
-          children: [
-            const ContentTypeIconBox(
-              icon: FeatureIcons.uncensoredNote,
+      child: isFluid()
+          ? FluidCardContainer(
+              borderRadius: kDefaultPadding / 2,
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: noteRow,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+              ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: noteRow,
             ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            ),
-            _noteContent(context),
-            PullDownGlobalButton(
-              model: note,
-              enableShare: true,
-              enableCopyId: true,
-              enableShowRawEvent: true,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -121,7 +131,7 @@ class ContentTypeIconBox extends StatelessWidget {
     required this.icon,
   });
 
-  final String icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -137,14 +147,10 @@ class ContentTypeIconBox extends StatelessWidget {
         ),
       ),
       alignment: Alignment.center,
-      child: SvgPicture.asset(
+      child: AppIcon(
         icon,
-        width: 25,
-        height: 25,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 25,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -214,7 +220,7 @@ class DashboardStatBox extends StatelessWidget {
     required this.val,
   });
 
-  final String icon;
+  final IconData icon;
   final num val;
 
   @override
@@ -222,14 +228,10 @@ class DashboardStatBox extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SvgPicture.asset(
+        AppIcon(
           icon,
-          width: 15,
-          height: 15,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 15,
+          color: Theme.of(context).primaryColorDark,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
@@ -262,6 +264,42 @@ class DashboardDraftContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final draftRow = Row(
+      children: [
+        ContentTypeIconBox(
+          icon: type == 'Article'
+              ? FeatureIcons.selfArticles
+              : type == 'Note'
+                  ? FeatureIcons.uncensoredNote
+                  : FeatureIcons.smartWidget,
+        ),
+        const SizedBox(
+          width: kDefaultPadding / 2,
+        ),
+        _draftInfo(context),
+        if (article != null)
+          PullDownGlobalButton(
+            model: article,
+            enableEdit: true,
+            enableDelete: true,
+            onDelete: () {
+              showCupertinoDeletionDialogue(
+                context: context,
+                title: context.t.deleteDraft.capitalizeFirst(),
+                description: context.t.confirmDeleteDraft.capitalizeFirst(),
+                buttonText: context.t.delete.capitalizeFirst(),
+                onDelete: () {
+                  YNavigator.pop(context);
+                  context
+                      .read<DashboardHomeCubit>()
+                      .onDeleteContent(article!.id, isNote: type == 'Note');
+                },
+              );
+            },
+          ),
+      ],
+    );
+
     return GestureDetector(
       onTap: () {
         YNavigator.pushPage(
@@ -274,54 +312,26 @@ class DashboardDraftContainer extends StatelessWidget {
           },
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: article != null
-                ? Theme.of(context).dividerColor
-                : Theme.of(context).primaryColor,
-            width: 0.5,
-          ),
-        ),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        child: Row(
-          children: [
-            ContentTypeIconBox(
-              icon: type == 'Article'
-                  ? FeatureIcons.selfArticles
-                  : type == 'Note'
-                      ? FeatureIcons.uncensoredNote
-                      : FeatureIcons.smartWidget,
-            ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            ),
-            _draftInfo(context),
-            if (article != null)
-              PullDownGlobalButton(
-                model: article,
-                enableEdit: true,
-                enableDelete: true,
-                onDelete: () {
-                  showCupertinoDeletionDialogue(
-                    context: context,
-                    title: context.t.deleteDraft.capitalizeFirst(),
-                    description: context.t.confirmDeleteDraft.capitalizeFirst(),
-                    buttonText: context.t.delete.capitalizeFirst(),
-                    onDelete: () {
-                      YNavigator.pop(context);
-                      context
-                          .read<DashboardHomeCubit>()
-                          .onDeleteContent(article!.id, isNote: type == 'Note');
-                    },
-                  );
-                },
+      child: isFluid()
+          ? FluidCardContainer(
+              borderRadius: kDefaultPadding / 2,
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: draftRow,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: article != null
+                      ? Theme.of(context).dividerColor
+                      : Theme.of(context).primaryColor,
+                  width: 0.5,
+                ),
               ),
-          ],
-        ),
-      ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: draftRow,
+            ),
     );
   }
 
@@ -438,41 +448,49 @@ class DashboardContentContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final contentRow = Row(
+      children: [
+        if (image != null)
+          CommonThumbnail(
+            image: image!,
+            width: 50,
+            height: 50,
+            radius: kDefaultPadding / 2,
+            isRound: true,
+          )
+        else
+          ContentTypeIconBox(
+            icon: getIcon(),
+          ),
+        const SizedBox(
+          width: kDefaultPadding / 2,
+        ),
+        _contentInfo(context),
+        _pulldownButton(context),
+      ],
+    );
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: onClick,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: borderColor ?? Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        child: Row(
-          children: [
-            if (image != null)
-              CommonThumbnail(
-                image: image!,
-                width: 50,
-                height: 50,
-                radius: kDefaultPadding / 2,
-                isRound: true,
-              )
-            else
-              ContentTypeIconBox(
-                icon: getIcon(),
+      child: isFluid()
+          ? FluidCardContainer(
+              borderRadius: kDefaultPadding / 2,
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: contentRow,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: borderColor ?? Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
               ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: contentRow,
             ),
-            _contentInfo(context),
-            _pulldownButton(context),
-          ],
-        ),
-      ),
     );
   }
 
@@ -513,7 +531,7 @@ class DashboardContentContainer extends StatelessWidget {
       enableDelete: true,
       enableReschedule: isScheduled != null,
       onReschedule: onReschedule,
-      visualDensity: -4,
+      size: 25,
       onEdit: isScheduled == null && kind == EventKind.CATEGORIZED_BOOKMARK
           ? () {
               Navigator.pushNamed(
@@ -621,14 +639,10 @@ class DashboardContentContainer extends StatelessWidget {
                         const SizedBox(
                           width: kDefaultPadding / 4,
                         ),
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.repost,
-                          width: 15,
-                          height: 15,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).primaryColorDark,
-                            BlendMode.srcIn,
-                          ),
+                          size: 15,
+                          color: Theme.of(context).primaryColorDark,
                         ),
                       ],
                     ),
@@ -667,7 +681,7 @@ class DashboardContentContainer extends StatelessWidget {
     );
   }
 
-  String getIcon() {
+  IconData getIcon() {
     switch (kind) {
       case EventKind.TEXT_NOTE:
         return FeatureIcons.uncensoredNote;

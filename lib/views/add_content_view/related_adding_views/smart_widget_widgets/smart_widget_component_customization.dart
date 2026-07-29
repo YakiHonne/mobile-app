@@ -14,11 +14,13 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../wallet_view/widgets/user_to_zap_view.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/custom_date_picker.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/data_providers.dart';
 import '../../../widgets/dotted_container.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/profile_picture.dart';
 import '../article_widgets/article_image_selector.dart';
 
@@ -36,24 +38,11 @@ class FrameComponentCustomization extends HookWidget {
   Widget build(BuildContext context) {
     final c = useState(boxComponent);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
+    return ModalSheetContainer(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: DraggableScrollableSheet(
+      child: DraggableScrollableSheet(
           initialChildSize: 0.70,
           minChildSize: 0.40,
           maxChildSize: 0.70,
@@ -76,7 +65,6 @@ class FrameComponentCustomization extends HookWidget {
             );
           },
         ),
-      ),
     );
   }
 
@@ -97,6 +85,7 @@ class FrameComponentCustomization extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     side: const BorderSide(color: kRed),
                   ),
                   child: Text(
@@ -141,6 +130,7 @@ class FrameComponentCustomization extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: Theme.of(context).cardColor,
                   ),
                   child: Text(
@@ -933,14 +923,10 @@ class SwDatePicker extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: Theme.of(context).cardColor,
       ),
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         selectedDate == null ? FeatureIcons.calendar : FeatureIcons.closeRaw,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 22,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

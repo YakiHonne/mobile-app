@@ -1,14 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 
 class WalletOptions extends HookWidget {
@@ -100,6 +101,7 @@ class WalletOptions extends HookWidget {
                       isTextfieldVisible.value = false;
                     },
                     style: TextButton.styleFrom(
+                      backgroundBuilder: (_, __, child) => child!,
                       backgroundColor: Theme.of(context).cardColor,
                     ),
                     child: Text(
@@ -255,8 +257,7 @@ class WalletOptions extends HookWidget {
       width: double.infinity,
       child: TextButton(
         onPressed: () async {
-          final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-          final String? clipboardText = clipboardData?.text;
+          final clipboardText = await getClipboardTextSafely();
 
           if (clipboardText != null &&
               clipboardText.isNotEmpty &&
@@ -265,13 +266,14 @@ class WalletOptions extends HookWidget {
           }
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.paste_rounded,
+              LucideIcons.clipboardPaste,
               color: Theme.of(context).primaryColorDark,
               size: 20,
             ),
@@ -298,6 +300,7 @@ class WalletOptions extends HookWidget {
           context.read<WalletsManagerCubit>().launchUrl(true);
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
         ),
         child: Row(
@@ -336,7 +339,7 @@ class WalletOptions extends HookWidget {
             onPressed: () {
               isMainView.value = true;
             },
-            icon: const Icon(Icons.arrow_back_ios),
+            icon: const Icon(LucideIcons.chevronLeft),
             style: IconButton.styleFrom(
               visualDensity: const VisualDensity(
                 vertical: -2,
@@ -378,7 +381,7 @@ class WalletOption extends StatelessWidget {
 
   final String title;
   final String description;
-  final String icon;
+  final Object icon;
   final Function() onClicked;
   final Color? color;
   final Widget? widget;
@@ -414,17 +417,24 @@ class WalletOption extends StatelessWidget {
   Row _infoRow(BuildContext context) {
     return Row(
       children: [
-        SvgPicture.asset(
-          icon,
-          width: 30,
-          height: 30,
-          colorFilter: color != null
-              ? ColorFilter.mode(
-                  color!,
-                  BlendMode.srcIn,
-                )
-              : null,
-        ),
+        if (icon case final IconData iconData)
+          AppIcon(
+            iconData,
+            size: 30,
+            color: color,
+          )
+        else
+          SvgPicture.asset(
+            icon as String,
+            width: 30,
+            height: 30,
+            colorFilter: color != null
+                ? ColorFilter.mode(
+                    color!,
+                    BlendMode.srcIn,
+                  )
+                : null,
+          ),
         const SizedBox(
           width: kDefaultPadding / 2,
         ),
@@ -433,7 +443,7 @@ class WalletOption extends StatelessWidget {
           width: kDefaultPadding / 2,
         ),
         const Icon(
-          Icons.add,
+          LucideIcons.plus,
           size: 20,
         ),
       ],

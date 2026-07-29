@@ -6,6 +6,7 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/article_widgets/article_details.dart';
 
@@ -18,21 +19,9 @@ class AddArticleSpecificationView extends HookWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WriteArticleCubit, WriteArticleState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
+        return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
           child: DraggableScrollableSheet(
             initialChildSize: 0.95,
             minChildSize: 0.60,
@@ -143,6 +132,7 @@ class AddArticleSpecificationView extends HookWidget {
               );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
           visualDensity: VisualDensity.standard,
         ),

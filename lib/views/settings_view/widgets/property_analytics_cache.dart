@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 
 import '../../../logic/crashlytics_cubit/crashlytics_cubit.dart';
@@ -100,6 +100,7 @@ class PropertyAnalyticsCache extends StatelessWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: const VisualDensity(vertical: -3),
                 ),
                 child: Text(
@@ -138,8 +139,8 @@ class PropertyAnalyticsCache extends StatelessWidget {
           description: context.t.crashlyticsDesc,
           title: context.t.analyticsCrashlytics.capitalizeFirst(),
           isToggled: state.isCrashlyticsEnabled,
-          firstIcon: CupertinoIcons.play_circle,
-          secondIcon: CupertinoIcons.pause_circle,
+          firstIcon: LucideIcons.circlePlay,
+          secondIcon: LucideIcons.circlePause,
         );
       },
     );

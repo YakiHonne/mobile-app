@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
@@ -116,7 +117,7 @@ class DmUserSearch extends HookWidget {
       prefix: const Padding(
         padding: EdgeInsets.only(left: 10.0),
         child: Icon(
-          CupertinoIcons.search,
+          LucideIcons.search,
           color: CupertinoColors.systemGrey,
           size: 20,
         ),
@@ -132,7 +133,7 @@ class DmUserSearch extends HookWidget {
           authors.value = [];
         },
         icon: const Icon(
-          Icons.close,
+          LucideIcons.x,
           color: CupertinoColors.systemGrey,
         ),
       ),

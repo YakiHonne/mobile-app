@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import 'create_cashu_wallet.dart';
 
 class CashuNoWallet extends HookWidget {
@@ -63,20 +64,17 @@ class CashuNoWallet extends HookWidget {
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
           visualDensity: VisualDensity.comfortable,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.addRaw,
-              width: 15,
-              height: 15,
-              colorFilter: const ColorFilter.mode(
-                kWhite,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: kWhite,
             ),
             const SizedBox(
               width: kDefaultPadding / 2,

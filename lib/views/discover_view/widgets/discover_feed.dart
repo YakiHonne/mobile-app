@@ -13,6 +13,7 @@ import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/curation_container.dart';
+import '../../widgets/fluid_content_card.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/suggestions_box/multi_suggestion_box.dart';
@@ -59,6 +60,8 @@ class ExploreFeed extends StatelessWidget {
                     index: index ~/ suggestionDiscoverSeparatorCount,
                     isLeading: false,
                   );
+                } else if (useFluidCards()) {
+                  return const SizedBox(height: kDefaultPadding / 2);
                 } else {
                   return const Divider(
                     thickness: 0.3,
@@ -79,65 +82,75 @@ class ExploreFeed extends StatelessWidget {
   }
 
   Widget getItem(BaseEventModel item, bool reduceImageSize) {
-    return BlocBuilder<DiscoverCubit, DiscoverState>(
-      builder: (context, state) {
-        if (item is Article) {
-          return ArticleContainer(
-            article: item,
-            highlightedTag: '',
-            isMuted: state.mutes.contains(item.pubkey),
-            isBookmarked: state.bookmarks.contains(item.identifier),
-            onClicked: () {
-              Navigator.pushNamed(
-                context,
-                ArticleView.routeName,
-                arguments: item,
-              );
-            },
-            isFollowing: state.followings.contains(item.pubkey),
-            reduceImageSize: reduceImageSize,
-          );
-        } else if (item is VideoModel) {
-          final video = item;
-
-          return VideoCommonContainer(
-            isBookmarked: state.bookmarks.contains(item.id),
-            video: video,
-            isMuted: state.mutes.contains(item.pubkey),
-            isFollowing: state.followings.contains(item.pubkey),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                video.isHorizontal
-                    ? HorizontalVideoView.routeName
-                    : VerticalVideoView.routeName,
-                arguments: [video],
-              );
-            },
-            reduceImageSize: reduceImageSize,
-          );
-        } else if (item is Curation) {
-          final curation = item;
-
-          return CurationContainer(
-            curation: curation,
-            isFollowing: state.followings.contains(item.pubkey),
-            isBookmarked: state.bookmarks.contains(curation.identifier),
-            isProfileAccessible: false,
-            onClicked: () {
-              Navigator.pushNamed(
-                context,
-                CurationView.routeName,
-                arguments: curation,
-              );
-            },
-            padding: 0,
-            reduceImageSize: reduceImageSize,
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+    return FluidContentCard(
+      child: BlocBuilder<DiscoverCubit, DiscoverState>(
+        builder: (context, state) =>
+            _content(context, item, reduceImageSize, state),
+      ),
     );
+  }
+
+  Widget _content(
+    BuildContext context,
+    BaseEventModel item,
+    bool reduceImageSize,
+    DiscoverState state,
+  ) {
+    if (item is Article) {
+      return ArticleContainer(
+        article: item,
+        highlightedTag: '',
+        isMuted: state.mutes.contains(item.pubkey),
+        isBookmarked: state.bookmarks.contains(item.identifier),
+        onClicked: () {
+          Navigator.pushNamed(
+            context,
+            ArticleView.routeName,
+            arguments: item,
+          );
+        },
+        isFollowing: state.followings.contains(item.pubkey),
+        reduceImageSize: reduceImageSize,
+      );
+    } else if (item is VideoModel) {
+      final video = item;
+
+      return VideoCommonContainer(
+        isBookmarked: state.bookmarks.contains(item.id),
+        video: video,
+        isMuted: state.mutes.contains(item.pubkey),
+        isFollowing: state.followings.contains(item.pubkey),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            video.isHorizontal
+                ? HorizontalVideoView.routeName
+                : VerticalVideoView.routeName,
+            arguments: [video],
+          );
+        },
+        reduceImageSize: reduceImageSize,
+      );
+    } else if (item is Curation) {
+      final curation = item;
+
+      return CurationContainer(
+        curation: curation,
+        isFollowing: state.followings.contains(item.pubkey),
+        isBookmarked: state.bookmarks.contains(curation.identifier),
+        isProfileAccessible: false,
+        onClicked: () {
+          Navigator.pushNamed(
+            context,
+            CurationView.routeName,
+            arguments: curation,
+          );
+        },
+        padding: 0,
+        reduceImageSize: reduceImageSize,
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

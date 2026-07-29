@@ -32,16 +32,19 @@ import '../../utils/utils.dart';
 import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
 import '../../views/explore_packs_view/widget/pack_feed_view.dart';
+import '../../views/main_view/widgets/feature_tour.dart';
 import '../../views/note_view/note_view.dart';
 import '../../views/profile_view/profile_view.dart';
 import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../views/uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../../views/version_news/app_news_popup.dart';
+import '../../views/version_news/new_features_intro.dart';
 import '../../views/widgets/media_components/horizontal_video_view.dart';
 import '../../views/widgets/media_components/picture_view.dart';
 import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/received_share_intent.dart';
+import '../../views/workshop_view/workshop_registration_view.dart';
 
 part 'main_state.dart';
 
@@ -160,19 +163,29 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<void> checkCurrentVersionNews() async {
-    final status = localDatabaseRepository.canDisplayVersionNews(appVersion);
+    final showNews = localDatabaseRepository.canDisplayVersionNews(appVersion);
+    final showTour = kAlwaysShowFeatureTour ||
+        localDatabaseRepository.canDisplayFeatureTour();
 
-    if (status) {
-      await Future.delayed(const Duration(seconds: 5)).then(
-        (_) {
-          if (context.mounted) {
-            showDialog(
-              context: context,
-              builder: (context) => const AppNewsPopup(),
-            );
-          }
-        },
-      );
+    if (!showNews && !showTour) {
+      return;
+    }
+
+    await Future.delayed(const Duration(seconds: 5));
+
+    if (!context.mounted) {
+      return;
+    }
+
+    // The features intro takes precedence — it hands off to the spotlight tour.
+    final startTour = await showDialog<bool>(
+      context: context,
+      builder: (context) =>
+          showTour ? const NewFeaturesIntro() : const AppNewsPopup(),
+    );
+
+    if ((startTour ?? false) && context.mounted) {
+      await showFeatureTour(context);
     }
   }
 
@@ -324,6 +337,23 @@ class MainCubit extends Cubit<MainState> {
     } else if (uriString.contains('yakihonne.com/pack/s') ||
         uriString.contains('yakihonne.com/pack/m')) {
       await _handlePackLink(uriString);
+    } else if (uriString.contains('yakihonne.com/workshop/registration')) {
+      final wid = Uri.parse(uriString).queryParameters['wid'];
+
+      if (wid != null && wid.isNotEmpty && context.mounted) {
+        doIfCanSign(
+          context: context,
+          func: () => showModalBottomSheet(
+            context: context,
+            elevation: 0,
+            isScrollControlled: true,
+            useRootNavigator: true,
+            useSafeArea: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => WorkshopRegistrationView(workshopId: wid),
+          ),
+        );
+      }
     } else if (uriString.contains('yakihonne.com/r/content/')) {
       final uri = Uri.parse(uriString);
       final relay = uri.queryParameters['r'];
@@ -763,6 +793,12 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleAddress(String nostrUri) async {
     final Map<String, dynamic> nostrDecode =
         Nip19.decodeShareableEntity(nostrUri);
+
+    if (nostrDecode['special'] == null) {
+      BotToastUtils.showError(context.t.eventNotFound.capitalizeFirst());
+      return;
+    }
+
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
     final hexCode = hex.decode(nostrDecode['special']);
     final special = String.fromCharCodes(hexCode);

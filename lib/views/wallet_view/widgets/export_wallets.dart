@@ -9,6 +9,7 @@ import '../../../models/wallet_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class ExportWalletOnCreation extends StatelessWidget {
   const ExportWalletOnCreation({super.key, required this.wallet});
@@ -62,6 +63,7 @@ class ExportWalletOnCreation extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => YNavigator.pop(context),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: VisualDensity.comfortable,
                     side: const BorderSide(
                       color: kRed,
@@ -86,6 +88,7 @@ class ExportWalletOnCreation extends StatelessWidget {
     return Expanded(
       child: TextButton.icon(
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: Theme.of(context).cardColor,
         ),
@@ -98,14 +101,10 @@ class ExportWalletOnCreation extends StatelessWidget {
             context.t.nwcCopied.capitalize(),
           );
         },
-        label: SvgPicture.asset(
+        label: AppIcon(
           FeatureIcons.copy,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         icon: Text(
           context.t.copy.capitalizeFirst(),
@@ -131,17 +130,14 @@ class ExportWalletOnCreation extends StatelessWidget {
           }
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: Theme.of(context).cardColor,
         ),
-        label: SvgPicture.asset(
+        label: AppIcon(
           FeatureIcons.export,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         icon: Text(context.t.export),
       ),
@@ -209,6 +205,7 @@ class ExportWalletOnLoginOut extends StatelessWidget {
       child: OutlinedButton(
         onPressed: () => YNavigator.pop(context),
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           side: const BorderSide(
             color: kRed,
@@ -229,18 +226,15 @@ class ExportWalletOnLoginOut extends StatelessWidget {
       width: double.infinity,
       child: TextButton.icon(
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: Theme.of(context).cardColor,
         ),
         onPressed: onLogout,
-        label: SvgPicture.asset(
+        label: AppIcon(
           FeatureIcons.log,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         icon: Text(
           context.t.logout.capitalizeFirst(),
@@ -269,17 +263,14 @@ class ExportWalletOnLoginOut extends StatelessWidget {
           }
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: Theme.of(context).cardColor,
         ),
-        label: SvgPicture.asset(
+        label: AppIcon(
           FeatureIcons.export,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         icon: Text(
           context.t.exportAndLogout,

@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'mint_details.dart';
 
 class MintsList extends HookWidget {
@@ -22,98 +25,77 @@ class MintsList extends HookWidget {
   Widget build(BuildContext context) {
     final tabController = useTabController(initialLength: 3);
 
-    return Material(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          expand: false,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) {
-            return BlocBuilder<CashuWalletManagerCubit,
-                CashuWalletManagerState>(
-              builder: (context, state) {
-                final hasInactiveMintsWithBalance = state.mints.entries.any(
-                    (e) =>
-                        !state.walletMints.contains(e.key) &&
-                        e.value.balance > 0);
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        initialChildSize: 0.9,
+        builder: (context, scrollController) {
+          return BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
+            builder: (context, state) {
+              final hasInactiveMintsWithBalance = state.mints.entries.any((e) =>
+                  !state.walletMints.contains(e.key) && e.value.balance > 0);
 
-                return Column(
-                  children: [
-                    const ModalBottomSheetHandle(),
-                    TabBar(
-                      controller: tabController,
-                      dividerHeight: 0,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorColor: Theme.of(context).primaryColor,
-                      labelStyle:
-                          Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.w600,
+              return Column(
+                children: [
+                  const ModalBottomSheetHandle(),
+                  TabBar(
+                    controller: tabController,
+                    dividerHeight: 0,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorColor: Theme.of(context).primaryColor,
+                    labelStyle:
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                    tabs: [
+                      Tab(
+                        text: context.t.active,
+                      ),
+                      Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: kDefaultPadding / 4,
+                          children: [
+                            if (hasInactiveMintsWithBalance) ...[
+                              const Icon(
+                                LucideIcons.triangleAlert,
+                                size: 15,
+                                color: kYellow,
                               ),
-                      tabs: [
-                        Tab(
-                          text: context.t.active,
-                        ),
-                        Tab(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            spacing: kDefaultPadding / 4,
-                            children: [
-                              if (hasInactiveMintsWithBalance) ...[
-                                const Icon(
-                                  Icons.warning_rounded,
-                                  size: 15,
-                                  color: kYellow,
-                                ),
-                              ],
-                              Text(context.t.inactive),
                             ],
-                          ),
+                            Text(context.t.inactive),
+                          ],
                         ),
-                        Tab(
-                          text: context.t.recommended,
+                      ),
+                      Tab(
+                        text: context.t.recommended,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  Expanded(
+                    child: TabBarView(
+                      controller: tabController,
+                      children: [
+                        _activeMintsList(
+                          scrollController: scrollController,
+                        ),
+                        _inactiveMintsList(
+                          scrollController: scrollController,
+                        ),
+                        _recommendedList(
+                          scrollController: scrollController,
                         ),
                       ],
                     ),
-                    const SizedBox(height: kDefaultPadding / 2),
-                    Expanded(
-                      child: TabBarView(
-                        controller: tabController,
-                        children: [
-                          _activeMintsList(
-                            scrollController: scrollController,
-                          ),
-                          _inactiveMintsList(
-                            scrollController: scrollController,
-                          ),
-                          _recommendedList(
-                            scrollController: scrollController,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                );
-              },
-            );
-          },
-        ),
+                  )
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -325,15 +307,10 @@ class ActiveMintsList extends HookWidget {
       },
       decoration: InputDecoration(
         hintText: context.t.mintUrl,
-        prefixIcon: SvgPicture.asset(
+        prefixIcon: AppIcon(
           FeatureIcons.search,
-          width: 20,
-          height: 20,
-          fit: BoxFit.scaleDown,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         suffixIcon: text.value.isEmpty
             ? null
@@ -501,14 +478,10 @@ class MintContainer extends StatelessWidget {
                         cashuWalletManagerCubit.syncMintData(url);
                       },
                       title: context.t.syncData.capitalizeFirst(),
-                      iconWidget: SvgPicture.asset(
+                      iconWidget: AppIcon(
                         FeatureIcons.restore,
-                        height: 20,
-                        width: 20,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: Theme.of(context).primaryColorDark,
                       ),
                       itemTheme: PullDownMenuItemTheme(
                         textStyle: textStyle,
@@ -523,14 +496,10 @@ class MintContainer extends StatelessWidget {
                         );
                       },
                       title: context.t.info.capitalizeFirst(),
-                      iconWidget: SvgPicture.asset(
+                      iconWidget: AppIcon(
                         FeatureIcons.informationRaw,
-                        height: 20,
-                        width: 20,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: Theme.of(context).primaryColorDark,
                       ),
                       itemTheme: PullDownMenuItemTheme(
                         textStyle: textStyle,
@@ -544,14 +513,10 @@ class MintContainer extends StatelessWidget {
                       },
                       title: context.t.delete.capitalizeFirst(),
                       isDestructive: true,
-                      iconWidget: SvgPicture.asset(
+                      iconWidget: const AppIcon(
                         FeatureIcons.trash,
-                        height: 20,
-                        width: 20,
-                        colorFilter: const ColorFilter.mode(
-                          kRed,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: kRed,
                       ),
                       itemTheme: PullDownMenuItemTheme(
                         textStyle: textStyle,

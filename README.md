@@ -94,15 +94,22 @@ flutter run -d linux
 
 **Build for production:**
 
+Mobile builds are obfuscated, so pass `--obfuscate --split-debug-info` and
+upload the resulting symbol map to Sentry afterwards — otherwise crash/ANR
+stack traces come back unreadable (`<unknown>` frames).
+
 ```bash
 # Android APK
-flutter build apk --release
+flutter build apk --release --obfuscate --split-debug-info=build/symbols
 
 # Android App Bundle
-flutter build appbundle --release
+flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
 
 # iOS
-flutter build ios --release
+flutter build ios --release --obfuscate --split-debug-info=build/symbols
+
+# Upload the Dart debug symbols to Sentry (reads config from pubspec.yaml + sentry.properties)
+dart run sentry_dart_plugin
 
 # Web
 flutter build web --release

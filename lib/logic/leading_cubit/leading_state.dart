@@ -13,6 +13,7 @@ class LeadingState extends Equatable {
   final bool refresh;
   final AppContentSource selectedSource;
   final bool showFollowingListMessage;
+  final List<Event> paidNoteAds;
 
   const LeadingState({
     required this.content,
@@ -26,6 +27,7 @@ class LeadingState extends Equatable {
     required this.refresh,
     required this.selectedSource,
     required this.showFollowingListMessage,
+    this.paidNoteAds = const [],
   });
 
   @override
@@ -41,6 +43,7 @@ class LeadingState extends Equatable {
         refresh,
         selectedSource,
         showFollowingListMessage,
+        paidNoteAds,
       ];
 
   LeadingState copyWith({
@@ -55,6 +58,7 @@ class LeadingState extends Equatable {
     bool? refresh,
     AppContentSource? selectedSource,
     bool? showFollowingListMessage,
+    List<Event>? paidNoteAds,
   }) {
     return LeadingState(
       content: content ?? this.content,
@@ -69,6 +73,7 @@ class LeadingState extends Equatable {
       selectedSource: selectedSource ?? this.selectedSource,
       showFollowingListMessage:
           showFollowingListMessage ?? this.showFollowingListMessage,
+      paidNoteAds: paidNoteAds ?? this.paidNoteAds,
     );
   }
 }

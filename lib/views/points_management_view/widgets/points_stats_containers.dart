@@ -8,6 +8,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../models/points_system_models.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import 'consumable_points_view.dart';
 import 'income_chart.dart';
@@ -353,22 +354,28 @@ class PointContainer extends StatelessWidget {
       builder: (context, state) {
         final points = state.currentXp - state.consumablePoints;
 
-        return Container(
-          padding: const EdgeInsets.all(
-            kDefaultPadding / 2,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(
-              kDefaultPadding / 2,
-            ),
-          ),
-          child: _contentColumn(points, context, state),
-        );
+        return isFluid()
+            ? FluidCardContainer(
+                borderRadius: kDefaultPadding / 2,
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                child: _contentColumn(points, context, state),
+              )
+            : Container(
+                padding: const EdgeInsets.all(
+                  kDefaultPadding / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    kDefaultPadding / 2,
+                  ),
+                ),
+                child: _contentColumn(points, context, state),
+              );
       },
     );
   }
@@ -380,7 +387,7 @@ class PointContainer extends StatelessWidget {
         Row(
           children: [
             Text(
-              points.toString(),
+              (state.currentXp - points).toString(),
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -408,6 +415,7 @@ class PointContainer extends StatelessWidget {
                 );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.compact,
                 padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding / 2,
@@ -426,7 +434,9 @@ class PointContainer extends StatelessWidget {
           height: kDefaultPadding / 2,
         ),
         LinearProgressIndicator(
-          value: state.consumablePoints / state.currentXp,
+          value: state.currentXp > 0
+              ? (state.currentXp - points) / state.currentXp
+              : 0,
           color: kRed,
           minHeight: 5,
           backgroundColor: kBlack.withValues(alpha: 0.3),
@@ -441,13 +451,13 @@ class PointContainer extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                context.t.consumablePoints.capitalizeFirst(),
+                context.t.consumedPoints.capitalizeFirst(),
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(),
               ),
             ),
             Text(
               context.t.lastUpdatedOn(
-                date: points == 0
+                date: state.userGlobalStats == null || points == 0
                     ? 'N/A'
                     : dateFormat2.format(
                         state.userGlobalStats!.currentPointsLastUpdated),
@@ -470,22 +480,28 @@ class XpContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PointsManagementCubit, PointsManagementState>(
       builder: (context, state) {
-        return Container(
-          padding: const EdgeInsets.all(
-            kDefaultPadding / 2,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(
-              kDefaultPadding / 2,
-            ),
-          ),
-          child: _contentColumn(state, context),
-        );
+        return isFluid()
+            ? FluidCardContainer(
+                borderRadius: kDefaultPadding / 2,
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                child: _contentColumn(state, context),
+              )
+            : Container(
+                padding: const EdgeInsets.all(
+                  kDefaultPadding / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    kDefaultPadding / 2,
+                  ),
+                ),
+                child: _contentColumn(state, context),
+              );
       },
     );
   }

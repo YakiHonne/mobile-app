@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class CameraOptions extends StatelessWidget {
   const CameraOptions({
@@ -152,7 +153,7 @@ class PickChoice extends StatelessWidget {
   final String pubkey;
   final MediaType mediaType;
   final String title;
-  final String icon;
+  final IconData icon;
   final String? replyId;
   final Function() onSuccess;
   final Function() onFailed;
@@ -178,14 +179,10 @@ class PickChoice extends StatelessWidget {
           },
       child: Column(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 30,
-            height: 30,
+            size: 30,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

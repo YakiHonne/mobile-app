@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class ExternalWalletsListView extends StatelessWidget {
   const ExternalWalletsListView({super.key});
@@ -13,18 +14,7 @@ class ExternalWalletsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        return ModalSheetContainer(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),

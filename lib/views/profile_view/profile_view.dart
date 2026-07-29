@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/fluid_blur_container.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/pull_down_global_button.dart';
@@ -166,78 +168,98 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
           previous.mutes != current.mutes ||
           previous.user != current.user,
       builder: (context, state) {
-        return SmartRefresher(
-            controller: refreshController,
-            enablePullUp: true,
-            enablePullDown: false,
-            footer: const RefresherClassicFooter(),
-            onLoading: () => context.read<ProfileCubit>().getUserInfos(
-                  profileData: widget.profileDataState.value,
-                  isAdding: true,
-                ),
-            child: CustomScrollView(
-              slivers: [
-                ProfileAppBar(
-                  profileData: widget.profileDataState.value,
-                ),
-                const SliverToBoxAdapter(
-                  child: ProfileHeader(),
-                ),
-                OptionsHeader(
-                  onProfileDataChanged: (profileData) {
-                    widget.profileDataState.value = profileData;
-                    context.read<ProfileCubit>().getUserInfos(
-                          profileData: profileData,
-                        );
-                  },
-                ),
-                MediaQuery.removePadding(
-                  removeTop: true,
-                  context: context,
-                  child: getCurrentWidget(
+        final currentType = widget.profileDataState.value.getType();
+        final isNotes = currentType == 'notes';
+        final isMedia = currentType == 'media';
+        final isOthers = currentType == 'others';
+        final showFilter = (isNotes || isMedia || isOthers) && isFluid();
+
+        return Stack(
+          children: [
+            SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: const RefresherClassicFooter(),
+              onLoading: () => context.read<ProfileCubit>().getUserInfos(
+                    profileData: widget.profileDataState.value,
+                    isAdding: true,
+                  ),
+              child: CustomScrollView(
+                slivers: [
+                  ProfileAppBar(
+                    profileData: widget.profileDataState.value,
+                  ),
+                  const SliverToBoxAdapter(
+                    child: ProfileHeader(),
+                  ),
+                  OptionsHeader(
+                    onProfileDataChanged: (profileData) {
+                      widget.profileDataState.value = profileData;
+                      context.read<ProfileCubit>().getUserInfos(
+                            profileData: profileData,
+                          );
+                    },
+                  ),
+                  MediaQuery.removePadding(
+                    removeTop: true,
                     context: context,
-                    profileDataState: widget.profileDataState,
+                    child: getCurrentWidget(
+                      context: context,
+                      profileDataState: widget.profileDataState,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (showFilter)
+              Positioned(
+                left: kDefaultPadding / 2,
+                right: kDefaultPadding / 2,
+                bottom: kDefaultPadding + MediaQuery.of(context).padding.bottom,
+                child: Align(
+                  child: SizedBox(
+                    width: 50.w,
+                    child: FluidBlurContainer(
+                      borderRadius: kDefaultPadding * 2,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPadding / 4,
+                      ),
+                      child: isNotes
+                          ? ProfileNotesFilter(
+                              profileData: widget.profileDataState.value,
+                              onChanged: (profileData) {
+                                widget.profileDataState.value = profileData;
+                                context.read<ProfileCubit>().getUserInfos(
+                                      profileData: profileData,
+                                    );
+                              },
+                            )
+                          : isMedia
+                              ? ProfileMediaFilter(
+                                  profileData: widget.profileDataState.value,
+                                  onChanged: (profileData) {
+                                    widget.profileDataState.value = profileData;
+                                    context.read<ProfileCubit>().getUserInfos(
+                                          profileData: profileData,
+                                        );
+                                  },
+                                )
+                              : ProfileOthersFilter(
+                                  profileData: widget.profileDataState.value,
+                                  onChanged: (profileData) {
+                                    widget.profileDataState.value = profileData;
+                                    context.read<ProfileCubit>().getUserInfos(
+                                          profileData: profileData,
+                                        );
+                                  },
+                                ),
+                    ),
                   ),
                 ),
-              ],
-            )
-
-            //  NestedScrollViewPlus(
-            //   headerSliverBuilder: (context, innerBoxIsScrolled) {
-            //     return [
-            //       const ProfileAppBar(),
-            //       const SliverToBoxAdapter(
-            //         child: ProfileHeader(),
-            //       ),
-            //       OptionsHeader(
-            //         onProfileDataChanged: (profileData) {
-            //           widget.profileDataState.value = profileData;
-            //           context.read<ProfileCubit>().getUserInfos(
-            //                 profileData: profileData,
-            //               );
-            //         },
-            //       ),
-            //     ];
-            //   },
-            //   body: TabBarView(
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     children: <Widget>[
-            //       ProfileGlobalNotes(
-            //       profileData: widget.profileDataState.value,
-            //       onProfileDataChanged: (profileData) {
-            //         widget.profileDataState.value = profileData;
-            //         context.read<ProfileCubit>().getUserInfos(
-            //               profileData: profileData,
-            //             );
-            //       },
-            //       ),
-            //       const ProfileArticles(),
-            //       ProfileMedia(),
-            //       ProfileMedia(),
-            //     ],
-            //   ),
-            // ),
-            );
+              ),
+          ],
+        );
       },
     );
   }
@@ -292,6 +314,7 @@ class OptionsHeader extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final index = useState(0);
+    final fluid = isFluid();
 
     return MediaQuery.removePadding(
       context: context,
@@ -303,42 +326,86 @@ class OptionsHeader extends HookWidget {
         automaticallyImplyLeading: false,
         leadingWidth: 0,
         titleSpacing: 0,
-        toolbarHeight: 40,
-        backgroundColor:
-            Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 1),
+        toolbarHeight: fluid ? 48 : 40,
+        backgroundColor: fluid
+            ? Colors.transparent
+            : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 1),
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         actions: const [SizedBox.shrink()],
         elevation: 0,
-        title: SizedBox(
-          width: double.infinity,
-          height: 40,
-          child: ScrollShadow(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: TabBar(
-              onTap: (selectedIndex) {
-                index.value = selectedIndex;
-                onProfileDataChanged(getProfileData(selectedIndex));
-              },
-              indicatorSize: TabBarIndicatorSize.tab,
-              padding: EdgeInsets.zero,
-              labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).primaryColorDark,
-                    fontWeight: FontWeight.w600,
+        title: fluid
+            ? Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                ),
+                child: FluidBlurContainer(
+                  backgroundAlpha: 0.75,
+                  padding: const EdgeInsets.all(3),
+                  child: TabBar(
+                    onTap: (selectedIndex) {
+                      index.value = selectedIndex;
+                      onProfileDataChanged(getProfileData(selectedIndex));
+                    },
+                    dividerHeight: 0,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    padding: EdgeInsets.zero,
+                    labelPadding: const EdgeInsets.all(3),
+                    indicator: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(300),
+                    ),
+                    labelStyle: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(fontWeight: FontWeight.w700),
+                    unselectedLabelStyle: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(fontWeight: FontWeight.w500),
+                    tabs: [
+                      Tab(height: 28, text: context.t.notes.capitalizeFirst()),
+                      Tab(
+                          height: 28,
+                          text: context.t.articles.capitalizeFirst()),
+                      Tab(height: 28, text: context.t.media.capitalizeFirst()),
+                      Tab(height: 28, text: context.t.others.capitalizeFirst()),
+                    ],
                   ),
-              unselectedLabelStyle:
-                  Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                      ),
-              indicatorColor: Theme.of(context).primaryColor,
-              dividerColor: Theme.of(context).dividerColor,
-              tabs: [
-                Tab(text: context.t.notes.capitalizeFirst()),
-                Tab(text: context.t.articles.capitalizeFirst()),
-                Tab(text: context.t.media.capitalizeFirst()),
-                Tab(text: context.t.others.capitalizeFirst()),
-              ],
-            ),
-          ),
-        ),
+                ),
+              )
+            : SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ScrollShadow(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: TabBar(
+                    onTap: (selectedIndex) {
+                      index.value = selectedIndex;
+                      onProfileDataChanged(getProfileData(selectedIndex));
+                    },
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    padding: EdgeInsets.zero,
+                    labelStyle:
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).primaryColorDark,
+                              fontWeight: FontWeight.w600,
+                            ),
+                    unselectedLabelStyle:
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).highlightColor,
+                            ),
+                    indicatorColor: Theme.of(context).primaryColor,
+                    dividerColor: Theme.of(context).dividerColor,
+                    tabs: [
+                      Tab(text: context.t.notes.capitalizeFirst()),
+                      Tab(text: context.t.articles.capitalizeFirst()),
+                      Tab(text: context.t.media.capitalizeFirst()),
+                      Tab(text: context.t.others.capitalizeFirst()),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -377,17 +444,10 @@ class ProfileAppBar extends StatelessWidget {
           elevation: 0,
           scrolledUnderElevation: 0,
           stretch: true,
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Center(
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Theme.of(context).cardColor,
-                child: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 20,
-                ),
-              ),
+          leading: Center(
+            child: AppIconButton(
+              icon: FeatureIcons.arrowLeft,
+              onClicked: () => YNavigator.pop(context),
             ),
           ),
           actions: [
@@ -473,10 +533,6 @@ class ProfileAppBar extends StatelessWidget {
                 (context) => ProfileSettingsView(),
               );
             },
-            style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).cardColor,
-              visualDensity: VisualDensity.standard,
-            ),
             child: Text(
               context.t.editProfile.capitalizeFirst(),
               style: Theme.of(context).textTheme.labelMedium,
@@ -499,6 +555,7 @@ class ProfileAppBar extends StatelessWidget {
                     }
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: const VisualDensity(
                       vertical: -1,
                     ),
@@ -533,7 +590,7 @@ class ProfileAppBar extends StatelessWidget {
 
               return AbsorbPointer(
                 absorbing: isDisabled,
-                child: NewBorderedIconButton(
+                child: CustomizedIconButton(
                   onClicked: () {
                     context.read<WalletsManagerCubit>().resetInvoice();
 
@@ -566,7 +623,7 @@ class ProfileAppBar extends StatelessWidget {
             width: kDefaultPadding / 4,
           ),
           if (canSign()) ...[
-            NewBorderedIconButton(
+            CustomizedIconButton(
               onClicked: () {
                 context.read<DmsCubit>().updateReadedTime(
                       state.user.pubkey,
@@ -618,46 +675,41 @@ class ProfileAppBar extends StatelessWidget {
     );
   }
 
-  Center _pulldownButton(BuildContext context, ProfileState state) {
-    return Center(
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: Theme.of(context).cardColor,
-        child: PullDownGlobalButton(
-          model: LightMetadata.fromMetadata(state.user),
-          enableCopyNpub: true,
-          enableCopyNpubHex: true,
-          enableUserRelays: true,
-          enableShare: true,
-          enableRefresh: true,
-          enableMute:
-              canSign() && currentSigner!.getPublicKey() != state.user.pubkey,
-          muteStatus: state.mutes.contains(state.user.pubkey),
-          onShowUserRelays: () {
-            context.read<ProfileCubit>().setRelays();
+  Widget _pulldownButton(BuildContext context, ProfileState state) {
+    return PullDownGlobalButton(
+      model: LightMetadata.fromMetadata(state.user),
+      enableCopyNpub: true,
+      enableCopyNpubHex: true,
+      enableUserRelays: true,
+      enableShare: true,
+      enableRefresh: true,
+      enableMute:
+          canSign() && currentSigner!.getPublicKey() != state.user.pubkey,
+      muteStatus: state.mutes.contains(state.user.pubkey),
+      onShowUserRelays: () {
+        context.read<ProfileCubit>().setRelays();
 
-            showModalBottomSheet(
-              context: context,
-              builder: (_) {
-                return BlocProvider.value(
-                  value: context.read<ProfileCubit>(),
-                  child: const ProfileRelays(),
-                );
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        showModalBottomSheet(
+          context: context,
+          builder: (_) {
+            return BlocProvider.value(
+              value: context.read<ProfileCubit>(),
+              child: const ProfileRelays(),
             );
           },
-          onRefresh: () {
-            context.read<ProfileCubit>().getUserInfos(
-                  profileData: profileData,
-                );
-          },
-        ),
-      ),
+          isScrollControlled: true,
+          useRootNavigator: true,
+          useSafeArea: true,
+          elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        );
+      },
+      onRefresh: () {
+        context.read<ProfileCubit>().getUserInfos(
+              profileData: profileData,
+            );
+      },
+      useFluidMode: true,
     );
   }
 }

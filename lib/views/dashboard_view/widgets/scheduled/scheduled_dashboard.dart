@@ -12,6 +12,7 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/parsed_content_display.dart';
 import '../home/dashboard_containers.dart';
 
@@ -34,19 +35,8 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
         DateTime.fromMillisecondsSinceEpoch(result.scheduledAt * 1000);
     showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
+      builder: (_) => ModalSheetContainer(
         height: MediaQuery.of(context).size.height * 0.4,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
         child: Column(
           children: [

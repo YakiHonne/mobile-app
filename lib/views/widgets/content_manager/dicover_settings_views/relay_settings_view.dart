@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
 import 'package:nostr_core_enhanced/utils/relay.dart';
@@ -17,6 +18,7 @@ import '../../../explore_packs_view/widget/pack_feed_view.dart';
 import '../../../relay_feed_view/relay_feed_view.dart';
 import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
+import '../../app_icon.dart';
 import '../../common_thumbnail.dart';
 import '../../custom_icon_buttons.dart';
 import '../../data_providers.dart';
@@ -239,6 +241,7 @@ class RelaySettingsView extends HookWidget {
                                 );
                               },
                               style: TextButton.styleFrom(
+                                backgroundBuilder: (_, __, child) => child!,
                                 visualDensity: VisualDensity.comfortable,
                               ),
                               child: Text(
@@ -550,6 +553,7 @@ class RelaySetContainer extends HookWidget {
     this.reorderable = false,
     this.removeContainer = false,
     this.isFavorite = false,
+    this.useIsFluid = false,
   });
 
   final UserRelaySet? relaySet;
@@ -562,6 +566,7 @@ class RelaySetContainer extends HookWidget {
   final bool? isFavorite;
   final bool removeContainer;
   final bool reorderable;
+  final bool useIsFluid;
 
   @override
   Widget build(BuildContext context) {
@@ -572,7 +577,9 @@ class RelaySetContainer extends HookWidget {
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
               color: isSelected
                   ? Theme.of(context).cardColor
-                  : Theme.of(context).scaffoldBackgroundColor,
+                  : useIsFluid && isFluid()
+                      ? kTransparent
+                      : Theme.of(context).scaffoldBackgroundColor,
               border: isSelected
                   ? Border.all(
                       color: Theme.of(context).dividerColor,
@@ -682,14 +689,10 @@ class RelaySetContainer extends HookWidget {
                               .relaysNumber(number: relaySet.relays.length),
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.arrowDown,
-                          width: 15,
-                          height: 15,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).highlightColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 15,
+                          color: Theme.of(context).highlightColor,
                         ),
                       ],
                     ),
@@ -758,7 +761,7 @@ class RelaySetContainer extends HookWidget {
             ),
           if (reorderable)
             const Icon(
-              Icons.drag_indicator_rounded,
+              LucideIcons.gripVertical,
               size: 20,
             ),
           const SizedBox(
@@ -779,6 +782,7 @@ class RelayContainer extends HookWidget {
     this.onClick,
     this.onShareRelay,
     this.reorderable = false,
+    this.useIsFluid = false,
   });
 
   final String url;
@@ -787,6 +791,7 @@ class RelayContainer extends HookWidget {
   final Function()? onDelete;
   final Function()? onShareRelay;
   final bool reorderable;
+  final bool useIsFluid;
 
   @override
   Widget build(BuildContext context) {
@@ -797,7 +802,9 @@ class RelayContainer extends HookWidget {
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           color: isSelected
               ? Theme.of(context).cardColor
-              : Theme.of(context).scaffoldBackgroundColor,
+              : useIsFluid && isFluid()
+                  ? kTransparent
+                  : Theme.of(context).scaffoldBackgroundColor,
           border: isSelected
               ? Border.all(
                   color: Theme.of(context).dividerColor,
@@ -869,7 +876,7 @@ class RelayContainer extends HookWidget {
             ),
           if (reorderable)
             const Icon(
-              Icons.drag_indicator_rounded,
+              LucideIcons.gripVertical,
               size: 20,
             ),
           const SizedBox(
@@ -1136,14 +1143,10 @@ class ShareRelayFeed extends StatelessWidget {
                   ],
                 ),
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.shareExternal,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),
@@ -1271,14 +1274,10 @@ class SharePackFeed extends StatelessWidget {
                   ],
                 ),
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.shareExternal,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),

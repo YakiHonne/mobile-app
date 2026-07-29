@@ -111,6 +111,7 @@ class VideoDownload extends HookWidget {
                         YNavigator.pop(context);
                       },
                       style: TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
                         backgroundColor: Theme.of(context).cardColor,
                         side: BorderSide(
                           color: Theme.of(context).dividerColor,

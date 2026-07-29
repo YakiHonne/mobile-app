@@ -55,6 +55,10 @@ class LeadingCubit extends Cubit<LeadingState> {
   final extraIds = <String>{};
   int? score;
   Timer? currentExtraTimer;
+  Timer? _paidNoteAdsRefreshTimer;
+
+  // Ads dropped from rotation once seen this many times, mirrors web's cap.
+  static const int maxAdSeenCount = 5;
 
   // =============================================================================
   // STREAMS & LISTENERS
@@ -130,12 +134,61 @@ class LeadingCubit extends Cubit<LeadingState> {
     }
 
     fetchMedia();
+    fetchPaidNoteAds();
 
     buildLeadingFeed(
       isAdding: false,
     );
 
     suggestionsBoxCubit.initLeading();
+  }
+
+  Future<void> fetchPaidNoteAds() async {
+    if (subscriptionCubit.isPremium) {
+      return;
+    }
+    final threeDaysAgo =
+        (DateTime.now().millisecondsSinceEpoch ~/ 1000) - (3 * 24 * 3600);
+    try {
+      var events = await NostrFunctionsRepository.getEventsAsync(
+        lTags: [FN_SEARCH_VALUE],
+        kinds: [EventKind.TEXT_NOTE],
+        limit: 20,
+        since: threeDaysAgo,
+      );
+      if (events.length < 10) {
+        events = await NostrFunctionsRepository.getEventsAsync(
+          lTags: [FN_SEARCH_VALUE],
+          kinds: [EventKind.TEXT_NOTE],
+          limit: 20,
+        );
+      }
+
+      final seenCounts = await localDatabaseRepository.getPaidNoteAdsSeenCounts();
+      final freshEvents =
+          events.where((e) => (seenCounts[e.id] ?? 0) < maxAdSeenCount).toList();
+
+      if (!isClosed && events.isNotEmpty) {
+        emit(
+          state.copyWith(
+            paidNoteAds: freshEvents.isNotEmpty ? freshEvents : events,
+          ),
+        );
+      }
+    } catch (_) {}
+
+    _paidNoteAdsRefreshTimer ??= Timer.periodic(
+      const Duration(hours: 24),
+      (_) => fetchPaidNoteAds(),
+    );
+  }
+
+  /// Records a paid note ad impression so it rotates out after
+  /// [maxAdSeenCount] views instead of repeating indefinitely.
+  Future<void> markPaidNoteAdSeen(String eventId) async {
+    final counts = await localDatabaseRepository.getPaidNoteAdsSeenCounts();
+    counts[eventId] = (counts[eventId] ?? 0) + 1;
+    await localDatabaseRepository.setPaidNoteAdsSeenCounts(counts: counts);
   }
 
   void onRemoveMutedContent(String pubkey) {
@@ -494,7 +547,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onContentLoading: false,
           onAddingData:
               filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,
@@ -627,6 +680,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     feedStream.cancel();
     mutesStream.cancel();
     noteDeletionStream.cancel();
+    _paidNoteAdsRefreshTimer?.cancel();
     // Note: score is an int, not a StreamSubscription
     return super.close();
   }

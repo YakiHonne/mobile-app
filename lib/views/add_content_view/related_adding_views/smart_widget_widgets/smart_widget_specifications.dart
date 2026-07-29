@@ -11,6 +11,7 @@ import '../../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../../models/smart_widgets_components.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/dotted_container.dart';
@@ -342,14 +343,10 @@ class SWappSmartWidget extends StatelessWidget {
                 ),
                 child: Center(
                   child: HeartbeatFade(
-                    child: SvgPicture.asset(
+                    child: AppIcon(
                       FeatureIcons.smartWidget,
-                      width: 40,
-                      height: 40,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColorDark,
-                        BlendMode.srcIn,
-                      ),
+                      size: 40,
+                      color: Theme.of(context).primaryColorDark,
                     ),
                   ),
                 ),
@@ -518,14 +515,10 @@ class ImageEditableContainer extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.image,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -657,6 +650,7 @@ class InputFieldEditableContainer extends StatelessWidget {
       width: double.infinity,
       child: TextButton.icon(
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
           backgroundColor: Theme.of(context).cardColor,
         ),
@@ -664,14 +658,10 @@ class InputFieldEditableContainer extends StatelessWidget {
         label: Text(
           context.t.addInputField,
         ),
-        icon: SvgPicture.asset(
+        icon: AppIcon(
           FeatureIcons.addRaw,
-          width: 15,
-          height: 15,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 15,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -794,6 +784,7 @@ class ButtonsEditableContainer extends HookWidget {
         width: double.infinity,
         child: TextButton.icon(
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             visualDensity: VisualDensity.comfortable,
             backgroundColor: Theme.of(context).cardColor,
           ),
@@ -801,14 +792,10 @@ class ButtonsEditableContainer extends HookWidget {
           label: Text(
             context.t.addButton,
           ),
-          icon: SvgPicture.asset(
+          icon: AppIcon(
             FeatureIcons.addRaw,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
         ),
       ),
@@ -921,6 +908,7 @@ class SMEditableTextButton extends StatelessWidget {
     final widget = TextButton(
       onPressed: onSelected,
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         visualDensity: const VisualDensity(horizontal: -0.5, vertical: -0.5),
         backgroundColor: Theme.of(context).cardColor,
         side: BorderSide(
@@ -977,7 +965,7 @@ class OnboardingOption extends StatelessWidget {
 
   final Function() onClick;
   final String title;
-  final String icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -998,13 +986,10 @@ class OnboardingOption extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 icon,
-                width: 30,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 30,
+                color: Theme.of(context).primaryColorDark,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -1032,7 +1017,7 @@ class GridSideButton extends StatelessWidget {
     this.isHorizontal,
   });
 
-  final String icon;
+  final IconData icon;
   final Color backGroundColor;
   final Function() onTap;
   final bool isSmall;
@@ -1050,14 +1035,10 @@ class GridSideButton extends StatelessWidget {
           color: backGroundColor,
         ),
         child: Center(
-          child: SvgPicture.asset(
+          child: AppIcon(
             icon,
-            width: 15,
-            height: 15,
-            colorFilter: const ColorFilter.mode(
-              kWhite,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: kWhite,
           ),
         ),
       ),

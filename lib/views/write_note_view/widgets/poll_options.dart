@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
 import '../../polls_view/zap_polls_selection.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/dotted_container.dart';
 import '../../write_zap_poll_view/write_zap_poll_view.dart';
 
@@ -93,14 +94,10 @@ class PollOptions extends HookWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.polls,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
-                width: 25,
-                height: 25,
+                color: Theme.of(context).primaryColorDark,
+                size: 25,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -151,14 +148,10 @@ class PollOptions extends HookWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.addRaw,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
-                width: 25,
-                height: 25,
+                color: Theme.of(context).primaryColorDark,
+                size: 25,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,

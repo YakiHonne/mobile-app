@@ -21,8 +21,11 @@ import '../../points_management_view/points_management_view.dart';
 import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
 import '../../settings_view/settings_view.dart';
+import '../../subscription_view/subscription_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
@@ -34,28 +37,55 @@ class MainViewDrawer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isGlass = themeCubit.state.isFluid;
+
     return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
-        return Drawer(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding,
-              vertical: kDefaultPadding / 1.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                kDefaultPadding,
+        if (!isGlass) {
+          return Drawer(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding,
+                vertical: kDefaultPadding / 1.5,
               ),
-              border: Border(
-                right: BorderSide(
-                  color: Theme.of(context).dividerColor,
-                  width: 0.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding),
+                border: Border(
+                  right: BorderSide(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
                 ),
               ),
+              child: _items(context, state),
             ),
-            child: _items(context, state),
+          );
+        }
+
+        // Glass mode: floating panel with blur, left/top/bottom margins
+        return Drawer(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + kDefaultPadding,
+              bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding,
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+            ),
+            child: FluidBlurContainer(
+              sigma: 20,
+              borderRadius: kDefaultPadding * 1.5,
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 1.5,
+                vertical: kDefaultPadding / 1.5,
+              ),
+              child: _items(context, state),
+            ),
           ),
         );
       },
@@ -65,9 +95,10 @@ class MainViewDrawer extends HookWidget {
   Column _items(BuildContext context, MainState state) {
     return Column(
       children: [
-        const SizedBox(
-          height: kToolbarHeight / 1.2,
-        ),
+        if (!isFluid())
+          const SizedBox(
+            height: kToolbarHeight / 1.2,
+          ),
         if (currentSigner == null)
           SvgPicture.asset(
             LogosIcons.logoBlack,
@@ -87,9 +118,10 @@ class MainViewDrawer extends HookWidget {
         else
           _login(context),
         if (canSign()) _walletManager(state),
-        const SizedBox(
-          height: kBottomNavigationBarHeight / 2,
-        ),
+        if (!isFluid())
+          const SizedBox(
+            height: kBottomNavigationBarHeight / 2,
+          ),
       ],
     );
   }
@@ -205,14 +237,10 @@ class MainViewDrawer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 3,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.sats,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),
@@ -260,14 +288,10 @@ class MainViewDrawer extends HookWidget {
             },
           );
         },
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.log,
-          width: kToolbarHeight / 2.5,
-          height: kToolbarHeight / 2.5,
-          colorFilter: const ColorFilter.mode(
-            kWhite,
-            BlendMode.srcIn,
-          ),
+          size: kToolbarHeight / 2.5,
+          color: kWhite,
         ),
         label: Text(
           context.t.login.capitalizeFirst(),
@@ -314,14 +338,10 @@ class MainViewDrawer extends HookWidget {
                     vertical: -3,
                   ),
                 ),
-                icon: SvgPicture.asset(
+                icon: AppIcon(
                   FeatureIcons.qr,
-                  width: 25,
-                  height: 25,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 25,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ],
@@ -350,7 +370,9 @@ class MainViewDrawer extends HookWidget {
             isScrollControlled: true,
             useRootNavigator: true,
             useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: isFluid()
+                ? kTransparent
+                : Theme.of(context).scaffoldBackgroundColor,
           );
         },
         icon: FeatureIcons.repost,
@@ -376,6 +398,7 @@ class MainViewDrawer extends HookWidget {
             if (canSign()) ...[
               _smartWidgetDrawerItem(state, context),
               _dashboardDrawerItem(state, context),
+              _subscriptionDrawerItem(state, context),
             ],
             _settingDrawerItem(state, context),
           ],
@@ -418,6 +441,23 @@ class MainViewDrawer extends HookWidget {
     );
   }
 
+  DrawerItem _subscriptionDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.hidden,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const SubscriptionView(),
+        );
+
+        Scaffold.of(context).closeDrawer();
+      },
+      icon: FeatureIcons.walletAvailable,
+      selectedIcon: FeatureIcons.walletAvailable,
+      title: context.t.subscription.capitalizeFirst(),
+    );
+  }
+
   DrawerItem _articlesDrawerItem(MainState state, BuildContext context) {
     return DrawerItem(
       isSelected: state.mainView == MainViews.articles,
@@ -443,7 +483,7 @@ class MainViewDrawer extends HookWidget {
         Scaffold.of(context).closeDrawer();
       },
       icon: FeatureIcons.discover,
-      selectedIcon: FeatureIcons.articleFilled,
+      selectedIcon: FeatureIcons.discoverFilled,
       title: context.t.explore.capitalizeFirst(),
     );
   }
@@ -456,7 +496,7 @@ class MainViewDrawer extends HookWidget {
         Scaffold.of(context).closeDrawer();
       },
       icon: FeatureIcons.smartWidget,
-      selectedIcon: FeatureIcons.smartWidgetFilled,
+      selectedIcon: FeatureIcons.smartWidget,
       title: context.t.smartWidget.capitalizeFirst(),
     );
   }
@@ -509,7 +549,7 @@ class MainViewDrawer extends HookWidget {
   BlocBuilder<PointsManagementCubit, PointsManagementState> _pointsSystem() {
     return BlocBuilder<PointsManagementCubit, PointsManagementState>(
       builder: (context, state) {
-        if (state.userGlobalStats != null) {
+        if (state.isSystemLoggedIn) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
@@ -548,14 +588,10 @@ class MainViewDrawer extends HookWidget {
                 color: Theme.of(context).cardColor,
               ),
               alignment: Alignment.center,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.reward,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           );
@@ -735,8 +771,8 @@ class DrawerItem extends StatelessWidget {
 
   final bool isSelected;
   final Function() onClicked;
-  final String icon;
-  final String selectedIcon;
+  final IconData icon;
+  final IconData selectedIcon;
   final String title;
 
   @override
@@ -751,14 +787,10 @@ class DrawerItem extends StatelessWidget {
         horizontalTitleGap: kDefaultPadding / 2,
         visualDensity: const VisualDensity(vertical: -1),
         splashColor: kTransparent,
-        leading: SvgPicture.asset(
+        leading: AppIcon(
           isSelected ? selectedIcon : icon,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
-          width: 24,
-          height: 24,
+          color: Theme.of(context).primaryColorDark,
+          size: 24,
         ),
         title: Text(
           title,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
 
 class SingleImageSelector extends HookWidget {
@@ -138,7 +140,7 @@ class SingleImageSelector extends HookWidget {
           child: Row(
             children: [
               const Icon(
-                Icons.arrow_back_ios_new_rounded,
+                LucideIcons.chevronLeft,
                 size: 15,
               ),
               const SizedBox(
@@ -187,7 +189,7 @@ class SingleImageChoice extends StatelessWidget {
 
   final MediaType mediaType;
   final String title;
-  final String icon;
+  final IconData icon;
   final Function()? onClicked;
   final Function(String, {Map<String, String>? imeta}) onUrlProvided;
 
@@ -205,14 +207,10 @@ class SingleImageChoice extends StatelessWidget {
           },
       child: Column(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 30,
-            height: 30,
+            color: Theme.of(context).primaryColorDark,
+            size: 30,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

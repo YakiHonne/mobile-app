@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_cubit.dart';
@@ -202,7 +203,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 30,
                   height: 30,
                   child: Icon(
-                    Icons.keyboard_arrow_down_rounded,
+                    LucideIcons.chevronDown,
                   ),
                 ),
               ],
@@ -214,26 +215,22 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   String getType(DashboardType type, BuildContext context) {
-    String title = '';
-
     switch (type) {
       case DashboardType.home:
-        title = context.t.home.capitalizeFirst();
+        return context.t.home.capitalizeFirst();
       case DashboardType.content:
-        title = context.t.content.capitalizeFirst();
+        return context.t.content.capitalizeFirst();
       case DashboardType.scheduled:
-        title = context.t.scheduled.capitalizeFirst();
+        return context.t.scheduled.capitalizeFirst();
       case DashboardType.smart:
-        title = context.t.smartWidget.capitalizeFirst();
+        return context.t.smartWidget.capitalizeFirst();
       case DashboardType.bookmarks:
-        title = context.t.bookmarks.capitalizeFirst();
+        return context.t.bookmarks.capitalizeFirst();
       case DashboardType.interests:
-        title = context.t.interests.capitalizeFirst();
+        return context.t.interests.capitalizeFirst();
       case DashboardType.paidNotes:
-        title = 'Paid notes';
+        return 'Paid notes';
     }
-
-    return title;
   }
 
   @override

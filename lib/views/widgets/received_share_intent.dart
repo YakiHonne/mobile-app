@@ -13,6 +13,7 @@ import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import 'dotted_container.dart';
 import 'link_previewer.dart';
+import 'modal_sheet_container.dart';
 import 'no_content_widgets.dart';
 import 'parsed_media_container.dart';
 
@@ -23,19 +24,7 @@ class ReceivedShareIntent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-      ),
+    return ModalSheetContainer(
       child: !canSign()
           ? const Column(
               mainAxisAlignment: MainAxisAlignment.center,

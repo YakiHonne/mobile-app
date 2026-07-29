@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/cashu/models/cashu_encoded_token.dart';
 import 'package:nostr_core_enhanced/cashu/models/cashu_spending_data.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
@@ -16,6 +17,7 @@ import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_token_details_view.dart';
@@ -56,84 +58,66 @@ class CashuHistory extends HookWidget {
       return null;
     }, []);
 
-    return Material(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          expand: false,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) => Column(
-            children: [
-              const ModalBottomSheetHandle(),
-              const SizedBox(height: kDefaultPadding / 2),
-              TabBar(
-                controller: tabController,
-                dividerHeight: 0,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: Theme.of(context).primaryColor,
-                labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                tabs: [
-                  Tab(
-                    text: context.t.history,
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        initialChildSize: 0.9,
+        builder: (context, scrollController) => Column(
+          children: [
+            const ModalBottomSheetHandle(),
+            const SizedBox(height: kDefaultPadding / 2),
+            TabBar(
+              controller: tabController,
+              dividerHeight: 0,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorColor: Theme.of(context).primaryColor,
+              labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  Tab(
-                    text: context.t.eCash,
-                  ),
-                  Tab(
-                    text: context.t.nutzaps,
-                  ),
-                ],
-              ),
-              const SizedBox(height: kDefaultPadding / 2),
-              Expanded(
-                child: isLoading.value
-                    ? Center(
-                        child: SpinKitCircle(
-                          color: Theme.of(context).primaryColorDark,
-                          size: 20,
-                        ),
-                      )
-                    : TabBarView(
-                        controller: tabController,
-                        children: [
-                          _HistoryList(
-                            history: history.value,
-                            scrollController: scrollController,
-                          ),
-                          _TokensList(
-                            tokens: tokens.value,
-                            scrollController: scrollController,
-                            onRefresh: refresh,
-                          ),
-                          _NutzapsList(
-                            nutzaps: nutzaps.value,
-                            scrollController: scrollController,
-                            onRefresh: refresh,
-                          ),
-                        ],
+              tabs: [
+                Tab(
+                  text: context.t.history,
+                ),
+                Tab(
+                  text: context.t.eCash,
+                ),
+                Tab(
+                  text: context.t.nutzaps,
+                ),
+              ],
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Expanded(
+              child: isLoading.value
+                  ? Center(
+                      child: SpinKitCircle(
+                        color: Theme.of(context).primaryColorDark,
+                        size: 20,
                       ),
-              )
-            ],
-          ),
+                    )
+                  : TabBarView(
+                      controller: tabController,
+                      children: [
+                        _HistoryList(
+                          history: history.value,
+                          scrollController: scrollController,
+                        ),
+                        _TokensList(
+                          tokens: tokens.value,
+                          scrollController: scrollController,
+                          onRefresh: refresh,
+                        ),
+                        _NutzapsList(
+                          nutzaps: nutzaps.value,
+                          scrollController: scrollController,
+                          onRefresh: refresh,
+                        ),
+                      ],
+                    ),
+            )
+          ],
         ),
       ),
     );
@@ -286,8 +270,8 @@ class _HistoryList extends HookWidget {
                   child: Center(
                     child: Icon(
                       direction == CashuSpendingDirection.incoming
-                          ? Icons.arrow_downward_rounded
-                          : Icons.arrow_upward_rounded,
+                          ? LucideIcons.arrowDown
+                          : LucideIcons.arrowUp,
                       color: direction == CashuSpendingDirection.incoming
                           ? kGreen
                           : kRed,
@@ -310,8 +294,8 @@ class _HistoryList extends HookWidget {
               child: Center(
                 child: Icon(
                   direction == CashuSpendingDirection.incoming
-                      ? Icons.arrow_downward_rounded
-                      : Icons.arrow_upward_rounded,
+                      ? LucideIcons.arrowDown
+                      : LucideIcons.arrowUp,
                   color: direction == CashuSpendingDirection.incoming
                       ? kGreen
                       : kRed,
@@ -580,7 +564,7 @@ class _NutzapsList extends HookWidget {
                               horizontal: kDefaultPadding,
                             ),
                             child: Icon(
-                              Icons.check_circle_outline_rounded,
+                              LucideIcons.circleCheck,
                               color: kGreen,
                               size: 25,
                             ),

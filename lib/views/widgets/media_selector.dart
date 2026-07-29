@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 
 class MediaSelector extends StatelessWidget {
   const MediaSelector({
@@ -130,7 +131,7 @@ class MediaChoice extends StatelessWidget {
 
   final MediaType mediaType;
   final String title;
-  final String icon;
+  final IconData icon;
   final Function()? onClicked;
   final Function(List<Map<String, String>>) onSuccess;
 
@@ -156,14 +157,10 @@ class MediaChoice extends StatelessWidget {
       },
       child: Column(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 30,
-            height: 30,
+            color: Theme.of(context).primaryColorDark,
+            size: 30,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

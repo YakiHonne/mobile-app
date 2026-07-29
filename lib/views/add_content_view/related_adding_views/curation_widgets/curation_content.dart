@@ -11,6 +11,7 @@ import '../../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../../models/article_model.dart';
 import '../../../../models/video_model.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/data_providers.dart';
@@ -559,16 +560,12 @@ class CurationTypeToggle extends StatelessWidget {
                 color: Theme.of(context).cardColor,
               ),
               child: Center(
-                child: SvgPicture.asset(
+                child: AppIcon(
                   isArticlesCuration
                       ? FeatureIcons.selfArticles
                       : FeatureIcons.videoOcta,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 18,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ),

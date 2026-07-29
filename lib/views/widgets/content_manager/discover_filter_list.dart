@@ -2,14 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../app_icon.dart';
 import '../custom_icon_buttons.dart';
 import '../dotted_container.dart';
+import '../modal_sheet_container.dart';
 import 'add_discover_filter.dart';
 
 class AppFilterList extends StatelessWidget {
@@ -19,50 +22,36 @@ class AppFilterList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) {
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-              child: Column(
-                children: [
-                  ModalBottomSheetAppbar(
-                    title: context.t.filters.capitalizeFirst(),
-                    isBack: false,
-                  ),
-                  if (viewType == ViewDataTypes.articles)
-                    _discoverList(scrollController)
-                  else if (viewType == ViewDataTypes.notes)
-                    _notesList(scrollController)
-                  else
-                    _mediaList(scrollController),
-                  _addFilter(context),
-                ],
-              ),
-            );
-          },
-        ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        minChildSize: 0.60,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Column(
+              children: [
+                ModalBottomSheetAppbar(
+                  title: context.t.filters.capitalizeFirst(),
+                  isBack: false,
+                ),
+                if (viewType == ViewDataTypes.articles)
+                  _discoverList(scrollController)
+                else if (viewType == ViewDataTypes.notes)
+                  _notesList(scrollController)
+                else
+                  _mediaList(scrollController),
+                _addFilter(context),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -104,7 +93,9 @@ class AppFilterList extends StatelessWidget {
                   isScrollControlled: true,
                   useRootNavigator: true,
                   useSafeArea: true,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: isFluid()
+                      ? kTransparent
+                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
             ),
@@ -152,7 +143,9 @@ class AppFilterList extends StatelessWidget {
             isScrollControlled: true,
             useRootNavigator: true,
             useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: isFluid()
+                ? kTransparent
+                : Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),
@@ -378,7 +371,7 @@ class FilterContainer extends StatelessWidget {
           Opacity(
             opacity: selectedFilter == id ? 1 : 0,
             child: const Icon(
-              Icons.check_rounded,
+              LucideIcons.check,
               size: 20,
             ),
           ),
@@ -403,14 +396,10 @@ class FilterContainer extends StatelessWidget {
           PullDownMenuItem(
             onTap: onEdit,
             title: context.t.edit.capitalizeFirst(),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.editArticle,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
@@ -420,14 +409,10 @@ class FilterContainer extends StatelessWidget {
             onTap: onDelete,
             title: context.t.delete.capitalizeFirst(),
             isDestructive: true,
-            iconWidget: SvgPicture.asset(
+            iconWidget: const AppIcon(
               FeatureIcons.trash,
-              height: 20,
-              width: 20,
-              colorFilter: const ColorFilter.mode(
-                kRed,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: kRed,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,

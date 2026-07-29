@@ -18,6 +18,7 @@ import '../../../utils/utils.dart';
 import '../../add_content_view/related_adding_views/smart_widget_widgets/smart_widget_specifications.dart';
 import '../../gallery_view/gallery_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/note_container.dart';
 
@@ -388,6 +389,7 @@ class SMTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onClicked,
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         visualDensity: const VisualDensity(horizontal: -0.5, vertical: -0.5),
         backgroundColor: Theme.of(context).cardColor,
         side: BorderSide(
@@ -774,20 +776,17 @@ class PollContainer extends HookWidget {
             votesByZaps.value = !votesByZaps.value;
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: Theme.of(context).cardColor,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
           ),
-          icon: SvgPicture.asset(
+          icon: AppIcon(
             votesByZaps.value ? FeatureIcons.zap : FeatureIcons.user,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              optionTextColor ?? Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: optionTextColor ?? Theme.of(context).primaryColorDark,
           ),
           label: Text(
             votesByZaps.value
