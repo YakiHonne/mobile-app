@@ -51,15 +51,11 @@ class CashuNoWallet extends HookWidget {
       ),
       child: TextButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
+          showAdaptiveModal(
+            context,
             builder: (_) {
               return const CreateCashuWallet();
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },

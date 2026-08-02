@@ -75,9 +75,8 @@ class SuggestedDonations extends StatelessWidget {
           if (context.mounted) {
             doIfCanSign(
               func: () {
-                showModalBottomSheet(
-                  elevation: 0,
-                  context: context,
+                showAdaptiveModal(
+                  context,
                   builder: (_) {
                     return SendZapsView(
                       metadata: metadata ??
@@ -89,9 +88,6 @@ class SuggestedDonations extends StatelessWidget {
                       zapSplits: const [],
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

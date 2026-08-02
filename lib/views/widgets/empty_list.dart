@@ -80,7 +80,7 @@ class EmptyListWithLogo extends StatelessWidget {
         child: Column(
           children: [
             SvgPicture.asset(
-              LogosIcons.logoMarkWhite,
+              LogosIcons.logoMark,
               width: 40,
               height: 40,
               colorFilter: ColorFilter.mode(

@@ -79,7 +79,7 @@ class WalletOptions extends HookWidget {
                 height: kDefaultPadding / 2,
               ),
               WalletOption(
-                icon: LogosIcons.logoMarkWhite,
+                icon: LogosIcons.logoMark,
                 title: context.t.yakiNwc.capitalizeFirst(),
                 description: context.t.yakiNwcDesc.capitalizeFirst(),
                 color: Theme.of(context).primaryColorDark,

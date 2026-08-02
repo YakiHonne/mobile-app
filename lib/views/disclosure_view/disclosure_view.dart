@@ -68,7 +68,7 @@ class DisclosureView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SvgPicture.asset(
-                  LogosIcons.logoMarkPurple,
+                  LogosIcons.logoMark,
                   width: 50,
                   height: 50,
                   colorFilter: ColorFilter.mode(

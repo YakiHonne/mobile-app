@@ -10,6 +10,7 @@ import '../../logic/users_info_list_cubit/users_info_list_cubit.dart';
 import '../../models/app_models/extended_model.dart';
 import '../../models/detailed_note_model.dart';
 import '../../repositories/nostr_data_repository.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../note_view/note_view.dart';
 import 'dotted_container.dart';
@@ -77,9 +78,9 @@ class NetStatsView extends HookWidget {
     );
   }
 
-  DraggableScrollableSheet _content(
+  AdaptiveDraggableSheet _content(
       BuildContext context, ValueNotifier<List<Event>> events) {
-    return DraggableScrollableSheet(
+    return AdaptiveDraggableSheet(
       initialChildSize: 0.9,
       minChildSize: 0.60,
       maxChildSize: 0.9,
@@ -207,7 +208,7 @@ class NoteUsersList extends StatelessWidget {
           return GestureDetector(
             onTap: event.isQuote()
                 ? () {
-                    Navigator.pushNamed(
+                    YNavigator.pushNamed(
                       context,
                       NoteView.routeName,
                       arguments: [DetailedNoteModel.fromEvent(event)],

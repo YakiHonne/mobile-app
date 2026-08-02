@@ -328,27 +328,23 @@ class ContentStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return NetStatsView(
               id: aTag,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
+          dialogHeight: 620,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return AddReply(
                   attachedEvent: attachedEvent,
@@ -363,9 +359,7 @@ class ContentStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
+              dialogHeight: 640,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -442,9 +436,8 @@ class ContentStats extends HookWidget {
   }
 
   Future<dynamic> _addReply(BuildContext context, bool isVideo, String aTag) {
-    return showModalBottomSheet(
-      context: context,
-      elevation: 0,
+    return showAdaptiveModal(
+      context,
       builder: (_) {
         return AddReply(
           isComment: true,
@@ -467,9 +460,7 @@ class ContentStats extends HookWidget {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+      dialogHeight: 640,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -598,9 +589,8 @@ class ContentZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(pubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return SendZapsView(
                     metadata: m,
@@ -619,9 +609,6 @@ class ContentZapButton extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -654,17 +641,14 @@ class ContentZapButton extends HookWidget {
       icon: selfZaps ? FeatureIcons.zapFilled : FeatureIcons.zap,
       onLongPress: () {
         if (zappers.isNotEmpty) {
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
             builder: (_) {
               return ZappersView(
                 zappers: zappers,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
+            dialogHeight: 620,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         }

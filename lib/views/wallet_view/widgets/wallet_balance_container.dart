@@ -320,14 +320,11 @@ class WallatBalanceContainer extends StatelessWidget {
       width: double.infinity,
       child: TextButton.icon(
         onPressed: () => doIfCanSign(
-          func: () => showModalBottomSheet(
-            context: context,
-            builder: (_) => const TransactionsList(),
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
+          func: () => showAdaptiveModal(
+            context,
+            dialogHeight: 620,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => const TransactionsList(),
           ),
           context: context,
         ),

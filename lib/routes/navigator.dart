@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../views/main_view/widgets/detail_pane.dart';
 import 'pages_router.dart';
 
 enum PushPageType {
@@ -102,6 +103,47 @@ class YNavigator extends Navigator {
     SystemNavigator.pop();
   }
 
+  /// The desktop detail pane, when an allowlisted content push should be
+  /// routed into it rather than over the whole window. Null means "push
+  /// normally".
+  ///
+  /// [DetailPaneRouteTracker.isMainPanelUnderneath] is the discriminator: the
+  /// main panel sits at the bottom of the root stack, so a push is redirected
+  /// only when nothing full-screen covers it. From inside a full-screen route
+  /// the push stays full-screen; from a sheet over the panel it reaches the
+  /// pane; and from inside the pane `Navigator.of` is already the pane, so
+  /// either branch stacks in the same place.
+  static NavigatorState? _detailPane(BuildContext context, bool isPaneRoute) {
+    if (!isPaneRoute) {
+      return null;
+    }
+
+    final pane = detailPaneNavigatorKey.currentState;
+
+    if (pane == null || !DetailPaneRouteTracker.isMainPanelUnderneath) {
+      return null;
+    }
+
+    return pane;
+  }
+
+  /// Drop-in for `Navigator.pushNamed`, with detail-pane interception for the
+  /// routes in [kDetailPaneRoutes]. Identical behaviour everywhere else.
+  @optionalTypeArgs
+  static Future<T?> pushNamed<T extends Object?>(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
+    final pane = _detailPane(context, kDetailPaneRoutes.contains(routeName));
+
+    if (pane != null) {
+      return pane.pushNamed<T>(routeName, arguments: arguments);
+    }
+
+    return Navigator.pushNamed<T>(context, routeName, arguments: arguments);
+  }
+
   @optionalTypeArgs
   static Future<T?> push<T extends Object?>(
       BuildContext context, Route<T> route) {
@@ -183,6 +225,12 @@ class YNavigator extends Navigator {
           builder: builder,
           settings: routeSettings,
         );
+    }
+
+    final pane = _detailPane(context, kDetailPanePages.contains(pageName));
+
+    if (pane != null) {
+      return pane.push<T>(route);
     }
 
     return YNavigator.push(

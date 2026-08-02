@@ -800,9 +800,10 @@ class ArticleView extends HookWidget {
         const SizedBox(width: kDefaultPadding / 4),
         AppIconButton(
           onClicked: () {
-            showModalBottomSheet(
-              elevation: 0,
-              context: context,
+            // The isFluid()/transparent-vs-scaffold background this call site
+            // spelled out is exactly showAdaptiveModal's own default.
+            showAdaptiveModal(
+              context,
               builder: (_) => SendZapsView(
                 metadata: state.metadata,
                 isZapSplit: article.zapsSplits.isNotEmpty,
@@ -810,12 +811,6 @@ class ArticleView extends HookWidget {
                 aTag:
                     '${EventKind.LONG_FORM}:${article.pubkey}:${article.identifier}',
               ),
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? Colors.transparent
-                  : Theme.of(context).scaffoldBackgroundColor,
             );
           },
           icon: FeatureIcons.zaps,

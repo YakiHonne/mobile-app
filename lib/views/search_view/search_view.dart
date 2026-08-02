@@ -1017,7 +1017,7 @@ class ContentList extends StatelessWidget {
               isMuted: state.mutes.contains(item.pubkey),
               isBookmarked: state.bookmarks.contains(item.identifier),
               onClicked: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   ArticleView.routeName,
                   arguments: item,
@@ -1034,7 +1034,7 @@ class ContentList extends StatelessWidget {
               isFollowing: contactListCubit.contacts.contains(video.pubkey),
               video: video,
               onTap: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   video.isHorizontal
                       ? HorizontalVideoView.routeName

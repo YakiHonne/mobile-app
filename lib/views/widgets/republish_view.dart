@@ -56,7 +56,7 @@ class RepublishView extends HookWidget {
     );
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,

@@ -26,7 +26,7 @@ class AppFilterList extends StatelessWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
@@ -72,9 +72,9 @@ class AppFilterList extends StatelessWidget {
               isLoading: false,
               onClicked: () {
                 YNavigator.pop(context);
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 0,
+                showAdaptiveModal(
+                  context,
+                  dialogHeight: 620,
                   builder: (_) {
                     if (viewType == ViewDataTypes.articles) {
                       return AddDiscoverFilter(
@@ -90,12 +90,6 @@ class AppFilterList extends StatelessWidget {
                       );
                     }
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
             ),
@@ -132,20 +126,14 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 620,
             builder: (_) {
               return AddNotesFilter(
                 notesFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: isFluid()
-                ? kTransparent
-                : Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),
@@ -235,18 +223,15 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 620,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             builder: (_) {
               return AddDiscoverFilter(
                 discoverFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),
@@ -308,18 +293,15 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 620,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             builder: (_) {
               return AddMediaFilter(
                 mediaFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),

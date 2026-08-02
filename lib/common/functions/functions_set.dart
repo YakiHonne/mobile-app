@@ -280,6 +280,127 @@ Future<void> launchInstantUrl(String url) async {
   );
 }
 
+/// A modal bottom sheet on mobile, a centered dialog on desktop.
+///
+/// A sheet sliding up from the bottom edge of a 1600pt window is a phone gesture
+/// with no desktop meaning — see md/DESKTOP_IMPLEMENTATION.md item 8. The mobile
+/// branch is byte-identical to the `showModalBottomSheet` call it replaces, so
+/// migrating a call site cannot change phone behaviour.
+///
+/// Both branches return `Future<T?>` and pop identically, so
+/// `Navigator.pop(context, value)` inside the body and any `await` at the call
+/// site keep working untouched.
+///
+/// [dialogHeight] is for bodies that need a *bounded* height — anything with an
+/// `Expanded` under a `Column`, which is most list sheets. Leave it null for
+/// content-sized bodies and the card shrink-wraps up to 720pt.
+Future<T?> showAdaptiveModal<T>(
+  BuildContext context, {
+  required WidgetBuilder builder,
+  bool isScrollControlled = true,
+  bool useRootNavigator = true,
+  bool useSafeArea = true,
+  bool isDismissible = true,
+  bool enableDrag = true,
+  Color? backgroundColor,
+  double dialogWidth = 560,
+  double? dialogHeight,
+}) {
+  final background = backgroundColor ??
+      (isFluid() ? kTransparent : Theme.of(context).scaffoldBackgroundColor);
+
+  if (!isDesktopPlatform) {
+    return showModalBottomSheet<T>(
+      context: context,
+      elevation: 0,
+      isScrollControlled: isScrollControlled,
+      useRootNavigator: useRootNavigator,
+      useSafeArea: useSafeArea,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      backgroundColor: background,
+      builder: builder,
+    );
+  }
+
+  // ponytail: a raw HardwareKeyboard handler, not a Shortcuts/Actions layer.
+  // ModalRoute already installs a DismissIntent action for every
+  // barrier-dismissible route — the intent simply never arrives, because
+  // Escape→DismissIntent only resolves from a focused node and nothing inside a
+  // plain dialog takes focus. Autofocusing the card would fix that in one line
+  // but would then steal focus from bodies that autofocus their own search
+  // field. This handler is focus-independent. The `isCurrent` guard is what
+  // makes nested sub-sheets pop one at a time instead of all at once.
+  BuildContext? dialogContext;
+
+  bool onEscape(KeyEvent event) {
+    if (event is! KeyDownEvent ||
+        event.logicalKey != LogicalKeyboardKey.escape) {
+      return false;
+    }
+
+    final ctx = dialogContext;
+    if (ctx == null || !ctx.mounted) {
+      return false;
+    }
+
+    final route = ModalRoute.of(ctx);
+    if (route == null || !route.isCurrent) {
+      return false;
+    }
+
+    Navigator.of(ctx).pop();
+
+    return true;
+  }
+
+  if (isDismissible) {
+    HardwareKeyboard.instance.addHandler(onEscape);
+  }
+
+  return showDialog<T>(
+    context: context,
+    useRootNavigator: useRootNavigator,
+    barrierDismissible: isDismissible,
+    builder: (context) {
+      dialogContext = context;
+
+      return Dialog(
+        backgroundColor: kTransparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.all(kDefaultPadding),
+        child: ConstrainedBox(
+          // ponytail: fixed numbers, not MediaQuery. MainView's desktop branch
+          // re-scopes MediaQuery to the content panel, but useRootNavigator
+          // centres this on the whole window — panel metrics would be the wrong
+          // measure.
+          constraints: BoxConstraints(
+            maxWidth: dialogWidth,
+            maxHeight: dialogHeight ?? 720,
+            minHeight: dialogHeight ?? 0,
+          ),
+          // Rounds all four corners and clips the sheet body's own BackdropFilter
+          // in fluid mode. Deliberately here and not in ModalSheetContainer —
+          // that is the root surface of ~170 sheets still sliding off the bottom
+          // edge, and rounding their bottom corners would be a visible
+          // regression.
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(kDefaultPadding),
+            child: ColoredBox(
+              color: background,
+              child: builder(context),
+            ),
+          ),
+        ),
+      );
+    },
+  ).whenComplete(() {
+    if (isDismissible) {
+      HardwareKeyboard.instance.removeHandler(onEscape);
+    }
+  });
+}
+
 Future<void> openApp({
   required String url,
   required BuildContext context,
@@ -861,7 +982,7 @@ class ParsedText extends HookWidget {
       );
     } else if (linkStr.startsWith('article:')) {
       if (link.url.isNotEmpty) {
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           ArticleView.routeName,
           arguments: Article.fromJson(link.url),
@@ -869,7 +990,7 @@ class ParsedText extends HookWidget {
       }
     } else if (linkStr.startsWith('curation:')) {
       if (link.url.isNotEmpty) {
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           CurationView.routeName,
           arguments: Curation.curation(link.url),
@@ -878,7 +999,7 @@ class ParsedText extends HookWidget {
     } else if (linkStr.startsWith('video:')) {
       if (link.url.isNotEmpty) {
         final video = VideoModel.fromJson(link.url);
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           video.kind == EventKind.VIDEO_HORIZONTAL
               ? HorizontalVideoView.routeName
@@ -902,7 +1023,7 @@ class ParsedText extends HookWidget {
         );
 
         if (note != null) {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             NoteView.routeName,
             arguments: [DetailedNoteModel.fromEvent(note)],

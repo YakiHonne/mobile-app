@@ -5,6 +5,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../models/article_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../widgets/article_container.dart';
@@ -75,7 +76,7 @@ class ProfileArticles extends StatelessWidget {
             highlightedTag: '',
             isBookmarked: state.bookmarks.contains(article.identifier),
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 ArticleView.routeName,
                 arguments: article,
@@ -104,7 +105,7 @@ class ProfileArticles extends StatelessWidget {
             highlightedTag: '',
             isBookmarked: state.bookmarks.contains(article.identifier),
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 ArticleView.routeName,
                 arguments: article,

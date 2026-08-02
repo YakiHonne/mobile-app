@@ -163,9 +163,8 @@ class _NotificationGlobalContainerState
         onClick: () {
           final note = DetailedNoteModel.fromEvent(widget.mainEvent);
 
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
             builder: (_) {
               final isComment = isReplaceable(note.rootKind);
 
@@ -187,9 +186,7 @@ class _NotificationGlobalContainerState
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
+            dialogHeight: 640,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -210,9 +207,8 @@ class _NotificationGlobalContainerState
               await metadataCubit.getAvailableMetadata(widget.mainEvent.pubkey);
 
           if (context.mounted) {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return SendZapsView(
                   metadata: m,
@@ -221,9 +217,6 @@ class _NotificationGlobalContainerState
                   zapSplits: const [],
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           }
@@ -240,10 +233,13 @@ class _NotificationGlobalContainerState
   void onClick(BuildContext context) {
     // Open Cashu history modal for NutZaps
     if (widget.mainEvent.kind == EventKind.CASHU_NUTZAP) {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
+      showAdaptiveModal(
+        context,
+        dialogHeight: 620,
         backgroundColor: Colors.transparent,
+        // This site never opted into either; kept so mobile is unchanged.
+        useRootNavigator: false,
+        useSafeArea: false,
         builder: (context) => const CashuHistory(initialIndex: 2),
       );
       return;

@@ -662,8 +662,8 @@ class SwProfilePicker extends HookWidget {
   Widget build(BuildContext context) {
     final searchAuthorFunc = useCallback(
       () {
-        showModalBottomSheet(
-          context: context,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UserToZap(
               onUserSelected: (user) {
@@ -677,10 +677,6 @@ class SwProfilePicker extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -1000,8 +996,8 @@ class ButtonZapCustomization extends HookWidget {
 
     final searchAuthorFunc = useCallback(
       () {
-        showModalBottomSheet(
-          context: context,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UserToZap(
               onUserSelected: (user) {
@@ -1021,10 +1017,6 @@ class ButtonZapCustomization extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

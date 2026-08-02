@@ -508,9 +508,9 @@ class RelaySettingsView extends HookWidget {
         ),
         SquareIconButton(
           onClicked: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            // See the note in set_relay_set.dart — no backgroundColor needed.
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return AvailableRelaysList(
                   onlineRelays: favoriteRelays.value,
@@ -529,9 +529,6 @@ class RelaySettingsView extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
             );
           },
         ),

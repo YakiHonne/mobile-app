@@ -37,14 +37,13 @@ mixin _AppBarHelpers on StatelessWidget {
       right: kDefaultPadding / 1.5,
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (_) => const UnsentEventsView(),
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 620,
+            // Kept explicit: this site was opaque even in fluid mode before the
+            // migration, and mobile must not change.
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => const UnsentEventsView(),
           );
         },
         behavior: HitTestBehavior.translucent,
@@ -203,16 +202,13 @@ mixin _AppBarHelpers on StatelessWidget {
             if (state.activeMint.isNotEmpty) {
               return CustomIconButton(
                 onClicked: () {
-                  showModalBottomSheet(
-                    context: context,
+                  showAdaptiveModal(
+                    context,
+                    dialogHeight: 560,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     builder: (_) => CashuRestoreProofs(
                       mintUrl: state.activeMint,
                     ),
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 icon: FeatureIcons.restore,
@@ -241,26 +237,20 @@ mixin _AppBarHelpers on StatelessWidget {
               doIfCanSign(
                 func: () {
                   if (state.isCashuWallet) {
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
-                      builder: (context) => const CashuHistory(),
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
+                    showAdaptiveModal(
+                      context,
+                      dialogHeight: 620,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
+                      builder: (context) => const CashuHistory(),
                     );
                   } else {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (_) => const TransactionsList(),
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      elevation: 0,
+                    showAdaptiveModal(
+                      context,
+                      dialogHeight: 620,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
+                      builder: (_) => const TransactionsList(),
                     );
                   }
                 },

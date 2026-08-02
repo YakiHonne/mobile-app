@@ -180,12 +180,8 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
 
   void _showPaymentBottomSheet(
       BuildContext context, Map<String, dynamic> paymentData) {
-    showModalBottomSheet(
-      elevation: 0,
-      context: context,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+    showAdaptiveModal(
+      context,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (_) => SendZapsView(
         metadata: Metadata.empty().copyWith(

@@ -88,8 +88,7 @@ class _MediaViewState extends State<MediaView> {
                     if (isFluid())
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          height: MediaQuery.of(context).padding.top +
-                              kToolbarHeight,
+                          height: fluidFeedTopInset(context),
                         ),
                       ),
                     if (state.onLoading)
@@ -129,9 +128,7 @@ class _MediaViewState extends State<MediaView> {
                 Positioned(
                   left: kDefaultPadding / 2,
                   right: kDefaultPadding / 2,
-                  top: MediaQuery.of(context).padding.top +
-                      kToolbarHeight +
-                      kDefaultPadding / 2,
+                  top: fluidFilterRowTop(context),
                   child: Align(
                     child: ValueListenableBuilder<bool>(
                       valueListenable:
@@ -183,28 +180,32 @@ class MediaGrid extends StatelessWidget {
     final autoPlay =
         nostrRepository.currentAppCustomization?.enableAutoPlay ?? true;
 
+    // One read, used for the delegate *and* the large-tile arithmetic below —
+    // reading it twice is how the two silently drift apart.
+    final columns = mediaGridColumns(context);
+    final cycle = mediaGridCycle(columns);
+    final invertedLargeOffset = mediaGridLargeTileOffset(columns);
+
     return BlocProvider.value(
       value: nostrRepository.mainCubit,
       child: SliverGrid(
         gridDelegate: SliverQuiltedGridDelegate(
-          crossAxisCount: 3,
+          crossAxisCount: columns,
           mainAxisSpacing: 2,
           crossAxisSpacing: 2,
           repeatPattern: QuiltedGridRepeatPattern.inverted,
           pattern: [
             const QuiltedGridTile(2, 1),
-            const QuiltedGridTile(1, 1),
-            const QuiltedGridTile(1, 1),
-            const QuiltedGridTile(1, 1),
-            const QuiltedGridTile(1, 1),
+            for (var i = 0; i < columns * 2 - 2; i++)
+              const QuiltedGridTile(1, 1),
           ],
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             final item = sortedContent.elementAt(index);
-            final positionInPattern = index % 10;
-            final isLargeTile =
-                positionInPattern == 0 || positionInPattern == 7;
+            final positionInPattern = index % cycle;
+            final isLargeTile = positionInPattern == 0 ||
+                positionInPattern == invertedLargeOffset;
 
             if (item is PictureModel) {
               return PictureWidget(item: item);

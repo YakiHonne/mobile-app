@@ -434,9 +434,8 @@ class HorizontalVideoView extends HookWidget {
       BuildContext context, HorizontalVideoState state) {
     return CustomizedIconButton(
       onClicked: () {
-        showModalBottomSheet(
-          elevation: 0,
-          context: context,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return SendZapsView(
               metadata: state.author,
@@ -445,9 +444,6 @@ class HorizontalVideoView extends HookWidget {
               eventId: state.video.id,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

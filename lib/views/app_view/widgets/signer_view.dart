@@ -39,7 +39,7 @@ class SignerView extends HookWidget {
                 padding: const EdgeInsets.all(kDefaultPadding / 2),
                 children: [
                   SvgPicture.asset(
-                    LogosIcons.logoMarkWhite,
+                    LogosIcons.logoMark,
                     width: 50,
                     height: 50,
                     colorFilter: ColorFilter.mode(

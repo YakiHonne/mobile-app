@@ -53,7 +53,7 @@ class AccountManager extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: _AccountManagerConstants.initialChildSize,
         minChildSize: _AccountManagerConstants.minChildSize,
         maxChildSize: _AccountManagerConstants.maxChildSize,

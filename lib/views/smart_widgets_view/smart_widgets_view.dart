@@ -128,7 +128,7 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
             .read<SmartWidgetsCubit>()
             .getSmartWidgets(isAdd: false, isSelf: false),
       ),
-      child: isTablet ? _itemsGrid(state) : _itemsList(state),
+      child: isTablet ? _itemsGrid(context, state) : _itemsList(state),
     );
   }
 
@@ -151,9 +151,9 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
     );
   }
 
-  MasonryGridView _itemsGrid(SmartWidgetsState state) {
+  MasonryGridView _itemsGrid(BuildContext context, SmartWidgetsState state) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: feedGridColumns(context),
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: state.widgets.length,
       crossAxisSpacing: kDefaultPadding / 2,

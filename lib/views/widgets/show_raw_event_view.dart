@@ -35,7 +35,7 @@ class ShowRawEventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: _initialChildSize,
         minChildSize: _minChildSize,
         maxChildSize: _maxChildSize,

@@ -26,7 +26,7 @@ class MintsList extends HookWidget {
     final tabController = useTabController(initialLength: 3);
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         expand: false,
         maxChildSize: 0.9,
         minChildSize: 0.5,

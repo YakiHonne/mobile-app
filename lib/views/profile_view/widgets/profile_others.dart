@@ -9,6 +9,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/smart_widgets_components.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../curation_view/curation_view.dart';
 import '../../smart_widgets_view/widgets/global_smart_widget_container.dart';
@@ -157,7 +158,7 @@ class ProfileOthers extends StatelessWidget {
             isBookmarked: state.bookmarks.contains(curation.identifier),
             isProfileAccessible: false,
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 CurationView.routeName,
                 arguments: curation,
@@ -187,7 +188,7 @@ class ProfileOthers extends StatelessWidget {
             isProfileAccessible: false,
             isBookmarked: state.bookmarks.contains(curation.identifier),
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 CurationView.routeName,
                 arguments: curation,

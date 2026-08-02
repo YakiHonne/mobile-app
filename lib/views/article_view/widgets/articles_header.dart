@@ -107,9 +107,8 @@ class ArticleHeader extends StatelessWidget {
           ),
           AppIconButton(
             onClicked: () {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return SendZapsView(
                     metadata: state.metadata,
@@ -119,9 +118,6 @@ class ArticleHeader extends StatelessWidget {
                         '${EventKind.LONG_FORM}:${article.pubkey}:${article.identifier}',
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },

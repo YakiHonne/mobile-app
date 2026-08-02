@@ -1510,9 +1510,8 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
   void _performZap(BuildContext context, {String? lud16}) {
     doIfCanSign(
       func: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) => SendZapsView(
             metadata: Metadata.empty().copyWith(
               lud06: lud16 ?? invoice,
@@ -1522,9 +1521,6 @@ class _OptimizedInvoiceContainer extends StatelessWidget {
             zapSplits: const [],
             isZapSplit: false,
           ),
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -1731,9 +1727,8 @@ class InvoiceContainer extends StatelessWidget {
   void _payInvoice(BuildContext context) {
     doIfCanSign(
       func: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) => SendZapsView(
             metadata: Metadata.empty().copyWith(
               lud06: invoice,
@@ -1744,9 +1739,6 @@ class InvoiceContainer extends StatelessWidget {
             isZapSplit: false,
             onSuccess: (preimage, amount) => YNavigator.pop(context),
           ),
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

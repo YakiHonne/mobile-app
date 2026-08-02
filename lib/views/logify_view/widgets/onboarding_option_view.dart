@@ -33,7 +33,7 @@ class OnboardingOptionsView extends StatelessWidget {
           height: kDefaultPadding / 2,
         ),
         SvgPicture.asset(
-          LogosIcons.logoMarkWhite,
+          LogosIcons.logoMark,
           colorFilter: ColorFilter.mode(
             Theme.of(context).primaryColorDark,
             BlendMode.srcIn,

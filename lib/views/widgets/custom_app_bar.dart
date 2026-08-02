@@ -68,7 +68,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             context.read<NostrDataRepository>().homeViewController.add(true);
           },
       child: SvgPicture.asset(
-        LogosIcons.logoMarkPurple,
+        LogosIcons.logoMark,
         height: kToolbarHeight / 1.8,
         fit: BoxFit.scaleDown,
         colorFilter: ColorFilter.mode(

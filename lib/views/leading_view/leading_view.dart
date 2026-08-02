@@ -95,9 +95,7 @@ class _LeadingViewState extends State<LeadingView> {
                     if (isFluid())
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          height: MediaQuery.of(context).padding.top +
-                              kToolbarHeight +
-                              40,
+                          height: fluidFeedTopInset(context, extra: 40),
                         ),
                       ),
                     if (state.showSuggestions &&
@@ -179,9 +177,7 @@ class _LeadingViewState extends State<LeadingView> {
         Positioned(
           left: kDefaultPadding / 2,
           right: kDefaultPadding / 2,
-          top: MediaQuery.of(context).padding.top +
-              kToolbarHeight +
-              kDefaultPadding / 2,
+          top: fluidFilterRowTop(context),
           child: Align(
             child: ValueListenableBuilder<bool>(
               valueListenable: widget.barsVisible ?? ValueNotifier(true),

@@ -8,6 +8,7 @@ import '../../../models/article_model.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/flash_news_model.dart';
 import '../../../models/video_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
@@ -36,7 +37,7 @@ class ExploreFeed extends StatelessWidget {
           return SliverPadding(
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             sliver: SliverMasonryGrid.count(
-              crossAxisCount: 2,
+              crossAxisCount: feedGridColumns(context),
               itemBuilder: (context, index) {
                 final item = state.content[index];
 
@@ -103,7 +104,7 @@ class ExploreFeed extends StatelessWidget {
         isMuted: state.mutes.contains(item.pubkey),
         isBookmarked: state.bookmarks.contains(item.identifier),
         onClicked: () {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             ArticleView.routeName,
             arguments: item,
@@ -121,7 +122,7 @@ class ExploreFeed extends StatelessWidget {
         isMuted: state.mutes.contains(item.pubkey),
         isFollowing: state.followings.contains(item.pubkey),
         onTap: () {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             video.isHorizontal
                 ? HorizontalVideoView.routeName
@@ -140,7 +141,7 @@ class ExploreFeed extends StatelessWidget {
         isBookmarked: state.bookmarks.contains(curation.identifier),
         isProfileAccessible: false,
         onClicked: () {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             CurationView.routeName,
             arguments: curation,

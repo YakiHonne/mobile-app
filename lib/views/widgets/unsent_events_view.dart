@@ -22,7 +22,7 @@ class UnsentEventsView extends StatelessWidget {
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
           ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
@@ -113,17 +113,14 @@ class UnsentEventContainer extends StatelessWidget {
     return PullDownGlobalButton(
       enableShowRawEvent: true,
       onShowRawEvent: () {
-        showModalBottomSheet(
-          elevation: 0,
-          context: context,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return ShowRawEventView(
               attachedEvent: e.toJsonString(),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
+          dialogHeight: 640,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

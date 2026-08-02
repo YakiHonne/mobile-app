@@ -93,7 +93,13 @@ class PropertyVersion extends StatelessWidget {
             color: kPurple,
             borderRadius: BorderRadius.circular(kDefaultPadding / 2),
           ),
-          child: SvgPicture.asset(LogosIcons.logoMarkWhite),
+          child: SvgPicture.asset(
+            LogosIcons.logoMark,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).primaryColorDark,
+              BlendMode.srcIn,
+            ),
+          ),
         ),
         const SizedBox(
           width: kDefaultPadding / 2,
@@ -138,9 +144,8 @@ class PropertyVersion extends StatelessWidget {
                 await metadataCubit.getFutureMetadata(yakihonneHex);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return SendZapsView(
                     metadata: metadata ??
@@ -152,9 +157,6 @@ class PropertyVersion extends StatelessWidget {
                     zapSplits: const [],
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }

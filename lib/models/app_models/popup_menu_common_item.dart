@@ -136,9 +136,8 @@ class PdmCommonActions {
       throw ArgumentError('Unsupported item type: ${item.runtimeType}');
     }
 
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return AddBookmarkView(
           kind: kind,
@@ -147,11 +146,9 @@ class PdmCommonActions {
           model: item,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      backgroundColor:
-          isFluid() ? kTransparent : Theme.of(context).scaffoldBackgroundColor,
+      // No backgroundColor: the isFluid()/kTransparent ternary this replaced is
+      // showAdaptiveModal's own default.
+      dialogHeight: 560,
     );
   }
 
@@ -159,15 +156,11 @@ class PdmCommonActions {
     BuildContext context,
     BaseEventModel model,
   ) async {
-    showModalBottomSheet(
-      elevation: 0,
-      context: context,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return ShareContentImage(model: model);
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -235,9 +228,8 @@ class PdmCommonActions {
       shareContent(text: nostrScheme);
     };
 
-    showModalBottomSheet(
-      elevation: 0,
-      context: context,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return ShareView(
           nostrScheme: nostrScheme,
@@ -246,9 +238,7 @@ class PdmCommonActions {
           onShareNostrScheme: onShareNostrScheme,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+      dialogHeight: 480,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -331,15 +321,12 @@ class PdmCommonActions {
     final e = await nc.db.loadEventById(id, isReplaceable);
 
     if (e != null) {
-      showModalBottomSheet(
-        elevation: 0,
-        context: context,
+      showAdaptiveModal(
+        context,
         builder: (_) {
           return RepublishView(event: e);
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
+        dialogHeight: 560,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     } else {
@@ -394,9 +381,8 @@ class PdmCommonActions {
   }
 
   static void onZap(BuildContext context, BaseEventModel model) {
-    showModalBottomSheet(
-      elevation: 0,
-      context: context,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return MetadataProvider(
           pubkey: model.pubkey,
@@ -407,9 +393,6 @@ class PdmCommonActions {
           ),
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -459,17 +442,14 @@ class PdmCommonActions {
       attachedEvent = model.stringifiedEvent;
     }
 
-    showModalBottomSheet(
-      elevation: 0,
-      context: context,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return ShowRawEventView(
           attachedEvent: attachedEvent,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+      dialogHeight: 640,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -540,9 +520,8 @@ class PdmCommonActions {
     final pubkey = data['pubkey'];
     final kind = data['kind'];
 
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return AddItemToCurationView(
           articleId: identifier,
@@ -550,9 +529,7 @@ class PdmCommonActions {
           kind: kind,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+      dialogHeight: 560,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }

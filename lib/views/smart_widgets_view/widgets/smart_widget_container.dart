@@ -275,9 +275,8 @@ class SmartWidgetComponentData extends HookWidget {
 
     if (button.type == SWBType.Zap && usedUrl.isNotEmpty) {
       if (usedUrl.toLowerCase().startsWith('lnbc')) {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return SendZapsView(
               metadata: Metadata.empty().copyWith(
@@ -289,9 +288,6 @@ class SmartWidgetComponentData extends HookWidget {
               isZapSplit: false,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       } else if (emailRegExp.hasMatch(usedUrl) ||
@@ -302,9 +298,8 @@ class SmartWidgetComponentData extends HookWidget {
         );
 
         if (context.mounted) {
-          showModalBottomSheet(
-            elevation: 0,
-            context: context,
+          showAdaptiveModal(
+            context,
             builder: (_) {
               return SendZapsView(
                 metadata: metadata,
@@ -312,9 +307,6 @@ class SmartWidgetComponentData extends HookWidget {
                 isZapSplit: false,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         }
@@ -693,9 +685,8 @@ class PollContainer extends HookWidget {
                         context.t.alreadyVoted.capitalizeFirst(),
                       );
                     } else {
-                      showModalBottomSheet(
-                        elevation: 0,
-                        context: context,
+                      showAdaptiveModal(
+                        context,
                         builder: (_) {
                           return SendZapsView(
                             metadata: user,
@@ -721,9 +712,6 @@ class PollContainer extends HookWidget {
                             },
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );

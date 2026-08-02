@@ -14,10 +14,9 @@ Future<void> showSecondReader(
   required void Function(String prefill) onFixWithAi,
 }) {
   if (!subscriptionCubit.isPremium) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+    return showAdaptiveModal<void>(
+      context,
+      useRootNavigator: false,
       backgroundColor: Colors.transparent,
       builder: (_) => AiUpsellSheet(
         parentContext: context,

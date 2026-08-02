@@ -6,6 +6,7 @@ import 'package:override_text_scale_factor/override_text_scale_factor.dart';
 
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../note_view/note_view.dart';
 import 'app_icon.dart';
@@ -37,7 +38,7 @@ class NoteContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           NoteView.routeName,
           arguments: [note],
@@ -81,7 +82,7 @@ class NoteContainer extends StatelessWidget {
                 scrollPhysics: scrollPhysics,
                 enableHidingMedia: enableHidingMedia,
                 onClicked: () {
-                  Navigator.pushNamed(
+                  YNavigator.pushNamed(
                     context,
                     NoteView.routeName,
                     arguments: [note],

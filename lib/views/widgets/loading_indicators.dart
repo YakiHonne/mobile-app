@@ -17,7 +17,7 @@ class LoadingWidget extends StatelessWidget {
           Pulse(
             infinite: true,
             child: SvgPicture.asset(
-              LogosIcons.logoMarkPurple,
+              LogosIcons.logoMark,
               colorFilter: ColorFilter.mode(
                 Theme.of(context).primaryColorDark,
                 BlendMode.srcIn,

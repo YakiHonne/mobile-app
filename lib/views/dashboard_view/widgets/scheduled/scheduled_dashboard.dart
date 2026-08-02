@@ -122,15 +122,11 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
     final id = note.id;
     final isPaid = note.isPaid;
     void onClick() {
-      showModalBottomSheet(
-        context: context,
+      showAdaptiveModal(
+        context,
         builder: (_) {
           return ParsedContentDisplay(content: content);
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }

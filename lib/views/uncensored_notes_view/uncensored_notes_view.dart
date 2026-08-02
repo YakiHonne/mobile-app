@@ -49,7 +49,7 @@ class UncensoredNotesView extends StatelessWidget {
                         isMainView: true,
                         onClicked: () {
                           if (canSign()) {
-                            Navigator.pushNamed(
+                            YNavigator.pushNamed(
                               context,
                               RewardsView.routeName,
                               arguments: context.read<UncensoredNotesCubit>(),
@@ -331,7 +331,7 @@ class _UnListState extends State<UnList> {
             context.read<UncensoredNotesCubit>().setIndex(state.index);
           },
           onClicked: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               UnFlashNewsDetails.routeName,
               arguments: unFlashNews,
@@ -360,7 +360,7 @@ class _UnListState extends State<UnList> {
             context.read<UncensoredNotesCubit>().setIndex(state.index);
           },
           onClicked: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               UnFlashNewsDetails.routeName,
               arguments: unFlashNews,

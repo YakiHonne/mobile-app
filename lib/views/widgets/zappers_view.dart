@@ -32,7 +32,7 @@ class ZappersView extends StatelessWidget {
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: ModalSheetContainer(
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.9,
             minChildSize: 0.60,
             maxChildSize: 0.9,

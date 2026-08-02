@@ -60,8 +60,8 @@ class ShareView extends HookWidget {
     );
   }
 
-  DraggableScrollableSheet _content() {
-    return DraggableScrollableSheet(
+  AdaptiveDraggableSheet _content() {
+    return AdaptiveDraggableSheet(
       initialChildSize: 0.95,
       minChildSize: 0.40,
       maxChildSize: 0.95,

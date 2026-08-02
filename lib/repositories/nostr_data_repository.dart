@@ -32,6 +32,7 @@ import '../routes/navigator.dart';
 import '../utils/bot_toast_util.dart';
 import '../utils/topics.dart';
 import '../utils/utils.dart';
+import '../views/dm_view/dm_view.dart' show selectedDmPubkey;
 import '../views/widgets/response_snackbar.dart';
 import 'http_functions_repository.dart';
 import 'nostr_functions_repository.dart';
@@ -479,6 +480,12 @@ class NostrDataRepository {
   // =============================================================================
 
   void setCurrentSignerState(EventSigner? signer) {
+    // Single choke point for login, logout and account switch. The desktop DM
+    // pane holds a peer pubkey in a module global that outlives all three, so
+    // without this a switch leaves the previous account's thread on screen.
+    selectedDmPubkey.value = null;
+    usersMessageNotifications.clear();
+
     currentSignerController.add(signer);
   }
 

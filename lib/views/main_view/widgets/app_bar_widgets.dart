@@ -46,16 +46,15 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
-                    context: context,
+                  showAdaptiveModal(
+                    context,
+                    dialogHeight: 620,
+                    // Kept explicit: this site was opaque even in fluid mode
+                    // before the migration, and mobile must not change.
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     builder: (_) {
                       return const MintsList();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -80,16 +79,13 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
-                    context: context,
+                  showAdaptiveModal(
+                    context,
+                    dialogHeight: 560,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     builder: (_) {
                       return const InternalWalletsListView();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -615,18 +611,12 @@ class FilterGlobalButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 620,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,

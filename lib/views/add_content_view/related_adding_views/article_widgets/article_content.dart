@@ -250,10 +250,9 @@ class _AppFlowyEditorSectionState extends State<_AppFlowyEditorSection> {
 
   void _openAskAi(BuildContext context) {
     if (!subscriptionCubit.isPremium) {
-      showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        useSafeArea: true,
+      showAdaptiveModal<void>(
+        context,
+        useRootNavigator: false,
         backgroundColor: Colors.transparent,
         builder: (_) => AiUpsellSheet(
           parentContext: context,

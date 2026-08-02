@@ -3,12 +3,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/discover_cubit/discover_cubit.dart';
 import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/main_cubit/main_cubit.dart';
 import '../../logic/media_cubit/media_cubit.dart';
 import '../../logic/theme_cubit/theme_cubit.dart';
+import '../../main.dart' show AppConstants;
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/app_cycle.dart';
@@ -25,7 +27,10 @@ import '../smart_widgets_view/smart_widgets_search.dart';
 import '../wallet_cashu_view/cashu_view.dart';
 import '../wallet_view/wallet_view.dart';
 import '../widgets/app_icon.dart';
+import '../widgets/fluid_blur_container.dart';
 import 'widgets/bottom_navigation_bar.dart';
+import 'widgets/desktop_sidebar.dart';
+import 'widgets/detail_pane.dart';
 import 'widgets/drawer_view.dart';
 import 'widgets/feature_tour.dart';
 import 'widgets/flip_to_share_wrapper.dart';
@@ -110,7 +115,9 @@ class MainViewContent extends HookWidget {
 
     // Scroll listener — valid here since we're inside a HookWidget.build
     useEffect(() {
-      if (!isGlass) {
+      // Desktop's chrome is docked, so there is nothing to hide on scroll —
+      // and a mouse wheel would make it twitch.
+      if (!isGlass || isDesktopPlatform) {
         return null;
       }
       final safeIndex = currentIndex.clamp(0, mainScrollControllers.length - 1);
@@ -194,6 +201,113 @@ class MainViewContent extends HookWidget {
           ),
         );
 
+        // Desktop shell: a floating glass rail replaces the bottom nav and the
+        // hamburger drawer at once, and the content column is capped so the
+        // feed keeps a readable measure on a wide monitor. The 7 IndexedStack
+        // views are untouched.
+        if (isDesktopPlatform) {
+          return Scaffold(
+            // The rail and the content panel both begin below the titlebar
+            // strip, which the glass background shows through. removePadding
+            // stops the SafeAreas inside from reserving it a second time.
+            body: Padding(
+              padding: EdgeInsets.only(top: kMacTitlebarInset),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: Row(
+                  children: [
+                    DesktopSidebar(
+                      onScrollTop: onScrollTop,
+                      compact: MediaQuery.of(context).size.width <
+                          kSidebarCollapseWidth,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: kDefaultPadding / 1.5,
+                          bottom: kDefaultPadding / 1.5,
+                          right: kDefaultPadding / 1.5,
+                        ),
+                        // Same floating glass surface as the rail, filling the
+                        // space the rail leaves.
+                        child: FluidBlurContainer(
+                          sigma: 20,
+                          borderRadius: kDefaultPadding * 1.75,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              // DMs already own a two-column layout; a third
+                              // column would leave each of them ~300pt.
+                              final showPane = state.mainView != MainViews.dms &&
+                                  constraints.maxWidth >=
+                                      kDetailPaneMinPanelWidth;
+
+                              final feedWidth = showPane
+                                  ? constraints.maxWidth - kDetailPaneWidth - 1
+                                  : constraints.maxWidth;
+
+                              return Row(
+                                children: [
+                                  // One scope per column, each measuring its
+                                  // own width. Re-scoping the whole panel and
+                                  // then splitting it would have the feed
+                                  // render at `feedWidth` while every
+                                  // `largerThan(MOBILE)` site inside it still
+                                  // measured the full panel.
+                                  SizedBox(
+                                    width: feedWidth,
+                                    child: _PanelScope(
+                                      width: feedWidth,
+                                      child: Stack(
+                                        children: [
+                                          body,
+                                          Positioned(
+                                            left: 0,
+                                            right: 0,
+                                            bottom: kDefaultPadding,
+                                            child: _FluidNewContentOverlay(
+                                              key: ValueKey(state.mainView),
+                                              mainView: state.mainView,
+                                              scrollController:
+                                                  mainScrollControllers[
+                                                      currentIndex.clamp(
+                                                          0,
+                                                          mainScrollControllers
+                                                                  .length -
+                                                              1)],
+                                              barsVisible: barsVisible,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (showPane)
+                                    const VerticalDivider(
+                                      width: 1,
+                                      thickness: 1,
+                                    ),
+                                  if (showPane)
+                                    const Expanded(
+                                      child: _PanelScope(
+                                        width: kDetailPaneWidth,
+                                        child: DetailPane(),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
         return Scaffold(
           resizeToAvoidBottomInset: true,
           drawerScrimColor: isGlass ? Colors.transparent : null,
@@ -259,8 +373,8 @@ class MainViewContent extends HookWidget {
                         key: ValueKey(state.mainView),
                         mainView: state.mainView,
                         scrollController: mainScrollControllers[
-                            (indexMap[state.mainView] ?? 0).clamp(
-                                0, mainScrollControllers.length - 1)],
+                            (indexMap[state.mainView] ?? 0)
+                                .clamp(0, mainScrollControllers.length - 1)],
                         barsVisible: barsVisible,
                       ),
                     ),
@@ -372,6 +486,36 @@ class MainViewContent extends HookWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// A column's own `MediaQuery` / breakpoint scope. Same trick the DM split
+/// plays for its list pane: without it every `largerThan(MOBILE)` inside the
+/// column measures the whole panel and picks a branch too wide for the space
+/// it actually gets.
+///
+/// ponytail: does not fix raw sizer calls — `.w` / `.h` read window statics set
+/// once at startup and ignore this entirely. Those still need explicit gating.
+class _PanelScope extends StatelessWidget {
+  const _PanelScope({
+    required this.width,
+    required this.child,
+  });
+
+  final double width;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+
+    return MediaQuery(
+      data: mq.copyWith(size: Size(width, mq.size.height)),
+      child: ResponsiveBreakpoints.builder(
+        breakpoints: AppConstants.responsiveBreakpoints,
+        child: child,
       ),
     );
   }

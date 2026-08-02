@@ -13,6 +13,7 @@ import '../../logic/settings_cubit/settings_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/curation_model.dart';
 import '../../repositories/nostr_data_repository.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
@@ -235,7 +236,7 @@ class CurationContentView extends StatelessWidget {
           isMuted: isUserMuted(video.pubkey),
           isFollowing: contactListCubit.contacts.contains(video.pubkey),
           onTap: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               video.isHorizontal
                   ? HorizontalVideoView.routeName
@@ -267,7 +268,7 @@ class CurationContentView extends StatelessWidget {
           isMuted: isUserMuted(video.pubkey),
           isFollowing: contactListCubit.contacts.contains(video.pubkey),
           onTap: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               video.isHorizontal
                   ? HorizontalVideoView.routeName
@@ -300,7 +301,7 @@ class CurationContentView extends StatelessWidget {
           isMuted: state.mutes.contains(article.pubkey),
           isBookmarked: false,
           onClicked: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               ArticleView.routeName,
               arguments: article,
@@ -331,7 +332,7 @@ class CurationContentView extends StatelessWidget {
           isMuted: state.mutes.contains(article.pubkey),
           isBookmarked: false,
           onClicked: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               ArticleView.routeName,
               arguments: article,
@@ -545,9 +546,8 @@ class CurationHeader extends HookWidget {
       BuildContext context, Metadata metadata, CurationState state) {
     return CustomizedIconButton(
       onClicked: () {
-        showModalBottomSheet(
-          elevation: 0,
-          context: context,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return SendZapsView(
               metadata: metadata,
@@ -557,9 +557,6 @@ class CurationHeader extends HookWidget {
                   '${curation.kind}:${curation.pubkey}:${curation.identifier}',
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

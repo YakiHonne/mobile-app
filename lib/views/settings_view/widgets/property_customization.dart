@@ -487,15 +487,11 @@ class PropertyCustomization extends HookWidget {
         ),
         TextButton(
           onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return const LeadingCustomization();
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },

@@ -196,16 +196,13 @@ class InternalWalletSelector extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
-              context: context,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 560,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               builder: (_) {
                 return const InternalWalletsListView();
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           behavior: HitTestBehavior.translucent,

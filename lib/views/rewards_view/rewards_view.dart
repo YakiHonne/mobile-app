@@ -14,6 +14,7 @@ import '../../logic/rewards_cubit/rewards_cubit.dart';
 import '../../logic/uncensored_notes_cubit/uncensored_notes_cubit.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/uncensored_notes_models.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../search_view/search_view.dart';
 import '../uncensored_notes_view/uncensored_notes_view.dart';
@@ -360,7 +361,7 @@ class UncensoredColumn extends StatelessWidget {
           mainFlashNews: MainFlashNews(flashNews: flash),
           flashNewsType: FlashNewsType.display,
           onClicked: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               UnFlashNewsDetails.routeName,
               arguments: UnFlashNews(

@@ -12,6 +12,7 @@ import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/smart_widgets_components.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
@@ -202,7 +203,7 @@ class ArticleNprofile extends StatelessWidget {
       // Center(
       //   child: ArticleUserMention(
       //     metadata: metadata,
-      //     onClicked: () => Navigator.pushNamed(
+      //     onClicked: () => YNavigator.pushNamed(
       //       context,
       //       ProfileView.routeName,
       //       arguments: [pubkey],
@@ -355,7 +356,7 @@ class NaddrArticleContainer extends HookWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
+                              YNavigator.pushNamed(
                                 context,
                                 ProfileView.routeName,
                                 arguments: [metadata.pubkey],
@@ -417,13 +418,13 @@ class NaddrArticleContainer extends HookWidget {
               return GestureDetector(
                 onTap: () {
                   if (naddrType == ArticleNaddrTypes.article) {
-                    Navigator.pushNamed(
+                    YNavigator.pushNamed(
                       context,
                       ArticleView.routeName,
                       arguments: component as Article,
                     );
                   } else {
-                    Navigator.pushNamed(
+                    YNavigator.pushNamed(
                       context,
                       CurationView.routeName,
                       arguments: component as Curation,

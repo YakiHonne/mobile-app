@@ -130,7 +130,7 @@ class SmartWidgetAppView extends StatelessWidget {
                     child: SafeArea(
                       child: HeartbeatFade(
                         child: SvgPicture.asset(
-                          LogosIcons.logoMarkWhite,
+                          LogosIcons.logoMark,
                           colorFilter: ColorFilter.mode(
                             Theme.of(context).primaryColorDark,
                             BlendMode.srcIn,

@@ -128,7 +128,7 @@ class FluidLogifyView extends HookWidget {
                                 ),
                                 const Spacer(),
                                 SvgPicture.asset(
-                                  LogosIcons.logoMarkWhite,
+                                  LogosIcons.logoMark,
                                   height: 30,
                                   width: 30,
                                   colorFilter: ColorFilter.mode(

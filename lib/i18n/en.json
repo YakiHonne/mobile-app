@@ -247,6 +247,8 @@
   "known": "Known",
   "unknown": "Unknown",
   "noMessageCanBeFound": "No messages can be found",
+  "selectConversation": "Select a conversation",
+  "selectContentToView": "Select something to open it here",
   "you": "You: ",
   "decrMessage": "Decrypting message",
   "gifs": "gifs",

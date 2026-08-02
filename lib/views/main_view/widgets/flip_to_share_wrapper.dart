@@ -39,6 +39,10 @@ class _FlipToShareWrapperState extends State<FlipToShareWrapper>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Flip-to-share is a phone gesture; desktop has no accelerometer.
+    if (!isMobilePlatform) {
+      return;
+    }
     _sub = accelerometerEventStream(
       samplingPeriod: SensorInterval.uiInterval,
     ).listen(_onAccelerometer);

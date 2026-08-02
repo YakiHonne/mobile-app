@@ -244,6 +244,13 @@ class ModalBottomSheetHandle extends StatelessWidget {
   final double? padding;
   @override
   Widget build(BuildContext context) {
+    // A drag handle on a centered desktop dialog is vestigial — there is nothing
+    // to drag. Hidden here rather than at the ~11 migrated sheet bodies, so every
+    // body that later migrates loses it for free too.
+    if (isDesktopPlatform) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: padding ?? kDefaultPadding / 2),
       child: Container(

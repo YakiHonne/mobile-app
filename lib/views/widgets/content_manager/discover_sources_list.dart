@@ -94,8 +94,8 @@ class AppSourcesList extends HookWidget {
     );
   }
 
-  DraggableScrollableSheet _content(List<Widget> widgets) {
-    return DraggableScrollableSheet(
+  Widget _content(List<Widget> widgets) {
+    return AdaptiveDraggableSheet(
       initialChildSize: 0.95,
       minChildSize: 0.60,
       maxChildSize: 0.95,
@@ -130,17 +130,13 @@ class AppSourcesList extends HookWidget {
       onSecondClick: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return DiscoverSourcesSettings(
                   viewType: viewType,
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -204,17 +200,13 @@ class NoRelaysAvailable extends StatelessWidget {
                 onPressed: () {
                   doIfCanSign(
                     func: () {
-                      showModalBottomSheet(
-                        context: context,
-                        elevation: 0,
+                      showAdaptiveModal(
+                        context,
                         builder: (_) {
                           return DiscoverSourcesSettings(
                             viewType: viewType,
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );

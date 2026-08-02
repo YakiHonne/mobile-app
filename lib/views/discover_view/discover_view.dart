@@ -110,9 +110,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                 if (isFluid())
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: MediaQuery.of(context).padding.top +
-                          kToolbarHeight +
-                          50,
+                      height: fluidFeedTopInset(context, extra: 50),
                     ),
                   ),
                 // _appbar(context),
@@ -146,9 +144,7 @@ class _DiscoverViewState extends State<DiscoverView> {
               Positioned(
                 left: kDefaultPadding / 2,
                 right: kDefaultPadding / 2,
-                top: MediaQuery.of(context).padding.top +
-                    kToolbarHeight +
-                    kDefaultPadding / 2,
+                top: fluidFilterRowTop(context),
                 child: Align(
                   child: ValueListenableBuilder<bool>(
                     valueListenable: widget.barsVisible ?? ValueNotifier(true),
@@ -290,18 +286,12 @@ class SourceButton extends HookWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 620,
               builder: (_) {
                 return AppSourcesList(viewType: viewType);
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? Colors.transparent
-                  : Theme.of(context).scaffoldBackgroundColor,
             );
           },
           behavior: HitTestBehavior.translucent,
@@ -574,18 +564,12 @@ class FilterButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 620,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,

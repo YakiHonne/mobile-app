@@ -165,7 +165,7 @@ class LoginDirectView extends HookWidget {
           ),
         ),
         title: SvgPicture.asset(
-          LogosIcons.logoBlack,
+          LogosIcons.logo,
           height: 45,
           colorFilter: ColorFilter.mode(
             Theme.of(context).primaryColorDark,

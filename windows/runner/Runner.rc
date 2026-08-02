@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.yakihonne" "\0"
-            VALUE "FileDescription", "yakihonne" "\0"
+            VALUE "CompanyName", "YakiHonne" "\0"
+            VALUE "FileDescription", "YakiHonne" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "yakihonne" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.yakihonne. All rights reserved." "\0"
-            VALUE "OriginalFilename", "yakihonne.exe" "\0"
-            VALUE "ProductName", "yakihonne" "\0"
+            VALUE "InternalName", "YakiHonne" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 YakiHonne. All rights reserved." "\0"
+            VALUE "OriginalFilename", "YakiHonne.exe" "\0"
+            VALUE "ProductName", "YakiHonne" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

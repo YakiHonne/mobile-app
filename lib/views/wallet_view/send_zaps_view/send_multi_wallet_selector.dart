@@ -62,13 +62,9 @@ class MultiWalletSelector extends StatelessWidget {
         if (cashuState.walletMints.isEmpty) {
           return CreateWalletPrompt(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
+              showAdaptiveModal(
+                context,
                 builder: (_) => const CreateCashuWallet(),
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
@@ -467,13 +463,9 @@ class CashuWalletSelector extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
-              context: context,
+            showAdaptiveModal(
+              context,
               builder: (_) => const SelectMintModal(),
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },

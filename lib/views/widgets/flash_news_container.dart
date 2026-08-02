@@ -12,6 +12,7 @@ import '../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/uncensored_notes_models.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../add_bookmark_view/add_bookmark_view.dart';
 import '../uncensored_notes_view/widgets/un_flashnews_container.dart';
@@ -314,9 +315,8 @@ class FlashNewsContainer extends HookWidget {
   IconButton _addBookmark(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return AddBookmarkView(
               kind: EventKind.TEXT_NOTE,
@@ -325,12 +325,7 @@ class FlashNewsContainer extends HookWidget {
               model: mainFlashNews.flashNews,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: isFluid()
-              ? kTransparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          dialogHeight: 560,
         );
       },
       icon: Builder(
@@ -451,7 +446,7 @@ class SealedComponent extends StatelessWidget {
             buttonColor: kBlue,
             textColor: kWhite,
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 UnFlashNewsDetails.routeName,
                 arguments: UnFlashNews(
@@ -497,7 +492,7 @@ class SealedComponent extends StatelessWidget {
             buttonColor: kBlue,
             textColor: kWhite,
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 UnFlashNewsDetails.routeName,
                 arguments: UnFlashNews(

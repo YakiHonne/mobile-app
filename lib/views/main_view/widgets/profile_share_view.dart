@@ -13,6 +13,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/profile_view.dart';
@@ -545,7 +546,7 @@ class _ConnectedUserProfileShareViewState
           if (context.mounted) {
             Navigator.pop(context);
 
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               ProfileView.routeName,
               arguments: [pubkey],
@@ -655,7 +656,7 @@ class CurrentUserQrCode extends StatelessWidget {
         children: [
           TextButton.icon(
             onPressed: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 ProfileView.routeName,
                 arguments: [state.pubKey],

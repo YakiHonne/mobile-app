@@ -8,6 +8,7 @@ import '../../../models/article_model.dart';
 import '../../../models/curation_model.dart';
 import '../../../models/flash_news_model.dart';
 import '../../../models/video_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
@@ -78,7 +79,7 @@ class RelayContentFeedList extends StatelessWidget {
               isMuted: false,
               isBookmarked: false,
               onClicked: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   ArticleView.routeName,
                   arguments: item,
@@ -95,7 +96,7 @@ class RelayContentFeedList extends StatelessWidget {
               isMuted: false,
               isFollowing: false,
               onTap: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   video.isHorizontal
                       ? HorizontalVideoView.routeName
@@ -113,7 +114,7 @@ class RelayContentFeedList extends StatelessWidget {
               isBookmarked: false,
               isProfileAccessible: false,
               onClicked: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   CurationView.routeName,
                   arguments: curation,

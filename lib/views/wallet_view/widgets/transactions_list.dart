@@ -46,7 +46,7 @@ class _TransactionsListState extends State<TransactionsList> {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.40,
         maxChildSize: 0.9,

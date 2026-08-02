@@ -345,7 +345,7 @@ class NoThumbnailPlaceHolder extends StatelessWidget {
                 size: 35,
               )
             : SvgPicture.asset(
-                LogosIcons.logoMarkWhite,
+                LogosIcons.logoMark,
                 colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
                 width: 35,
                 height: 35,

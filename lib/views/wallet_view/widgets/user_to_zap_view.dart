@@ -32,7 +32,7 @@ class UserToZap extends HookWidget {
     return BlocProvider(
       create: (context) => SearchUserCubit(),
       child: ModalSheetContainer(
-        child: DraggableScrollableSheet(
+        child: AdaptiveDraggableSheet(
           initialChildSize: 0.8,
           minChildSize: 0.40,
           maxChildSize: 0.8,

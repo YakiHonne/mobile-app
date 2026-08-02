@@ -583,9 +583,8 @@ class _PlanCard extends HookWidget {
 
   void _openLightningZap(BuildContext context) {
     final amountSats = int.tryParse(plan.amount) ?? 0;
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
+    showAdaptiveModal(
+      context,
       builder: (_) => SendZapsView(
         metadata: creatorMetadata,
         isZapSplit: false,
@@ -596,9 +595,6 @@ class _PlanCard extends HookWidget {
           ['interval', plan.interval],
         ],
       ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }

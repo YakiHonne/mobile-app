@@ -19,6 +19,7 @@ import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../../models/dm_models.dart';
 import '../../../models/flash_news_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../giphy_view/giphy_view.dart';
@@ -58,11 +59,17 @@ class DmDetails extends HookWidget {
     );
   }
 
-  DmDetails({super.key, required this.pubkey}) {
+  DmDetails({super.key, required this.pubkey, this.onClose}) {
     umamiAnalytics.trackEvent(screenName: 'Private message details view');
   }
 
   final String pubkey;
+
+  /// Non-null only when this thread is the desktop detail pane's content
+  /// rather than a route. Pane-ness is a structural fact, so it is passed in —
+  /// inferring it from [selectedDmPubkey] would misfire for a pushed
+  /// `DmDetails` opened on the same peer that the pane already has selected.
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +91,24 @@ class DmDetails extends HookWidget {
     final selectedEvents = useState(<String>{});
 
     useEffect(() {
+      // Routes get the add in [route] before the widget exists; the pane has no
+      // route, so it adds here — keeping add and remove on one lifecycle. The
+      // ValueKey on the pane's DmDetails is what makes that fire per switch.
+      if (onClose != null) {
+        nostrRepository.usersMessageNotifications.add(pubkey);
+      }
+
       return () => nostrRepository.usersMessageNotifications.remove(pubkey);
     }, []);
 
     return Scaffold(
+      // In the pane this Scaffold sits *inside* MainView's glass panel, and
+      // desktop is always fluid — an opaque scaffoldBackgroundColor would punch
+      // a solid rectangle through the blur. Routes keep their own background.
+      backgroundColor: onClose != null ? kTransparent : null,
       appBar: DmAppBar(
         pubkey: pubkey,
+        onClose: onClose,
         isSelectionMode: isSelectionMode,
         selectedEvents: selectedEvents,
         onDelete: () {
@@ -990,6 +1009,7 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
     required this.isSelectionMode,
     required this.selectedEvents,
     this.onDelete,
+    this.onClose,
   });
 
   final String pubkey;
@@ -997,10 +1017,20 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
   final ValueNotifier<Set<String>> selectedEvents;
   final VoidCallback? onDelete;
 
+  /// See [DmDetails.onClose] — non-null means "pane, not route".
+  final VoidCallback? onClose;
+
   @override
   Widget build(BuildContext context) {
+    // The app bar theme is opaque in every variant, glass included, so the pane
+    // has to opt out explicitly or it paints a bar across the blur.
+    final paneBackground = onClose != null ? kTransparent : null;
+    final paneScrolledElevation = onClose != null ? 0.0 : null;
+
     if (isSelectionMode.value) {
       return AppBar(
+        backgroundColor: paneBackground,
+        scrolledUnderElevation: paneScrolledElevation,
         leading: IconButton(
           onPressed: () {
             isSelectionMode.value = false;
@@ -1030,6 +1060,8 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
       pubkey: pubkey,
       child: (metadata, isNip05Valid) {
         return AppBar(
+          backgroundColor: paneBackground,
+          scrolledUnderElevation: paneScrolledElevation,
           leading: _buildBackButton(context),
           actions: [
             _buildMoreOptionsButton(context, metadata),
@@ -1045,6 +1077,8 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
   }
 
   Widget _buildBackButton(BuildContext context) {
+    // In the desktop detail pane there is nothing to pop — this thread is not a
+    // route, it is the pane's content. Popping would tear down MainView.
     return FadeInRight(
       duration: const Duration(milliseconds: 500),
       from: 30,
@@ -1052,9 +1086,11 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
         height: 45,
         width: 45,
         child: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: onClose ?? () => Navigator.pop(context),
           iconSize: 20,
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(
+            onClose != null ? LucideIcons.x : LucideIcons.chevronLeft,
+          ),
         ),
       ),
     );
@@ -1087,7 +1123,7 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
       child: (metadata, isNip05Valid) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: () => Navigator.pushNamed(
+          onTap: () => YNavigator.pushNamed(
             context,
             ProfileView.routeName,
             arguments: [pubkey],

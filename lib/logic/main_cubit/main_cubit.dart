@@ -191,6 +191,11 @@ class MainCubit extends Cubit<MainState> {
 
   // Share intent
   Future<void> initShareIntent() async {
+    // Receive-share is a mobile concept — share_handler is Android/iOS only.
+    if (!isMobilePlatform) {
+      return;
+    }
+
     final handler = ShareHandlerPlatform.instance;
     final media = await handler.getInitialSharedMedia();
 
@@ -460,7 +465,7 @@ class MainCubit extends Cubit<MainState> {
       BotToastUtils.showError(context.t.articleNotFound.capitalizeFirst());
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final Article article = Article.fromEvent(event);
-      Navigator.pushNamed(context, ArticleView.routeName, arguments: article);
+      YNavigator.pushNamed(context, ArticleView.routeName, arguments: article);
     }
   }
 
@@ -499,7 +504,7 @@ class MainCubit extends Cubit<MainState> {
       BotToastUtils.showError(context.t.curationNotFound.capitalizeFirst());
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final curation = Curation.fromEvent(event, '');
-      Navigator.pushNamed(context, CurationView.routeName, arguments: curation);
+      YNavigator.pushNamed(context, CurationView.routeName, arguments: curation);
     }
   }
 
@@ -536,7 +541,7 @@ class MainCubit extends Cubit<MainState> {
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final smartWidgetModel = SmartWidget.fromEvent(event);
 
-      Navigator.pushNamed(
+      YNavigator.pushNamed(
         context,
         SmartWidgetChecker.routeName,
         arguments: [
@@ -590,7 +595,7 @@ class MainCubit extends Cubit<MainState> {
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final VideoModel video = VideoModel.fromEvent(event);
 
-      Navigator.pushNamed(
+      YNavigator.pushNamed(
         context,
         video.kind == EventKind.VIDEO_HORIZONTAL
             ? HorizontalVideoView.routeName
@@ -668,7 +673,7 @@ class MainCubit extends Cubit<MainState> {
     final user = await metadataCubit.getCachedMetadata(pubkey);
 
     if (user != null && context.mounted) {
-      Navigator.pushNamed(
+      YNavigator.pushNamed(
         context,
         ProfileView.routeName,
         arguments: [user.pubkey],
@@ -687,7 +692,7 @@ class MainCubit extends Cubit<MainState> {
 
         if (newUser != null && context.mounted) {
           metadataCubit.saveMetadata(newUser);
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             ProfileView.routeName,
             arguments: [newUser.pubkey],
@@ -706,7 +711,7 @@ class MainCubit extends Cubit<MainState> {
       BotToastUtils.showError(context.t.noteNotFound.capitalizeFirst());
     } else if (!isUserMuted(event.pubkey) && context.mounted) {
       final note = DetailedNoteModel.fromEvent(event);
-      Navigator.pushNamed(context, NoteView.routeName, arguments: [note]);
+      YNavigator.pushNamed(context, NoteView.routeName, arguments: [note]);
     }
   }
 
@@ -731,7 +736,7 @@ class MainCubit extends Cubit<MainState> {
         final unFlashNews =
             await HttpFunctionsRepository.getUnFlashNews(event.id);
         if (unFlashNews != null) {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             UnFlashNewsDetails.routeName,
             arguments: unFlashNews,
@@ -743,7 +748,7 @@ class MainCubit extends Cubit<MainState> {
         }
       } else if (event.kind == EventKind.TEXT_NOTE) {
         final note = DetailedNoteModel.fromEvent(event);
-        Navigator.pushNamed(context, NoteView.routeName, arguments: [note]);
+        YNavigator.pushNamed(context, NoteView.routeName, arguments: [note]);
       } else if (event.kind == EventKind.PICTURE) {
         lg.i('event.kind == EventKind.PICTURE');
         final picture = PictureModel.fromEvent(event);
@@ -755,12 +760,12 @@ class MainCubit extends Cubit<MainState> {
         );
       } else if (event.kind == EventKind.LONG_FORM) {
         final article = Article.fromEvent(event);
-        Navigator.pushNamed(context, ArticleView.routeName, arguments: article);
+        YNavigator.pushNamed(context, ArticleView.routeName, arguments: article);
       } else if (event.kind == EventKind.CURATION_ARTICLES ||
           event.kind == EventKind.CURATION_VIDEOS) {
         final curation = Curation.fromEvent(event, '');
 
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           CurationView.routeName,
           arguments: curation,
@@ -768,7 +773,7 @@ class MainCubit extends Cubit<MainState> {
       } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
           event.kind == EventKind.VIDEO_VERTICAL) {
         final video = VideoModel.fromEvent(event);
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           video.kind == EventKind.VIDEO_HORIZONTAL
               ? HorizontalVideoView.routeName
@@ -822,7 +827,7 @@ class MainCubit extends Cubit<MainState> {
     if (event.kind == EventKind.VIDEO_HORIZONTAL ||
         event.kind == EventKind.VIDEO_VERTICAL) {
       final VideoModel video = VideoModel.fromEvent(event);
-      Navigator.pushNamed(
+      YNavigator.pushNamed(
         context,
         video.kind == EventKind.VIDEO_HORIZONTAL
             ? HorizontalVideoView.routeName
@@ -831,14 +836,14 @@ class MainCubit extends Cubit<MainState> {
       );
     } else if (event.kind == EventKind.LONG_FORM) {
       final Article article = Article.fromEvent(event);
-      Navigator.pushNamed(context, ArticleView.routeName, arguments: article);
+      YNavigator.pushNamed(context, ArticleView.routeName, arguments: article);
     } else if (event.kind == EventKind.CURATION_ARTICLES ||
         event.kind == EventKind.CURATION_VIDEOS) {
       final Curation curation = Curation.fromEvent(event, '');
-      Navigator.pushNamed(context, CurationView.routeName, arguments: curation);
+      YNavigator.pushNamed(context, CurationView.routeName, arguments: curation);
     } else if (event.kind == EventKind.SMART_WIDGET_ENH) {
       final smartWidgetModel = SmartWidget.fromEvent(event);
-      Navigator.pushNamed(
+      YNavigator.pushNamed(
         context,
         SmartWidgetChecker.routeName,
         arguments: <Object>[smartWidgetModel.getScheme(), smartWidgetModel],

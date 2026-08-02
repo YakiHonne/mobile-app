@@ -16,6 +16,7 @@ import 'logic/theme_cubit/theme_cubit.dart';
 import 'routes/app_router.dart';
 import 'utils/global_keys.dart';
 import 'utils/utils.dart';
+import 'views/main_view/widgets/detail_pane.dart';
 import 'views/widgets/relay_progress_bar.dart';
 
 class AppConstants {
@@ -39,6 +40,7 @@ class AppConstants {
   static final List<NavigatorObserver> navigatorObservers = [
     BotToastNavigatorObserver(),
     routeObserver,
+    DetailPaneRouteTracker(),
   ];
 }
 
@@ -135,68 +137,107 @@ class MyApp extends HookWidget {
       }
     }
 
-    return Sizer(
-      builder: (context, orientation, deviceType) => MultiRepositoryProvider(
-        providers: repositoryProviders,
-        child: MultiBlocProvider(
-          providers: blocProviders,
-          child: BlocBuilder<ThemeCubit, ThemeState>(
-            builder: (context, state) {
-              return GestureDetector(
-                onTap: () => onGlobalTap(context),
-                child: BlocBuilder<LocalizationCubit, LocalizationState>(
-                  builder: (context, localizationState) {
-                    return RefreshConfiguration(
-                      springDescription: const SpringDescription(
-                        mass: 1,
-                        stiffness: 364.718677686,
-                        damping: 35.2,
-                      ),
-                      child: MaterialApp(
-                        debugShowCheckedModeBanner: false,
-                        theme: state.theme,
-                        onGenerateRoute: (settings) =>
-                            onGenerateRoute(settings),
-                        navigatorObservers: AppConstants.navigatorObservers,
-                        localizationsDelegates:
-                            AppConstants.localizationDelegates,
-                        locale: TranslationProvider.of(context)
-                            .locale
-                            .flutterLocale,
-                        supportedLocales: AppLocaleUtils.supportedLocales,
-                        navigatorKey: GlobalKeys.navigatorKey,
-                        builder: EasyLoading.init(
-                          builder: (context, child) {
-                            child = botToastBuilder(context, child);
+    // Built as a closure, not a hoisted variable: returning the *same* widget
+    // instance from a LayoutBuilder short-circuits `Element.updateChild`, so the
+    // subtree would never rebuild and every `.w`/`.h`/`.sp` would freeze at its
+    // first-frame value.
+    Widget shell(BuildContext context) => MultiRepositoryProvider(
+          providers: repositoryProviders,
+          child: MultiBlocProvider(
+            providers: blocProviders,
+            child: BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () => onGlobalTap(context),
+                  child: BlocBuilder<LocalizationCubit, LocalizationState>(
+                    builder: (context, localizationState) {
+                      return RefreshConfiguration(
+                        springDescription: const SpringDescription(
+                          mass: 1,
+                          stiffness: 364.718677686,
+                          damping: 35.2,
+                        ),
+                        child: MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          theme: state.theme,
+                          onGenerateRoute: (settings) =>
+                              onGenerateRoute(settings),
+                          navigatorObservers: AppConstants.navigatorObservers,
+                          localizationsDelegates:
+                              AppConstants.localizationDelegates,
+                          locale: TranslationProvider.of(context)
+                              .locale
+                              .flutterLocale,
+                          supportedLocales: AppLocaleUtils.supportedLocales,
+                          navigatorKey: GlobalKeys.navigatorKey,
+                          builder: EasyLoading.init(
+                            builder: (context, child) {
+                              child = botToastBuilder(context, child);
 
-                            return Stack(
-                              children: [
-                                MediaQuery(
-                                  data: MediaQuery.of(context).copyWith(
-                                    textScaler: TextScaler.linear(
-                                      state.textScaleFactor,
+                              return Stack(
+                                children: [
+                                  MediaQuery(
+                                    data: MediaQuery.of(context).copyWith(
+                                      textScaler: TextScaler.linear(
+                                        state.textScaleFactor,
+                                      ),
+                                      // Reserve the macOS titlebar strip once,
+                                      // here, so every SafeArea and appbar in
+                                      // every route clears the traffic lights.
+                                      // Added, not assigned, so a phone's real
+                                      // status-bar inset survives (+0 there).
+                                      padding: MediaQuery.of(context)
+                                          .padding
+                                          .copyWith(
+                                            top: MediaQuery.of(context)
+                                                    .padding
+                                                    .top +
+                                                kMacTitlebarInset,
+                                          ),
+                                      viewPadding: MediaQuery.of(context)
+                                          .viewPadding
+                                          .copyWith(
+                                            top: MediaQuery.of(context)
+                                                    .viewPadding
+                                                    .top +
+                                                kMacTitlebarInset,
+                                          ),
+                                    ),
+                                    child: ResponsiveBreakpoints.builder(
+                                      child: child,
+                                      breakpoints:
+                                          AppConstants.responsiveBreakpoints,
                                     ),
                                   ),
-                                  child: ResponsiveBreakpoints.builder(
-                                    child: child,
-                                    breakpoints:
-                                        AppConstants.responsiveBreakpoints,
-                                  ),
-                                ),
-                                const RelaysProgressBar(),
-                              ],
-                            );
-                          },
+                                  const RelaysProgressBar(),
+                                ],
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ),
-    );
+        );
+
+    // ponytail: sizer's `setScreenSize` swaps width and height whenever the
+    // orientation is landscape (sizer/util.dart) — which is every normal desktop
+    // window. That made all 209 `.w`/`.h`/`.sp` sites measure the wrong axis, and
+    // invert the moment a window was dragged across square. Forcing portrait on
+    // desktop makes them measure the real axes. Mobile keeps the untouched
+    // `Sizer` path; landscape phones are out of scope here.
+    return isDesktopPlatform
+        ? LayoutBuilder(
+            builder: (context, constraints) {
+              SizerUtil.setScreenSize(constraints, Orientation.portrait);
+
+              return shell(context);
+            },
+          )
+        : Sizer(builder: (context, _, __) => shell(context));
   }
 }

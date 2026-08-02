@@ -416,27 +416,23 @@ class NoteStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return NetStatsView(
               id: model.id,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
+          dialogHeight: 620,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 final m = model;
                 bool isComment = false;
@@ -457,9 +453,7 @@ class NoteStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
+              dialogHeight: 640,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -482,21 +476,22 @@ class NoteStats extends HookWidget {
     return CustomIconButton(
       backgroundColor: kTransparent,
       icon: FeatureIcons.repost,
-      onLongPress: isFluid()
+      // Glass mode drops these long-presses, but desktop is *always* glass and
+      // right-click is not a long-press — it costs the glass design nothing. So
+      // the guard is relaxed on desktop only; on mobile this reads exactly as
+      // `isFluid()` did.
+      onLongPress: isFluid() && !isDesktopPlatform
           ? null
           : () {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return NetStatsView(
                     id: model.id,
                     type: NoteRelatedEventsType.reposts,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
+                dialogHeight: 620,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
@@ -537,9 +532,8 @@ class NoteStats extends HookWidget {
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 if (model is DetailedNoteModel) {
                   final m = model as DetailedNoteModel;
@@ -588,12 +582,9 @@ class NoteStats extends HookWidget {
                   );
                 }
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
+              // No backgroundColor: the isFluid()/kTransparent ternary this
+              // replaced is exactly showAdaptiveModal's own default.
+              dialogHeight: 640,
             );
           },
           context: context,
@@ -619,7 +610,7 @@ class NoteStats extends HookWidget {
       pubkey: model.pubkey,
       reactions: reactions,
       size: 16,
-      enableLongPress: !isFluid(),
+      enableLongPress: !isFluid() || isDesktopPlatform,
     );
   }
 
@@ -655,9 +646,8 @@ class NoteStats extends HookWidget {
           title: context.t.quote.capitalizeFirst(),
           onTap: () => doIfCanSign(
             func: () {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   final m = model;
                   bool isComment = false;
@@ -677,9 +667,7 @@ class NoteStats extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
+                dialogHeight: 640,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
@@ -752,17 +740,14 @@ class ZappersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final commonPubkeys = zapData['nextBestPubkeys'] as List;
     void openZappersList() {
-      showModalBottomSheet(
-        context: context,
-        elevation: 0,
+      showAdaptiveModal(
+        context,
         builder: (_) {
           return ZappersView(
             zappers: zappers,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
+        dialogHeight: 620,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
@@ -986,9 +971,8 @@ class ZappersRow extends StatelessWidget {
       onTap: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              elevation: 0,
-              context: context,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return SendZapsView(
                   metadata: metadata,
@@ -996,9 +980,6 @@ class ZappersRow extends StatelessWidget {
                   zapSplits: const [],
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -1143,9 +1124,8 @@ class ZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(eventPubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return SendZapsView(
                     metadata: m,
@@ -1163,9 +1143,6 @@ class ZapButton extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -1198,21 +1175,18 @@ class ZapButton extends HookWidget {
         key: ValueKey(selfZaps),
         backgroundColor: kTransparent,
         icon: selfZaps ? FeatureIcons.zapAmount : FeatureIcons.zap,
-        onLongPress: isFluid()
+        onLongPress: isFluid() && !isDesktopPlatform
             ? null
             : () {
                 if (zappers.isNotEmpty) {
-                  showModalBottomSheet(
-                    context: context,
-                    elevation: 0,
+                  showAdaptiveModal(
+                    context,
                     builder: (_) {
                       return ZappersView(
                         zappers: zappers,
                       );
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
+                    dialogHeight: 620,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 }
@@ -1486,18 +1460,15 @@ class CustomReactionButton extends HookWidget {
       imageUrl: getCustomEmoji(event.value),
       onLongPress: enableLongPress
           ? () {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return NetStatsView(
                     id: id,
                     type: NoteRelatedEventsType.reactions,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
+                dialogHeight: 620,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -1588,18 +1559,15 @@ class RepostNoteContainer extends HookWidget {
     );
 
     void onClicked() {
-      showModalBottomSheet(
-        context: context,
-        elevation: 0,
+      showAdaptiveModal(
+        context,
         builder: (_) {
           return NetStatsView(
             id: repostedEventId.value,
             type: NoteRelatedEventsType.reposts,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
+        dialogHeight: 620,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }

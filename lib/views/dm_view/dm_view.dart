@@ -13,6 +13,7 @@ import 'package:nostr_core_enhanced/utils/string_utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/dms_cubit/dms_cubit.dart';
+import '../../main.dart' show AppConstants;
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/dm_models.dart';
 import '../../routes/navigator.dart';
@@ -33,6 +34,23 @@ import 'widgets/dm_details.dart';
 import 'widgets/dm_user_search.dart';
 
 // Imports...
+
+/// The conversation open in the desktop detail pane, or null for none.
+///
+/// ponytail: a module-level notifier, not a param threaded through the five
+/// widgets between [DmsView] and `_DmsListView`, and not a new cubit — this is
+/// pure view state that dies with the window. It matches the global-singleton
+/// pattern the rest of the app already uses (`globals.dart`).
+///
+/// Null on mobile at all times: `_DmsListView` still pushes a route there.
+final selectedDmPubkey = ValueNotifier<String?>(null);
+
+/// Panel width below which the detail pane is dropped and DMs fall back to
+/// push navigation. 360 list + ~540 thread is the point where the message
+/// bubbles stop wrapping every other word.
+const double _kDmSplitMinWidth = 900;
+
+const double _kDmListPaneWidth = 360;
 
 class DmsView extends HookWidget {
   DmsView({
@@ -88,10 +106,93 @@ class DmsView extends HookWidget {
       return const _DisconnectedView();
     }
 
-    return _DmsTabView(
+    final list = _DmsTabView(
       textController: textController,
       tabController: tabController,
       scrollController: scrollController,
+    );
+
+    if (!isDesktopPlatform) {
+      return list;
+    }
+
+    // Desktop: conversation list beside the open thread. Below the threshold
+    // the pane is dropped and `_DmsListView` goes back to pushing a route.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final split = constraints.maxWidth >= _kDmSplitMinWidth;
+        final listWidth = split ? _kDmListPaneWidth : constraints.maxWidth;
+
+        // The list keeps the same element position and depth on both sides of
+        // the threshold — Row's first child either way. Returning a bare `list`
+        // below the threshold instead would remount the whole NestedScrollView
+        // on every resize past 900, re-attaching MainView's shared
+        // ScrollController mid-frame. Crossing now only changes a width.
+        return Row(
+          children: [
+            SizedBox(
+              width: listWidth,
+              child: _DmListPaneScope(
+                split: split,
+                width: listWidth,
+                child: list,
+              ),
+            ),
+            if (split) const VerticalDivider(width: 1, thickness: 1),
+            if (split)
+              Expanded(
+              child: ValueListenableBuilder<String?>(
+                valueListenable: selectedDmPubkey,
+                builder: (context, pubkey, _) => pubkey == null
+                    ? EmptyList(
+                        description: context.t.selectConversation,
+                        icon: FeatureIcons.dms,
+                      )
+                    // Keyed so switching conversation rebuilds the whole
+                    // thread — DmDetails keeps its draft, reply target and
+                    // selection in hooks keyed to nothing else.
+                    : DmDetails(
+                        key: ValueKey(pubkey),
+                        pubkey: pubkey,
+                        onClose: () => selectedDmPubkey.value = null,
+                      ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// The list pane's own `MediaQuery` / breakpoint scope. Same trick `MainView`
+/// plays for the content panel: without it every `largerThan(MOBILE)` inside
+/// the list measures the whole window and picks a branch far too wide for a
+/// 360pt pane.
+class _DmListPaneScope extends StatelessWidget {
+  const _DmListPaneScope({
+    required this.split,
+    required this.width,
+    required this.child,
+  });
+
+  /// Whether the detail pane is actually mounted beside this list. Always
+  /// present in the tree on desktop — this flag, not the widget's existence,
+  /// is what `_DmsListView` reads to choose selection over push navigation.
+  final bool split;
+  final double width;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+
+    return MediaQuery(
+      data: mq.copyWith(size: Size(width, mq.size.height)),
+      child: ResponsiveBreakpoints.builder(
+        breakpoints: AppConstants.responsiveBreakpoints,
+        child: child,
+      ),
     );
   }
 }
@@ -174,7 +275,11 @@ class _DmsTabView extends StatelessWidget {
                             ),
                             RepaintBoundary(
                               child: SizedBox(
-                                width: 50.w,
+                                // sizer reads the window, not this subtree, so
+                                // 50.w overflows the 360pt list pane.
+                                width: isDesktopPlatform
+                                    ? MediaQuery.of(context).size.width / 2
+                                    : 50.w,
                                 child: const AnimatedPulseLine(),
                               ),
                             ),
@@ -205,9 +310,13 @@ class _DmsTabView extends StatelessWidget {
             Positioned(
               left: kDefaultPadding / 2,
               right: kDefaultPadding / 2,
-              bottom: kBottomNavigationBarHeight +
-                  MediaQuery.of(context).padding.bottom +
-                  kDefaultPadding / 2,
+              // No bottom nav on desktop — the rail is vertical — so the
+              // tab bar sits just above the panel edge instead.
+              bottom: isDesktopPlatform
+                  ? kDefaultPadding
+                  : kBottomNavigationBarHeight +
+                      MediaQuery.of(context).padding.bottom +
+                      kDefaultPadding / 2,
               child: Align(
                 child: _FluidFloatingTabBar(
                   tabController: tabController,
@@ -233,7 +342,10 @@ class _FluidFloatingTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 70.w,
+      // Same sizer caveat as the history spinner above.
+      width: isDesktopPlatform
+          ? MediaQuery.of(context).size.width * 0.9
+          : 70.w,
       child: FluidBlurContainer(
         padding: const EdgeInsets.all(3),
         backgroundAlpha: 0.5,
@@ -587,12 +699,15 @@ class _DmsListView extends StatelessWidget {
           top: kDefaultPadding / 2,
           left: isMobile ? kDefaultPadding / 1.5 : 20.w,
           right: isMobile ? kDefaultPadding / 1.5 : 20.w,
-          bottom: themeCubit.state.isFluid
-              ? kBottomNavigationBarHeight +
-                  kDefaultPadding * 2 +
-                  MediaQuery.of(context).padding.bottom / 2 +
-                  40 // floating tab bar height clearance
-              : kDefaultPadding / 2,
+          bottom: !themeCubit.state.isFluid
+              ? kDefaultPadding / 2
+              : isDesktopPlatform
+                  // Floating tab bar only — no bottom nav to clear.
+                  ? kDefaultPadding * 2 + 40
+                  : kBottomNavigationBarHeight +
+                      kDefaultPadding * 2 +
+                      MediaQuery.of(context).padding.bottom / 2 +
+                      40, // floating tab bar height clearance
         ),
         itemBuilder: (context, index) => DmContainer(
           dmSessionDetail: dmsSessions[index],
@@ -604,11 +719,22 @@ class _DmsListView extends StatelessWidget {
   }
 
   void _onDmTapped(BuildContext context, DMSessionDetail dmSessionDetail) {
-    context.read<DmsCubit>().updateReadedTime(dmSessionDetail.dmSession.pubkey);
+    final pubkey = dmSessionDetail.dmSession.pubkey;
+    context.read<DmsCubit>().updateReadedTime(pubkey);
+
+    // Ask the tree, not the width. Below the split threshold desktop has no
+    // detail pane and pushes exactly like mobile. Safe outside build — this is
+    // a tap callback, so there is no dependency to register.
+    if (context.findAncestorWidgetOfExactType<_DmListPaneScope>()?.split ??
+        false) {
+      selectedDmPubkey.value = pubkey;
+      return;
+    }
+
     Navigator.pushNamed(
       context,
       DmDetails.routeName,
-      arguments: [dmSessionDetail.dmSession.pubkey],
+      arguments: [pubkey],
     );
   }
 }

@@ -46,7 +46,7 @@ class AddBookmarkView extends StatelessWidget {
       child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: DraggableScrollableSheet(
+        child: AdaptiveDraggableSheet(
           initialChildSize: 0.8,
           minChildSize: 0.40,
           maxChildSize: 0.8,

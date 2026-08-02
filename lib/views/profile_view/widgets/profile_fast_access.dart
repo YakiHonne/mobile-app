@@ -126,7 +126,7 @@ class ProfileFastAccess extends HookWidget {
               onPressed: () {
                 Navigator.pop(context);
 
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   ProfileView.routeName,
                   arguments: [metadata.pubkey],
@@ -277,9 +277,8 @@ class ProfileFastAccess extends HookWidget {
                 onClicked: () {
                   walletManagerCubit.resetInvoice();
 
-                  showModalBottomSheet(
-                    context: context,
-                    elevation: 0,
+                  showAdaptiveModal(
+                    context,
                     builder: (_) {
                       return SendZapsView(
                         metadata: metadata,
@@ -287,9 +286,6 @@ class ProfileFastAccess extends HookWidget {
                         zapSplits: const [],
                       );
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
@@ -310,7 +306,7 @@ class ProfileFastAccess extends HookWidget {
               context.read<DmsCubit>().updateReadedTime(
                     metadata.pubkey,
                   );
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 DmDetails.routeName,
                 arguments: [
@@ -932,7 +928,7 @@ class _FluidActionButtons extends StatelessWidget {
             onClicked: () {
               context.read<DmsCubit>().updateReadedTime(metadata.pubkey);
               Navigator.pop(context);
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 DmDetails.routeName,
                 arguments: [metadata.pubkey],
@@ -948,17 +944,13 @@ class _FluidActionButtons extends StatelessWidget {
             child: AppIconButton(
               onClicked: () {
                 walletManagerCubit.resetInvoice();
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 0,
+                showAdaptiveModal(
+                  context,
                   builder: (_) => SendZapsView(
                     metadata: metadata,
                     isZapSplit: false,
                     zapSplits: const [],
                   ),
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
@@ -972,7 +964,7 @@ class _FluidActionButtons extends StatelessWidget {
         AppIconButton(
           onClicked: () {
             Navigator.pop(context);
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               ProfileView.routeName,
               arguments: [metadata.pubkey],

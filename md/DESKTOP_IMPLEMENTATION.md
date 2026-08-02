@@ -4,6 +4,9 @@ Reference for shipping YakiHonne to macOS, Windows and Linux. All findings are s
 the current tree (branch `nc013`) — resolved dependency versions come from `pubspec.lock`,
 platform support from each plugin's declared `flutter.platforms` key, not from documentation.
 
+**For what is done and what is left, jump to the [Implementation tracker](#implementation-tracker).**
+Everything before it is the original analysis, which still holds.
+
 ---
 
 ## Verdict
@@ -383,10 +386,180 @@ mostly already solved, the UI is not.
 
 ---
 
+## Implementation tracker
+
+Live state of the port, audited against the tree on 2026-07-30 (branch `DESKTOP`, everything
+uncommitted). This section supersedes [Suggested order](#suggested-order) as the working list —
+that one is the original plan, this is what actually happened.
+
+`[x]` done and seen working — on screen, or covered by a test · `[c]` code complete, **never seen
+running**: analyze and tests say nothing about it · `[~]` partially done, the rest named inline ·
+`[ ]` not started.
+
+Tree state behind this audit: `flutter analyze` clean; `flutter test` = 16 passing,
+1 pre-existing failure (`test/widget_test.dart`, the stock counter smoke test, untouched since the
+initial commit — it pumps the real app and always fails). Neither command proves a plugin exists
+at runtime or that a layout ever rendered.
+
+### Phase 1 — make it run (macOS)
+
+- [x] `DebugProfile.entitlements` gets `network.client` (both entitlement files carry it now), so
+      relays connect in debug.
+- [x] macOS debug build runs. This is what turned the compatibility matrix above from static
+      analysis into fact for macOS.
+- [x] `lib/utils/platform_utils.dart` — `isMobilePlatform` / `isDesktopPlatform` are the single
+      gate vocabulary. Every new gate uses them, not raw `Platform.is*`.
+- [x] Window shape (`macos/Runner/MainFlutterWindow.swift`): `minSize` 720×600 (below 720 the
+      layout falls into MOBILE), geometry persisted via AppKit's `setFrameAutosaveName` — no
+      plugin — and a transparent full-size-content titlebar the app's own glass shows through,
+      with `kMacTitlebarInset` keeping Dart content clear of the traffic lights.
+- [x] `sizer` measures the right axis on desktop: `SizerUtil.setScreenSize(constraints,
+      Orientation.portrait)` at main.dart:233. sizer swaps width/height in landscape, which is
+      every normal desktop window — without this all 210 sites read the wrong axis and flipped
+      when the window crossed square.
+- [x] Umami user-agent has a macOS case (`umami_tracker.dart:37-49`). Windows and Linux still
+      report `Unknown Device`.
+- [~] Mobile-only feature gating. Done: camera init (`initializers.dart:162`), receive-share
+      (`main_cubit.dart:195`), flip-to-share wrapper, the iOS-only path rewrite
+      (`functions_set.dart:312`). **Left:** QR *scanner* entry points
+      (`wallet_view/send_view/qr_code_scanner.dart`, `widgets/general_qr_code_scanner.dart`,
+      `widgets/qr_scanner_modal.dart` — `qr_code_scanner` is Android/iOS, QR *display* is fine),
+      `media_handler.dart` (`image_gallery_saver_plus`, `video_thumbnail`), `open_filex` call
+      sites, and the unifiedpush surfaces in settings (the `Platform.isAndroid` guards in
+      `push_core.dart` / `up_functions.dart` fail safe, but the UI still offers the feature).
+- [ ] IAP platform strings are wrong on desktop, not just on Windows/Linux:
+      `pricing_screen.dart:143` computes `Platform.isIOS ? 'ios' : 'android'` and
+      `subscription_section.dart:211,974,980` render "Google Play" — on macOS, where
+      `in_app_purchase` *does* work, the receipt platform and the store label are both wrong.
+      Needs a macOS branch, not just a desktop hide.
+- [c] Deep links. `Info.plist` registers `nostr`, `nostrwalletconnect` and `nostr+walletconnect`;
+      `app_links` is wired in `MainCubit.initUniLinks` (`main_cubit.dart:226-253`) with no
+      platform gate, so it should work as-is. Never exercised on macOS.
+- [~] NIP-46 remote signer in the desktop login flow: `bunker://` / `nostrconnect://` paths exist
+      in `signin_view.dart` and `fluid_logify_view.dart` already. Unverified on desktop, and
+      unverified whether the Amber-only affordances are hidden there.
+- [x] The 7-row [platform guard audit](#platform-guard-audit) above is walked. Resolved:
+      `functions_set.dart:312` (now `!isDesktopPlatform`), `umami_tracker.dart` (macOS case).
+      Confirmed fail-safe as written: `initializers.dart:234` (`Platform.isAndroid && …`
+      short-circuits), `push_core.dart:23-28` (no-ops), and `app_view.dart:296-304`, which builds
+      an empty `system` string on desktop and is guarded by `if (system.isNotEmpty)` — the JS
+      injection is skipped, not misapplied. Still open: the two IAP files, tracked as their own
+      item above.
+
+### Phase 2 — the shell
+
+- [x] `DesktopSidebar` (`main_view/widgets/desktop_sidebar.dart`, 779 lines) replaces the 6-tab
+      bottom nav and the 10-item hamburger drawer at once: brand, search field, compose button,
+      rail items, account footer. Collapses to icon-only below `kSidebarCollapseWidth` = 1080.
+      Hover feedback via its own `_Hoverable`.
+- [x] `barsVisible` scroll-hide gated off desktop (`main_view.dart:120`) — docked chrome has
+      nothing to hide, and a wheel made it twitch.
+- [x] Panel-scoped `MediaQuery` (`_PanelScope`): each column measures its own width, so
+      `largerThan(MOBILE)` sites inside the feed stop reading the whole window. Feed and media
+      grids pick their column count from the panel (`feedGridColumns`, `mediaGridColumns`).
+- [~] Bottom sheets → dialogs. `showAdaptiveModal` (`functions_set.dart:297`) is the wrapper:
+      byte-identical `showModalBottomSheet` on mobile, centered `Dialog` on desktop, with a
+      focus-independent Escape handler and an `isCurrent` guard so nested sub-sheets pop one at a
+      time. **101 call sites across 45 files converted; 84 raw
+      `showModalBottomSheet` / `showCupertinoModalBottomSheet` calls remain.**
+- [c] Escape-to-close on those dialogs has never been seen working — `cliclick` keystrokes do not
+      reach the Flutter window, so only the user can confirm it.
+- [ ] **No content max-width cap.** The original plan's centrepiece is still missing. Confirmed by
+      grep across `leading_view`, `discover_view`, `media_view` and `main_view`: the only
+      `maxWidth` in the whole panel path is `feature_tour.dart:170` (340pt, a tour card). The rail
+      and the 520pt detail pane absorb width, but at 1920 the feed column is still ~1300pt and at
+      2560 it is ~1900pt. Decide between a hard cap on the feed column and filling the surplus
+      with a right-hand gutter (below) — one of the two, not neither.
+- [~] `sizer`: axis is correct now, but **157 raw `.w` and 53 `.h`** still measure the *window*,
+      not the panel — a re-scoped `MediaQuery` does not reach them. They need explicit gating
+      site by site; the ones inside the detail pane and the DM columns are the visible offenders.
+- [ ] Refresh affordance. 20 files drive `SmartRefresher` / `pull_to_refresh`; pull-to-refresh is
+      meaningless with a wheel and not one of them has a desktop refresh button yet.
+- [~] Hover states: the sidebar's own `_Hoverable`, plus whatever the ~10 files using `InkWell` /
+      `MouseRegion` get for free. Feed cards, avatars, and the custom `GestureDetector` areas
+      throughout give a cursor no feedback.
+- [ ] Right-click context menus where long-press is the trigger today — exactly one
+      `onSecondaryTap` in the tree (`widgets/custom_icon_buttons.dart`).
+- [ ] Keyboard: no app-level shortcuts (compose, search, switch destination), no focus-traversal
+      pass, no Enter-to-send audit. Escape is handled only inside `showAdaptiveModal`.
+- [~] Text selection: 5 files use `SelectionArea` / `SelectableText` (article, curation, content
+      renderer, raw event, smart widgets). Note bodies in the feed are still unselectable.
+- [ ] Density pass — `kDefaultPadding = 20` is thumb-tuned. Wants a theme-level multiplier, not
+      per-widget edits.
+- [ ] Glass visual pass for the desktop chrome. The rail and panel are glass and *look* right, but
+      `md/GLASS_IMPLEMENTATION.md` was written for floating phone chrome and has not been revised
+      for a docked rail.
+
+### Phase 3 — multi-column
+
+- [x] **DMs**: conversation list beside the open thread (`dm_view.dart:115`), with the pane
+      dropped and route-pushing restored below the threshold. Verified working on screen.
+- [x] **Detail pane** (`main_view/widgets/detail_pane.dart`): nested `Navigator` seeded with the
+      empty state, sharing the root `onGenerateRoute` so pane-internal pushes stack inside it.
+      Mounts when the *panel* is ≥ 1024pt (window ≈ 1306px+), 520pt wide, not on DMs. One `Theme`
+      override at the pane root keeps the five content views unedited. Allowlisted via
+      `kDetailPaneRoutes` / `kDetailPanePages`; 47 call sites converted to `YNavigator.pushNamed`,
+      `pushPage` intercepts its 36 for free. Verified working on screen.
+- [c] Pane: pushed content no longer blends with the empty state. `_DetailPaneEmpty` returns
+      `SizedBox.shrink()` when `ModalRoute.of(context)?.isCurrent` is false — the route stays
+      seeded (an unseeded pane would quit the app, `navigator.dart:41-45`) and no opaque scaffold
+      is introduced, which would have punched a hole through the glass. No test covers appearance.
+- [x] Pane: pushes from a modal sheet reach the pane. The discriminator was
+      `!Navigator.of(context).canPop()`, and a sheet that pops itself and pushes in the same frame
+      (`profile_fast_access.dart:127`, every fast-access button) is still in `_history` — so the
+      push escaped to full screen. Now `DetailPaneRouteTracker`, a `NavigatorObserver` mirroring
+      the root stack, answers "is the main panel the content underneath?" by walking to the
+      topmost `opaque` route and returning `route.isFirst`. Sheets and dialogs are non-opaque and
+      drop out of the test; a full-screen route is opaque, so pushes from a sheet opened inside
+      one stay full-screen. Covered by `test/detail_pane_route_tracker_test.dart` — the only check
+      that fails if the discriminator loosens — but not yet seen on screen.
+- [ ] **Notifications**: list + selected item detail. Not started.
+- [ ] **Feed gutter**: trending / relays / suggestions in the space a capped centre column frees.
+      Not started, and coupled to the max-width decision above.
+- [ ] Pane stack is discarded when switching to DMs and back (accepted, documented).
+- [ ] Threads: the pane covers note→thread→profile drilling, but `threads_view` itself has no
+      desktop layout of its own.
+
+### Phase 4 — Windows and Linux
+
+Nothing started. Ordered by what blocks a first run:
+
+- [ ] `media_kit` replacing `video_player` + `just_audio` (Windows and Linux both).
+- [ ] `webview_flutter` call sites in `app_view.dart` → `flutter_inappwebview` or gated (Windows).
+- [ ] Hide IAP entirely on Windows/Linux (see the Phase 1 item — same call sites).
+- [ ] Deep-link registration: Windows registry entry, Linux `.desktop` file.
+- [ ] Umami UA cases for Windows/Linux.
+- [ ] Linux has no webview at all — Pomegranate Google Sign-In has no path there. Decide whether
+      Linux ships without it or does not ship.
+- [ ] Packaging: Developer ID signing + notarization (macOS), code signing + MSIX (Windows),
+      `.deb`/Flatpak + `libsecret-1-dev` (Linux).
+
+### Verification debt
+
+- [ ] `test/` holds 6 files. Two are desktop-port work — `media_grid_pattern_test.dart` (grid
+      pattern arithmetic) and `detail_pane_route_tracker_test.dart` (pane discriminator); three
+      predate it (`dm_redeem_code`, `pomegranate_crypto`, `logic/`); one is the stock
+      `widget_test.dart`, which fails and always has. The shell, the sidebar, the DM columns and
+      `showAdaptiveModal` have no coverage at all.
+- [ ] Delete or fix `test/widget_test.dart` — it makes `flutter test` red, which is how a real
+      regression gets ignored.
+- [ ] `MissingPluginException` sweep on macOS — nothing static can find these. Exercise, in this
+      order: QR scan, save-media-to-gallery, video thumbnail, local notifications
+      (`awesome_notifications`, still unverified on any desktop), IAP purchase, file open.
+- [ ] Everything marked `[c]`, cumulative: Escape-to-close on dialogs, deep-link handling, both
+      pane fixes above, and the glass appearance of the rail at 1440+ widths.
+- [ ] Agent-side tooling limits worth knowing before planning verification: `cliclick`
+      keystrokes do not reach the Flutter window (Escape and shortcuts are unverifiable without
+      the user), `SIGUSR1` triggers hot reload, and the debug instance is not logged in.
+
+---
+
 ## Notes
 
-- No desktop build has been run against this tree. The matrix above is static analysis of
-  declared plugin support; step 2 is what converts it into fact.
+- The macOS debug build now runs, so the matrix is fact for macOS. Windows and Linux remain
+  static analysis of declared plugin support.
+- **[Implementation tracker](#implementation-tracker) is the live state of the port.** The
+  phase list below the matrix is the original plan and is kept for its reasoning, not its status.
 - `md/DESIGN_GUIDELINES.md` and `md/GLASS_IMPLEMENTATION.md` remain the authority on visual
   language. Glass mode uses `BackdropFilter`, which is GPU-cheap on desktop — no concerns
   there, but it has not been visually verified at desktop window sizes.

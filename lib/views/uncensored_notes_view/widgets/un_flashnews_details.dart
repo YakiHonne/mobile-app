@@ -562,9 +562,8 @@ class UnFlashNewsDetails extends HookWidget {
             PullDownMenuItem(
               title: context.t.bookmark.capitalizeFirst(),
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 0,
+                showAdaptiveModal(
+                  context,
                   builder: (_) {
                     return AddBookmarkView(
                       kind: EventKind.TEXT_NOTE,
@@ -573,12 +572,7 @@ class UnFlashNewsDetails extends HookWidget {
                       model: unFlashNews.flashNews,
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
+                  dialogHeight: 560,
                 );
               },
               itemTheme: PullDownMenuItemTheme(
@@ -640,9 +634,8 @@ class UnFlashNewsDetails extends HookWidget {
       isSealed: sealedNotHelpful.isNotEmpty,
       sealDisable: isSealed,
       onLike: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UnFlashNewsAddRating(
               isUpvote: true,
@@ -653,16 +646,12 @@ class UnFlashNewsDetails extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onDislike: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UnFlashNewsAddRating(
               isUpvote: false,
@@ -673,9 +662,6 @@ class UnFlashNewsDetails extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

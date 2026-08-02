@@ -133,9 +133,8 @@ class UnFlashNewsContainer extends StatelessWidget {
           sealedNote: unNewFlashNews.sealedNote,
           flashNewsPubkey: unNewFlashNews.flashNews.pubkey,
           onLike: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: true,
@@ -146,16 +145,12 @@ class UnFlashNewsContainer extends StatelessWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           onDislike: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: false,
@@ -166,9 +161,6 @@ class UnFlashNewsContainer extends StatelessWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -295,9 +287,8 @@ class UnFlashNewsContainer extends StatelessWidget {
             PullDownMenuItem(
               title: context.t.bookmark.capitalizeFirst(),
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 0,
+                showAdaptiveModal(
+                  context,
                   builder: (_) {
                     return AddBookmarkView(
                       kind: EventKind.TEXT_NOTE,
@@ -306,12 +297,7 @@ class UnFlashNewsContainer extends StatelessWidget {
                       model: unNewFlashNews.flashNews,
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
+                  dialogHeight: 560,
                 );
               },
               itemTheme: PullDownMenuItemTheme(

@@ -159,6 +159,9 @@ class AppInitializer {
   }
 
   static Future<void> initCameras() async {
+    if (!isMobilePlatform) {
+      return;
+    }
     cameras = await availableCameras();
   }
 

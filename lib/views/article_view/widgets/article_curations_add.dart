@@ -45,7 +45,7 @@ class AddItemToCurationView extends StatelessWidget {
       child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: DraggableScrollableSheet(
+        child: AdaptiveDraggableSheet(
           initialChildSize: 0.9,
           minChildSize: 0.60,
           maxChildSize: 0.9,

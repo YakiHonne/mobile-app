@@ -10,3 +10,4 @@ export 'bloc_observer.dart';
 export 'constants.dart';
 export 'enums.dart';
 export 'extension.dart';
+export 'platform_utils.dart';

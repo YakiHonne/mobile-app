@@ -11,6 +11,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/properties_cubit/mute_list_cubit/mute_list_cubit.dart';
 import '../../../models/detailed_note_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/profile_view.dart';
 import '../../widgets/app_icon.dart';
@@ -307,7 +308,7 @@ class MutedUserContainer extends StatelessWidget {
       pubkey: pubkey,
       child: (metadata, nip05) => GestureDetector(
         onTap: () {
-          Navigator.pushNamed(
+          YNavigator.pushNamed(
             context,
             ProfileView.routeName,
             arguments: [metadata.pubkey],

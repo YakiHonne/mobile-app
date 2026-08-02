@@ -389,16 +389,13 @@ class CashuWallatBalanceContainer extends StatelessWidget {
               context: context,
               title: context.t.restoreWallet.capitalizeFirst(),
               icon: FeatureIcons.restore,
-              onTap: () => showModalBottomSheet(
-                context: context,
+              onTap: () => showAdaptiveModal(
+                context,
+                dialogHeight: 560,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 builder: (_) => CashuRestoreProofs(
                   mintUrl: state.activeMint,
                 ),
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
           ),
@@ -408,14 +405,11 @@ class CashuWallatBalanceContainer extends StatelessWidget {
             title: context.t.history.capitalizeFirst(),
             icon: FeatureIcons.transactions,
             onTap: () => doIfCanSign(
-              func: () => showModalBottomSheet(
-                context: context,
-                builder: (_) => const CashuHistory(),
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
+              func: () => showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                builder: (_) => const CashuHistory(),
               ),
               context: context,
             ),

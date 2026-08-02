@@ -650,7 +650,7 @@ List<Widget> _buildEmptyReplies(BuildContext context) {
           child: Column(
             children: [
               SvgPicture.asset(
-                LogosIcons.logoMarkWhite,
+                LogosIcons.logoMark,
                 height: 50,
                 colorFilter: ColorFilter.mode(
                   Theme.of(context).primaryColorDark,

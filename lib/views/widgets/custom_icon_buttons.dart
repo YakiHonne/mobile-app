@@ -55,6 +55,12 @@ class CustomIconButton extends StatelessWidget {
     return RepaintBoundary(
       child: GestureDetector(
         onLongPress: onLongPress,
+        // Right-click is the desktop spelling of long-press (md/
+        // DESKTOP_IMPLEMENTATION.md item 9). Every long-pressable icon button in
+        // the app routes through here, so one line covers all of them instead of
+        // 31 per-site GestureDetectors. Null on mobile, so the phone gesture
+        // arena is untouched.
+        onSecondaryTap: isDesktopPlatform ? onLongPress : null,
         onDoubleTap: onDoubleTap,
         child: IconButton(
           onPressed: onClicked,

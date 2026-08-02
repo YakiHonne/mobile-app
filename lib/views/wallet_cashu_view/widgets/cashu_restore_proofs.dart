@@ -42,7 +42,7 @@ class CashuRestoreProofs extends HookWidget {
     }, []);
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
           expand: false,
           maxChildSize: 0.9,
           minChildSize: 0.5,

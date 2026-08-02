@@ -20,7 +20,7 @@ class ParsedContentDisplay extends StatelessWidget {
     return ModalSheetContainer(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,

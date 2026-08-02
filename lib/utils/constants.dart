@@ -21,13 +21,13 @@ const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
 const baseUrl2 = 'www.yakihonne.com';
 const baseUrl3 = 'yakihonne.com';
-const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
+const apiBaseUrl = 'https://api.yakihonne.com/';
 const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
-
+const compressImageUrl = '${apiBaseUrl}api/img';
 //TODO: [REVERT TO LIVE]
-// const apiUrl = 'https://api.yakihonne.com/api/v1/';
-const compressImageUrl = 'https://api.yakihonne.com/api/img';
+// const apiUrl = '${apiBaseUrl}api/v1/';
+
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
 const searchRelaysUrl = 'https://api.nostr.watch/v2/relays/by/nip';

@@ -232,9 +232,12 @@ class SetRelaySet extends HookWidget {
         ),
         SquareIconButton(
           onClicked: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            // ponytail: no backgroundColor, so this takes showAdaptiveModal's
+            // default. It differs from the Material default this site used to
+            // get in normal mode, but AvailableRelaysList's ModalSheetContainer
+            // root paints an opaque fill over the whole box, so nothing shows.
+            showAdaptiveModal(
+              context,
               builder: (_) {
                 return AvailableRelaysList(
                   onlineRelays: relaysList.value,
@@ -249,9 +252,6 @@ class SetRelaySet extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
             );
           },
         ),

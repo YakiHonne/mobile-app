@@ -26,7 +26,7 @@ class LeadingFeed extends StatelessWidget {
     return BlocBuilder<LeadingCubit, LeadingState>(
       builder: (context, state) {
         if (isTablet && !useSingleColumn) {
-          return _gridItems(state);
+          return _gridItems(context, state);
         } else {
           return _listItems(state);
         }
@@ -118,7 +118,7 @@ class LeadingFeed extends StatelessWidget {
     );
   }
 
-  SliverPadding _gridItems(LeadingState state) {
+  SliverPadding _gridItems(BuildContext context, LeadingState state) {
     final adGap = subscriptionCubit.isBasic ? 15 : 7;
     final showAds =
         !subscriptionCubit.isPremium && state.paidNoteAds.isNotEmpty;
@@ -140,7 +140,7 @@ class LeadingFeed extends StatelessWidget {
     return SliverPadding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       sliver: SliverMasonryGrid.count(
-        crossAxisCount: 2,
+        crossAxisCount: feedGridColumns(context),
         itemBuilder: (context, index) {
           final cell = cells[index];
           final event = cell.event;

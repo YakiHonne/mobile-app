@@ -785,6 +785,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'No messages can be found'
 	String get noMessageCanBeFound => 'No messages can be found';
 
+	/// en: 'Select a conversation'
+	String get selectConversation => 'Select a conversation';
+
+	/// en: 'Select something to open it here'
+	String get selectContentToView => 'Select something to open it here';
+
 	/// en: 'You: '
 	String get you => 'You: ';
 
@@ -6245,6 +6251,8 @@ extension on Translations {
 			'known' => 'Known',
 			'unknown' => 'Unknown',
 			'noMessageCanBeFound' => 'No messages can be found',
+			'selectConversation' => 'Select a conversation',
+			'selectContentToView' => 'Select something to open it here',
 			'you' => 'You: ',
 			'decrMessage' => 'Decrypting message',
 			'gifs' => 'gifs',
@@ -6507,14 +6515,14 @@ extension on Translations {
 			'voteRequired' => 'Vote is required to display stats.',
 			'showStats' => 'Show stats',
 			'pollClosesAt' => ({required Object date}) => 'Closes at: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'Closed at: ${date}',
-			'checkSmartWidget' => 'Check a smart widget',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'pollClosedAt' => ({required Object date}) => 'Closed at: ${date}',
+			'checkSmartWidget' => 'Check a smart widget',
 			'emptyVerifiedNote' => 'Empty verified note content!',
 			'post' => 'Post',
 			'seeAnything' => 'See anything you want to improve?',
@@ -7025,14 +7033,14 @@ extension on Translations {
 			'blockHeight' => 'Block height',
 			'atContractCreation' => ({required Object number}) => '${number} (at contract creation)',
 			'zkProofs' => 'ZK proofs',
-			'downloadZkProofs' => 'Download proofs',
-			'walletConnectionString' => 'Wallet Connection String',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$2(String path) {
 		return switch (path) {
+			'downloadZkProofs' => 'Download proofs',
+			'walletConnectionString' => 'Wallet Connection String',
 			'walletConnectionStringDesc' => 'Please make sure to securely copy or export your wallet connection string. We do not store this information, and if lost, it cannot be recovered.',
 			'export' => 'Export',
 			'logout' => 'Log out',
@@ -7543,14 +7551,14 @@ extension on Translations {
 			'mintUrl' => 'Mint URL',
 			'mintUnavailable' => 'Mint you are trying to add is not available',
 			'inactiveMints' => 'Inactive mints',
-			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
-			'errorAddingMint' => 'Error occured while adding mint',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
+			'errorAddingMint' => 'Error occured while adding mint',
 			'restoreWallet' => 'Restore wallet',
 			'restoreWalletDesc' => 'Restore proofs of your wallet in this mint to save them on NOSTR',
 			'seedPhraseLocallyOnly' => 'Your seed phrase is only used locally to derive your wallet keys.',

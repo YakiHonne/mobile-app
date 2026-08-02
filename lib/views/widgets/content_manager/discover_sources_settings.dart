@@ -39,10 +39,10 @@ class DiscoverSourcesSettings extends HookWidget {
     );
   }
 
-  DraggableScrollableSheet _content(
+  AdaptiveDraggableSheet _content(
     TabController tabController,
   ) {
-    return DraggableScrollableSheet(
+    return AdaptiveDraggableSheet(
       initialChildSize: 0.95,
       minChildSize: 0.60,
       maxChildSize: 0.95,

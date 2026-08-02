@@ -594,9 +594,8 @@ class ProfileAppBar extends StatelessWidget {
                   onClicked: () {
                     context.read<WalletsManagerCubit>().resetInvoice();
 
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
+                    showAdaptiveModal(
+                      context,
                       builder: (_) {
                         return SendZapsView(
                           metadata: state.user,
@@ -604,9 +603,6 @@ class ProfileAppBar extends StatelessWidget {
                           zapSplits: const [],
                         );
                       },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                     );

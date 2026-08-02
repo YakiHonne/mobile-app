@@ -101,7 +101,7 @@ class MainViewDrawer extends HookWidget {
           ),
         if (currentSigner == null)
           SvgPicture.asset(
-            LogosIcons.logoBlack,
+            LogosIcons.logo,
             colorFilter: ColorFilter.mode(
               Theme.of(context).primaryColorDark,
               BlendMode.srcIn,
@@ -356,9 +356,9 @@ class MainViewDrawer extends HookWidget {
       child: DrawerItem(
         isSelected: false,
         onClicked: () {
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 560,
             builder: (_) {
               return BlocProvider.value(
                 value: context.read<MainCubit>(),
@@ -367,12 +367,6 @@ class MainViewDrawer extends HookWidget {
                 ),
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: isFluid()
-                ? kTransparent
-                : Theme.of(context).scaffoldBackgroundColor,
           );
         },
         icon: FeatureIcons.repost,

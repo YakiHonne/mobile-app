@@ -16,10 +16,12 @@ export 'widgets/energy_helpers.dart' show energyColor;
 
 Future<void> showEnergyMapper(BuildContext context, String content) {
   if (!subscriptionCubit.isPaid) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+    // ponytail: useRootNavigator kept false — showModalBottomSheet defaults to
+    // false and showAdaptiveModal to true, so passing it is what keeps mobile
+    // byte-identical.
+    return showAdaptiveModal<void>(
+      context,
+      useRootNavigator: false,
       backgroundColor: Colors.transparent,
       builder: (_) => AiUpsellSheet(
         parentContext: context,

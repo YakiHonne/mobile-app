@@ -104,7 +104,7 @@ class AddDiscoverFilter extends HookWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
@@ -462,8 +462,10 @@ class AddDiscoverFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
+        // The isFluid()/transparent-vs-scaffold background these call sites
+        // spelled out is exactly showAdaptiveModal's own default.
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UserToZap(
               onUserSelected: (user) {
@@ -472,13 +474,6 @@ class AddDiscoverFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -673,20 +668,14 @@ class AddDiscoverFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.articles,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -841,7 +830,7 @@ class AddNotesFilter extends HookWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
@@ -1033,8 +1022,10 @@ class AddNotesFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
+        // The isFluid()/transparent-vs-scaffold background these call sites
+        // spelled out is exactly showAdaptiveModal's own default.
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UserToZap(
               onUserSelected: (user) {
@@ -1043,13 +1034,6 @@ class AddNotesFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -1242,20 +1226,14 @@ class AddNotesFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.notes,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1320,7 +1298,7 @@ class AddMediaFilter extends HookWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
@@ -1513,8 +1491,10 @@ class AddMediaFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
+        // The isFluid()/transparent-vs-scaffold background these call sites
+        // spelled out is exactly showAdaptiveModal's own default.
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return UserToZap(
               onUserSelected: (user) {
@@ -1523,13 +1503,6 @@ class AddMediaFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -1722,20 +1695,14 @@ class AddMediaFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.media,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },

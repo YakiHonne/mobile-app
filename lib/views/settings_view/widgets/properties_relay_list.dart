@@ -149,7 +149,7 @@ class AvailableRelaysList extends HookWidget {
     final relaysSnapshot = useFuture(relaysFuture);
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
         maxChildSize: 0.95,
