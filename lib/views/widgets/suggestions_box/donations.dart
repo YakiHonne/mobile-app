@@ -4,6 +4,7 @@ import 'package:nostr_core_enhanced/models/metadata.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../fluid_sheet.dart';
 
 class SuggestedDonations extends StatelessWidget {
   const SuggestedDonations({super.key});
@@ -75,8 +76,7 @@ class SuggestedDonations extends StatelessWidget {
           if (context.mounted) {
             doIfCanSign(
               func: () {
-                showModalBottomSheet(
-                  elevation: 0,
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return SendZapsView(
@@ -89,9 +89,6 @@ class SuggestedDonations extends StatelessWidget {
                       zapSplits: const [],
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

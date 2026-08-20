@@ -5,8 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/localdatabase_repository.dart';
+import '../subscription_cubit/usage_limit.dart';
 
 part 'second_reader_state.dart';
+
+/// `error` carries codes, not copy — this one tells the view to render the
+/// live quota message instead of the generic failure text.
+const kSecondReaderUsageError = 'usage_limit';
 
 const _kLastPersonaKey = 'sr_last_persona_id';
 const _kReactionsPrefix = 'sr_reactions_';
@@ -65,6 +70,12 @@ class SecondReaderCubit extends Cubit<SecondReaderState> {
       return;
     }
 
+    // Only a *new* analysis spends quota — cached personas above stay readable.
+    if (isUsageBlocked(kUsageKeySecondReader)) {
+      emit(state.copyWith(error: () => kSecondReaderUsageError));
+      return;
+    }
+
     emit(state.copyWith(
       activePersona: () => persona,
       lastUsedPersonaId: () => persona.id,
@@ -90,6 +101,7 @@ class SecondReaderCubit extends Cubit<SecondReaderState> {
       _cache[persona.id] = reactions;
       _persist(persona.id, reactions);
       prefs.setString(_kLastPersonaKey, persona.id);
+      refreshUsageAfterCall();
 
       emit(state.copyWith(
         view: SecondReaderView.active,
@@ -97,12 +109,18 @@ class SecondReaderCubit extends Cubit<SecondReaderState> {
         isAnalyzing: false,
       ));
     } on DioException catch (e) {
+      final fresh = await checkUsageLimit(kUsageKeySecondReader);
       emit(state.copyWith(
         isAnalyzing: false,
-        error: () => e.message ?? 'error',
+        error: () =>
+            fresh != null ? kSecondReaderUsageError : (e.message ?? 'error'),
       ));
     } catch (_) {
-      emit(state.copyWith(isAnalyzing: false, error: () => 'error'));
+      final fresh = await checkUsageLimit(kUsageKeySecondReader);
+      emit(state.copyWith(
+        isAnalyzing: false,
+        error: () => fresh != null ? kSecondReaderUsageError : 'error',
+      ));
     }
   }
 

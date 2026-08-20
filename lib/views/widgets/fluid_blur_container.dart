@@ -47,18 +47,12 @@ class FluidCardContainer extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
+          color: cardColor,
           border: Border(
-            top: BorderSide(color: borderColor),
-          ),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              cardColor.withValues(alpha: 0.95),
-              cardColor,
-              cardColor.withValues(alpha: 0.85),
-            ],
-            stops: const [0.0, 0.15, 1.0],
+            top: BorderSide(color: borderColor, width: 2),
+            left: BorderSide(color: borderColor, width: 0.5),
+            right: BorderSide(color: borderColor, width: 0.5),
+            bottom: BorderSide(color: borderColor, width: 0.5),
           ),
         ),
         child: Padding(

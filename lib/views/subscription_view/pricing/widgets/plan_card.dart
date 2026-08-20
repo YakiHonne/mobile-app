@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../../models/app_models/pricing_plan_model.dart';
@@ -17,6 +18,7 @@ class PlanCard extends StatelessWidget {
     this.isPoints = false,
     this.pointsCost = 0,
     this.pointsEligible = false,
+    this.scrollable = false,
   });
 
   final PricingPlan plan;
@@ -29,6 +31,11 @@ class PlanCard extends StatelessWidget {
   final bool isCurrent;
   final bool isUpgrade;
   final VoidCallback? onCheckout;
+
+  /// Set inside the phone PageView, where the card is stretched to a fixed
+  /// page height: long feature lists scroll within the card instead of
+  /// overflowing it.
+  final bool scrollable;
 
   String _formatPoints(int pts) {
     if (pts >= 1000) {
@@ -57,12 +64,14 @@ class PlanCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: scrollable ? MainAxisSize.max : MainAxisSize.min,
         children: [
           Row(
             children: [
               Text(
                 plan.name,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w800),
               ),
               if (plan.highlighted) ...[
                 const SizedBox(width: kDefaultPadding / 2),
@@ -112,7 +121,8 @@ class PlanCard extends StatelessWidget {
                     : isLn
                         ? context.t.pricing_sats_period
                         : plan.period,
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                style:
+                    theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
               ),
             ],
           ),
@@ -120,29 +130,85 @@ class PlanCard extends StatelessWidget {
             Text(
               isPoints
                   ? (pointsEligible
-                      ? context.t.pricing_points_cost(points: pointsCost.toString())
+                      ? context.t
+                          .pricing_points_cost(points: pointsCost.toString())
                       : context.t.pricing_points_not_eligible)
                   : isLn
                       ? context.t.pricing_approx_usd(price: plan.price)
                       : plan.highlighted
                           ? context.t.pricing_approx_sats(sats: plan.sats)
-                          : context.t.pricing_approx_sats_discount(sats: plan.sats),
+                          : context.t
+                              .pricing_approx_sats_discount(sats: plan.sats),
               style: theme.textTheme.labelSmall?.copyWith(
-                color: isPoints && !pointsEligible ? Colors.red.withValues(alpha: 0.7) : theme.hintColor,
+                color: isPoints && !pointsEligible
+                    ? Colors.red.withValues(alpha: 0.7)
+                    : theme.hintColor,
               ),
             ),
           if (plan.desc.isNotEmpty) ...[
             const SizedBox(height: kDefaultPadding / 2),
             Text(
               plan.desc,
-              style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+              style:
+                  theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],
-          Divider(height: kDefaultPadding, thickness: 0.5, color: theme.dividerColor),
-          ...plan.features.map(
-            (f) => Padding(
+          Divider(
+              height: kDefaultPadding,
+              thickness: 0.5,
+              color: theme.dividerColor),
+          if (scrollable)
+            Expanded(
+                child: ScrollShadow(
+                    color: plan.highlighted
+                        ? theme.primaryColor.withValues(alpha: 0.05)
+                        : theme.cardColor,
+                    child: SingleChildScrollView(child: _features(theme))))
+          else
+            _features(theme),
+          const SizedBox(height: kDefaultPadding / 4),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              // The themed fill ignores the disabled state, so the current
+              // plan would otherwise look like a live CTA.
+              style: isCurrent
+                  ? TextButton.styleFrom(
+                      disabledBackgroundColor: theme.disabledColor.withValues(
+                        alpha: 0.15,
+                      ),
+                      disabledForegroundColor: theme.hintColor,
+                    )
+                  : null,
+              // Store/Stripe/Lightning loading lives on the checkout screen —
+              // only the points redeem still spins here.
+              onPressed: isCurrent || anyLoading ? null : onCheckout,
+              child: isLoading
+                  ? SpinKitCircle(color: theme.primaryColor, size: 16)
+                  : Text(
+                      isCurrent
+                          ? context.t.pricing_current_plan
+                          : isUpgrade
+                              ? context.t.pricing_upgrade_to_pro
+                              : isPoints
+                                  ? context.t.pricing_redeem_with_points
+                                  : context.t.pricing_cta_subscribe,
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _features(ThemeData theme) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final f in plan.features)
+            Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding / 4),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,34 +228,15 @@ class PlanCard extends StatelessWidget {
                     child: Text(
                       f.text,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: f.dim ? theme.hintColor.withValues(alpha: 0.5) : null,
+                        color: f.dim
+                            ? theme.hintColor.withValues(alpha: 0.5)
+                            : null,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: kDefaultPadding / 4),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: isCurrent || anyLoading ? null : onCheckout,
-              child: isLoading
-                  ? SpinKitCircle(color: theme.primaryColor, size: 16)
-                  : Text(
-                      isCurrent
-                          ? context.t.pricing_current_plan
-                          : isUpgrade
-                          ? context.t.pricing_upgrade_to_pro
-                          : isPoints
-                          ? context.t.pricing_redeem_with_points
-                          : context.t.pricing_cta_subscribe,
-                    ),
-            ),
-          ),
         ],
-      ),
-    );
-  }
+      );
 }

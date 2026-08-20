@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
@@ -13,6 +12,8 @@ import '../../add_content_view/tools_view/tools_view.dart';
 import '../../giphy_view/giphy_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/media_selector.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
@@ -112,7 +113,7 @@ class PublishingMediaContainer extends HookWidget {
               height: 25,
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: CupertinoSwitch(
+                child: FluidSwitch(
                   value: isPaid!.value,
                   onChanged: (isToggled) {
                     isPaid!.value = !isPaid!.value;
@@ -130,9 +131,8 @@ class PublishingMediaContainer extends HookWidget {
   IconButton _smartWidgets(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          isScrollControlled: true,
           builder: (_) {
             return ToolsView(
               onContentAdded: (content) => appendTextToPosition(
@@ -142,9 +142,6 @@ class PublishingMediaContainer extends HookWidget {
             );
           },
           backgroundColor: kTransparent,
-          useRootNavigator: true,
-          elevation: 0,
-          useSafeArea: true,
         );
       },
       icon: AppIcon(
@@ -179,7 +176,7 @@ class PublishingMediaContainer extends HookWidget {
   IconButton _gif(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return GiphyView(
@@ -188,13 +185,6 @@ class PublishingMediaContainer extends HookWidget {
               ]),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? kTransparent
-              : Theme.of(context).scaffoldBackgroundColor,
         );
       },
       icon: SvgPicture.asset(
@@ -212,9 +202,8 @@ class PublishingMediaContainer extends HookWidget {
   IconButton _image(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          isScrollControlled: true,
           builder: (_) {
             return MediaSelector(
               onSuccess: (urls) {
@@ -224,9 +213,6 @@ class PublishingMediaContainer extends HookWidget {
             );
           },
           backgroundColor: kTransparent,
-          useRootNavigator: true,
-          elevation: 0,
-          useSafeArea: true,
         );
       },
       icon: AppIcon(

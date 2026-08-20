@@ -146,7 +146,12 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
   }
 
   Future<void> logout() async {
-    await HttpFunctionsRepository.logoutAppSystem();
+    try {
+      await HttpFunctionsRepository.logoutAppSystem().timeout(
+        const Duration(seconds: 3),
+      );
+    } catch (_) {}
+
     _appLifeCycle?.cancel();
     zapsToPointsList.clear();
 
@@ -155,13 +160,17 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
     }
     if (!isClosed) {
       emit(
-        state.copyWith(
-          isUpdated: !state.isUpdated,
+        const PointsManagementState(
+          isUpdated: true,
           isNew: false,
           currentXp: 0,
           standards: [],
+          additionalXp: 0,
           currentLevel: 0,
+          currentLevelXp: 0,
+          nextLevelXp: 0,
           percentage: 0,
+          consumablePoints: 0,
         ),
       );
     }
@@ -180,13 +189,13 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
           state.copyWith(
             isUpdated: !state.isUpdated,
             userGlobalStats: userStats,
-            currentXp: currentXp,
+            currentXp: currentXp.toInt(),
             currentLevel: currentLevel,
-            additionalXp: additionalXp,
+            additionalXp: additionalXp.toInt(),
             currentLevelXp: currentLevelXp,
             nextLevelXp: nextLevelXp,
             percentage: additionalXp / (nextLevelXp - currentLevelXp),
-            consumablePoints: points,
+            consumablePoints: points.toInt(),
             isSystemLoggedIn: true,
           ),
         );
@@ -210,8 +219,8 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
         subscriptionCubit.emitOnlineStats(online);
         if (!isClosed) {
           emit(state.copyWith(
-            consumablePoints: online.consumablePoints,
-            currentXp: online.xp,
+            consumablePoints: online.consumablePoints.toInt(),
+            currentXp: online.xp.toInt(),
           ));
         }
       }

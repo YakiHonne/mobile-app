@@ -16,6 +16,7 @@ import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/data_providers.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_sheet.dart';
 import '../../../widgets/muted_mark.dart';
 import '../../../widgets/place_holders.dart';
 import 'curation_articles_list.dart';
@@ -101,9 +102,8 @@ class CurationContent extends HookWidget {
       onClicked: () {
         context.read<WriteCurationCubit>().getItems(false);
 
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return BlocProvider.value(
               value: context.read<AddContentCubit>(),
@@ -116,9 +116,6 @@ class CurationContent extends HookWidget {
               ),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

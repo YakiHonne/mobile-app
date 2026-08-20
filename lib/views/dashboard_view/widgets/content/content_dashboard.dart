@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -24,7 +25,9 @@ import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/content_placeholder.dart';
 import '../../../widgets/empty_list.dart';
-import '../../../widgets/fluid_blur_container.dart';
+import '../../../widgets/fluid_glass_tab_bar.dart';
+import '../../../widgets/fluid_pull_down_button.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../widgets/media_components/horizontal_video_view.dart';
 import '../../../widgets/media_components/picture_view.dart';
 import '../../../widgets/media_components/vertical_video_view.dart';
@@ -147,6 +150,9 @@ class _ContentDashboardState extends State<ContentDashboard>
           onRefresh: () => buildContent.call(context, false, state.chosenRE),
           child: CustomScrollView(
             slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(height: fluidScaffoldTopInset(context)),
+              ),
               if (!isFluid()) _appbar(context),
               _pulldownButton(style),
               if ((nostrRepository.userDrafts!.articleDraft.isNotEmpty &&
@@ -219,39 +225,16 @@ class _ContentDashboardState extends State<ContentDashboard>
   }
 
   Widget _buildFluidContentTabBar(BuildContext context) {
-    return FluidBlurContainer(
-      padding: const EdgeInsets.all(3),
-      backgroundAlpha: 0.5,
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabAlignment: TabAlignment.start,
-        dividerHeight: 0,
-        indicatorSize: TabBarIndicatorSize.tab,
-        padding: EdgeInsets.zero,
-        labelPadding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 1.5,
-          vertical: 3,
-        ),
-        indicator: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(300),
-        ),
-        labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
-              fontWeight: FontWeight.w700,
+    return FluidGlassTabBar(
+      floating: true,
+      controller: _tabController,
+      tabs: contentTypes
+          .map(
+            (type) => GlassTab(
+              label: getContentType(type, context).capitalizeFirst(),
             ),
-        unselectedLabelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-        tabs: contentTypes
-            .map(
-              (type) => Tab(
-                height: 28,
-                text: getContentType(type, context).capitalizeFirst(),
-              ),
-            )
-            .toList(),
-      ),
+          )
+          .toList(),
     );
   }
 
@@ -415,8 +398,8 @@ class _ContentDashboardState extends State<ContentDashboard>
     );
   }
 
-  PullDownButton _postPulldownButton(BuildContext context, TextStyle style) {
-    return PullDownButton(
+  FluidPullDownButton _postPulldownButton(BuildContext context, TextStyle style) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -498,8 +481,8 @@ class _ContentDashboardState extends State<ContentDashboard>
     );
   }
 
-  PullDownButton _propertiesPulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _propertiesPulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

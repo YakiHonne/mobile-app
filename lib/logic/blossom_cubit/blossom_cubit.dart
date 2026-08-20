@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
-import 'package:nostr_core_enhanced/utils/static_properties.dart';
 
 import '../../models/blossom_media.dart';
 import '../../repositories/blossom_repository.dart';
@@ -32,9 +31,11 @@ class BlossomCubit extends Cubit<BlossomState> {
     int? selectedServerIndex,
     bool? isGridView,
     bool? isLoading,
+    String? searchQuery,
   }) {
     if (!isClosed) {
       emit(state.copyWith(
+        searchQuery: searchQuery,
         allMedia: allMedia,
         filteredMedia: filteredMedia,
         servers: servers,
@@ -98,18 +99,36 @@ class BlossomCubit extends Cubit<BlossomState> {
   }
 
   void _applyFilter() {
-    if (state.selectedServerIndex == -1) {
-      _updateState(filteredMedia: state.allMedia);
-    } else {
+    var filtered = state.allMedia;
+
+    if (state.selectedServerIndex != -1) {
       final selectedServer = state.servers[state.selectedServerIndex];
       // Since loadMedia(targetServer) already filters, state.allMedia
       // should already be restricted to this server if it was just refreshed.
       // But we still apply filter for consistency if called after full load.
-      final filtered = state.allMedia
-          .where((m) => m.serverUrls.contains(selectedServer))
-          .toList();
-      _updateState(filteredMedia: filtered);
+      filtered =
+          filtered.where((m) => m.serverUrls.contains(selectedServer)).toList();
     }
+
+    final query = state.searchQuery.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      filtered = filtered
+          .where(
+            (m) =>
+                m.media.sha256.toLowerCase().contains(query) ||
+                m.media.type.toLowerCase().contains(query) ||
+                m.media.url.toLowerCase().contains(query),
+          )
+          .toList();
+    }
+
+    _updateState(filteredMedia: filtered);
+  }
+
+  /// Local filter over the already-fetched list — never a refetch.
+  void search(String query) {
+    _updateState(searchQuery: query);
+    _applyFilter();
   }
 
   void selectFilter(int index) {
@@ -219,23 +238,8 @@ class BlossomCubit extends Cubit<BlossomState> {
     }
   }
 
-  Future<Event?> _createAuthEvent(String type, {String? hash}) async {
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final tags = [
-      ['t', type],
-      ['expiration', (now + 3600).toString()]
-    ];
-    if (hash != null) {
-      tags.add(['x', hash]);
-    }
-
-    return Event.genEvent(
-      kind: EventKind.BLOSSOM_HTTP_AUTH,
-      tags: tags,
-      content: '',
-      signer: currentSigner,
-    );
-  }
+  Future<Event?> _createAuthEvent(String type, {String? hash}) =>
+      blossomAuthEvent(type, hash: hash);
 
   Future<void> uploadMedia({
     required List<int> fileBytes,

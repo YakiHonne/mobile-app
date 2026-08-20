@@ -6,6 +6,7 @@ import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
 import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
+import 'modal_sheet_container.dart';
 
 class SingleImageSelector extends HookWidget {
   const SingleImageSelector({
@@ -24,59 +25,47 @@ class SingleImageSelector extends HookWidget {
     final toggleUrl = useState(false);
     final url = useState('');
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
-      child: Container(
-        width: 100.w,
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding * 2),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
+    return ModalSheetContainer(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: kDefaultPadding / 2,
+          right: kDefaultPadding / 2,
+          bottom: kBottomNavigationBarHeight,
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                height: kDefaultPadding / 2,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+            Text(
+              title ?? context.t.pickYourImage.capitalizeFirst(),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            Text(
+              description ?? context.t.uploadPasteUrl.capitalizeFirst(),
+              style: TextStyle(
+                color: Theme.of(context).highlightColor,
               ),
-              Text(
-                title ?? context.t.pickYourImage.capitalizeFirst(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: kDefaultPadding,
-              ),
-              Text(
-                description ?? context.t.uploadPasteUrl.capitalizeFirst(),
-                style: TextStyle(
-                  color: Theme.of(context).highlightColor,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: kDefaultPadding,
-              ),
-              if (toggleUrl.value)
-                _pasteYourLink(toggleUrl, context, url)
-              else
-                _actionsRow(context, toggleUrl),
-              const SizedBox(
-                height: kDefaultPadding * 1.5,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            if (toggleUrl.value)
+              _pasteYourLink(toggleUrl, context, url)
+            else
+              _actionsRow(context, toggleUrl),
+            const SizedBox(
+              height: kDefaultPadding * 1.5,
+            ),
+          ],
         ),
       ),
     );

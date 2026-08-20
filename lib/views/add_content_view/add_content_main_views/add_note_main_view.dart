@@ -12,6 +12,7 @@ import '../../../models/flash_news_model.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/parsed_content_display.dart';
 import '../../write_note_view/widgets/paid_note_process.dart';
 import '../../write_note_view/write_note_view.dart';
@@ -88,7 +89,7 @@ class AddNoteMainView extends HookWidget {
                       selectedExternalRelay: selectedExternalRelay,
                       scheduled: scheduled.value,
                       onPaymentProcess: () {
-                        showModalBottomSheet(
+                        showAppModalSheet(
                           context: context,
                           builder: (_) {
                             return BlocProvider.value(
@@ -98,10 +99,6 @@ class AddNoteMainView extends HookWidget {
                               ),
                             );
                           },
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          useSafeArea: true,
-                          elevation: 0,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );
@@ -227,7 +224,7 @@ class AddNoteMainView extends HookWidget {
             final content = getRawText(controller);
 
             if (content.trim().isNotEmpty) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return ParsedContentDisplay(
@@ -235,26 +232,21 @@ class AddNoteMainView extends HookWidget {
                     baseEventModel: attachedEvent,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
-          style: TextButton.styleFrom(
+          child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
+              horizontal: kDefaultPadding / 1.5,
             ),
-            visualDensity: VisualDensity.compact,
-          ),
-          child: Text(
-            context.t.preview,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).highlightColor,
-                ),
+            child: Text(context.t.preview,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isFluid()
+                          ? Theme.of(context).primaryColorDark
+                          : kWhite,
+                    )),
           ),
         ),
         const SizedBox(

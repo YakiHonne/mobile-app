@@ -8,7 +8,7 @@ import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
 import 'dm_details.dart';
@@ -30,13 +30,14 @@ class DmUserSearch extends HookWidget {
     final textEditingController = useTextEditingController();
     final authors = useState(<Metadata>[]);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.newMessage.capitalizeFirst(),
-        notElevated: false,
-      ),
+    return FluidScaffold(
+      title: context.t.newMessage.capitalizeFirst(),
+      notElevated: true,
       body: CustomScrollView(
         slivers: [
+          SliverPadding(
+            padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          ),
           _appbar(textEditingController, context, authors),
           const SliverToBoxAdapter(
             child: SizedBox(height: kDefaultPadding / 2),
@@ -90,6 +91,7 @@ class DmUserSearch extends HookWidget {
       titleSpacing: 0,
       automaticallyImplyLeading: false,
       pinned: true,
+      primary: false,
       actions: const [
         SizedBox.shrink(),
       ],

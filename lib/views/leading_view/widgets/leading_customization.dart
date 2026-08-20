@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,6 +12,7 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_sheet_container.dart';
 
 class LeadingCustomization extends HookWidget {
@@ -124,7 +124,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showInterests,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -162,7 +162,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showRelatedContent,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -199,7 +199,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showPeopleToFollow,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -236,7 +236,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showSuggestions,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -316,7 +316,7 @@ class LeadingCustomization extends HookWidget {
               ),
               Transform.scale(
                 scale: 0.8,
-                child: CupertinoSwitch(
+                child: FluidSwitch(
                   value: state.useSingleColumnFeed,
                   activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (isToggled) {
@@ -350,7 +350,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.collapseNote,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -384,7 +384,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.hideNonFollowedMedia,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -420,11 +420,13 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableNestedReplies,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
-                  context.read<CustomizeLeadingCubit>().setNestedRepliesStatus();
+                  context
+                      .read<CustomizeLeadingCubit>()
+                      .setNestedRepliesStatus();
                 },
               ),
             ),
@@ -454,7 +456,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableAutoPlay,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -488,7 +490,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.linkPreview,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -662,7 +664,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: action.value,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {

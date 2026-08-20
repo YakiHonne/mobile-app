@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.0.6] - 2026-08-20
+
+### Added
+
+- Introduced Basic and Premium subscriptions, payable by card, Lightning, or points.
+- Added creator subscriptions, so you can support creators directly.
+- Added Google sign-in with key recovery, split across operators so no single one holds your key.
+- Added Yaki usernames and NIP-05 addresses, claimable from profile settings.
+- Added fluid mode, with adjustable glass quality in appearance settings.
+- Added usage indicators showing your remaining quota and when it renews.
+
+### Changed
+
+- Points can now be redeemed toward a subscription.
+- Linked the terms of use and privacy policy from the subscription screen.
+- Improved Blossom media server management.
+- Improved the article editor.
+- Completed login screen translations across all supported languages.
+
+### Fixed
+
+- General bug fixes and performance enhancements.
+
 ## [2.0.5] - 2026-05-14
 
 ### Changed

@@ -43,6 +43,7 @@ class Images {
   static const String spBackground = 'assets/images/sp-background.png';
   static const String underMaintenance = 'assets/images/under-maintenance.png';
   static const String ai = 'assets/images/ai.png';
+  static const String upgrade = 'assets/images/upgrade.png';
   static const String boxView = 'assets/images/box-view.png';
   static const String threadView = 'assets/images/thread-view.png';
   static const String blurredImageWhite = 'assets/images/blur-white.png';

@@ -17,10 +17,12 @@ import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_pull_down_button.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/tag_container.dart';
 import 'widget/pack_feed_view.dart';
 import 'widget/pack_info_view.dart';
@@ -57,11 +59,9 @@ class _ExplorePacksViewState extends State<ExplorePacksView> {
 
     return BlocProvider(
       create: (context) => ExplorePacksCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.followPacks.capitalizeFirst(),
-          description: context.t.followPacksDesc,
-        ),
+      child: FluidScaffold(
+        title: context.t.followPacks.capitalizeFirst(),
+        description: context.t.followPacksDesc,
         body: Builder(builder: (context) {
           return Padding(
             padding:
@@ -191,20 +191,14 @@ class PackCard extends HookWidget {
       onTap: hasActions
           ? null
           : () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return PackInfoView(
                     pack: pack,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? kTransparent
-                    : Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
       child: isFluid()
@@ -275,9 +269,10 @@ class PackCard extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonThumbnail(
+          // ponytail: cap so 10% of a tablet's width doesn't become a huge avatar
           image: pack.image,
-          width: 10.w,
-          height: 10.w,
+          width: 10.w.clamp(0.0, 56.0),
+          height: 10.w.clamp(0.0, 56.0),
           radius: kDefaultPadding / 2,
           isRound: true,
         ),
@@ -315,7 +310,7 @@ class PackCard extends HookWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -429,8 +424,8 @@ class CompactPackCard extends StatelessWidget {
           children: [
             CommonThumbnail(
               image: pack.image,
-              width: 10.w,
-              height: 10.w,
+              width: 10.w.clamp(0.0, 56.0),
+              height: 10.w.clamp(0.0, 56.0),
               radius: kDefaultPadding / 2,
               isRound: true,
             ),
@@ -464,15 +459,11 @@ class CompactPackCard extends StatelessWidget {
             ),
             CustomIconButton(
               onClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
-                  elevation: 0,
                   builder: (_) {
                     return SharePackFeed(pack: pack);
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
@@ -521,44 +512,57 @@ class ExplorePacks extends HookWidget {
 
     final selectedType = useState(types.first);
 
+    // ponytail: the scaffold inset lives inside the bar instead of in a
+    // preceding SliverPadding — a floating bar always returns to the viewport
+    // top, so anything above it would leave the tabs under the glass app bar.
+    final topInset = fluidScaffoldTopInset(context);
+
     return SliverAppBar(
       leading: const SizedBox.shrink(),
       automaticallyImplyLeading: false,
       leadingWidth: 0,
       titleSpacing: 0,
       floating: true,
-      title: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
-        child: SizedBox(
-          height: 36,
-          width: double.infinity,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(
-              width: kDefaultPadding / 4,
-            ),
-            itemBuilder: (context, index) {
-              final type = types[index];
+      primary: false,
+      toolbarHeight: topInset + 46,
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: topInset),
+          Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
+            child: SizedBox(
+              height: 36,
+              width: double.infinity,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (context, index) => const SizedBox(
+                  width: kDefaultPadding / 4,
+                ),
+                itemBuilder: (context, index) {
+                  final type = types[index];
 
-              return TagContainer(
-                title: type.capitalizeFirst(),
-                isActive: selectedType.value == type,
-                style: Theme.of(context).textTheme.labelLarge,
-                onClick: () {
-                  selectedType.value = type;
-                  final isStarterPack = type == context.t.starterPacks;
-                  context
-                      .read<ExplorePacksCubit>()
-                      .getPacks(isStarterPack: isStarterPack);
-                  onStarterPackSelected.call(isStarterPack);
-                  HapticFeedback.lightImpact();
+                  return TagContainer(
+                    title: type.capitalizeFirst(),
+                    isActive: selectedType.value == type,
+                    style: Theme.of(context).textTheme.labelLarge,
+                    onClick: () {
+                      selectedType.value = type;
+                      final isStarterPack = type == context.t.starterPacks;
+                      context
+                          .read<ExplorePacksCubit>()
+                          .getPacks(isStarterPack: isStarterPack);
+                      onStarterPackSelected.call(isStarterPack);
+                      HapticFeedback.lightImpact();
+                    },
+                  );
                 },
-              );
-            },
-            itemCount: types.length,
+                itemCount: types.length,
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

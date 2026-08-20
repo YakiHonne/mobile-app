@@ -26,6 +26,7 @@ import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/no_content_widgets.dart';
 import '../../widgets/profile_picture.dart';
 import '../profile_view.dart';
@@ -132,10 +133,13 @@ class ProfileFastAccess extends HookWidget {
                   arguments: [metadata.pubkey],
                 );
               },
-              style: TextButton.styleFrom(
-                backgroundBuilder: (_, __, child) => child!,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              ),
+              style: isFluid()
+                  ? TextButton.styleFrom(
+                      backgroundBuilder: (_, __, child) => child!,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                    )
+                  : null,
               icon: Text(
                 context.t.visitProfile.capitalizeFirst(),
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -166,10 +170,12 @@ class ProfileFastAccess extends HookWidget {
                     ),
                   );
                 },
-                style: TextButton.styleFrom(
-                  backgroundBuilder: (_, __, child) => child!,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                ),
+                style: isFluid()
+                    ? TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
+                        backgroundColor: Theme.of(context).primaryColorDark,
+                      )
+                    : null,
                 icon: Text(
                   context.t.editProfile.capitalizeFirst(),
                   style: Theme.of(context).textTheme.labelLarge,
@@ -277,9 +283,8 @@ class ProfileFastAccess extends HookWidget {
                 onClicked: () {
                   walletManagerCubit.resetInvoice();
 
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
-                    elevation: 0,
                     builder: (_) {
                       return SendZapsView(
                         metadata: metadata,
@@ -287,9 +292,6 @@ class ProfileFastAccess extends HookWidget {
                         zapSplits: const [],
                       );
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
@@ -939,6 +941,7 @@ class _FluidActionButtons extends StatelessWidget {
               );
             },
             icon: FeatureIcons.startDms,
+            iconColor: kWhite,
             buttonStatus:
                 canBeFollowed ? ButtonStatus.inactive : ButtonStatus.disabled,
           ),
@@ -948,20 +951,17 @@ class _FluidActionButtons extends StatelessWidget {
             child: AppIconButton(
               onClicked: () {
                 walletManagerCubit.resetInvoice();
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
-                  elevation: 0,
                   builder: (_) => SendZapsView(
                     metadata: metadata,
                     isZapSplit: false,
                     zapSplits: const [],
                   ),
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
+              iconColor: kWhite,
               icon: FeatureIcons.zaps,
               buttonStatus:
                   canBeZapped ? ButtonStatus.inactive : ButtonStatus.disabled,
@@ -978,7 +978,8 @@ class _FluidActionButtons extends StatelessWidget {
               arguments: [metadata.pubkey],
             );
           },
-          icon: FeatureIcons.shareExternal,
+          iconColor: kWhite,
+          icon: FeatureIcons.user,
           buttonStatus: ButtonStatus.inactive,
         ),
       ],

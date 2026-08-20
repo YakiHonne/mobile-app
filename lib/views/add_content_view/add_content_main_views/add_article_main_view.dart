@@ -10,12 +10,16 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/metadata_cubit/metadata_cubit.dart';
+import '../../../logic/subscription_cubit/subscription_cubit.dart';
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../models/article_model.dart';
 import '../../../repositories/localdatabase_repository.dart';
 import '../../../utils/utils.dart';
+import '../../subscription_view/pricing/subscription_gate.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/profile_picture.dart';
 import '../add_content_specification_views/add_article_specification_view.dart';
 import '../related_adding_views/article_widgets/article_content.dart';
@@ -31,138 +35,15 @@ class AddArticleMainView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final components = <Widget>[];
     final signer = useState(currentSigner!);
-    final isSubscriber = subscriptionCubit.isPaid;
-    final editorAdvanced = useState(
-      isSubscriber && (prefs.getBool('yh-editor-advanced') ?? false),
-    );
+    final editorAdvanced =
+        useState(prefs.getBool('yh-editor-advanced') ?? false);
 
-    components.add(
-      BlocBuilder<WriteArticleCubit, WriteArticleState>(
-        builder: (context, state) {
-          final enabled = state.title.isNotEmpty && state.content.isNotEmpty;
-
-          return Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: AddContentAppbar(
-              actionButtonText: context.t.next.capitalize(),
-              isActionButtonEnabled: enabled,
-              extraRight: Padding(
-                padding: const EdgeInsets.only(left: kDefaultPadding / 3),
-                child: ContentAccountsSwitcher(signer: signer),
-              ),
-              extra: isSubscriber
-                  ? PullDownButton(
-                      animationBuilder: (context, state, child) {
-                        return child;
-                      },
-                      routeTheme: PullDownMenuRouteTheme(
-                        backgroundColor: Theme.of(context).cardColor,
-                      ),
-                      itemBuilder: (context) {
-                        final textStyle =
-                            Theme.of(context).textTheme.labelMedium;
-
-                        return [
-                          PullDownMenuItem.selectable(
-                            title: context.t.editor_classic,
-                            selected: !editorAdvanced.value,
-                            onTap: () {
-                              prefs.setBool('yh-editor-advanced', false);
-                              editorAdvanced.value = false;
-                            },
-                            itemTheme:
-                                PullDownMenuItemTheme(textStyle: textStyle),
-                          ),
-                          PullDownMenuItem.selectable(
-                            title: context.t.editor_advanced,
-                            selected: editorAdvanced.value,
-                            onTap: () {
-                              prefs.setBool('yh-editor-advanced', true);
-                              editorAdvanced.value = true;
-                            },
-                            itemTheme:
-                                PullDownMenuItemTheme(textStyle: textStyle),
-                          ),
-                        ];
-                      },
-                      buttonBuilder: (context, showMenu) => Padding(
-                        padding:
-                            const EdgeInsets.only(right: kDefaultPadding / 4),
-                        child: TextButton(
-                          onPressed: showMenu,
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: kDefaultPadding / 2,
-                            ),
-                            visualDensity: VisualDensity.compact,
-                            foregroundColor: Theme.of(context).primaryColorDark,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                editorAdvanced.value
-                                    ? context.t.editor_advanced
-                                    : context.t.editor_classic,
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              const SizedBox(width: kDefaultPadding / 6),
-                              Icon(
-                                LucideIcons.chevronDown,
-                                size: 16,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  : null,
-              onActionClicked: () {
-                context.read<WriteArticleCubit>().setContentKeywords();
-
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) {
-                    return BlocProvider<WriteArticleCubit>.value(
-                      value: context.read<WriteArticleCubit>(),
-                      child: AddArticleSpecificationView(
-                        signer: signer.value,
-                      ),
-                    );
-                  },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
-
-    components.add(
-      Expanded(
-        child: BlocBuilder<AddContentCubit, AddContentState>(
-          builder: (context, state) {
-            return ArticleContent(
-              isMenuDismissed:
-                  !state.displayBottomNavigationBar || article != null,
-              useAdvanced: editorAdvanced.value,
-              signer: signer,
-              isSubscriber: isSubscriber,
-            );
-          },
-        ),
-      ),
-    );
+    // Make sure the gate reflects the current plan every time the editor opens.
+    useEffect(() {
+      subscriptionCubit.refreshStatus();
+      return null;
+    }, const []);
 
     return MultiBlocProvider(
       providers: [
@@ -175,9 +56,143 @@ class AddArticleMainView extends HookWidget {
           ),
         ),
       ],
-      child: Column(
-        children: components,
+      child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
+        builder: (context, _) {
+          final isSubscriber = subscriptionCubit.isPaid;
+          final useAdvanced = isSubscriber && editorAdvanced.value;
+
+          return Column(
+            children: [
+              _appbar(
+                  context, signer, editorAdvanced, isSubscriber, useAdvanced),
+              Expanded(
+                child: BlocBuilder<AddContentCubit, AddContentState>(
+                  builder: (context, state) {
+                    return ArticleContent(
+                      isMenuDismissed:
+                          !state.displayBottomNavigationBar || article != null,
+                      useAdvanced: useAdvanced,
+                      signer: signer,
+                      isSubscriber: isSubscriber,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  Widget _appbar(
+    BuildContext context,
+    ValueNotifier<EventSigner> signer,
+    ValueNotifier<bool> editorAdvanced,
+    bool isSubscriber,
+    bool useAdvanced,
+  ) {
+    return BlocBuilder<WriteArticleCubit, WriteArticleState>(
+      builder: (context, state) {
+        final enabled = state.title.isNotEmpty && state.content.isNotEmpty;
+
+        return Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          child: AddContentAppbar(
+            actionButtonText: context.t.next.capitalize(),
+            isActionButtonEnabled: enabled,
+            extraRight: Padding(
+              padding: const EdgeInsets.only(left: kDefaultPadding / 3),
+              child: ContentAccountsSwitcher(signer: signer),
+            ),
+            extra: FluidPullDownButton(
+              animationBuilder: (context, state, child) {
+                return child;
+              },
+              routeTheme: PullDownMenuRouteTheme(
+                backgroundColor: Theme.of(context).cardColor,
+              ),
+              itemBuilder: (context) {
+                final textStyle = Theme.of(context).textTheme.labelMedium;
+
+                return [
+                  PullDownMenuItem.selectable(
+                    title: context.t.editor_classic,
+                    selected: !useAdvanced,
+                    onTap: () {
+                      prefs.setBool('yh-editor-advanced', false);
+                      editorAdvanced.value = false;
+                    },
+                    itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
+                  ),
+                  PullDownMenuItem.selectable(
+                    title: context.t.editor_advanced,
+                    selected: useAdvanced,
+                    icon: isSubscriber ? null : LucideIcons.lock,
+                    onTap: () {
+                      if (!requireSubscription(context)) {
+                        return;
+                      }
+
+                      prefs.setBool('yh-editor-advanced', true);
+                      editorAdvanced.value = true;
+                    },
+                    itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
+                  ),
+                ];
+              },
+              buttonBuilder: (context, showMenu) => Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding / 4),
+                child: TextButton(
+                  onPressed: showMenu,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPadding / 1.5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          useAdvanced
+                              ? context.t.editor_advanced
+                              : context.t.editor_classic,
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                        const SizedBox(width: kDefaultPadding / 6),
+                        Icon(
+                          LucideIcons.chevronDown,
+                          size: 16,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            onActionClicked: () {
+              context.read<WriteArticleCubit>().setContentKeywords();
+
+              showAppModalSheet(
+                context: context,
+                builder: (_) {
+                  return BlocProvider<WriteArticleCubit>.value(
+                    value: context.read<WriteArticleCubit>(),
+                    child: AddArticleSpecificationView(
+                      signer: signer.value,
+                    ),
+                  );
+                },
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -215,7 +230,7 @@ class AddArticleMainView extends HookWidget {
 //                 Navigator.pop(context);
 
 //                 if (article != null) {
-//                   showModalBottomSheet(
+//                   showAppModalSheet(
 //                     context: context,
 //                     elevation: 0,
 //                     builder: (_) {
@@ -344,7 +359,7 @@ class ContentAccountsSwitcher extends HookWidget {
         return MetadataProvider(
           child: (metadata, isNip05Valid) => ProfilePicture2(
             key: profilePictureKey,
-            size: 32,
+            size: 40,
             image: metadata.picture,
             pubkey: metadata.pubkey,
             padding: 0,

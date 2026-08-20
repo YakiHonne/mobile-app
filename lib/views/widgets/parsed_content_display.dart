@@ -20,35 +20,29 @@ class ParsedContentDisplay extends StatelessWidget {
     return ModalSheetContainer(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        minChildSize: 0.60,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollController) => Column(
-          children: [
-            const ModalBottomSheetHandle(),
-            Text(
-              context.t.preview,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+      child: Column(
+        children: [
+          const ModalBottomSheetHandle(),
+          Text(
+            context.t.preview,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding,
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              width: double.infinity,
+              child: ParsedText(text: _getParsedContent()),
             ),
-            const SizedBox(
-              height: kDefaultPadding,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(kDefaultPadding / 2),
-                width: double.infinity,
-                child: ParsedText(text: _getParsedContent()),
-              ),
-            ),
-            const SizedBox(
-              height: kBottomNavigationBarHeight,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: kBottomNavigationBarHeight,
+          ),
+        ],
       ),
     );
   }

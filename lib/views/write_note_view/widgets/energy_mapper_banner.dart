@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../logic/subscription_cubit/usage_limit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/usage_gate.dart';
 
 class NoteEnergyMapperBanner extends StatelessWidget {
   const NoteEnergyMapperBanner({super.key, required this.onTap});
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      UsageGate(builder: (ctx) => _build(ctx));
+
+  Widget _build(BuildContext context) {
     final theme = Theme.of(context);
+    // The screen analyzes in initState, so it must not open at all when the
+    // quota is spent — a toast inside would fire after the sheet is up.
+    final blocked = isUsageBlocked(kUsageKeyEnergyMapper);
     return GestureDetector(
-      onTap: onTap,
+      onTap: blocked ? null : onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         margin: const EdgeInsets.fromLTRB(
@@ -33,15 +41,17 @@ class NoteEnergyMapperBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              LucideIcons.sparkles,
+              blocked ? LucideIcons.triangleAlert : LucideIcons.sparkles,
               size: 20,
-              color: theme.primaryColor,
+              color: blocked ? theme.hintColor : theme.primaryColor,
             ),
             const SizedBox(width: kDefaultPadding / 2),
             Text(
-              t.energy_mapper_title,
+              blocked
+                  ? t.usage_limit_reached_short
+                  : t.energy_mapper_title,
               style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.primaryColorDark,
+                color: blocked ? theme.hintColor : theme.primaryColorDark,
                 fontWeight: FontWeight.w500,
               ),
             ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -11,7 +10,10 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
 import '../../leading_view/widgets/leading_customization.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/fluid_switch.dart';
 import 'settings_text.dart';
 
 class PropertyCustomization extends HookWidget {
@@ -130,15 +132,14 @@ class PropertyCustomization extends HookWidget {
 
     return BlocBuilder<PropertiesCubit, PropertiesState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.customization.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.customization.capitalizeFirst(),
           body: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
             child: ListView(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
               children: [
                 const SizedBox(
                   height: kDefaultPadding / 2,
@@ -208,7 +209,7 @@ class PropertyCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.enableOneTapReaction,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -309,7 +310,7 @@ class PropertyCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: openPromptedUrl.value,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -334,7 +335,7 @@ class PropertyCustomization extends HookWidget {
         BlocBuilder<ThemeCubit, ThemeState>(
           builder: (context, themeState) => Transform.scale(
             scale: 0.8,
-            child: CupertinoSwitch(
+            child: FluidSwitch(
               value: themeState.fluidCards,
               activeTrackColor: Theme.of(context).primaryColor,
               onChanged: themeCubit.setFluidCards,
@@ -358,7 +359,7 @@ class PropertyCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: enableActionsPopups.value,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -383,7 +384,7 @@ class PropertyCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: profilePreview.value,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -408,7 +409,7 @@ class PropertyCustomization extends HookWidget {
             description: context.t.NewPostDesc,
           ),
         ),
-        PullDownButton(
+        FluidPullDownButton(
           animationBuilder: (context, state, child) {
             return child;
           },
@@ -487,15 +488,11 @@ class PropertyCustomization extends HookWidget {
         ),
         TextButton(
           onPressed: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return const LeadingCustomization();
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },

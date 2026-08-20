@@ -5,6 +5,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_video_cubit/write_video_cubit.dart';
 import '../../../models/video_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../add_content_specification_views/add_video_specification_view.dart';
 import '../related_adding_views/video_widgets/video_content.dart';
 import '../widgets/add_content_appbar.dart';
@@ -29,7 +30,7 @@ class AddVideoMainView extends StatelessWidget {
               actionButtonText: context.t.next,
               isActionButtonEnabled: enabled,
               onActionClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return BlocProvider<WriteVideoCubit>.value(
@@ -37,10 +38,6 @@ class AddVideoMainView extends StatelessWidget {
                       child: const AddVideoSpecificationView(),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

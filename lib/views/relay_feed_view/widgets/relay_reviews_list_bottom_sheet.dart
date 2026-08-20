@@ -8,6 +8,7 @@ import '../../../models/relay_review.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'relay_review_bottom_sheet.dart';
 import 'relay_review_card.dart';
@@ -82,9 +83,8 @@ class RelayReviewListBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      isScrollControlled: true,
                       builder: (_) => BlocProvider.value(
                         value: context.read<RelayFeedCubit>(),
                         child: const RelayReviewBottomSheet(),

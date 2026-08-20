@@ -24,6 +24,7 @@ import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/tag_container.dart';
+import 'drawer_view.dart';
 
 /// Constants for the AccountManager
 class _AccountManagerConstants {
@@ -324,7 +325,7 @@ class AccountManager extends HookWidget {
   void _navigateToMain(BuildContext context) {
     YNavigator.popToRoot(context);
     context.read<MainCubit>().updateIndex(MainViews.leading);
-    Scaffold.of(scaffoldContext).closeDrawer();
+    closeMainDrawer(context);
   }
 }
 

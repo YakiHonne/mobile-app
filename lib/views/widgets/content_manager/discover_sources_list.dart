@@ -15,6 +15,7 @@ import '../../../utils/utils.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
 import '../app_icon.dart';
 import '../dotted_container.dart';
+import '../fluid_sheet.dart';
 import '../modal_sheet_container.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
 import 'dicover_settings_views/set_pack_view.dart';
@@ -130,18 +131,13 @@ class AppSourcesList extends HookWidget {
       onSecondClick: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return DiscoverSourcesSettings(
                   viewType: viewType,
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -204,19 +200,13 @@ class NoRelaysAvailable extends StatelessWidget {
                 onPressed: () {
                   doIfCanSign(
                     func: () {
-                      showModalBottomSheet(
+                      showAppModalSheet(
                         context: context,
-                        elevation: 0,
                         builder: (_) {
                           return DiscoverSourcesSettings(
                             viewType: viewType,
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
                       );
                     },
                     context: context,
@@ -518,19 +508,14 @@ class RelaysDiscoverList extends StatelessWidget {
       isSelected: selectedKey == r,
       useIsFluid: true,
       onShareRelay: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return ShareRelayFeed(
               relay: r,
               viewType: viewType,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClick: () {

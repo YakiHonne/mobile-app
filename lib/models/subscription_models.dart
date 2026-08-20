@@ -42,6 +42,10 @@ class SubscriptionStatus extends Equatable {
     this.pendingPlan = '',
     this.pendingPlanSince = 0,
     this.history = const [],
+    this.username = '',
+    this.nip05 = const AccountNip05(),
+    this.wallets = const [],
+    this.onboarded = false,
   });
 
   factory SubscriptionStatus.fromJson(Map<String, dynamic> j) {
@@ -52,21 +56,37 @@ class SubscriptionStatus extends Equatable {
       inTrial: j['in_trial'] as bool? ??
           (trialEndsAt > DateTime.now().millisecondsSinceEpoch ~/ 1000),
       trialEndsAt: trialEndsAt,
-        accessBlocked: j['access_blocked'] as bool? ?? false,
-        lastPaymentMethod: j['last_payment_method'] as String? ?? '',
-        lastSubscription: (j['last_subscription'] as num?)?.toInt() ?? 0,
-        nextSubscription: (j['next_subscription'] as num?)?.toInt() ?? 0,
-        cancelAtPeriodEnd: j['cancel_at_period_end'] as bool? ?? false,
-        pendingPlan: j['pending_plan'] as String? ?? '',
-        pendingPlanSince: (j['pending_plan_since'] as num?)?.toInt() ?? 0,
-        history: (j['history'] as List<dynamic>? ?? [])
-            .map(
-              (e) => SubscriptionPaymentRecord.fromJson(
-                e as Map<String, dynamic>,
-              ),
-            )
-            .toList(),
-      );
+      accessBlocked: j['access_blocked'] as bool? ?? false,
+      lastPaymentMethod: j['last_payment_method'] as String? ?? '',
+      lastSubscription: (j['last_subscription'] as num?)?.toInt() ?? 0,
+      nextSubscription: (j['next_subscription'] as num?)?.toInt() ?? 0,
+      cancelAtPeriodEnd: j['cancel_at_period_end'] as bool? ?? false,
+      pendingPlan: j['pending_plan'] as String? ?? '',
+      pendingPlanSince: (j['pending_plan_since'] as num?)?.toInt() ?? 0,
+      history: (j['history'] as List<dynamic>? ?? [])
+          .map(
+            (e) => SubscriptionPaymentRecord.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
+      username: j['username'] as String? ?? '',
+      nip05: j['nip05'] != null
+          ? AccountNip05.fromJson(j['nip05'] as Map<String, dynamic>)
+          : const AccountNip05(),
+      wallets: (j['wallets'] as List<dynamic>? ?? [])
+          .map(
+            // Element shape is unconfirmed, so accept a bare name or an
+            // object carrying one, and drop anything that yields neither.
+            (e) => e is Map
+                ? (e['username'] ?? e['name'] ?? '').toString()
+                : e.toString(),
+          )
+          .map((n) => n.split('@').first)
+          .where((n) => n.isNotEmpty)
+          .toList(),
+      onboarded: j['onboarded'] as bool? ?? false,
+    );
   }
 
   final String plan;
@@ -82,6 +102,14 @@ class SubscriptionStatus extends Equatable {
   final int pendingPlanSince;
   final List<SubscriptionPaymentRecord> history;
 
+  /// Claimed `yakihonne.com/<username>` handle, empty when never claimed.
+  final String username;
+  final AccountNip05 nip05;
+
+  /// Lightning wallet names owned by this account, bare (no `@domain`).
+  final List<String> wallets;
+  final bool onboarded;
+
   bool get isTrialing {
     if (inTrial) {
       return true;
@@ -89,6 +117,11 @@ class SubscriptionStatus extends Equatable {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     return trialEndsAt > now;
   }
+
+  /// A paid subscription, trials excluded. Gates the features that a trial is
+  /// not entitled to — [isTrialing] rather than [inTrial], so a stale flag with
+  /// an unexpired trial period still reads as a trial.
+  bool get isActivePaidSub => active && !isTrialing;
 
   int get trialDaysRemaining {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -112,7 +145,28 @@ class SubscriptionStatus extends Equatable {
         pendingPlan,
         pendingPlanSince,
         history,
+        username,
+        nip05,
+        wallets,
+        onboarded,
       ];
+}
+
+/// The account's NIP-05 claim. [name] is bare — the domain is always
+/// `yakihonne.com`, so it is not carried here.
+class AccountNip05 extends Equatable {
+  const AccountNip05({this.isActive = false, this.name = ''});
+
+  factory AccountNip05.fromJson(Map<String, dynamic> j) => AccountNip05(
+        isActive: j['is_active'] as bool? ?? false,
+        name: j['name'] as String? ?? '',
+      );
+
+  final bool isActive;
+  final String name;
+
+  @override
+  List<Object?> get props => [isActive, name];
 }
 
 class UserOnlineStats {
@@ -125,14 +179,14 @@ class UserOnlineStats {
   factory UserOnlineStats.fromJson(Map<String, dynamic> j) => UserOnlineStats(
         subscriptionStatus: SubscriptionStatus.fromJson(j),
         consumablePoints:
-            (j['current_points'] as Map<String, dynamic>?)?['points'] as int? ??
+            (j['current_points'] as Map<String, dynamic>?)?['points'] as num? ??
                 0,
-        xp: j['xp'] as int? ?? 0,
+        xp: j['xp'] as num? ?? 0,
       );
 
   final SubscriptionStatus subscriptionStatus;
-  final int consumablePoints;
-  final int xp;
+  final num consumablePoints;
+  final num xp;
 }
 
 class UsageItem extends Equatable {
@@ -165,7 +219,8 @@ class UsageItem extends Equatable {
   bool get isLocked => limit == 0;
 
   @override
-  List<Object?> get props => [key, label, periodType, limit, percentage, resetAt];
+  List<Object?> get props =>
+      [key, label, periodType, limit, percentage, resetAt];
 }
 
 class UsageData extends Equatable {

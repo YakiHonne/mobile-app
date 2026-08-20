@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
@@ -17,8 +19,10 @@ class FluidSourceFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ponytail: 70.w is the phone pill; the cap only bites on tablets, where
+    // 70% of a 1024+ screen is an absurdly wide filter row.
     return SizedBox(
-      width: 70.w,
+      width: min(70.w, 380),
       child: FluidBlurContainer(
         borderRadius: kDefaultPadding * 2,
         child: Row(

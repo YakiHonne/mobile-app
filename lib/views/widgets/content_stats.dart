@@ -26,11 +26,11 @@ import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
 import 'dotted_container.dart';
 import 'fluid_blur_container.dart';
+import 'fluid_sheet.dart';
 import 'loading_indicators.dart';
 import 'note_stats.dart';
 import 'note_stats_view.dart';
 import 'pull_down_global_button.dart';
-import 'sheet_drag_to_close.dart';
 import 'zappers_view.dart';
 
 class ContentStats extends HookWidget {
@@ -328,27 +328,21 @@ class ContentStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return NetStatsView(
               id: aTag,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return AddReply(
                   attachedEvent: attachedEvent,
@@ -363,10 +357,6 @@ class ContentStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -442,9 +432,8 @@ class ContentStats extends HookWidget {
   }
 
   Future<dynamic> _addReply(BuildContext context, bool isVideo, String aTag) {
-    return showModalBottomSheet(
+    return showAppModalSheet(
       context: context,
-      elevation: 0,
       builder: (_) {
         return AddReply(
           isComment: true,
@@ -467,10 +456,6 @@ class ContentStats extends HookWidget {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -506,17 +491,12 @@ class ContentStats extends HookWidget {
       size: 16,
       iconColor: Theme.of(context).highlightColor,
       onClicked: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) => _ContentStatsModal(
             aTag: aTag,
             zappers: zappers,
           ),
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Colors.transparent,
         );
       },
     );
@@ -598,32 +578,27 @@ class ContentZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(pubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
-                builder: (_) {
-                  return SendZapsView(
-                    metadata: m,
-                    eventId: isVideo ? aTag : null,
-                    aTag: isVideo ? null : aTag,
-                    isZapSplit: zs.isNotEmpty,
-                    zapSplits: zs,
-                    onSuccess: (_, amount) {
-                      notesEventsCubit.handleSubmittedZap(
-                        recipientPubkey: pubkey,
-                        eventId: aTag,
-                        amount: amount,
-                        senderPubkey: currentSigner!.getPublicKey(),
-                        isIdentifier: true,
-                      );
-                    },
-                  );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              );
+              showAppModalSheet(
+                  context: context,
+                  builder: (_) {
+                    return SendZapsView(
+                      metadata: m,
+                      eventId: isVideo ? aTag : null,
+                      aTag: isVideo ? null : aTag,
+                      isZapSplit: zs.isNotEmpty,
+                      zapSplits: zs,
+                      onSuccess: (_, amount) {
+                        notesEventsCubit.handleSubmittedZap(
+                          recipientPubkey: pubkey,
+                          eventId: aTag,
+                          amount: amount,
+                          senderPubkey: currentSigner!.getPublicKey(),
+                          isIdentifier: true,
+                        );
+                      },
+                    );
+                  },
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor);
             }
           },
           context: context,
@@ -654,18 +629,13 @@ class ContentZapButton extends HookWidget {
       icon: selfZaps ? FeatureIcons.zapFilled : FeatureIcons.zap,
       onLongPress: () {
         if (zappers.isNotEmpty) {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return ZappersView(
                 zappers: zappers,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         }
       },
@@ -740,8 +710,7 @@ class _ContentStatsModal extends HookWidget {
           minChildSize: 0.60,
           maxChildSize: 0.9,
           expand: false,
-          builder: (_, __) => SheetDragToClose(
-            child: Column(
+          builder: (_, sheetController) => Column(
             children: [
               const ModalBottomSheetHandle(),
               _tabBar(context, tabController),
@@ -754,23 +723,28 @@ class _ContentStatsModal extends HookWidget {
                       id: aTag,
                       type: NoteRelatedEventsType.replies,
                       embedded: true,
+                      controller: sheetController,
                     ),
                     NetStatsView(
                       id: aTag,
                       type: NoteRelatedEventsType.reactions,
                       embedded: true,
+                      controller: sheetController,
                     ),
                     NetStatsView(
                       id: aTag,
                       type: NoteRelatedEventsType.quotes,
                       embedded: true,
+                      controller: sheetController,
                     ),
-                    _ContentEmbeddedZappersList(zappers: zappers),
+                    _ContentEmbeddedZappersList(
+                      zappers: zappers,
+                      controller: sheetController,
+                    ),
                   ],
                 ),
               ),
             ],
-            ),
           ),
         ),
       ),
@@ -817,9 +791,13 @@ class _ContentStatsModal extends HookWidget {
 }
 
 class _ContentEmbeddedZappersList extends StatefulWidget {
-  const _ContentEmbeddedZappersList({required this.zappers});
+  const _ContentEmbeddedZappersList({
+    required this.zappers,
+    required this.controller,
+  });
 
   final Map<String, MapEntry<String, int>> zappers;
+  final ScrollController controller;
 
   @override
   State<_ContentEmbeddedZappersList> createState() =>
@@ -828,20 +806,6 @@ class _ContentEmbeddedZappersList extends StatefulWidget {
 
 class _ContentEmbeddedZappersListState
     extends State<_ContentEmbeddedZappersList> {
-  late final ScrollController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -860,7 +824,7 @@ class _ContentEmbeddedZappersListState
               widget.zappers.entries.toList()
                 ..sort((a, b) => b.value.value.compareTo(a.value.value)),
             ),
-            controller: _controller,
+            controller: widget.controller,
           );
         },
       ),

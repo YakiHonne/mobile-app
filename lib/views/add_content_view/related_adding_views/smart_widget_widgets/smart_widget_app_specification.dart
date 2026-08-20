@@ -31,15 +31,15 @@ class SmartWidgetAppSpecification extends HookWidget {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: DraggableScrollableSheet(
-              initialChildSize: 0.70,
-              minChildSize: 0.40,
-              maxChildSize: 0.70,
-              expand: false,
-              builder: (context, scrollController) {
-                return _specificationsColumn(
-                    context, state, formKey, controller, onLoading);
-              },
-            ),
+            initialChildSize: 0.70,
+            minChildSize: 0.40,
+            maxChildSize: 0.70,
+            expand: false,
+            builder: (context, scrollController) {
+              return _specificationsColumn(
+                  context, state, formKey, controller, onLoading);
+            },
+          ),
         );
       },
     );

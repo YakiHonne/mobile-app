@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../logic/properties_cubit/properties_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 import 'media_uploader_settings.dart';
 import 'mute_list_view.dart';
 import 'settings_text.dart';
@@ -22,15 +22,14 @@ class PropertyContentModeration extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PropertiesCubit, PropertiesState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.contentModeration.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.contentModeration.capitalizeFirst(),
           body: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
             child: ListView(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
               children: [
                 const SizedBox(
                   height: kDefaultPadding / 2,
@@ -93,7 +92,7 @@ class PropertyContentModeration extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.isUsingNip44,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -117,7 +116,7 @@ class PropertyContentModeration extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.enableUsingExternalBrowser,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -141,7 +140,7 @@ class PropertyContentModeration extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.enableGossip,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -165,7 +164,7 @@ class PropertyContentModeration extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.enableAutomaticSigning,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {

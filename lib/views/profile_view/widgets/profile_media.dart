@@ -22,6 +22,7 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/picture_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
@@ -638,7 +639,7 @@ class ProfileMediaFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,

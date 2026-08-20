@@ -10,6 +10,7 @@ import '../../utils/utils.dart';
 import '../add_content_view/related_adding_views/article_widgets/article_details.dart';
 import 'app_icon.dart';
 import 'data_providers.dart';
+import 'fluid_sheet.dart';
 import 'profile_picture.dart';
 import 'zap_split_user.dart';
 
@@ -122,7 +123,7 @@ class ContentZapSplits extends StatelessWidget {
   TextButton _addUserButton(BuildContext context) {
     return TextButton.icon(
       onPressed: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return ZapSplitUsers(
@@ -135,10 +136,6 @@ class ContentZapSplits extends StatelessWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

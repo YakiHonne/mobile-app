@@ -19,6 +19,7 @@ import '../models/app_models/diverse_functions.dart';
 import '../models/app_models/extended_model.dart';
 import '../models/app_models/pricing_plan_model.dart';
 import '../models/article_model.dart';
+import '../models/creator_subscription_models.dart';
 import '../models/flash_news_model.dart';
 import '../models/points_system_models.dart';
 import '../models/smart_widgets_components.dart';
@@ -204,8 +205,7 @@ class HttpFunctionsRepository {
       );
 
       return resp.data;
-    } on DioException catch (ex) {
-      lg.i(ex.response);
+    } on DioException catch (_) {
       rethrow;
     } catch (e, stack) {
       lg.i(stack);
@@ -1513,11 +1513,162 @@ class HttpFunctionsRepository {
     }
   }
 
+  static Future<String?> subscriptionGetBillingPortal() async {
+    try {
+      final data = await post(
+        '${apiUrl}billing-portal',
+        {'main': true},
+      );
+
+      return data?['url'] as String?;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ==================================================
+  // IDENTITY ONBOARDING: username / NIP-05 / wallet
+  // Same cookie session as the subscription calls above.
+  // ==================================================
+
+  /// One row's availability verdict. [owned] means this account already holds
+  /// the name, so there is nothing left to claim.
+  static Future<({bool available, bool owned, String? reason})>
+      _checkAvailability(String route, String name) async {
+    try {
+      final data = await get('$apiUrl$route-availability/$name');
+
+      if (data == null) {
+        return (available: true, owned: false, reason: null);
+      }
+
+      return (
+        available: data['available'] == true,
+        owned: data['owned'] == true,
+        reason: data['reason']?.toString(),
+      );
+    } catch (_) {
+      // Network issues must not block claiming: let the backend decide on POST.
+      return (available: true, owned: false, reason: null);
+    }
+  }
+
+  static Future<({bool available, bool owned, String? reason})>
+      checkUsernameAvailability(String name) =>
+          _checkAvailability('user/username', name);
+
+  static Future<({bool available, bool owned, String? reason})>
+      checkNip05Availability(String name) =>
+          _checkAvailability('user/nip05', name);
+
+  static Future<({bool available, bool owned, String? reason})>
+      checkWalletAvailability(String name) =>
+          _checkAvailability('user/wallet', name);
+
+  /// Claims a name. Returns null on success, otherwise the server's reason.
+  /// An `already_set` conflict is success-shaped — the account already owns it,
+  /// which is what makes a retry after a partial failure safe.
+  static Future<String?> _claim(String path, Map<String, dynamic> body) async {
+    try {
+      await post('$apiUrl$path', body);
+      return null;
+    } on DioException catch (ex) {
+      final data = ex.response?.data;
+      final reason = data is Map ? data['reason']?.toString() : null;
+      if (reason == 'already_set') {
+        return null;
+      }
+      lg.i(ex.response);
+      return reason ?? 'failed';
+    }
+  }
+
+  /// Resolves a claimed username to its pubkey — the `/<username>` deeplink.
+  /// Null means no such username.
+  static Future<String?> getUsernamePubkey(String name) async {
+    try {
+      final data = await get('${apiUrl}user/username/$name');
+
+      final pubkey = data?['pubkey'] ?? data?['user']?['pubkey'];
+
+      return (pubkey is String && pubkey.isNotEmpty) ? pubkey : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<String?> claimUsername(String name) =>
+      _claim('user/username', {'username': name});
+
+  static Future<String?> claimNip05({
+    required String name,
+    required String pubkey,
+  }) =>
+      _claim('user/nip05', {'name': name, 'pubkey': pubkey});
+
+  /// Creates a `name@wallet.yakihonne.com` wallet.
+  ///
+  /// [rejected] separates "the server refused this name" from "the call went
+  /// through but the body did not parse". Only the former means the name is
+  /// unusable — a 2xx we cannot read must not be reported as a taken name,
+  /// since the wallet may well have been created.
+  static Future<
+      ({
+        String? lightningAddress,
+        String? nwc,
+        String? reason,
+        bool rejected
+      })> createLightningWallet(String name) async {
+    try {
+      final data = await post('${apiUrl}wallet', {'username': name});
+
+      if (data != null && data['connectionSecret'] != null) {
+        return (
+          lightningAddress: data['lightningAddress']?.toString() ??
+              '$name@wallet.yakihonne.com',
+          nwc: data['connectionSecret'].toString(),
+          reason: null,
+          rejected: false,
+        );
+      }
+
+      lg.i('[wallet] unreadable success body for $name: $data');
+      return (lightningAddress: null, nwc: null, reason: null, rejected: false);
+    } on DioException catch (ex) {
+      final data = ex.response?.data;
+      lg.i('[wallet] create failed: $data');
+      final reason = data is Map ? data['reason']?.toString() : null;
+      return (
+        lightningAddress: null,
+        nwc: null,
+        reason: reason,
+        rejected: true,
+      );
+    }
+  }
+
+  /// Flags the account as having been through onboarding. Fire-and-forget: a
+  /// failure here must not trap the user on the screen.
+  static Future<void> markOnboarded() async {
+    try {
+      await post('${apiUrl}user/onboarded', {});
+    } catch (_) {}
+  }
+
+  /// [onReceiptOwnedByOtherAccount] fires when the backend rejects the receipt
+  /// with 409 because it is already bound to a different pubkey — a distinct
+  /// outcome from "no purchase found", which callers surface differently.
+  ///
+  /// [onAnotherSubscriptionActive] fires on the other 409: this account is
+  /// already subscribed through a different store subscription (typically the
+  /// companion app), so a second one would be charged but never honoured.
   static Future<Map<String, dynamic>?> subscriptionValidateIap({
     required String platform,
     required String receipt,
     required String productId,
     required String pubkey,
+    VoidCallback? onReceiptOwnedByOtherAccount,
+    VoidCallback? onAnotherSubscriptionActive,
   }) async {
     try {
       return await post('${apiUrl}iap/validate', {
@@ -1530,6 +1681,15 @@ class HttpFunctionsRepository {
       if (e is DioException) {
         lg.i(
             '[IAP] validate failed: status=${e.response?.statusCode} body=${e.response?.data}');
+        // Two distinct 409s share this path; `reason` marks the newer one.
+        if (e.response?.statusCode == 409) {
+          final reason = (e.response?.data as Map<String, dynamic>?)?['reason'];
+          if (reason == 'another_iap_subscription_active') {
+            onAnotherSubscriptionActive?.call();
+          } else {
+            onReceiptOwnedByOtherAccount?.call();
+          }
+        }
       } else {
         lg.i('[IAP] validate failed: $e');
       }
@@ -1560,6 +1720,44 @@ class HttpFunctionsRepository {
       if (kDebugMode) {
         print(ex.error);
       }
+      return null;
+    }
+  }
+
+  /// Creators the authenticated user pays, plus a flat cross-creator payment
+  /// list. Never cache the result — `display_status` is reversible.
+  static Future<
+      ({
+        List<SubscriberSubscription> subscriptions,
+        List<SubscriptionPayment> payments,
+      })> getSubscriberSubscriptions() async {
+    final data = await get('${apiUrl}subscriber/subscriptions');
+
+    return (
+      subscriptions: (data?['subscriptions'] as List<dynamic>? ?? [])
+          .map((e) => SubscriberSubscription.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      payments: (data?['payments'] as List<dynamic>? ?? [])
+          .map((e) => SubscriptionPayment.fromMap(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  /// Single-use Stripe portal url; request a fresh one every time. Returns null
+  /// when the caller has no Stripe subscription to that creator (404) — gate the
+  /// button on `has_stripe` to avoid hitting that.
+  static Future<String?> getSubscriberBillingPortal(
+    String creatorPubkey,
+  ) async {
+    try {
+      final data = await post(
+        '${apiUrl}subscriber/billing-portal',
+        {'creator_pubkey': creatorPubkey},
+      );
+      final url = data?['url'] as String?;
+      return (url?.isEmpty ?? true) ? null : url;
+    } catch (e) {
+      lg.i('[billing-portal] $e');
       return null;
     }
   }

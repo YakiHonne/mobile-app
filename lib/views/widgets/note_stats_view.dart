@@ -24,16 +24,23 @@ class NetStatsView extends HookWidget {
     required this.id,
     required this.type,
     this.embedded = false,
+    this.controller,
   });
 
   final String id;
   final NoteRelatedEventsType type;
   final bool embedded;
 
+  /// The [DraggableScrollableSheet] controller of the hosting modal sheet.
+  /// When provided, the embedded list is attached to it so the sheet can be
+  /// dragged closed even when the list is long.
+  final ScrollController? controller;
+
   @override
   Widget build(BuildContext context) {
     final events = useState(<Event>[]);
     final embeddedController = useScrollController();
+    final scrollController = controller ?? embeddedController;
 
     final f = useCallback(
       () async {
@@ -58,7 +65,7 @@ class NetStatsView extends HookWidget {
           buildWhen: (previous, current) =>
               previous.isLoading != current.isLoading,
           builder: (context, state) =>
-              getView(state.isLoading, events.value, embeddedController),
+              getView(state.isLoading, events.value, scrollController),
         ),
       );
     }

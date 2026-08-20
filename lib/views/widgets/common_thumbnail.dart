@@ -66,9 +66,15 @@ class CommonThumbnail extends StatelessWidget {
       return _buildBase64Image(context);
     }
 
-    return _buildNetworkImage(
-      context,
-      cleanImage,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: _getBorderRadius(),
+      ),
+      child: _buildNetworkImage(
+        context,
+        cleanImage,
+      ),
     );
   }
 

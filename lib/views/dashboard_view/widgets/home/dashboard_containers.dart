@@ -568,6 +568,7 @@ class DashboardContentContainer extends StatelessWidget {
           if (item is DetailedNoteModel)
             ParsedText(
               text: content,
+              emojis: (item as DetailedNoteModel).emojis,
               disableNoteParsing: true,
             )
           else

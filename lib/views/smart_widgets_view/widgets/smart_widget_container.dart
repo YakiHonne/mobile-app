@@ -20,6 +20,7 @@ import '../../gallery_view/gallery_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/note_container.dart';
 
 class SmartWidgetComponent extends HookWidget {
@@ -275,24 +276,17 @@ class SmartWidgetComponentData extends HookWidget {
 
     if (button.type == SWBType.Zap && usedUrl.isNotEmpty) {
       if (usedUrl.toLowerCase().startsWith('lnbc')) {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
-          builder: (_) {
-            return SendZapsView(
-              metadata: Metadata.empty().copyWith(
-                lud06: usedUrl,
-                lud16: usedUrl,
-              ),
-              lnbc: usedUrl.trim(),
-              zapSplits: const [],
-              isZapSplit: false,
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          builder: (_) => SendZapsView(
+            metadata: Metadata.empty().copyWith(
+              lud06: usedUrl,
+              lud16: usedUrl,
+            ),
+            lnbc: usedUrl.trim(),
+            zapSplits: const [],
+            isZapSplit: false,
+          ),
         );
       } else if (emailRegExp.hasMatch(usedUrl) ||
           usedUrl.toLowerCase().startsWith('lnurl')) {
@@ -302,20 +296,13 @@ class SmartWidgetComponentData extends HookWidget {
         );
 
         if (context.mounted) {
-          showModalBottomSheet(
-            elevation: 0,
+          showAppModalSheet(
             context: context,
-            builder: (_) {
-              return SendZapsView(
-                metadata: metadata,
-                zapSplits: const [],
-                isZapSplit: false,
-              );
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => SendZapsView(
+              metadata: metadata,
+              zapSplits: const [],
+              isZapSplit: false,
+            ),
           );
         }
       } else {
@@ -693,8 +680,7 @@ class PollContainer extends HookWidget {
                         context.t.alreadyVoted.capitalizeFirst(),
                       );
                     } else {
-                      showModalBottomSheet(
-                        elevation: 0,
+                      showAppModalSheet(
                         context: context,
                         builder: (_) {
                           return SendZapsView(
@@ -721,11 +707,6 @@ class PollContainer extends HookWidget {
                             },
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
                       );
                     }
                   },

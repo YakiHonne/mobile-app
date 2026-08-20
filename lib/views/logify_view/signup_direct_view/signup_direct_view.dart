@@ -12,8 +12,8 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../widgets/signup_preview.dart';
 
 class LogifyDirectView extends HookWidget {
@@ -151,20 +151,23 @@ class LoginDirectView extends HookWidget {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: Center(
-          child: CustomIconButton(
-            onClicked: () {
-              YNavigator.pop(context);
-            },
-            icon: FeatureIcons.closeRaw,
-            size: 20,
-            vd: -2,
-            backgroundColor: Theme.of(context).cardColor,
-          ),
+    return FluidScaffold(
+      leading: Center(
+        child: CustomIconButton(
+          onClicked: () {
+            YNavigator.pop(context);
+          },
+          icon: FeatureIcons.closeRaw,
+          size: 20,
+          vd: -2,
+          backgroundColor: Theme.of(context).cardColor,
         ),
-        title: SvgPicture.asset(
+      ),
+      actions: const [],
+      // Center inside the full-width title slot, so the logo stays centred the
+      // way AppBar's default centerTitle had it.
+      titleWidget: Center(
+        child: SvgPicture.asset(
           LogosIcons.logoBlack,
           height: 45,
           colorFilter: ColorFilter.mode(
@@ -173,10 +176,17 @@ class LoginDirectView extends HookWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: components,
+      // Padding, not a leading child: the Column centres its contents, so an
+      // inset child would only shift them by half.
+      body: Padding(
+        padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+        // top: false — the inset already includes the status bar.
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: components,
+          ),
         ),
       ),
     );
@@ -334,12 +344,10 @@ class SignupViewDirect extends HookWidget {
       ],
     );
 
-    return Scaffold(
+    return FluidScaffold(
       extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(
-        title: context.t.createAccount,
-        onBackClicked: onPop,
-      ),
+      title: context.t.createAccount,
+      onBackClicked: onPop,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         child: Column(
@@ -670,7 +678,7 @@ class SignupDirectMetadata extends HookWidget {
           height: constraints.maxWidth * 0.35,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: kCardDark,
+            color: kDarkThemeCard,
             border: Border.all(
               color: Theme.of(context).scaffoldBackgroundColor,
               width: 3,

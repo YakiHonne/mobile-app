@@ -26,6 +26,7 @@ import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/fluid_source_filter_row.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/discover_feed.dart';
@@ -290,18 +291,10 @@ class SourceButton extends HookWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
-              builder: (_) {
-                return AppSourcesList(viewType: viewType);
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? Colors.transparent
-                  : Theme.of(context).scaffoldBackgroundColor,
+              builder: (_) => AppSourcesList(viewType: viewType),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           behavior: HitTestBehavior.translucent,
@@ -574,18 +567,12 @@ class FilterButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -835,13 +822,6 @@ class NewContentContainer extends HookWidget {
                 horizontal: kDefaultPadding / 1.5,
                 vertical: kDefaultPadding / 2.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  color: kBlack.withValues(alpha: 0.2),
-                ),
-              ],
               child: BlocBuilder<MetadataCubit, MetadataState>(
                 builder: (context, state) => Row(
                   mainAxisSize: MainAxisSize.min,

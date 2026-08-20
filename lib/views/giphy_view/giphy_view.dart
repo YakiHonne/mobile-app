@@ -148,7 +148,6 @@ class SelectedGifType extends StatelessWidget {
             return GiphyContentGrid(
               content: state.gifs,
               onGifSelected: onGifSelected,
-              scrollController: scrollController,
             );
           } else {
             return WrongView(
@@ -166,7 +165,6 @@ class SelectedGifType extends StatelessWidget {
             return GiphyContentGrid(
               content: state.stickers,
               onGifSelected: onGifSelected,
-              scrollController: scrollController,
             );
           } else {
             return WrongView(
@@ -185,12 +183,10 @@ class GiphyContentGrid extends StatefulWidget {
   const GiphyContentGrid({
     super.key,
     required this.content,
-    required this.scrollController,
     required this.onGifSelected,
   });
 
   final List<GiphyGif?> content;
-  final ScrollController scrollController;
   final Function(String) onGifSelected;
 
   @override
@@ -198,15 +194,19 @@ class GiphyContentGrid extends StatefulWidget {
 }
 
 class _GiphyContentGridState extends State<GiphyContentGrid> {
+  // Own controller rather than the sheet's: the two tabs live side by side in
+  // a TabBarView and each paginates off its own scroll position.
+  final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    widget.scrollController.addListener(_onScroll);
+    _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
-    if (widget.scrollController.position.pixels >=
-        widget.scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
       // Load more when near bottom
       final cubit = context.read<GiphyCubit>();
       final type = widget.content == cubit.state.gifs
@@ -218,7 +218,7 @@ class _GiphyContentGridState extends State<GiphyContentGrid> {
 
   @override
   void dispose() {
-    widget.scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -237,7 +237,7 @@ class _GiphyContentGridState extends State<GiphyContentGrid> {
               horizontal: 8.0,
               vertical: kDefaultPadding,
             ),
-            controller: widget.scrollController,
+            controller: _scrollController,
             itemCount: widget.content.length,
             crossAxisCount: 2,
             crossAxisSpacing: kDefaultPadding / 2,

@@ -17,6 +17,7 @@ import 'common_thumbnail.dart';
 import 'content_stats.dart';
 import 'data_providers.dart';
 import 'muted_mark.dart';
+import 'note_stats.dart';
 import 'profile_picture.dart';
 import 'subscription_badge_view.dart';
 
@@ -40,6 +41,7 @@ class ContentContainer extends HookWidget {
   final bool reduceImageSize;
   final bool? isMuted;
   final String? extra;
+  final bool isPremium;
 
   const ContentContainer({
     super.key,
@@ -61,6 +63,7 @@ class ContentContainer extends HookWidget {
     this.reduceImageSize = false,
     this.isMuted,
     this.extra,
+    this.isPremium = false,
   });
 
   @override
@@ -361,6 +364,10 @@ class ContentContainer extends HookWidget {
         ],
         const SizedBox(width: kDefaultPadding / 4),
         SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
+        if (isPremium) ...[
+          const SizedBox(width: kDefaultPadding / 4),
+          const PremiumBadge(),
+        ],
       ],
     );
   }

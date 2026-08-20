@@ -19,6 +19,7 @@ import '../../profile_view/profile_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 
 class ProfileShareView extends HookWidget {
@@ -43,20 +44,19 @@ class ProfileShareView extends HookWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
       ),
-      child: Scaffold(
+      child: FluidScaffold(
         backgroundColor: kTransparent,
-        appBar: AppBar(
-          elevation: 0,
-          forceMaterialTransparency: true,
-          leading: Center(
-            child: CustomIconButton(
-              onClicked: () =>
-                  onClose != null ? onClose!() : Navigator.pop(context),
-              icon: FeatureIcons.closeRaw,
-              size: 20,
-              iconColor: kWhite,
-              backgroundColor: kBlack.withValues(alpha: 0.5),
-            ),
+        appBarColor: kTransparent,
+        notElevated: true,
+        actions: const [],
+        leading: Center(
+          child: CustomIconButton(
+            onClicked: () =>
+                onClose != null ? onClose!() : Navigator.pop(context),
+            icon: FeatureIcons.closeRaw,
+            size: 20,
+            iconColor: kWhite,
+            backgroundColor: kBlack.withValues(alpha: 0.5),
           ),
         ),
         body: _contentBox(isPubkeyToggled, context, width),
@@ -410,21 +410,20 @@ class _ConnectedUserProfileShareViewState
           ],
         ),
       ),
-      child: Scaffold(
+      child: FluidScaffold(
         backgroundColor: kTransparent,
-        appBar: AppBar(
-          elevation: 0,
-          forceMaterialTransparency: true,
-          leading: Center(
-            child: CustomIconButton(
-              onClicked: () {
-                Navigator.pop(context);
-              },
-              icon: FeatureIcons.closeRaw,
-              size: 20,
-              iconColor: kWhite,
-              backgroundColor: kBlack.withValues(alpha: 0.5),
-            ),
+        appBarColor: kTransparent,
+        notElevated: true,
+        actions: const [],
+        leading: Center(
+          child: CustomIconButton(
+            onClicked: () {
+              Navigator.pop(context);
+            },
+            icon: FeatureIcons.closeRaw,
+            size: 20,
+            iconColor: kWhite,
+            backgroundColor: kBlack.withValues(alpha: 0.5),
           ),
         ),
         body: _contentBox(context, width),

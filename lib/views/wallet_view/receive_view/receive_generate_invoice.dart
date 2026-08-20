@@ -13,7 +13,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_success_view.dart';
 import '../send_view/send_using_invoice.dart';
@@ -26,12 +26,14 @@ class ReceiveGenerateInvoice extends HookWidget {
   Widget build(BuildContext context) {
     final invoice = useState('');
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.invoice.capitalize(),
-      ),
+    return FluidScaffold(
+      title: context.t.invoice.capitalize(),
+      // Top inset lives on the Padding, not a leading child: this Column sets
+      // `spacing`, so an extra zero-height child would add a real gap off the
+      // fluid path.
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2)
+            .copyWith(top: fluidScaffoldTopInset(context)),
         child: Column(
           spacing: kDefaultPadding / 4,
           children: [

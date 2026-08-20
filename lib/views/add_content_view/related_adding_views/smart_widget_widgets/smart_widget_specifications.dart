@@ -15,6 +15,7 @@ import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/dotted_container.dart';
+import '../../../widgets/fluid_sheet.dart';
 import 'smart_widget_app_specification.dart';
 import 'smart_widget_component_customization.dart';
 import 'smart_widget_drafts.dart';
@@ -34,7 +35,7 @@ class FrameSpecifications extends HookWidget {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     void browseTemplates() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
         builder: (_) {
           return BlocProvider.value(
@@ -48,17 +49,12 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
     void drafts() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
         builder: (_) {
           return BlocProvider.value(
@@ -80,12 +76,7 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -277,19 +268,14 @@ class SWappSmartWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (!toggleView) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return BlocProvider.value(
                     value: context.read<WriteSmartWidgetCubit>(),
                     child: const SmartWidgetAppSpecification(),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             } else if (state.appSmartWidget.isValid()) {}
           },
@@ -444,7 +430,7 @@ class ImageEditableContainer extends StatelessWidget {
         final child = GestureDetector(
           onTap: () {
             if (!toggleView) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return BlocProvider.value(
@@ -453,12 +439,7 @@ class ImageEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.image,
                     ),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -609,7 +590,7 @@ class InputFieldEditableContainer extends StatelessWidget {
             icon: FeatureIcons.editArticle,
             backGroundColor: Theme.of(context).cardColor,
             onTap: () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return BlocProvider.value(
@@ -618,12 +599,7 @@ class InputFieldEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.inputField!,
                     ),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
             isSmall: true,
@@ -674,7 +650,7 @@ class InputFieldEditableContainer extends StatelessWidget {
         child: GestureDetector(
           key: const ValueKey('inputField'),
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
               builder: (_) {
                 return BlocProvider.value(
@@ -683,12 +659,7 @@ class InputFieldEditableContainer extends StatelessWidget {
                     boxComponent: smartWidgetBox.inputField!,
                   ),
                 );
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              },              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           child: AbsorbPointer(

@@ -6,7 +6,10 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../utils/utils.dart';
+import 'app_models/diverse_functions.dart';
 import 'flash_news_model.dart';
+
+final Expando<Map<String, String>> _emojiCache = Expando();
 
 class DetailedNoteModel extends Equatable implements BaseEventModel {
   @override
@@ -54,6 +57,34 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
 
   String getYakiHonneUrl() {
     return '${baseUrl}notes/${Nip19.encodeNote(id)}';
+  }
+
+  Map<String, String> get emojis {
+    final cached = _emojiCache[this];
+
+    if (cached != null) {
+      return cached;
+    }
+
+    final parsed = _parseEmojis();
+    _emojiCache[this] = parsed;
+    return parsed;
+  }
+
+  Map<String, String> _parseEmojis() {
+    if (stringifiedEvent.isEmpty) {
+      return const {};
+    }
+
+    try {
+      final json = jsonDecode(stringifiedEvent) as Map<String, dynamic>;
+      final tags = (json['tags'] as List<dynamic>)
+          .map((e) => (e as List<dynamic>).map((e) => e as String).toList())
+          .toList();
+      return parseEmojiTags(tags);
+    } catch (_) {
+      return const {};
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -163,6 +194,21 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
         }
       } else if (isOriginEtag ?? false) {
         rootId = originEventId;
+      }
+    }
+
+    // NIP-22 (kind 1111): the root lives in the uppercase A/E tags — the
+    // lowercase a/e tags point at the parent and carry no root/reply marker,
+    // so the loop above leaves originEventId null. Fall back to A, then E.
+    if (originEventId == null) {
+      if (rootAddress != null) {
+        originEventId = rootAddress;
+        isOriginEtag = false;
+        root = false;
+      } else if (rootId != null) {
+        originEventId = rootId;
+        isOriginEtag = true;
+        root = false;
       }
     }
 

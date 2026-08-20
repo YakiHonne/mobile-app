@@ -43,35 +43,35 @@ class CashuRestoreProofs extends HookWidget {
 
     return ModalSheetContainer(
       child: DraggableScrollableSheet(
-          expand: false,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) => Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
-            ),
-            child: Column(
-              children: [
-                const ModalBottomSheetHandle(),
-                Expanded(
-                  child: ListView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: kDefaultPadding / 2,
-                    ),
-                    children: [
-                      _buildHeader(context),
-                      const SizedBox(height: kDefaultPadding),
-                      _buildSeedInputGrid(context, controllers, updateProgress),
-                    ],
+        expand: false,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        initialChildSize: 0.9,
+        builder: (context, scrollController) => Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2,
+          ),
+          child: Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPadding / 2,
                   ),
+                  children: [
+                    _buildHeader(context),
+                    const SizedBox(height: kDefaultPadding),
+                    _buildSeedInputGrid(context, controllers, updateProgress),
+                  ],
                 ),
-                _buildActionSection(context, wordsCount, controllers),
-              ],
-            ),
+              ),
+              _buildActionSection(context, wordsCount, controllers),
+            ],
           ),
         ),
+      ),
     );
   }
 

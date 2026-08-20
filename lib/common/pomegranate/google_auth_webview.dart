@@ -66,20 +66,52 @@ class GoogleAuthWebView extends StatefulWidget {
     super.key,
     required this.url,
     required this.type,
+    this.forceAccountPicker = false,
   });
 
   final String url;
   final GoogleAuthWebViewType type;
+  final bool forceAccountPicker;
 
+  /// Guards against two webviews existing at once. The route pops as soon as
+  /// the token arrives, but the native view is only released when the exit
+  /// transition finishes — pushing again inside that window makes the platform
+  /// reuse the same view id and throw `recreating_view`.
+  static bool _isOpen = false;
+
+  /// [forceAccountPicker] rewrites the central's Google redirect to add
+  /// `prompt=select_account`. Without it Google auto-selects when exactly one
+  /// account is signed in, so the user can never choose a different one. The
+  /// session is left intact — clearing cookies would work too, but forces a
+  /// full re-login every time.
   static Future<String?> show(
-      BuildContext context, String url, GoogleAuthWebViewType type) {
-    return Navigator.push<String?>(
-      context,
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (_) => GoogleAuthWebView(url: url, type: type),
-      ),
-    );
+    BuildContext context,
+    String url,
+    GoogleAuthWebViewType type, {
+    bool forceAccountPicker = false,
+  }) async {
+    if (_isOpen) {
+      return null;
+    }
+    _isOpen = true;
+
+    try {
+      return await Navigator.push<String?>(
+        context,
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => GoogleAuthWebView(
+            url: url,
+            type: type,
+            forceAccountPicker: forceAccountPicker,
+          ),
+        ),
+      );
+    } finally {
+      // Outlive the pop animation so the native view is really gone.
+      await Future.delayed(const Duration(milliseconds: 350));
+      _isOpen = false;
+    }
   }
 
   @override
@@ -88,6 +120,10 @@ class GoogleAuthWebView extends StatefulWidget {
 
 class _GoogleAuthWebViewState extends State<GoogleAuthWebView> {
   bool _handled = false;
+
+  // Only rewrite the first Google navigation; the reload would otherwise be
+  // intercepted again and loop.
+  bool _promptAdded = false;
 
   void _onMessage(List<dynamic> args) {
     lg.i(args);
@@ -131,7 +167,38 @@ class _GoogleAuthWebViewState extends State<GoogleAuthWebView> {
         initialUrlRequest: URLRequest(url: WebUri(widget.url)),
         initialSettings: InAppWebViewSettings(
           userAgent: Platform.isIOS ? _kIosUA : _kAndroidUA,
+          useShouldOverrideUrlLoading: widget.forceAccountPicker,
         ),
+        // The central builds the Google URL server-side (with its own state
+        // cookie) and omits `prompt`, so Google skips the chooser whenever
+        // exactly one account is signed in. Catch that redirect and re-issue
+        // it with the parameter instead of clearing the session.
+        shouldOverrideUrlLoading: widget.forceAccountPicker
+            ? (controller, action) async {
+                final uri = action.request.url;
+                if (uri == null ||
+                    _promptAdded ||
+                    !uri.host.endsWith('accounts.google.com') ||
+                    uri.queryParameters.containsKey('prompt')) {
+                  return NavigationActionPolicy.ALLOW;
+                }
+
+                _promptAdded = true;
+                await controller.loadUrl(
+                  urlRequest: URLRequest(
+                    url: WebUri(
+                      uri.replace(
+                        queryParameters: {
+                          ...uri.queryParameters,
+                          'prompt': 'select_account',
+                        },
+                      ).toString(),
+                    ),
+                  ),
+                );
+                return NavigationActionPolicy.CANCEL;
+              }
+            : null,
         initialUserScripts: UnmodifiableListView([
           UserScript(
             source: widget.type == GoogleAuthWebViewType.login

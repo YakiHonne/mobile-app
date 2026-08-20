@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../common/nostr_password_manager.dart';
@@ -21,11 +23,21 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_glass_tab_bar.dart';
 import '../../widgets/modal_with_blur.dart';
 import 'google_login_sheet.dart';
 import 'login_mesh_background.dart';
 import 'signup_packs.dart';
 import 'signup_wallet.dart';
+
+// Widest the auth card is allowed to get. On a tablet the card would otherwise
+// stretch edge to edge; a centred, phone-width card is the expected pattern.
+const double _kMaxCardWidth = 460;
+
+// Tallest the auth card is allowed to get. The signup body has an Expanded in
+// it, so without a cap the card stretches to fill a tablet's full height and
+// the content strands itself in the middle of an empty sheet.
+const double _kMaxCardHeight = 680;
 
 // Login sub-state: which method panel is open
 enum _LoginStep { options, key, remote }
@@ -53,10 +65,10 @@ class FluidLogifyView extends HookWidget {
     }
 
     useEffect(() {
+      // No guard on indexIsChanging: the body cross-fade should start with the
+      // tap, not after the tab settles. Waiting left the panel frozen for the
+      // length of the tab animation, which read as a stutter.
       void listener() {
-        if (tabCtrl.indexIsChanging) {
-          return;
-        }
         if (tabCtrl.index == 0 && authView.value != _AuthView.login) {
           authView.value = _AuthView.login;
           loginStep.value = _LoginStep.options;
@@ -89,10 +101,109 @@ class FluidLogifyView extends HookWidget {
       }
     }
 
-    final maxCardHeight = MediaQuery.of(context).size.height -
+    final availableHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom -
         kDefaultPadding * 4;
+
+    // Brand copy sits beside the card only when there is room for both; on a
+    // phone the card keeps just the pill — vertical space is too tight there.
+    // 900, not the MOBILE breakpoint (720): a phone in landscape is ~844 wide
+    // but only ~390 tall, and the two-column split would crush both the card
+    // and the brand copy. Real tablets clear 900.
+    final isWide = ResponsiveBreakpoints.of(context).screenWidth >= 900;
+
+    final maxCardHeight = availableHeight.clamp(0.0, _kMaxCardHeight);
+
+    final card = ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: maxCardHeight,
+        maxWidth: _kMaxCardWidth,
+      ),
+      child: FluidBlurContainer(
+        borderRadius: kDefaultPadding * 1.5,
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 1.5,
+          vertical: kDefaultPadding / 1.5,
+        ),
+        blur: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Header row ──────────────────────────────
+            Row(
+              children: [
+                AppIconButton(
+                  icon: FeatureIcons.arrowLeft,
+                  size: 32,
+                  iconSize: 16,
+                  onClicked: handleBack,
+                ),
+                const Spacer(),
+                SvgPicture.asset(
+                  LogosIcons.logoMarkWhite,
+                  height: 30,
+                  width: 30,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            // ── Eyebrow pill ─────────────────────────────
+            // On wide layouts the brand column already carries this pill, so
+            // showing it here too would double up.
+            if (!isWide) ...[
+              const Center(child: _BuiltOnNostrPill()),
+              const SizedBox(height: kDefaultPadding / 2),
+            ],
+            // ── Animated title ────────────────────────────
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Align(
+                key: ValueKey(authView.value),
+                child: Text(
+                  authView.value == _AuthView.login
+                      ? context.t.loginToYakihonne
+                      : context.t.createAccount.capitalizeFirst(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.w900),
+                ),
+              ),
+            ),
+            const SizedBox(height: kDefaultPadding / 1.5),
+            // ── Mode pill tabs ────────────────────────────
+            _ModePillTabBar(tabCtrl: tabCtrl),
+            const SizedBox(height: kDefaultPadding),
+            // ── Body ──────────────────────────────────────
+            Flexible(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                child: KeyedSubtree(
+                  key: ValueKey(authView.value),
+                  child: authView.value == _AuthView.login
+                      ? _LoginBody(
+                          loginStep: loginStep,
+                          onPop: onPop,
+                        )
+                      : _SignupBody(
+                          step: signupStep,
+                          onPop: onPop,
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
 
     return SafeArea(
       child: Padding(
@@ -103,101 +214,14 @@ class FluidLogifyView extends HookWidget {
             Column(
               children: [
                 Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: maxCardHeight),
-                      child: FluidBlurContainer(
-                        backgroundAlpha: 0,
-                        borderRadius: kDefaultPadding * 1.5,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding / 1.5,
-                          vertical: kDefaultPadding / 1.5,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                  child: isWide
+                      ? Row(
                           children: [
-                            // ── Header row ──────────────────────────────
-                            Row(
-                              children: [
-                                AppIconButton(
-                                  icon: FeatureIcons.arrowLeft,
-                                  size: 32,
-                                  iconSize: 16,
-                                  onClicked: handleBack,
-                                ),
-                                const Spacer(),
-                                SvgPicture.asset(
-                                  LogosIcons.logoMarkWhite,
-                                  height: 30,
-                                  width: 30,
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).primaryColorDark,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: kDefaultPadding / 2),
-                            // ── Eyebrow ──────────────────────────────────
-                            Text(
-                              'Decentralized identity',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
-                                  .copyWith(
-                                    color: Theme.of(context).highlightColor,
-                                    letterSpacing: 1.2,
-                                  ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: kDefaultPadding / 4),
-                            // ── Animated title ────────────────────────────
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Align(
-                                key: ValueKey(authView.value),
-                                child: Text(
-                                  authView.value == _AuthView.login
-                                      ? context.t.loginToYakihonne
-                                      : context.t.createAccount
-                                          .capitalizeFirst(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge!
-                                      .copyWith(fontWeight: FontWeight.w900),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: kDefaultPadding / 1.5),
-                            // ── Mode pill tabs ────────────────────────────
-                            _ModePillTabBar(tabCtrl: tabCtrl),
-                            const SizedBox(height: kDefaultPadding),
-                            // ── Body ──────────────────────────────────────
-                            Flexible(
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 250),
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeIn,
-                                child: KeyedSubtree(
-                                  key: ValueKey(authView.value),
-                                  child: authView.value == _AuthView.login
-                                      ? _LoginBody(
-                                          loginStep: loginStep,
-                                          onPop: onPop,
-                                        )
-                                      : _SignupBody(
-                                          step: signupStep,
-                                          onPop: onPop,
-                                        ),
-                                ),
-                              ),
-                            ),
+                            const Expanded(child: _LoginBrandColumn()),
+                            Expanded(child: Center(child: card)),
                           ],
-                        ),
-                      ),
-                    ),
-                  ),
+                        )
+                      : Center(child: card),
                 ),
                 const SizedBox(height: kDefaultPadding / 2),
                 GestureDetector(
@@ -239,6 +263,134 @@ class FluidLogifyView extends HookWidget {
   }
 }
 
+// ─── Shared brand bits ─────────────────────────────────────────────────────
+
+List<String> _facts(BuildContext context) => [
+      context.t.loginFactSelfSovereign,
+      context.t.loginFactLightning,
+      context.t.loginFactCensorshipResistant,
+      context.t.loginFactRelayRedundant,
+    ];
+
+class _BuiltOnNostrPill extends StatelessWidget {
+  const _BuiltOnNostrPill();
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).primaryColor;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding * 0.7,
+        vertical: kDefaultPadding / 4,
+      ),
+      decoration: BoxDecoration(
+        color: primary.withValues(alpha: 0.08),
+        border: Border.all(color: primary.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(9999),
+      ),
+      child: Text(
+        context.t.loginBuiltOnNostr,
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+              color: primary,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+            ),
+      ),
+    );
+  }
+}
+
+// ─── Brand column (mirrors yaki_pro's LoginBrandColumn) ────────────────────
+// Tablet/landscape only — gives the card something to sit next to instead of
+// floating alone in the middle of a wide screen.
+
+class _LoginBrandColumn extends StatelessWidget {
+  const _LoginBrandColumn();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primary = theme.primaryColor;
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: kDefaultPadding * 2,
+        right: kDefaultPadding * 2,
+        top: kDefaultPadding * 3,
+        bottom: kDefaultPadding * 3,
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
+          // Scrollable so a short-but-wide window degrades instead of
+          // overflowing the Row's height constraint.
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SvgPicture.asset(
+                  LogosIcons.logoMarkWhite,
+                  width: 44,
+                  height: 44,
+                  colorFilter: ColorFilter.mode(
+                    theme.primaryColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding * 1.4),
+                const _BuiltOnNostrPill(),
+                const SizedBox(height: kDefaultPadding * 1.2),
+                Text(
+                  context.t.loginTagline,
+                  style: theme.textTheme.displaySmall!.copyWith(
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    letterSpacing: -1,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding * 0.8),
+                Text(
+                  context.t.loginPlatformDesc,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: theme.highlightColor,
+                    height: 1.7,
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding * 1.4),
+                ..._facts(context).map(
+                  (f) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          '+  ',
+                          style: TextStyle(
+                            color: primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          f,
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ─── Mode pill tab bar (mirrors DM view's _FluidFloatingTabBar) ─────────────
 
 class _ModePillTabBar extends StatelessWidget {
@@ -248,30 +400,12 @@ class _ModePillTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluidBlurContainer(
-      padding: const EdgeInsets.all(3),
-      backgroundAlpha: 0.5,
-      child: TabBar(
-        controller: tabCtrl,
-        dividerHeight: 0,
-        indicatorSize: TabBarIndicatorSize.tab,
-        padding: EdgeInsets.zero,
-        labelPadding: const EdgeInsets.all(3),
-        indicator: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(300),
-        ),
-        labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-        unselectedLabelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-        tabs: [
-          Tab(height: 30, text: context.t.loginAction.capitalizeFirst()),
-          Tab(height: 30, text: context.t.createAccount.capitalizeFirst()),
-        ],
-      ),
+    return FluidGlassTabBar(
+      controller: tabCtrl,
+      tabs: [
+        GlassTab(label: context.t.loginAction.capitalizeFirst()),
+        GlassTab(label: context.t.createAccount.capitalizeFirst()),
+      ],
     );
   }
 }
@@ -321,60 +455,62 @@ class _LoginOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.t.loginToYakihonne,
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Theme.of(context).highlightColor,
-              ),
-        ),
-        const SizedBox(height: kDefaultPadding / 1.5),
-        _MethodCard(
-          icon: FeatureIcons.keys,
-          title: context.t.keys,
-          desc: context.t.npubNsecHex,
-          enabled: true,
-          onTap: () => loginStep.value = _LoginStep.key,
-        ),
-        if (isExternalSignerInstalled) ...[
-          const SizedBox(height: kDefaultPadding / 2),
-          _MethodCard(
-            icon: FeatureIcons.shareGlobal,
-            title: context.t.amber,
-            desc: context.t.useAmber,
-            enabled: true,
-            onTap: () => context.read<LogifyCubit>().loginWithAmber(
-                  context: context,
-                  onSuccess: onPop ?? () => Navigator.pop(context),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.t.loginToYakihonne,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).highlightColor,
                 ),
           ),
-        ],
-        const SizedBox(height: kDefaultPadding / 2),
-        _MethodCard(
-          icon: FeatureIcons.shareGlobal,
-          title: context.t.remoteSigner,
-          desc: context.t.useUrlBunker,
-          enabled: true,
-          onTap: () => loginStep.value = _LoginStep.remote,
-        ),
-        if (!Platform.isIOS) ...[
+          const SizedBox(height: kDefaultPadding / 1.5),
+          _MethodCard(
+            icon: FeatureIcons.keys,
+            title: context.t.keys,
+            desc: context.t.npubNsecHex,
+            enabled: true,
+            onTap: () => loginStep.value = _LoginStep.key,
+          ),
+          if (isExternalSignerInstalled) ...[
+            const SizedBox(height: kDefaultPadding / 2),
+            _MethodCard(
+              icon: FeatureIcons.shareGlobal,
+              title: context.t.amber,
+              desc: context.t.useAmber,
+              enabled: true,
+              onTap: () => context.read<LogifyCubit>().loginWithAmber(
+                    context: context,
+                    onSuccess: onPop ?? () => Navigator.pop(context),
+                  ),
+            ),
+          ],
           const SizedBox(height: kDefaultPadding / 2),
           _MethodCard(
             icon: FeatureIcons.shareGlobal,
-            svgIcon: FeatureIcons.google,
-            title: context.t.loginWithGoogle,
-            desc: context.t.pomLoginDesc,
+            title: context.t.remoteSigner,
+            desc: context.t.useUrlBunker,
             enabled: true,
-            onTap: () => showGoogleLoginSheet(
-              context,
-              onSuccess: onPop ?? () => Navigator.pop(context),
-            ),
+            onTap: () => loginStep.value = _LoginStep.remote,
           ),
+          if (Platform.isIOS) ...[
+            const SizedBox(height: kDefaultPadding / 2),
+            _MethodCard(
+              icon: FeatureIcons.shareGlobal,
+              svgIcon: FeatureIcons.google,
+              title: context.t.loginWithGoogle,
+              desc: context.t.pomLoginDesc,
+              enabled: true,
+              onTap: () => showGoogleLoginSheet(
+                context,
+                onSuccess: onPop ?? () => Navigator.pop(context),
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -416,7 +552,15 @@ class _MethodCard extends StatelessWidget {
           child: Row(
             children: [
               if (svgIcon != null)
-                SvgPicture.asset(svgIcon!, width: 24, height: 24)
+                SvgPicture.asset(
+                  svgIcon!,
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColor,
+                    BlendMode.srcIn,
+                  ),
+                )
               else
                 AppIcon(
                   icon,
@@ -511,104 +655,106 @@ class _LoginKeyInput extends HookWidget {
       return null;
     }, []);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Back link (matches web's login-convo-back)
-        GestureDetector(
-          onTap: () => loginStep.value = _LoginStep.options,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppIcon(
-                FeatureIcons.arrowLeft,
-                size: 13,
-                color: Theme.of(context).highlightColor,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                context.t.back,
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: Theme.of(context).highlightColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Back link (matches web's login-convo-back)
+          GestureDetector(
+            onTap: () => loginStep.value = _LoginStep.options,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppIcon(
+                  FeatureIcons.arrowLeft,
+                  size: 13,
+                  color: Theme.of(context).highlightColor,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  context.t.back,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: kDefaultPadding / 1.5),
-        Form(
-          key: formKey,
-          child: AutofillGroup(
-            child: TextFormField(
-              autofillHints: const [AutofillHints.password],
-              controller: controller,
-              autofocus: true,
-              style: Theme.of(context).textTheme.bodyMedium,
-              validator: (v) => keyValidator.call(v, context),
-              onChanged: (v) => fieldValue.value = v,
-              decoration: InputDecoration(
-                prefixIcon: SizedBox(
-                  width: 44,
-                  child: Center(
-                    child: AppIcon(
-                      FeatureIcons.keys,
-                      size: 18,
-                      color: Theme.of(context).primaryColorDark,
+          const SizedBox(height: kDefaultPadding / 1.5),
+          Form(
+            key: formKey,
+            child: AutofillGroup(
+              child: TextFormField(
+                autofillHints: const [AutofillHints.password],
+                controller: controller,
+                autofocus: true,
+                style: Theme.of(context).textTheme.bodyMedium,
+                validator: (v) => keyValidator.call(v, context),
+                onChanged: (v) => fieldValue.value = v,
+                decoration: InputDecoration(
+                  prefixIcon: SizedBox(
+                    width: 44,
+                    child: Center(
+                      child: AppIcon(
+                        FeatureIcons.keys,
+                        size: 18,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
                     ),
                   ),
+                  hintText: context.t.npubNsecHex,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
                 ),
-                hintText: context.t.npubNsecHex,
-                hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Theme.of(context).highlightColor,
-                    ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: kDefaultPadding / 1.5),
-        SizedBox(
-          width: double.infinity,
-          child: TextButton(
-            onPressed: isLoading.value ? null : proceed,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: isLoading.value
-                  ? const SpinKitCircle(color: kWhite, size: 21)
-                  : fieldValue.value.isNotEmpty
-                      ? Row(
-                          key: const ValueKey(1),
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(context.t.loginAction.capitalizeFirst()),
-                            const SizedBox(width: kDefaultPadding / 2),
-                            const RotatedBox(
-                              quarterTurns: 1,
-                              child: AppIcon(
-                                FeatureIcons.arrowUp,
-                                size: 18,
-                                color: kWhite,
+          const SizedBox(height: kDefaultPadding / 1.5),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: isLoading.value ? null : proceed,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: isLoading.value
+                    ? const SpinKitCircle(color: kWhite, size: 21)
+                    : fieldValue.value.isNotEmpty
+                        ? Row(
+                            key: const ValueKey(1),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(context.t.loginAction.capitalizeFirst()),
+                              const SizedBox(width: kDefaultPadding / 2),
+                              const RotatedBox(
+                                quarterTurns: 1,
+                                child: AppIcon(
+                                  FeatureIcons.arrowUp,
+                                  size: 18,
+                                  color: kWhite,
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Text(
-                          key: const ValueKey(2),
-                          context.t.pasteYourKey.capitalizeFirst(),
-                        ),
+                            ],
+                          )
+                        : Text(
+                            key: const ValueKey(2),
+                            context.t.pasteYourKey.capitalizeFirst(),
+                          ),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: kDefaultPadding / 2),
-        Text(
-          context.t.secureStorageDesc.capitalizeFirst(),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                color: Theme.of(context).highlightColor,
-              ),
-        ),
-      ],
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            context.t.secureStorageDesc.capitalizeFirst(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -665,7 +811,9 @@ class _LoginRemote extends HookWidget {
               ),
               child: QrImageView(
                 data: connectionUrl,
-                size: 52.w,
+                // Clamped against the card, not the screen: 52.w alone would
+                // overflow the capped card on a tablet.
+                size: 52.w.clamp(0.0, _kMaxCardWidth * 0.6),
                 dataModuleStyle: QrDataModuleStyle(
                   color: Theme.of(context).primaryColorDark,
                   dataModuleShape: QrDataModuleShape.circle,

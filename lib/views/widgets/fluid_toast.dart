@@ -131,12 +131,19 @@ class _FluidToastWidgetState extends State<_FluidToastWidget>
                     horizontal: kDefaultPadding / 1.5,
                     vertical: kDefaultPadding / 1.5,
                   ),
+                  // A toast is read in a couple of seconds over arbitrary
+                  // content, so it sits well above the 0.55 default — the
+                  // surface stays glass without the text fighting the feed.
+                  backgroundAlpha: 0.85,
                   borderColor: accentColor.withValues(alpha: 0.4),
                   boxShadow: [
+                    // Drop shadow, not a halo: offset down, no spread, so the
+                    // accent lifts the toast off the page instead of ringing
+                    // it. This is the thing GlassToast got wrong.
                     BoxShadow(
-                      color: accentColor.withValues(alpha: 0.15),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
+                      color: accentColor.withValues(alpha: 0.10),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                   child: Row(

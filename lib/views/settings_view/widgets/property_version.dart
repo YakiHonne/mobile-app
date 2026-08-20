@@ -8,6 +8,7 @@ import '../../version_news/version_news.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart';
 
 class PropertyVersion extends StatelessWidget {
   const PropertyVersion({super.key});
@@ -60,9 +61,15 @@ class PropertyVersion extends StatelessWidget {
         );
 
     Widget legalButton(String title, String path) {
-      return GestureDetector(
-        onTap: () => openWebPage(url: '$baseUrl$path'),
-        child: Text(title, style: style),
+      return Flexible(
+        child: GestureDetector(
+          onTap: () => openWebPage(url: '$baseUrl$path'),
+          child: Text(
+            title,
+            style: style,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       );
     }
 
@@ -138,8 +145,7 @@ class PropertyVersion extends StatelessWidget {
                 await metadataCubit.getFutureMetadata(yakihonneHex);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return SendZapsView(
@@ -152,9 +158,6 @@ class PropertyVersion extends StatelessWidget {
                     zapSplits: const [],
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }

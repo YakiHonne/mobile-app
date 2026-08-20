@@ -15,6 +15,8 @@ import '../../../utils/utils.dart';
 import '../../main_view/widgets/wallet_switcher_fab.dart';
 import '../../widgets/animated_components/glass_button.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
 import '../../widgets/modal_with_blur.dart';
 import '../receive_view/receive_generate_invoice.dart';
 import '../redeem_code_view/redeem_code_view.dart';
@@ -50,8 +52,14 @@ class WallatBalanceContainer extends StatelessWidget {
               BlocBuilder<MainCubit, MainState>(
                 builder: (context, mainState) {
                   return Center(
-                    child: WalletSwitcherFAB(
-                      isCashuWallet: mainState.isCashuWallet,
+                    child: Column(
+                      children: [
+                        WalletSwitcherFAB(
+                          isCashuWallet: mainState.isCashuWallet,
+                        ),
+                        if (!isFluid())
+                          const SizedBox(height: kDefaultPadding / 4),
+                      ],
                     ),
                   );
                 },
@@ -143,6 +151,7 @@ class WallatBalanceContainer extends StatelessWidget {
                   builder: (ctx, cs) => Icon(
                     LucideIcons.arrowUp,
                     size: cs.maxHeight,
+                    color: kWhite,
                   ),
                 ),
               ),
@@ -241,7 +250,7 @@ class WallatBalanceContainer extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
-          PullDownButton(
+          FluidPullDownButton(
             routeTheme: PullDownMenuRouteTheme(
               backgroundColor: Theme.of(context).cardColor,
             ),
@@ -316,34 +325,45 @@ class WallatBalanceContainer extends StatelessWidget {
   }
 
   Widget _transactionsButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton.icon(
-        onPressed: () => doIfCanSign(
-          func: () => showModalBottomSheet(
-            context: context,
-            builder: (_) => const TransactionsList(),
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          ),
+    return GestureDetector(
+      onTap: () => doIfCanSign(
+        func: () => showAppModalSheet(
           context: context,
+          builder: (_) => const TransactionsList(),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
-            vertical: kDefaultPadding / 4,
+        context: context,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 1.5,
+          vertical: kDefaultPadding / 3,
+        ),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
           ),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
         ),
-        icon: const AppIcon(
-          FeatureIcons.transactions,
-          size: 15,
+        child: Row(
+          spacing: kDefaultPadding / 4,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const AppIcon(
+              FeatureIcons.transactions,
+              size: 15,
+            ),
+            Text(
+              context.t.transactions.capitalizeFirst(),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            )
+          ],
         ),
-        label: Text(context.t.transactions.capitalizeFirst()),
       ),
     );
   }
@@ -409,15 +429,11 @@ class WallatBalanceContainer extends StatelessWidget {
             HapticFeedback.mediumImpact();
 
             if (state.wallets.isNotEmpty) {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return const RedeemCodeView();
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             } else {

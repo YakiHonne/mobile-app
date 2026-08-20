@@ -30,8 +30,9 @@ import '../../../search_view/search_view.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_pull_down_button.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../widgets/media_components/horizontal_video_view.dart';
 import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/response_snackbar.dart';
@@ -79,15 +80,17 @@ class BookmarksListDetails extends HookWidget {
           ),
         )
       ],
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.bookmark.capitalizeFirst(),
-        ),
-        body: Stack(
-          children: [
-            _nestedScrollView(scrollController, bookmarkType),
-            ResetScrollButton(scrollController: scrollController),
-          ],
+      child: FluidScaffold(
+        title: context.t.bookmark.capitalizeFirst(),
+        // Pinned NestedScrollView header — see mute_list_view.
+        body: Padding(
+          padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          child: Stack(
+            children: [
+              _nestedScrollView(scrollController, bookmarkType),
+              ResetScrollButton(scrollController: scrollController),
+            ],
+          ),
         ),
       ),
     );
@@ -264,7 +267,7 @@ class BookmarksListDetails extends HookWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            PullDownButton(
+            FluidPullDownButton(
               animationBuilder: (context, state, child) {
                 return child;
               },

@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, unused_element
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,9 +12,12 @@ import '../../../models/translate_services_model.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'settings_text.dart';
 
@@ -32,12 +34,12 @@ class PropertyLanguagePreferences extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LocalizationCubit, LocalizationState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.languagePreferences.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.languagePreferences.capitalizeFirst(),
           body: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+              top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+            ),
             children: [
               _buildDescription(context),
               const _SectionDivider(),
@@ -90,7 +92,7 @@ class _CustomPullDownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -236,7 +238,7 @@ class _AutoTranslation extends StatelessWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableAutoTranslation,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -398,13 +400,9 @@ class _TranslationServiceSelector extends StatelessWidget {
   }
 
   void _showCustomServiceModal(BuildContext context) {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
       builder: (_) => const ManageCustomServices(),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -638,34 +636,34 @@ class ManageCustomServices extends HookWidget {
       builder: (context, state) {
         return ModalSheetContainer(
           child: DraggableScrollableSheet(
-              initialChildSize: 0.85,
-              minChildSize: 0.40,
-              maxChildSize: 0.85,
-              expand: false,
-              builder: (context, scrollController) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    SliverToBoxAdapter(child: _buildHeader(context)),
-                    if (state.translationServices.customServices.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: _ExistingCustomServices(
-                            services: state.translationServices.customServices),
-                      ),
+            initialChildSize: 0.85,
+            minChildSize: 0.40,
+            maxChildSize: 0.85,
+            expand: false,
+            builder: (context, scrollController) => Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverToBoxAdapter(child: _buildHeader(context)),
+                  if (state.translationServices.customServices.isNotEmpty)
                     SliverToBoxAdapter(
-                      child: _AddNewServiceForm(
-                        displayApiKey: displayApiKey,
-                        apiKeyController: apiKeyController,
-                        urlController: urlController,
-                        paidPlan: paidPlan,
-                      ),
+                      child: _ExistingCustomServices(
+                          services: state.translationServices.customServices),
                     ),
-                  ],
-                ),
+                  SliverToBoxAdapter(
+                    child: _AddNewServiceForm(
+                      displayApiKey: displayApiKey,
+                      apiKeyController: apiKeyController,
+                      urlController: urlController,
+                      paidPlan: paidPlan,
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
         );
       },
     );

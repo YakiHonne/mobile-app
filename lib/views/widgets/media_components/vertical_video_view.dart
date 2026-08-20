@@ -157,7 +157,7 @@ class VerticalVideoView extends HookWidget {
   //     BuildContext context, HorizontalVideoState state) {
   //   return GestureDetector(
   //     onTap: () {
-  //       showModalBottomSheet(
+  //       showAppModalSheet(
   //         context: context,
   //         elevation: 0,
   //         builder: (_) {

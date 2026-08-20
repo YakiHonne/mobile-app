@@ -119,6 +119,14 @@ class MediaServersCubit extends Cubit<MediaServersState> {
     return false;
   }
 
+  bool get hasYakiProBlossomServer => state.blossomServers.any(
+        (s) => Uri.tryParse(s)?.host == Uri.parse(yakiProBlossomServer).host,
+      );
+
+  /// Adds the YakiHonne Blossom server and makes it the active (default) one.
+  Future<bool> addYakiProBlossomServer() =>
+      addBlossomServer(yakiProBlossomServer);
+
   Future<void> selectBlossomServer(int index) async {
     final servers = List<String>.from(state.blossomServers);
     final selectedServer = servers.removeAt(index);

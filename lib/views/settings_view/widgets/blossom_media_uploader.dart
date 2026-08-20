@@ -11,6 +11,7 @@ import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class BlossomMediaUploader extends HookWidget {
   const BlossomMediaUploader({super.key});
@@ -27,13 +28,7 @@ class BlossomMediaUploader extends HookWidget {
       return null;
     }, [servers]);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(kDefaultPadding),
-        ),
-      ),
+    return ModalSheetContainer(
       child: SafeArea(
         top: false,
         child: Column(
@@ -304,44 +299,28 @@ class BlossomMediaUploader extends HookWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: TextButton(
-        onPressed: canUpload
-            ? () async {
-                final bytes = await file.readAsBytes();
-                final mimeType = _getMimeType(file.path);
-                if (context.mounted) {
-                  await context.read<BlossomCubit>().uploadMedia(
-                        fileBytes: bytes,
-                        filePath: file.path,
-                        mimeType: mimeType,
-                        targetServers: selectedServers,
-                      );
-                  Navigator.pop(context);
+      child: SizedBox(
+        width: double.infinity,
+        child: TextButton(
+          onPressed: canUpload
+              ? () async {
+                  final bytes = await file.readAsBytes();
+                  final mimeType = _getMimeType(file.path);
+                  if (context.mounted) {
+                    await context.read<BlossomCubit>().uploadMedia(
+                          fileBytes: bytes,
+                          filePath: file.path,
+                          mimeType: mimeType,
+                          targetServers: selectedServers,
+                        );
+                    Navigator.pop(context);
+                  }
                 }
-              }
-            : null,
-        style: TextButton.styleFrom(
-          backgroundBuilder: (_, __, child) => child!,
-          backgroundColor: canUpload
-              ? Theme.of(context).cardColor
-              : Theme.of(context).disabledColor,
-          foregroundColor: canUpload
-              ? Theme.of(context).primaryColorDark
-              : Theme.of(context).highlightColor,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: canUpload
-                  ? Theme.of(context).dividerColor
-                  : Colors.transparent,
-              width: 0.5,
-            ),
+              : null,
+          child: Text(
+            context.t.upload.toUpperCase(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-        child: Text(
-          context.t.upload.toUpperCase(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );

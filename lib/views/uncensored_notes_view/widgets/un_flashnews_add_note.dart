@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -9,6 +8,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 
@@ -124,7 +124,7 @@ class UnFlashNewsAddNote extends HookWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                CupertinoSwitch(
+                FluidSwitch(
                   value: isCorrect.value,
                   onChanged: (value) => isCorrect.value = value,
                   inactiveTrackColor: kRed,

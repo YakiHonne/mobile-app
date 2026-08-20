@@ -20,6 +20,7 @@ import '../content_stats.dart';
 import '../custom_app_bar.dart';
 import '../data_providers.dart';
 import '../fluid_blur_container.dart';
+import '../fluid_sheet.dart';
 import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import '../profile_picture.dart';
@@ -65,8 +66,7 @@ class HorizontalVideoView extends HookWidget {
             appBar: CustomAppBar(
               title: context.t.video.capitalizeFirst(),
             ),
-            bottomNavigationBar:
-                isFluid() ? null : _bottomNavBar(context),
+            bottomNavigationBar: isFluid() ? null : _bottomNavBar(context),
             body: isUserMuted(video.pubkey)
                 ? Center(
                     child: MutedUserContent(
@@ -434,8 +434,7 @@ class HorizontalVideoView extends HookWidget {
       BuildContext context, HorizontalVideoState state) {
     return CustomizedIconButton(
       onClicked: () {
-        showModalBottomSheet(
-          elevation: 0,
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return SendZapsView(
@@ -445,9 +444,6 @@ class HorizontalVideoView extends HookWidget {
               eventId: state.video.id,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -536,7 +532,7 @@ class HorizontalVideoView extends HookWidget {
   GestureDetector _videoInfo(BuildContext context, HorizontalVideoState state) {
     return GestureDetector(
       onTap: () {
-        // showModalBottomSheet(
+        // showAppModalSheet(
         //   context: context,
         //   elevation: 0,
         //   builder: (_) {

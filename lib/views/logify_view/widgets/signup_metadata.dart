@@ -61,7 +61,7 @@ class SignupMetadata extends HookWidget {
                         height: constraints.maxWidth * 0.35,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: kCardDark,
+                          color: kDarkThemeCard,
                           border: Border.all(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             width: 2,

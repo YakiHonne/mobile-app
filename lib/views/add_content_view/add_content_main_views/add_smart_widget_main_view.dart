@@ -8,6 +8,7 @@ import '../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../add_content_specification_views/add_smart_widget_specification_view.dart';
 import '../related_adding_views/smart_widget_widgets/smart_widget_specifications.dart';
 import '../widgets/add_content_appbar.dart';
@@ -50,7 +51,7 @@ class AddSmartWidgetMainView extends HookWidget {
                   ? null
                   : _toggleFrame(toggleFrameSpecifications, context),
               onActionClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return BlocProvider<WriteSmartWidgetCubit>.value(
@@ -60,10 +61,6 @@ class AddSmartWidgetMainView extends HookWidget {
                       ),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

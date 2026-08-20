@@ -6,6 +6,7 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
 import '../../../models/cashu/nutzap.dart';
@@ -197,6 +198,7 @@ class NotificationEventMain extends HookWidget {
             child: ParsedText(
               text: attachedText,
               enableHidingMedia: true,
+              emojis: parseEmojiTags(mainEvent.origin.tags),
               pubkey: mainEvent.pubkey,
               scrollPhysics: const NeverScrollableScrollPhysics(),
               isNotification: true,
@@ -274,6 +276,7 @@ class NotificationEventMain extends HookWidget {
                   scrollPhysics: const NeverScrollableScrollPhysics(),
                   disableNoteParsing: false,
                   enableHidingMedia: true,
+                  emojis: parseEmojiTags(ev.tags),
                   pubkey: ev.pubkey,
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: Theme.of(context).highlightColor,
@@ -375,6 +378,7 @@ class NotificationEventMain extends HookWidget {
             scrollPhysics: const NeverScrollableScrollPhysics(),
             disableNoteParsing: false,
             enableHidingMedia: true,
+            emojis: parseEmojiTags(mainEvent.origin.tags),
             pubkey: mainEvent.pubkey,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   color: Theme.of(context).highlightColor,
@@ -564,6 +568,7 @@ class NotificationEventMain extends HookWidget {
             child: ParsedText(
               text: attachedText,
               enableHidingMedia: true,
+              emojis: parseEmojiTags(ev.tags),
               pubkey: mainEvent.kind == EventKind.TEXT_NOTE
                   ? mainEvent.pubkey
                   : ev.pubkey,

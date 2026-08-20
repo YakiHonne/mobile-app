@@ -6,9 +6,10 @@ import '../../../../models/packs_model.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../search_view/search_view.dart';
-import '../../custom_app_bar.dart';
 import '../../custom_icon_buttons.dart';
 import '../../data_providers.dart';
+import '../../fluid_scaffold.dart';
+import '../../fluid_sheet.dart';
 import '../../single_image_selector.dart';
 import '../add_discover_filter.dart';
 import 'search_pack_users.dart';
@@ -30,8 +31,7 @@ class SetPackView extends HookWidget {
         useState(pack?.pubkey == currentSigner!.getPublicKey());
     final isLoading = useState(false);
 
-    final bottomAppBar = BottomAppBar(
-      color: Theme.of(context).scaffoldBackgroundColor,
+    final bottomAppBar = FluidBottomBar(
       child: Row(
         children: [
           Expanded(
@@ -72,26 +72,28 @@ class SetPackView extends HookWidget {
       ),
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: pack != null
-            ? pack!.pubkey != currentSigner!.getPublicKey()
-                ? context.t.clonePack
-                : context.t.updatePack
-            : context.t.addPack,
-      ),
-      bottomNavigationBar: bottomAppBar,
+    return FluidScaffold(
+      title: pack != null
+          ? pack!.pubkey != currentSigner!.getPublicKey()
+              ? context.t.clonePack
+              : context.t.updatePack
+          : context.t.addPack,
+      bottomBar: bottomAppBar,
+      // M3 BottomAppBar's default height, since this one sets none.
+      bottomBarHeight: 80,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
         child: CustomScrollView(
           slivers: [
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
             SliverToBoxAdapter(
               child: Builder(
                 builder: (context) {
                   void addImage() {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      isScrollControlled: true,
                       builder: (_) {
                         return SingleImageSelector(
                           onUrlProvided: (url, {imeta}) {
@@ -101,9 +103,6 @@ class SetPackView extends HookWidget {
                         );
                       },
                       backgroundColor: kTransparent,
-                      useRootNavigator: true,
-                      elevation: 0,
-                      useSafeArea: true,
                     );
                   }
 

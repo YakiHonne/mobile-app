@@ -253,6 +253,18 @@ List<String> getRelayFromTag(List<List<String>> tags) {
   return relays;
 }
 
+Map<String, String> parseEmojiTags(List<List<String>> tags) {
+  final emojis = <String, String>{};
+
+  for (final tag in tags) {
+    if (tag.length >= 3 && tag.first == 'emoji') {
+      emojis[tag[1]] = tag[2];
+    }
+  }
+
+  return emojis;
+}
+
 Future<List<String>> getInboxRelays(String pubKey,
     {bool showMessage = true}) async {
   final timer = Timer(

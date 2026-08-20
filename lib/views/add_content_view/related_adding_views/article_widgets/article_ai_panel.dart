@@ -5,9 +5,15 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 
 import '../../../../logic/ask_ai_cubit/ask_ai_cubit.dart';
+import '../../../../logic/subscription_cubit/usage_limit.dart';
+import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
+import '../../../subscription_view/pricing/pricing_screen.dart';
+import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/custom_icon_buttons.dart';
+import '../../../widgets/fluid_sheet.dart';
 import '../../../widgets/modal_sheet_container.dart';
+import '../../../widgets/usage_gate.dart';
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
@@ -16,10 +22,8 @@ Future<void> showArticleAskAi(
   AskAiCubit cubit, {
   String? prefill,
 }) {
-  return showModalBottomSheet<void>(
+  return showAppModalSheet<void>(
     context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
     backgroundColor: Colors.transparent,
     builder: (_) => BlocProvider.value(
       value: cubit,
@@ -78,15 +82,26 @@ class _AskAiBodyState extends State<_AskAiBody> {
 Widget _aiShell({
   required BuildContext context,
   required List<Widget> children,
-}) =>
-    ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.92,
-      ),
+}) {
+  // showModalBottomSheet doesn't resize for the keyboard, so lift the sheet by
+  // the inset ourselves — otherwise the input bar sits behind the keyboard.
+  final media = MediaQuery.of(context);
+  final bottomInset = media.viewInsets.bottom;
+  // Clamped: a tall keyboard on a short screen would otherwise send maxHeight
+  // negative, which BoxConstraints rejects.
+  final maxHeight = (media.size.height * 0.92 - bottomInset)
+      .clamp(0.0, media.size.height);
+
+  return Padding(
+    padding: EdgeInsets.only(bottom: bottomInset),
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
       child: ModalSheetContainer(
         child: Column(mainAxisSize: MainAxisSize.min, children: children),
       ),
-    );
+    ),
+  );
+}
 
 // ── Chat sheet ────────────────────────────────────────────────────────────────
 
@@ -155,21 +170,14 @@ class _AiChatSheetState extends State<_AiChatSheet> {
                   ),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          LucideIcons.x,
-                          size: 16,
-                          color: theme.hintColor,
-                        ),
-                      ),
+                    child: AppIconButton(
+                      icon: LucideIcons.x,
+                      onClicked: () => Navigator.of(context).pop(),
+                      iconSize: 16,
+                      iconColor: theme.hintColor,
+                      backgroundColor: theme.cardColor,
+                      size: 32,
+                      buttonRadius: 16,
                     ),
                   ),
                 ],
@@ -190,93 +198,128 @@ class _AiChatSheetState extends State<_AiChatSheet> {
               ),
             ),
 
-            // Input bar
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                kDefaultPadding / 2,
-                kDefaultPadding / 2,
-                kDefaultPadding / 2,
-                bottomInset > 0
-                    ? kDefaultPadding / 2
-                    : bottomPadding + kDefaultPadding / 2,
-              ),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                border: Border(
-                  top: BorderSide(color: theme.dividerColor, width: 0.5),
-                ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: widget.controller,
-                      focusNode: widget.focusNode,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.newline,
-                      style: theme.textTheme.bodyMedium,
-                      decoration: InputDecoration(
-                        hintText: context.t.ask_ai_placeholder,
-                        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.hintColor,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding / 2 + 2,
-                          vertical: kDefaultPadding / 2,
-                        ),
-                      ),
+            // Quota banner + input bar. UsageGate so a refresh mid-session
+            // raises the banner without the sheet knowing about usage.
+            UsageGate(
+              builder: (ctx) {
+                final limit = usageLimitFor(kUsageKeyAskAi);
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (limit != null) _QuotaBanner(limit: limit),
+                    _buildInputBar(
+                      ctx,
+                      theme,
+                      state,
+                      cubit,
+                      bottomInset,
+                      bottomPadding,
+                      blocked: limit != null,
                     ),
-                  ),
-                  const SizedBox(width: kDefaultPadding / 4),
-                  CustomIconButton(
-                    onClicked: state.isLoading
-                        ? () {}
-                        : () {
-                            final msg = widget.controller.text.trim();
-                            if (msg.isEmpty) {
-                              return;
-                            }
-                            cubit.send(msg);
-                            widget.controller.clear();
-                          },
-                    icon: LucideIcons.arrowUp,
-                    widget: state.isLoading
-                        ? SpinKitThreeBounce(color: theme.hintColor, size: 12)
-                        : null,
-                    iconColor: Colors.white,
-                    size: 18,
-                    backgroundColor: state.isLoading
-                        ? theme.dividerColor
-                        : theme.primaryColor,
-                    borderRadius: kDefaultPadding / 2,
-                    vd: 1,
-                  ),
-                  const SizedBox(width: kDefaultPadding / 4),
-                  CustomIconButton(
-                    onClicked: state.messages.isEmpty
-                        ? () {}
-                        : () {
-                            cubit.clear();
-                            widget.controller.clear();
-                          },
-                    icon: FeatureIcons.trash,
-                    iconColor: state.messages.isEmpty
-                        ? theme.dividerColor
-                        : theme.hintColor,
-                    size: 18,
-                    backgroundColor: theme.cardColor,
-                    borderRadius: kDefaultPadding / 2,
-                    vd: 1,
-                  ),
-                ],
-              ),
+                  ],
+                );
+              },
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildInputBar(
+    BuildContext context,
+    ThemeData theme,
+    AskAiState state,
+    AskAiCubit cubit,
+    double bottomInset,
+    double bottomPadding, {
+    required bool blocked,
+  }) {
+    final sendDisabled = state.isLoading || blocked;
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        kDefaultPadding / 2,
+        kDefaultPadding / 2,
+        kDefaultPadding / 2,
+        bottomInset > 0
+            ? kDefaultPadding / 2
+            : bottomPadding + kDefaultPadding / 2,
+      ),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(color: theme.dividerColor, width: 0.5),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              enabled: !blocked,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+              style: theme.textTheme.bodyMedium,
+              decoration: InputDecoration(
+                hintText: blocked
+                    ? context.t.usage_quota_exceeded
+                    : context.t.ask_ai_placeholder,
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.hintColor,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2 + 2,
+                  vertical: kDefaultPadding / 2,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
+          CustomIconButton(
+            onClicked: sendDisabled
+                ? () {}
+                : () {
+                    final msg = widget.controller.text.trim();
+                    if (msg.isEmpty) {
+                      return;
+                    }
+                    cubit.send(msg);
+                    widget.controller.clear();
+                  },
+            icon: LucideIcons.arrowUp,
+            widget: state.isLoading
+                ? SpinKitThreeBounce(color: theme.hintColor, size: 12)
+                : null,
+            iconColor: Colors.white,
+            size: 18,
+            backgroundColor:
+                sendDisabled ? theme.dividerColor : theme.primaryColor,
+            borderRadius: kDefaultPadding / 2,
+            vd: 1,
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
+          CustomIconButton(
+            onClicked: state.messages.isEmpty
+                ? () {}
+                : () {
+                    cubit.clear();
+                    widget.controller.clear();
+                  },
+            icon: FeatureIcons.trash,
+            iconColor: state.messages.isEmpty
+                ? theme.dividerColor
+                : theme.hintColor,
+            size: 18,
+            backgroundColor: theme.cardColor,
+            borderRadius: kDefaultPadding / 2,
+            vd: 1,
+          ),
+        ],
+      ),
     );
   }
 
@@ -631,8 +674,7 @@ class _ReviewChangesButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(LucideIcons.diff,
-                size: 15, color: theme.primaryColor),
+            Icon(LucideIcons.diff, size: 15, color: theme.primaryColor),
             const SizedBox(width: kDefaultPadding / 4),
             Text(
               context.t.ask_ai_review_changes(count: count),
@@ -954,6 +996,57 @@ class _HunkBtn extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Sits above the input bar when the Ask AI quota is spent or the plan never
+/// included it. The Upgrade link is the only one of the three surfaces that
+/// has room for a second action.
+class _QuotaBanner extends StatelessWidget {
+  const _QuotaBanner({required this.limit});
+  final UsageLimit limit;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding,
+        vertical: kDefaultPadding / 2,
+      ),
+      color: Colors.amber.withValues(alpha: 0.12),
+      child: Row(
+        children: [
+          const Icon(LucideIcons.triangleAlert, size: 16, color: Colors.amber),
+          const SizedBox(width: kDefaultPadding / 2),
+          Expanded(
+            child: Text(
+              limit.message,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.primaryColorDark,
+              ),
+            ),
+          ),
+          if (limit.canUpgrade)
+            GestureDetector(
+              // Null context so pushPage falls back to the global navigator
+              // key: this element is defunct the moment the sheet pops.
+              onTap: () {
+                Navigator.of(context).pop();
+                YNavigator.pushPage<void>(null, (_) => const PricingScreen());
+              },
+              child: Text(
+                context.t.usage_upgrade,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.primaryColor,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

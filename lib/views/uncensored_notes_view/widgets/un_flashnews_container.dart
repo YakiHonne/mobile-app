@@ -15,6 +15,8 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/flash_tags_row.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/response_snackbar.dart';
 import 'un_flashnews_add_rating.dart';
@@ -133,10 +135,8 @@ class UnFlashNewsContainer extends StatelessWidget {
           sealedNote: unNewFlashNews.sealedNote,
           flashNewsPubkey: unNewFlashNews.flashNews.pubkey,
           onLike: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
-              builder: (_) {
+            showAppModalSheet(
+              context: context,              builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: true,
                   uncensoredNoteId: note.id,
@@ -145,18 +145,11 @@ class UnFlashNewsContainer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 );
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            );
+              },            );
           },
           onDislike: () {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
-              builder: (_) {
+            showAppModalSheet(
+              context: context,              builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: false,
                   uncensoredNoteId: note.id,
@@ -165,12 +158,7 @@ class UnFlashNewsContainer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 );
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            );
+              },            );
           },
           onDelete: (ratingNoteId) {
             showCupertinoDeletionDialogue(
@@ -279,8 +267,8 @@ class UnFlashNewsContainer extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -295,24 +283,15 @@ class UnFlashNewsContainer extends StatelessWidget {
             PullDownMenuItem(
               title: context.t.bookmark.capitalizeFirst(),
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 0,
-                  builder: (_) {
+                showAppModalSheet(
+                  context: context,                  builder: (_) {
                     return AddBookmarkView(
                       kind: EventKind.TEXT_NOTE,
                       identifier: unNewFlashNews.flashNews.id,
                       eventPubkey: unNewFlashNews.flashNews.pubkey,
                       model: unNewFlashNews.flashNews,
                     );
-                  },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
-                );
+                  },                );
               },
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,

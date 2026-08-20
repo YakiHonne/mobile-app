@@ -23,14 +23,19 @@ import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_stats.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/mark_down_widget.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/scroll_to_top.dart';
 import 'widgets/articles_header.dart';
+
+// Reading measure for the fluid layout. On a phone the screen is narrower than
+// this so it's a no-op; on a tablet it keeps lines from running edge to edge.
+const double _kMaxReadingWidth = 700;
 
 class ArticleView extends HookWidget {
   static const routeName = '/articleView';
@@ -143,11 +148,9 @@ class ArticleView extends HookWidget {
         },
         child: BlocBuilder<ArticleCubit, ArticleState>(
           builder: (context, state) {
-            return Scaffold(
-              appBar: CustomAppBar(
-                title: context.t.article.capitalizeFirst(),
-              ),
-              bottomNavigationBar: isFluid()
+            return FluidScaffold(
+              title: context.t.article.capitalizeFirst(),
+              bottomBar: isFluid()
                   ? null
                   : _contentStatsBar(
                       context,
@@ -207,7 +210,7 @@ class ArticleView extends HookWidget {
               },
               child: ListView(
                 padding: EdgeInsets.only(
-                  top: kDefaultPadding,
+                  top: kDefaultPadding + fluidScaffoldTopInset(context),
                   bottom: isFluid()
                       ? MediaQuery.of(context).padding.bottom + 160
                       : kDefaultPadding,
@@ -585,28 +588,35 @@ class ArticleView extends HookWidget {
             bottom: bottomPad,
             top: kDefaultPadding / 4,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: kDefaultPadding / 4,
-            children: [
-              _fluidTranslationButton(
-                context,
-                isTranslating: isTranslating,
-                showOriginalContent: showOriginalContent,
-                translateContent: translateContent,
-                articleContent: articleContent,
-                articleTitle: articleTitle,
-                articleSummary: articleSummary,
+          // Capped to match the article column above, so the bar's edges line
+          // up with the text instead of spanning the whole tablet.
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: _kMaxReadingWidth),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: kDefaultPadding / 4,
+                children: [
+                  _fluidTranslationButton(
+                    context,
+                    isTranslating: isTranslating,
+                    showOriginalContent: showOriginalContent,
+                    translateContent: translateContent,
+                    articleContent: articleContent,
+                    articleTitle: articleTitle,
+                    articleSummary: articleSummary,
+                  ),
+                  FluidBlurContainer(
+                    customBorderRadius: BorderRadius.circular(kDefaultPadding),
+                    padding: const EdgeInsets.all(
+                      kDefaultPadding / 2,
+                    ),
+                    child: stats,
+                  ),
+                ],
               ),
-              FluidBlurContainer(
-                customBorderRadius: BorderRadius.circular(kDefaultPadding),
-                padding: const EdgeInsets.all(
-                  kDefaultPadding / 2,
-                ),
-                child: stats,
-              ),
-            ],
+            ),
           ),
         ),
       );
@@ -639,65 +649,75 @@ class ArticleView extends HookWidget {
   ) {
     return BlocBuilder<ArticleCubit, ArticleState>(
       builder: (context, state) {
-        return Directionality(
-          textDirection: textDirectionality.value,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _postedFromRow(context),
-              const SizedBox(height: kDefaultPadding / 2),
-              Builder(
-                builder: (context) {
-                  final title = articleTitle.value.trim();
-                  return SelectableText(
-                    title.isEmpty ? context.t.noTitle.capitalizeFirst() : title,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: title.isEmpty
-                              ? Theme.of(context).highlightColor
-                              : Theme.of(context).primaryColorDark,
-                        ),
-                  );
-                },
+        // Center passes loose constraints down; without it the ConstrainedBox
+        // inherits the ListView's tight width and the cap does nothing.
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _kMaxReadingWidth),
+            child: Directionality(
+              textDirection: textDirectionality.value,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _postedFromRow(context),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  Builder(
+                    builder: (context) {
+                      final title = articleTitle.value.trim();
+                      return SelectableText(
+                        title.isEmpty
+                            ? context.t.noTitle.capitalizeFirst()
+                            : title,
+                        textAlign: TextAlign.center,
+                        style:
+                            Theme.of(context).textTheme.headlineLarge!.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: title.isEmpty
+                                      ? Theme.of(context).highlightColor
+                                      : Theme.of(context).primaryColorDark,
+                                ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: kDefaultPadding),
+                  _fluidAuthorRow(context, state),
+                  if (articleSummary.value.trim().isNotEmpty) ...[
+                    const SizedBox(height: kDefaultPadding),
+                    SelectableText(
+                      articleSummary.value.trim(),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).highlightColor,
+                          ),
+                    ),
+                  ],
+                  if (article.hashTags.isNotEmpty) ...[
+                    const SizedBox(height: kDefaultPadding / 2),
+                    _tagWrap(context),
+                  ],
+                  const SizedBox(height: kDefaultPadding),
+                  if (article.image.isNotEmpty) ...[
+                    _imageContainer(),
+                    const SizedBox(height: kDefaultPadding / 2),
+                  ],
+                  Builder(
+                    builder: (context) {
+                      try {
+                        return MarkDownWidget(
+                          content: articleContent.value,
+                          onLinkClicked: (link) => openWebPage(url: link),
+                        );
+                      } catch (e) {
+                        return MarkDownWidget(
+                          content: article.content,
+                          onLinkClicked: (link) => openWebPage(url: link),
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: kDefaultPadding),
-              _fluidAuthorRow(context, state),
-              if (articleSummary.value.trim().isNotEmpty) ...[
-                const SizedBox(height: kDefaultPadding),
-                SelectableText(
-                  articleSummary.value.trim(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                      ),
-                ),
-              ],
-              if (article.hashTags.isNotEmpty) ...[
-                const SizedBox(height: kDefaultPadding / 2),
-                _tagWrap(context),
-              ],
-              const SizedBox(height: kDefaultPadding),
-              if (article.image.isNotEmpty) ...[
-                _imageContainer(),
-                const SizedBox(height: kDefaultPadding / 2),
-              ],
-              Builder(
-                builder: (context) {
-                  try {
-                    return MarkDownWidget(
-                      content: articleContent.value,
-                      onLinkClicked: (link) => openWebPage(url: link),
-                    );
-                  } catch (e) {
-                    return MarkDownWidget(
-                      content: article.content,
-                      onLinkClicked: (link) => openWebPage(url: link),
-                    );
-                  }
-                },
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -800,8 +820,7 @@ class ArticleView extends HookWidget {
         const SizedBox(width: kDefaultPadding / 4),
         AppIconButton(
           onClicked: () {
-            showModalBottomSheet(
-              elevation: 0,
+            showAppModalSheet(
               context: context,
               builder: (_) => SendZapsView(
                 metadata: state.metadata,
@@ -810,12 +829,7 @@ class ArticleView extends HookWidget {
                 aTag:
                     '${EventKind.LONG_FORM}:${article.pubkey}:${article.identifier}',
               ),
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? Colors.transparent
-                  : Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           icon: FeatureIcons.zaps,

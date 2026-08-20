@@ -140,6 +140,10 @@ class SignInView extends HookWidget {
                         FeatureIcons.google,
                         width: 18,
                         height: 18,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).primaryColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: kDefaultPadding / 2),
                       Text(

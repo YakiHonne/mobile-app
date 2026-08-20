@@ -10,6 +10,7 @@ class BlossomState extends Equatable {
     required this.selectedServerIndex,
     required this.isGridView,
     required this.isLoading,
+    this.searchQuery = '',
   });
 
   factory BlossomState.initial() {
@@ -28,6 +29,7 @@ class BlossomState extends Equatable {
   final int selectedServerIndex; // -1 for "All servers"
   final bool isGridView;
   final bool isLoading;
+  final String searchQuery;
 
   BlossomState copyWith({
     List<BlossomAggregatedMedia>? allMedia,
@@ -36,6 +38,7 @@ class BlossomState extends Equatable {
     int? selectedServerIndex,
     bool? isGridView,
     bool? isLoading,
+    String? searchQuery,
   }) {
     return BlossomState(
       allMedia: allMedia ?? this.allMedia,
@@ -44,6 +47,7 @@ class BlossomState extends Equatable {
       selectedServerIndex: selectedServerIndex ?? this.selectedServerIndex,
       isGridView: isGridView ?? this.isGridView,
       isLoading: isLoading ?? this.isLoading,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
@@ -55,5 +59,6 @@ class BlossomState extends Equatable {
         selectedServerIndex,
         isGridView,
         isLoading,
+        searchQuery,
       ];
 }

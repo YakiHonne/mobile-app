@@ -62,6 +62,23 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
     ));
   }
 
+  /// Fetches usage on its own — used at app start and after an AI call spends
+  /// quota, where the subscription status is not also needed.
+  Future<void> refreshUsage() async {
+    emit(state.copyWith(usageRefreshing: true));
+    try {
+      final data = await HttpFunctionsRepository.subscriptionGetUsage();
+      emit(state.copyWith(usageData: data, usageRefreshing: false));
+    } catch (e) {
+      lg.i('SubscriptionCubit.refreshUsage: $e');
+      emit(state.copyWith(usageRefreshing: false));
+    }
+  }
+
+  void setUsageData(UsageData data) {
+    emit(state.copyWith(usageData: data));
+  }
+
   void reset() {
     emit(const SubscriptionState());
   }

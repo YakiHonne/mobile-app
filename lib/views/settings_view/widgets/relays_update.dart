@@ -18,9 +18,10 @@ import '../../../utils/utils.dart';
 import '../../relay_feed_view/relay_feed_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_sheet.dart';
 import 'properties_relay_list.dart';
 import 'relay_info_view.dart';
 
@@ -196,22 +197,16 @@ class RelayUpdateView extends HookWidget {
                               .read<UpdateRelaysCubit>()
                               .setOnlineRelays(isSearch: true);
 
-                          showModalBottomSheet(
+                          showAppModalSheet(
                             context: context,
-                            elevation: 0,
-                            builder: (_) {
-                              return BlocProvider.value(
-                                value: context.read<UpdateRelaysCubit>(),
-                                child: RelaysList(
-                                  index: index.value,
-                                ),
-                              );
-                            },
-                            isScrollControlled: true,
-                            useRootNavigator: true,
-                            useSafeArea: true,
                             backgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<UpdateRelaysCubit>(),
+                              child: RelaysList(
+                                index: index.value,
+                              ),
+                            ),
                           );
                         },
                         child: Row(
@@ -247,12 +242,13 @@ class RelayUpdateView extends HookWidget {
       create: (context) => UpdateRelaysCubit(
         nostrRepository: context.read<NostrDataRepository>(),
       ),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.relays.capitalizeFirst(),
-        ),
-        body: Column(
-          children: widgets,
+      child: FluidScaffold(
+        title: context.t.relays.capitalizeFirst(),
+        body: Padding(
+          padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          child: Column(
+            children: widgets,
+          ),
         ),
       ),
     );
@@ -451,21 +447,15 @@ class RelayUpdateView extends HookWidget {
             .read<UpdateRelaysCubit>()
             .setOnlineRelays(isSearch: index.value == 2);
 
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
-          builder: (_) {
-            return BlocProvider.value(
-              value: context.read<UpdateRelaysCubit>(),
-              child: RelaysList(
-                index: index.value,
-              ),
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          builder: (_) => BlocProvider.value(
+            value: context.read<UpdateRelaysCubit>(),
+            child: RelaysList(
+              index: index.value,
+            ),
+          ),
         );
       },
     );

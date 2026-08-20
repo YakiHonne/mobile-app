@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -12,6 +13,7 @@ import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_glass_tab_bar.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'mint_details.dart';
 import 'mints_list.dart';
@@ -33,23 +35,38 @@ class CreateCashuWallet extends HookWidget {
         builder: (context, scrollController) => Column(
           children: [
             const ModalBottomSheetHandle(),
-            TabBar(
-              controller: tabController,
-              dividerHeight: 0,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Theme.of(context).primaryColor,
-              labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
+            if (isFluid())
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                ),
+                child: FluidGlassTabBar(
+                  segmented: true,
+                  controller: tabController,
+                  tabs: [
+                    GlassTab(label: context.t.active),
+                    GlassTab(label: context.t.recommended),
+                  ],
+                ),
+              )
+            else
+              TabBar(
+                controller: tabController,
+                dividerHeight: 0,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: Theme.of(context).primaryColor,
+                labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                tabs: [
+                  Tab(
+                    text: context.t.active,
                   ),
-              tabs: [
-                Tab(
-                  text: context.t.active,
-                ),
-                Tab(
-                  text: context.t.recommended,
-                ),
-              ],
-            ),
+                  Tab(
+                    text: context.t.recommended,
+                  ),
+                ],
+              ),
             const SizedBox(height: kDefaultPadding / 2),
             Expanded(
               child: TabBarView(

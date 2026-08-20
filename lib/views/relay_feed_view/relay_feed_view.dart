@@ -11,7 +11,7 @@ import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
-import '../widgets/dotted_container.dart';
+import '../widgets/custom_app_bar.dart';
 import 'widgets/relay_content_feed.dart';
 
 class RelayFeedView extends StatelessWidget {
@@ -29,16 +29,27 @@ class RelayFeedView extends StatelessWidget {
         relay: Relay.clean(relay) ?? relay,
       )..initView(),
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: SafeArea(
-            child: ModalBottomSheetAppbar(
-              title: Relay.removeSocket(relay) ?? relay,
-              isBack: false,
-              widget: !canSign() ? null : _buildPullDown(context),
-            ),
-          ),
+        appBar: CustomAppBar(
+          title: Relay.removeSocket(relay) ?? relay,
+          actions: [
+            if (canSign()) ...[
+              _buildPullDown(context),
+              const SizedBox(
+                width: kDefaultPadding / 2,
+              )
+            ]
+          ],
         ),
+        // PreferredSize(
+        //   preferredSize: const Size.fromHeight(kToolbarHeight),
+        //   child: SafeArea(
+        //     child: ModalBottomSheetAppbar(
+        //       title: Relay.removeSocket(relay) ?? relay,
+        //       isBack: false,
+        //       widget: !canSign() ? null : _buildPullDown(context),
+        //     ),
+        //   ),
+        // ),
         floatingActionButton: canSign()
             ? Builder(
                 builder: (context) {
@@ -103,7 +114,7 @@ class RelayFeedView extends StatelessWidget {
           iconColor: isAvailable
               ? Theme.of(context).primaryColor
               : Theme.of(context).primaryColorDark,
-          size: 40,
+          size: 35,
           iconSize: 20,
         );
       },

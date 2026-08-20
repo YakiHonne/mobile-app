@@ -9,6 +9,7 @@ import '../../logic/add_media_cubit/add_media_cubit.dart';
 import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../utils/utils.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/publish_content_final_step.dart';
 import 'add_content_main_views/add_article_main_view.dart';
 import 'widgets/add_content_appbar.dart';
@@ -62,9 +63,8 @@ class AddMediaView extends HookWidget {
                       onSuccess: (e) {
                         Navigator.pop(context);
 
-                        showModalBottomSheet(
+                        showAppModalSheet(
                           context: context,
-                          elevation: 0,
                           builder: (_) {
                             return PublishContentFinalStep(
                               appContentType: isVideo.value
@@ -75,9 +75,6 @@ class AddMediaView extends HookWidget {
                                   : PictureModel.fromEvent(e),
                             );
                           },
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          useSafeArea: true,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );

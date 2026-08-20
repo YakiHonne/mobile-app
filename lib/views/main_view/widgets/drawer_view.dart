@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:numeral/numeral.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -13,6 +15,7 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
 import '../../../utils/utils.dart';
+import '../../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../../dashboard_view/dashboard_view.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
@@ -20,17 +23,47 @@ import '../../logify_view/logify_view.dart';
 import '../../points_management_view/points_management_view.dart';
 import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
+import '../../settings_view/blossom_management_view.dart';
 import '../../settings_view/settings_view.dart';
 import '../../subscription_view/subscription_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
-import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
+import '../../widgets/upgrade_banner.dart';
 import 'accounts_manager.dart';
 import 'profile_share_view.dart';
+
+/// GlassScaffold has no drawer slot, so fluid mode drives the drawer by hand:
+/// MainView parks it behind the body and slides the body aside on open.
+/// ponytail: no swipe-to-open — add a horizontal drag if it's missed.
+final mainDrawerOpen = ValueNotifier(false);
+
+/// Standard Material drawer width — how far the body is pushed in fluid mode.
+const kMainDrawerWidth = 304.0;
+
+/// Lets callers close the drawer from a context that isn't under the main
+/// Scaffold (modal sheets, post-pop callbacks) where `Scaffold.of` throws.
+final mainScaffoldKey = GlobalKey<ScaffoldState>();
+
+void openMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = true;
+  } else {
+    Scaffold.of(context).openDrawer();
+  }
+}
+
+void closeMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = false;
+  } else {
+    mainScaffoldKey.currentState?.closeDrawer();
+  }
+}
 
 class MainViewDrawer extends HookWidget {
   const MainViewDrawer({super.key});
@@ -64,29 +97,24 @@ class MainViewDrawer extends HookWidget {
           );
         }
 
-        // Glass mode: floating panel with blur, left/top/bottom margins
-        return Drawer(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + kDefaultPadding,
-              bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding,
-              left: kDefaultPadding / 2,
-              right: kDefaultPadding / 2,
-            ),
-            child: FluidBlurContainer(
-              sigma: 20,
-              borderRadius: kDefaultPadding * 1.5,
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 1.5,
-                vertical: kDefaultPadding / 1.5,
+        // Glass mode: bare items, a hairline marking the seam with the body.
+        return Container(
+          width: kMainDrawerWidth,
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kDefaultPadding,
+            bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding,
+            left: kDefaultPadding / 1.5,
+            right: kDefaultPadding / 1.5,
+          ),
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
               ),
-              child: _items(context, state),
             ),
           ),
+          child: _items(context, state),
         );
       },
     );
@@ -113,6 +141,7 @@ class MainViewDrawer extends HookWidget {
           height: kDefaultPadding,
         ),
         _drawerItems(context, state),
+        const UpgradeBanner(),
         if (currentSigner != null)
           _accountManager(context)
         else
@@ -154,7 +183,7 @@ class MainViewDrawer extends HookWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 context.read<MainCubit>().updateIndex(MainViews.wallet);
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               },
               child: Column(
                 children: [
@@ -283,7 +312,7 @@ class MainViewDrawer extends HookWidget {
           await Future.delayed(const Duration(milliseconds: 500)).then(
             (value) {
               if (context.mounted) {
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               }
             },
           );
@@ -356,23 +385,15 @@ class MainViewDrawer extends HookWidget {
       child: DrawerItem(
         isSelected: false,
         onClicked: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
-            builder: (_) {
-              return BlocProvider.value(
-                value: context.read<MainCubit>(),
-                child: AccountManager(
-                  scaffoldContext: context,
-                ),
-              );
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: isFluid()
-                ? kTransparent
-                : Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => BlocProvider.value(
+              value: context.read<MainCubit>(),
+              child: AccountManager(
+                scaffoldContext: context,
+              ),
+            ),
           );
         },
         icon: FeatureIcons.repost,
@@ -387,21 +408,29 @@ class MainViewDrawer extends HookWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: ListView(
-          children: [
-            if (canSign()) ...[
-              _profileDrawerItem(state, context),
+        child: ScrollShadow(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: ListView(
+            children: [
+              if (canSign()) ...[
+                _profileDrawerItem(state, context),
+              ],
+              _articlesDrawerItem(state, context),
+              _exploreDrawerItem(state, context),
+              _relaysOrbitDrawerItem(state, context),
+              if (canSign()) ...[
+                _smartWidgetDrawerItem(state, context),
+                _dashboardDrawerItem(state, context),
+                _subscriptionDrawerItem(state, context),
+                _blossomDrawerItem(state, context),
+                // Store rules forbid surfacing external paid subscriptions in
+                // IAP builds.
+                if (!kIapEnabled)
+                  _creatorsSubscriptionsDrawerItem(state, context),
+              ],
+              _settingDrawerItem(state, context),
             ],
-            _articlesDrawerItem(state, context),
-            _exploreDrawerItem(state, context),
-            _relaysOrbitDrawerItem(state, context),
-            if (canSign()) ...[
-              _smartWidgetDrawerItem(state, context),
-              _dashboardDrawerItem(state, context),
-              _subscriptionDrawerItem(state, context),
-            ],
-            _settingDrawerItem(state, context),
-          ],
+          ),
         ),
       ),
     );
@@ -416,7 +445,7 @@ class MainViewDrawer extends HookWidget {
           (context) => SettingsView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.settings,
       selectedIcon: FeatureIcons.propertiesFilled,
@@ -433,7 +462,7 @@ class MainViewDrawer extends HookWidget {
           (context) => DashboardView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.dashboard2,
       selectedIcon: FeatureIcons.propertiesFilled,
@@ -450,11 +479,48 @@ class MainViewDrawer extends HookWidget {
           (context) => const SubscriptionView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.walletAvailable,
       selectedIcon: FeatureIcons.walletAvailable,
       title: context.t.subscription.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _blossomDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.hidden,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const BlossomManagementView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: FeatureIcons.media,
+      selectedIcon: FeatureIcons.media,
+      title: context.t.blossomStorage.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _creatorsSubscriptionsDrawerItem(
+    MainState state,
+    BuildContext context,
+  ) {
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const CreatorsSubscriptionsView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: LucideIcons.crown,
+      selectedIcon: LucideIcons.crown,
+      title: context.t.creatorsSubscriptions.capitalizeFirst(),
     );
   }
 
@@ -463,7 +529,7 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.articles,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.articles);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.article,
       selectedIcon: FeatureIcons.articleFilled,
@@ -480,7 +546,7 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExplorePacksView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.discover,
       selectedIcon: FeatureIcons.discoverFilled,
@@ -493,7 +559,7 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.smartWidgets,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.smartWidgets);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.smartWidget,
       selectedIcon: FeatureIcons.smartWidget,
@@ -510,7 +576,7 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExploreRelaysView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.relaysOrbit,
       selectedIcon: FeatureIcons.relaysOrbit,
@@ -529,7 +595,7 @@ class MainViewDrawer extends HookWidget {
           ),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.user,
       selectedIcon: FeatureIcons.user,
@@ -553,7 +619,7 @@ class MainViewDrawer extends HookWidget {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              Scaffold.of(context).closeDrawer();
+              closeMainDrawer(context);
               Navigator.pushNamed(
                 context,
                 PointsStatisticsView.routeName,
@@ -574,7 +640,7 @@ class MainViewDrawer extends HookWidget {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              Scaffold.of(context).closeDrawer();
+              closeMainDrawer(context);
               showBlurredModal(
                 context: context,
                 view: const PointsLoginPopup(),

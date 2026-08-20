@@ -15,9 +15,9 @@ import '../settings_view/widgets/properties_relay_list.dart';
 import '../settings_view/widgets/relay_info_view.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/tag_container.dart';
 
@@ -41,11 +41,9 @@ class ExploreRelaysView extends HookWidget {
     final selectedType = useState(types.first);
     final search = useState('');
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.relayOrbits.capitalizeFirst(),
-        description: context.t.relayOrbitsDesc,
-      ),
+    return FluidScaffold(
+      title: context.t.relayOrbits.capitalizeFirst(),
+      description: context.t.relayOrbitsDesc,
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
@@ -53,6 +51,11 @@ class ExploreRelaysView extends HookWidget {
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
+            const SliverPadding(
+              padding: EdgeInsets.only(
+                top: kToolbarHeight,
+              ),
+            ),
             _appbar(context, types, selectedType, search, scrollController),
             const SliverToBoxAdapter(
               child: SizedBox(
@@ -110,7 +113,6 @@ class ExploreRelaysView extends HookWidget {
       automaticallyImplyLeading: false,
       leadingWidth: 0,
       titleSpacing: 0,
-      floating: true,
       title: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),

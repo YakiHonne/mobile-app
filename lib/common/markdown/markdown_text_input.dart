@@ -12,6 +12,8 @@ import '../../views/add_content_view/related_adding_views/article_widgets/articl
 import '../../views/widgets/app_icon.dart';
 import '../../views/widgets/custom_icon_buttons.dart';
 import '../../views/widgets/fluid_blur_container.dart';
+import '../../views/widgets/fluid_pull_down_button.dart';
+import '../../views/widgets/fluid_sheet.dart';
 import '../../views/widgets/smart_widget_selection.dart';
 import '../common_regex.dart';
 import 'format_markdown.dart';
@@ -539,8 +541,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     );
   }
 
-  PullDownButton _writingState(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _writingState(BuildContext context) {
+    return FluidPullDownButton(
       itemBuilder: (context) {
         return ArticleWritingState.values
             .map(
@@ -714,7 +716,7 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Future<void> selectImage(MarkdownType type, BuildContext context) async {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
       builder: (_) {
         return ImageSelector(
@@ -729,17 +731,13 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
   Future<void> selectSmartWidget(
       MarkdownType type, BuildContext context) async {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
       builder: (_) {
         return SmartWidgetSelection(
@@ -749,10 +747,6 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }

@@ -5,6 +5,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/single_image_selector.dart';
 
 class PublishPreviewContainer extends HookWidget {
@@ -79,18 +80,14 @@ class PublishPreviewContainer extends HookWidget {
       flex: 2,
       child: Builder(builder: (context) {
         void addImage() {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            isScrollControlled: true,
             builder: (_) {
               return SingleImageSelector(
                 onUrlProvided: onImageLinkChanged,
               );
             },
-            backgroundColor: kTransparent,
-            useRootNavigator: true,
-            elevation: 0,
-            useSafeArea: true,
+            backgroundColor: Theme.of(context).cardColor,
           );
         }
 

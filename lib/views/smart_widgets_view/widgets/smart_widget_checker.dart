@@ -11,9 +11,9 @@ import '../../../models/smart_widgets_components.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/related_adding_views/smart_widget_widgets/smart_widget_pulldown_button.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import 'smart_widget_container.dart';
 
 class SmartWidgetChecker extends HookWidget {
@@ -82,15 +82,14 @@ class SmartWidgetChecker extends HookWidget {
       },
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: viewMode
-            ? context.t.smartWidget.capitalizeFirst()
-            : context.t.smartWidgetChecker.capitalizeFirst(),
-        notElevated: true,
-      ),
+    return FluidScaffold(
+      title: viewMode
+          ? context.t.smartWidget.capitalizeFirst()
+          : context.t.smartWidgetChecker.capitalizeFirst(),
+      notElevated: true,
       body: Column(
         children: [
+          SizedBox(height: fluidScaffoldTopInset(context)),
           if (!viewMode) ...[
             const SizedBox(
               height: kDefaultPadding / 4,

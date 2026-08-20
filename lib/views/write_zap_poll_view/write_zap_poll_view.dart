@@ -20,11 +20,13 @@ import '../../utils/global_keys.dart';
 import '../../utils/utils.dart';
 import '../giphy_view/giphy_view.dart';
 import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/curation_container.dart';
 import '../widgets/custom_date_picker.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/media_selector.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/profile_picture.dart';
@@ -492,11 +494,9 @@ class WriteZapPollView extends HookWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomIconButton(
+          AppIconButton(
             onClicked: () => Navigator.pop(context),
             icon: FeatureIcons.closeRaw,
-            size: 18,
-            vd: 0,
             backgroundColor: Theme.of(context).cardColor,
           ),
           Text(
@@ -507,7 +507,7 @@ class WriteZapPollView extends HookWidget {
           ),
           BlocBuilder<WriteZapPollCubit, WriteZapPollState>(
             builder: (context, state) {
-              return CustomIconButton(
+              return AppIconButton(
                 onClicked: () {
                   final post = getRawText(controller);
 
@@ -528,8 +528,6 @@ class WriteZapPollView extends HookWidget {
                   }
                 },
                 icon: FeatureIcons.addRaw,
-                size: 17,
-                vd: 0,
                 iconColor: kWhite,
                 backgroundColor: Theme.of(context).primaryColor,
               );
@@ -704,9 +702,8 @@ class PublishingMediaContainer extends HookWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      isScrollControlled: true,
                       builder: (_) {
                         return MediaSelector(
                           onSuccess: (urls) {
@@ -715,9 +712,6 @@ class PublishingMediaContainer extends HookWidget {
                         );
                       },
                       backgroundColor: kTransparent,
-                      useRootNavigator: true,
-                      elevation: 0,
-                      useSafeArea: true,
                     );
                   },
                   icon: AppIcon(
@@ -728,7 +722,7 @@ class PublishingMediaContainer extends HookWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
                       builder: (_) {
                         return GiphyView(
@@ -739,10 +733,6 @@ class PublishingMediaContainer extends HookWidget {
                           },
                         );
                       },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      elevation: 0,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                     );

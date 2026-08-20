@@ -12,21 +12,26 @@ import 'utils.dart';
 // Stripe + Lightning; defaults to true (IAP) so the toggle lives in the
 // build command instead of a source edit someone has to remember to revert.
 const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
-
 // ** App version
-const String appVersion = 'v2.0.6+196';
+// Keep in sync with `version:` in pubspec.yaml — test/app_version_test.dart
+// fails if they drift.
+const String appVersion = 'v2.0.6+201';
 
 //** network
+const yakiProBlossomServer = 'https://blossom.yakihonne.com';
 const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
+// App Store guideline 3.1.2 requires both to be linked from the paywall, and
+// 5.1.1(i) requires the privacy policy anywhere accounts exist.
+const termsUrl = 'https://yakihonne.com/terms';
+const privacyUrl = 'https://yakihonne.com/privacy';
 const baseUrl2 = 'www.yakihonne.com';
 const baseUrl3 = 'yakihonne.com';
 const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
-const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
-
-//TODO: [REVERT TO LIVE]
-// const apiUrl = 'https://api.yakihonne.com/api/v1/';
+const apiUrl = 'https://api.yakihonne.com/api/v1/';
+// const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
+// const apiUrl = 'http://192.168.100.114:5001/api/v1/';
 const compressImageUrl = 'https://api.yakihonne.com/api/img';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
@@ -54,7 +59,8 @@ const kBlack = Colors.black;
 const kWhite = Colors.white;
 const kScaffoldDark = Color(0xff171718);
 const kTransparent = Colors.transparent;
-const kCardDark = Color(0xff222525);
+const kBlackThemeCard = Color(0xff0b0b0c);
+const kDarkThemeCard = Color(0xff1B1B1D);
 const kOutlineDark = Color(0xff393b3b);
 const kOutlineLight = Color(0xffe5e5e5);
 

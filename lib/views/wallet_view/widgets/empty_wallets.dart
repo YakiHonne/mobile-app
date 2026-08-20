@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/modal_with_blur.dart';
+import '../../widgets/wallet_type_switch.dart';
 import 'wallet_options_view.dart';
 
 class DisconnectedWallet extends HookWidget {
@@ -29,6 +32,20 @@ class DisconnectedWallet extends HookWidget {
           height: kDefaultPadding,
         ),
         _emptyWalletAdd(context),
+        if (isFluid()) ...[
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: WalletTypeSwitch(
+              isCashu: false,
+              onTap: () {
+                context.read<MainCubit>().changeWalletType();
+              },
+            ),
+          ),
+        ],
       ],
     );
   }

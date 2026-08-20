@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../utils/utils.dart';
 import '../../widgets/buttons_containers_widgets.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 
 class UncensoredNoteExplanation extends StatelessWidget {
   const UncensoredNoteExplanation({super.key});
@@ -16,15 +16,13 @@ class UncensoredNoteExplanation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.explanation.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.explanation.capitalizeFirst(),
       body: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
           vertical: kDefaultPadding,
-        ),
+        ).copyWith(top: kDefaultPadding + fluidScaffoldTopInset(context)),
         children: [
           Container(
             padding: const EdgeInsets.all(kDefaultPadding / 1.5),

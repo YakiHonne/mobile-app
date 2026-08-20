@@ -13,6 +13,7 @@ import '../../../widgets/app_icon.dart';
 import '../../../widgets/buttons_containers_widgets.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../widgets/response_snackbar.dart';
 import '../home/dashboard_containers.dart';
 import 'add_bookmarks_list_view.dart';
@@ -60,6 +61,7 @@ class TabletBookmarksList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: fluidScaffoldTopInset(context)),
         const BookmarksHeader(),
         const SizedBox(
           height: kDefaultPadding / 2,
@@ -142,6 +144,9 @@ class MobileBookmarksList extends StatelessWidget {
     return Scrollbar(
       child: CustomScrollView(
         slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(height: fluidScaffoldTopInset(context)),
+          ),
           const SliverToBoxAdapter(
             child: BookmarksHeader(),
           ),

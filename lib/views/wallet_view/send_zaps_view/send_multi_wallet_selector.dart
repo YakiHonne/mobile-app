@@ -9,6 +9,7 @@ import '../../../utils/utils.dart';
 import '../../wallet_cashu_view/widgets/create_cashu_wallet.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
 import '../../widgets/modal_with_blur.dart';
 import '../send_view/send_using_invoice.dart';
 import '../widgets/wallet_options_view.dart';
@@ -62,13 +63,10 @@ class MultiWalletSelector extends StatelessWidget {
         if (cashuState.walletMints.isEmpty) {
           return CreateWalletPrompt(
             onTap: () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
                 builder: (_) => const CreateCashuWallet(),
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
+           
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
@@ -467,13 +465,10 @@ class CashuWalletSelector extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
               builder: (_) => const SelectMintModal(),
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
+            
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },

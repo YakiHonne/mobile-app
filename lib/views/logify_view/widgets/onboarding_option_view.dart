@@ -3,12 +3,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import 'eula_view.dart';
 
 class OnboardingOptionsView extends StatelessWidget {
@@ -167,15 +167,11 @@ class OnboardingOptionsView extends StatelessWidget {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    showCupertinoModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (_) {
                         return const EulaView();
                       },
-                      useRootNavigator: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
                     );
                   },
               ),

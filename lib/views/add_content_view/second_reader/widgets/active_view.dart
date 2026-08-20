@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../logic/second_reader_cubit/second_reader_cubit.dart';
+import '../../../../logic/subscription_cubit/usage_limit.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/common_thumbnail.dart';
+import '../../../widgets/usage_gate.dart';
 import 'sheet_header.dart';
 
 class SecondReaderActiveView extends StatelessWidget {
@@ -27,186 +29,192 @@ class SecondReaderActiveView extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SecondReaderSheetHeader(
-              title: context.t.second_reader_title,
-              trailing: state.reactions.isNotEmpty
-                  ? TextButton(
-                      onPressed: cubit.clearReactions,
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.95,
+          builder: (context, scrollController) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SecondReaderSheetHeader(
+                title: context.t.second_reader_title,
+                trailing: state.reactions.isNotEmpty
+                    ? TextButton(
+                        onPressed: cubit.clearReactions,
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.red.withValues(alpha: 0.07),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding / 2),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        child: const Text(
+                          'Clear',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
+              Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
+              Flexible(
+                child: state.reactions.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(kDefaultPadding * 2),
+                          child: Text(
+                            context.t.second_reader_no_reactions,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(color: theme.hintColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : ListView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(
+                          kDefaultPadding,
+                          kDefaultPadding * 0.75,
+                          kDefaultPadding,
+                          kDefaultPadding,
+                        ),
+                        children: [
+                          ...state.activeReactions.map(
+                            (r) => ReactionCard(
+                              reaction: r,
+                              onFix: () {
+                                cubit.markFixed(r);
+                                Navigator.of(context).pop();
+                                onFixWithAi(
+                                  context.t.ask_ai_prefill_fix(
+                                    index: r.paragraphIndex + 1,
+                                    comment: r.comment,
+                                  ),
+                                );
+                              },
+                              onIgnore: () => cubit.ignore(r),
+                            ),
+                          ),
+                          if (state.resolvedReactions.isNotEmpty) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: kDefaultPadding / 2),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Divider(
+                                      height: 1,
+                                      thickness: 0.5,
+                                      color: theme.dividerColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: kDefaultPadding / 2),
+                                    child: Text(
+                                      context.t.second_reader_resolved(
+                                        count: state.resolvedReactions.length,
+                                      ),
+                                      style:
+                                          theme.textTheme.labelSmall?.copyWith(
+                                        color: theme.hintColor,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 1,
+                                      thickness: 0.5,
+                                      color: theme.dividerColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ...state.resolvedReactions.map(
+                              (r) => ReactionCard(
+                                reaction: r,
+                                onFix: () => cubit.markFixed(r),
+                                onIgnore: () => cubit.ignore(r),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(
+                  kDefaultPadding,
+                  kDefaultPadding,
+                  kDefaultPadding / 2,
+                  MediaQuery.of(context).padding.bottom,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  border: Border(
+                      top: BorderSide(color: theme.dividerColor, width: 0.5)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonThumbnail(
+                      image: persona.imageUrl,
+                      width: 58,
+                      isRound: true,
+                      radius: 29,
+                    ),
+                    const SizedBox(width: kDefaultPadding / 2 + 2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            persona.name,
+                            style: theme.textTheme.labelLarge
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: kDefaultPadding / 4 - 4),
+                          Text(
+                            persona.role,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.primaryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: kDefaultPadding / 4 - 2),
+                          Text(
+                            persona.description,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.hintColor,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: cubit.switchToPicker,
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.red.withValues(alpha: 0.07),
+                        backgroundColor: theme.scaffoldBackgroundColor,
                         padding: const EdgeInsets.symmetric(
                             horizontal: kDefaultPadding / 2),
                         visualDensity: VisualDensity.compact,
                       ),
-                      child: const Text(
-                        'Clear',
+                      child: Text(
+                        context.t.second_reader_switch,
                         style: TextStyle(
-                          color: Colors.red,
+                          color: theme.hintColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                         ),
                       ),
-                    )
-                  : null,
-            ),
-            Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
-            Flexible(
-              child: state.reactions.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(kDefaultPadding * 2),
-                        child: Text(
-                          context.t.second_reader_no_reactions,
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(color: theme.hintColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(
-                        kDefaultPadding,
-                        kDefaultPadding * 0.75,
-                        kDefaultPadding,
-                        kDefaultPadding,
-                      ),
-                      children: [
-                        ...state.activeReactions.map(
-                          (r) => ReactionCard(
-                            reaction: r,
-                            onFix: () {
-                              cubit.markFixed(r);
-                              Navigator.of(context).pop();
-                              onFixWithAi(
-                                context.t.ask_ai_prefill_fix(
-                                  index: r.paragraphIndex + 1,
-                                  comment: r.comment,
-                                ),
-                              );
-                            },
-                            onIgnore: () => cubit.ignore(r),
-                          ),
-                        ),
-                        if (state.resolvedReactions.isNotEmpty) ...[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: kDefaultPadding / 2),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Divider(
-                                    height: 1,
-                                    thickness: 0.5,
-                                    color: theme.dividerColor,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: kDefaultPadding / 2),
-                                  child: Text(
-                                    context.t.second_reader_resolved(
-                                      count: state.resolvedReactions.length,
-                                    ),
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: theme.hintColor,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Divider(
-                                    height: 1,
-                                    thickness: 0.5,
-                                    color: theme.dividerColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ...state.resolvedReactions.map(
-                            (r) => ReactionCard(
-                              reaction: r,
-                              onFix: () => cubit.markFixed(r),
-                              onIgnore: () => cubit.ignore(r),
-                            ),
-                          ),
-                        ],
-                      ],
                     ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                kDefaultPadding,
-                kDefaultPadding,
-                kDefaultPadding / 2,
-                MediaQuery.of(context).padding.bottom,
+                  ],
+                ),
               ),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                border: Border(
-                    top: BorderSide(color: theme.dividerColor, width: 0.5)),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonThumbnail(
-                    image: persona.imageUrl,
-                    width: 58,
-                    isRound: true,
-                    radius: 29,
-                  ),
-                  const SizedBox(width: kDefaultPadding / 2 + 2),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          persona.name,
-                          style: theme.textTheme.labelLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: kDefaultPadding / 4 - 4),
-                        Text(
-                          persona.role,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: kDefaultPadding / 4 - 2),
-                        Text(
-                          persona.description,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.hintColor,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: cubit.switchToPicker,
-                    style: TextButton.styleFrom(
-                      backgroundColor: theme.scaffoldBackgroundColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding / 2),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    child: Text(
-                      context.t.second_reader_switch,
-                      style: TextStyle(
-                        color: theme.hintColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -335,10 +343,22 @@ class ReactionCard extends StatelessWidget {
                       else
                         Row(
                           children: [
-                            CardActionButton(
-                              label: context.t.second_reader_fix_with_ai,
-                              color: theme.primaryColor,
-                              onTap: onFix,
+                            // Gates on chat-articles, not second-reader: this
+                            // prefills Ask AI and spends *that* quota.
+                            UsageGate(
+                              builder: (_) {
+                                final blocked =
+                                    isUsageBlocked(kUsageKeyAskAi);
+                                return CardActionButton(
+                                  label: blocked
+                                      ? context.t.usage_limit_reached_short
+                                      : context.t.second_reader_fix_with_ai,
+                                  color: blocked
+                                      ? theme.hintColor
+                                      : theme.primaryColor,
+                                  onTap: blocked ? () {} : onFix,
+                                );
+                              },
                             ),
                             const SizedBox(width: kDefaultPadding / 2),
                             CardActionButton(

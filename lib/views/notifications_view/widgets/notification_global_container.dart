@@ -24,6 +24,7 @@ import '../../wallet_cashu_view/widgets/cashu_history.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/picture_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
@@ -163,9 +164,8 @@ class _NotificationGlobalContainerState
         onClick: () {
           final note = DetailedNoteModel.fromEvent(widget.mainEvent);
 
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               final isComment = isReplaceable(note.rootKind);
 
@@ -187,9 +187,6 @@ class _NotificationGlobalContainerState
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -210,9 +207,8 @@ class _NotificationGlobalContainerState
               await metadataCubit.getAvailableMetadata(widget.mainEvent.pubkey);
 
           if (context.mounted) {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return SendZapsView(
                   metadata: m,
@@ -221,9 +217,6 @@ class _NotificationGlobalContainerState
                   zapSplits: const [],
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           }
@@ -240,9 +233,8 @@ class _NotificationGlobalContainerState
   void onClick(BuildContext context) {
     // Open Cashu history modal for NutZaps
     if (widget.mainEvent.kind == EventKind.CASHU_NUTZAP) {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
-        isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (context) => const CashuHistory(initialIndex: 2),
       );

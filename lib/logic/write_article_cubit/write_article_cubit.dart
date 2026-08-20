@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -512,19 +511,4 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
     }
   }
 
-  // ── AppFlowy editor helpers ──────────────────────────────────────────────
-
-  EditorState buildEditorState() {
-    if (state.content.isEmpty) {
-      return EditorState.blank();
-    }
-    final doc = markdownToDocument(state.content);
-    if (doc.root.children.isEmpty) {
-      return EditorState.blank();
-    }
-    return EditorState(document: doc);
-  }
-
-  String extractMarkdown(EditorState editorState) =>
-      documentToMarkdown(editorState.document);
 }

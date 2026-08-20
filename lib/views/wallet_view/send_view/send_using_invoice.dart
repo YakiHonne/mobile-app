@@ -10,7 +10,8 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
 import '../widgets/external_wallets_list_view.dart';
 import '../widgets/internal_wallets_list_view.dart';
 import 'send_success_view.dart';
@@ -86,10 +87,8 @@ class SendUsingInvoice extends HookWidget {
       },
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.invoice.capitalize(),
-      ),
+    return FluidScaffold(
+      title: context.t.invoice.capitalize(),
       body: Builder(
         builder: (context) {
           final amount = getlnbcValue(invoice).toInt();
@@ -101,6 +100,7 @@ class SendUsingInvoice extends HookWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: fluidScaffoldTopInset(context)),
                 Expanded(
                   child: Center(
                     child: Column(
@@ -196,15 +196,11 @@ class InternalWalletSelector extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
               builder: (_) {
                 return const InternalWalletsListView();
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -287,15 +283,11 @@ class ExternalWalletSelector extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
               builder: (_) {
                 return const ExternalWalletsListView();
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },

@@ -10,10 +10,14 @@ import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../settings_view/widgets/relays_update.dart';
+import '../subscription_view/pricing/subscription_gate.dart';
 import '../widgets/app_icon.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
+import '../widgets/identity_field.dart';
 import '../widgets/modal_sheet_container.dart';
+import 'widgets/profile_settings_identity.dart';
 import 'widgets/profile_settings_media.dart';
 
 class ProfileSettingsView extends HookWidget {
@@ -34,19 +38,20 @@ class ProfileSettingsView extends HookWidget {
 
     return BlocProvider(
       create: (context) => ProfileSettingsCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.editProfile.capitalizeFirst(),
-        ),
-        bottomNavigationBar: BottomAppBar(
+      child: FluidScaffold(
+        title: context.t.editProfile.capitalizeFirst(),
+        bottomBarHeight: kBottomNavigationBarHeight,
+        bottomBar: FluidBottomBar(
           height: kBottomNavigationBarHeight,
-          color: Theme.of(context).scaffoldBackgroundColor,
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: _updateButton(description, displayName, name, website, nip05,
               lud16, picture, cover),
         ),
         body: CustomScrollView(
           slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(height: fluidScaffoldTopInset(context)),
+            ),
             const SliverToBoxAdapter(
               child: ProfileSettingsMedia(),
             ),
@@ -65,6 +70,11 @@ class ProfileSettingsView extends HookWidget {
                 ),
               ),
             ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: kBottomNavigationBarHeight + kDefaultPadding,
+              ),
+            )
           ],
         ),
       ),
@@ -137,13 +147,9 @@ class ProfileSettingsView extends HookWidget {
   }
 
   void _showRelayListRequiredSheet(BuildContext context) {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
       builder: (_) => const _RelayListRequiredSheet(),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: kTransparent,
     );
   }
@@ -205,6 +211,46 @@ class _RelayListRequiredSheet extends StatelessWidget {
   }
 }
 
+/// A compact pill that sits inside a field, right of the input. Small enough
+/// not to compete with the value it sits beside.
+class _InlineFieldAction extends StatelessWidget {
+  const _InlineFieldAction({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Material(
+      // Not scaffoldBackgroundColor: in the light and cream themes it sits
+      // within a few points of cardColor, leaving the pill with no edge.
+      color: theme.dividerColor.withValues(alpha: 0.5),
+      borderRadius: BorderRadius.circular(kDefaultPadding),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(kDefaultPadding),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 1.5,
+            vertical: kDefaultPadding / 2.5,
+          ),
+          child: Text(
+            label,
+            // A long label in ru/hi/ar would otherwise overflow the row.
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class ProfileSettingsMetadata extends HookWidget {
   const ProfileSettingsMetadata({
     super.key,
@@ -247,6 +293,10 @@ class ProfileSettingsMetadata extends HookWidget {
     );
 
     return BlocConsumer<ProfileSettingsCubit, ProfileSettingsState>(
+      // Only a metadata resync should overwrite the controllers. The identity
+      // rows emit on every keystroke, and an unguarded listener would snap
+      // every other field back to its stored value mid-edit.
+      listenWhen: (p, c) => p.refresh != c.refresh,
       listener: (context, state) {
         description.text = state.description;
         name.text = state.name;
@@ -258,11 +308,6 @@ class ProfileSettingsMetadata extends HookWidget {
         nip05.text = state.nip05;
       },
       builder: (context, state) {
-        final dStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: Theme.of(context).highlightColor,
-              fontStyle: FontStyle.italic,
-            );
-
         const spacer = SizedBox(
           height: kDefaultPadding / 1.5,
         );
@@ -270,84 +315,83 @@ class ProfileSettingsMetadata extends HookWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(context.t.userName.capitalizeFirst(), style: dStyle),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
-              controller: name,
-              textCapitalization: TextCapitalization.sentences,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: context.t.yourName.capitalizeFirst(),
-                prefixIcon: const Icon(LucideIcons.atSign),
-              ),
+            // Part of the paid identity — a trial does not entitle a user to
+            // claim a name, and there is nothing to gate into: the name is
+            // claimed by the update button, not by its own action.
+            if (isSubscribed(excludeTrial: true)) ...[
+              const YakiUsernameField(),
+              spacer,
+            ],
+            // The two short names pair on one row; everything below is a
+            // full-width row of the same card field.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: IdentityField(
+                    label: context.t.displayName.capitalizeFirst(),
+                    controller: displayName,
+                    hint: context.t.yourDisplayName.capitalizeFirst(),
+                    capitalize: true,
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding / 2),
+                Expanded(
+                  child: IdentityField(
+                    label: context.t.userName.capitalizeFirst(),
+                    controller: name,
+                    hint: context.t.yourName.capitalizeFirst(),
+                    prefixIcon: LucideIcons.atSign,
+                    capitalize: true,
+                  ),
+                ),
+              ],
             ),
             spacer,
-            Text(context.t.displayName.capitalizeFirst(), style: dStyle),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
-              controller: displayName,
-              textCapitalization: TextCapitalization.sentences,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: context.t.yourDisplayName.capitalizeFirst(),
-              ),
-            ),
-            spacer,
-            Text(context.t.aboutYou.capitalizeFirst(), style: dStyle),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
+            IdentityField(
+              label: context.t.aboutYou.capitalizeFirst(),
               controller: description,
-              textCapitalization: TextCapitalization.sentences,
-              style: Theme.of(context).textTheme.bodyMedium,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: context.t.writeSomethingAboutYou.capitalizeFirst(),
-              ),
+              hint: context.t.writeSomethingAboutYou.capitalizeFirst(),
+              maxLines: 4,
+              capitalize: true,
             ),
             spacer,
-            Text(context.t.website.capitalizeFirst(), style: dStyle),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
+            IdentityField(
+              label: context.t.website.capitalizeFirst(),
               controller: website,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: context.t.yourWebsite.capitalizeFirst(),
-              ),
+              hint: context.t.yourWebsite.capitalizeFirst(),
             ),
             spacer,
-            Text(context.t.verifyNip05.capitalizeFirst(), style: dStyle),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
+            IdentityField(
+              label: context.t.verifyNip05.capitalizeFirst(),
               controller: nip05,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: context.t.enterNip05.capitalizeFirst(),
+              hint: context.t.enterNip05.capitalizeFirst(),
+              // Always offered: the sheet itself sends an unsubscribed user to
+              // pricing rather than hiding the entry point.
+              trailing: _InlineFieldAction(
+                label: context.t.yakiNip05,
+                onPressed: () => showYakiNip05Sheet(
+                  context: context,
+                  nip05: nip05,
+                ),
               ),
             ),
             spacer,
-            Text(
-              context.t.lightningAddress.capitalizeFirst(),
-              style: dStyle,
-            ),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            TextFormField(
+            IdentityField(
+              label: context.t.lightningAddress.capitalizeFirst(),
               controller: lud16,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: InputDecoration(
-                hintText: context.t.enterLn.capitalizeFirst(),
-              ),
+              hint: context.t.enterLn.capitalizeFirst(),
+              // Independent of the subscription: this only offers addresses
+              // from wallets the user has already connected.
+              trailing: context.read<ProfileSettingsCubit>().hasWalletAddresses
+                  ? _InlineFieldAction(
+                      label: context.t.useConnectedWallet,
+                      onPressed: () => showWalletAddressSheet(
+                        context: context,
+                        lud16: lud16,
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(
               height: kDefaultPadding / 2,
@@ -383,33 +427,16 @@ class ProfileSettingsMetadata extends HookWidget {
                     ),
                   ),
                   if (isExpanded.value) ...[
-                    Text('Picture url', style: dStyle),
-                    const SizedBox(
-                      height: kDefaultPadding / 4,
-                    ),
-                    TextFormField(
+                    IdentityField(
+                      label: 'Picture url',
                       controller: picture,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      decoration: InputDecoration(
-                        hintText: context.t.enterPictureUrl.capitalizeFirst(),
-                      ),
+                      hint: context.t.enterPictureUrl.capitalizeFirst(),
                     ),
-                    const SizedBox(
-                      height: kDefaultPadding / 4,
-                    ),
-                    Text(
-                      context.t.coverUrl.capitalizeFirst(),
-                      style: dStyle,
-                    ),
-                    const SizedBox(
-                      height: kDefaultPadding / 4,
-                    ),
-                    TextFormField(
+                    spacer,
+                    IdentityField(
+                      label: context.t.coverUrl.capitalizeFirst(),
                       controller: cover,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      decoration: InputDecoration(
-                        hintText: context.t.enterCoverUrl.capitalizeFirst(),
-                      ),
+                      hint: context.t.enterCoverUrl.capitalizeFirst(),
                     ),
                   ]
                 ],

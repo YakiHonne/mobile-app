@@ -68,7 +68,7 @@ class TinputDecorationTheme {
 
   static final darkInputDecorationTheme = InputDecorationTheme(
     filled: true,
-    fillColor: kCardDark,
+    fillColor: kDarkThemeCard,
     contentPadding: const EdgeInsets.symmetric(
       horizontal: kDefaultPadding,
       vertical: kDefaultPadding / 1.5,
@@ -127,7 +127,7 @@ class TinputDecorationTheme {
 
   static final blackInputDecorationTheme = InputDecorationTheme(
     filled: true,
-    fillColor: kScaffoldDark,
+    fillColor: kBlackThemeCard,
     contentPadding: const EdgeInsets.symmetric(
       horizontal: kDefaultPadding,
       vertical: kDefaultPadding / 1.5,

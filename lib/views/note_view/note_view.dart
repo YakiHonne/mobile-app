@@ -13,9 +13,9 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/note_stats.dart';
 import '../widgets/parsed_media_container.dart';
 import '../widgets/response_snackbar.dart';
@@ -192,18 +192,20 @@ class NoteView extends HookWidget {
       builder: (context, state) {
         final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
         final mutedThread = state.mutesEvents.contains(currentNote.value.id);
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.thread.capitalizeFirst(),
-            onBackClicked: () => _handleBack(context, threadIds, updateNote),
-          ),
+        return FluidScaffold(
+          title: context.t.thread.capitalizeFirst(),
+          onBackClicked: () => _handleBack(context, threadIds, updateNote),
           body: AnimatedOpacity(
             opacity: isTransitioning.value ? 0.0 : 1.0,
             duration: _kFadeDuration,
             curve: Curves.easeInOut,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              // Inset the whole view rather than a leading sliver: this scroll
+              // view uses `center` + `anchor`, so slivers before the centre lay
+              // out upward and a SliverPadding there would move the anchor.
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 2,
+              ).copyWith(top: fluidScaffoldTopInset(context)),
               // Refresh replies when stats/mutes change (was inside the old
               // NoteRepliesList).
               child: BlocListener<NotesEventsCubit, NotesEventsState>(

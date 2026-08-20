@@ -21,6 +21,8 @@ import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/content_manager/discover_filter_list.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart';
 
 class SelectedWalletContainer extends StatelessWidget {
   const SelectedWalletContainer({super.key});
@@ -46,16 +48,11 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
                     builder: (_) {
                       return const MintsList();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -80,16 +77,11 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
                     builder: (_) {
                       return const InternalWalletsListView();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -212,7 +204,7 @@ class DmOptionsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -300,7 +292,7 @@ class InboxTypes extends HookWidget {
           builder: (context, snapshot) {
             final counts = snapshot.data!;
 
-            return PullDownButton(
+            return FluidPullDownButton(
               animationBuilder: (context, state, child) => child,
               routeTheme: PullDownMenuRouteTheme(
                 backgroundColor: Theme.of(context).cardColor,
@@ -434,7 +426,7 @@ class NotificationTypes extends HookWidget {
 
     return BlocBuilder<NotificationsCubit, NotificationsState>(
       builder: (context, state) {
-        return PullDownButton(
+        return FluidPullDownButton(
           animationBuilder: (context, state, child) => child,
           routeTheme: PullDownMenuRouteTheme(
             backgroundColor: Theme.of(context).cardColor,
@@ -615,18 +607,12 @@ class FilterGlobalButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,

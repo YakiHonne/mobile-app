@@ -21,10 +21,10 @@ import '../uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../uncensored_notes_view/widgets/uncensored_note_component.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
 import '../widgets/flash_news_container.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/no_content_widgets.dart';
 
 class RewardsView extends HookWidget {
@@ -54,20 +54,22 @@ class RewardsView extends HookWidget {
       create: (context) =>
           RewardsCubit(uncensoredNotesCubit: uncensoredNotesCubit)..initView(),
       lazy: false,
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.rewards.capitalizeFirst(),
-        ),
+      child: FluidScaffold(
+        title: context.t.rewards.capitalizeFirst(),
         body: BlocBuilder<RewardsCubit, RewardsState>(
           builder: (context, state) {
-            return Stack(
-              children: [
-                _scrollableView(scrollController, state),
-                ResetScrollButton(
-                  scrollController: scrollController,
-                  isLeft: true,
-                ),
-              ],
+            // Pinned NestedScrollView header — see mute_list_view.
+            return Padding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+              child: Stack(
+                children: [
+                  _scrollableView(scrollController, state),
+                  ResetScrollButton(
+                    scrollController: scrollController,
+                    isLeft: true,
+                  ),
+                ],
+              ),
             );
           },
         ),

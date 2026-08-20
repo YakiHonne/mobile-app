@@ -11,9 +11,9 @@ import 'package:open_filex/open_filex.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/dotted_container.dart';
-import 'google_key_recovery_sheet.dart';
+import '../../widgets/fluid_scaffold.dart';
+import 'google_manage_sheet.dart';
 import 'settings_text.dart';
 
 class KeysView extends HookWidget {
@@ -47,12 +47,11 @@ class KeysView extends HookWidget {
   Widget build(BuildContext context) {
     final secretKey = useState(false);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.keys.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.keys.capitalizeFirst(),
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2)
+            .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Text(
             context.t.settingsKeysDesc,
@@ -129,36 +128,29 @@ class KeysView extends HookWidget {
               thickness: 0.5,
               height: kDefaultPadding * 2,
             ),
-            GestureDetector(
-              onTap: () => showGoogleKeyRecoverySheet(context),
-              behavior: HitTestBehavior.translucent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.t.pomRecoverTitle,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        context.t.recoverWithGoogle,
-                        style:
-                            Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  color: Theme.of(context).highlightColor,
-                                ),
-                      ),
-                    ],
-                  ),
-                  Icon(
-                    LucideIcons.chevronRight,
-                    color: Theme.of(context).highlightColor,
-                  ),
-                ],
+            _googleRow(
+              context,
+              title: context.t.pomRecoverTitle,
+              description: context.t.recoverWithGoogle,
+              onTap: () => showGoogleRecoverSheet(context),
+            ),
+            const SizedBox(height: kDefaultPadding),
+            _googleRow(
+              context,
+              title: context.t.pomUnlinkTitle,
+              description: context.t.googleManageUnlinkDesc,
+              onTap: () => showGoogleUnlinkSheet(
+                context,
+                // The key is no longer reachable through Google, so this
+                // account has to go — the user keeps it via the nsec the
+                // unlink flow made them copy first. `onLogoutTap`, not
+                // `removeKey`: the latter leaves `currentSigner` pointing at
+                // the deleted account's remote signer, and leaves this
+                // index flagged Google for whatever key lands there next.
+                onDisconnect: () => settingsCubit.onLogoutTap(
+                  settingsCubit.privateKeyIndex!,
+                  onPop: () {},
+                ),
               ),
             ),
           ],
@@ -172,6 +164,47 @@ class KeysView extends HookWidget {
           ),
           const SizedBox(
             height: kDefaultPadding,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _googleRow(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            LucideIcons.chevronRight,
+            color: Theme.of(context).highlightColor,
           ),
         ],
       ),

@@ -12,7 +12,8 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/common_thumbnail.dart';
-import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/fluid_scaffold.dart';
+import '../../../widgets/fluid_sheet.dart';
 import '../../../widgets/single_image_selector.dart';
 
 class AddBookmarksListView extends HookWidget {
@@ -57,14 +58,13 @@ class AddBookmarksListView extends HookWidget {
 
     return BlocProvider.value(
       value: bookmarksCubit,
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.addBookmarkList.capitalize(),
-        ),
+      child: FluidScaffold(
+        title: context.t.addBookmarkList.capitalize(),
         body: BlocBuilder<DashboardBookmarksCubit, DashboardBookmarksState>(
           builder: (context, state) {
             return ListView(
-              padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding / 2),
+              padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding / 2)
+                  .copyWith(top: fluidScaffoldTopInset(context)),
               children: [
                 const SizedBox(
                   height: kDefaultPadding,
@@ -115,9 +115,8 @@ class AddBookmarksListView extends HookWidget {
                 Builder(
                   builder: (context) {
                     void addImage() {
-                      showModalBottomSheet(
+                      showAppModalSheet(
                         context: context,
-                        isScrollControlled: true,
                         builder: (_) {
                           return SingleImageSelector(
                             onUrlProvided: (url, {imeta}) {
@@ -126,10 +125,7 @@ class AddBookmarksListView extends HookWidget {
                             },
                           );
                         },
-                        backgroundColor: kTransparent,
-                        useRootNavigator: true,
-                        elevation: 0,
-                        useSafeArea: true,
+                        backgroundColor: Theme.of(context).cardColor,
                       );
                     }
 

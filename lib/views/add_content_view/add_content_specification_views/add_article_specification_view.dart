@@ -6,6 +6,7 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/article_widgets/article_details.dart';
@@ -74,18 +75,14 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (_) {
                         return PublishContentFinalStep(
                           appContentType: AppContentType.article,
                           event: article,
                         );
                       },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                     );
@@ -112,18 +109,14 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (_) {
                         return PublishContentFinalStep(
                           appContentType: AppContentType.article,
                           event: article,
                         );
                       },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                     );

@@ -9,7 +9,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import 'qr_code_scanner.dart';
 import 'send_manual_selection.dart';
 import 'send_search_user.dart';
@@ -21,14 +21,17 @@ class SendMainView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.send,
-      ),
-      body: Column(
-        spacing: kDefaultPadding / 4,
-        children: [
-          const Expanded(
+    return FluidScaffold(
+      title: context.t.send,
+      // Padding, not a leading SizedBox: this Column sets `spacing`, which
+      // inserts a gap between every adjacent pair — an extra zero-height child
+      // would add a real gap off the fluid path.
+      body: Padding(
+        padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+        child: Column(
+          spacing: kDefaultPadding / 4,
+          children: [
+            const Expanded(
             child: SendManualSelection(),
           ),
           Padding(
@@ -47,7 +50,8 @@ class SendMainView extends HookWidget {
               ],
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

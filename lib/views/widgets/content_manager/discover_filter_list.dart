@@ -12,6 +12,8 @@ import '../../../utils/utils.dart';
 import '../app_icon.dart';
 import '../custom_icon_buttons.dart';
 import '../dotted_container.dart';
+import '../fluid_pull_down_button.dart';
+import '../fluid_sheet.dart';
 import '../modal_sheet_container.dart';
 import 'add_discover_filter.dart';
 
@@ -72,9 +74,8 @@ class AppFilterList extends StatelessWidget {
               isLoading: false,
               onClicked: () {
                 YNavigator.pop(context);
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
-                  elevation: 0,
                   builder: (_) {
                     if (viewType == ViewDataTypes.articles) {
                       return AddDiscoverFilter(
@@ -90,12 +91,6 @@ class AppFilterList extends StatelessWidget {
                       );
                     }
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  backgroundColor: isFluid()
-                      ? kTransparent
-                      : Theme.of(context).scaffoldBackgroundColor,
                 );
               },
             ),
@@ -132,20 +127,13 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return AddNotesFilter(
                 notesFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: isFluid()
-                ? kTransparent
-                : Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),
@@ -235,18 +223,13 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return AddDiscoverFilter(
                 discoverFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
       ),
@@ -308,17 +291,13 @@ class AppFilterList extends StatelessWidget {
         onEdit: () {
           YNavigator.pop(context);
 
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return AddMediaFilter(
                 mediaFilter: f.value,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -381,8 +360,8 @@ class FilterContainer extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

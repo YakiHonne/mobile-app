@@ -141,8 +141,7 @@ class MediaChoice extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: () async {
         if (mediaType == MediaType.gallery) {
-          final medias =
-              await MediaHandler.selectMultiMediaAndUploadWithData();
+          final medias = await MediaHandler.selectMultiMediaAndUploadWithData();
           if (medias.isNotEmpty) {
             onSuccess.call(medias);
           }

@@ -119,7 +119,7 @@
 //                       Navigator.pop(context);
 //                       Navigator.pop(context);
 
-//                       showModalBottomSheet(
+//                       showAppModalSheet(
 //                         context: context,
 //                         elevation: 0,
 //                         builder: (_) {
@@ -359,7 +359,7 @@
 //       flex: 2,
 //       child: Builder(builder: (context) {
 //         void addImage() {
-//           showModalBottomSheet(
+//           showAppModalSheet(
 //             context: context,
 //             isScrollControlled: true,
 //             builder: (_) {

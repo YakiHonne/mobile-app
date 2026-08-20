@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,6 +22,8 @@ import '../custom_drop_down.dart';
 import '../custom_icon_buttons.dart';
 import '../data_providers.dart';
 import '../dotted_container.dart';
+import '../fluid_sheet.dart';
+import '../fluid_switch.dart';
 import '../modal_sheet_container.dart';
 import '../profile_picture.dart';
 import 'discover_filter_list.dart';
@@ -462,7 +463,7 @@ class AddDiscoverFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -472,13 +473,7 @@ class AddDiscoverFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -673,20 +668,14 @@ class AddDiscoverFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.articles,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1033,7 +1022,7 @@ class AddNotesFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -1043,13 +1032,7 @@ class AddNotesFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -1242,20 +1225,14 @@ class AddNotesFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.notes,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1513,7 +1490,7 @@ class AddMediaFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -1523,13 +1500,7 @@ class AddMediaFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
-          backgroundColor: isFluid()
-              ? Colors.transparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       child: TextFormField(
@@ -1722,20 +1693,14 @@ class AddMediaFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.media,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: isFluid()
-                    ? Colors.transparent
-                    : Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1977,7 +1942,7 @@ class ToggleBox extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: isToggled,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onToggle,

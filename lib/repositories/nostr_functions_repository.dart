@@ -758,7 +758,7 @@ class NostrFunctionsRepository {
       until: until,
     );
 
-    await nc.doQuery(
+    await queryEvents(
       [f1, f2, f3],
       [],
       source: EventsSource.relays,
@@ -892,7 +892,7 @@ class NostrFunctionsRepository {
         c: c,
       );
 
-      await nc.doQuery(
+      await queryEvents(
         [
           if (filters[0] != null) filters[0]!,
           if (filters[1] != null) filters[1]!,
@@ -1441,7 +1441,7 @@ class NostrFunctionsRepository {
 
     final pubkey = currentSigner!.getPublicKey();
 
-    nc.doQuery(
+    queryEvents(
       [
         Filter(
           kinds: [
@@ -2076,7 +2076,7 @@ class NostrFunctionsRepository {
 
     final Map<String, SmartWidget> smartWidgets = {};
 
-    await nc.doQuery(
+    await queryEvents(
       searchFilters,
       [],
       eventCallBack: (event, relay) {
@@ -2778,7 +2778,7 @@ class NostrFunctionsRepository {
     }
 
     try {
-      await nc.doQuery(
+      await queryEvents(
         filters,
         [relay],
         timeOut: 1,
@@ -3053,7 +3053,7 @@ class NostrFunctionsRepository {
     nostrRepository.getTopics();
 
     try {
-      await nc.doQuery(
+      await queryEvents(
         [
           Filter(
             kinds: [EventKind.LONG_FORM],
@@ -3412,7 +3412,7 @@ class NostrFunctionsRepository {
     try {
       final f = feedRelaySet?.urls.toList();
 
-      await nc.doQuery(
+      await queryEvents(
         [
           if (f1 != null) f1,
           if (f2 != null) f2,
@@ -3886,7 +3886,7 @@ class NostrFunctionsRepository {
     try {
       await Future.wait(
         [
-          nc.doQuery(
+          queryEvents(
             [
               Filter(
                 kinds: [
@@ -3916,7 +3916,7 @@ class NostrFunctionsRepository {
               nc.closeSubscription(curationRequestId, relay);
             },
           ),
-          nc.doQuery(
+          queryEvents(
             [
               Filter(
                 kinds: [
@@ -4425,7 +4425,7 @@ class NostrFunctionsRepository {
       kinds: kinds,
     );
 
-    await nc.doQuery(
+    await queryEvents(
       [f1],
       relays ?? [],
       eventCallBack: (newEvent, relay) {
@@ -4434,6 +4434,7 @@ class NostrFunctionsRepository {
         }
       },
       eoseCallBack: (requestId, ok, relay, unCompletedRelays) {
+        lg.i(relay);
         nc.closeSubscription(requestId, relay);
       },
       timeOut: 2,
@@ -4807,6 +4808,45 @@ class NostrFunctionsRepository {
   // =============================================================================
   // EVENT MANAGEMENT
   // =============================================================================
+
+  /// Read counterpart of [sendEvent]: connects the relays that aren't already
+  /// connected, runs the query, and disconnects exactly those again once it
+  /// settles — connections the app already had stay untouched.
+  ///
+  /// Returns the deduplicated events; [eventCallBack] still streams them live.
+  static Future<void> queryEvents(List<Filter> filters, List<String> relays,
+      {int timeOut = 5,
+      int? startingTimeout,
+      bool includeExpired = true,
+      EventsSource source = EventsSource.cacheFirst,
+      void Function(Event, String)? eventCallBack,
+      void Function(String, OKEvent, String, List<String>)?
+          eoseCallBack}) async {
+    final targetRelays = relays.map((e) => Relay.clean(e) ?? e).toList();
+    final missingRelays = nc.missingRelays(targetRelays);
+
+    if (missingRelays.isNotEmpty) {
+      await nc.connectRelays(missingRelays, waitForAuth: true);
+    }
+
+    try {
+      await nc.doQuery(
+        filters,
+        targetRelays,
+        timeOut: timeOut,
+        startingTimeout: startingTimeout,
+        includeExpired: includeExpired,
+        source: source,
+        eventCallBack: eventCallBack,
+      );
+    } catch (e) {
+      lg.e('Error querying events: $e');
+    } finally {
+      if (missingRelays.isNotEmpty) {
+        await nc.closeConnect(missingRelays);
+      }
+    }
+  }
 
   /// Helper method to handle event operations with timer-based completion
   ///

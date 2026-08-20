@@ -8,6 +8,7 @@ import '../../utils/utils.dart';
 import '../settings_view/widgets/settings_text.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
+import 'fluid_sheet.dart';
 import 'modal_sheet_container.dart';
 import 'pull_down_global_button.dart';
 import 'show_raw_event_view.dart';
@@ -113,17 +114,13 @@ class UnsentEventContainer extends StatelessWidget {
     return PullDownGlobalButton(
       enableShowRawEvent: true,
       onShowRawEvent: () {
-        showModalBottomSheet(
-          elevation: 0,
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return ShowRawEventView(
               attachedEvent: e.toJsonString(),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

@@ -149,7 +149,7 @@ class PointsStatContainers extends StatelessWidget {
         if (standard.cooldown == 0) {
           cooldownVal = -1;
           if (standardAction != null) {
-            collectedPoints = standardAction.allTimePoints;
+            collectedPoints = standardAction.allTimePoints.toInt();
           }
         } else {
           if (standardAction != null) {
@@ -164,7 +164,7 @@ class PointsStatContainers extends StatelessWidget {
               cooldownVal = Duration(seconds: remaining).inMinutes;
             }
 
-            collectedPoints = standardAction.allTimePoints;
+            collectedPoints = standardAction.allTimePoints.toInt();
           }
         }
 
@@ -197,7 +197,7 @@ class PointsStatContainers extends StatelessWidget {
         if (standard.cooldown == 0) {
           cooldownVal = -1;
           if (standardAction != null) {
-            collectedPoints = standardAction.allTimePoints;
+            collectedPoints = standardAction.allTimePoints.toInt();
           }
         } else {
           if (standardAction != null) {
@@ -212,7 +212,7 @@ class PointsStatContainers extends StatelessWidget {
               cooldownVal = Duration(seconds: remaining).inMinutes;
             }
 
-            collectedPoints = standardAction.allTimePoints;
+            collectedPoints = standardAction.allTimePoints.toInt();
           }
         }
 
@@ -241,8 +241,8 @@ class PointsStatContainers extends StatelessWidget {
         int count = 0;
 
         if (standardAction != null) {
-          total = standardAction.allTimePoints;
-          count = standardAction.allTimePoints;
+          total = standardAction.allTimePoints.toInt();
+          count = standardAction.allTimePoints.toInt();
         } else {
           total = standard.points.first;
         }
@@ -253,7 +253,7 @@ class PointsStatContainers extends StatelessWidget {
           total: total,
           isCompleted: isCompleted,
           standardAction: standardAction,
-          remainingAttempts: remainingAttempts,
+          remainingAttempts: remainingAttempts.toInt(),
         );
       },
       itemCount: state.userGlobalStats!.onetimePointStandards.values.length,
@@ -281,8 +281,8 @@ class PointsStatContainers extends StatelessWidget {
         int count = 0;
 
         if (standardAction != null) {
-          total = standardAction.allTimePoints;
-          count = standardAction.allTimePoints;
+          total = standardAction.allTimePoints.toInt();
+          count = standardAction.allTimePoints.toInt();
         } else {
           total = standard.points.first;
         }
@@ -293,7 +293,7 @@ class PointsStatContainers extends StatelessWidget {
           total: total,
           isCompleted: isCompleted,
           standardAction: standardAction,
-          remainingAttempts: remainingAttempts,
+          remainingAttempts: remainingAttempts.toInt(),
         );
       },
       childCount: state.userGlobalStats!.onetimePointStandards.values.length,

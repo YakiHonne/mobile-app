@@ -16,6 +16,7 @@ import '../../widgets/content_placeholder.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/empty_list.dart';
 import '../../widgets/fluid_content_card.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 import '../../widgets/tag_container.dart';
 
 final profileDataList = [
@@ -250,7 +251,7 @@ class ProfileOthersFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,

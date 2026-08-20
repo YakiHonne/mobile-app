@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -28,6 +27,8 @@ import '../widgets/content_manager/dicover_settings_views/relay_settings_view.da
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/fluid_sheet.dart';
+import '../widgets/fluid_switch.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import '../widgets/parsed_media_container.dart';
@@ -161,7 +162,7 @@ class AddReply extends HookWidget {
       ValueNotifier<DateTime?> scheduled) {
     return BlocBuilder<WriteNoteCubit, WriteNoteState>(
       builder: (context, state) {
-        return CustomIconButton(
+        return AppIconButton(
           onClicked: () {
             if (isComment ?? false) {
               context.read<WriteNoteCubit>().postComment(
@@ -183,7 +184,7 @@ class AddReply extends HookWidget {
                     useSourceRelay: false,
                     isPaid: false,
                     onPaymentProcess: () {
-                      showModalBottomSheet(
+                      showAppModalSheet(
                         context: context,
                         builder: (_) {
                           return BlocProvider.value(
@@ -193,10 +194,6 @@ class AddReply extends HookWidget {
                             ),
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        elevation: 0,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );
@@ -209,8 +206,7 @@ class AddReply extends HookWidget {
             }
           },
           icon: FeatureIcons.send,
-          size: 20,
-          vd: 0,
+          iconSize: 20,
           iconColor: kWhite,
           backgroundColor: Theme.of(context).primaryColor,
         );
@@ -406,7 +402,7 @@ class NoteSelectedRelay extends StatelessWidget {
                 if (!isExternal) ...[
                   Transform.scale(
                     scale: 0.7,
-                    child: CupertinoSwitch(
+                    child: FluidSwitch(
                       value: useSourceRelay!.value,
                       onChanged: (isToggled) {
                         useSourceRelay!.value = !useSourceRelay!.value;

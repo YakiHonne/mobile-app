@@ -15,6 +15,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
 import '../../views/wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../../views/widgets/fluid_sheet.dart';
 
 part 'smart_widget_app_state.dart';
 
@@ -180,12 +181,8 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
 
   void _showPaymentBottomSheet(
       BuildContext context, Map<String, dynamic> paymentData) {
-    showModalBottomSheet(
-      elevation: 0,
+    showAppModalSheet(
       context: context,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (_) => SendZapsView(
         metadata: Metadata.empty().copyWith(

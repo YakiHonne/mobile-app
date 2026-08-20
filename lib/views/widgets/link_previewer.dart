@@ -18,6 +18,7 @@ import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
 import 'content_renderer/url_type_checker.dart';
 import 'fluid_blur_container.dart';
+import 'fluid_sheet.dart';
 import 'media_components/video_download.dart';
 import 'seek_bar.dart';
 
@@ -631,18 +632,13 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
         _usedUrl = url;
       },
       onDownloadVideo: (url) {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return VideoDownload(
               url: _usedUrl,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          enableDrag: false,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -740,9 +736,7 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
               opacity: _showIcon ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 300),
               child: Icon(
-                _isPlaying
-                    ? LucideIcons.circlePause
-                    : LucideIcons.circlePlay,
+                _isPlaying ? LucideIcons.circlePause : LucideIcons.circlePlay,
                 color: Colors.white.withValues(alpha: 0.8),
                 size: 65,
               ),

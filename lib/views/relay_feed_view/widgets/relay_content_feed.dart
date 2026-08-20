@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -36,8 +37,11 @@ import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
 import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/fluid_content_card.dart';
+import '../../widgets/fluid_glass_tab_bar.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/note_stats.dart';
 import '../../widgets/tag_container.dart';
 import '../../widgets/video_common_container.dart';
@@ -141,10 +145,10 @@ class _RelayContentFeedState extends State<RelayContentFeed>
                     ),
                   ),
                   _relayReviews(context),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: kDefaultPadding),
-                  ),
                   _nip43Action(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: kDefaultPadding / 2),
+                  ),
                   if (!isFluid()) _appbar(context),
                   if (state.onLoading)
                     SliverToBoxAdapter(
@@ -166,8 +170,7 @@ class _RelayContentFeedState extends State<RelayContentFeed>
                 children: [
                   scrollBody,
                   Positioned(
-                    bottom: MediaQuery.of(context).padding.bottom +
-                        kDefaultPadding / 2,
+                    bottom: MediaQuery.of(context).padding.bottom - 5,
                     left: kDefaultPadding / 2,
                     right: kDefaultPadding / 2,
                     child: Align(child: _buildFluidRelayTabBar(context)),
@@ -336,8 +339,7 @@ class _RelayContentFeedState extends State<RelayContentFeed>
                       if (state.isMember) {
                         cubit.leaveRelay();
                       } else {
-                        showModalBottomSheet(
-                          elevation: 0,
+                        showAppModalSheet(
                           context: context,
                           builder: (_) {
                             return BlocProvider.value(
@@ -345,9 +347,6 @@ class _RelayContentFeedState extends State<RelayContentFeed>
                               child: const RequestRelayJoin(),
                             );
                           },
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          useSafeArea: true,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );
@@ -456,30 +455,24 @@ class _RelayContentFeedState extends State<RelayContentFeed>
   }
 
   void _showInviteCodeModal(BuildContext context, String code) {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
       builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
+        return ModalSheetContainer(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2,
           ),
           child: SafeArea(
             top: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2,
-              ),
-              child: Column(
-                children: [
-                  const ModalBottomSheetHandle(),
-                  Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const ModalBottomSheetHandle(),
+                Flexible(
+                  child: SingleChildScrollView(
                     child: Column(
                       spacing: kDefaultPadding,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           context.t.relayInviteCode,
@@ -525,30 +518,30 @@ class _RelayContentFeedState extends State<RelayContentFeed>
                       ],
                     ),
                   ),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  Row(
-                    spacing: kDefaultPadding / 4,
-                    children: [
-                      Expanded(
-                        child: SendOptionsButton(
-                          onClicked: () => YNavigator.pop(context),
-                          title: context.t.close.capitalizeFirst(),
-                          icon: FeatureIcons.closeRaw,
-                          textColor: kWhite,
-                          backgroundColor: kRed,
-                        ),
+                ),
+                const SizedBox(height: kDefaultPadding / 2),
+                Row(
+                  spacing: kDefaultPadding / 4,
+                  children: [
+                    Expanded(
+                      child: SendOptionsButton(
+                        onClicked: () => YNavigator.pop(context),
+                        title: context.t.close.capitalizeFirst(),
+                        icon: FeatureIcons.closeRaw,
+                        textColor: kWhite,
+                        backgroundColor: kRed,
                       ),
-                      Expanded(
-                        child: SendOptionsButton(
-                          onClicked: () => shareContent(text: code),
-                          title: context.t.share.capitalizeFirst(),
-                          icon: FeatureIcons.shareExternal,
-                        ),
+                    ),
+                    Expanded(
+                      child: SendOptionsButton(
+                        onClicked: () => shareContent(text: code),
+                        title: context.t.share.capitalizeFirst(),
+                        icon: FeatureIcons.shareExternal,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );
@@ -615,9 +608,8 @@ class _RelayContentFeedState extends State<RelayContentFeed>
         return SliverToBoxAdapter(
           child: GestureDetector(
             onTap: () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                isScrollControlled: true,
                 backgroundColor: Colors.transparent,
                 builder: (_) => BlocProvider.value(
                   value: context.read<RelayFeedCubit>(),
@@ -660,41 +652,16 @@ class _RelayContentFeedState extends State<RelayContentFeed>
   }
 
   Widget _buildFluidRelayTabBar(BuildContext context) {
-    return FluidBlurContainer(
-      padding: const EdgeInsets.all(3),
-      backgroundAlpha: 0.5,
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabAlignment: TabAlignment.start,
-        dividerHeight: 0,
-        indicatorSize: TabBarIndicatorSize.tab,
-        padding: EdgeInsets.zero,
-        labelPadding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 1.5,
-          vertical: 3,
-        ),
-        indicator: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(300),
-        ),
-        labelStyle: Theme.of(context)
-            .textTheme
-            .labelMedium!
-            .copyWith(fontWeight: FontWeight.w700),
-        unselectedLabelStyle: Theme.of(context)
-            .textTheme
-            .labelMedium!
-            .copyWith(fontWeight: FontWeight.w500),
-        tabs: RelayContentType.values
-            .map(
-              (type) => Tab(
-                height: 28,
-                text: typeName(type: type, context: context).capitalizeFirst(),
-              ),
-            )
-            .toList(),
-      ),
+    return FluidGlassTabBar(
+      floating: true,
+      controller: _tabController,
+      tabs: RelayContentType.values
+          .map(
+            (type) => GlassTab(
+              label: typeName(type: type, context: context).capitalizeFirst(),
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -721,33 +688,24 @@ class RequestRelayJoin extends HookWidget {
     final cubit = context.read<RelayFeedCubit>();
     final textController = useTextEditingController();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
-        maxChildSize: 0.5,
-        expand: false,
-        builder: (context, scrollController) => SafeArea(
+      child: ModalSheetContainer(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 2,
+        ),
+        child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
-            ),
-            child: Column(
-              children: [
-                const ModalBottomSheetHandle(),
-                Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const ModalBottomSheetHandle(),
+              Flexible(
+                child: SingleChildScrollView(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         context.t.joinRelay,
@@ -778,23 +736,23 @@ class RequestRelayJoin extends HookWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: kDefaultPadding / 2),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      cubit.joinRelay(
-                        inviteCode: textController.text,
-                        onSuccess: () {
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                    child: Text(context.t.joinRelay),
-                  ),
+              ),
+              const SizedBox(height: kDefaultPadding / 2),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () {
+                    cubit.joinRelay(
+                      inviteCode: textController.text,
+                      onSuccess: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                  child: Text(context.t.joinRelay),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

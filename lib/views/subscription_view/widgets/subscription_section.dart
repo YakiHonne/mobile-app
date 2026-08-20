@@ -1,23 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../logic/checkout_cubit/checkout_cubit.dart';
 import '../../../logic/subscription_cubit/subscription_cubit.dart';
-import '../../../models/points_system_models.dart';
 import '../../../models/subscription_models.dart';
-import '../../../models/wallet_model.dart';
 import '../../../repositories/http_functions_repository.dart';
 import '../../../utils/bot_toast_util.dart';
+import '../../../utils/theme/custom/buttons_theme.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/dotted_container.dart';
-import '../../widgets/modal_sheet_container.dart';
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
@@ -47,6 +47,7 @@ String fmtSubDate(int ts) {
 // ── Local primitives ──────────────────────────────────────────────────────────
 
 const double _kGroupRadius = 12.0;
+const int _kPaymentsPerPage = 5;
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
@@ -150,7 +151,6 @@ class PlanBadge extends StatelessWidget {
   final String plan;
 
   static const _kOrange = Color(0xFFf97316);
-  static const _kPurple = Color(0xFF697BD8);
 
   @override
   Widget build(BuildContext context) {
@@ -159,9 +159,6 @@ class PlanBadge extends StatelessWidget {
     if (plan == 'premium') {
       bg = _kOrange.withValues(alpha: 0.15);
       fg = _kOrange;
-    } else if (plan == 'business') {
-      bg = _kPurple.withValues(alpha: 0.15);
-      fg = _kPurple;
     } else {
       bg = theme.cardColor;
       fg = theme.hintColor;
@@ -241,96 +238,106 @@ class SubscriptionSection extends StatefulWidget {
 class _SubscriptionSectionState extends State<SubscriptionSection> {
   bool _cancelling = false;
   bool _resuming = false;
+  bool _managingBilling = false;
   String? _changingPlan;
   bool _cancellingChange = false;
+  bool _restoringPurchases = false;
+  bool _restoreValidatedAny = false;
+  bool _restoreOwnedByOtherAccount = false;
+  bool _restoreAnotherActive = false;
 
-  List<PointsRedeemCode> _redeemCodes = [];
-  bool _codesLoading = false;
-  bool _requesting = false;
-  String? _redeemingCode;
+  // Restore purchases re-delivers store transactions through the purchase
+  // stream, so a listener is subscribed only for the duration of an explicit
+  // restore — never persistently — to avoid double-processing transactions
+  // with CheckoutScreen's CheckoutCubit listener when both routes are mounted.
+  StreamSubscription<List<PurchaseDetails>>? _iapSub;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadCodes();
-  }
+  Future<void> _handleRestoreUpdate(List<PurchaseDetails> purchases) async {
+    for (final purchase in purchases) {
+      switch (purchase.status) {
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+          switch (await validateIapPurchase(purchase)) {
+            case IapValidation.valid:
+              _restoreValidatedAny = true;
+            case IapValidation.otherAccount:
+              _restoreOwnedByOtherAccount = true;
+            case IapValidation.anotherActive:
+              // Already subscribed via the companion app — the account is
+              // entitled, so the "already active" branch below covers it.
+              _restoreAnotherActive = true;
+            case IapValidation.invalid:
+              break;
+          }
 
-  Future<void> _loadCodes() async {
-    setState(() => _codesLoading = true);
-    try {
-      final codes = await HttpFunctionsRepository.getRedeemCodes();
-      if (mounted) {
-        setState(() => _redeemCodes = codes);
-      }
-    } catch (_) {
-    } finally {
-      if (mounted) {
-        setState(() => _codesLoading = false);
+        case PurchaseStatus.pending:
+        case PurchaseStatus.error:
+        case PurchaseStatus.canceled:
+          break;
       }
     }
   }
 
-  Future<void> _requestCode() async {
-    setState(() => _requesting = true);
-    try {
-      await HttpFunctionsRepository.requestRedeemCode();
-      if (mounted) {
-        BotToastUtils.showSuccess(context.t.points_request_success);
-      }
-      await _loadCodes();
-    } on DioException catch (e) {
-      if (mounted) {
-        BotToastUtils.showError(
-          (e.response?.data as Map<String, dynamic>?)?['message'] as String? ??
-              context.t.points_request_error,
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        BotToastUtils.showError(context.t.points_request_error);
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _requesting = false);
-      }
-    }
+  /// Re-reads status from the backend (not the cached state, which predates
+  /// the restore) and reports whether the account is already entitled.
+  Future<bool> _hasActiveSubscription() async {
+    await subscriptionCubit.refreshStatus();
+    final status = subscriptionCubit.state.subscriptionStatus;
+    return status != null && status.active;
   }
 
-  Future<void> _redeemCode(PointsRedeemCode code) async {
-    final lightningAddress = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _RedeemCodeSheet(code: code),
+  Future<void> _restorePurchases() async {
+    setState(() => _restoringPurchases = true);
+    _restoreValidatedAny = false;
+    _restoreOwnedByOtherAccount = false;
+    _restoreAnotherActive = false;
+    _iapSub = InAppPurchase.instance.purchaseStream.listen(
+      _handleRestoreUpdate,
+      onError: (_) {},
     );
-    if (lightningAddress == null || lightningAddress.isEmpty) {
-      return;
-    }
-    setState(() => _redeemingCode = code.code);
+    var restoreThrew = false;
     try {
-      await HttpFunctionsRepository.redeemPointsCode(
-        code: code.code,
-        lightningAddress: lightningAddress,
-      );
-      if (mounted) {
-        BotToastUtils.showSuccess(context.t.points_redeem_success);
-      }
-      await _loadCodes();
-    } on DioException catch (e) {
-      if (mounted) {
-        BotToastUtils.showError(
-          (e.response?.data as Map<String, dynamic>?)?['message'] as String? ??
-              context.t.points_redeem_error,
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        BotToastUtils.showError(context.t.points_redeem_error);
-      }
+      await InAppPurchase.instance.restorePurchases();
+      // The store may deliver transactions slightly after the restore future
+      // resolves — keep listening briefly so late events are still handled.
+      await Future<void>.delayed(const Duration(seconds: 2));
+    } catch (e) {
+      restoreThrew = true;
+      lg.i('[IAP] restorePurchases error: $e');
     } finally {
+      await _iapSub?.cancel();
+      _iapSub = null;
+
+      // Entitlement lives on the account, not on this app's store queue: a
+      // subscription bought in the companion app never appears in this app's
+      // receipts, so an empty queue is not proof the user isn't subscribed.
+      // Re-check the backend before reporting failure.
+      // A "another subscription is active" rejection is itself proof of
+      // entitlement, so it needs no extra status round-trip.
+      final alreadyEntitled = !_restoreValidatedAny &&
+          !_restoreOwnedByOtherAccount &&
+          (_restoreAnotherActive || await _hasActiveSubscription());
+
       if (mounted) {
-        setState(() => _redeemingCode = null);
+        setState(() => _restoringPurchases = false);
+        if (_restoreValidatedAny) {
+          subscriptionCubit.refreshStatus();
+        } else if (alreadyEntitled) {
+          BotToastUtils.showSuccess(context.t.pricing_restore_already_active);
+        } else if (_restoreOwnedByOtherAccount) {
+          // The store had a valid purchase but the backend has it bound to a
+          // different pubkey. Retrying can never succeed, so say why rather
+          // than showing the "nothing found" message.
+          BotToastUtils.showError(context.t.pricing_restore_other_account);
+        } else {
+          // A store failure and an empty queue are different outcomes: the
+          // first is worth retrying, the second means there is nothing to find.
+          BotToastUtils.showError(
+            restoreThrew
+                ? context.t.pricing_error_restore_failed
+                : context.t.pricing_restore_nothing,
+          );
+        }
       }
     }
   }
@@ -360,6 +367,19 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
     }
     if (mounted) {
       setState(() => _resuming = false);
+    }
+  }
+
+  Future<void> _manageBilling() async {
+    setState(() => _managingBilling = true);
+    final url = await HttpFunctionsRepository.subscriptionGetBillingPortal();
+    if (mounted) {
+      setState(() => _managingBilling = false);
+    }
+    if (url != null) {
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      BotToastUtils.showError(context.t.sub_action_failed);
     }
   }
 
@@ -495,6 +515,16 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
                         label: context.t.sub_last_payment,
                         trailing: Text(fmtSubDate(s.lastSubscription),
                             style: theme.textTheme.bodySmall)),
+                  if (showStripeControls)
+                    _BillingActionsGroup(
+                      status: s,
+                      cancelling: _cancelling,
+                      resuming: _resuming,
+                      managingBilling: _managingBilling,
+                      onCancel: () => _showCancelConfirm(context, s),
+                      onResume: _resume,
+                      onManageBilling: _manageBilling,
+                    ),
                 ],
               ),
             ],
@@ -512,16 +542,9 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
                   changingPlan: _changingPlan,
                   onChangePlan: _changePlan),
             ],
-            if (s.inTrial || showStripeControls) ...[
+            if (s.inTrial) ...[
               _SectionLabel(context.t.sub_actions),
-              _SubActionsGroup(
-                status: s,
-                cancelling: _cancelling,
-                resuming: _resuming,
-                onCancel: () => _showCancelConfirm(context, s),
-                onResume: _resume,
-                onUpgrade: widget.onUpgrade,
-              ),
+              _SubActionsGroup(onUpgrade: widget.onUpgrade),
             ],
             if (kIapEnabled && isIapActive) ...[
               _SectionLabel(context.t.pricing_manage_on_store),
@@ -551,15 +574,11 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
                 ),
               ),
             ],
-            if (s.active && !s.inTrial) ...[
-              _SectionLabel(context.t.points_redeem_codes),
-              _RedeemCodesSection(
-                codes: _redeemCodes,
-                loading: _codesLoading,
-                requesting: _requesting,
-                redeemingCode: _redeemingCode,
-                onRequest: _requestCode,
-                onRedeem: _redeemCode,
+            if (kIapEnabled) ...[
+              _SectionLabel(context.t.pricing_restore_purchases),
+              _RestorePurchasesButton(
+                restoring: _restoringPurchases,
+                onRestore: _restorePurchases,
               ),
             ],
             _SectionLabel(context.t.sub_payment_history),
@@ -813,22 +832,25 @@ class _PlanSwitcherGroup extends StatelessWidget {
                                 style: theme.textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.w700)),
                             if (isCurrent)
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: kDefaultPadding / 4,
-                                    vertical: 1),
-                                decoration: BoxDecoration(
-                                  color: theme.primaryColor
-                                      .withValues(alpha: 0.12),
-                                  borderRadius:
-                                      BorderRadius.circular(kDefaultPadding),
-                                ),
-                                child: Text(
-                                  context.t.sub_current,
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      color: theme.primaryColor,
-                                      fontWeight: FontWeight.w700),
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: kDefaultPadding / 4,
+                                      vertical: 1),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor
+                                        .withValues(alpha: 0.12),
+                                    borderRadius:
+                                        BorderRadius.circular(kDefaultPadding),
+                                  ),
+                                  child: Text(
+                                    context.t.sub_current,
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        color: theme.primaryColor,
+                                        fontWeight: FontWeight.w700),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                           ],
@@ -880,16 +902,26 @@ class _PlanSwitcherGroup extends StatelessWidget {
                   horizontal: kDefaultPadding / 2 + 4,
                   vertical: kDefaultPadding / 2),
               decoration: BoxDecoration(
-                color: theme.cardColor,
+                color: theme.primaryColor.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(_kGroupRadius),
-                border: Border.all(color: theme.dividerColor, width: 0.5),
+                border: Border.all(
+                    color: theme.primaryColor.withValues(alpha: 0.35)),
               ),
-              child: Text(
-                s.lastPaymentMethod == 'lightning'
-                    ? context.t.sub_note_lightning
-                    : context.t.sub_note_stripe,
-                style:
-                    theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+              child: Row(
+                children: [
+                  Icon(LucideIcons.lightbulb,
+                      size: 18, color: theme.primaryColor),
+                  const SizedBox(width: kDefaultPadding / 2),
+                  Expanded(
+                    child: Text(
+                      s.lastPaymentMethod == 'lightning'
+                          ? context.t.sub_note_lightning
+                          : context.t.sub_note_stripe,
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.primaryColor),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -902,59 +934,117 @@ class _PlanSwitcherGroup extends StatelessWidget {
 // ── Sub actions group ─────────────────────────────────────────────────────────
 
 class _SubActionsGroup extends StatelessWidget {
-  const _SubActionsGroup({
+  const _SubActionsGroup({required this.onUpgrade});
+
+  final VoidCallback onUpgrade;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: SizedBox(
+        width: double.infinity,
+        child: TextButton(
+          onPressed: onUpgrade,
+          child: Text(context.t.sub_upgrade_now),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Billing actions group ─────────────────────────────────────────────────────
+
+class _BillingActionsGroup extends StatelessWidget {
+  const _BillingActionsGroup({
     required this.status,
     required this.cancelling,
     required this.resuming,
+    required this.managingBilling,
     required this.onCancel,
     required this.onResume,
-    required this.onUpgrade,
+    required this.onManageBilling,
   });
 
   final SubscriptionStatus status;
   final bool cancelling;
   final bool resuming;
+  final bool managingBilling;
   final VoidCallback onCancel;
   final VoidCallback onResume;
-  final VoidCallback onUpgrade;
+  final VoidCallback onManageBilling;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final s = status;
-    final isStripeActive = s.lastPaymentMethod == 'stripe' && s.active;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      padding: const EdgeInsets.all(kDefaultPadding / 2 + 2),
+      child: Row(
         children: [
-          if (s.inTrial)
-            TextButton(
-                onPressed: onUpgrade, child: Text(context.t.sub_upgrade_now)),
-          if (isStripeActive) ...[
-            if (s.inTrial) const SizedBox(height: kDefaultPadding / 2 - 2),
-            if (s.cancelAtPeriodEnd) ...[
-              OutlinedButton(
-                onPressed: resuming ? null : onResume,
-                child: resuming
-                    ? SpinKitCircle(color: theme.primaryColor, size: 16)
-                    : Text(context.t.sub_resume),
-              ),
-            ] else ...[
-              OutlinedButton(
-                onPressed: cancelling ? null : onCancel,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: BorderSide(color: Colors.red.withValues(alpha: 0.4)),
-                ),
-                child: cancelling
-                    ? const SpinKitCircle(color: Colors.red, size: 16)
-                    : Text(context.t.sub_cancel),
-              ),
-            ],
-          ],
+          Expanded(
+            child: TextButton(
+              onPressed: managingBilling ? null : onManageBilling,
+              style: TbuttonsTheme.solidTextButtonStyle(theme.primaryColor),
+              child: managingBilling
+                  ? const SpinKitCircle(color: kWhite, size: 16)
+                  : Text(context.t.sub_manage_billing),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 2 - 2),
+          Expanded(
+            child: s.cancelAtPeriodEnd
+                ? TextButton(
+                    onPressed: resuming ? null : onResume,
+                    style:
+                        TbuttonsTheme.solidTextButtonStyle(theme.primaryColor),
+                    child: resuming
+                        ? const SpinKitCircle(color: kWhite, size: 16)
+                        : Text(context.t.sub_resume),
+                  )
+                : TextButton(
+                    onPressed: cancelling ? null : onCancel,
+                    style: TbuttonsTheme.solidTextButtonStyle(
+                      Colors.red,
+                      borderColor: Colors.red,
+                    ),
+                    child: cancelling
+                        ? const SpinKitCircle(color: kWhite, size: 16)
+                        : Text(context.t.cancel.capitalizeFirst()),
+                  ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Restore purchases button ─────────────────────────────────────────────────
+
+class _RestorePurchasesButton extends StatelessWidget {
+  const _RestorePurchasesButton({
+    required this.restoring,
+    required this.onRestore,
+  });
+
+  final bool restoring;
+  final VoidCallback onRestore;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: restoring ? null : onRestore,
+          icon: restoring
+              ? SpinKitCircle(color: theme.primaryColor, size: 14)
+              : const Icon(LucideIcons.rotateCcw, size: 18),
+          label: Text(context.t.pricing_restore_purchases),
+        ),
       ),
     );
   }
@@ -990,7 +1080,7 @@ class _ManageOnStoreButton extends StatelessWidget {
 
 // ── Payment history group ─────────────────────────────────────────────────────
 
-class _PaymentHistoryGroup extends StatelessWidget {
+class _PaymentHistoryGroup extends HookWidget {
   const _PaymentHistoryGroup({required this.history});
   final List<SubscriptionPaymentRecord> history;
 
@@ -1018,461 +1108,73 @@ class _PaymentHistoryGroup extends StatelessWidget {
       );
     }
 
+    final records = history.reversed.toList();
+    final totalPages = (records.length / _kPaymentsPerPage).ceil();
+    final page = useState(0);
+    final currentPage = page.value >= totalPages ? totalPages - 1 : page.value;
+
     return _GroupCard(
-      children: history.reversed.map((entry) {
-        return _Row(
-          label: fmtSubDate(entry.lastSubscription),
-          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-            PaymentMethodLabel(method: entry.lastPaymentMethod),
-            const SizedBox(width: kDefaultPadding / 2),
-            PlanBadge(plan: entry.plan),
-          ]),
-        );
-      }).toList(),
-    );
-  }
-}
-
-// ── Redeem Codes Section ─────────────────────────────────────────────────────
-
-// ── Redeem Code Sheet ────────────────────────────────────────────────────────
-
-class _RedeemCodeSheet extends StatefulWidget {
-  const _RedeemCodeSheet({required this.code});
-  final PointsRedeemCode code;
-
-  @override
-  State<_RedeemCodeSheet> createState() => _RedeemCodeSheetState();
-}
-
-class _RedeemCodeSheetState extends State<_RedeemCodeSheet> {
-  final _controller = TextEditingController();
-  WalletModel? _selectedWallet;
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _selectWallet(WalletModel wallet) {
-    setState(() {
-      if (_selectedWallet?.id == wallet.id) {
-        _selectedWallet = null;
-        _controller.clear();
-      } else {
-        _selectedWallet = wallet;
-        _controller.text = wallet.lud16;
-      }
-    });
-  }
-
-  void _confirm() {
-    final address = _controller.text.trim();
-    if (address.isEmpty) {
-      return;
-    }
-    Navigator.of(context).pop(address);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final viewInsets = MediaQuery.of(context).viewInsets.bottom;
-    final wallets = walletManagerCubit.state.wallets.values
-        .where((w) => w.lud16.isNotEmpty)
-        .toList();
-
-    return ModalSheetContainer(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: viewInsets),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: kDefaultPadding / 2),
-              child: Center(child: ModalBottomSheetHandle()),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                kDefaultPadding,
-                kDefaultPadding / 2,
-                kDefaultPadding,
-                0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.t.points_redeem_action,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: kDefaultPadding / 4),
-                  Text(
-                    context.t.points_enter_lightning,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: theme.hintColor),
-                  ),
-                ],
-              ),
-            ),
-            if (wallets.isNotEmpty) ...[
-              const SizedBox(height: kDefaultPadding),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding,
-                ),
-                child: Text(
-                  context.t.lightningAddress.toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.hintColor,
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: kDefaultPadding / 4),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
-                    border: Border.all(
-                      color: theme.dividerColor,
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < wallets.length; i++) ...[
-                        _WalletTile(
-                          wallet: wallets[i],
-                          isSelected: _selectedWallet?.id == wallets[i].id,
-                          onTap: () => _selectWallet(wallets[i]),
-                        ),
-                        if (i < wallets.length - 1)
-                          Divider(
-                            height: 0.5,
-                            thickness: 0.5,
-                            indent: kDefaultPadding,
-                            color: theme.dividerColor,
-                          ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: kDefaultPadding / 2,
-                  horizontal: kDefaultPadding,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: theme.dividerColor,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: kDefaultPadding / 2,
-                      ),
-                      child: Text(
-                        context.t.or,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: theme.hintColor),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: theme.dividerColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ] else
-              const SizedBox(height: kDefaultPadding),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding,
-              ),
-              child: TextField(
-                controller: _controller,
-                onChanged: (_) {
-                  if (_selectedWallet != null &&
-                      _controller.text != _selectedWallet!.lud16) {
-                    setState(() => _selectedWallet = null);
-                  }
-                },
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'user@wallet.com',
-                  prefixIcon: Icon(
-                    LucideIcons.zap,
-                    color: theme.hintColor,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                kDefaultPadding,
-                kDefaultPadding,
-                kDefaultPadding,
-                kDefaultPadding,
-              ),
-              child: Row(
-                spacing: kDefaultPadding / 2,
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(context.t.cancel.capitalizeFirst()),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: TextButton(
-                      onPressed: _confirm,
-                      child: Text(context.t.points_redeem_action),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _WalletTile extends StatelessWidget {
-  const _WalletTile({
-    required this.wallet,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final WalletModel wallet;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 2,
-          vertical: kDefaultPadding * 0.75,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? theme.primaryColor.withValues(alpha: 0.12)
-                    : theme.scaffoldBackgroundColor,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? theme.primaryColor.withValues(alpha: 0.5)
-                      : theme.dividerColor,
-                  width: isSelected ? 1.5 : 0.5,
-                ),
-              ),
-              child: Icon(
-                LucideIcons.wallet,
-                size: 18,
-                color: isSelected ? theme.primaryColor : theme.hintColor,
-              ),
-            ),
-            const SizedBox(width: kDefaultPadding / 2),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    wallet.name,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    wallet.lud16,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.hintColor,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            if (isSelected)
-              Icon(
-                LucideIcons.circleCheck,
-                size: 18,
-                color: theme.primaryColor,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Redeem Codes Section ─────────────────────────────────────────────────────
-
-class _RedeemCodesSection extends StatelessWidget {
-  const _RedeemCodesSection({
-    required this.codes,
-    required this.loading,
-    required this.requesting,
-    required this.redeemingCode,
-    required this.onRequest,
-    required this.onRedeem,
-  });
-
-  final List<PointsRedeemCode> codes;
-  final bool loading;
-  final bool requesting;
-  final String? redeemingCode;
-  final VoidCallback onRequest;
-  final ValueChanged<PointsRedeemCode> onRedeem;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: requesting ? null : onRequest,
-              icon: requesting
-                  ? SpinKitCircle(color: theme.primaryColor, size: 14)
-                  : const Icon(LucideIcons.plus, size: 18),
-              label: Text(context.t.points_request_code),
-            ),
+      children: [
+        for (final entry in records
+            .skip(currentPage * _kPaymentsPerPage)
+            .take(_kPaymentsPerPage))
+          _Row(
+            label: fmtSubDate(entry.lastSubscription),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              PaymentMethodLabel(method: entry.lastPaymentMethod),
+              const SizedBox(width: kDefaultPadding / 2),
+              PlanBadge(plan: entry.plan),
+            ]),
           ),
-          if (loading)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: Center(child: SpinKitCircle(color: theme.primaryColorDark, size: 32)),
-            )
-          else if (codes.isEmpty)
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-              child: Text(
-                context.t.points_no_codes,
-                style:
-                    theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
-              ),
-            )
-          else
-            Container(
-              margin: const EdgeInsets.only(top: kDefaultPadding / 2),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(_kGroupRadius),
-                border: Border.all(color: theme.dividerColor, width: 0.5),
-              ),
-              child: Column(
-                children: [
-                  for (int i = 0; i < codes.length; i++) ...[
-                    _RedeemCodeRow(
-                      code: codes[i],
-                      isRedeeming: redeemingCode == codes[i].code,
-                      onRedeem: () => onRedeem(codes[i]),
-                    ),
-                    if (i < codes.length - 1)
-                      Divider(
-                        height: 0.5,
-                        thickness: 0.5,
-                        indent: kDefaultPadding,
-                        color: theme.dividerColor,
-                      ),
-                  ],
-                ],
-              ),
-            ),
-          const SizedBox(height: kDefaultPadding / 2),
-        ],
-      ),
+        if (totalPages > 1)
+          _PaginationBar(
+            page: currentPage,
+            totalPages: totalPages,
+            onPrevious:
+                currentPage > 0 ? () => page.value = currentPage - 1 : null,
+            onNext: currentPage < totalPages - 1
+                ? () => page.value = currentPage + 1
+                : null,
+          ),
+      ],
     );
   }
 }
 
-class _RedeemCodeRow extends StatelessWidget {
-  const _RedeemCodeRow({
-    required this.code,
-    required this.isRedeeming,
-    required this.onRedeem,
+class _PaginationBar extends StatelessWidget {
+  const _PaginationBar({
+    required this.page,
+    required this.totalPages,
+    required this.onPrevious,
+    required this.onNext,
   });
-
-  final PointsRedeemCode code;
-  final bool isRedeeming;
-  final VoidCallback onRedeem;
+  final int page;
+  final int totalPages;
+  final VoidCallback? onPrevious;
+  final VoidCallback? onNext;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isRedeemed = code.status;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding,
-        vertical: kDefaultPadding * 0.75,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  code.code,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'monospace',
-                  ),
-                ),
-                Text(
-                  '${code.amount} sats · ${isRedeemed ? context.t.points_code_redeemed : context.t.points_code_pending}',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: isRedeemed ? Colors.green : theme.hintColor,
-                  ),
-                ),
-              ],
-            ),
+          IconButton(
+            onPressed: onPrevious,
+            icon: const Icon(LucideIcons.chevronLeft, size: 18),
+            tooltip: 'Previous',
           ),
-          if (!isRedeemed)
-            isRedeeming
-                ? SpinKitCircle(color: theme.primaryColor, size: 16)
-                : TextButton(
-                    onPressed: onRedeem,
-                    child: Text(context.t.points_redeem_action),
-                  ),
+          Text(
+            '${page + 1} / $totalPages',
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+          ),
+          IconButton(
+            onPressed: onNext,
+            icon: const Icon(LucideIcons.chevronRight, size: 18),
+            tooltip: 'Next',
+          ),
         ],
       ),
     );

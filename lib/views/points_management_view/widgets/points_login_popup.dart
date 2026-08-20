@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
+import '../../../utils/theme/custom/buttons_theme.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/fluid_blur_container.dart';
 
@@ -287,6 +288,8 @@ class YakiLoginChest extends StatelessWidget {
                 );
               }
             },
+            style: TbuttonsTheme.solidTextButtonStyle(
+                Theme.of(context).primaryColor),
             child: Text(context.t.login.capitalizeFirst()),
           ),
         ),

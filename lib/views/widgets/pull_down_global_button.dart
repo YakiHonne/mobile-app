@@ -9,6 +9,7 @@ import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
 import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
+import 'fluid_pull_down_button.dart';
 
 class PullDownGlobalButton extends StatelessWidget {
   const PullDownGlobalButton({
@@ -181,7 +182,7 @@ class PullDownGlobalButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = themeCubit.isDark;
 
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

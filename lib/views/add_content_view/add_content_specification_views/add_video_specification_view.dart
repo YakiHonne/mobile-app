@@ -5,6 +5,7 @@ import '../../../logic/write_video_cubit/write_video_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/video_widgets/video_specifications.dart';
@@ -66,18 +67,14 @@ class AddVideoSpecificationView extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pop(context);
 
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return PublishContentFinalStep(
                     appContentType: AppContentType.video,
                     event: video,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },

@@ -8,9 +8,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../logic/search_user_cubit/search_user_cubit.dart';
 import '../../../../utils/utils.dart';
 import '../../../search_view/search_view.dart';
-import '../../custom_app_bar.dart';
 import '../../dotted_container.dart';
 import '../../empty_list.dart';
+import '../../fluid_scaffold.dart';
 import '../../modal_sheet_container.dart';
 
 class SearchPackUsers extends HookWidget {
@@ -169,7 +169,15 @@ class SearchPackUsers extends HookWidget {
         horizontal: kDefaultPadding / 2,
       ),
       child: CustomScrollView(
-        slivers: children,
+        slivers: [
+          // Modal path renders in a sheet, not a FluidScaffold — no bar to
+          // clear there.
+          if (!isModal)
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
+          ...children,
+        ],
       ),
     );
 
@@ -196,10 +204,8 @@ class SearchPackUsers extends HookWidget {
 
     return BlocProvider(
       create: (context) => SearchUserCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.contacts,
-        ),
+      child: FluidScaffold(
+        title: context.t.contacts,
         body: view,
       ),
     );

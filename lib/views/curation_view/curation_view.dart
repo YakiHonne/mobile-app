@@ -22,9 +22,10 @@ import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/content_renderer/content_renderer.dart';
 import '../widgets/content_stats.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/media_components/horizontal_video_view.dart';
 import '../widgets/media_components/vertical_video_view.dart';
 import '../widgets/no_content_widgets.dart';
@@ -63,9 +64,11 @@ class CurationView extends HookWidget {
       )..initView(),
       child: BlocBuilder<CurationCubit, CurationState>(
         builder: (context, state) {
-          return Scaffold(
-            appBar: CustomAppBar(title: context.t.curation.capitalizeFirst()),
-            bottomNavigationBar: Visibility(
+          return FluidScaffold(
+            title: context.t.curation.capitalizeFirst(),
+            bottomBarHeight: kBottomNavigationBarHeight +
+                MediaQuery.of(context).padding.bottom,
+            bottomBar: Visibility(
               visible: !isUserMuted(curation.pubkey),
               maintainSize: true,
               maintainAnimation: true,
@@ -136,6 +139,9 @@ class CurationContentView extends StatelessWidget {
         controller: scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
             _curationInfoContainer(),
             SliverToBoxAdapter(
               child: Padding(
@@ -545,8 +551,8 @@ class CurationHeader extends HookWidget {
       BuildContext context, Metadata metadata, CurationState state) {
     return CustomizedIconButton(
       onClicked: () {
-        showModalBottomSheet(
-          elevation: 0,
+        showAppModalSheet(
+     
           context: context,
           builder: (_) {
             return SendZapsView(
@@ -557,9 +563,7 @@ class CurationHeader extends HookWidget {
                   '${curation.kind}:${curation.pubkey}:${curation.identifier}',
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
+      
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

@@ -31,23 +31,23 @@ class ToolsView extends StatelessWidget {
       create: (context) => ToolsCubit(),
       child: ModalSheetContainer(
         child: DraggableScrollableSheet(
-            expand: false,
-            maxChildSize: 0.95,
-            minChildSize: 0.7,
-            initialChildSize: 0.95,
-            builder: (context, scrollController) => Column(
-              children: [
-                _titleContainer(context),
-                Expanded(
-                  child: ToolList(
-                    onContentAdded: onContentAdded,
-                    scrollController: scrollController,
-                  ),
-                )
-              ],
-            ),
+          expand: false,
+          maxChildSize: 0.95,
+          minChildSize: 0.7,
+          initialChildSize: 0.95,
+          builder: (context, scrollController) => Column(
+            children: [
+              _titleContainer(context),
+              Expanded(
+                child: ToolList(
+                  onContentAdded: onContentAdded,
+                  scrollController: scrollController,
+                ),
+              )
+            ],
           ),
         ),
+      ),
     );
   }
 
@@ -99,10 +99,12 @@ class ToolList extends HookWidget {
     super.key,
     required this.onContentAdded,
     required this.scrollController,
+    this.physics,
   });
 
   final Function(String) onContentAdded;
   final ScrollController scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {

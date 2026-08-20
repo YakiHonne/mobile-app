@@ -14,6 +14,7 @@ import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/profile_picture.dart';
 
 class ArticleHeader extends StatelessWidget {
@@ -107,8 +108,7 @@ class ArticleHeader extends StatelessWidget {
           ),
           AppIconButton(
             onClicked: () {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return SendZapsView(
@@ -119,9 +119,6 @@ class ArticleHeader extends StatelessWidget {
                         '${EventKind.LONG_FORM}:${article.pubkey}:${article.identifier}',
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },

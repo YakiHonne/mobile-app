@@ -14,6 +14,7 @@ import '../../main_view/widgets/profile_share_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/subscription_badge_view.dart';
 import 'profile_connections_view.dart';
 
@@ -119,9 +120,8 @@ class ProfileHeader extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return BlocProvider.value(
                   value: context.read<ProfileCubit>(),
@@ -130,9 +130,6 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -282,6 +279,7 @@ class _CreatorSubscribeButton extends StatelessWidget {
         if (kIapEnabled || state.isSameUser) {
           return const SizedBox.shrink();
         }
+
         if (state.isCreatorSubscriptionLoading) {
           return const SizedBox.shrink();
         }

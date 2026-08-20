@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_bool_literals_in_conditional_expressions
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,7 @@ import '../subscription_view/subscription_view.dart';
 import '../threads_view/threads_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../write_note_view/write_note_view.dart';
+import './fluid_pull_down_button.dart';
 import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'container_boxes.dart';
@@ -47,6 +49,7 @@ import 'custom_icon_buttons.dart';
 import 'data_providers.dart';
 import 'dotted_container.dart';
 import 'fluid_blur_container.dart';
+import 'fluid_sheet.dart';
 import 'loading_indicators.dart';
 import 'modal_sheet_container.dart';
 import 'no_content_widgets.dart';
@@ -55,7 +58,6 @@ import 'parsed_media_container.dart';
 import 'profile_picture.dart';
 import 'pull_down_global_button.dart';
 import 'response_snackbar.dart';
-import 'sheet_drag_to_close.dart';
 import 'subscription_badge_view.dart';
 import 'zappers_view.dart';
 
@@ -233,8 +235,10 @@ class NoteStats extends HookWidget {
                               enableDelete: canSign() &&
                                   currentSigner!.getPublicKey() == model.pubkey,
                               enableRepublish: true,
-                              enablePin:
-                                  canSign() && model is DetailedNoteModel,
+                              enablePin: canSign() &&
+                                  model is DetailedNoteModel &&
+                                  (model as DetailedNoteModel).pubkey ==
+                                      currentSigner!.getPublicKey(),
                               onDelete: () {
                                 showCupertinoDeletionDialogue(
                                   context: context,
@@ -269,6 +273,7 @@ class NoteStats extends HookWidget {
                               muteEventStatus:
                                   state.mutesEvents.contains(model.id),
                               iconColor: Theme.of(context).highlightColor,
+                              iconBackgroundColor: kTransparent,
                               muteStatus: state.mutes.contains(model.pubkey),
                             );
                           },
@@ -416,27 +421,21 @@ class NoteStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return NetStatsView(
               id: model.id,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 final m = model;
                 bool isComment = false;
@@ -457,10 +456,6 @@ class NoteStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -485,19 +480,14 @@ class NoteStats extends HookWidget {
       onLongPress: isFluid()
           ? null
           : () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return NetStatsView(
                     id: model.id,
                     type: NoteRelatedEventsType.reposts,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
       onClicked: () {
@@ -537,9 +527,8 @@ class NoteStats extends HookWidget {
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 if (model is DetailedNoteModel) {
                   final m = model as DetailedNoteModel;
@@ -588,12 +577,6 @@ class NoteStats extends HookWidget {
                   );
                 }
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: isFluid()
-                  ? kTransparent
-                  : Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -631,7 +614,7 @@ class NoteStats extends HookWidget {
     dynamic selfQuote,
   ) {
     final count = (reposts as Map).length + (quotes as Map).length;
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -655,9 +638,8 @@ class NoteStats extends HookWidget {
           title: context.t.quote.capitalizeFirst(),
           onTap: () => doIfCanSign(
             func: () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   final m = model;
                   bool isComment = false;
@@ -677,10 +659,6 @@ class NoteStats extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
             context: context,
@@ -721,17 +699,12 @@ class NoteStats extends HookWidget {
       size: 16,
       iconColor: Theme.of(context).highlightColor,
       onClicked: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) => _NoteStatsModal(
             id: model.id,
             zappers: zappers,
           ),
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Colors.transparent,
         );
       },
     );
@@ -752,18 +725,13 @@ class ZappersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final commonPubkeys = zapData['nextBestPubkeys'] as List;
     void openZappersList() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
-        elevation: 0,
         builder: (_) {
           return ZappersView(
             zappers: zappers,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -945,8 +913,8 @@ class ZappersRow extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context, Metadata metadata) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context, Metadata metadata) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -986,8 +954,7 @@ class ZappersRow extends StatelessWidget {
       onTap: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              elevation: 0,
+            showAppModalSheet(
               context: context,
               builder: (_) {
                 return SendZapsView(
@@ -996,10 +963,6 @@ class ZappersRow extends StatelessWidget {
                   zapSplits: const [],
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -1143,8 +1106,7 @@ class ZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(eventPubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return SendZapsView(
@@ -1163,10 +1125,6 @@ class ZapButton extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1202,18 +1160,13 @@ class ZapButton extends HookWidget {
             ? null
             : () {
                 if (zappers.isNotEmpty) {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
-                    elevation: 0,
                     builder: (_) {
                       return ZappersView(
                         zappers: zappers,
                       );
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 }
               },
@@ -1486,19 +1439,14 @@ class CustomReactionButton extends HookWidget {
       imageUrl: getCustomEmoji(event.value),
       onLongPress: enableLongPress
           ? () {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return NetStatsView(
                     id: id,
                     type: NoteRelatedEventsType.reactions,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           : null,
@@ -1588,19 +1536,14 @@ class RepostNoteContainer extends HookWidget {
     );
 
     void onClicked() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
-        elevation: 0,
         builder: (_) {
           return NetStatsView(
             id: repostedEventId.value,
             type: NoteRelatedEventsType.reposts,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -1881,17 +1824,7 @@ class DetailedNoteContainer extends HookWidget {
       return core;
     }
 
-    return Container(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
-        color: kPremiumColor.withValues(alpha: 0.06),
-        border: Border.all(
-          color: kPremiumColor.withValues(alpha: 0.4),
-        ),
-      ),
-      child: core,
-    );
+    return PremiumContainer(child: core);
   }
 
   Column _mainColumn(
@@ -1945,6 +1878,7 @@ class DetailedNoteContainer extends HookWidget {
             onClicked: click,
             pubkey: note.pubkey,
             text: noteContent.value.trim(),
+            emojis: note.emojis,
             enableHidingMedia: true,
             style: noRender
                 ? Theme.of(context).textTheme.labelLarge
@@ -2032,6 +1966,7 @@ class DetailedNoteContainer extends HookWidget {
               key: ValueKey(note.id),
               onClicked: click,
               text: noteContent.value.trim(),
+              emojis: note.emojis,
               enableHidingMedia: true,
               pubkey: note.pubkey,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -2104,7 +2039,8 @@ class DetailedNoteContainer extends HookWidget {
               enableDelete:
                   canSign() && currentSigner!.getPublicKey() == note.pubkey,
               enableRepublish: true,
-              enablePin: canSign(),
+              enablePin:
+                  canSign() && note.pubkey == currentSigner!.getPublicKey(),
               onDelete: () {
                 showCupertinoDeletionDialogue(
                   context: context,
@@ -2193,14 +2129,9 @@ class DetailedNoteContainer extends HookWidget {
                         if (note.isPaid)
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: () => showModalBottomSheet(
+                            onTap: () => showAppModalSheet(
                               context: context,
-                              elevation: 0,
                               builder: (_) => const PaidNoteInfoSheet(),
-                              isScrollControlled: true,
-                              useRootNavigator: true,
-                              useSafeArea: true,
-                              backgroundColor: Colors.transparent,
                             ),
                             child: const PaidContainer(),
                           ),
@@ -2340,9 +2271,10 @@ class InlineFollowButton extends StatelessWidget {
             isFollowing
                 ? context.t.unfollow.capitalizeFirst()
                 : context.t.follow.capitalizeFirst(),
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall!
+                .copyWith(fontWeight: FontWeight.w600, color: kWhite),
           ),
         );
       },
@@ -2810,24 +2742,137 @@ class _PaidContainerState extends State<PaidContainer>
   }
 }
 
+/// Tinted, outlined box that marks premium (nip63) content in feeds.
+class PremiumContainer extends StatelessWidget {
+  const PremiumContainer({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      foregroundPainter: _CornerBracketsPainter(
+        color: kPremiumColor.withValues(alpha: 0.4),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
+          color: Theme.of(context).cardColor,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Draws an L-shaped mark at the top-left and bottom-right corners only.
+class _CornerBracketsPainter extends CustomPainter {
+  const _CornerBracketsPainter({required this.color});
+
+  final Color color;
+
+  static const _radius = kDefaultPadding / 1.5;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Each arm gets its own linear gradient: opaque at the corner, fading to
+    // transparent at the arm's tip. Per-arm (not radial) so a wide, short box
+    // still fades along its vertical arms.
+    final armX = size.width * 0.55;
+    final armY = size.height * 0.55;
+
+    void drawArm(Path path, Offset from, Offset to) {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke
+          ..shader = ui.Gradient.linear(
+            from,
+            to,
+            [color, color.withValues(alpha: 0)],
+          ),
+      );
+    }
+
+    // Top-left: horizontal arm (carries the corner arc) + vertical arm.
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..arcToPoint(
+          const Offset(_radius, 0),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(armX, 0),
+      Offset.zero,
+      Offset(armX, 0),
+    );
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..lineTo(0, armY),
+      Offset.zero,
+      Offset(0, armY),
+    );
+
+    // Bottom-right: mirrored.
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..arcToPoint(
+          Offset(size.width - _radius, size.height),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(size.width - armX, size.height),
+      Offset(size.width, size.height),
+      Offset(size.width - armX, size.height),
+    );
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..lineTo(size.width, size.height - armY),
+      Offset(size.width, size.height),
+      Offset(size.width, size.height - armY),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CornerBracketsPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
 class PremiumBadge extends StatelessWidget {
   const PremiumBadge({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kDefaultPadding),
-        color: kPremiumColor.withValues(alpha: 0.4),
+        color: kPremiumColor.withValues(alpha: 0.1),
+        border: Border.all(
+          color: kPremiumColor.withValues(alpha: 0.4),
+          width: 0.5,
+        ),
       ),
-      child: Text(
-        context.t.premium,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              height: 1,
-            ),
+      child: Row(
+        spacing: kDefaultPadding / 4,
+        children: [
+          const AppIcon(
+            LucideIcons.crown,
+            size: 12,
+          ),
+          Text(
+            context.t.premium,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  height: 1,
+                ),
+          ),
+        ],
       ),
     );
   }
@@ -2865,8 +2910,7 @@ class _NoteStatsModal extends HookWidget {
           minChildSize: 0.60,
           maxChildSize: 0.9,
           expand: false,
-          builder: (_, __) => SheetDragToClose(
-            child: Column(
+          builder: (_, sheetController) => Column(
             children: [
               const ModalBottomSheetHandle(),
               _fluidTabBar(context, tabController),
@@ -2879,28 +2923,34 @@ class _NoteStatsModal extends HookWidget {
                       id: id,
                       type: NoteRelatedEventsType.replies,
                       embedded: true,
+                      controller: sheetController,
                     ),
                     NetStatsView(
                       id: id,
                       type: NoteRelatedEventsType.reactions,
                       embedded: true,
+                      controller: sheetController,
                     ),
                     NetStatsView(
                       id: id,
                       type: NoteRelatedEventsType.reposts,
                       embedded: true,
+                      controller: sheetController,
                     ),
                     NetStatsView(
                       id: id,
                       type: NoteRelatedEventsType.quotes,
                       embedded: true,
+                      controller: sheetController,
                     ),
-                    _EmbeddedZappersList(zappers: zappers),
+                    _EmbeddedZappersList(
+                      zappers: zappers,
+                      controller: sheetController,
+                    ),
                   ],
                 ),
               ),
             ],
-            ),
           ),
         ),
       ),
@@ -2948,29 +2998,19 @@ class _NoteStatsModal extends HookWidget {
 }
 
 class _EmbeddedZappersList extends StatefulWidget {
-  const _EmbeddedZappersList({required this.zappers});
+  const _EmbeddedZappersList({
+    required this.zappers,
+    required this.controller,
+  });
 
   final Map<String, MapEntry<String, int>> zappers;
+  final ScrollController controller;
 
   @override
   State<_EmbeddedZappersList> createState() => _EmbeddedZappersListState();
 }
 
 class _EmbeddedZappersListState extends State<_EmbeddedZappersList> {
-  late final ScrollController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -2989,7 +3029,7 @@ class _EmbeddedZappersListState extends State<_EmbeddedZappersList> {
               widget.zappers.entries.toList()
                 ..sort((a, b) => b.value.value.compareTo(a.value.value)),
             ),
-            controller: _controller,
+            controller: widget.controller,
           );
         },
       ),

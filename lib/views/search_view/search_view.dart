@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -21,6 +22,7 @@ import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../routes/navigator.dart';
 import '../../routes/pages_router.dart';
+import '../../utils/theme/glass_settings.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
 import '../media_view/media_view.dart';
@@ -33,6 +35,7 @@ import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/fluid_blur_container.dart';
 import '../widgets/fluid_content_card.dart';
+import '../widgets/fluid_glass_tab_bar.dart';
 import '../widgets/media_components/horizontal_video_view.dart';
 import '../widgets/media_components/vertical_video_view.dart';
 import '../widgets/nip05_component.dart';
@@ -65,6 +68,12 @@ class SearchView extends HookWidget {
     final searchTextEdittingController = useTextEditingController();
     final selectedIndex = useState(index ?? 0);
     final focusNode = useFocusNode();
+    // FluidGlassTabBar is controller-driven; selectedIndex stays the source of
+    // truth for the body, the controller only mirrors it for the glass pill.
+    final tabController = useTabController(
+      initialLength: contentOptions.length,
+      initialIndex: index ?? 0,
+    );
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,6 +118,7 @@ class SearchView extends HookWidget {
                 searchText,
                 selectedIndex,
                 contentOptions,
+                tabController,
               )
             : NestedScrollView(
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -176,6 +186,7 @@ class SearchView extends HookWidget {
     ValueNotifier<String?> searchText,
     ValueNotifier<int> selectedIndex,
     List<String> contentOptions,
+    TabController tabController,
   ) {
     final safeTop = MediaQuery.of(context).padding.top;
     final safeBottom = MediaQuery.of(context).padding.bottom;
@@ -236,10 +247,7 @@ class SearchView extends HookWidget {
           top: 0,
           left: 0,
           right: 0,
-          child: FluidBlurContainer(
-            sigma: 20,
-            useClipRect: true,
-            showBorder: false,
+          child: Container(
             padding: EdgeInsets.only(
               top: safeTop + kDefaultPadding / 4,
               bottom: kDefaultPadding / 4,
@@ -256,7 +264,7 @@ class SearchView extends HookWidget {
                   iconSize: 20,
                 ),
                 Expanded(
-                  child: _cupertinoTextfield(
+                  child: _glassSearchBar(
                     focusNode,
                     searchTextEdittingController,
                     searchText,
@@ -280,15 +288,27 @@ class SearchView extends HookWidget {
             ),
           ),
         ),
+
         // Floating glass tab pill at the bottom
         Positioned(
           bottom: tabPillBottom,
           left: 0,
           right: 0,
           child: Center(
-            child: _GlassTabPill(
-              contentOptions: contentOptions,
-              selectedIndex: selectedIndex,
+            child: SizedBox(
+              width: 90.w,
+              child: FluidGlassTabBar(
+                floating: true,
+                barHeight: tabPillHeight,
+                controller: tabController,
+                onTap: (i) {
+                  selectedIndex.value = i;
+                  HapticFeedback.lightImpact();
+                },
+                tabs: [
+                  for (final option in contentOptions) GlassTab(label: option),
+                ],
+              ),
             ),
           ),
         ),
@@ -583,6 +603,99 @@ class SearchView extends HookWidget {
     );
   }
 
+  /// Fluid-mode search field. [GlassSearchBar] has no accessory slot, so the
+  /// `isSearching` spinner lives beside it in the header row instead of inside
+  /// the pill — see [_searchingSpinner]. Its built-in clear button fires
+  /// `onChanged('')`, which resets the results the same way the normal path's
+  /// × does.
+  Widget _glassSearchBar(
+    FocusNode focusNode,
+    TextEditingController searchTextEdittingController,
+    ValueNotifier<String?> searchText,
+  ) {
+    return Builder(builder: (context) {
+      void search(String value) {
+        searchText.value = value.isEmpty ? null : value;
+        context.read<SearchCubit>().getItemsBySearch(value);
+      }
+
+      // GlassTextField wraps a bare CupertinoTextField and exposes no
+      // cursorColor/selectionColor, so the caret and the selection band fall
+      // back to CupertinoTheme.primaryColor — activeBlue. Overriding it here is
+      // the only hook; it tints the caret, the band and the drag handles
+      // together.
+      return CupertinoTheme(
+        data: CupertinoTheme.of(context).copyWith(
+          primaryColor: Theme.of(context).primaryColorDark,
+        ),
+        child: GlassTextField.search(
+          controller: searchTextEdittingController,
+          focusNode: focusNode,
+          placeholder: context.t.search.capitalizeFirst(),
+          height: 40,
+          useOwnLayer: true,
+          settings: GlassSettings.searchBar(context),
+          // No glow, no press-scale: they read as the field lighting up under
+          // the finger while the user types.
+          interactionBehavior: GlassInteractionBehavior.none,
+          shape: const LiquidRoundedRectangle(borderRadius: 20),
+          textStyle: Theme.of(context).textTheme.bodyMedium,
+          prefixIcon: Icon(
+            LucideIcons.search,
+            size: 20,
+            color: Theme.of(context).highlightColor,
+          ),
+          suffixIcon: _searchSuffix(searchTextEdittingController),
+          onSuffixTap: () {
+            if (searchTextEdittingController.text.isEmpty) {
+              return;
+            }
+
+            searchTextEdittingController.clear();
+            search('');
+          },
+          onChanged: search,
+        ),
+      );
+    });
+  }
+
+  /// Spinner and clear × share the one suffix slot. Both are laid out
+  /// unconditionally at a fixed width — `isSearching` flips on every keystroke,
+  /// so anything that resized here would make the field breathe while typing.
+  Widget _searchSuffix(TextEditingController controller) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 4,
+      children: [
+        BlocBuilder<SearchCubit, SearchState>(
+          buildWhen: (previous, current) =>
+              previous.isSearching != current.isSearching,
+          builder: (context, state) => AnimatedOpacity(
+            opacity: state.isSearching ? 1 : 0,
+            duration: const Duration(milliseconds: 180),
+            child: SpinKitCircle(
+              size: 18,
+              color: Theme.of(context).primaryColorDark,
+            ),
+          ),
+        ),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: controller,
+          builder: (context, value, _) => AnimatedOpacity(
+            opacity: value.text.isEmpty ? 0 : 1,
+            duration: const Duration(milliseconds: 180),
+            child: Icon(
+              LucideIcons.x,
+              size: 18,
+              color: Theme.of(context).highlightColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _cupertinoTextfield(
       FocusNode focusNode,
       TextEditingController searchTextEdittingController,
@@ -796,67 +909,6 @@ class SearchView extends HookWidget {
         contentType: contentType,
       );
     }
-  }
-}
-
-class _GlassTabPill extends StatelessWidget {
-  const _GlassTabPill({
-    required this.contentOptions,
-    required this.selectedIndex,
-  });
-
-  final List<String> contentOptions;
-  final ValueNotifier<int> selectedIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: selectedIndex,
-      builder: (context, selected, _) {
-        return SizedBox(
-          width: 90.w,
-          child: FluidBlurContainer(
-            padding: const EdgeInsets.all(3),
-            backgroundAlpha: 0.5,
-            child: Row(
-              children: [
-                for (int i = 0; i < contentOptions.length; i++)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        selectedIndex.value = i;
-                        HapticFeedback.lightImpact();
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: selected == i
-                              ? Theme.of(context).cardColor
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(300),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          contentOptions[i],
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    fontWeight: selected == i
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                    height: 1,
-                                  ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }
 

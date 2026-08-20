@@ -21,6 +21,7 @@ import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
 import 'data_providers.dart';
 import 'flash_tags_row.dart';
+import 'fluid_sheet.dart';
 import 'profile_picture.dart';
 
 class FlashNewsContainer extends HookWidget {
@@ -314,9 +315,8 @@ class FlashNewsContainer extends HookWidget {
   IconButton _addBookmark(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return AddBookmarkView(
               kind: EventKind.TEXT_NOTE,
@@ -325,12 +325,7 @@ class FlashNewsContainer extends HookWidget {
               model: mainFlashNews.flashNews,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: isFluid()
-              ? kTransparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       icon: Builder(

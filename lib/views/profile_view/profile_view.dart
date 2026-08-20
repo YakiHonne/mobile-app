@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../logic/dms_cubit/dms_cubit.dart';
@@ -23,6 +26,9 @@ import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_glass_tab_bar.dart';
+import '../widgets/fluid_pull_down_button.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/pull_down_global_button.dart';
@@ -32,6 +38,15 @@ import 'widgets/profile_media.dart';
 import 'widgets/profile_notes.dart';
 import 'widgets/profile_others.dart';
 import 'widgets/relays_list.dart';
+
+/// Profile tab order — premium sits right after notes when the user has it.
+List<ProfileData> profileTabs(bool hasPremium) => [
+      ProfileData.notes,
+      if (hasPremium) ProfileData.premium,
+      ProfileData.articles,
+      ProfileData.allMedia,
+      ProfileData.curations,
+    ];
 
 class ProfileView extends HookWidget {
   static const routeName = '/profileView';
@@ -82,13 +97,19 @@ class ProfileView extends HookWidget {
                   )
                 : BlocBuilder<ProfileCubit, ProfileState>(
                     buildWhen: (previous, current) =>
-                        previous.profileStatus != current.profileStatus,
+                        previous.profileStatus != current.profileStatus ||
+                        previous.creatorProviders != current.creatorProviders,
                     builder: (context, state) {
+                      final hasPremium =
+                          state.creatorProviders?.isNotEmpty ?? false;
+
                       return DefaultTabController(
-                        length: 4,
-                        initialIndex: getIndex(profileDataState.value),
+                        length: hasPremium ? 5 : 4,
+                        initialIndex:
+                            getIndex(profileDataState.value, hasPremium),
                         child: ProfileNestedScrollView(
                           profileDataState: profileDataState,
+                          hasPremium: hasPremium,
                         ),
                       );
                     },
@@ -99,29 +120,11 @@ class ProfileView extends HookWidget {
     );
   }
 
-  int getIndex(ProfileData profileData) {
-    switch (profileData) {
-      case ProfileData.notes:
-        return 0;
-      case ProfileData.replies:
-        return 0;
-      case ProfileData.mentions:
-        return 0;
-      case ProfileData.pinned:
-        return 0;
-      case ProfileData.articles:
-        return 1;
-      case ProfileData.curations:
-        return 3;
-      case ProfileData.smartWidgets:
-        return 3;
-      case ProfileData.allMedia:
-        return 2;
-      case ProfileData.videos:
-        return 2;
-      case ProfileData.pictures:
-        return 2;
-    }
+  int getIndex(ProfileData profileData, bool hasPremium) {
+    final index = profileTabs(hasPremium)
+        .indexWhere((tab) => tab.getType() == profileData.getType());
+
+    return index == -1 ? 0 : index;
   }
 }
 
@@ -129,9 +132,11 @@ class ProfileNestedScrollView extends StatefulWidget {
   const ProfileNestedScrollView({
     super.key,
     required this.profileDataState,
+    required this.hasPremium,
   });
 
   final ValueNotifier<ProfileData> profileDataState;
+  final bool hasPremium;
 
   @override
   State<ProfileNestedScrollView> createState() =>
@@ -140,6 +145,7 @@ class ProfileNestedScrollView extends StatefulWidget {
 
 class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
   final refreshController = RefreshController();
+
   void onRefresh({required Function() onInit}) {
     refreshController.resetNoData();
     onInit.call();
@@ -173,6 +179,7 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
         final isMedia = currentType == 'media';
         final isOthers = currentType == 'others';
         final showFilter = (isNotes || isMedia || isOthers) && isFluid();
+        final showSwitcher = currentType == 'premium';
 
         return Stack(
           children: [
@@ -194,6 +201,7 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                     child: ProfileHeader(),
                   ),
                   OptionsHeader(
+                    hasPremium: widget.hasPremium,
                     onProfileDataChanged: (profileData) {
                       widget.profileDataState.value = profileData;
                       context.read<ProfileCubit>().getUserInfos(
@@ -212,7 +220,7 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                 ],
               ),
             ),
-            if (showFilter)
+            if (showFilter || showSwitcher)
               Positioned(
                 left: kDefaultPadding / 2,
                 right: kDefaultPadding / 2,
@@ -225,18 +233,19 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                       padding: const EdgeInsets.symmetric(
                         vertical: kDefaultPadding / 4,
                       ),
-                      child: isNotes
-                          ? ProfileNotesFilter(
-                              profileData: widget.profileDataState.value,
-                              onChanged: (profileData) {
-                                widget.profileDataState.value = profileData;
-                                context.read<ProfileCubit>().getUserInfos(
-                                      profileData: profileData,
-                                    );
-                              },
+                      child: showSwitcher
+                          ? PremiumContentFilter(
+                              articlesOnly: context
+                                  .read<ProfileCubit>()
+                                  .premiumArticlesOnly,
+                              onChanged: (articlesOnly) => setState(() {
+                                context
+                                    .read<ProfileCubit>()
+                                    .setPremiumArticlesOnly(articlesOnly);
+                              }),
                             )
-                          : isMedia
-                              ? ProfileMediaFilter(
+                          : isNotes
+                              ? ProfileNotesFilter(
                                   profileData: widget.profileDataState.value,
                                   onChanged: (profileData) {
                                     widget.profileDataState.value = profileData;
@@ -245,15 +254,33 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                                         );
                                   },
                                 )
-                              : ProfileOthersFilter(
-                                  profileData: widget.profileDataState.value,
-                                  onChanged: (profileData) {
-                                    widget.profileDataState.value = profileData;
-                                    context.read<ProfileCubit>().getUserInfos(
-                                          profileData: profileData,
-                                        );
-                                  },
-                                ),
+                              : isMedia
+                                  ? ProfileMediaFilter(
+                                      profileData:
+                                          widget.profileDataState.value,
+                                      onChanged: (profileData) {
+                                        widget.profileDataState.value =
+                                            profileData;
+                                        context
+                                            .read<ProfileCubit>()
+                                            .getUserInfos(
+                                              profileData: profileData,
+                                            );
+                                      },
+                                    )
+                                  : ProfileOthersFilter(
+                                      profileData:
+                                          widget.profileDataState.value,
+                                      onChanged: (profileData) {
+                                        widget.profileDataState.value =
+                                            profileData;
+                                        context
+                                            .read<ProfileCubit>()
+                                            .getUserInfos(
+                                              profileData: profileData,
+                                            );
+                                      },
+                                    ),
                     ),
                   ),
                 ),
@@ -282,6 +309,12 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
       );
     } else if (type == 'articles') {
       return const ProfileArticles();
+    } else if (type == 'premium') {
+      return ProfileNotes(
+        profileData: widget.profileDataState.value,
+        showFilters: false,
+        onProfileDataChanged: (_) {},
+      );
     } else if (type == 'media') {
       return ProfileMedia(
         profileData: widget.profileDataState.value,
@@ -306,10 +339,82 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
   }
 }
 
+/// Floating pull-down that filters the premium tab between notes and articles.
+class PremiumContentFilter extends StatelessWidget {
+  const PremiumContentFilter({
+    super.key,
+    required this.articlesOnly,
+    required this.onChanged,
+  });
+
+  final bool articlesOnly;
+  final Function(bool) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final isArticles = articlesOnly;
+
+    return FluidPullDownButton(
+      animationBuilder: (context, state, child) => child,
+      routeTheme: PullDownMenuRouteTheme(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      itemBuilder: (context) {
+        return [false, true].map((articles) {
+          return PullDownMenuItem.selectable(
+            title: (articles ? context.t.articles : context.t.notes)
+                .capitalizeFirst(),
+            selected: articles == articlesOnly,
+            onTap: () => onChanged(articles),
+            itemTheme: PullDownMenuItemTheme(
+              textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          );
+        }).toList();
+      },
+      buttonBuilder: (context, showMenu) => GestureDetector(
+        onTap: showMenu,
+        behavior: HitTestBehavior.translucent,
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  (isArticles ? context.t.articles : context.t.notes)
+                      .capitalizeFirst(),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(
+                width: 30,
+                height: 30,
+                child: Icon(LucideIcons.chevronDown),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class OptionsHeader extends HookWidget {
-  const OptionsHeader({super.key, required this.onProfileDataChanged});
+  const OptionsHeader({
+    super.key,
+    required this.onProfileDataChanged,
+    required this.hasPremium,
+  });
 
   final Function(ProfileData profileData) onProfileDataChanged;
+  final bool hasPremium;
 
   @override
   Widget build(BuildContext context) {
@@ -339,39 +444,19 @@ class OptionsHeader extends HookWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding / 2,
                 ),
-                child: FluidBlurContainer(
-                  backgroundAlpha: 0.75,
-                  padding: const EdgeInsets.all(3),
-                  child: TabBar(
-                    onTap: (selectedIndex) {
-                      index.value = selectedIndex;
-                      onProfileDataChanged(getProfileData(selectedIndex));
-                    },
-                    dividerHeight: 0,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    padding: EdgeInsets.zero,
-                    labelPadding: const EdgeInsets.all(3),
-                    indicator: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(300),
-                    ),
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(fontWeight: FontWeight.w500),
-                    tabs: [
-                      Tab(height: 28, text: context.t.notes.capitalizeFirst()),
-                      Tab(
-                          height: 28,
-                          text: context.t.articles.capitalizeFirst()),
-                      Tab(height: 28, text: context.t.media.capitalizeFirst()),
-                      Tab(height: 28, text: context.t.others.capitalizeFirst()),
-                    ],
-                  ),
+                child: FluidGlassTabBar(
+                  onTap: (selectedIndex) {
+                    index.value = selectedIndex;
+                    onProfileDataChanged(getProfileData(selectedIndex));
+                  },
+                  tabs: [
+                    GlassTab(label: context.t.notes.capitalizeFirst()),
+                    if (hasPremium)
+                      GlassTab(label: context.t.premium.capitalizeFirst()),
+                    GlassTab(label: context.t.articles.capitalizeFirst()),
+                    GlassTab(label: context.t.media.capitalizeFirst()),
+                    GlassTab(label: context.t.others.capitalizeFirst()),
+                  ],
                 ),
               )
             : SizedBox(
@@ -399,6 +484,8 @@ class OptionsHeader extends HookWidget {
                     dividerColor: Theme.of(context).dividerColor,
                     tabs: [
                       Tab(text: context.t.notes.capitalizeFirst()),
+                      if (hasPremium)
+                        Tab(text: context.t.premium.capitalizeFirst()),
                       Tab(text: context.t.articles.capitalizeFirst()),
                       Tab(text: context.t.media.capitalizeFirst()),
                       Tab(text: context.t.others.capitalizeFirst()),
@@ -411,18 +498,9 @@ class OptionsHeader extends HookWidget {
   }
 
   ProfileData getProfileData(int index) {
-    switch (index) {
-      case 0:
-        return ProfileData.notes;
-      case 1:
-        return ProfileData.articles;
-      case 2:
-        return ProfileData.allMedia;
-      case 3:
-        return ProfileData.curations;
-      default:
-        return ProfileData.notes;
-    }
+    final tabs = profileTabs(hasPremium);
+
+    return index < tabs.length ? tabs[index] : ProfileData.notes;
   }
 }
 
@@ -594,9 +672,8 @@ class ProfileAppBar extends StatelessWidget {
                   onClicked: () {
                     context.read<WalletsManagerCubit>().resetInvoice();
 
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (_) {
                         return SendZapsView(
                           metadata: state.user,
@@ -604,9 +681,6 @@ class ProfileAppBar extends StatelessWidget {
                           zapSplits: const [],
                         );
                       },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                     );
@@ -689,7 +763,7 @@ class ProfileAppBar extends StatelessWidget {
       onShowUserRelays: () {
         context.read<ProfileCubit>().setRelays();
 
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return BlocProvider.value(
@@ -697,10 +771,6 @@ class ProfileAppBar extends StatelessWidget {
               child: const ProfileRelays(),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

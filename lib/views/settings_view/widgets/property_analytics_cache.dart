@@ -10,7 +10,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../notifications_view/widgets/notifications_customization.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/response_snackbar.dart';
 import 'mute_list_view.dart';
 import 'property_appearance.dart';
@@ -23,12 +23,11 @@ class PropertyAnalyticsCache extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.analyticsCache.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.analyticsCache.capitalizeFirst(),
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2)
+            .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Text(
             context.t.settingsCacheDesc,

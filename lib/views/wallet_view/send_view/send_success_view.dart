@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_scaffold.dart';
 
 class SendSuccessView extends StatelessWidget {
   const SendSuccessView({super.key, required this.amount, this.ln});
@@ -32,18 +33,14 @@ class SendSuccessView extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.t.paymentSucceeded,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-        ),
-        automaticallyImplyLeading: false,
-      ),
+    return FluidScaffold(
+      title: context.t.paymentSucceeded,
+      // Terminal screen — no way back, and no logo shortcut out of it.
+      leading: const SizedBox.shrink(),
+      actions: const [],
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2)
+            .copyWith(top: fluidScaffoldTopInset(context)),
         child: Column(
           children: [
             _successColumn(context),

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../common/widgets/ai_upsell_sheet.dart';
 import '../../../logic/energy_mapper_cubit/energy_mapper_cubit.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_icon_buttons.dart';
+import '../../subscription_view/pricing/subscription_gate.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
+import '../../widgets/modal_sheet_container.dart';
 import 'widgets/energy_chart.dart';
 import 'widgets/energy_chip_row.dart';
 import 'widgets/energy_detail_panel.dart';
@@ -15,29 +17,23 @@ import 'widgets/shimmer_box.dart';
 export 'widgets/energy_helpers.dart' show energyColor;
 
 Future<void> showEnergyMapper(BuildContext context, String content) {
-  if (!subscriptionCubit.isPaid) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AiUpsellSheet(
-        parentContext: context,
-        title: context.t.energy_upsell_title,
-        features: [
-          context.t.pricing_feature_ai_writing_unlimited,
-          context.t.pricing_feature_second_reader_all,
-          context.t.pricing_feature_energy_mapper_full,
-          context.t.pricing_feature_diff_viewer,
-        ],
-      ),
-    );
+  final allowed = requireSubscription(
+    context,
+    upsellTitle: context.t.energy_upsell_title,
+    upsellFeatures: [
+      context.t.pricing_feature_ai_writing_unlimited,
+      context.t.pricing_feature_second_reader_all,
+      context.t.pricing_feature_energy_mapper_full,
+      context.t.pricing_feature_diff_viewer,
+    ],
+  );
+
+  if (!allowed) {
+    return Future<void>.value();
   }
 
-  return showModalBottomSheet<void>(
+  return showAppModalSheet<void>(
     context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
     backgroundColor: Colors.transparent,
     builder: (_) => _EnergyMapperSheet(content: content),
   );
@@ -103,13 +99,7 @@ class _EnergyMapperSheetState extends State<_EnergyMapperSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(kDefaultPadding),
-        ),
-      ),
+    return ModalSheetContainer(
       child: BlocProvider.value(
         value: _cubit,
         child: BlocBuilder<EnergyMapperCubit, EnergyMapperState>(
@@ -118,7 +108,10 @@ class _EnergyMapperSheetState extends State<_EnergyMapperSheet> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const ModalBottomSheetHandle(),
-                _buildHeader(context, theme, state),
+                _buildHeader(theme, state),
+                const SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
                 const Divider(height: 1),
                 if (state.isLoading)
                   _buildSkeleton(theme)
@@ -153,43 +146,36 @@ class _EnergyMapperSheetState extends State<_EnergyMapperSheet> {
     );
   }
 
-  Widget _buildHeader(
-      BuildContext context, ThemeData theme, EnergyMapperState state) {
+  Widget _buildHeader(ThemeData theme, EnergyMapperState state) {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding / 4),
-      child: Row(
+      child: Column(
+        spacing: kDefaultPadding / 4,
         children: [
-          const Icon(
-            LucideIcons.zap,
-            color: Color(0xFF10B981),
-            size: 18,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const AppIcon(
+                LucideIcons.zap,
+                color: kGreen,
+                size: 18,
+              ),
+              const SizedBox(width: kDefaultPadding / 4),
+              Text(
+                t.energy_mapper_title.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.1,
+                  color: kGreen,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: kDefaultPadding / 4),
           Text(
-            context.t.energy_mapper_title.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.1,
-              color: Color(0xFF10B981),
-            ),
-          ),
-          const SizedBox(width: kDefaultPadding / 2),
-          Expanded(
-            child: Text(
-              state.isLoading
-                  ? context.t.energy_mapper_loading
-                  : state.summary ?? '',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 12, color: theme.hintColor),
-            ),
-          ),
-          CustomIconButton(
-            icon: FeatureIcons.closeRaw,
-            size: 15,
-            onClicked: () => Navigator.of(context).pop(),
-            backgroundColor: kTransparent,
+            state.isLoading ? t.energy_mapper_loading : state.summary ?? '',
+            style: TextStyle(fontSize: 12, color: theme.hintColor),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
