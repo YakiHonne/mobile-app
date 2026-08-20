@@ -4,20 +4,22 @@
 
 ### Added
 
-- Introduced Basic and Premium subscriptions, payable by card, Lightning, or points.
-- Added creator subscriptions, so you can support creators directly.
-- Added Google sign-in with key recovery, split across operators so no single one holds your key.
-- Added Yaki usernames and NIP-05 addresses, claimable from profile settings.
-- Added fluid mode, with adjustable glass quality in appearance settings.
-- Added usage indicators showing your remaining quota and when it renews.
+- Added Ask AI to improve, rewrite, retone, or expand any part of an article without leaving the editor.
+- Added Second Reader to pick a reader persona and see how they would react to your draft, paragraph by paragraph.
+- Added Energy Mapper, a per-sentence emotion graph of your note, to spot flat or overheated passages before publishing.
+- Added Yakihonne plans in-app, with a usage dashboard and subscription badges.
+- Added direct creator subscriptions from their profile.
+- Added Fluid mode, a glass look across the app with blurred surfaces and translucent sheets.
+- Added Google sign-in for new accounts.
+- Added encrypted key backup and recovery from settings.
+- Added gift code redemption straight from a DM.
+- Added a guided tour on first launch and a what's new screen after major updates.
+- Added flip to share on notes.
 
 ### Changed
 
-- Points can now be redeemed toward a subscription.
-- Linked the terms of use and privacy policy from the subscription screen.
-- Improved Blossom media server management.
-- Improved the article editor.
-- Completed login screen translations across all supported languages.
+- Redesigned bottom navigation.
+- Reworked search, discover, profile, and note stats.
 
 ### Fixed
 
