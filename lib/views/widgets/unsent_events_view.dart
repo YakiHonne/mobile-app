@@ -8,6 +8,8 @@ import '../../utils/utils.dart';
 import '../settings_view/widgets/settings_text.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
+import 'fluid_sheet.dart';
+import 'modal_sheet_container.dart';
 import 'pull_down_global_button.dart';
 import 'show_raw_event_view.dart';
 
@@ -16,13 +18,11 @@ class UnsentEventsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       padding: MediaQuery.of(context).viewInsets.copyWith(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
           ),
-      decoration: _buildContainerDecoration(context),
       child: DraggableScrollableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
@@ -45,21 +45,6 @@ class UnsentEventsView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Build container decoration
-  BoxDecoration _buildContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      border: Border.all(
-        color: Theme.of(context).dividerColor,
-        width: 0.5,
       ),
     );
   }
@@ -129,17 +114,13 @@ class UnsentEventContainer extends StatelessWidget {
     return PullDownGlobalButton(
       enableShowRawEvent: true,
       onShowRawEvent: () {
-        showModalBottomSheet(
-          elevation: 0,
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return ShowRawEventView(
               attachedEvent: e.toJsonString(),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

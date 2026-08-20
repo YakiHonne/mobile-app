@@ -6,8 +6,10 @@ import 'package:numeral/numeral.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../wallet_view/send_zaps_view/send_multi_wallet_selector.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 enum GiftStep { selection, payment }
 
@@ -32,14 +34,7 @@ class SendGiftView extends HookWidget {
     final isSending = useState(false);
     final isUsingSats = useState(true);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-      ),
+    return ModalSheetContainer(
       height: 85.h,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -215,14 +210,10 @@ class _CoverSelection extends StatelessWidget {
                               ],
                             ),
                             child: Center(
-                              child: SvgPicture.asset(
+                              child: AppIcon(
                                 FeatureIcons.dmGift,
-                                width: 7.w,
-                                height: 7.w,
-                                colorFilter: const ColorFilter.mode(
-                                  kWhite,
-                                  BlendMode.srcIn,
-                                ),
+                                size: 7.w,
+                                color: kWhite,
                               ),
                             ),
                           ),
@@ -496,14 +487,10 @@ class _GiftPaymentDetails extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.repost,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),

@@ -51,15 +51,15 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCamera();
+      controller!.pauseCameraSafely();
     } else if (state == AppLifecycleState.resumed && isVisible) {
-      controller!.resumeCamera();
+      controller!.resumeCameraSafely();
     }
   }
 
   @override
   void didPushNext() {
-    controller?.pauseCamera();
+    controller?.pauseCameraSafely();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -68,7 +68,7 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
 
   @override
   void didPopNext() {
-    controller?.resumeCamera();
+    controller?.resumeCameraSafely();
     setState(() {
       isVisible = true;
     });

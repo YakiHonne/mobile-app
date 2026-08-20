@@ -10,17 +10,24 @@ import 'package:nostr_core_enhanced/utils/static_properties.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
+import '../../logic/users_info_list_cubit/users_info_list_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/video_model.dart';
+import '../../repositories/nostr_data_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../threads_view/threads_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../write_note_view/write_note_view.dart';
+import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
+import 'dotted_container.dart';
+import 'fluid_blur_container.dart';
+import 'fluid_sheet.dart';
+import 'loading_indicators.dart';
 import 'note_stats.dart';
 import 'note_stats_view.dart';
 import 'pull_down_global_button.dart';
@@ -159,6 +166,8 @@ class ContentStats extends HookWidget {
               identifier,
             ),
             muteStatus: state.mutes.contains(attachedEvent.pubkey),
+            iconSize: 20,
+            size: 25,
           );
 
           final sb = SizedBox(
@@ -176,7 +185,13 @@ class ContentStats extends HookWidget {
                           );
                         },
                       ),
-                      Flexible(child: pullDownButton),
+                      if (isFluid())
+                        _fluidStatsButton(
+                          context,
+                          aTag,
+                          zappers as Map<String, MapEntry<String, int>>,
+                        ),
+                      pullDownButton,
                     ]
                   : [
                       Expanded(
@@ -185,40 +200,47 @@ class ContentStats extends HookWidget {
                           children: widgets,
                         ),
                       ),
+                      if (isFluid())
+                        _fluidStatsButton(
+                          context,
+                          aTag,
+                          zappers as Map<String, MapEntry<String, int>>,
+                        ),
                       pullDownButton,
                     ],
             ),
           );
 
+          final zappersRow = AnimatedCrossFade(
+            firstChild: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: kDefaultPadding / 4,
+              ),
+              child: ZappersRow(
+                zapData: zapsData,
+                zappers: zappers,
+              ),
+            ),
+            secondChild: const SizedBox(width: double.infinity),
+            crossFadeState: (zappers as Map).isNotEmpty
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 300),
+          );
+
           if (isInside) {
-            return sb;
+            if (!isFluid()) {
+              return sb;
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: kDefaultPadding / 4,
+              children: [if (zappers.isNotEmpty) zappersRow, sb],
+            );
           } else {
             return Column(
               spacing: kDefaultPadding / 4,
-              children: [
-                if (!isInside)
-                  AnimatedCrossFade(
-                    firstChild: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPadding / 4,
-                      ),
-                      child: ZappersRow(
-                        zapData: zapsData,
-                        zappers: zappers,
-                      ),
-                    ),
-                    secondChild: const SizedBox(
-                      width: double.infinity,
-                    ),
-                    crossFadeState: zappers.isNotEmpty
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(
-                      milliseconds: 300,
-                    ),
-                  ),
-                sb,
-              ],
+              children: [if (zappers.isNotEmpty) zappersRow, sb],
             );
           }
         },
@@ -306,27 +328,21 @@ class ContentStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return NetStatsView(
               id: aTag,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return AddReply(
                   attachedEvent: attachedEvent,
@@ -341,10 +357,6 @@ class ContentStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -420,9 +432,8 @@ class ContentStats extends HookWidget {
   }
 
   Future<dynamic> _addReply(BuildContext context, bool isVideo, String aTag) {
-    return showModalBottomSheet(
+    return showAppModalSheet(
       context: context,
-      elevation: 0,
       builder: (_) {
         return AddReply(
           isComment: true,
@@ -445,10 +456,6 @@ class ContentStats extends HookWidget {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -471,6 +478,28 @@ class ContentStats extends HookWidget {
     }
 
     return title;
+  }
+
+  Widget _fluidStatsButton(
+    BuildContext context,
+    String aTag,
+    Map<String, MapEntry<String, int>> zappers,
+  ) {
+    return CustomIconButton(
+      backgroundColor: kTransparent,
+      icon: FeatureIcons.unStats,
+      size: 16,
+      iconColor: Theme.of(context).highlightColor,
+      onClicked: () {
+        showAppModalSheet(
+          context: context,
+          builder: (_) => _ContentStatsModal(
+            aTag: aTag,
+            zappers: zappers,
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -549,32 +578,27 @@ class ContentZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(pubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
-                context: context,
-                builder: (_) {
-                  return SendZapsView(
-                    metadata: m,
-                    eventId: isVideo ? aTag : null,
-                    aTag: isVideo ? null : aTag,
-                    isZapSplit: zs.isNotEmpty,
-                    zapSplits: zs,
-                    onSuccess: (_, amount) {
-                      notesEventsCubit.handleSubmittedZap(
-                        recipientPubkey: pubkey,
-                        eventId: aTag,
-                        amount: amount,
-                        senderPubkey: currentSigner!.getPublicKey(),
-                        isIdentifier: true,
-                      );
-                    },
-                  );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              );
+              showAppModalSheet(
+                  context: context,
+                  builder: (_) {
+                    return SendZapsView(
+                      metadata: m,
+                      eventId: isVideo ? aTag : null,
+                      aTag: isVideo ? null : aTag,
+                      isZapSplit: zs.isNotEmpty,
+                      zapSplits: zs,
+                      onSuccess: (_, amount) {
+                        notesEventsCubit.handleSubmittedZap(
+                          recipientPubkey: pubkey,
+                          eventId: aTag,
+                          amount: amount,
+                          senderPubkey: currentSigner!.getPublicKey(),
+                          isIdentifier: true,
+                        );
+                      },
+                    );
+                  },
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor);
             }
           },
           context: context,
@@ -605,18 +629,13 @@ class ContentZapButton extends HookWidget {
       icon: selfZaps ? FeatureIcons.zapFilled : FeatureIcons.zap,
       onLongPress: () {
         if (zappers.isNotEmpty) {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return ZappersView(
                 zappers: zappers,
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         }
       },
@@ -656,5 +675,159 @@ class ContentZapButton extends HookWidget {
     } else {
       return [];
     }
+  }
+}
+
+class _ContentStatsModal extends HookWidget {
+  const _ContentStatsModal({
+    required this.aTag,
+    required this.zappers,
+  });
+
+  final String aTag;
+  final Map<String, MapEntry<String, int>> zappers;
+
+  @override
+  Widget build(BuildContext context) {
+    final tabController = useTabController(initialLength: 4);
+
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: FluidBlurContainer(
+        customBorderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        customBorder: Border(
+          top: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+          left: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+          right: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+        ),
+        backgroundAlpha: isFluid() ? 0.55 : 1,
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          minChildSize: 0.60,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (_, sheetController) => Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              _tabBar(context, tabController),
+              const SizedBox(height: kDefaultPadding / 2),
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    NetStatsView(
+                      id: aTag,
+                      type: NoteRelatedEventsType.replies,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: aTag,
+                      type: NoteRelatedEventsType.reactions,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: aTag,
+                      type: NoteRelatedEventsType.quotes,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    _ContentEmbeddedZappersList(
+                      zappers: zappers,
+                      controller: sheetController,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _tabBar(BuildContext context, TabController controller) {
+    Widget tabIcon(IconData asset) => Tab(
+          height: 30,
+          child: Builder(
+            builder: (context) => AppIcon(
+              asset,
+              size: 20,
+            ),
+          ),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: FluidBlurContainer(
+        padding: const EdgeInsets.all(3),
+        child: TabBar(
+          controller: controller,
+          dividerHeight: 0,
+          indicatorSize: TabBarIndicatorSize.tab,
+          padding: EdgeInsets.zero,
+          labelPadding: const EdgeInsets.all(3),
+          labelColor: Theme.of(context).primaryColorDark,
+          unselectedLabelColor: Theme.of(context).hintColor,
+          indicator: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(300),
+          ),
+          tabs: [
+            tabIcon(FeatureIcons.comments),
+            tabIcon(FeatureIcons.heart),
+            tabIcon(FeatureIcons.nQuotes),
+            tabIcon(FeatureIcons.nZaps),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContentEmbeddedZappersList extends StatefulWidget {
+  const _ContentEmbeddedZappersList({
+    required this.zappers,
+    required this.controller,
+  });
+
+  final Map<String, MapEntry<String, int>> zappers;
+  final ScrollController controller;
+
+  @override
+  State<_ContentEmbeddedZappersList> createState() =>
+      _ContentEmbeddedZappersListState();
+}
+
+class _ContentEmbeddedZappersListState
+    extends State<_ContentEmbeddedZappersList> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => UsersInfoListCubit(
+        nostrRepository: context.read<NostrDataRepository>(),
+      ),
+      child: BlocBuilder<UsersInfoListCubit, UsersInfoListState>(
+        buildWhen: (previous, current) =>
+            previous.isLoading != current.isLoading,
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: LoadingWidget());
+          }
+          return ZappersList(
+            zappers: Map.fromEntries(
+              widget.zappers.entries.toList()
+                ..sort((a, b) => b.value.value.compareTo(a.value.value)),
+            ),
+            controller: widget.controller,
+          );
+        },
+      ),
+    );
   }
 }

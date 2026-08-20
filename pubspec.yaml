@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.5+189
+version: 2.0.6+201
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -20,7 +20,6 @@ dependencies:
   bolt11_decoder: ^1.0.2
   bot_toast: ^4.1.3
   buttons_tabbar: ^1.3.8
-  cached_network_image: ^3.2.3
   calendar_date_picker2: ^1.1.7
   camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
@@ -31,7 +30,7 @@ dependencies:
   crypto: ^3.0.6
   custom_sliding_segmented_control: ^1.8.3
   deepl_dart: ^1.5.0
-  device_info_plus: ^12.3.0
+  device_info_plus: ^13.1.0
   dio: ^5.2.1+1
   dio_cookie_manager: ^3.1.0+1
   dropdown_button2: ^2.3.9
@@ -84,6 +83,7 @@ dependencies:
   just_audio: ^0.10.5
   logger: ^2.4.0
   lottie: ^3.1.2
+  lucide_icons_flutter: ^3.1.15
   markdown: ^7.3.0
   markdown_widget: ^2.3.2+6
   mention_tag_text_field: ^0.0.8
@@ -113,10 +113,11 @@ dependencies:
   qr_flutter: ^4.1.0
   responsive_framework: ^1.1.0
   screenshot: ^3.0.0
+  sensors_plus: ^4.0.2
   sentry_dart_plugin: ^3.1.1
   sentry_flutter: ^9.4.1
   share_handler: ^0.0.25
-  share_plus: ^12.0.1
+  share_plus: ^13.1.0
   shared_preferences: ^2.5.3
   sizer: ^2.0.14
   skeletonizer: ^2.1.0+1
@@ -125,6 +126,9 @@ dependencies:
   string_validator: ^1.0.2
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
+  in_app_purchase: ^3.2.0
+  in_app_purchase_android: ^0.5.0
+  in_app_purchase_storekit: ^0.4.11
   url_launcher: ^6.1.14
   uuid: ^4.3.3
   video_player: ^2.9.2
@@ -133,10 +137,24 @@ dependencies:
   visibility_detector: ^0.4.0+2
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.3
+  pointycastle: ^4.0.0
+  tutorial_coach_mark: ^1.2.13
+  liquid_glass_widgets: ^0.27.0
+  flutter_quill: ^11.5.0
+  markdown_quill: ^4.3.0
+  htmltopdfwidgets: ^2.1.1
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: false
+  upload_sources: false
+  project: yakihonne
+  org: yakihonne
 
 dependency_overrides:
+  quill_native_bridge_windows: ^0.1.0
   pointycastle: ^4.0.0
-  
+
 flutter_launcher_icons:
   android: true
   # ios: true
@@ -157,6 +175,7 @@ flutter:
   assets:
     - assets/icon.png
     - assets/icons/features/
+    - assets/icons/features-fluid/
     - assets/icons/logos/
     - assets/icons/toasts/
     - assets/images/

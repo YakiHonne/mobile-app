@@ -11,6 +11,7 @@ import '../../logic/giphy_cubit/giphy_cubit.dart';
 import '../../utils/utils.dart';
 import '../search_view/search_view.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/no_content_widgets.dart';
 
 class GiphyView extends HookWidget {
@@ -30,46 +31,31 @@ class GiphyView extends HookWidget {
 
     return BlocProvider(
       create: (context) => GiphyCubit(),
-      child: Material(
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.9,
-            expand: false,
-            builder: (context, scrollController) => Column(
-              children: [
-                _tabBar(tabController, textController, context),
-                Expanded(
-                  child: TabBarView(
-                    controller: tabController,
-                    children: [
-                      SelectedGifType(
-                        gifType: GiphyType.gifs,
-                        onGifSelected: onGifSelected,
-                        scrollController: scrollController,
-                      ),
-                      SelectedGifType(
-                        gifType: GiphyType.stickers,
-                        onGifSelected: onGifSelected,
-                        scrollController: scrollController,
-                      ),
-                    ],
-                  ),
+      child: ModalSheetContainer(
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              _tabBar(tabController, textController, context),
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    SelectedGifType(
+                      gifType: GiphyType.gifs,
+                      onGifSelected: onGifSelected,
+                      scrollController: scrollController,
+                    ),
+                    SelectedGifType(
+                      gifType: GiphyType.stickers,
+                      onGifSelected: onGifSelected,
+                      scrollController: scrollController,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -162,7 +148,6 @@ class SelectedGifType extends StatelessWidget {
             return GiphyContentGrid(
               content: state.gifs,
               onGifSelected: onGifSelected,
-              scrollController: scrollController,
             );
           } else {
             return WrongView(
@@ -180,7 +165,6 @@ class SelectedGifType extends StatelessWidget {
             return GiphyContentGrid(
               content: state.stickers,
               onGifSelected: onGifSelected,
-              scrollController: scrollController,
             );
           } else {
             return WrongView(
@@ -199,12 +183,10 @@ class GiphyContentGrid extends StatefulWidget {
   const GiphyContentGrid({
     super.key,
     required this.content,
-    required this.scrollController,
     required this.onGifSelected,
   });
 
   final List<GiphyGif?> content;
-  final ScrollController scrollController;
   final Function(String) onGifSelected;
 
   @override
@@ -212,15 +194,19 @@ class GiphyContentGrid extends StatefulWidget {
 }
 
 class _GiphyContentGridState extends State<GiphyContentGrid> {
+  // Own controller rather than the sheet's: the two tabs live side by side in
+  // a TabBarView and each paginates off its own scroll position.
+  final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    widget.scrollController.addListener(_onScroll);
+    _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
-    if (widget.scrollController.position.pixels >=
-        widget.scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
       // Load more when near bottom
       final cubit = context.read<GiphyCubit>();
       final type = widget.content == cubit.state.gifs
@@ -232,7 +218,7 @@ class _GiphyContentGridState extends State<GiphyContentGrid> {
 
   @override
   void dispose() {
-    widget.scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -251,7 +237,7 @@ class _GiphyContentGridState extends State<GiphyContentGrid> {
               horizontal: 8.0,
               vertical: kDefaultPadding,
             ),
-            controller: widget.scrollController,
+            controller: _scrollController,
             itemCount: widget.content.length,
             crossAxisCount: 2,
             crossAxisSpacing: kDefaultPadding / 2,

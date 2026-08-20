@@ -14,6 +14,7 @@ import '../../search_view/search_view.dart';
 import '../buttons_containers_widgets.dart';
 import '../content_stats.dart';
 import '../custom_app_bar.dart';
+import '../fluid_blur_container.dart';
 import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import 'picture_view.dart';
@@ -77,7 +78,7 @@ class VerticalVideoView extends HookWidget {
               title: context.t.video.capitalizeFirst(),
               color: kTransparent,
             ),
-            bottomNavigationBar: _bottomNavBar(context),
+            bottomNavigationBar: isFluid() ? null : _bottomNavBar(context),
             body: BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
               builder: (context, state) {
                 return isUserMuted(video.pubkey)
@@ -101,7 +102,9 @@ class VerticalVideoView extends HookWidget {
         _videoPlayer(),
         _gradient(),
         Positioned(
-          bottom: kDefaultPadding,
+          bottom: isFluid()
+              ? MediaQuery.of(context).padding.bottom + 90
+              : kDefaultPadding,
           left: kDefaultPadding / 2,
           right: kDefaultPadding / 2,
           child: MediaInfoColumn(
@@ -111,7 +114,41 @@ class VerticalVideoView extends HookWidget {
             createdAt: video.createdAt,
             onFollowAction: () {},
           ),
-        )
+        ),
+        if (isFluid())
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Visibility(
+              visible: !isUserMuted(video.pubkey),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: kDefaultPadding / 2,
+                  right: kDefaultPadding / 2,
+                  bottom: MediaQuery.of(context).padding.bottom +
+                      kDefaultPadding / 4,
+                  top: kDefaultPadding / 4,
+                ),
+                child: FluidBlurContainer(
+                  customBorderRadius:
+                      BorderRadius.circular(kDefaultPadding * 1.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding / 2,
+                    vertical: kDefaultPadding / 2,
+                  ),
+                  child: ContentStats(
+                    attachedEvent: video,
+                    pubkey: video.pubkey,
+                    kind: video.kind,
+                    identifier: video.id,
+                    createdAt: video.createdAt,
+                    title: video.title,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -120,7 +157,7 @@ class VerticalVideoView extends HookWidget {
   //     BuildContext context, HorizontalVideoState state) {
   //   return GestureDetector(
   //     onTap: () {
-  //       showModalBottomSheet(
+  //       showAppModalSheet(
   //         context: context,
   //         elevation: 0,
   //         builder: (_) {

@@ -10,6 +10,7 @@ import '../../article_view/article_view.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_content_card.dart';
 
 class ProfileArticles extends StatelessWidget {
   const ProfileArticles({super.key});
@@ -57,26 +58,30 @@ class ProfileArticles extends StatelessWidget {
 
   SliverList _itemsList(ProfileState state) {
     return SliverList.separated(
-      separatorBuilder: (context, index) => const Divider(
-        height: kDefaultPadding * 1.5,
-        thickness: 0.5,
-      ),
+      separatorBuilder: (context, index) => useFluidCards()
+          ? const SizedBox(height: kDefaultPadding / 2)
+          : const Divider(
+              height: kDefaultPadding * 1.5,
+              thickness: 0.5,
+            ),
       itemBuilder: (context, index) {
         final event = state.content[index];
         final article = Article.fromEvent(event);
 
-        return ArticleContainer(
-          isFollowing: false,
-          article: article,
-          highlightedTag: '',
-          isBookmarked: state.bookmarks.contains(article.identifier),
-          onClicked: () {
-            Navigator.pushNamed(
-              context,
-              ArticleView.routeName,
-              arguments: article,
-            );
-          },
+        return FluidContentCard(
+          child: ArticleContainer(
+            isFollowing: false,
+            article: article,
+            highlightedTag: '',
+            isBookmarked: state.bookmarks.contains(article.identifier),
+            onClicked: () {
+              Navigator.pushNamed(
+                context,
+                ArticleView.routeName,
+                arguments: article,
+              );
+            },
+          ),
         );
       },
       itemCount: state.content.length,
@@ -92,18 +97,20 @@ class ProfileArticles extends StatelessWidget {
         final event = state.content[index];
         final article = Article.fromEvent(event);
 
-        return ArticleContainer(
-          isFollowing: false,
-          article: article,
-          highlightedTag: '',
-          isBookmarked: state.bookmarks.contains(article.identifier),
-          onClicked: () {
-            Navigator.pushNamed(
-              context,
-              ArticleView.routeName,
-              arguments: article,
-            );
-          },
+        return FluidContentCard(
+          child: ArticleContainer(
+            isFollowing: false,
+            article: article,
+            highlightedTag: '',
+            isBookmarked: state.bookmarks.contains(article.identifier),
+            onClicked: () {
+              Navigator.pushNamed(
+                context,
+                ArticleView.routeName,
+                arguments: article,
+              );
+            },
+          ),
         );
       },
       childCount: state.content.length,

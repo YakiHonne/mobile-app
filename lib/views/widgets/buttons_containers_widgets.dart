@@ -3,10 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
 import '../../utils/bot_toast_util.dart';
+import '../../utils/theme/custom/buttons_theme.dart';
+import '../../utils/theme/glass_settings.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
+import 'fluid_blur_container.dart';
 
 //** Bordered icon button */
 
@@ -27,8 +33,8 @@ class BorderedIconButton extends StatelessWidget {
 
   final bool firstSelection;
   final Function() onClicked;
-  final String primaryIcon;
-  final String secondaryIcon;
+  final IconData primaryIcon;
+  final IconData secondaryIcon;
   final Color borderColor;
   final Color? backGroundColor;
   final Color? iconColor;
@@ -44,15 +50,11 @@ class BorderedIconButton extends StatelessWidget {
       child: IconButton(
         onPressed: isDisabled != null ? () {} : onClicked,
         padding: const EdgeInsets.all(10),
-        icon: SvgPicture.asset(
+        icon: AppIcon(
           firstSelection ? primaryIcon : secondaryIcon,
-          fit: BoxFit.scaleDown,
-          colorFilter: ColorFilter.mode(
-            isDisabled != null
-                ? kWhite
-                : iconColor ?? Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          color: isDisabled != null
+              ? kWhite
+              : iconColor ?? Theme.of(context).primaryColorDark,
         ),
         style: IconButton.styleFrom(
           backgroundColor: isDisabled != null
@@ -68,59 +70,224 @@ class BorderedIconButton extends StatelessWidget {
   }
 }
 
-class NewBorderedIconButton extends StatelessWidget {
-  const NewBorderedIconButton({
+class AppIconButton extends StatelessWidget {
+  const AppIconButton({
+    super.key,
+    required this.icon,
+    this.buttonStatus = ButtonStatus.active,
+    this.onClicked,
+    this.iconSize = 25,
+    this.size = 45,
+    this.iconColor,
+    this.buttonRadius,
+    this.borderColor,
+    this.backgroundColor,
+    this.borderWidth,
+    this.enableFluid = true,
+  });
+
+  final IconData icon;
+
+  final ButtonStatus? buttonStatus;
+  final Function()? onClicked;
+  final double? iconSize;
+  final Color? iconColor;
+  final double? size;
+  final double? buttonRadius;
+  final Color? borderColor;
+  final Color? backgroundColor;
+  final double? borderWidth;
+  final bool? enableFluid;
+
+  @override
+  Widget build(BuildContext context) {
+    final fluid = isFluid() && (enableFluid ?? true);
+
+    final ic = iconColor ?? Theme.of(context).primaryColorDark;
+    final buttonSize = size ?? 45;
+    final icnSize = iconSize ?? 25;
+
+    final iconWidget = AppIcon(icon, size: icnSize, color: ic);
+
+    if (fluid) {
+      if (ModalRoute.of(context) is ModalBottomSheetRoute) {
+        final button = SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: TextButton(
+            onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+            style: backgroundColor != null
+                ? TbuttonsTheme.solidTextButtonStyle(
+                    backgroundColor!,
+                    foregroundColor: ic,
+                    borderColor: borderColor,
+                  ).copyWith(
+                    padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+                    minimumSize: const WidgetStatePropertyAll(Size.zero),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(buttonRadius ?? 300),
+                      ),
+                    ),
+                    side: borderColor != null || borderWidth != null
+                        ? WidgetStatePropertyAll(
+                            BorderSide(
+                              color:
+                                  borderColor ?? Theme.of(context).dividerColor,
+                              width: borderWidth ?? 0.5,
+                            ),
+                          )
+                        : null,
+                  )
+                : TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(buttonRadius ?? 12),
+                    ),
+                    side: borderColor != null || borderWidth != null
+                        ? BorderSide(
+                            color:
+                                borderColor ?? Theme.of(context).dividerColor,
+                            width: borderWidth ?? 0.5,
+                          )
+                        : null,
+                  ),
+            child: iconWidget,
+          ),
+        );
+
+        return Opacity(
+          opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1.0,
+          child: backgroundColor != null
+              ? button
+              : FluidCardContainer(
+                  borderRadius: buttonRadius ?? 300,
+                  padding: EdgeInsets.zero,
+                  child: button,
+                ),
+        );
+      }
+
+      return GlassIconButton(
+        icon: iconWidget,
+        iconSize: iconSize,
+        useOwnLayer: true,
+        // Standalone icon buttons use the shared icon-button recipe; buttons
+        // inside a GlassAppBar keep inheriting its `buttonSettings` plate.
+        settings: DefaultButtonSettings.of(context) == null
+            ? GlassSettings.iconButton(context)
+            : null,
+        onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+      );
+    }
+
+    final localStyle = TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: Size.zero,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      backgroundBuilder: (context, states, child) => child!,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(buttonRadius ?? 12),
+      ),
+      backgroundColor: backgroundColor ?? Colors.transparent,
+      side: borderColor != null || borderWidth != null
+          ? BorderSide(
+              color: borderColor ?? Theme.of(context).dividerColor,
+              width: borderWidth ?? 0.5,
+            )
+          : null,
+    );
+
+    final button = SizedBox(
+      width: buttonSize,
+      height: buttonSize,
+      child: TextButton(
+        onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+        style: localStyle,
+        child: iconWidget,
+      ),
+    );
+
+    return Opacity(
+      opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1.0,
+      child: button,
+    );
+  }
+}
+
+class CustomizedIconButton extends StatelessWidget {
+  const CustomizedIconButton({
     super.key,
     required this.buttonStatus,
     required this.icon,
     required this.onClicked,
-    this.iconData,
+    this.iconSize = 22,
+    this.size,
+    this.visualDensity,
   });
 
   final ButtonStatus buttonStatus;
-  final String icon;
+  final IconData icon;
   final Function() onClicked;
-  final IconData? iconData;
+  final double? iconSize;
+  final double? size;
+  final double? visualDensity;
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1,
-      child: SizedBox(
-        height: 42,
-        width: 42,
-        child: IconButton(
-          onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
-          icon: iconData == null
-              ? SvgPicture.asset(
-                  icon,
-                  width: 22,
-                  height: 22,
-                  fit: BoxFit.scaleDown,
-                  colorFilter: ColorFilter.mode(
-                    buttonStatus == ButtonStatus.active
-                        ? kWhite
-                        : Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
-                )
-              : Icon(
-                  iconData,
-                  size: 22,
-                ),
-          style: IconButton.styleFrom(
-            backgroundColor: buttonStatus == ButtonStatus.active
+    final isActive = buttonStatus == ButtonStatus.active;
+    final fluid = isFluid() && !isActive;
+
+    final iconWidget = AppIcon(
+      icon,
+      size: iconSize,
+      color: isActive ? kWhite : Theme.of(context).primaryColorDark,
+    );
+
+    final button = SizedBox(
+      height: size ?? 42,
+      width: size ?? 42,
+      child: IconButton(
+        onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+        icon: iconWidget,
+        padding: EdgeInsets.zero,
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity(
+            horizontal: visualDensity ?? -4,
+            vertical: visualDensity ?? -1,
+          ),
+          backgroundColor: isActive
+              ? Theme.of(context).primaryColor
+              : fluid
+                  ? Theme.of(context)
+                      .scaffoldBackgroundColor
+                      .withValues(alpha: 0.35)
+                  : Theme.of(context).scaffoldBackgroundColor,
+          side: BorderSide(
+            color: buttonStatus == ButtonStatus.loading || isActive
                 ? Theme.of(context).primaryColor
-                : Theme.of(context).scaffoldBackgroundColor,
-            side: BorderSide(
-              color: buttonStatus == ButtonStatus.loading ||
-                      buttonStatus == ButtonStatus.active
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).dividerColor,
-            ),
+                : Theme.of(context).dividerColor.withValues(
+                      alpha: fluid ? 0.5 : 1,
+                    ),
           ),
         ),
       ),
+    );
+
+    return Opacity(
+      opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1,
+      child: fluid
+          ? FluidBlurContainer(
+              showDecoration: false,
+              borderRadius: 21,
+              child: button,
+            )
+          : button,
     );
   }
 }
@@ -145,6 +312,7 @@ class StatusButton extends StatelessWidget {
       child: TextButton(
         onPressed: !isDisabled ? onClicked : null,
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor:
               isDisabled ? kDimGrey : (color ?? Theme.of(context).primaryColor),
           visualDensity: VisualDensity.comfortable,
@@ -291,14 +459,10 @@ class PubKeyContainer extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.copy,
-              width: 10,
-              height: 10,
-              colorFilter: const ColorFilter.mode(
-                kWhite,
-                BlendMode.srcIn,
-              ),
+              size: 10,
+              color: kWhite,
             ),
           ],
         ),
@@ -360,8 +524,8 @@ class ResetScrollButton extends HookWidget {
               );
             }
           },
-          icon: Icon(
-            Icons.keyboard_arrow_up_rounded,
+          icon: AppIcon(
+            LucideIcons.chevronUp,
             color: Theme.of(context).primaryColorLight,
           ),
           style: IconButton.styleFrom(
@@ -415,8 +579,8 @@ class ChatResetScrollButton extends HookWidget {
                 );
               }
             },
-            icon: Icon(
-              Icons.keyboard_arrow_down,
+            icon: AppIcon(
+              LucideIcons.chevronDown,
               color: Theme.of(context).primaryColorLight,
             ),
             style: IconButton.styleFrom(

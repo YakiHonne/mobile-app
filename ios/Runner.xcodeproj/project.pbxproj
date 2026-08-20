@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		043591412E960EE6007C6F36 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 043591372E960EE6007C6F36 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		045E3ED62D7405D8008D704F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 045E3ED52D7405D8008D704F /* GoogleService-Info.plist */; };
+		04F20C142FEE40CA0009D8C8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F20C132FEE40CA0009D8C8 /* StoreKit.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -66,6 +67,7 @@
 		043591372E960EE6007C6F36 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		045E3ED42D740549008D704F /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		045E3ED52D7405D8008D704F /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		04F20C132FEE40CA0009D8C8 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		128BC76C6081262E353B80A0 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				917CA03298A83A23999E0FF6 /* Pods_Runner.framework in Frameworks */,
+				04F20C142FEE40CA0009D8C8 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +220,7 @@
 		FC4AF67324EE53E6B395CB2D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				04F20C132FEE40CA0009D8C8 /* StoreKit.framework */,
 				E5D807B0A6809993ED08D7A2 /* Pods_Runner.framework */,
 				6934DD01274B7CCA08654DD4 /* Pods_ShareExtension.framework */,
 			);

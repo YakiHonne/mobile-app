@@ -1,14 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/media_servers_cubit/media_servers_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 import '../blossom_management_view.dart';
 
 class MediaUploaderSettings extends HookWidget {
@@ -29,14 +32,15 @@ class MediaUploaderSettings extends HookWidget {
           context.t.blossomServers,
         ];
 
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.mediaUploader.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.mediaUploader.capitalizeFirst(),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             child: CustomScrollView(
               slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+                ),
                 _pulldownButton(context, services, state),
                 const SliverToBoxAdapter(
                   child: Divider(),
@@ -109,7 +113,7 @@ class MediaUploaderSettings extends HookWidget {
               ),
               Transform.scale(
                 scale: 0.8,
-                child: CupertinoSwitch(
+                child: FluidSwitch(
                   value: state.enableMirroring,
                   activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (isToggled) {
@@ -255,9 +259,7 @@ class MediaUploaderSettings extends HookWidget {
               onClicked: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => BlossomManagementView(
-                      blossomServers: state.blossomServers,
-                    ),
+                    builder: (context) => const BlossomManagementView(),
                   ),
                 );
               },
@@ -298,7 +300,7 @@ class MediaUploaderSettings extends HookWidget {
           const SizedBox(
             width: kDefaultPadding / 4,
           ),
-          PullDownButton(
+          FluidPullDownButton(
             animationBuilder: (context, state, child) {
               return child;
             },
@@ -340,7 +342,7 @@ class MediaUploaderSettings extends HookWidget {
                       width: kDefaultPadding / 4,
                     ),
                     const Icon(
-                      CupertinoIcons.chevron_up_chevron_down,
+                      LucideIcons.chevronsUpDown,
                       size: 18,
                     ),
                   ],
@@ -371,7 +373,7 @@ class MediaUploaderSettings extends HookWidget {
             const SizedBox(
               width: kDefaultPadding / 4,
             ),
-            PullDownButton(
+            FluidPullDownButton(
               animationBuilder: (context, state, child) {
                 return child;
               },
@@ -412,7 +414,7 @@ class MediaUploaderSettings extends HookWidget {
                         width: kDefaultPadding / 4,
                       ),
                       const Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
+                        LucideIcons.chevronsUpDown,
                         size: 18,
                       ),
                     ],
@@ -467,14 +469,10 @@ class MediaSettingsContainer extends StatelessWidget {
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   isToggled ? FeatureIcons.arrowUp : FeatureIcons.arrowDown,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 18,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ],
             ),

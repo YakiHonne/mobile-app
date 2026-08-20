@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/picture_cubit/picture_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/picture_model.dart';
 import '../../../utils/utils.dart';
 import '../../gallery_view/gallery_view.dart';
+import '../app_icon.dart';
 import '../data_providers.dart';
+import '../fluid_blur_container.dart';
 import '../no_content_widgets.dart';
 import '../note_stats.dart';
 import '../profile_picture.dart';
+import '../subscription_badge_view.dart';
 
 class PictureView extends StatefulWidget {
   const PictureView({super.key, required this.picture});
@@ -31,7 +35,7 @@ class _PictureViewState extends State<PictureView> {
         builder: (context, state) {
           return Scaffold(
             extendBodyBehindAppBar: true,
-            bottomNavigationBar: _bottomNavBar(context),
+            bottomNavigationBar: isFluid() ? null : _bottomNavBar(context),
             body: BlocBuilder<PictureCubit, PictureState>(
               builder: (context, state) {
                 return isUserMuted(widget.picture.pubkey)
@@ -101,7 +105,9 @@ class _PictureViewState extends State<PictureView> {
           ),
         ),
         Positioned(
-          bottom: kDefaultPadding,
+          bottom: isFluid()
+              ? MediaQuery.of(context).padding.bottom + 90
+              : kDefaultPadding,
           left: kDefaultPadding / 2,
           right: kDefaultPadding / 2,
           child: MediaInfoColumn(
@@ -115,7 +121,35 @@ class _PictureViewState extends State<PictureView> {
               }
             },
           ),
-        )
+        ),
+        if (isFluid())
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: kDefaultPadding / 2,
+                right: kDefaultPadding / 2,
+                bottom:
+                    MediaQuery.of(context).padding.bottom + kDefaultPadding / 4,
+                top: kDefaultPadding / 4,
+              ),
+              child: FluidBlurContainer(
+                customBorderRadius:
+                    BorderRadius.circular(kDefaultPadding * 1.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                  vertical: kDefaultPadding / 2,
+                ),
+                child: NoteStats(
+                  id: widget.picture.id,
+                  model: widget.picture,
+                  isMain: true,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -197,17 +231,15 @@ class MediaInfoColumn extends StatelessWidget {
                               const SizedBox(
                                 width: kDefaultPadding / 4,
                               ),
-                              SvgPicture.asset(
+                              AppIcon(
                                 FeatureIcons.verified,
-                                width: 15,
-                                height: 15,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).primaryColor,
-                                  BlendMode.srcIn,
-                                ),
+                                size: 15,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ],
-                          )
+                          ),
+                        const SizedBox(width: kDefaultPadding / 4),
+                        SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
                       ],
                     ),
                     Text(
@@ -237,6 +269,7 @@ class MediaInfoColumn extends StatelessWidget {
                     child: TextButton(
                       onPressed: onFollowAction,
                       style: TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
                         visualDensity: const VisualDensity(
                           vertical: -1,
                         ),
@@ -383,7 +416,7 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
           ),
           if (_exceedsTwoLines)
             Icon(
-              _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              _isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
               color: kWhite,
               size: 20,
               shadows: const [

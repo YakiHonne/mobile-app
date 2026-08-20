@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../logic/theme_cubit/theme_cubit.dart';
@@ -38,6 +39,7 @@ class LocalDatabaseRepository {
   static const String _isPrivateMap = 'keys_is_private_map';
   static const String _isExternalSignerMap = 'keys_is_external_map';
   static const String _externalKeysType = 'external_keys_map';
+  static const String _pomegranateSetups = 'pomegranate_setups_map';
   static const String _remoteSigners = 'remote_signers_map';
   static const String _appWallets = 'global_app_wallets';
   static const String _selectedWalletId = 'selected_wallet_id';
@@ -53,6 +55,9 @@ class LocalDatabaseRepository {
   static const String _appTheme = 'app_theme';
   static const String _appMainColor = 'app_main_color';
   static const String _textScaleFactor = 'text_scale_factor';
+  static const String _fluidMode = 'fluid_mode';
+  static const String _fluidCards = 'fluid_cards';
+  static const String _glassQuality = 'glass_quality';
   static const String _crashlyticsData = 'collect_data';
 
   // User Interface & Experience
@@ -62,6 +67,7 @@ class LocalDatabaseRepository {
   static const String _showNewSettingPopup = 'show_new_setting_popup';
   static const String _showCachePopup = 'show_cache_popup';
   static const String _versionNews = 'version_news';
+  static const String _featureTour = 'feature_tour_v2';
   static const String _pointsSystem = 'points_system';
 
   // Content & Communication
@@ -85,11 +91,13 @@ class LocalDatabaseRepository {
   static const String _wotConfigurations = 'wot_configurations';
   static const String _filterStatus = 'filter_status';
   static const String _defaultZapAmounts = 'default_zap_amounts';
+  static const String _paidNoteAdsSeenCounts = 'paid_note_ads_seen_counts';
   static const String _defaultReaction = 'default_reaction';
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
   static const String _automaticCachePurge = 'automatic_cache_purge';
   static const String _autoTranslation = 'auto_translation';
+  static const String _upgradeBannerDismissed = 'upgrade_banner_dismissed';
   static const String _nestedReplies = 'nested_replies';
 
   // Notifications & Flash News
@@ -220,6 +228,17 @@ class LocalDatabaseRepository {
 
   Future<void> setExternalKeysType(String keysExternalMap) async {
     await _setSecureData(_externalKeysType, keysExternalMap);
+  }
+
+  /// Per-key-index Pomegranate setups, as `{index: setupJson}`. Stored beside
+  /// the key rather than as one blob: applying account A's operator set to
+  /// account B would send recovery to servers that never held its shards.
+  Future<String?> getPomegranateSetups() async {
+    return _getSecureData<String>(_pomegranateSetups);
+  }
+
+  Future<void> setPomegranateSetups(String setups) async {
+    await _setSecureData(_pomegranateSetups, setups);
   }
 
   Future<String?> getRemoteSigners() async {
@@ -375,6 +394,40 @@ class LocalDatabaseRepository {
     _setPrefsData(_textScaleFactor, textScaleFactor);
   }
 
+  /// Text Scale Factor
+  bool getFluidMode() {
+    final isFluidMode = _getPrefsData<bool>(_fluidMode);
+    if (isFluidMode != null) {
+      return isFluidMode;
+    }
+
+    setFluidMode(true);
+    return true;
+  }
+
+  void setFluidMode(bool isFluidMode) {
+    _setPrefsData(_fluidMode, isFluidMode);
+  }
+
+  GlassQuality getGlassQuality() {
+    final name = _getPrefsData<String>(_glassQuality);
+
+    return GlassQuality.values.firstWhere(
+      (q) => q.name == name,
+      orElse: () => GlassQuality.minimal,
+    );
+  }
+
+  void setGlassQuality(GlassQuality quality) {
+    _setPrefsData(_glassQuality, quality.name);
+  }
+
+  bool getFluidCards() => _getPrefsData<bool>(_fluidCards) ?? true;
+
+  void setFluidCards(bool useFluidCards) {
+    _setPrefsData(_fluidCards, useFluidCards);
+  }
+
   /// Analytics and Cache Configuration
   Future<void> setAutomaticCachePurge(bool enable) async {
     await _setPrefsData(_automaticCachePurge, enable);
@@ -474,6 +527,12 @@ class LocalDatabaseRepository {
     _setPrefsData(_versionNews, version);
     return version != currentVersion;
   }
+
+  /// Feature tour — new features intro + spotlight tour, shown once.
+  bool canDisplayFeatureTour() =>
+      !(_getPrefsData<bool>(_featureTour, defaultValue: false) ?? false);
+
+  Future<void> setFeatureTourSeen() => _setPrefsData(_featureTour, true);
 
   // ==================================================
   // CONTENT & COMMUNICATION
@@ -716,6 +775,15 @@ class LocalDatabaseRepository {
     return _getPrefsData<bool>('$_autoTranslation-$pubkey') ?? false;
   }
 
+  /// Upgrade banner (leading view dismissal, per user)
+  Future<void> setUpgradeBannerDismissed(String pubkey) async {
+    await _setPrefsData('$_upgradeBannerDismissed-$pubkey', true);
+  }
+
+  bool getUpgradeBannerDismissed(String pubkey) {
+    return _getPrefsData<bool>('$_upgradeBannerDismissed-$pubkey') ?? false;
+  }
+
   /// Nested Replies
   Future<void> setNestedRepliesStatus(String pubkey, bool enable) async {
     await _setPrefsData('$_nestedReplies-$pubkey', enable);
@@ -786,6 +854,25 @@ class LocalDatabaseRepository {
 
   Future<bool> getOneTapZap() async {
     return _getPrefsData<bool>(_enableOneTapZap, defaultValue: false) ?? false;
+  }
+
+  /// Paid Note Ads Configuration
+  Future<void> setPaidNoteAdsSeenCounts(
+      {required Map<String, int> counts}) async {
+    await _setPrefsData(_paidNoteAdsSeenCounts, jsonEncode(counts));
+  }
+
+  Future<Map<String, int>> getPaidNoteAdsSeenCounts() async {
+    final data = _getPrefsData<String>(_paidNoteAdsSeenCounts);
+    if (data == null) {
+      return {};
+    }
+    try {
+      return Map<String, int>.from(jsonDecode(data));
+    } catch (e) {
+      lg.i('Error parsing paid note ads seen counts: $e');
+      return {};
+    }
   }
 
   /// Messaging Configuration

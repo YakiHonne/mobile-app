@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../logic/metadata_cubit/metadata_cubit.dart';
@@ -346,14 +347,7 @@ class DMGiftWidget extends HookWidget {
         ),
         child: Center(
           child: isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
+              ? const SpinKitCircle(color: Colors.white, size: 24)
               : Text(
                   status,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(

@@ -5,6 +5,7 @@ class PointsManagementState extends Equatable {
   final UserGlobalStats? userGlobalStats;
   final bool isUpdated;
   final bool isNew;
+  final bool isSystemLoggedIn;
   final List<String> standards;
   final int currentXp;
   final int currentLevel;
@@ -18,6 +19,7 @@ class PointsManagementState extends Equatable {
     this.userGlobalStats,
     required this.isUpdated,
     required this.isNew,
+    this.isSystemLoggedIn = false,
     required this.standards,
     required this.currentXp,
     required this.currentLevel,
@@ -32,6 +34,7 @@ class PointsManagementState extends Equatable {
   List<Object> get props => [
         isUpdated,
         isNew,
+        isSystemLoggedIn,
         standards,
         currentXp,
         currentLevel,
@@ -46,6 +49,7 @@ class PointsManagementState extends Equatable {
     UserGlobalStats? userGlobalStats,
     bool? isUpdated,
     bool? isNew,
+    bool? isSystemLoggedIn,
     List<String>? standards,
     int? currentXp,
     int? currentLevel,
@@ -59,6 +63,7 @@ class PointsManagementState extends Equatable {
       userGlobalStats: userGlobalStats,
       isUpdated: isUpdated ?? this.isUpdated,
       isNew: isNew ?? this.isNew,
+      isSystemLoggedIn: isSystemLoggedIn ?? this.isSystemLoggedIn,
       standards: standards ?? this.standards,
       currentXp: currentXp ?? this.currentXp,
       currentLevel: currentLevel ?? this.currentLevel,

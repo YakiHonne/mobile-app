@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -15,16 +16,20 @@ import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/profile_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 
 class ProfileShareView extends HookWidget {
   final Metadata metadata;
+  final VoidCallback? onClose;
 
   ProfileShareView({
     super.key,
     required this.metadata,
+    this.onClose,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Profile share view');
   }
@@ -39,21 +44,19 @@ class ProfileShareView extends HookWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
       ),
-      child: Scaffold(
+      child: FluidScaffold(
         backgroundColor: kTransparent,
-        appBar: AppBar(
-          elevation: 0,
-          forceMaterialTransparency: true,
-          leading: Center(
-            child: CustomIconButton(
-              onClicked: () {
-                Navigator.pop(context);
-              },
-              icon: FeatureIcons.closeRaw,
-              size: 20,
-              iconColor: kWhite,
-              backgroundColor: kBlack.withValues(alpha: 0.5),
-            ),
+        appBarColor: kTransparent,
+        notElevated: true,
+        actions: const [],
+        leading: Center(
+          child: CustomIconButton(
+            onClicked: () =>
+                onClose != null ? onClose!() : Navigator.pop(context),
+            icon: FeatureIcons.closeRaw,
+            size: 20,
+            iconColor: kWhite,
+            backgroundColor: kBlack.withValues(alpha: 0.5),
           ),
         ),
         body: _contentBox(isPubkeyToggled, context, width),
@@ -212,14 +215,10 @@ class ProfileShareView extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColor,
               ),
             ],
           ],
@@ -288,18 +287,14 @@ class ProfileShareView extends HookWidget {
     required String title,
     required String content,
     required String copyText,
-    required String icon,
+    required IconData icon,
   }) {
     return Row(
       children: [
-        SvgPicture.asset(
+        AppIcon(
           icon,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
-          width: 20,
-          height: 20,
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         const SizedBox(
           width: kDefaultPadding / 2,
@@ -340,20 +335,17 @@ class ProfileShareView extends HookWidget {
             BotToastUtils.showSuccess(copyText);
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: const VisualDensity(
               vertical: -4,
               horizontal: -2,
             ),
           ),
-          icon: SvgPicture.asset(
+          icon: AppIcon(
             FeatureIcons.copy,
-            width: 18,
-            height: 18,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 18,
+            color: Theme.of(context).primaryColorDark,
           ),
         ),
       ],
@@ -389,9 +381,9 @@ class _ConnectedUserProfileShareViewState
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCamera();
+      controller!.pauseCameraSafely();
     } else if (state == AppLifecycleState.resumed && !isQRcodeShown) {
-      controller!.resumeCamera();
+      controller!.resumeCameraSafely();
     }
   }
 
@@ -418,21 +410,20 @@ class _ConnectedUserProfileShareViewState
           ],
         ),
       ),
-      child: Scaffold(
+      child: FluidScaffold(
         backgroundColor: kTransparent,
-        appBar: AppBar(
-          elevation: 0,
-          forceMaterialTransparency: true,
-          leading: Center(
-            child: CustomIconButton(
-              onClicked: () {
-                Navigator.pop(context);
-              },
-              icon: FeatureIcons.closeRaw,
-              size: 20,
-              iconColor: kWhite,
-              backgroundColor: kBlack.withValues(alpha: 0.5),
-            ),
+        appBarColor: kTransparent,
+        notElevated: true,
+        actions: const [],
+        leading: Center(
+          child: CustomIconButton(
+            onClicked: () {
+              Navigator.pop(context);
+            },
+            icon: FeatureIcons.closeRaw,
+            size: 20,
+            iconColor: kWhite,
+            backgroundColor: kBlack.withValues(alpha: 0.5),
           ),
         ),
         body: _contentBox(context, width),
@@ -457,15 +448,16 @@ class _ConnectedUserProfileShareViewState
               child: TextButton(
                 onPressed: () {
                   if (isQRcodeShown) {
-                    controller?.resumeCamera();
+                    controller?.resumeCameraSafely();
                   } else {
-                    controller?.pauseCamera();
+                    controller?.pauseCameraSafely();
                   }
                   setState(() {
                     isQRcodeShown = !isQRcodeShown;
                   });
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   backgroundColor: kWhite,
                 ),
                 child: Text(
@@ -669,6 +661,7 @@ class CurrentUserQrCode extends StatelessWidget {
               );
             },
             style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: kWhite,
                 visualDensity: const VisualDensity(
                   vertical: -2,
@@ -680,7 +673,7 @@ class CurrentUserQrCode extends StatelessWidget {
                   ),
             ),
             label: const Icon(
-              Icons.arrow_outward_rounded,
+              LucideIcons.arrowUpRight,
               size: 18,
               color: kBlack,
             ),
@@ -701,6 +694,7 @@ class CurrentUserQrCode extends StatelessWidget {
               );
             },
             style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: kWhite,
                 visualDensity: const VisualDensity(
                   vertical: -2,
@@ -711,10 +705,10 @@ class CurrentUserQrCode extends StatelessWidget {
                     color: kBlack,
                   ),
             ),
-            label: SvgPicture.asset(
+            label: const AppIcon(
               FeatureIcons.copy,
-              width: 15,
-              height: 15,
+              size: 15,
+              color: kBlack,
             ),
           ),
         ],

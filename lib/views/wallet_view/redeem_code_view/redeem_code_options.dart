@@ -31,7 +31,7 @@ class RedeemCodeOptions extends HookWidget {
 
     useEffect(() {
       if (!isQrCode.value) {
-        controller.value?.pauseCamera();
+        controller.value?.pauseCameraSafely();
       }
       return null;
     }, [isQrCode.value]);
@@ -42,9 +42,9 @@ class RedeemCodeOptions extends HookWidget {
       }
 
       if (appState == AppLifecycleState.paused) {
-        controller.value!.pauseCamera();
+        controller.value!.pauseCameraSafely();
       } else if (appState == AppLifecycleState.resumed && isQrCode.value) {
-        controller.value!.resumeCamera();
+        controller.value!.resumeCameraSafely();
       }
 
       return null;

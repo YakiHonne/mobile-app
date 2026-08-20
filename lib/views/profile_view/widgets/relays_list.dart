@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
@@ -10,6 +11,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class ProfileRelays extends StatelessWidget {
   const ProfileRelays({super.key});
@@ -18,18 +20,7 @@ class ProfileRelays extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(kDefaultPadding),
-              topRight: Radius.circular(kDefaultPadding),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        return ModalSheetContainer(
           child: DraggableScrollableSheet(
             initialChildSize: 0.7,
             minChildSize: 0.60,
@@ -167,11 +158,12 @@ class ProfileRelayContainer extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: const Icon(
-              Icons.check_circle,
+              LucideIcons.circleCheck,
               color: kGreen,
               size: 20,
             ),
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             ),
           )
@@ -189,11 +181,12 @@ class ProfileRelayContainer extends StatelessWidget {
                 IconButton(
                   onPressed: onAddRelay,
                   icon: Icon(
-                    Icons.add_circle_outline_rounded,
+                    LucideIcons.circlePlus,
                     color: Theme.of(context).primaryColor,
                     size: 20,
                   ),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity:
                         const VisualDensity(horizontal: -4, vertical: -4),
                   ),

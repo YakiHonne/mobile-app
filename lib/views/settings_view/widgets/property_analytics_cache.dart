@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 
 import '../../../logic/crashlytics_cubit/crashlytics_cubit.dart';
@@ -10,7 +10,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../notifications_view/widgets/notifications_customization.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/response_snackbar.dart';
 import 'mute_list_view.dart';
 import 'property_appearance.dart';
@@ -23,12 +23,11 @@ class PropertyAnalyticsCache extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.analyticsCache.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.analyticsCache.capitalizeFirst(),
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2)
+            .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Text(
             context.t.settingsCacheDesc,
@@ -100,6 +99,7 @@ class PropertyAnalyticsCache extends StatelessWidget {
                   );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: const VisualDensity(vertical: -3),
                 ),
                 child: Text(
@@ -138,8 +138,8 @@ class PropertyAnalyticsCache extends StatelessWidget {
           description: context.t.crashlyticsDesc,
           title: context.t.analyticsCrashlytics.capitalizeFirst(),
           isToggled: state.isCrashlyticsEnabled,
-          firstIcon: CupertinoIcons.play_circle,
-          secondIcon: CupertinoIcons.pause_circle,
+          firstIcon: LucideIcons.circlePlay,
+          secondIcon: LucideIcons.circlePause,
         );
       },
     );

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 
+import '../../models/app_models/diverse_functions.dart';
 import '../../utils/utils.dart';
 import '../../utils/video_utils.dart';
 
@@ -33,6 +34,7 @@ class PreviewQueueManager {
       final request = _queue.removeFirst();
       final data = await getPreviewData(request.url);
       nostrRepository.previewCache[request.url] = data;
+      nostrRepository.previewCache.capSize(300);
       request.callback(data);
     }
 
@@ -72,6 +74,7 @@ class VideoThumbnailQueueManager {
         context: gc,
       );
       nostrRepository.videoThumbnails[request.url] = data;
+      nostrRepository.videoThumbnails.capSize(500);
       request.callback(data);
     }
 

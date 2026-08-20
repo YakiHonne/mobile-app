@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class SignerView extends HookWidget {
   const SignerView({
@@ -23,19 +24,7 @@ class SignerView extends HookWidget {
     final automaticSignIn =
         useState(localDatabaseRepository.getAutomaticSigning());
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         expand: false,
         maxChildSize: 0.85,
@@ -109,6 +98,7 @@ class SignerView extends HookWidget {
             child: TextButton(
               onPressed: onCancel,
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: Theme.of(context).cardColor,
                 visualDensity: VisualDensity.standard,
               ),

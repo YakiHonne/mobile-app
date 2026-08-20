@@ -8,7 +8,8 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_scaffold.dart';
 import 'qr_code_scanner.dart';
 import 'send_manual_selection.dart';
 import 'send_search_user.dart';
@@ -20,14 +21,17 @@ class SendMainView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.send,
-      ),
-      body: Column(
-        spacing: kDefaultPadding / 4,
-        children: [
-          const Expanded(
+    return FluidScaffold(
+      title: context.t.send,
+      // Padding, not a leading SizedBox: this Column sets `spacing`, which
+      // inserts a gap between every adjacent pair — an extra zero-height child
+      // would add a real gap off the fluid path.
+      body: Padding(
+        padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+        child: Column(
+          spacing: kDefaultPadding / 4,
+          children: [
+            const Expanded(
             child: SendManualSelection(),
           ),
           Padding(
@@ -46,7 +50,8 @@ class SendMainView extends HookWidget {
               ],
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -55,8 +60,7 @@ class SendMainView extends HookWidget {
     return Expanded(
       child: SendOptionsButton(
         onClicked: () async {
-          final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-          final clipboardText = clipboardData?.text;
+          final clipboardText = await getClipboardTextSafely();
 
           if (clipboardText != null &&
               clipboardText.isNotEmpty &&
@@ -137,7 +141,7 @@ class SendOptionsButton extends StatelessWidget {
 
   final Function() onClicked;
   final String title;
-  final String icon;
+  final IconData icon;
   final bool? isLoading;
   final Color? textColor;
   final Color? borderColor;
@@ -184,14 +188,10 @@ class SendOptionsButton extends StatelessWidget {
       key: const ValueKey('data'),
       spacing: kDefaultPadding / 4,
       children: [
-        SvgPicture.asset(
+        AppIcon(
           icon,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            textColor ?? Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: textColor ?? Theme.of(context).primaryColorDark,
         ),
         Text(
           title,

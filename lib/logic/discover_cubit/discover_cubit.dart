@@ -290,7 +290,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           showFollowingListMessage: showFollowingsMessage,
           onAddingData:
@@ -403,7 +403,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           showFollowingListMessage: false,
           onAddingData:
@@ -452,7 +452,7 @@ class DiscoverCubit extends Cubit<DiscoverState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           showFollowingListMessage: false,
           onAddingData:

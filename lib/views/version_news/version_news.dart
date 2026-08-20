@@ -1,11 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 
 import '../../utils/utils.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/custom_icon_buttons.dart';
+import '../widgets/fluid_scaffold.dart';
 
 class VersionNews extends StatefulWidget {
   const VersionNews({
@@ -26,37 +27,28 @@ class _VersionNewsState extends State<VersionNews> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FluidScaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        forceMaterialTransparency: true,
-        toolbarHeight: kToolbarHeight,
-        title: Text(
-          context.t.updatesNews.capitalizeFirst(),
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium!
-              .copyWith(fontWeight: FontWeight.w700),
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-        leading: Center(
-          child: CustomIconButton(
-            onClicked: () {
-              Navigator.pop(context);
-            },
-            icon: FeatureIcons.closeRaw,
-            size: 20,
-            iconColor: Theme.of(context).primaryColorDark,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          ),
+      notElevated: true,
+      title: context.t.updatesNews.capitalizeFirst(),
+      // Dismissed with the close button, so no back chevron and no logo.
+      leading: Center(
+        child: CustomIconButton(
+          onClicked: () {
+            Navigator.pop(context);
+          },
+          icon: FeatureIcons.closeRaw,
+          size: 20,
+          iconColor: Theme.of(context).primaryColorDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
+      actions: const [],
       body: ScrollShadow(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: ListView(
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          padding: const EdgeInsets.all(kDefaultPadding / 2)
+              .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
           children: [
             const SizedBox(
               height: kDefaultPadding / 2,
@@ -155,28 +147,20 @@ class _VersionNewsState extends State<VersionNews> {
   AspectRatio _thumbnail(Map<String, Object> e, BuildContext context) {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: CachedNetworkImage(
-        imageUrl: e['thumbnail'].toString(),
-        cacheManager: imagesCacheManager,
-        memCacheWidth: MediaQuery.of(context).size.width.toInt(),
-        imageBuilder: (context, imageProvider) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                kDefaultPadding,
-              ),
-              border: Border.all(
-                color: (e['new']! as bool)
-                    ? Theme.of(context).primaryColor
-                    : kTransparent,
-                width: 1.5,
-              ),
-              image: DecorationImage(
-                image: imageProvider,
-              ),
-            ),
-          );
-        },
+      child: ExtendedImage.network(
+        e['thumbnail'].toString(),
+        fit: BoxFit.scaleDown,
+        cacheWidth: MediaQuery.of(context).size.width.toInt(),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(
+          kDefaultPadding,
+        ),
+        border: Border.all(
+          color: (e['new']! as bool)
+              ? Theme.of(context).primaryColor
+              : kTransparent,
+          width: 1.5,
+        ),
       ),
     );
   }
@@ -255,15 +239,17 @@ class _VersionNewsState extends State<VersionNews> {
   }
 }
 
+/// Shown under [appVersion], so this list must be rewritten every release —
+/// it shipped once already holding the previous version's notes.
 final List<String> releaseNotes = [
-  'Moved nested comments to Feed customization.',
-  'Disabled followings notifications by default.',
-  'Updated description in Blossom management upload view.',
-  'Enabled internal view opening for Blossom management items.',
-  'Adjusted mirror functionality in Blossom management options.',
-  'Optimized videos prefetching.',
-  'Fixed videos thumbnails not loading in Blossom management.',
-  'Fixed quote functionality.',
+  'Introduced Basic and Premium subscriptions, payable by card, Lightning, or points.',
+  'Added creator subscriptions, so you can support creators directly.',
+  'Added Google sign-in with key recovery, split across operators so no single one holds your key.',
+  'Added Yaki usernames and NIP-05 addresses, claimable from profile settings.',
+  'Added fluid mode, with adjustable glass quality in appearance settings.',
+  'Added usage indicators showing your remaining quota and when it renews.',
+  'Points can now be redeemed toward a subscription.',
+  'Improved Blossom media server management and the article editor.',
   'General bug fixes and performance enhancements.',
 ];
 

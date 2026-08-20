@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 
 class EmptyList extends StatelessWidget {
   const EmptyList({
@@ -12,7 +13,7 @@ class EmptyList extends StatelessWidget {
 
   final String? title;
   final String description;
-  final String icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,10 @@ class EmptyList extends StatelessWidget {
           vertical: kDefaultPadding * 2,
         ),
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            width: 45,
-            height: 45,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 45,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

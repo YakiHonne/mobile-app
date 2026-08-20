@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 
 import '../../../logic/search_user_cubit/search_user_cubit.dart';
@@ -10,6 +11,7 @@ import '../../../utils/utils.dart';
 import '../../search_view/search_view.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class UserToZap extends HookWidget {
   final Function(Metadata) onUserSelected;
@@ -29,19 +31,7 @@ class UserToZap extends HookWidget {
 
     return BlocProvider(
       create: (context) => SearchUserCubit(),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
+      child: ModalSheetContainer(
         child: DraggableScrollableSheet(
           initialChildSize: 0.8,
           minChildSize: 0.40,
@@ -122,7 +112,7 @@ class UserToZap extends HookWidget {
             textEditingController.clear();
             context.read<SearchUserCubit>().emptyAuthorsList();
           },
-          icon: const Icon(Icons.close),
+          icon: const Icon(LucideIcons.x),
         ),
       ),
     );

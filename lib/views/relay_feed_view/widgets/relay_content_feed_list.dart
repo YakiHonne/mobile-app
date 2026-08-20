@@ -13,6 +13,7 @@ import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/curation_container.dart';
+import '../../widgets/fluid_content_card.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/video_common_container.dart';
@@ -47,10 +48,12 @@ class RelayContentFeedList extends StatelessWidget {
             sliver: SliverList.separated(
               itemCount: state.content.length,
               separatorBuilder: (context, index) {
-                return const Divider(
-                  thickness: 0.3,
-                  height: kDefaultPadding * 1.5,
-                );
+                return useFluidCards()
+                    ? const SizedBox(height: kDefaultPadding / 2)
+                    : const Divider(
+                        thickness: 0.3,
+                        height: kDefaultPadding * 1.5,
+                      );
               },
               itemBuilder: (context, index) {
                 final item = state.content[index];
@@ -65,62 +68,64 @@ class RelayContentFeedList extends StatelessWidget {
   }
 
   Widget getItem(BaseEventModel item) {
-    return BlocBuilder<RelayFeedCubit, RelayFeedState>(
-      builder: (context, state) {
-        if (item is Article) {
-          return ArticleContainer(
-            article: item,
-            highlightedTag: '',
-            isMuted: false,
-            isBookmarked: false,
-            onClicked: () {
-              Navigator.pushNamed(
-                context,
-                ArticleView.routeName,
-                arguments: item,
-              );
-            },
-            isFollowing: false,
-          );
-        } else if (item is VideoModel) {
-          final video = item;
+    return FluidContentCard(
+      child: BlocBuilder<RelayFeedCubit, RelayFeedState>(
+        builder: (context, state) {
+          if (item is Article) {
+            return ArticleContainer(
+              article: item,
+              highlightedTag: '',
+              isMuted: false,
+              isBookmarked: false,
+              onClicked: () {
+                Navigator.pushNamed(
+                  context,
+                  ArticleView.routeName,
+                  arguments: item,
+                );
+              },
+              isFollowing: false,
+            );
+          } else if (item is VideoModel) {
+            final video = item;
 
-          return VideoCommonContainer(
-            isBookmarked: false,
-            video: video,
-            isMuted: false,
-            isFollowing: false,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                video.isHorizontal
-                    ? HorizontalVideoView.routeName
-                    : VerticalVideoView.routeName,
-                arguments: [video],
-              );
-            },
-          );
-        } else if (item is Curation) {
-          final curation = item;
+            return VideoCommonContainer(
+              isBookmarked: false,
+              video: video,
+              isMuted: false,
+              isFollowing: false,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  video.isHorizontal
+                      ? HorizontalVideoView.routeName
+                      : VerticalVideoView.routeName,
+                  arguments: [video],
+                );
+              },
+            );
+          } else if (item is Curation) {
+            final curation = item;
 
-          return CurationContainer(
-            curation: curation,
-            isFollowing: false,
-            isBookmarked: false,
-            isProfileAccessible: false,
-            onClicked: () {
-              Navigator.pushNamed(
-                context,
-                CurationView.routeName,
-                arguments: curation,
-              );
-            },
-            padding: 0,
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+            return CurationContainer(
+              curation: curation,
+              isFollowing: false,
+              isBookmarked: false,
+              isProfileAccessible: false,
+              onClicked: () {
+                Navigator.pushNamed(
+                  context,
+                  CurationView.routeName,
+                  arguments: curation,
+                );
+              },
+              padding: 0,
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 }

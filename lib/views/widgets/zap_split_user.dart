@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
 import '../../utils/utils.dart';
 import 'buttons_containers_widgets.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 import 'profile_picture.dart';
 
 class ZapSplitUsers extends HookWidget {
@@ -28,18 +30,7 @@ class ZapSplitUsers extends HookWidget {
     final authors = useState(<Metadata>[]);
     final pubkeysList = useState(currentPubkeys);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.60,
@@ -113,14 +104,14 @@ class ZapSplitUsers extends HookWidget {
           decoration: InputDecoration(
             hintText: context.t.search.capitalizeFirst(),
             prefixIcon: const Icon(
-              Icons.search,
+              LucideIcons.search,
             ),
             suffixIcon: IconButton(
               onPressed: () {
                 textEditingController.clear();
                 authors.value = [];
               },
-              icon: const Icon(Icons.close),
+              icon: const Icon(LucideIcons.x),
             ),
           ),
         ),

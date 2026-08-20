@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
 import '../dotted_container.dart';
+import '../modal_sheet_container.dart';
 import 'dicover_settings_views/packs_settings_view.dart';
 import 'dicover_settings_views/relay_settings_view.dart';
 import 'dicover_settings_views/reorder_settings_view.dart';
@@ -25,28 +26,14 @@ class DiscoverSourcesSettings extends HookWidget {
       initialIndex: index ?? 0,
     );
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: DefaultTabController(
-        length: 3,
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: _content(
-            tabController,
-          ),
+    return DefaultTabController(
+      length: 3,
+      child: ModalSheetContainer(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: _content(
+          tabController,
         ),
       ),
     );

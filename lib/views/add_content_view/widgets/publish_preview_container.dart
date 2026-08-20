@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/single_image_selector.dart';
 
 class PublishPreviewContainer extends HookWidget {
@@ -29,16 +32,8 @@ class PublishPreviewContainer extends HookWidget {
       text: descInitText,
     );
 
-    return Container(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return FluidCardContainer(
+      borderRadius: kDefaultPadding / 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -85,18 +80,14 @@ class PublishPreviewContainer extends HookWidget {
       flex: 2,
       child: Builder(builder: (context) {
         void addImage() {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            isScrollControlled: true,
             builder: (_) {
               return SingleImageSelector(
                 onUrlProvided: onImageLinkChanged,
               );
             },
-            backgroundColor: kTransparent,
-            useRootNavigator: true,
-            elevation: 0,
-            useSafeArea: true,
+            backgroundColor: Theme.of(context).cardColor,
           );
         }
 
@@ -184,14 +175,10 @@ class PublishPreviewContainer extends HookWidget {
         ),
         child: imageLink.isEmpty
             ? Center(
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.imageAttachment,
-                  width: 25,
-                  height: 25,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 25,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               )
             : LayoutBuilder(

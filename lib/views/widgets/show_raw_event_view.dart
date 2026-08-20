@@ -7,9 +7,10 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
-import 'custom_icon_buttons.dart';
+import 'buttons_containers_widgets.dart';
 import 'data_providers.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 import 'profile_picture.dart';
 
 /// A widget that displays raw event data in a formatted JSON view
@@ -33,9 +34,7 @@ class ShowRawEventView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: _buildContainerDecoration(context),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: _initialChildSize,
         minChildSize: _minChildSize,
@@ -43,22 +42,6 @@ class ShowRawEventView extends StatelessWidget {
         expand: false,
         builder: (_, controller) => _buildContent(context, controller),
       ),
-    );
-  }
-
-  // MARK: - Container & Layout Building
-
-  BoxDecoration _buildContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-      border: Border.all(
-        color: Theme.of(context).dividerColor,
-        width: _borderWidth,
-      ),
-      color: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -272,13 +255,12 @@ class ShowRawEventView extends StatelessWidget {
               style: _getLabelStyle(context),
             ),
           ),
-          CustomIconButton(
-            onClicked: () => _copyToClipboard(context, jsonString),
+          AppIconButton(
             icon: FeatureIcons.copy,
-            size: 17,
-            backgroundColor: kTransparent,
+            onClicked: () => _copyToClipboard(context, jsonString),
+            iconSize: 17,
+            size: 30,
             iconColor: Theme.of(context).highlightColor,
-            vd: -4,
           ),
         ],
       ),

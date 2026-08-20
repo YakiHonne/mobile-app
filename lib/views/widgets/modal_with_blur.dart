@@ -12,7 +12,7 @@ void showBlurredModal(
     barrierDismissible: isDismissable ?? true,
     barrierLabel: '',
     barrierColor: isDark
-        ? Colors.black45.withValues(alpha: 0.8)
+        ? Colors.black45.withValues(alpha: 0.7)
         : kDimGrey.withValues(alpha: 0.5),
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (ctx, anim1, anim2) => Center(

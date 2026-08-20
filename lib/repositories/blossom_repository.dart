@@ -2,9 +2,24 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
+import 'package:nostr_core_enhanced/utils/static_properties.dart';
 
 import '../models/blossom_media.dart';
 import '../utils/utils.dart';
+
+Future<Event?> blossomAuthEvent(String type, {String? hash}) {
+  final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  return Event.genEvent(
+    kind: EventKind.BLOSSOM_HTTP_AUTH,
+    tags: [
+      ['t', type],
+      ['expiration', (now + 3600).toString()],
+      if (hash != null) ['x', hash],
+    ],
+    content: '',
+    signer: currentSigner,
+  );
+}
 
 class BlossomRepository {
   final Dio _dio = Dio();

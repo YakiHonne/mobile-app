@@ -16,6 +16,7 @@ import '../../views/article_view/widgets/article_curations_add.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../views/wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../../views/widgets/data_providers.dart';
+import '../../views/widgets/fluid_sheet.dart';
 import '../../views/widgets/republish_view.dart';
 import '../../views/widgets/response_snackbar.dart';
 import '../../views/widgets/share_content_image.dart';
@@ -136,9 +137,8 @@ class PdmCommonActions {
       throw ArgumentError('Unsupported item type: ${item.runtimeType}');
     }
 
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
-      elevation: 0,
       builder: (_) {
         return AddBookmarkView(
           kind: kind,
@@ -147,10 +147,8 @@ class PdmCommonActions {
           model: item,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor:
+          isFluid() ? kTransparent : Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -158,15 +156,11 @@ class PdmCommonActions {
     BuildContext context,
     BaseEventModel model,
   ) async {
-    showModalBottomSheet(
-      elevation: 0,
+    showAppModalSheet(
       context: context,
       builder: (_) {
         return ShareContentImage(model: model);
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -234,8 +228,7 @@ class PdmCommonActions {
       shareContent(text: nostrScheme);
     };
 
-    showModalBottomSheet(
-      elevation: 0,
+    showAppModalSheet(
       context: context,
       builder: (_) {
         return ShareView(
@@ -245,9 +238,6 @@ class PdmCommonActions {
           onShareNostrScheme: onShareNostrScheme,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -330,15 +320,11 @@ class PdmCommonActions {
     final e = await nc.db.loadEventById(id, isReplaceable);
 
     if (e != null) {
-      showModalBottomSheet(
-        elevation: 0,
+      showAppModalSheet(
         context: context,
         builder: (_) {
           return RepublishView(event: e);
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     } else {
@@ -393,22 +379,16 @@ class PdmCommonActions {
   }
 
   static void onZap(BuildContext context, BaseEventModel model) {
-    showModalBottomSheet(
-      elevation: 0,
+    showAppModalSheet(
       context: context,
-      builder: (_) {
-        return MetadataProvider(
-          pubkey: model.pubkey,
-          child: (m, n05) => SendZapsView(
-            isZapSplit: false,
-            zapSplits: const [],
-            metadata: m,
-          ),
-        );
-      },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
+      builder: (_) => MetadataProvider(
+        pubkey: model.pubkey,
+        child: (m, n05) => SendZapsView(
+          isZapSplit: false,
+          zapSplits: const [],
+          metadata: m,
+        ),
+      ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -458,17 +438,13 @@ class PdmCommonActions {
       attachedEvent = model.stringifiedEvent;
     }
 
-    showModalBottomSheet(
-      elevation: 0,
+    showAppModalSheet(
       context: context,
       builder: (_) {
         return ShowRawEventView(
           attachedEvent: attachedEvent,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -539,9 +515,8 @@ class PdmCommonActions {
     final pubkey = data['pubkey'];
     final kind = data['kind'];
 
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
-      elevation: 0,
       builder: (_) {
         return AddItemToCurationView(
           articleId: identifier,
@@ -549,9 +524,6 @@ class PdmCommonActions {
           kind: kind,
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }

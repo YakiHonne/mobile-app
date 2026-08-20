@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mention_tag_text_field/mention_tag_text_field.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -20,14 +20,21 @@ import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
 import '../smart_widgets_view/widgets/smart_widget_container.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/fluid_sheet.dart';
+import '../widgets/fluid_switch.dart';
+import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import '../widgets/parsed_media_container.dart';
 import '../widgets/profile_picture.dart';
+import 'energy_mapper/energy_mapper_screen.dart';
+import 'widgets/energy_mapper_banner.dart';
 import 'widgets/mention_text_field.dart';
 import 'widgets/paid_note_process.dart';
 import 'widgets/publish_media_container.dart';
@@ -93,21 +100,9 @@ class AddReply extends HookWidget {
         isMention: isMention ?? false,
         isQuote: isQuote ?? false,
       ),
-      child: Container(
-        width: double.infinity,
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
         child: DraggableScrollableSheet(
           initialChildSize: 0.95,
           minChildSize: 0.60,
@@ -122,12 +117,9 @@ class AddReply extends HookWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomIconButton(
+                    AppIconButton(
                       onClicked: () => Navigator.pop(context),
                       icon: FeatureIcons.closeRaw,
-                      size: 18,
-                      vd: 0,
-                      backgroundColor: Theme.of(context).cardColor,
                     ),
                     Text(
                       context.t.compose.capitalizeFirst(),
@@ -170,7 +162,7 @@ class AddReply extends HookWidget {
       ValueNotifier<DateTime?> scheduled) {
     return BlocBuilder<WriteNoteCubit, WriteNoteState>(
       builder: (context, state) {
-        return CustomIconButton(
+        return AppIconButton(
           onClicked: () {
             if (isComment ?? false) {
               context.read<WriteNoteCubit>().postComment(
@@ -192,7 +184,7 @@ class AddReply extends HookWidget {
                     useSourceRelay: false,
                     isPaid: false,
                     onPaymentProcess: () {
-                      showModalBottomSheet(
+                      showAppModalSheet(
                         context: context,
                         builder: (_) {
                           return BlocProvider.value(
@@ -202,10 +194,6 @@ class AddReply extends HookWidget {
                             ),
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        elevation: 0,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );
@@ -218,8 +206,7 @@ class AddReply extends HookWidget {
             }
           },
           icon: FeatureIcons.send,
-          size: 20,
-          vd: 0,
+          iconSize: 20,
           iconColor: kWhite,
           backgroundColor: Theme.of(context).primaryColor,
         );
@@ -325,6 +312,11 @@ class NoteWritingComponent extends HookWidget {
             ),
           ),
         ),
+        if (subscriptionCubit.isPaid) ...[
+          NoteEnergyMapperBanner(
+            onTap: () => showEnergyMapper(context, controller.getText),
+          ),
+        ],
         if (useSourceRelay != null || selectedExternalRelay != null) ...[
           NoteSelectedRelay(
             useSourceRelay: useSourceRelay,
@@ -410,7 +402,7 @@ class NoteSelectedRelay extends StatelessWidget {
                 if (!isExternal) ...[
                   Transform.scale(
                     scale: 0.7,
-                    child: CupertinoSwitch(
+                    child: FluidSwitch(
                       value: useSourceRelay!.value,
                       onChanged: (isToggled) {
                         useSourceRelay!.value = !useSourceRelay!.value;
@@ -540,14 +532,10 @@ class _MediaPreviewSection extends StatelessWidget {
             color: Theme.of(context).cardColor,
           ),
           child: Center(
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.videoGallery,
-              width: 30,
-              height: 30,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 30,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ),
@@ -563,7 +551,7 @@ class _MediaPreviewSection extends StatelessWidget {
               );
             },
             icon: const Icon(
-              Icons.close,
+              LucideIcons.x,
               color: kWhite,
             ),
             style: IconButton.styleFrom(
@@ -670,7 +658,9 @@ class _NoteInputSection extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium!,
               decoration: InputDecoration(
                 hintText: context.t.writeSomething.capitalizeFirst(),
-                fillColor: Theme.of(context).scaffoldBackgroundColor,
+                fillColor: isFluid()
+                    ? kTransparent
+                    : Theme.of(context).scaffoldBackgroundColor,
                 focusColor: Theme.of(context).primaryColorLight,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,

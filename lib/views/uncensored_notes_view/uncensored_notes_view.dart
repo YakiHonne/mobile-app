@@ -15,6 +15,7 @@ import '../../utils/utils.dart';
 import '../logify_view/logify_view.dart';
 import '../rewards_view/rewards_view.dart';
 import '../search_view/search_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
@@ -161,14 +162,10 @@ class CommunityWalletContainer extends StatelessWidget {
               left: -20,
               child: Transform.rotate(
                 angle: 0.7,
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.reward,
-                  width: 100,
-                  height: 100,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark.withValues(alpha: 0.15),
-                    BlendMode.srcIn,
-                  ),
+                  size: 100,
+                  color: Theme.of(context).primaryColorDark.withValues(alpha: 0.15),
                 ),
               ),
             ),

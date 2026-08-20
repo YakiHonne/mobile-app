@@ -8,6 +8,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../utils/utils.dart';
 import '../note_view/note_view.dart';
+import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'data_providers.dart';
 import 'profile_picture.dart';
@@ -76,6 +77,7 @@ class NoteContainer extends StatelessWidget {
               child: ParsedText(
                 text: note.content,
                 pubkey: note.pubkey,
+                emojis: note.emojis,
                 disableNoteParsing: disableVisualParsing,
                 scrollPhysics: scrollPhysics,
                 enableHidingMedia: enableHidingMedia,
@@ -164,14 +166,10 @@ class ProfileInfoHeader extends StatelessWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColor,
               ),
             ],
             DotContainer(

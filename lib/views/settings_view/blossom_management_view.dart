@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../logic/blossom_cubit/blossom_state.dart';
+import '../../logic/media_servers_cubit/media_servers_cubit.dart';
 import '../../models/blossom_media.dart';
 import '../../repositories/blossom_repository.dart';
 import '../../routes/navigator.dart';
@@ -18,32 +18,42 @@ import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/link_previewer.dart';
 import '../widgets/pull_down_global_button.dart';
 import 'widgets/blossom_media_uploader.dart';
+import 'widgets/blossom_server_card.dart';
+import 'widgets/blossom_summary_header.dart';
 
 class BlossomManagementView extends StatelessWidget {
-  const BlossomManagementView({
-    super.key,
-    required this.blossomServers,
-  });
-
-  final List<String> blossomServers;
+  const BlossomManagementView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => BlossomCubit(
-        repository: BlossomRepository(),
-        blossomServers: blossomServers,
-        pubkey: currentSigner!.getPublicKey(),
-      ),
-      child: const BlossomManagementContent(),
+    // The server list is live: adding the YakiHonne server from the card has to
+    // rebuild the cubit, hence the ValueKey.
+    return BlocBuilder<MediaServersCubit, MediaServersState>(
+      bloc: mediaServersCubit,
+      buildWhen: (prev, curr) => prev.blossomServers != curr.blossomServers,
+      builder: (context, serversState) {
+        final servers = serversState.blossomServers;
+
+        return BlocProvider(
+          key: ValueKey(servers.join(',')),
+          create: (context) => BlossomCubit(
+            repository: BlossomRepository(),
+            blossomServers: servers,
+            pubkey: currentSigner!.getPublicKey(),
+          ),
+          child: const BlossomManagementContent(),
+        );
+      },
     );
   }
 }
@@ -53,52 +63,58 @@ class BlossomManagementContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.blossomManagement.capitalizeFirst(),
-        description: context.t.blossomManagementDesc.capitalizeFirst(),
-        actions: [
-          CustomIconButton(
-            onClicked: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => BlocProvider.value(
-                  value: context.read<BlossomCubit>(),
-                  child: const BlossomMediaUploader(),
-                ),
-              );
-            },
-            icon: FeatureIcons.addRaw,
-            size: 15,
-            vd: -1,
-            backgroundColor: Theme.of(context).cardColor,
-          ),
-          const SizedBox(width: kDefaultPadding / 2),
-        ],
-      ),
+    return FluidScaffold(
+      title: context.t.blossomManagement.capitalizeFirst(),
+      description: context.t.blossomManagementDesc.capitalizeFirst(),
+      actions: [
+        AppIconButton(
+          onClicked: () {
+            showAppModalSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              builder: (_) => BlocProvider.value(
+                value: context.read<BlossomCubit>(),
+                child: const BlossomMediaUploader(),
+              ),
+            );
+          },
+          icon: FeatureIcons.addRaw,
+          size: 22,
+        ),
+      ],
       body: BlocBuilder<BlossomCubit, BlossomState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              _buildServerControls(context, state),
-              Expanded(
-                child: state.isLoading
-                    ? Center(
-                        child: SpinKitCircle(
-                        size: kDefaultPadding,
-                        color: Theme.of(context).primaryColorDark,
-                      ))
-                    : state.filteredMedia.isEmpty
-                        ? EmptyList(
-                            description: context.t.noContentFound,
-                            icon: FeatureIcons.media,
-                          )
-                        : state.isGridView
-                            ? _buildGridView(context, state)
-                            : _buildListView(context, state),
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(height: fluidScaffoldTopInset(context)),
               ),
+              if (state.servers.isNotEmpty)
+                SliverToBoxAdapter(child: _buildServerControls(context, state)),
+              SliverToBoxAdapter(child: YakiBlossomBanner(state: state)),
+              SliverToBoxAdapter(child: BlossomSummaryHeader(state: state)),
+              if (state.isLoading)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: SpinKitCircle(
+                      size: kDefaultPadding,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                  ),
+                )
+              else if (state.filteredMedia.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyList(
+                    description: context.t.noContentFound,
+                    icon: FeatureIcons.media,
+                  ),
+                )
+              else if (state.isGridView)
+                _buildGridView(context, state)
+              else
+                _buildListView(context, state),
             ],
           );
         },
@@ -165,6 +181,19 @@ class BlossomManagementContent extends StatelessWidget {
                                         : FontWeight.normal,
                                   ),
                         ),
+                        // Our own server gets a crown so it stands out among
+                        // the user's third-party ones.
+                        if (index > 0 && _isYakiBlossomServer(title))
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: AppIcon(
+                              LucideIcons.crown,
+                              size: 12,
+                              color: isSelected
+                                  ? kWhite
+                                  : Theme.of(context).primaryColorDark,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -190,38 +219,44 @@ class BlossomManagementContent extends StatelessWidget {
   }
 
   Widget _buildGridView(BuildContext context, BlossomState state) {
-    return GridView.builder(
+    return SliverPadding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: kDefaultPadding / 4,
-        mainAxisSpacing: kDefaultPadding / 4,
-        childAspectRatio: 0.85,
+      sliver: SliverGrid.builder(
+        // Extent-based so the grid gains columns on tablets instead of
+        // stretching two giant thumbnails across the screen.
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 220,
+          crossAxisSpacing: kDefaultPadding / 4,
+          mainAxisSpacing: kDefaultPadding / 4,
+          childAspectRatio: 0.85,
+        ),
+        itemCount: state.filteredMedia.length,
+        itemBuilder: (context, index) {
+          final item = state.filteredMedia[index];
+          return _BlossomMediaGridItem(
+            item: item,
+            allServers: state.servers,
+          );
+        },
       ),
-      itemCount: state.filteredMedia.length,
-      itemBuilder: (context, index) {
-        final item = state.filteredMedia[index];
-        return _BlossomMediaGridItem(
-          item: item,
-          allServers: state.servers,
-        );
-      },
     );
   }
 
   Widget _buildListView(BuildContext context, BlossomState state) {
-    return ListView.separated(
+    return SliverPadding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
-      itemCount: state.filteredMedia.length,
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: kDefaultPadding / 4),
-      itemBuilder: (context, index) {
-        final item = state.filteredMedia[index];
-        return _BlossomMediaListItem(
-          item: item,
-          allServers: state.servers,
-        );
-      },
+      sliver: SliverList.separated(
+        itemCount: state.filteredMedia.length,
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: kDefaultPadding / 4),
+        itemBuilder: (context, index) {
+          final item = state.filteredMedia[index];
+          return _BlossomMediaListItem(
+            item: item,
+            allServers: state.servers,
+          );
+        },
+      ),
     );
   }
 }
@@ -238,15 +273,20 @@ class _BlossomMediaGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVideo = item.media.type.startsWith('video/');
+    final theme = Theme.of(context);
 
     return GestureDetector(
       onTap: () => _showMediaDetails(context, item),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          border: Border.all(color: theme.dividerColor, width: 0.5),
         ),
-        clipBehavior: Clip.antiAlias,
+        // ponytail: hardEdge, not antiAlias — an antialiased clip costs a
+        // saveLayer per tile, and the children already paint their own
+        // antialiased rounded corners inside this rect.
+        clipBehavior: Clip.hardEdge,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -266,27 +306,74 @@ class _BlossomMediaGridItem extends StatelessWidget {
                       radius: kDefaultPadding / 2,
                     ),
                   if (isVideo)
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(
-                          FeatureIcons.video,
-                          colorFilter: const ColorFilter.mode(
-                            kWhite,
-                            BlendMode.srcIn,
-                          ),
-                          width: 30,
-                          height: 30,
-                        ),
+                    const Positioned(
+                      top: kDefaultPadding / 2 - 2,
+                      left: kDefaultPadding / 2 - 2,
+                      child: AppIcon(
+                        FeatureIcons.video,
+                        size: 20,
+                        color: kWhite,
                       ),
                     ),
+                  Positioned(
+                    left: kDefaultPadding / 4,
+                    right: kDefaultPadding / 4,
+                    bottom: kDefaultPadding / 4,
+                    // ponytail: solid pill, not FluidBlurContainer — a
+                    // BackdropFilter per tile is the grid's dominant scroll
+                    // cost, and at this height a sigma-16 blur is invisible.
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPadding / 2 - 2,
+                        vertical: kDefaultPadding / 4 - 1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.scaffoldBackgroundColor.withValues(
+                          alpha:
+                              theme.brightness == Brightness.dark ? 0.75 : 0.85,
+                        ),
+                        borderRadius: BorderRadius.circular(300),
+                        border: Border.all(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _formatShortDate(item.media.uploaded),
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.primaryColorDark,
+                                fontSize: 9,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: kDefaultPadding / 4),
+                          Text(
+                            formatMediaBytes(item.media.size),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.primaryColorDark,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 9,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              padding: const EdgeInsets.fromLTRB(
+                kDefaultPadding / 2 - 2,
+                kDefaultPadding / 4,
+                kDefaultPadding / 4,
+                kDefaultPadding / 4,
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -294,16 +381,18 @@ class _BlossomMediaGridItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.media.sha256.sixCharacters(),
-                          style:
-                              Theme.of(context).textTheme.labelSmall!.copyWith(
-                                    color: Theme.of(context).primaryColorDark,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 9,
-                                  ),
+                          _shortHash(item.media.sha256, 8),
+                          style: theme.textTheme.labelSmall!.copyWith(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 9,
+                          ),
                         ),
-                        const SizedBox(height: 1),
-                        _buildServerIndicators(),
+                        const SizedBox(height: kDefaultPadding / 4 - 3),
+                        _ServerDots(
+                          serverUrls: item.serverUrls,
+                          allServers: allServers,
+                        ),
                       ],
                     ),
                   ),
@@ -316,27 +405,40 @@ class _BlossomMediaGridItem extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildServerIndicators() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: item.serverUrls.map((url) {
-          final serverIndex = allServers.indexOf(url);
-          if (serverIndex == -1) {
-            return const SizedBox.shrink();
-          }
-          return Padding(
-            padding: const EdgeInsets.only(right: 3),
-            child: DotContainer(
-              color: mainColorsList[serverIndex % mainColorsList.length],
-              size: 6,
-              isNotMarging: true,
+class _ServerDots extends StatelessWidget {
+  const _ServerDots({
+    required this.serverUrls,
+    required this.allServers,
+    this.size = 6.0,
+  });
+
+  final List<String> serverUrls;
+  final List<String> allServers;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: serverUrls.map((url) {
+        final idx = allServers.indexOf(url);
+        if (idx == -1) {
+          return const SizedBox.shrink();
+        }
+        return Padding(
+          padding: const EdgeInsets.only(right: kDefaultPadding / 4 - 2),
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: mainColorsList[idx % mainColorsList.length],
+              shape: BoxShape.circle,
             ),
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -353,13 +455,14 @@ class _BlossomMediaListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVideo = item.media.type.startsWith('video/');
+    final theme = Theme.of(context);
 
-    return InkWell(
+    return GestureDetector(
       onTap: () => _showMediaDetails(context, item),
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(kDefaultPadding / 2 - 2),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(kDefaultPadding / 2),
         ),
         child: Row(
@@ -368,27 +471,23 @@ class _BlossomMediaListItem extends StatelessWidget {
               children: [
                 CommonThumbnail(
                   image: item.media.url,
-                  width: 50,
-                  height: 50,
-                  radius: 4,
+                  width: 52,
+                  height: 52,
+                  radius: kDefaultPadding / 4,
                 ),
                 if (isVideo)
-                  Positioned.fill(
+                  const Positioned.fill(
                     child: Center(
-                      child: SvgPicture.asset(
+                      child: AppIcon(
                         FeatureIcons.video,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white70,
-                          BlendMode.srcIn,
-                        ),
-                        width: 20,
-                        height: 20,
+                        size: 20,
+                        color: Colors.white70,
                       ),
                     ),
                   ),
               ],
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: kDefaultPadding / 2 + 2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,61 +497,44 @@ class _BlossomMediaListItem extends StatelessWidget {
                     children: [
                       Text(
                         item.media.type,
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                              color: Theme.of(context).primaryColor,
-                            ),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.primaryColor,
+                        ),
                       ),
                       Text(
-                        _formatDate(item.media.uploaded),
-                        style: Theme.of(context).textTheme.labelSmall,
+                        _formatShortDate(item.media.uploaded),
+                        style: theme.textTheme.labelSmall,
                       ),
                     ],
                   ),
                   Text(
-                    item.media.sha256.nineCharacters(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
+                    _shortHash(item.media.sha256, 12),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _formatBytes(item.media.size),
-                        style: Theme.of(context).textTheme.labelSmall,
+                        formatMediaBytes(item.media.size),
+                        style: theme.textTheme.labelSmall,
                       ),
-                      _buildServerIndicators(),
+                      _ServerDots(
+                        serverUrls: item.serverUrls,
+                        allServers: allServers,
+                        size: 8,
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: kDefaultPadding / 2 - 2),
             _MediaPullDownButton(item: item),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildServerIndicators() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: item.serverUrls.map((url) {
-        final serverIndex = allServers.indexOf(url);
-        if (serverIndex == -1) {
-          return const SizedBox.shrink();
-        }
-        return Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: DotContainer(
-            color: mainColorsList[serverIndex % mainColorsList.length],
-            size: 8,
-            isNotMarging: true,
-          ),
-        );
-      }).toList(),
     );
   }
 }
@@ -505,6 +587,9 @@ class _MediaPullDownButton extends StatelessWidget {
       enableDelete: true,
       onDelete: () => _confirmDelete(context, item.media.sha256),
       buttonColor: Theme.of(context).cardColor.withValues(alpha: 0.8),
+      iconBackgroundColor: kTransparent,
+      iconColor: Theme.of(context).highlightColor,
+      iconSize: 16,
     );
   }
 }
@@ -542,6 +627,7 @@ class BlossomMediaDetails extends StatelessWidget {
                 child: TextButton(
                   onPressed: () => _downloadFile(context, item.media),
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kMainColor,
                     foregroundColor: kWhite,
                     minimumSize: const Size(double.infinity, 44),
@@ -552,14 +638,10 @@ class BlossomMediaDetails extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
+                      const AppIcon(
                         FeatureIcons.download,
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          kWhite,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: kWhite,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -593,7 +675,7 @@ class BlossomMediaDetails extends StatelessWidget {
           _metadataColumn(
               context, context.t.dateLabel, _formatDate(item.media.uploaded)),
           _metadataColumn(
-              context, context.t.sizeLabel, _formatBytes(item.media.size)),
+              context, context.t.sizeLabel, formatMediaBytes(item.media.size)),
         ],
       ),
     );
@@ -717,14 +799,16 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
   }
 }
 
-String _formatBytes(int bytes) {
-  if (bytes <= 0) {
-    return '0 B';
-  }
-  const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  final i = (log(bytes) / log(1024)).floor();
-  return '${(bytes / pow(1024, i)).toStringAsFixed(2)} ${suffixes[i]}';
-}
+/// `true` when [url] points at the YakiHonne-run blossom server; compared by
+/// host so a trailing slash or scheme difference still matches.
+bool _isYakiBlossomServer(String url) =>
+    Uri.tryParse(url)?.host == Uri.parse(yakiProBlossomServer).host;
+
+String _shortHash(String hash, int length) =>
+    hash.length > length ? hash.substring(0, length) : hash;
+
+String _formatShortDate(int timestamp) => DateFormat('MMM d, yyyy')
+    .format(DateTime.fromMillisecondsSinceEpoch(timestamp * 1000));
 
 String _formatDate(int timestamp) {
   final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);

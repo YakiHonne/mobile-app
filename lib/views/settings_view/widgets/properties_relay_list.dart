@@ -7,10 +7,12 @@ import 'package:nostr_core_enhanced/models/models.dart';
 
 import '../../../logic/properties_cubit/update_relays_cubit/update_relays_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'relay_info_view.dart';
 
 class RelaysList extends HookWidget {
@@ -24,19 +26,7 @@ class RelaysList extends HookWidget {
 
     return BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        return ModalSheetContainer(
           child: DraggableScrollableSheet(
             initialChildSize: 0.9,
             minChildSize: 0.60,
@@ -158,52 +148,34 @@ class AvailableRelaysList extends HookWidget {
     final relaysFuture = useMemoized(() => nostrRepository.fetchRelays());
     final relaysSnapshot = useFuture(relaysFuture);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) => Scrollbar(
-            controller: scrollController,
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  _header(context, searchController),
-                  // Use the snapshot directly instead of FutureBuilder
-                  if (relaysSnapshot.connectionState == ConnectionState.waiting)
-                    _loading(context)
-                  else if (relaysSnapshot.hasData)
-                    _relaysList(relaysSnapshot, searchController, activeRelays)
-                  else
-                    SliverToBoxAdapter(
-                      child: EmptyList(
-                        description: context.t.relaysNotReached,
-                        icon: FeatureIcons.relays,
-                      ),
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        minChildSize: 0.60,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Scrollbar(
+          controller: scrollController,
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                _header(context, searchController),
+                // Use the snapshot directly instead of FutureBuilder
+                if (relaysSnapshot.connectionState == ConnectionState.waiting)
+                  _loading(context)
+                else if (relaysSnapshot.hasData)
+                  _relaysList(relaysSnapshot, searchController, activeRelays)
+                else
+                  SliverToBoxAdapter(
+                    child: EmptyList(
+                      description: context.t.relaysNotReached,
+                      icon: FeatureIcons.relays,
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -458,14 +430,10 @@ class RelayListTile extends HookWidget {
         ),
         child: RotatedBox(
           quarterTurns: expandRelayInfo.value ? 2 : 4,
-          child: SvgPicture.asset(
+          child: AppIcon(
             FeatureIcons.arrowDown,
-            width: 17,
-            height: 17,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 17,
+            color: Theme.of(context).primaryColorDark,
           ),
         ),
       ),
@@ -490,14 +458,10 @@ class RelayListTile extends HookWidget {
             width: 0.5,
           ),
         ),
-        child: SvgPicture.asset(
+        child: AppIcon(
           isAvailable ? FeatureIcons.trash : FeatureIcons.addRaw,
-          width: 17,
-          height: 17,
-          colorFilter: ColorFilter.mode(
-            isAvailable ? kRed : Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 17,
+          color: isAvailable ? kRed : Theme.of(context).primaryColorDark,
         ),
       ),
     );

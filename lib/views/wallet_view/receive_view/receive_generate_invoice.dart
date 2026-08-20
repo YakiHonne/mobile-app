@@ -12,7 +12,8 @@ import '../../../repositories/nostr_functions_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_success_view.dart';
 import '../send_view/send_using_invoice.dart';
@@ -25,12 +26,14 @@ class ReceiveGenerateInvoice extends HookWidget {
   Widget build(BuildContext context) {
     final invoice = useState('');
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.invoice.capitalize(),
-      ),
+    return FluidScaffold(
+      title: context.t.invoice.capitalize(),
+      // Top inset lives on the Padding, not a leading child: this Column sets
+      // `spacing`, so an extra zero-height child would add a real gap off the
+      // fluid path.
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2)
+            .copyWith(top: fluidScaffoldTopInset(context)),
         child: Column(
           spacing: kDefaultPadding / 4,
           children: [
@@ -106,6 +109,7 @@ class ReceiveGenerateInvoice extends HookWidget {
               invoice.value = '';
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kRed.withValues(alpha: 0.2),
               side: const BorderSide(
                 color: kRed,
@@ -372,6 +376,7 @@ class ReceiveGenInvoice extends HookWidget {
             );
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: Theme.of(context).cardColor,
             side: BorderSide(
               color: Theme.of(context).dividerColor,
@@ -525,14 +530,10 @@ class ReceiveGenInvoice extends HookWidget {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.repost,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
         ],
       ),

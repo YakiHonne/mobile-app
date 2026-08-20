@@ -130,9 +130,9 @@ class _ClipboardPasteMentionTextFieldState
 
   Future<void> _pasteText() async {
     try {
-      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-      if (clipboardData?.text != null) {
-        var text = clipboardData!.text!;
+      final clipboardText = await getClipboardTextSafely();
+      if (clipboardText != null) {
+        var text = clipboardText;
 
         // ✅ Only clean pasted content, not existing text
         text = text.replaceAll('‡', ''); // block user pasting that char

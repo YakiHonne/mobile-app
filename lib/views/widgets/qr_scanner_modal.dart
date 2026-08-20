@@ -6,6 +6,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 
 class QrScannerModal extends StatefulWidget {
   const QrScannerModal({super.key, required this.onValue});
@@ -28,19 +29,7 @@ class _QrScannerModalState extends State<QrScannerModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -66,7 +55,7 @@ class _QrScannerModalState extends State<QrScannerModal> {
                               scanData.code!.isNotEmpty &&
                               qrValue == null) {
                             qrValue = scanData.code;
-                            controller.pauseCamera();
+                            controller.pauseCameraSafely();
                             YNavigator.pop(context);
                             widget.onValue(scanData.code!);
                           }

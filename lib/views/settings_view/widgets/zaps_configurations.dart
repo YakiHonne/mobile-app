@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class ExternalWalletContainer extends StatelessWidget {
   const ExternalWalletContainer({
@@ -128,12 +130,9 @@ class ExternalWalletContainer extends StatelessWidget {
                   ),
                 ),
           child: isDefault
-              ? SvgPicture.asset(
+              ? AppIcon(
                   FeatureIcons.selectExternalWallet,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  color: Theme.of(context).primaryColorDark,
                 )
               : null,
         ),
@@ -155,8 +154,8 @@ class ExternalWalletContainer extends StatelessWidget {
         ),
         Icon(
           isWalletListCollapsed.value
-              ? Icons.keyboard_arrow_down_outlined
-              : Icons.keyboard_arrow_up_outlined,
+              ? LucideIcons.chevronDown
+              : LucideIcons.chevronUp,
           color: Theme.of(context).primaryColorDark,
         ),
       ],

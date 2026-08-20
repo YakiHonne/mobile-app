@@ -8,8 +8,8 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../models/detailed_note_model.dart';
 import '../../utils/utils.dart';
 import '../widgets/buttons_containers_widgets.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/note_stats.dart';
 
 class ContentThreadsView extends HookWidget {
@@ -56,18 +56,16 @@ class ContentThreadsView extends HookWidget {
       f.call();
     });
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.thread.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.thread.capitalizeFirst(),
       body: Stack(
         children: [
           Positioned.fill(
             child: contentReplies.value.isEmpty
                 ? EmptyListWithLogo(description: context.t.noReplies)
                 : isTablet
-                    ? _itemsGrid(contentReplies)
-                    : _itemsList(contentReplies),
+                    ? _itemsGrid(context, contentReplies)
+                    : _itemsList(context, contentReplies),
           ),
           ResetScrollButton(scrollController: controller),
         ],
@@ -75,13 +73,18 @@ class ContentThreadsView extends HookWidget {
     );
   }
 
-  ListView _itemsList(ValueNotifier<List<DetailedNoteModel>> contentReplies) {
+  ListView _itemsList(
+    BuildContext context,
+    ValueNotifier<List<DetailedNoteModel>> contentReplies,
+  ) {
     return ListView.separated(
       separatorBuilder: (context, index) => const Divider(
         thickness: 0.5,
         height: kDefaultPadding,
       ),
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+        top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+      ),
       itemBuilder: (context, index) {
         final reply = contentReplies.value[index];
 
@@ -97,11 +100,14 @@ class ContentThreadsView extends HookWidget {
   }
 
   MasonryGridView _itemsGrid(
-      ValueNotifier<List<DetailedNoteModel>> contentReplies) {
+    BuildContext context,
+    ValueNotifier<List<DetailedNoteModel>> contentReplies,
+  ) {
     return MasonryGridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: kDefaultPadding,
       mainAxisSpacing: kDefaultPadding,
+      padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
       itemBuilder: (context, index) {
         final reply = contentReplies.value[index];
 

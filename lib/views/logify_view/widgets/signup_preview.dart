@@ -10,6 +10,7 @@ import 'package:open_filex/open_filex.dart';
 import '../../../logic/logify_cubit/logify_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class SignupPreview extends StatelessWidget {
   const SignupPreview({
@@ -77,14 +78,10 @@ class SignupPreview extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.keys,
-              width: 30,
-              height: 30,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 30,
+              color: Theme.of(context).primaryColorDark,
             ),
             const SizedBox(
               width: kDefaultPadding / 2,
@@ -127,6 +124,7 @@ class SignupPreview extends StatelessWidget {
                   }
                 },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kGreen,
             ),
             child: Text(
@@ -264,20 +262,17 @@ class SignupPreview extends StatelessWidget {
             BotToastUtils.showSuccess(copyText);
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             backgroundColor: kTransparent,
             visualDensity: const VisualDensity(
               vertical: -4,
               horizontal: -2,
             ),
           ),
-          icon: SvgPicture.asset(
+          icon: const AppIcon(
             FeatureIcons.copy,
-            width: 18,
-            height: 18,
-            colorFilter: const ColorFilter.mode(
-              kWhite,
-              BlendMode.srcIn,
-            ),
+            size: 18,
+            color: kWhite,
           ),
         ),
       ],

@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, no_self_assignments
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,11 +13,15 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../wallet_view/widgets/user_to_zap_view.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/custom_date_picker.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/data_providers.dart';
 import '../../../widgets/dotted_container.dart';
+import '../../../widgets/fluid_sheet.dart';
+import '../../../widgets/fluid_switch.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/profile_picture.dart';
 import '../article_widgets/article_image_selector.dart';
 
@@ -36,46 +39,32 @@ class FrameComponentCustomization extends HookWidget {
   Widget build(BuildContext context) {
     final c = useState(boxComponent);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
+    return ModalSheetContainer(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.70,
-          minChildSize: 0.40,
-          maxChildSize: 0.70,
-          expand: false,
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                const ModalBottomSheetHandle(),
-                Expanded(
-                  child: getSmartWidgetComponentWidget(
-                    boxComponent,
-                    scrollController,
-                    (component) {
-                      c.value = component;
-                    },
-                  ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.70,
+        minChildSize: 0.40,
+        maxChildSize: 0.70,
+        expand: false,
+        builder: (context, scrollController) {
+          return Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              Expanded(
+                child: getSmartWidgetComponentWidget(
+                  boxComponent,
+                  scrollController,
+                  (component) {
+                    c.value = component;
+                  },
                 ),
-                _actionButtons(context, c),
-              ],
-            );
-          },
-        ),
+              ),
+              _actionButtons(context, c),
+            ],
+          );
+        },
       ),
     );
   }
@@ -97,6 +86,7 @@ class FrameComponentCustomization extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     side: const BorderSide(color: kRed),
                   ),
                   child: Text(
@@ -141,6 +131,7 @@ class FrameComponentCustomization extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: Theme.of(context).cardColor,
                   ),
                   child: Text(
@@ -356,7 +347,7 @@ class SmartWidgetImageCustomization extends HookWidget {
             ),
             CustomIconButton(
               onClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return ImageSelector(
@@ -367,10 +358,6 @@ class SmartWidgetImageCustomization extends HookWidget {
                       },
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
@@ -672,7 +659,7 @@ class SwProfilePicker extends HookWidget {
   Widget build(BuildContext context) {
     final searchAuthorFunc = useCallback(
       () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -687,10 +674,6 @@ class SwProfilePicker extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -933,14 +916,10 @@ class SwDatePicker extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: Theme.of(context).cardColor,
       ),
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         selectedDate == null ? FeatureIcons.calendar : FeatureIcons.closeRaw,
-        width: 22,
-        height: 22,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 22,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -1014,7 +993,7 @@ class ButtonZapCustomization extends HookWidget {
 
     final searchAuthorFunc = useCallback(
       () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -1035,10 +1014,6 @@ class ButtonZapCustomization extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -1065,7 +1040,7 @@ class ButtonZapCustomization extends HookWidget {
               ),
               Transform.scale(
                 scale: 0.8,
-                child: CupertinoSwitch(
+                child: FluidSwitch(
                   value: toggleSatsMode.value,
                   activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (val) {

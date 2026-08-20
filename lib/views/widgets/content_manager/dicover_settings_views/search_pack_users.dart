@@ -1,16 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../logic/search_user_cubit/search_user_cubit.dart';
 import '../../../../utils/utils.dart';
 import '../../../search_view/search_view.dart';
-import '../../custom_app_bar.dart';
 import '../../dotted_container.dart';
 import '../../empty_list.dart';
+import '../../fluid_scaffold.dart';
+import '../../modal_sheet_container.dart';
 
 class SearchPackUsers extends HookWidget {
   const SearchPackUsers({
@@ -77,7 +78,7 @@ class SearchPackUsers extends HookWidget {
               decoration: InputDecoration(
                 hintText: context.t.searchNameNpub.capitalizeFirst(),
                 prefixIcon: const Icon(
-                  CupertinoIcons.search,
+                  LucideIcons.search,
                   size: 20,
                 ),
                 suffixIcon: searchText.value.isNotEmpty
@@ -87,7 +88,7 @@ class SearchPackUsers extends HookWidget {
                           searchText.value = '';
                           context.read<SearchUserCubit>().emptyAuthorsList();
                         },
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(LucideIcons.x),
                       )
                     : null,
               ),
@@ -168,26 +169,23 @@ class SearchPackUsers extends HookWidget {
         horizontal: kDefaultPadding / 2,
       ),
       child: CustomScrollView(
-        slivers: children,
+        slivers: [
+          // Modal path renders in a sheet, not a FluidScaffold — no bar to
+          // clear there.
+          if (!isModal)
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
+          ...children,
+        ],
       ),
     );
 
     if (isModal) {
-      return Container(
+      return ModalSheetContainer(
         height: MediaQuery.of(context).size.height * 0.9,
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
         ),
         child: BlocProvider(
           create: (context) => SearchUserCubit(),
@@ -206,10 +204,8 @@ class SearchPackUsers extends HookWidget {
 
     return BlocProvider(
       create: (context) => SearchUserCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.contacts,
-        ),
+      child: FluidScaffold(
+        title: context.t.contacts,
         body: view,
       ),
     );

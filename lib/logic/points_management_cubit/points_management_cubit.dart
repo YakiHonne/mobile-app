@@ -49,30 +49,25 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
       );
     }
 
-    final res = await HttpFunctionsRepository.loginPointsSystem();
+    final res = await HttpFunctionsRepository.loginToAppSystem();
 
     if (res != null) {
       BotToastUtils.showSuccess(
         t.loggedToYakiChest.capitalizeFirst(),
       );
 
+      if (!isClosed) {
+        emit(state.copyWith(isSystemLoggedIn: true));
+      }
+
       getRecentStats();
+      subscriptionCubit.refreshStatus();
 
       final isNew = (res['isNew'] as bool?) ?? false;
       final actions = (res['actions'] as List?) ?? <PointAction>[];
 
       if (isNew && actions.isNotEmpty) {
         final int currentXp = res['xp'] ?? 0;
-        final List<String> pointsNames = [];
-        final standards = res['standards'];
-
-        if (standards != null) {
-          for (final action in res['actions'] as List<PointAction>) {
-            if (standards[action.actionId] != null) {
-              pointsNames.add(standards[action.actionId].displayName);
-            }
-          }
-        }
 
         final currentLevel = getCurrentLevel(currentXp);
         final currentLevelXp = getRemainingXp(currentLevel);
@@ -84,7 +79,6 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
             state.copyWith(
               currentXp: currentXp,
               percentage: additionalXp / (nextLevelXp - currentLevelXp),
-              standards: pointsNames,
               currentLevel: currentLevel,
               userGlobalStats: state.userGlobalStats,
               isNew: true,
@@ -152,7 +146,12 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
   }
 
   Future<void> logout() async {
-    await HttpFunctionsRepository.logoutPointsSystem();
+    try {
+      await HttpFunctionsRepository.logoutAppSystem().timeout(
+        const Duration(seconds: 3),
+      );
+    } catch (_) {}
+
     _appLifeCycle?.cancel();
     zapsToPointsList.clear();
 
@@ -161,13 +160,17 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
     }
     if (!isClosed) {
       emit(
-        state.copyWith(
-          isUpdated: !state.isUpdated,
+        const PointsManagementState(
+          isUpdated: true,
           isNew: false,
           currentXp: 0,
           standards: [],
+          additionalXp: 0,
           currentLevel: 0,
+          currentLevelXp: 0,
+          nextLevelXp: 0,
           percentage: 0,
+          consumablePoints: 0,
         ),
       );
     }
@@ -186,13 +189,14 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
           state.copyWith(
             isUpdated: !state.isUpdated,
             userGlobalStats: userStats,
-            currentXp: currentXp,
+            currentXp: currentXp.toInt(),
             currentLevel: currentLevel,
-            additionalXp: additionalXp,
+            additionalXp: additionalXp.toInt(),
             currentLevelXp: currentLevelXp,
             nextLevelXp: nextLevelXp,
             percentage: additionalXp / (nextLevelXp - currentLevelXp),
-            consumablePoints: points,
+            consumablePoints: points.toInt(),
+            isSystemLoggedIn: true,
           ),
         );
       }
@@ -210,6 +214,16 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
 
   Future<void> getRecentStats() async {
     try {
+      final online = await HttpFunctionsRepository.getUserOnlineStats();
+      if (online != null) {
+        subscriptionCubit.emitOnlineStats(online);
+        if (!isClosed) {
+          emit(state.copyWith(
+            consumablePoints: online.consumablePoints.toInt(),
+            currentXp: online.xp.toInt(),
+          ));
+        }
+      }
       final userStats = await HttpFunctionsRepository.getUserStats();
       setUserStats(userStats);
     } catch (_) {}

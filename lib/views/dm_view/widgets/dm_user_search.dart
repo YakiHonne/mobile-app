@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
 import 'dm_details.dart';
@@ -29,13 +30,14 @@ class DmUserSearch extends HookWidget {
     final textEditingController = useTextEditingController();
     final authors = useState(<Metadata>[]);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.newMessage.capitalizeFirst(),
-        notElevated: false,
-      ),
+    return FluidScaffold(
+      title: context.t.newMessage.capitalizeFirst(),
+      notElevated: true,
       body: CustomScrollView(
         slivers: [
+          SliverPadding(
+            padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          ),
           _appbar(textEditingController, context, authors),
           const SliverToBoxAdapter(
             child: SizedBox(height: kDefaultPadding / 2),
@@ -89,6 +91,7 @@ class DmUserSearch extends HookWidget {
       titleSpacing: 0,
       automaticallyImplyLeading: false,
       pinned: true,
+      primary: false,
       actions: const [
         SizedBox.shrink(),
       ],
@@ -116,7 +119,7 @@ class DmUserSearch extends HookWidget {
       prefix: const Padding(
         padding: EdgeInsets.only(left: 10.0),
         child: Icon(
-          CupertinoIcons.search,
+          LucideIcons.search,
           color: CupertinoColors.systemGrey,
           size: 20,
         ),
@@ -132,7 +135,7 @@ class DmUserSearch extends HookWidget {
           authors.value = [];
         },
         icon: const Icon(
-          Icons.close,
+          LucideIcons.x,
           color: CupertinoColors.systemGrey,
         ),
       ),

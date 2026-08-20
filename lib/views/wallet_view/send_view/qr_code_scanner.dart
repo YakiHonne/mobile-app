@@ -56,15 +56,15 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCamera();
+      controller!.pauseCameraSafely();
     } else if (state == AppLifecycleState.resumed && isVisible) {
-      controller!.resumeCamera();
+      controller!.resumeCameraSafely();
     }
   }
 
   @override
   void didPushNext() {
-    controller?.pauseCamera();
+    controller?.pauseCameraSafely();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -73,7 +73,7 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
 
   @override
   void didPopNext() {
-    controller?.resumeCamera();
+    controller?.resumeCameraSafely();
     setState(() {
       isVisible = true;
     });
@@ -132,6 +132,7 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
               });
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: Theme.of(context).cardColor,
               side: BorderSide(
                 color: Theme.of(context).dividerColor,
@@ -163,6 +164,7 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
               });
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: Theme.of(context).cardColor,
               side: BorderSide(
                 color: Theme.of(context).dividerColor,

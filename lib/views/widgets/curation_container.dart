@@ -6,6 +6,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/curation_model.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'content_container.dart';
 
 class CurationContainer extends HookWidget {
@@ -189,14 +190,13 @@ class NoImagePlaceHolder extends StatelessWidget {
             ],
           ),
         ),
-        child: Center(
+        child: const Center(
           child: Padding(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: SvgPicture.asset(
+            padding: EdgeInsets.all(kDefaultPadding / 2),
+            child: AppIcon(
               FeatureIcons.forbidden,
-              colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
-              width: 30,
-              height: 30,
+              color: kWhite,
+              size: 30,
             ),
           ),
         ),
@@ -213,13 +213,15 @@ class NoImage2PlaceHolder extends StatelessWidget {
     this.isTopRounded,
     this.isLeftRounded,
     this.value,
+    this.size,
   });
 
-  final String icon;
+  final IconData icon;
   final bool? isRound;
   final bool? isTopRounded;
   final bool? isLeftRounded;
   final double? value;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +244,7 @@ class NoImage2PlaceHolder extends StatelessWidget {
               );
 
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: radius,
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -253,11 +256,12 @@ class NoImage2PlaceHolder extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(kDefaultPadding / 2),
-          child: SvgPicture.asset(
-            icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: AppIcon(
+              icon,
+              color: Theme.of(context).primaryColorDark,
+              size: size,
             ),
           ),
         ),
@@ -277,14 +281,7 @@ class ImageLoadingPlaceHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: SizedBox(
-        width: 25,
-        height: 25,
-        child: CircularProgressIndicator(
-          strokeWidth: 1.5,
-          color: kWhite,
-        ),
-      ),
+      child: SpinKitCircle(color: kWhite, size: 25),
     );
   }
 }
@@ -298,14 +295,14 @@ class NoThumbnailPlaceHolder extends StatelessWidget {
     this.isRightRounded,
     this.isMonoColor,
     required this.isError,
-    required this.icon,
+    this.icon,
   });
 
   final bool? isRound;
   final bool? isTopRounded;
   final bool? isRightRounded;
   final double? value;
-  final String? icon;
+  final IconData? icon;
   final bool? isMonoColor;
   final bool isError;
 
@@ -341,12 +338,18 @@ class NoThumbnailPlaceHolder extends StatelessWidget {
         color: isMonoColor != null ? kDimGrey2 : null,
       ),
       child: Center(
-        child: SvgPicture.asset(
-          icon != null && icon!.isNotEmpty ? icon! : LogosIcons.logoMarkWhite,
-          colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
-          width: 35,
-          height: 35,
-        ),
+        child: icon != null
+            ? AppIcon(
+                icon!,
+                color: kWhite,
+                size: 35,
+              )
+            : SvgPicture.asset(
+                LogosIcons.logoMarkWhite,
+                colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
+                width: 35,
+                height: 35,
+              ),
       ),
     );
   }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
 import 'package:numeral/numeral.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -25,7 +26,11 @@ import '../../../points_management_view/points_management_view.dart';
 import '../../../points_management_view/widgets/points_login_popup.dart';
 import '../../../profile_view/profile_view.dart';
 import '../../../profile_view/widgets/profile_connections_view.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
+import '../../../widgets/fluid_blur_container.dart';
+import '../../../widgets/fluid_scaffold.dart';
+import '../../../widgets/fluid_sheet.dart';
 import '../../../widgets/media_components/horizontal_video_view.dart';
 import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/modal_with_blur.dart';
@@ -69,6 +74,12 @@ class _HomeDashboardState extends State<HomeDashboard> {
       ),
     );
 
+    widgets.add(
+      SliverToBoxAdapter(
+        child: SizedBox(height: fluidScaffoldTopInset(context)),
+      ),
+    );
+
     widgets.add(spacer);
 
     widgets.add(
@@ -93,139 +104,146 @@ class _HomeDashboardState extends State<HomeDashboard> {
         builder: (context) {
           final metadata = nostrRepository.currentMetadata;
 
-          return SliverToBoxAdapter(
-            child: Container(
-              decoration: containerDecoration,
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
-              margin: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2,
-              ),
-              child: Row(
-                children: [
-                  ProfilePicture2(
-                    size: 55,
+          final profileRow = Row(
+            children: [
+              ProfilePicture2(
+                size: 55,
+                pubkey: metadata.pubkey,
+                image: metadata.picture,
+                padding: 0,
+                strokeWidth: 3,
+                strokeColor: Theme.of(context).cardColor,
+                onClicked: () => YNavigator.pushPage(
+                  context,
+                  (context) => ProfileView(
                     pubkey: metadata.pubkey,
-                    image: metadata.picture,
-                    padding: 0,
-                    strokeWidth: 3,
-                    strokeColor: Theme.of(context).cardColor,
-                    onClicked: () => YNavigator.pushPage(
-                      context,
-                      (context) => ProfileView(
-                        pubkey: metadata.pubkey,
-                      ),
-                    ),
                   ),
-                  const SizedBox(
-                    width: kDefaultPadding / 2,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          metadata.getName(),
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                        ),
-                        Text(
-                          context.t.joinedOn(
-                            date: dateFormat6.format(
-                              DateTime.now(),
-                            ),
+                ),
+              ),
+              const SizedBox(
+                width: kDefaultPadding / 2,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      metadata.getName(),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w900,
                           ),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium!
-                              .copyWith(
-                                  color: Theme.of(context).highlightColor),
-                        ),
-                      ],
                     ),
-                  ),
-                  if (canSign()) ...[
-                    BlocBuilder<PointsManagementCubit, PointsManagementState>(
-                      builder: (context, state) {
-                        return Builder(
-                          builder: (context) {
-                            void onNavigate() {
-                              if (state.userGlobalStats != null) {
-                                Navigator.pushNamed(
-                                  context,
-                                  PointsStatisticsView.routeName,
-                                );
-                              }
-                            }
-
-                            return GestureDetector(
-                              onTap: onNavigate,
-                              behavior: HitTestBehavior.translucent,
-                              child: Row(
-                                children: [
-                                  if (state.userGlobalStats != null)
-                                    GestureDetector(
-                                      behavior: HitTestBehavior.translucent,
-                                      onTap: onNavigate,
-                                      child: PointsPercentage(
-                                        currentXp: state.currentXp,
-                                        nextLevelXp: state.nextLevelXp,
-                                        additionalXp: state.additionalXp,
-                                        currentLevelXp: state.currentLevelXp,
-                                        currentLevel: state.currentLevel,
-                                        percentage: state.percentage,
-                                        backgroundColor: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                      ),
-                                    )
-                                  else
-                                    GestureDetector(
-                                      behavior: HitTestBehavior.translucent,
-                                      onTap: () {
-                                        Scaffold.of(context).closeDrawer();
-                                        showBlurredModal(
-                                          context: context,
-                                          view: const PointsLoginPopup(),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 50,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: SvgPicture.asset(
-                                          FeatureIcons.reward,
-                                          width: 25,
-                                          height: 25,
-                                          colorFilter: ColorFilter.mode(
-                                            Theme.of(context).primaryColorDark,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  const SizedBox(
-                                    width: kDefaultPadding / 2,
-                                  ),
-                                  const Icon(
-                                    Icons.keyboard_arrow_right_rounded,
-                                  ),
-                                ],
-                              ),
+                    Text(
+                      context.t.joinedOn(
+                        date: dateFormat6.format(
+                          DateTime.now(),
+                        ),
+                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(color: Theme.of(context).highlightColor),
+                    ),
+                  ],
+                ),
+              ),
+              if (canSign()) ...[
+                BlocBuilder<PointsManagementCubit, PointsManagementState>(
+                  builder: (context, state) {
+                    return Builder(
+                      builder: (context) {
+                        void onNavigate() {
+                          if (state.userGlobalStats != null) {
+                            Navigator.pushNamed(
+                              context,
+                              PointsStatisticsView.routeName,
                             );
-                          },
+                          }
+                        }
+
+                        return GestureDetector(
+                          onTap: onNavigate,
+                          behavior: HitTestBehavior.translucent,
+                          child: Row(
+                            children: [
+                              if (state.userGlobalStats != null)
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: onNavigate,
+                                  child: PointsPercentage(
+                                    currentXp: state.currentXp,
+                                    nextLevelXp: state.nextLevelXp,
+                                    additionalXp: state.additionalXp,
+                                    currentLevelXp: state.currentLevelXp,
+                                    currentLevel: state.currentLevel,
+                                    percentage: state.percentage,
+                                    backgroundColor: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                  ),
+                                )
+                              else
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    Scaffold.of(context).closeDrawer();
+                                    showBlurredModal(
+                                      context: context,
+                                      view: const PointsLoginPopup(),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: AppIcon(
+                                      FeatureIcons.reward,
+                                      size: 25,
+                                      color: Theme.of(context).primaryColorDark,
+                                    ),
+                                  ),
+                                ),
+                              const SizedBox(
+                                width: kDefaultPadding / 2,
+                              ),
+                              const Icon(
+                                LucideIcons.chevronRight,
+                              ),
+                            ],
+                          ),
                         );
                       },
-                    )
-                  ],
-                ],
-              ),
-            ),
+                    );
+                  },
+                )
+              ],
+            ],
+          );
+
+          return SliverToBoxAdapter(
+            child: isFluid()
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                    child: FluidCardContainer(
+                      borderRadius: kDefaultPadding / 2,
+                      padding: const EdgeInsets.all(kDefaultPadding / 2),
+                      child: profileRow,
+                    ),
+                  )
+                : Container(
+                    decoration: containerDecoration,
+                    padding: const EdgeInsets.all(kDefaultPadding / 2),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                    child: profileRow,
+                  ),
           );
         },
       ),
@@ -237,18 +255,14 @@ class _HomeDashboardState extends State<HomeDashboard> {
       BlocBuilder<DashboardHomeCubit, DashboardHomeState>(
         builder: (context, state) {
           void followingFollowers(bool isFollowers) {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return ProfileConnectionsView(
                   pubkey: currentSigner!.getPublicKey(),
                   isFollowers: isFollowers,
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           }
@@ -301,7 +315,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                     child: DashboardStatsContainer(
                       firstVal: (state.stats['notes'] ?? 0).numeral(),
                       firstdesc: context.t.notes.capitalizeFirst(),
-                      icon: FeatureIcons.uncensoredNote,
+                      icon: FeatureIcons.note,
                       onClicked: () {
                         YNavigator.pushPage(
                           context,
@@ -319,7 +333,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                     child: DashboardStatsContainer(
                       firstVal: (state.stats['replies'] ?? 0).numeral(),
                       firstdesc: context.t.replies.capitalizeFirst(),
-                      icon: FeatureIcons.uncensoredNote,
+                      icon: FeatureIcons.comments,
                       onClicked: () {
                         YNavigator.pushPage(
                           context,
@@ -491,6 +505,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                       MediaQuery.removePadding(
                         context: context,
                         removeBottom: true,
+                        removeTop: true,
                         child: ListView.separated(
                           primary: false,
                           shrinkWrap: true,
@@ -782,6 +797,8 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                         widget.onDraftClicked.call();
                                       },
                                       style: TextButton.styleFrom(
+                                        backgroundBuilder: (_, __, child) =>
+                                            child!,
                                         backgroundColor: kTransparent,
                                         visualDensity: VisualDensity.compact,
                                         padding: EdgeInsets.zero,
@@ -797,7 +814,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                             ),
                                       ),
                                       label: Icon(
-                                        Icons.keyboard_arrow_right_rounded,
+                                        LucideIcons.chevronRight,
                                         color:
                                             Theme.of(context).primaryColorDark,
                                       ),
@@ -810,6 +827,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                               MediaQuery.removePadding(
                                 context: context,
                                 removeBottom: true,
+                                removeTop: true,
                                 child: isTablet
                                     ? MasonryGridView.builder(
                                         shrinkWrap: true,
@@ -897,6 +915,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                     MediaQuery.removePadding(
                       context: context,
                       removeBottom: true,
+                      removeTop: true,
                       child: isTablet
                           ? MasonryGridView.builder(
                               shrinkWrap: true,
@@ -976,7 +995,7 @@ class DashboardStatsContainer extends StatelessWidget {
     this.secondDesc,
   });
 
-  final String icon;
+  final IconData icon;
   final String firstVal;
   final String firstdesc;
   final Function() onClicked;
@@ -985,80 +1004,84 @@ class DashboardStatsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onClicked,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
+    final statsRow = Row(
+      children: [
+        AppIcon(
+          icon,
+          size: 30,
+          color: Theme.of(context).primaryColorDark,
         ),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              icon,
-              width: 30,
-              height: 30,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$firstVal ',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                  ),
-                  Text(
-                    firstdesc,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .copyWith(color: Theme.of(context).highlightColor),
-                  ),
-                ],
-              ),
-            ),
-            if (secondVal != null) ...[
-              const SizedBox(
-                width: kDefaultPadding,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$secondVal ',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
+        const SizedBox(
+          width: kDefaultPadding / 2,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$firstVal ',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w900,
                     ),
-                    Text(
-                      secondDesc!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(color: Theme.of(context).highlightColor),
-                    ),
-                  ],
-                ),
+              ),
+              Text(
+                firstdesc,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: Theme.of(context).highlightColor),
               ),
             ],
-          ],
+          ),
         ),
-      ),
+        if (secondVal != null) ...[
+          const SizedBox(
+            width: kDefaultPadding,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$secondVal ',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                ),
+                Text(
+                  secondDesc!,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: Theme.of(context).highlightColor),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+
+    return GestureDetector(
+      onTap: onClicked,
+      child: isFluid()
+          ? FluidCardContainer(
+              borderRadius: kDefaultPadding / 2,
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: statsRow,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+              ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: statsRow,
+            ),
     );
   }
 }

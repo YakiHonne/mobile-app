@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../logic/dashboard_cubits/dashboard_bookmarks_cubit/bookmarks_cubit.dart';
@@ -10,6 +11,9 @@ import '../../logic/dashboard_cubits/dashboard_content_cubit/dashboard_content_c
 import '../../logic/dashboard_cubits/dashboard_home_cubit/dashboard_home_cubit.dart';
 import '../../logic/dashboard_cubits/dashboard_scheduled_cubit/dashboard_scheduled_cubit.dart';
 import '../../utils/utils.dart';
+import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_pull_down_button.dart';
+import '../widgets/fluid_scaffold.dart';
 import 'widgets/bookmarks/bookmarks_dashboard.dart';
 import 'widgets/content/content_dashboard.dart';
 import 'widgets/home/home_dashboard.dart';
@@ -50,8 +54,8 @@ class DashboardView extends HookWidget {
           lazy: false,
         ),
       ],
-      child: Scaffold(
-        appBar: DashboardAppBar(
+      child: FluidScaffold(
+        titleWidget: DashboardAppBar(
           selectedType: selectedDashboardType,
           onSelectType: (type) {
             selectedDashboardType.value = type;
@@ -140,16 +144,13 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: selector(context),
-      centerTitle: true,
-    );
+    return selector(context);
   }
 
   Widget selector(BuildContext context) {
     final types = DashboardType.values.toList();
 
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -181,31 +182,35 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       },
       buttonBuilder: (context, showMenu) => GestureDetector(
         onTap: showMenu,
-        child: SizedBox(
-          width: 50.w,
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    getType(selectedType.value, context),
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            right: 10,
+          ),
+          child: FluidBlurContainer(
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      getType(selectedType.value, context),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: Icon(
-                    Icons.keyboard_arrow_down_rounded,
+                  const SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Icon(
+                      LucideIcons.chevronDown,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -214,26 +219,22 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   String getType(DashboardType type, BuildContext context) {
-    String title = '';
-
     switch (type) {
       case DashboardType.home:
-        title = context.t.home.capitalizeFirst();
+        return context.t.home.capitalizeFirst();
       case DashboardType.content:
-        title = context.t.content.capitalizeFirst();
+        return context.t.content.capitalizeFirst();
       case DashboardType.scheduled:
-        title = context.t.scheduled.capitalizeFirst();
+        return context.t.scheduled.capitalizeFirst();
       case DashboardType.smart:
-        title = context.t.smartWidget.capitalizeFirst();
+        return context.t.smartWidget.capitalizeFirst();
       case DashboardType.bookmarks:
-        title = context.t.bookmarks.capitalizeFirst();
+        return context.t.bookmarks.capitalizeFirst();
       case DashboardType.interests:
-        title = context.t.interests.capitalizeFirst();
+        return context.t.interests.capitalizeFirst();
       case DashboardType.paidNotes:
-        title = 'Paid notes';
+        return 'Paid notes';
     }
-
-    return title;
   }
 
   @override

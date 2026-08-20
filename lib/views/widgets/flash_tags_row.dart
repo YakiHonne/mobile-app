@@ -6,6 +6,7 @@ import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../search_view/search_view.dart';
+import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 
 class FlashTagsRow extends StatelessWidget {
@@ -48,14 +49,10 @@ class FlashTagsRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SvgPicture.asset(
+          const AppIcon(
             FeatureIcons.flame,
-            height: 16,
-            fit: BoxFit.fitHeight,
-            colorFilter: const ColorFilter.mode(
-              kWhite,
-              BlendMode.srcIn,
-            ),
+            size: 16,
+            color: kWhite,
           ),
           const SizedBox(
             width: kDefaultPadding / 4,

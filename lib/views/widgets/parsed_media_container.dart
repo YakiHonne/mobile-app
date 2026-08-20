@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
 import 'package:nostr_core_enhanced/utils/string_utils.dart';
@@ -21,6 +22,7 @@ import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
 import '../smart_widgets_view/widgets/global_smart_widget_container.dart';
 import '../smart_widgets_view/widgets/smart_widget_checker.dart';
+import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'common_thumbnail.dart';
 import 'data_providers.dart';
@@ -209,14 +211,10 @@ class ParsedMediaContainer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 10,
-                height: 10,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 10,
+                color: Theme.of(context).primaryColor,
               ),
             ],
           ],
@@ -279,15 +277,12 @@ class ParsedMediaContainer extends HookWidget {
                 ),
                 child: baseEventModel is VideoModel
                     ? const Icon(
-                        Icons.play_arrow_rounded,
+                        LucideIcons.play,
                         color: kWhite,
                       )
-                    : SvgPicture.asset(
+                    : const AppIcon(
                         FeatureIcons.smartWidget,
-                        colorFilter: const ColorFilter.mode(
-                          kWhite,
-                          BlendMode.srcIn,
-                        ),
+                        color: kWhite,
                       ),
               ),
             ),
@@ -486,6 +481,7 @@ class YoutubeVideoContainer extends HookWidget {
             isVideoActive.value = true;
           }
         },
+        onLongPress: () => openWebPage(url: url),
         behavior: HitTestBehavior.opaque,
         child: Container(
           decoration: BoxDecoration(
@@ -571,7 +567,7 @@ class YoutubeVideoContainer extends HookWidget {
               color: kBlack.withValues(alpha: 0.7),
             ),
             child: const Icon(
-              Icons.play_arrow_rounded,
+              LucideIcons.play,
               size: 40,
               color: kWhite,
             ),
@@ -796,7 +792,7 @@ class MediaFeedContainer extends HookWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Icon(
-                  Icons.play_arrow,
+                  LucideIcons.play,
                   color: Theme.of(context).primaryColorDark,
                   size: 16,
                 ),
@@ -828,14 +824,10 @@ class MediaFeedContainer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 10,
-                height: 10,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 10,
+                color: Theme.of(context).primaryColor,
               ),
             ],
           ],

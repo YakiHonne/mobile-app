@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../models/relay_review.dart';
 import '../../../utils/utils.dart';
@@ -69,7 +70,7 @@ class RelayReviewCard extends StatelessWidget {
                         RatingBarIndicator(
                           rating: review.rating.toDouble(),
                           itemBuilder: (context, index) => Icon(
-                            Icons.star,
+                            LucideIcons.star,
                             color: Theme.of(context).primaryColorDark,
                           ),
                           itemSize: 15.0,

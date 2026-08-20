@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'redeem_code_options.dart';
 import 'redeem_code_result.dart';
 
@@ -18,14 +19,12 @@ class RedeemCodeView extends HookWidget {
     final redeemCode = useTextEditingController();
     final code = useState('');
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       height: 90.h,
       padding: MediaQuery.of(context).viewInsets.copyWith(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
           ),
-      decoration: _buildContainerDecoration(context),
       child: Column(
         children: [
           const ModalBottomSheetHandle(),
@@ -140,18 +139,4 @@ class RedeemCodeView extends HookWidget {
     return RedeemCodeResults(onSwitchToOptions: onSwitchToOptions, data: data);
   }
 
-  /// Build container decoration
-  BoxDecoration _buildContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      border: Border.all(
-        color: Theme.of(context).dividerColor,
-        width: 0.5,
-      ),
-    );
-  }
 }

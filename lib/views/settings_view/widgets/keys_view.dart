@@ -4,13 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_scaffold.dart';
+import 'google_manage_sheet.dart';
 import 'settings_text.dart';
 
 class KeysView extends HookWidget {
@@ -44,12 +47,11 @@ class KeysView extends HookWidget {
   Widget build(BuildContext context) {
     final secretKey = useState(false);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.keys.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.keys.capitalizeFirst(),
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2)
+            .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Text(
             context.t.settingsKeysDesc,
@@ -99,7 +101,7 @@ class KeysView extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                Icons.warning_amber_rounded,
+                LucideIcons.triangleAlert,
                 color: Theme.of(context).primaryColor,
               ),
               const SizedBox(
@@ -119,6 +121,39 @@ class KeysView extends HookWidget {
             height: kDefaultPadding,
           ),
           _textButton(context),
+          if (settingsCubit.privateKeyIndex != null &&
+              settingsCubit
+                  .isExternalGoogle(settingsCubit.privateKeyIndex!)) ...[
+            const Divider(
+              thickness: 0.5,
+              height: kDefaultPadding * 2,
+            ),
+            _googleRow(
+              context,
+              title: context.t.pomRecoverTitle,
+              description: context.t.recoverWithGoogle,
+              onTap: () => showGoogleRecoverSheet(context),
+            ),
+            const SizedBox(height: kDefaultPadding),
+            _googleRow(
+              context,
+              title: context.t.pomUnlinkTitle,
+              description: context.t.googleManageUnlinkDesc,
+              onTap: () => showGoogleUnlinkSheet(
+                context,
+                // The key is no longer reachable through Google, so this
+                // account has to go — the user keeps it via the nsec the
+                // unlink flow made them copy first. `onLogoutTap`, not
+                // `removeKey`: the latter leaves `currentSigner` pointing at
+                // the deleted account's remote signer, and leaves this
+                // index flagged Google for whatever key lands there next.
+                onDisconnect: () => settingsCubit.onLogoutTap(
+                  settingsCubit.privateKeyIndex!,
+                  onPop: () {},
+                ),
+              ),
+            ),
+          ],
           const Divider(
             thickness: 0.5,
             height: kDefaultPadding * 2,
@@ -129,6 +164,47 @@ class KeysView extends HookWidget {
           ),
           const SizedBox(
             height: kDefaultPadding,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _googleRow(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            LucideIcons.chevronRight,
+            color: Theme.of(context).highlightColor,
           ),
         ],
       ),
@@ -173,6 +249,7 @@ class KeysView extends HookWidget {
                     secretKey.value = true;
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -187,6 +264,7 @@ class KeysView extends HookWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -285,14 +363,10 @@ class DottedContainer extends StatelessWidget {
               IconButton(
                 onPressed: onClicked,
                 icon: isShown == null || isShown!
-                    ? SvgPicture.asset(
+                    ? AppIcon(
                         FeatureIcons.copy,
-                        width: 20,
-                        height: 20,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        size: 20,
+                        color: Theme.of(context).primaryColorDark,
                       )
                     : Text(
                         context.t.show.capitalizeFirst(),

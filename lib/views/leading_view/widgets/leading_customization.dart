@@ -1,16 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/leading_cubit/customize_leading_cubit/customize_leading_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../settings_view/widgets/property_customization.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_switch.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class LeadingCustomization extends HookWidget {
   const LeadingCustomization({super.key});
@@ -23,21 +26,9 @@ class LeadingCustomization extends HookWidget {
 
     return BlocProvider(
       create: (context) => CustomizeLeadingCubit(),
-      child: Container(
-        width: double.infinity,
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
         child: DraggableScrollableSheet(
           initialChildSize: 0.95,
           minChildSize: 0.60,
@@ -133,7 +124,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showInterests,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -171,7 +162,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showRelatedContent,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -208,7 +199,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showPeopleToFollow,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -245,7 +236,7 @@ class LeadingCustomization extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.showSuggestions,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -325,7 +316,7 @@ class LeadingCustomization extends HookWidget {
               ),
               Transform.scale(
                 scale: 0.8,
-                child: CupertinoSwitch(
+                child: FluidSwitch(
                   value: state.useSingleColumnFeed,
                   activeTrackColor: Theme.of(context).primaryColor,
                   onChanged: (isToggled) {
@@ -359,7 +350,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.collapseNote,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -393,7 +384,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.hideNonFollowedMedia,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -429,11 +420,13 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableNestedReplies,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
-                  context.read<CustomizeLeadingCubit>().setNestedRepliesStatus();
+                  context
+                      .read<CustomizeLeadingCubit>()
+                      .setNestedRepliesStatus();
                 },
               ),
             ),
@@ -463,7 +456,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableAutoPlay,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -497,7 +490,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.linkPreview,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -653,14 +646,10 @@ class LeadingCustomization extends HookWidget {
         index: index,
         child: Row(
           children: [
-            SvgPicture.asset(
+            AppIcon(
               getPostActionIcon(action.key, context),
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
             const SizedBox(
               width: kDefaultPadding / 3,
@@ -675,7 +664,7 @@ class LeadingCustomization extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: action.value,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -686,7 +675,7 @@ class LeadingCustomization extends HookWidget {
               ),
             ),
             const Icon(
-              Icons.drag_indicator_rounded,
+              LucideIcons.gripVertical,
               size: 20,
             ),
           ],
@@ -714,8 +703,8 @@ class LeadingCustomization extends HookWidget {
     return name;
   }
 
-  String getPostActionIcon(String type, BuildContext context) {
-    String icon = FeatureIcons.heart;
+  IconData getPostActionIcon(String type, BuildContext context) {
+    IconData icon = FeatureIcons.heart;
 
     switch (type) {
       case 'reactions':

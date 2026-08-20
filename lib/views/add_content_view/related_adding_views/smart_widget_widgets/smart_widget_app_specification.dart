@@ -10,6 +10,7 @@ import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
 import '../../../widgets/data_providers.dart';
 import '../../../widgets/dotted_container.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/note_container.dart';
 
 class SmartWidgetAppSpecification extends HookWidget {
@@ -25,33 +26,19 @@ class SmartWidgetAppSpecification extends HookWidget {
 
     return BlocBuilder<WriteSmartWidgetCubit, WriteSmartWidgetState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(kDefaultPadding),
-              topRight: Radius.circular(kDefaultPadding),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
+        return ModalSheetContainer(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.70,
-              minChildSize: 0.40,
-              maxChildSize: 0.70,
-              expand: false,
-              builder: (context, scrollController) {
-                return _specificationsColumn(
-                    context, state, formKey, controller, onLoading);
-              },
-            ),
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.70,
+            minChildSize: 0.40,
+            maxChildSize: 0.70,
+            expand: false,
+            builder: (context, scrollController) {
+              return _specificationsColumn(
+                  context, state, formKey, controller, onLoading);
+            },
           ),
         );
       },
@@ -208,6 +195,7 @@ class SmartWidgetAppSpecification extends HookWidget {
                 }
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: state.appSmartWidget.isValid()
                     ? kRed
                     : Theme.of(context).cardColor,
@@ -361,6 +349,7 @@ class SmartWidgetAppSpecificationRow extends HookWidget {
                     }
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: state.appSmartWidget.isValid()
                         ? kRed
                         : Theme.of(context).cardColor,

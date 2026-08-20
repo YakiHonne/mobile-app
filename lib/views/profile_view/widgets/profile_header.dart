@@ -3,14 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:numeral/numeral.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../creator_subscribe_view/creator_subscribe_view.dart';
 import '../../main_view/widgets/profile_share_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/subscription_badge_view.dart';
 import 'profile_connections_view.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -60,14 +65,10 @@ class ProfileHeader extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          SvgPicture.asset(
+                          AppIcon(
                             FeatureIcons.link,
-                            width: 20,
-                            height: 20,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).primaryColorDark,
-                              BlendMode.srcIn,
-                            ),
+                            size: 20,
+                            color: Theme.of(context).primaryColorDark,
                           ),
                           const SizedBox(
                             width: kDefaultPadding / 4,
@@ -105,6 +106,7 @@ class ProfileHeader extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
+          _CreatorSubscribeButton(),
         ],
       ),
     );
@@ -118,9 +120,8 @@ class ProfileHeader extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return BlocProvider.value(
                   value: context.read<ProfileCubit>(),
@@ -129,9 +130,6 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -181,14 +179,10 @@ class ProfileHeader extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.nip05,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 20,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 const SizedBox(
                   width: kDefaultPadding / 4,
@@ -238,19 +232,17 @@ class ProfileHeader extends StatelessWidget {
               width: kDefaultPadding / 2,
             ),
             if (state.isNip05) ...[
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColor,
               ),
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
             ],
+            SubscriptionBadgeView(pubkey: state.user.pubkey),
+            const SizedBox(width: kDefaultPadding / 4),
             CustomIconButton(
               onClicked: () {
                 Navigator.push(
@@ -274,6 +266,46 @@ class ProfileHeader extends StatelessWidget {
   }
 }
 
+class _CreatorSubscribeButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      buildWhen: (previous, current) =>
+          previous.creatorProviders != current.creatorProviders ||
+          previous.isCreatorSubscriptionLoading !=
+              current.isCreatorSubscriptionLoading ||
+          previous.isSameUser != current.isSameUser,
+      builder: (context, state) {
+        if (kIapEnabled || state.isSameUser) {
+          return const SizedBox.shrink();
+        }
+
+        if (state.isCreatorSubscriptionLoading) {
+          return const SizedBox.shrink();
+        }
+
+        final providers = state.creatorProviders;
+        if (providers == null || providers.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+          child: OutlinedButton.icon(
+            onPressed: () => CreatorProvidersSheet.show(
+              context,
+              providers: providers,
+              creatorMetadata: state.user,
+            ),
+            icon: const Icon(LucideIcons.star, size: 16),
+            label: Text(context.t.creator_subscribe.capitalizeFirst()),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class UserStatsRow extends StatelessWidget {
   const UserStatsRow({
     super.key,
@@ -284,7 +316,7 @@ class UserStatsRow extends StatelessWidget {
     required this.secondValue,
   });
 
-  final String icon;
+  final IconData icon;
   final String firstTitle;
   final String firstValue;
   final String secondtitle;
@@ -294,14 +326,10 @@ class UserStatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SvgPicture.asset(
+        AppIcon(
           icon,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         const SizedBox(
           width: kDefaultPadding / 4,
@@ -388,7 +416,7 @@ class UnStatsRow extends StatelessWidget {
             width: kDefaultPadding / 4,
           ),
           const Icon(
-            Icons.keyboard_arrow_right_rounded,
+            LucideIcons.chevronRight,
             size: 20,
           ),
         ],

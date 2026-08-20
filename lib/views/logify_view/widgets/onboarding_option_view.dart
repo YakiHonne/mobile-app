@@ -3,10 +3,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import 'eula_view.dart';
 
 class OnboardingOptionsView extends StatelessWidget {
@@ -109,43 +111,41 @@ class OnboardingOptionsView extends StatelessWidget {
 
     components.addAll(
       [
-        SizedBox(
-          width: double.infinity,
-          child: TextButton(
-            onPressed: () {
-              logifySelection.value = false;
-              controller.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: Text(context.t.loginAction.capitalizeFirst()),
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _optionCard(
+                context,
+                icon: FeatureIcons.keys,
+                label: context.t.loginAction.capitalizeFirst(),
+                onTap: () {
+                  logifySelection.value = false;
+                  controller.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: kDefaultPadding / 2),
+            Expanded(
+              child: _optionCard(
+                context,
+                icon: FeatureIcons.profileAdd,
+                label: context.t.createAccount.capitalizeFirst(),
+                isPrimary: true,
+                onTap: () {
+                  logifySelection.value = true;
+                  controller.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        const SizedBox(
-          height: kDefaultPadding / 2,
-        ),
-      ],
-    );
-
-    components.addAll(
-      [
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton(
-            onPressed: () {
-              logifySelection.value = true;
-              controller.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: Text(context.t.createAccount.capitalizeFirst()),
-          ),
-        ),
-        const SizedBox(
-          height: kDefaultPadding,
-        ),
+        const SizedBox(height: kDefaultPadding),
       ],
     );
 
@@ -167,15 +167,11 @@ class OnboardingOptionsView extends StatelessWidget {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    showCupertinoModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (_) {
                         return const EulaView();
                       },
-                      useRootNavigator: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
                     );
                   },
               ),
@@ -209,16 +205,12 @@ class OnboardingOptionsView extends StatelessWidget {
                 const SizedBox(
                   width: kDefaultPadding / 2,
                 ),
-                RotatedBox(
+                const RotatedBox(
                   quarterTurns: 1,
-                  child: SvgPicture.asset(
+                  child: AppIcon(
                     FeatureIcons.arrowUp,
-                    width: 20,
-                    height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      kWhite,
-                      BlendMode.srcIn,
-                    ),
+                    size: 20,
+                    color: kWhite,
                   ),
                 ),
               ]
@@ -237,6 +229,71 @@ class OnboardingOptionsView extends StatelessWidget {
         child: Column(
           children: components,
         ),
+      ),
+    );
+  }
+
+  Widget _optionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    bool isPrimary = false,
+  }) {
+    const br = kDefaultPadding * 1.25;
+    final iconColor = isPrimary
+        ? Theme.of(context).primaryColor
+        : Theme.of(context).primaryColorDark;
+
+    final content = Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppIcon(
+            icon,
+            size: 32,
+            color: iconColor,
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: isFluid()
+            ? FluidBlurContainer(
+                borderRadius: br,
+                padding: const EdgeInsets.all(kDefaultPadding),
+                borderColor: isPrimary
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
+                    : null,
+                child: content,
+              )
+            : Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(br),
+                  border: Border.all(
+                    color: isPrimary
+                        ? Theme.of(context).primaryColor.withValues(alpha: 0.4)
+                        : Theme.of(context).dividerColor,
+                    width: isPrimary ? 0.8 : 0.5,
+                  ),
+                ),
+                padding: const EdgeInsets.all(kDefaultPadding),
+                alignment: Alignment.center,
+                child: content,
+              ),
       ),
     );
   }

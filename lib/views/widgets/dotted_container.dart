@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
-import 'custom_icon_buttons.dart';
+import 'buttons_containers_widgets.dart';
 
 /// Add a dotted border around any [child] widget. The [strokeWidth] property
 /// defines the width of the dashed border and [color] determines the stroke
@@ -244,8 +245,17 @@ class ModalBottomSheetHandle extends StatelessWidget {
   final double? padding;
   @override
   Widget build(BuildContext context) {
+    final vertical = padding ?? kDefaultPadding / 2;
+
+    // GlassModalSheet draws its own drag indicator — don't stack two. The room
+    // it needs is reserved once per sheet at the root, in ModalSheetContainer,
+    // so that sheets which open on something other than a handle get it too.
+    if (ScrollControllerProvider.of(context) != null) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: padding ?? kDefaultPadding / 2),
+      padding: EdgeInsets.symmetric(vertical: vertical),
       child: Container(
         height: 5,
         width: 30,
@@ -272,7 +282,7 @@ class ModalBottomSheetAppbar extends StatelessWidget {
 
   final Function()? onClicked;
   final Function()? onSecondClick;
-  final String? secondIcon;
+  final IconData? secondIcon;
   final bool isBack;
   final String title;
   final double? padding;
@@ -289,7 +299,7 @@ class ModalBottomSheetAppbar extends StatelessWidget {
         children: [
           const SizedBox(
             width: double.infinity,
-            height: 40,
+            height: 45,
           ),
           Positioned.fill(
             child: Align(
@@ -314,15 +324,12 @@ class ModalBottomSheetAppbar extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: RotatedBox(
                 quarterTurns: isBack ? 1 : 0,
-                child: CustomIconButton(
+                child: AppIconButton(
                   onClicked: onClicked ??
                       () {
                         YNavigator.pop(context);
                       },
                   icon: isBack ? FeatureIcons.arrowDown : FeatureIcons.closeRaw,
-                  size: 18,
-                  vd: -1,
-                  backgroundColor: Theme.of(context).cardColor,
                 ),
               ),
             ),
@@ -335,12 +342,9 @@ class ModalBottomSheetAppbar extends StatelessWidget {
             Positioned.fill(
               child: Align(
                 alignment: Alignment.centerRight,
-                child: CustomIconButton(
-                  onClicked: onSecondClick!,
+                child: AppIconButton(
+                  onClicked: onSecondClick,
                   icon: secondIcon!,
-                  size: 18,
-                  vd: -1,
-                  backgroundColor: Theme.of(context).cardColor,
                 ),
               ),
             )

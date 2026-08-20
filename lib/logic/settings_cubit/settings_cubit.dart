@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/remote_event_signer.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
+import 'package:nostr_core_enhanced/pomegranate/pomegranate.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../initializers.dart';
@@ -76,6 +77,20 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   final Map<String, ExternalKeyType> _externalKeysType = {};
 
+  /// index -> the central + operator set that account's key was sharded across.
+  ///
+  /// Keyed by index like [_externalKeysType]: recovery must use the operators
+  /// and threshold the account was actually registered with, which vary per
+  /// client and are user-configurable at signup.
+  final Map<String, PomSetup> _pomegranateSetups = {};
+
+  /// The active account's Pomegranate setup, or null when unknown — accounts
+  /// created before this was persisted, and centrals that omit the fields.
+  PomSetup? get pomegranateSetup {
+    final index = _settingData?.privateKeyIndex;
+    return index == null ? null : _pomegranateSetups[index.toString()];
+  }
+
   String? get key {
     if (_settingData!.privateKeyIndex != null && _keyMap.isNotEmpty) {
       return _keyMap[_settingData!.privateKeyIndex.toString()];
@@ -104,6 +119,10 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   bool isExternalAmber(int index) {
     return _externalKeysType[index.toString()] == ExternalKeyType.Amber;
+  }
+
+  bool isExternalGoogle(int index) {
+    return _externalKeysType[index.toString()] == ExternalKeyType.Google;
   }
 
   bool get isPrivateKey {
@@ -146,6 +165,7 @@ class SettingsCubit extends Cubit<SettingsState> {
           localDatabaseRepository.getKeysPrivacyStatus(),
           localDatabaseRepository.getKeysExternalStatus(),
           localDatabaseRepository.getExternalKeysType(),
+          localDatabaseRepository.getPomegranateSetups(),
         ]);
 
         final String? keyMapJson = data[0];
@@ -155,6 +175,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         final String? keyIsExternalSignerMapJson = data[2];
 
         final String? externalKeysTypeMapJson = data[3];
+
+        final String? pomegranateSetupsJson = data[4];
 
         if (StringUtil.isNotBlank(keyMapJson)) {
           try {
@@ -167,6 +189,9 @@ class SettingsCubit extends Cubit<SettingsState> {
                 : null;
             final externalKeysTypeJsonKeyMap = externalKeysTypeMapJson != null
                 ? jsonDecode(externalKeysTypeMapJson)
+                : null;
+            final pomegranateSetupsJsonMap = pomegranateSetupsJson != null
+                ? jsonDecode(pomegranateSetupsJson)
                 : null;
 
             if (jsonKeyMap != null) {
@@ -191,6 +216,19 @@ class SettingsCubit extends Cubit<SettingsState> {
                     (element) => element.name == val,
                     orElse: () => ExternalKeyType.Amber,
                   );
+                }
+
+                final setupJson = pomegranateSetupsJsonMap?[entry.key];
+
+                if (setupJson != null) {
+                  try {
+                    _pomegranateSetups[entry.key] =
+                        PomSetup.fromJson(Map<String, dynamic>.from(setupJson));
+                  } catch (_) {
+                    // A malformed setup only costs recovery its operator list,
+                    // which falls back to the known set — not worth losing the
+                    // whole key map over.
+                  }
                 }
               }
             }
@@ -356,9 +394,11 @@ class SettingsCubit extends Cubit<SettingsState> {
     final c = BotToastUtils.showLoading();
 
     localDatabaseRepository.setKeysMap(json.encode({}));
+    localDatabaseRepository.setPomegranateSetups(json.encode({}));
     privateKeyIndex = null;
     _keyIsExternalSignerMap.clear();
     _externalKeysType.clear();
+    _pomegranateSetups.clear();
     _keyIsPrivateMap.clear();
     _keyMap.clear();
     _settingData!.privateKeyIndex = null;
@@ -384,6 +424,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     bool fetchData = false,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
     RemoteEventSigner? remoteSigner,
+    PomSetup? pomegranateSetup,
   }) async {
     int? findIndex;
 
@@ -415,6 +456,13 @@ class SettingsCubit extends Cubit<SettingsState> {
           _externalKeysType[index] = externalKeyType;
         }
 
+        // Only Google keys have one, and only when the central reported its
+        // operator set — never guess, a wrong set makes recovery impossible.
+        if (externalKeyType == ExternalKeyType.Google &&
+            pomegranateSetup != null) {
+          _pomegranateSetups[index] = pomegranateSetup;
+        }
+
         _settingData!.privateKeyIndex = i;
 
         await localDatabaseRepository.setKeysMap(json.encode(_keyMap));
@@ -435,12 +483,21 @@ class SettingsCubit extends Cubit<SettingsState> {
           json.encode(converted),
         );
 
+        await localDatabaseRepository.setPomegranateSetups(
+          json.encode(
+            _pomegranateSetups.map(
+              (key, value) => MapEntry(key, value.toJson()),
+            ),
+          ),
+        );
+
         saveAndUpdate(updateUI: fetchData);
 
         final publicKey = isPrivate ? getPublicKey(key) : key;
 
         currentSigner = isExternalSignerKey
-            ? externalKeyType == ExternalKeyType.Bunker
+            ? (externalKeyType == ExternalKeyType.Bunker ||
+                    externalKeyType == ExternalKeyType.Google)
                 ? remoteSigner
                 : AmberEventSigner(publicKey)
             : Bip340EventSigner(
@@ -459,6 +516,9 @@ class SettingsCubit extends Cubit<SettingsState> {
           nostrRepository.loadCurrentUserRelatedData();
           walletManagerCubit.switchWallets();
           cashuWalletManagerCubit.init();
+          if (currentSigner?.canSign() ?? false) {
+            pointsManagementCubit.login(onSuccess: () {});
+          }
         }
 
         appSettingsManagerCubit.loadAppSharedSettings();
@@ -475,8 +535,32 @@ class SettingsCubit extends Cubit<SettingsState> {
   void removeKey(int index) {
     final indexStr = index.toString();
     _keyMap.remove(indexStr);
+    _pomegranateSetups.remove(indexStr);
+
+    // Indexes are reused by `addAndChangeKey`, so a left-behind flag makes the
+    // next key at this index inherit the old one's signer type — a plain nsec
+    // account showing the Google recover/unlink rows, for instance.
+    _keyIsExternalSignerMap.remove(indexStr);
+    _externalKeysType.remove(indexStr);
+    _keyIsPrivateMap.remove(indexStr);
 
     localDatabaseRepository.setKeysMap(json.encode(_keyMap));
+
+    localDatabaseRepository.setKeysPrivacyStatus(json.encode(_keyIsPrivateMap));
+
+    localDatabaseRepository.setKeysExternalStatus(
+      json.encode(_keyIsExternalSignerMap),
+    );
+
+    localDatabaseRepository.setExternalKeysType(
+      json.encode(_externalKeysType.map((k, v) => MapEntry(k, v.name))),
+    );
+
+    localDatabaseRepository.setPomegranateSetups(
+      json.encode(
+        _pomegranateSetups.map((key, value) => MapEntry(key, value.toJson())),
+      ),
+    );
 
     if (_settingData!.privateKeyIndex == index) {
       if (_keyMap.isEmpty) {

@@ -31,6 +31,7 @@ class Article extends Equatable implements BaseEventModel {
   final List<ZapSplit> zapsSplits;
   final List<String> pTags;
   final String stringifiedEvent;
+  final bool isPremium;
 
   const Article({
     required this.id,
@@ -51,6 +52,7 @@ class Article extends Equatable implements BaseEventModel {
     required this.zapsSplits,
     required this.pTags,
     required this.stringifiedEvent,
+    this.isPremium = false,
   });
 
   factory Article.fromEvent(Event event, {bool? isDraft, String? relay}) {
@@ -121,6 +123,7 @@ class Article extends Equatable implements BaseEventModel {
       pTags: pTags,
       stringifiedEvent: event.toJsonString(),
       relays: relay != null ? {relay} : {},
+      isPremium: getPremiumStatus(event),
     );
   }
 
@@ -169,6 +172,7 @@ class Article extends Equatable implements BaseEventModel {
       'isDraft': isDraft,
       'pTags': pTags,
       'stringifiedEvent': stringifiedEvent,
+      'isPremium': isPremium,
     };
   }
 
@@ -192,6 +196,7 @@ class Article extends Equatable implements BaseEventModel {
       relays: const {},
       pTags: List<String>.from(map['pTags'] as List? ?? []),
       stringifiedEvent: map['stringifiedEvent'] as String? ?? '',
+      isPremium: map['isPremium'] as bool? ?? false,
     );
   }
 

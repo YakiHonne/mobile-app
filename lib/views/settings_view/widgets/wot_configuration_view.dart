@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/properties_cubit/wot_configuration_cubit/wot_configuration_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 
 class WotConfigurationView extends StatelessWidget {
   const WotConfigurationView({super.key});
@@ -13,10 +13,8 @@ class WotConfigurationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => WotConfigurationCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.wot.capitalizeFirst(),
-        ),
+      child: FluidScaffold(
+        title: context.t.wot.capitalizeFirst(),
         body: BlocBuilder<WotConfigurationCubit, WotConfigurationState>(
           builder: (context, state) {
             final c = context.read<WotConfigurationCubit>();
@@ -25,6 +23,8 @@ class WotConfigurationView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: kDefaultPadding,
                 vertical: kDefaultPadding / 2,
+              ).copyWith(
+                top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
               ),
               children: [
                 Text(

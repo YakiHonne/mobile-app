@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../utils/utils.dart';
@@ -11,9 +13,12 @@ import '../../logic/add_bookmark_cubit/add_bookmark_cubit.dart';
 import '../../models/bookmark_list_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_data_repository.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/dotted_container.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/modal_sheet_container.dart';
 
 class AddBookmarkView extends StatelessWidget {
   const AddBookmarkView({
@@ -39,29 +44,15 @@ class AddBookmarkView extends StatelessWidget {
         model: model,
         nostrRepository: context.read<NostrDataRepository>(),
       ),
-      child: Padding(
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.8,
-            minChildSize: 0.40,
-            maxChildSize: 0.8,
-            expand: false,
-            builder: (_, controller) => _addBookmarkColumn(controller),
-          ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.8,
+          minChildSize: 0.40,
+          maxChildSize: 0.8,
+          expand: false,
+          builder: (_, controller) => _addBookmarkColumn(controller),
         ),
       ),
     );
@@ -95,14 +86,12 @@ class AddBookmarkView extends StatelessWidget {
             child: Stack(
               children: [
                 if (!state.isBookmarksLists)
-                  IconButton(
-                    onPressed: () {
+                  AppIconButton(
+                    onClicked: () {
                       context.read<AddBookmarkCubit>().setView(true);
                     },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 20,
-                    ),
+                    icon: LucideIcons.chevronLeft,
+                    iconSize: 20,
                   ),
                 Center(
                   child: Text(
@@ -335,21 +324,15 @@ class BookmarkListContainer extends StatelessWidget {
               child: IconButton(
                 onPressed: onSetBookmark,
                 icon: isAbsorbing
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1,
-                        ),
+                    ? SpinKitCircle(
+                        color: Theme.of(context).primaryColorDark,
+                        size: 20,
                       )
-                    : SvgPicture.asset(
+                    : AppIcon(
                         isActive
                             ? FeatureIcons.bookmarkChecked
                             : FeatureIcons.bookmarkAdd,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColorDark,
-                          BlendMode.srcIn,
-                        ),
+                        color: Theme.of(context).primaryColorDark,
                       ),
               ),
             );
@@ -391,7 +374,9 @@ class AddBookmarkBottomBar extends HookWidget {
                 }
               },
               icon: Icon(
-                articleState.isBookmarksLists ? Icons.add_rounded : Icons.check,
+                articleState.isBookmarksLists
+                    ? LucideIcons.plus
+                    : LucideIcons.check,
                 size: 20,
               ),
               label: Text(

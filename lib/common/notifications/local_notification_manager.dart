@@ -40,14 +40,24 @@ class LocalNotificationManager {
 
     if (!isEnabled &&
         localDatabaseRepository.getNotificationPrompter() == null) {
-      await AwesomeNotifications().requestPermissionToSendNotifications(
-        permissions: [
-          NotificationPermission.Vibration,
-          NotificationPermission.Sound,
-          NotificationPermission.Light,
-          NotificationPermission.PreciseAlarms,
-        ],
-      );
+      try {
+        await AwesomeNotifications().requestPermissionToSendNotifications(
+          permissions: [
+            NotificationPermission.Vibration,
+            NotificationPermission.Sound,
+            NotificationPermission.Light,
+            NotificationPermission.PreciseAlarms,
+          ],
+        );
+      } catch (e) {
+        // ponytail: awesome_notifications throws a native NPE when there's no
+        // attached Activity (e.g. triggered from a background push callback
+        // with a detached isolate); permission prompt just won't show this
+        // time, retried on next app launch.
+        if (kDebugMode) {
+          print('Failed to request notification permission: $e');
+        }
+      }
     }
 
     // Attach global listeners
@@ -114,18 +124,26 @@ class LocalNotificationManager {
       return;
     }
 
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: DateTime.now().millisecondsSinceEpoch % 10000,
-        channelKey: 'yaki_channel',
-        title: title,
-        body: body,
-        payload: payload,
-        wakeUpScreen: true,
-        icon: 'resource://drawable/ic_notification',
-        backgroundColor: kPurple,
-      ),
-    );
+    try {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: DateTime.now().millisecondsSinceEpoch % 10000,
+          channelKey: 'yaki_channel',
+          title: title,
+          body: body,
+          payload: payload,
+          wakeUpScreen: true,
+          icon: 'resource://drawable/ic_notification',
+          backgroundColor: kPurple,
+        ),
+      );
+    } catch (e) {
+      // ponytail: user disabled the yaki_channel notification channel at OS level;
+      // isNotificationAllowed() doesn't catch this per-channel case.
+      if (kDebugMode) {
+        print('Failed to show notification: $e');
+      }
+    }
   }
 
   /// Handle notification taps from both platforms

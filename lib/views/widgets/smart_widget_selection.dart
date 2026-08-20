@@ -12,6 +12,7 @@ import '../smart_widgets_view/widgets/global_smart_widget_container.dart';
 import 'classic_footer.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
+import 'modal_sheet_container.dart';
 
 class SmartWidgetSelection extends StatefulWidget {
   const SmartWidgetSelection({
@@ -58,26 +59,22 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
 
     return BlocProvider(
       create: (context) => SmartWidgetsCubit(),
-      child: BlocConsumer<SmartWidgetsCubit, SmartWidgetsState>(
-        listener: (context, state) {
-          if (state.loadingState == UpdatingState.success) {
-            refreshController.loadComplete();
-          } else if (state.loadingState == UpdatingState.idle) {
-            refreshController.loadNoData();
-          }
-        },
-        builder: (context, state) {
-          return DraggableScrollableSheet(
-            initialChildSize: 0.80,
-            minChildSize: 0.40,
-            maxChildSize: 0.80,
-            expand: false,
-            builder: (context, scrollController) => ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(kDefaultPadding),
-                topRight: Radius.circular(kDefaultPadding),
-              ),
-              child: NestedScrollView(
+      child: ModalSheetContainer(
+        child: BlocConsumer<SmartWidgetsCubit, SmartWidgetsState>(
+          listener: (context, state) {
+            if (state.loadingState == UpdatingState.success) {
+              refreshController.loadComplete();
+            } else if (state.loadingState == UpdatingState.idle) {
+              refreshController.loadNoData();
+            }
+          },
+          builder: (context, state) {
+            return DraggableScrollableSheet(
+              initialChildSize: 0.80,
+              minChildSize: 0.40,
+              maxChildSize: 0.80,
+              expand: false,
+              builder: (context, scrollController) => NestedScrollView(
                 controller: scrollController,
                 floatHeaderSlivers: true,
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -87,9 +84,9 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
                 },
                 body: _content(state, isTablet, scrollController),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

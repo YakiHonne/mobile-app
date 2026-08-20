@@ -1,9 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -18,9 +21,6 @@ import 'utils/utils.dart';
 import 'views/widgets/relay_progress_bar.dart';
 
 class AppConstants {
-  static const String sentryDsn =
-      'https://d6e3ba87d6dfb18e7dc4dc75ff028eda@o4508401650565120.ingest.de.sentry.io/4508401653317712';
-
   // Pre-defined breakpoints to avoid recreation
   static const List<Breakpoint> responsiveBreakpoints = [
     Breakpoint(start: 0, end: 719, name: MOBILE),
@@ -35,6 +35,7 @@ class AppConstants {
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
+    FlutterQuillLocalizations.delegate,
   ];
 
   // Navigator observers list
@@ -47,11 +48,27 @@ class AppConstants {
 void main() async {
   await AppInitializer.initApp();
 
+  // TEMP DEBUG (article editor hang investigation) — remove when done.
+  // Native sampling showed the loop is in microtasks/GC, not layout or build,
+  // so the build/layout flags are off; instrumentation lives in the editor's
+  // auto_scrollable_widget.dart instead.
+
+  // ponytail: liquid_glass_widgets trial — prewarms the shaders so the first
+  // glass frame doesn't flash white. Remove along with wrap() below to revert.
+  await LiquidGlassWidgets.initialize();
+
+  // ponytail: kills the blue keyboard focus ring GlassTextField paints when
+  // FocusManager flips to traditional highlight mode (typing on the search
+  // field). Touch-only app — the ring has no purpose here.
+  FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
+
   if (nostrRepository.isCrashlyticsEnabled) {
     await SentryFlutter.init(
-      (options) {
-        options.dsn = AppConstants.sentryDsn;
-      },
+      (options) => options
+        ..dsn = dotenv.env['GLITCH_TIP_DSN']
+        ..tracesSampleRate = 0.01
+        ..enableAppHangTracking = false
+        ..enableAutoSessionTracking = false,
       appRunner: () async {
         runnerApp();
       },
@@ -63,8 +80,29 @@ void main() async {
 
 void runnerApp() {
   runApp(
-    TranslationProvider(
-      child: const MyApp(),
+    // ponytail: user-picked quality replaces per-surface tuning and
+    // GlassAdaptiveScope auto-tuning — there is no GlassAdaptiveScope in the
+    // app, so no ceiling is applied to anything.
+    //
+    // Setting a theme quality is not just a floor: it sits at the same step as
+    // GlassIsolationScope.defaultQuality and wins over it
+    // (glass_theme_helpers.dart:216), so GlassScaffold's premium-bar hint is
+    // suppressed. Every surface renders at the user's pick. That is the
+    // trade for one honest setting instead of a per-surface matrix.
+    BlocBuilder<ThemeCubit, ThemeState>(
+      bloc: themeCubit,
+      buildWhen: (p, c) => p.glassQuality != c.glassQuality,
+      builder: (context, state) => LiquidGlassWidgets.wrap(
+        respectSystemAccessibility: false,
+        theme: GlassThemeData.simple(
+          blur: 10,
+          thickness: 30,
+          quality: state.glassQuality,
+        ),
+        child: TranslationProvider(
+          child: const MyApp(),
+        ),
+      ),
     ),
   );
 }
@@ -97,6 +135,8 @@ class MyApp extends HookWidget {
         BlocProvider.value(value: themeCubit),
         BlocProvider.value(value: settingsCubit),
         BlocProvider.value(value: pointsManagementCubit),
+        BlocProvider.value(value: subscriptionCubit),
+        BlocProvider.value(value: subscriptionBadgeCubit),
         BlocProvider.value(value: routingCubit),
         BlocProvider.value(value: walletManagerCubit),
         BlocProvider.value(value: cashuWalletManagerCubit),

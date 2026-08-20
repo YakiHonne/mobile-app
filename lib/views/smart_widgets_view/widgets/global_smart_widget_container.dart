@@ -12,6 +12,7 @@ import '../../../repositories/nostr_functions_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/add_content_view.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/note_container.dart';
 import '../../widgets/publish_content_final_step.dart';
 import '../../widgets/pull_down_global_button.dart';
@@ -205,24 +206,21 @@ class GlobalSmartWidgetHeader extends StatelessWidget {
           NostrFunctionsRepository.publishClonedSmartWidget(
             sm: currentSw.value,
             onSuccess: (sw) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return PublishContentFinalStep(
                     appContentType: AppContentType.smartWidget,
                     event: sw,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
           visualDensity: VisualDensity.compact,
         ),

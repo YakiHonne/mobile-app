@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/crashlytics_cubit/crashlytics_cubit.dart';
 import '../../logic/routing_cubit/routing_cubit.dart';
 import '../../utils/utils.dart';
+import '../widgets/fluid_sheet.dart';
 import 'widgets/set_anaytics_status.dart';
 
 class DisclosureView extends StatelessWidget {
@@ -37,17 +38,14 @@ class DisclosureView extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        showModalBottomSheet(
+                        showAppModalSheet(
                           context: context,
-                          elevation: 0,
                           builder: (_) {
                             return BlocProvider.value(
                               value: context.read<CrashlyticsCubit>(),
                               child: const SetAnalyticsStatus(),
                             );
                           },
-                          useRootNavigator: true,
-                          useSafeArea: true,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );

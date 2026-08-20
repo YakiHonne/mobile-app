@@ -4,9 +4,10 @@ import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 
 class MintDetails extends StatelessWidget {
   const MintDetails({super.key, required this.mintInfo});
@@ -15,15 +16,15 @@ class MintDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.details.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.details.capitalizeFirst(),
       body: Column(
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+                top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+              ),
               children: [
                 Center(
                   child: CommonThumbnail(
@@ -232,14 +233,10 @@ class MintDetails extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.copy,
-            width: 18,
-            height: 18,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).highlightColor,
-              BlendMode.srcIn,
-            ),
+            size: 18,
+            color: Theme.of(context).highlightColor,
           )
         ],
       ),
@@ -271,14 +268,10 @@ class MintDetails extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.copy,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).highlightColor,
-                    BlendMode.srcIn,
-                  ),
+                  size: 18,
+                  color: Theme.of(context).highlightColor,
                 )
               ],
             ),
@@ -287,18 +280,34 @@ class MintDetails extends StatelessWidget {
   }
 
   Widget getIcon(String method, BuildContext context) {
-    return SvgPicture.asset(
-      method.toLowerCase() == 'x' || method.toLowerCase() == 'twitter'
-          ? FeatureIcons.x
-          : method.toLowerCase() == 'nostr'
-              ? FeatureIcons.nostr
-              : FeatureIcons.message,
-      width: 25,
-      height: 25,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
-      ),
+    final lowerMethod = method.toLowerCase();
+
+    if (lowerMethod == 'x' || lowerMethod == 'twitter') {
+      return SvgPicture.asset(
+        FeatureIcons.x,
+        width: 25,
+        height: 25,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).primaryColorDark,
+          BlendMode.srcIn,
+        ),
+      );
+    } else if (lowerMethod == 'nostr') {
+      return SvgPicture.asset(
+        FeatureIcons.nostr,
+        width: 25,
+        height: 25,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).primaryColorDark,
+          BlendMode.srcIn,
+        ),
+      );
+    }
+
+    return AppIcon(
+      FeatureIcons.message,
+      size: 25,
+      color: Theme.of(context).primaryColorDark,
     );
   }
 }

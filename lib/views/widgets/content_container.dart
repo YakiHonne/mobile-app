@@ -4,18 +4,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/utils/string_utils.dart';
 
 import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../models/flash_news_model.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'common_thumbnail.dart';
 import 'content_stats.dart';
 import 'data_providers.dart';
 import 'muted_mark.dart';
+import 'note_stats.dart';
 import 'profile_picture.dart';
+import 'subscription_badge_view.dart';
 
 class ContentContainer extends HookWidget {
   final bool isSensitive;
@@ -37,6 +41,7 @@ class ContentContainer extends HookWidget {
   final bool reduceImageSize;
   final bool? isMuted;
   final String? extra;
+  final bool isPremium;
 
   const ContentContainer({
     super.key,
@@ -58,6 +63,7 @@ class ContentContainer extends HookWidget {
     this.reduceImageSize = false,
     this.isMuted,
     this.extra,
+    this.isPremium = false,
   });
 
   @override
@@ -178,6 +184,7 @@ class ContentContainer extends HookWidget {
                   displaySensitiveContent.value = true;
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: VisualDensity.comfortable,
                 ),
                 child: Text(
@@ -276,7 +283,7 @@ class ContentContainer extends HookWidget {
                       color: kBlack.withValues(alpha: 0.7),
                     ),
                     child: const Icon(
-                      Icons.play_arrow_rounded,
+                      LucideIcons.play,
                       color: kWhite,
                     ),
                   ),
@@ -349,15 +356,17 @@ class ContentContainer extends HookWidget {
         ),
         if (isFollowing) ...[
           const SizedBox(width: kDefaultPadding / 4),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.userFollowed,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColorDark,
           ),
+        ],
+        const SizedBox(width: kDefaultPadding / 4),
+        SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
+        if (isPremium) ...[
+          const SizedBox(width: kDefaultPadding / 4),
+          const PremiumBadge(),
         ],
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 
 class CashuDropdownItem<T> {
@@ -9,12 +10,14 @@ class CashuDropdownItem<T> {
     required this.label,
     this.icon,
     this.assetIcon,
+    this.iconData,
     this.balance,
   });
   final T value;
   final String label;
   final String? icon;
   final String? assetIcon;
+  final IconData? iconData;
   final int? balance;
 }
 
@@ -60,13 +63,24 @@ class CashuSelectionDropdown<T> extends StatelessWidget {
               child: Row(
                 spacing: kDefaultPadding / 3,
                 children: [
-                  CommonThumbnail(
-                    image: item.icon ?? '',
-                    assetUrl: item.assetIcon,
-                    width: 25,
-                    height: 25,
-                    isRound: true,
-                  ),
+                  if (item.iconData != null)
+                    SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: AppIcon(
+                        item.iconData!,
+                        size: 20,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                    )
+                  else
+                    CommonThumbnail(
+                      image: item.icon ?? '',
+                      assetUrl: item.assetIcon,
+                      width: 25,
+                      height: 25,
+                      isRound: true,
+                    ),
                   Expanded(
                     child: Text(
                       item.label,

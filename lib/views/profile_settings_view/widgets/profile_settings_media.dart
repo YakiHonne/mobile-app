@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/profile_settings_cubit/profile_settings_cubit.dart';
 import '../../../utils/utils.dart';
@@ -50,6 +51,7 @@ class ProfileSettingsMedia extends StatelessWidget {
                               .setMetadataMedia(false);
                         },
                         style: TextButton.styleFrom(
+                          backgroundBuilder: (_, __, child) => child!,
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withValues(
@@ -107,11 +109,6 @@ class ProfileSettingsMedia extends StatelessWidget {
               onPressed: () {
                 context.read<ProfileSettingsCubit>().setMetadataMedia(true);
               },
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).cardColor.withValues(
-                      alpha: 0.8,
-                    ),
-              ),
               child: Text(
                 state.bannerLink.isEmpty
                     ? context.t.addPicture.capitalizeFirst()
@@ -142,6 +139,7 @@ class ProfileSettingsMedia extends StatelessWidget {
                     context.read<ProfileSettingsCubit>().deleteBanner();
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -156,6 +154,7 @@ class ProfileSettingsMedia extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     backgroundColor: kTransparent,
                   ),
                   child: Text(
@@ -180,9 +179,10 @@ class ProfileSettingsMedia extends StatelessWidget {
         );
       },
       icon: const Icon(
-        CupertinoIcons.delete,
+        LucideIcons.trash2,
       ),
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor.withValues(
               alpha: 0.8,
             ),

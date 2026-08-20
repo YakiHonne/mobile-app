@@ -10,9 +10,10 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/related_adding_views/smart_widget_widgets/smart_widget_pulldown_button.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import 'smart_widget_container.dart';
 
 class SmartWidgetChecker extends HookWidget {
@@ -81,15 +82,14 @@ class SmartWidgetChecker extends HookWidget {
       },
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: viewMode
-            ? context.t.smartWidget.capitalizeFirst()
-            : context.t.smartWidgetChecker.capitalizeFirst(),
-        notElevated: true,
-      ),
+    return FluidScaffold(
+      title: viewMode
+          ? context.t.smartWidget.capitalizeFirst()
+          : context.t.smartWidgetChecker.capitalizeFirst(),
+      notElevated: true,
       body: Column(
         children: [
+          SizedBox(height: fluidScaffoldTopInset(context)),
           if (!viewMode) ...[
             const SizedBox(
               height: kDefaultPadding / 4,
@@ -306,14 +306,10 @@ class SmartWidgetChecker extends HookWidget {
             width: 10,
             height: 10,
             child: Center(
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.search,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           ),
@@ -625,14 +621,13 @@ class WidgetCheckerRow extends StatelessWidget {
           const SizedBox(
             width: kDefaultPadding / 3,
           ),
-          SvgPicture.asset(
+          AppIcon(
             mapStatus == PropertyStatus.valid
                 ? FeatureIcons.widgetCorrect
                 : mapStatus == PropertyStatus.invalid
                     ? FeatureIcons.widgetInfo
                     : FeatureIcons.widgetWrong,
-            width: 17,
-            height: 17,
+            size: 17,
           )
         ],
       ),

@@ -18,6 +18,7 @@ import '../../utils/utils.dart';
 import 'article_container.dart';
 import 'curation_container.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 import 'note_stats.dart';
 import 'video_common_container.dart';
 
@@ -31,21 +32,9 @@ class ShareContentImage extends HookWidget {
     final screenshotController = useState(ScreenshotController());
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
-    return Container(
+    return ModalSheetContainer(
       padding: EdgeInsets.symmetric(
         horizontal: isTablet ? 15.w : kDefaultPadding / 2,
-      ),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

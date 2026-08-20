@@ -249,7 +249,7 @@ class MediaCubit extends Cubit<MediaState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           onAddingData:
               filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,
@@ -315,7 +315,7 @@ class MediaCubit extends Cubit<MediaState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           onAddingData:
               filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,
@@ -341,7 +341,7 @@ class MediaCubit extends Cubit<MediaState> {
     if (!isClosed) {
       emit(
         state.copyWith(
-          content: [...state.content, ...filtered],
+          content: [...state.content, ...filtered].capFeed(),
           onLoading: false,
           onAddingData:
               filtered.isEmpty ? UpdatingState.idle : UpdatingState.success,

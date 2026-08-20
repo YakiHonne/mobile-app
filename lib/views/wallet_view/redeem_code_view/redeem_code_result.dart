@@ -5,6 +5,32 @@ import 'package:lottie/lottie.dart';
 import '../../../utils/utils.dart';
 import '../send_zaps_view/send_tips_invoice.dart';
 
+/// Translated message for a redeem API result code.
+String redeemResultMessage(BuildContext context, String resultCode) {
+  switch (resultCode) {
+    case 'missingCode':
+      return context.t.missingCode.capitalizeFirst();
+    case 'missingPubkey':
+      return context.t.missingPubkey;
+    case 'invalidPubkey':
+      return context.t.invalidPubkey;
+    case 'missingLightningAddress':
+      return context.t.missingLightningAddress;
+    case 'invalidLightningAddress':
+      return context.t.invalidLightningAddress;
+    case 'codeNotFound':
+      return context.t.codeNotFound;
+    case 'codeBeingRedeemed':
+      return context.t.codeBeingRedeemed;
+    case 'codeAlreadyRedeemed':
+      return context.t.codeAlreadyRedeemed;
+    case 'codeRedeemed':
+      return context.t.redeemCodeSuccess;
+    default:
+      return context.t.redeemFailed;
+  }
+}
+
 /// Widget for displaying zap payment results (success or failure)
 class RedeemCodeResults extends HookWidget {
   const RedeemCodeResults({
@@ -122,35 +148,8 @@ class RedeemCodeResults extends HookWidget {
   }
 
   Widget _buildContentMessage(BuildContext context, String resultCode) {
-    String message = '';
-
-    switch (resultCode) {
-      case 'missingCode':
-        message = context.t.missingCode.capitalizeFirst();
-      case 'missingPubkey':
-        message = context.t.missingPubkey;
-      case 'invalidPubkey':
-        message = context.t.invalidPubkey;
-      case 'missingLightningAddress':
-        message = context.t.missingLightningAddress;
-      case 'invalidLightningAddress':
-        message = context.t.invalidLightningAddress;
-      case 'codeNotFound':
-        message = context.t.codeNotFound;
-      case 'codeBeingRedeemed':
-        message = context.t.codeBeingRedeemed;
-      case 'codeAlreadyRedeemed':
-        message = context.t.codeAlreadyRedeemed;
-      case 'paymentFailed':
-        message = context.t.redeemFailed;
-      case 'codeRedeemed':
-        message = context.t.redeemCodeSuccess;
-      default:
-        message = context.t.redeemFailed;
-    }
-
     return Text(
-      message,
+      redeemResultMessage(context, resultCode),
       style: _getHighlightTextStyle(context),
       textAlign: TextAlign.center,
     );

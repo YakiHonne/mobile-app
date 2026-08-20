@@ -15,6 +15,8 @@ import '../../../utils/utils.dart';
 import '../../search_view/search_view.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class PaidNoteProcess extends HookWidget {
   const PaidNoteProcess({
@@ -24,23 +26,45 @@ class PaidNoteProcess extends HookWidget {
 
   final bool checkZap;
 
+  int get _effectiveSats {
+    if (subscriptionCubit.isPremium) {
+      return 0;
+    }
+    if (subscriptionCubit.isBasic) {
+      return 400;
+    }
+    return 800;
+  }
+
+  int get _effectivePoints {
+    if (subscriptionCubit.isPremium) {
+      return 0;
+    }
+    if (subscriptionCubit.isBasic) {
+      return 400;
+    }
+    return 800;
+  }
+
+  bool get _canPayWithPoints =>
+      !subscriptionCubit.isPremium &&
+      pointsManagementCubit.state.consumablePoints >= _effectivePoints;
+
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
-
     final isZapConfirmed = useState<bool?>(null);
+    final usePoints = useState(_canPayWithPoints);
+    final isPayingWithPoints = useState(false);
 
     useEffect(
       () {
         final walletsCubit = context.read<WalletsManagerCubit>();
-
         if (checkZap) {
           final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
           if (event != null) {
-            NostrFunctionsRepository.checkPayment(
-              event.id,
-              skipDelay: true,
-            ).then((value) {
+            NostrFunctionsRepository.checkPayment(event.id, skipDelay: true)
+                .then((value) {
               if (context.mounted) {
                 isZapConfirmed.value = value;
               }
@@ -51,24 +75,12 @@ class PaidNoteProcess extends HookWidget {
         } else {
           isZapConfirmed.value = false;
         }
-
         return walletsCubit.resetInvoice;
       },
       [checkZap],
     );
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.40,
@@ -77,9 +89,7 @@ class PaidNoteProcess extends HookWidget {
         builder: (context, scrollController) => Column(
           children: [
             const Center(child: ModalBottomSheetHandle()),
-            const SizedBox(
-              height: kDefaultPadding / 4,
-            ),
+            const SizedBox(height: kDefaultPadding / 4),
             Center(
               child: Text(
                 context.t.payPublish.capitalizeFirst(),
@@ -88,13 +98,17 @@ class PaidNoteProcess extends HookWidget {
                     ),
               ),
             ),
-            const SizedBox(
-              height: kDefaultPadding,
-            ),
+            const SizedBox(height: kDefaultPadding),
             Expanded(
-              child: _informationColumn(context, isTablet),
+              child: _informationColumn(context, isTablet, usePoints),
             ),
-            _bottomNavBar(context, isTablet, isZapConfirmed),
+            _bottomNavBar(
+              context,
+              isTablet,
+              isZapConfirmed,
+              usePoints,
+              isPayingWithPoints,
+            ),
           ],
         ),
       ),
@@ -104,6 +118,7 @@ class PaidNoteProcess extends HookWidget {
   Widget _informationColumn(
     BuildContext context,
     bool isTablet,
+    ValueNotifier<bool> usePoints,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -113,22 +128,28 @@ class PaidNoteProcess extends HookWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Payment method selector — only shown when points are available
+          if (_canPayWithPoints) ...[
+            _MethodPicker(usePoints: usePoints),
+            const SizedBox(height: kDefaultPadding),
+          ],
+          // Cost display
           Text(
-            nostrRepository.flashNewsPrice.toInt().toString(),
+            usePoints.value
+                ? _effectivePoints.toString()
+                : _effectiveSats.toString(),
             style: Theme.of(context).textTheme.displayMedium!.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
           ),
           Text(
-            'SATS',
+            usePoints.value ? context.t.points.toUpperCase() : 'SATS',
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                   fontWeight: FontWeight.w800,
                   color: Theme.of(context).primaryColor,
                 ),
           ),
-          const SizedBox(
-            height: kDefaultPadding / 2,
-          ),
+          const SizedBox(height: kDefaultPadding / 2),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(kDefaultPadding),
@@ -152,6 +173,8 @@ class PaidNoteProcess extends HookWidget {
     BuildContext context,
     bool isTablet,
     ValueNotifier<bool?> isZapConfirmed,
+    ValueNotifier<bool> usePoints,
+    ValueNotifier<bool> isPayingWithPoints,
   ) {
     return Container(
       padding: EdgeInsets.only(
@@ -170,27 +193,33 @@ class PaidNoteProcess extends HookWidget {
               child: Builder(
                 builder: (context) {
                   if (isZapConfirmed.value == null) {
-                    return const Center(
-                      child: SearchLoading(),
+                    return const Center(child: SearchLoading());
+                  }
+
+                  if (isZapConfirmed.value ?? false) {
+                    return Row(
+                      spacing: kDefaultPadding / 4,
+                      children: [_confirm(lightningState, context)],
                     );
-                  } else if (isZapConfirmed.value ?? false) {
+                  }
+
+                  // Points payment flow
+                  if (usePoints.value) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: _payWithPoints(context, isPayingWithPoints),
+                    );
+                  }
+
+                  // Lightning payment flow
+                  if (!lightningState.isLnurlAvailable) {
                     return Row(
                       spacing: kDefaultPadding / 4,
                       children: [
+                        _getInvoice(lightningState, context),
+                        _pay(lightningState, context),
                         _confirm(lightningState, context),
                       ],
-                    );
-                  } else if (!lightningState.isLnurlAvailable) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: Row(
-                        spacing: kDefaultPadding / 4,
-                        children: [
-                          _getInvoice(lightningState, context),
-                          _pay(lightningState, context),
-                          _confirm(lightningState, context),
-                        ],
-                      ),
                     );
                   } else {
                     return Row(
@@ -215,9 +244,7 @@ class PaidNoteProcess extends HookWidget {
   Expanded _cancelInvoice(BuildContext context) {
     return Expanded(
       child: SendOptionsButton(
-        onClicked: () {
-          context.read<WalletsManagerCubit>().resetInvoice();
-        },
+        onClicked: () => context.read<WalletsManagerCubit>().resetInvoice(),
         title: context.t.cancel.capitalizeFirst(),
         icon: FeatureIcons.closeRaw,
         textColor: kRed,
@@ -230,15 +257,8 @@ class PaidNoteProcess extends HookWidget {
     return Expanded(
       child: SendOptionsButton(
         onClicked: () {
-          Clipboard.setData(
-            ClipboardData(
-              text: lightningState.lnurl,
-            ),
-          );
-
-          BotToastUtils.showSuccess(
-            context.t.invoiceCopied.capitalizeFirst(),
-          );
+          Clipboard.setData(ClipboardData(text: lightningState.lnurl));
+          BotToastUtils.showSuccess(context.t.invoiceCopied.capitalizeFirst());
         },
         title: context.t.copy.capitalizeFirst(),
         icon: FeatureIcons.copy,
@@ -251,10 +271,8 @@ class PaidNoteProcess extends HookWidget {
       child: SendOptionsButton(
         onClicked: () {
           context.read<WriteNoteCubit>().submitEvent(
-            () {
-              YNavigator.popToRoot(context);
-            },
-          );
+                () => YNavigator.popToRoot(context),
+              );
         },
         title: context.t.confirmPayment,
         icon: FeatureIcons.zap,
@@ -266,51 +284,46 @@ class PaidNoteProcess extends HookWidget {
   Expanded _qrCode(BuildContext context, WalletsManagerState lightningState) {
     final width =
         ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 50.w : 70.w;
-
     return Expanded(
       child: SendOptionsButton(
         onClicked: () {
           showDialog(
             context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Container(
-                  width: width,
-                  height: width,
-                  padding: const EdgeInsets.all(
-                    kDefaultPadding / 4,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kDefaultPadding),
+            builder: (context) => AlertDialog(
+              content: Container(
+                width: width,
+                height: width,
+                padding: const EdgeInsets.all(kDefaultPadding / 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(
                     color: Theme.of(context).cardColor,
-                    border: Border.all(
-                      color: Theme.of(context).cardColor,
-                      width: 5,
-                    ),
-                  ),
-                  child: QrImageView(
-                    data: lightningState.lnurl,
-                    dataModuleStyle: QrDataModuleStyle(
-                      color: Theme.of(context).primaryColorDark,
-                      dataModuleShape: QrDataModuleShape.circle,
-                    ),
-                    eyeStyle: QrEyeStyle(
-                      eyeShape: QrEyeShape.circle,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
+                    width: 5,
                   ),
                 ),
-                title: Text(
-                  context.t.scanQrCode.capitalizeFirst(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: kBlack),
-                  textAlign: TextAlign.center,
+                child: QrImageView(
+                  data: lightningState.lnurl,
+                  dataModuleStyle: QrDataModuleStyle(
+                    color: Theme.of(context).primaryColorDark,
+                    dataModuleShape: QrDataModuleShape.circle,
+                  ),
+                  eyeStyle: QrEyeStyle(
+                    eyeShape: QrEyeShape.circle,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
-                backgroundColor: Theme.of(context).primaryColorDark,
-              );
-            },
+              ),
+              title: Text(
+                context.t.scanQrCode.capitalizeFirst(),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: kBlack),
+                textAlign: TextAlign.center,
+              ),
+              backgroundColor: Theme.of(context).primaryColorDark,
+            ),
           );
         },
         title: context.t.qrCode,
@@ -324,10 +337,9 @@ class PaidNoteProcess extends HookWidget {
       child: SendOptionsButton(
         onClicked: () {
           final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
-
           if (event != null && context.mounted) {
             context.read<WalletsManagerCubit>().handleWalletZap(
-                  sats: nostrRepository.flashNewsPrice.toInt(),
+                  sats: _effectiveSats,
                   user: Metadata.empty().copyWith(
                     lud16: nostrRepository.yakihonneWallet,
                     pubkey: yakihonneHex,
@@ -343,16 +355,10 @@ class PaidNoteProcess extends HookWidget {
                   onFinished: (invoice) {},
                   onSuccess: (invoice) {
                     context.read<WriteNoteCubit>().submitEvent(
-                          () => YNavigator.popToRoot(
-                            context,
-                          ),
+                          () => YNavigator.popToRoot(context),
                         );
                   },
-                  onFailure: (message) {
-                    BotToastUtils.showError(
-                      message,
-                    );
-                  },
+                  onFailure: (message) => BotToastUtils.showError(message),
                 );
           }
         },
@@ -369,10 +375,9 @@ class PaidNoteProcess extends HookWidget {
       child: SendOptionsButton(
         onClicked: () async {
           final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
-
           if (event != null && context.mounted) {
             context.read<WalletsManagerCubit>().generateZapInvoice(
-                  sats: nostrRepository.flashNewsPrice.toInt(),
+                  sats: _effectiveSats,
                   user: Metadata.empty().copyWith(
                     lud16: nostrRepository.yakihonneWallet,
                     pubkey: yakihonneHex,
@@ -385,17 +390,97 @@ class PaidNoteProcess extends HookWidget {
                       )
                       .capitalizeFirst(),
                   eventId: event.id,
-                  onFailure: (message) {
-                    BotToastUtils.showError(
-                      message,
-                    );
-                  },
+                  onFailure: (message) => BotToastUtils.showError(message),
                 );
           }
         },
         title: context.t.getInvoice,
         icon: FeatureIcons.note,
         isLoading: !lightningState.isLoading ? null : true,
+      ),
+    );
+  }
+
+  Widget _payWithPoints(
+    BuildContext context,
+    ValueNotifier<bool> isPayingWithPoints,
+  ) {
+    return SendOptionsButton(
+      onClicked: isPayingWithPoints.value
+          ? () {}
+          : () {
+              context.read<WriteNoteCubit>().redeemPointsAndPublish(
+                    () => YNavigator.popToRoot(context),
+                    (msg) => BotToastUtils.showError(msg),
+                  );
+            },
+      title: context.t.points_pay_with_points,
+      icon: FeatureIcons.zap,
+      isLoading: isPayingWithPoints.value ? true : null,
+    );
+  }
+}
+
+class _MethodPicker extends StatelessWidget {
+  const _MethodPicker({required this.usePoints});
+  final ValueNotifier<bool> usePoints;
+
+  @override
+  Widget build(BuildContext context) {
+    return FluidCardContainer(
+      borderRadius: kDefaultPadding / 2,
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
+          _Tab(
+            label: context.t.pricing_toggle_sats,
+            selected: !usePoints.value,
+            onTap: () => usePoints.value = false,
+          ),
+          _Tab(
+            label: context.t.points.capitalizeFirst(),
+            selected: usePoints.value,
+            onTap: () => usePoints.value = true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Tab extends StatelessWidget {
+  const _Tab({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+          decoration: BoxDecoration(
+            color: selected ? theme.primaryColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(kDefaultPadding / 2 - 2),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelMedium!.copyWith(
+              fontWeight: FontWeight.w700,
+              color: selected ? Colors.white : theme.highlightColor,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -12,9 +12,11 @@ import '../../common/media_handler/media_handler.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../../utils/video_utils.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_renderer/hidden_media_container.dart';
 import '../widgets/custom_icon_buttons.dart';
+import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/link_previewer.dart';
 
 class GalleryImageView extends StatelessWidget {
@@ -303,7 +305,9 @@ class GalleryComponent extends HookWidget {
                   ? ExtendedImage.file(
                       File(snapshot.data!),
                       fit: BoxFit.cover,
-                      compressionRatio: 16 / 9,
+                      cacheWidth: (MediaQuery.sizeOf(context).width *
+                              MediaQuery.devicePixelRatioOf(context))
+                          .round(),
                     )
                   : null,
             ),
@@ -315,14 +319,10 @@ class GalleryComponent extends HookWidget {
                     borderRadius: BorderRadiusDirectional.circular(300),
                   ),
                   padding: const EdgeInsets.all(10),
-                  child: SvgPicture.asset(
+                  child: const AppIcon(
                     FeatureIcons.videoOcta,
-                    width: 25,
-                    height: 25,
-                    colorFilter: const ColorFilter.mode(
-                      kWhite,
-                      BlendMode.srcIn,
-                    ),
+                    size: 25,
+                    color: kWhite,
                   ),
                 ),
               ),
@@ -466,7 +466,6 @@ class OpenGalleryWidget extends HookWidget {
                         ),
                         vd: -1,
                         icon: FeatureIcons.download,
-                        iconData: Icons.download_rounded,
                         size: 22,
                         backgroundColor: Theme.of(context).cardColor,
                       ),
@@ -479,9 +478,9 @@ class OpenGalleryWidget extends HookWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context,
+  FluidPullDownButton _pulldownButton(BuildContext context,
       ValueNotifier<MapEntry<String, UrlType>> currentSource) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -498,14 +497,10 @@ class OpenGalleryWidget extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.copy,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           PullDownMenuItem(
@@ -514,14 +509,10 @@ class OpenGalleryWidget extends HookWidget {
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.shareGlobal,
-              height: 20,
-              width: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
@@ -634,6 +625,7 @@ Widget itemBuilder({
             radius: isRound ? kDefaultPadding / 2 : 0,
             useDefaultNoMedia: false,
             isRound: isRound,
+            fullResolution: true,
           ),
         );
       },

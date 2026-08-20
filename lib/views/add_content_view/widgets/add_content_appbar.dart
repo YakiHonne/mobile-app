@@ -5,7 +5,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/buttons_containers_widgets.dart';
 
 class AddContentAppbar extends StatelessWidget {
   const AddContentAppbar({
@@ -36,13 +36,12 @@ class AddContentAppbar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomIconButton(
+              AppIconButton(
                 onClicked: () {
                   YNavigator.pop(context);
                 },
                 icon: FeatureIcons.closeRaw,
-                size: 18,
-                vd: -1,
+                size: 38,
                 backgroundColor: Theme.of(context).cardColor,
               ),
               Row(
@@ -64,23 +63,21 @@ class AddContentAppbar extends StatelessWidget {
       absorbing: !isActionButtonEnabled,
       child: TextButton(
         onPressed: onActionClicked,
-        style: TextButton.styleFrom(
-          backgroundColor: isActionButtonEnabled
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor,
+        child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
+            horizontal: kDefaultPadding / 1.5,
           ),
-          visualDensity: VisualDensity.compact,
-        ),
-        child: Text(
-          actionButtonText,
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                color: isActionButtonEnabled
-                    ? kWhite
-                    : Theme.of(context).highlightColor,
-              ),
+          child: Text(
+            actionButtonText,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isActionButtonEnabled
+                      ? isFluid()
+                          ? Theme.of(context).primaryColorDark
+                          : kWhite
+                      : Theme.of(context).highlightColor,
+                ),
+          ),
         ),
       ),
     );
@@ -116,13 +113,12 @@ class AddMediaAppbar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomIconButton(
+              AppIconButton(
                 onClicked: () {
                   YNavigator.pop(context);
                 },
                 icon: FeatureIcons.arrowLeft,
                 size: 22,
-                backgroundColor: kTransparent,
               ),
               Row(
                 children: [
@@ -143,23 +139,18 @@ class AddMediaAppbar extends StatelessWidget {
       absorbing: !isActionButtonEnabled,
       child: TextButton(
         onPressed: onActionClicked,
-        style: TextButton.styleFrom(
-          backgroundColor: isActionButtonEnabled
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor,
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
+        child: Padding(
+          padding: const EdgeInsetsGeometry.symmetric(
+              horizontal: kDefaultPadding / 1.5),
+          child: Text(
+            actionButtonText,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isActionButtonEnabled
+                      ? kWhite
+                      : Theme.of(context).highlightColor,
+                ),
           ),
-          visualDensity: VisualDensity.compact,
-        ),
-        child: Text(
-          actionButtonText,
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                color: isActionButtonEnabled
-                    ? kWhite
-                    : Theme.of(context).highlightColor,
-              ),
         ),
       ),
     );

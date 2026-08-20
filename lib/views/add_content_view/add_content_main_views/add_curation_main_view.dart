@@ -5,6 +5,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../models/curation_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../add_content_specification_views/add_curation_specification_view.dart';
 import '../related_adding_views/curation_widgets/curation_content.dart';
 import '../widgets/add_content_appbar.dart';
@@ -29,7 +30,7 @@ class AddCurationMainView extends StatelessWidget {
               actionButtonText: context.t.next.capitalize(),
               isActionButtonEnabled: enabled,
               onActionClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return BlocProvider<WriteCurationCubit>.value(
@@ -37,10 +38,6 @@ class AddCurationMainView extends StatelessWidget {
                       child: const AddCurationSpecificationView(),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

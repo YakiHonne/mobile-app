@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/core/nostr_core_repository.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -15,10 +16,12 @@ import '../../../repositories/nostr_data_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../relay_feed_view/relay_feed_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_sheet.dart';
 import 'properties_relay_list.dart';
 import 'relay_info_view.dart';
 
@@ -194,22 +197,16 @@ class RelayUpdateView extends HookWidget {
                               .read<UpdateRelaysCubit>()
                               .setOnlineRelays(isSearch: true);
 
-                          showModalBottomSheet(
+                          showAppModalSheet(
                             context: context,
-                            elevation: 0,
-                            builder: (_) {
-                              return BlocProvider.value(
-                                value: context.read<UpdateRelaysCubit>(),
-                                child: RelaysList(
-                                  index: index.value,
-                                ),
-                              );
-                            },
-                            isScrollControlled: true,
-                            useRootNavigator: true,
-                            useSafeArea: true,
                             backgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<UpdateRelaysCubit>(),
+                              child: RelaysList(
+                                index: index.value,
+                              ),
+                            ),
                           );
                         },
                         child: Row(
@@ -245,12 +242,13 @@ class RelayUpdateView extends HookWidget {
       create: (context) => UpdateRelaysCubit(
         nostrRepository: context.read<NostrDataRepository>(),
       ),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.relays.capitalizeFirst(),
-        ),
-        body: Column(
-          children: widgets,
+      child: FluidScaffold(
+        title: context.t.relays.capitalizeFirst(),
+        body: Padding(
+          padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          child: Column(
+            children: widgets,
+          ),
         ),
       ),
     );
@@ -398,7 +396,7 @@ class RelayUpdateView extends HookWidget {
         );
       },
       child: Icon(
-        CupertinoIcons.info,
+        LucideIcons.info,
         color: Theme.of(context).highlightColor,
         size: 18,
       ),
@@ -449,21 +447,15 @@ class RelayUpdateView extends HookWidget {
             .read<UpdateRelaysCubit>()
             .setOnlineRelays(isSearch: index.value == 2);
 
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
-          builder: (_) {
-            return BlocProvider.value(
-              value: context.read<UpdateRelaysCubit>(),
-              child: RelaysList(
-                index: index.value,
-              ),
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          builder: (_) => BlocProvider.value(
+            value: context.read<UpdateRelaysCubit>(),
+            child: RelaysList(
+              index: index.value,
+            ),
+          ),
         );
       },
     );
@@ -499,7 +491,7 @@ class SquareIconButton extends StatelessWidget {
   });
 
   final Function() onClicked;
-  final String icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -569,6 +561,7 @@ class RelaySearchTextfield extends StatelessWidget {
                 : connect.value == RelayConnectivity.found
                     ? TextButton(
                         style: TextButton.styleFrom(
+                          backgroundBuilder: (_, __, child) => child!,
                           backgroundColor: kTransparent,
                         ),
                         onPressed: () async {
@@ -588,7 +581,7 @@ class RelaySearchTextfield extends StatelessWidget {
                         ),
                       )
                     : const Icon(
-                        Icons.close,
+                        LucideIcons.x,
                         color: kRed,
                         size: 18,
                       ),
@@ -728,6 +721,7 @@ class ContentRelaysContainer extends StatelessWidget {
                       );
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: VisualDensity.comfortable,
                 ),
                 child: Text(
@@ -1159,7 +1153,7 @@ class DefaultRelaySuggestionContainer extends StatelessWidget {
                 }
               },
               child: Icon(
-                Icons.info_outline_rounded,
+                LucideIcons.info,
                 color: Theme.of(context).highlightColor,
                 size: 18,
               ),
@@ -1185,7 +1179,7 @@ class DefaultRelaySuggestionContainer extends StatelessWidget {
           relayInfo?.icon ?? '',
           width: 20,
           height: 20,
-          compressionRatio: 1,
+          cacheWidth: 60,
           borderRadius: BorderRadius.circular(kDefaultPadding / 4),
           shape: BoxShape.rectangle,
           loadStateChanged: (state) {
@@ -1281,16 +1275,12 @@ class DefaultRelayUpdateContainer extends StatelessWidget {
           vertical: kDefaultPadding / 4,
           horizontal: kDefaultPadding / 1.5,
         ),
-        child: Row(
+        child: const Row(
           children: [
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.log,
-              width: 15,
-              height: 15,
-              colorFilter: const ColorFilter.mode(
-                kRed,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: kRed,
             ),
           ],
         ),
@@ -1328,7 +1318,7 @@ class DefaultRelayUpdateContainer extends StatelessWidget {
                 }
               },
               child: Icon(
-                Icons.info_outline_rounded,
+                LucideIcons.info,
                 color: Theme.of(context).highlightColor,
                 size: 18,
               ),
@@ -1354,7 +1344,7 @@ class DefaultRelayUpdateContainer extends StatelessWidget {
           relayInfo?.icon ?? '',
           width: 20,
           height: 20,
-          compressionRatio: 1,
+          cacheWidth: 60,
           borderRadius: BorderRadius.circular(kDefaultPadding / 4),
           shape: BoxShape.rectangle,
           loadStateChanged: (state) {
@@ -1482,14 +1472,10 @@ class ContentRelayUpdateContainer extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SvgPicture.asset(
+            AppIcon(
               toBeDeleted ? FeatureIcons.undo : FeatureIcons.log,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                toBeDeleted ? Theme.of(context).primaryColorDark : kRed,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: toBeDeleted ? Theme.of(context).primaryColorDark : kRed,
             ),
           ],
         ),
@@ -1572,7 +1558,7 @@ class ContentRelayUpdateContainer extends StatelessWidget {
                 }
               },
               child: Icon(
-                CupertinoIcons.info,
+                LucideIcons.info,
                 color: Theme.of(context).highlightColor,
                 size: 18,
               ),
@@ -1600,7 +1586,7 @@ class ContentRelayUpdateContainer extends StatelessWidget {
             relayInfo?.icon ?? '',
             width: 20,
             height: 20,
-            compressionRatio: 1,
+            cacheWidth: 60,
             borderRadius: BorderRadius.circular(kDefaultPadding / 4),
             shape: BoxShape.rectangle,
             loadStateChanged: (state) {

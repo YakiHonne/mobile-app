@@ -24,8 +24,8 @@ class CommonThumbnail extends StatelessWidget {
     this.isLeftRound,
     this.fit,
     this.useDefaultNoMedia = true,
-    this.compressImage = false,
     this.isPfp = false,
+    this.fullResolution = false,
   });
 
   final String image;
@@ -39,11 +39,11 @@ class CommonThumbnail extends StatelessWidget {
   final bool? isLeftRound;
   final BoxFit? fit;
   final bool useDefaultNoMedia;
-  final bool compressImage;
   final bool isPfp;
 
-  // Cache for base64 decoded data to avoid repeated decoding
-  static final Map<String, Uint8List> _base64Cache = {};
+  /// Decode at the image's native resolution instead of capping at the
+  /// display size. Only for zoomable full-screen viewers.
+  final bool fullResolution;
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +63,18 @@ class CommonThumbnail extends StatelessWidget {
     }
 
     if (isBase64(cleanImage)) {
-      return _buildBase64Image();
+      return _buildBase64Image(context);
     }
 
-    return _buildNetworkImage(
-      context,
-      cleanImage,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: _getBorderRadius(),
+      ),
+      child: _buildNetworkImage(
+        context,
+        cleanImage,
+      ),
     );
   }
 
@@ -77,6 +83,7 @@ class CommonThumbnail extends StatelessWidget {
       file,
       width: width,
       height: height,
+      cacheWidth: _getCacheWidth(context),
       fit: fit,
       borderRadius: _getBorderRadius(),
       shape: BoxShape.rectangle,
@@ -106,20 +113,17 @@ class CommonThumbnail extends StatelessWidget {
     );
   }
 
-  Widget _buildBase64Image() {
+  Widget _buildBase64Image(BuildContext context) {
     try {
-      // Use cached data if available, otherwise decode and cache
-      final imageData = _base64Cache[image] ?? decodeBase64(image);
+      final imageData = decodeBase64(image);
 
       if (imageData == null) {
         return _buildPlaceholder(PlaceholderType.error);
       }
 
       return _buildExtendedImage(
-        imageProvider: ExtendedMemoryImageProvider(
-          imageData,
-          cacheRawData: true,
-        ),
+        context: context,
+        imageProvider: ExtendedMemoryImageProvider(imageData),
       );
     } catch (_) {
       return _buildPlaceholder(PlaceholderType.error);
@@ -131,7 +135,7 @@ class CommonThumbnail extends StatelessWidget {
       image,
       width: width,
       height: _getEffectiveHeight(),
-      compressionRatio: _getCompressionRatio(),
+      cacheWidth: _getCacheWidth(context),
       shape: BoxShape.rectangle,
       borderRadius: _getBorderRadius(),
       fit: fit ?? BoxFit.cover,
@@ -140,9 +144,15 @@ class CommonThumbnail extends StatelessWidget {
     );
   }
 
-  Widget _buildExtendedImage({required ImageProvider imageProvider}) {
+  Widget _buildExtendedImage({
+    required BuildContext context,
+    required ImageProvider imageProvider,
+  }) {
     return ExtendedImage(
-      image: imageProvider,
+      image: ExtendedResizeImage.resizeIfNeeded(
+        provider: imageProvider,
+        cacheWidth: _getCacheWidth(context),
+      ),
       width: width,
       height: _getEffectiveHeight(),
       fit: fit ?? BoxFit.cover,
@@ -248,11 +258,21 @@ class CommonThumbnail extends StatelessWidget {
     return height == 0 ? null : height;
   }
 
-  double _getCompressionRatio() {
-    if (height == 0 || width == 0 || height == null || width == null) {
-      return 1.0;
+  /// Decode target in physical pixels: the widget's own width when known,
+  /// otherwise the screen width. Without this, large images are decoded at
+  /// their native resolution (a 4000x3000 photo is ~48MB decoded) even when
+  /// rendered as a small thumbnail, which piles up fast in feeds and gets the
+  /// app killed on low-RAM devices.
+  int? _getCacheWidth(BuildContext context) {
+    if (fullResolution) {
+      return null;
     }
-    return width! / height!;
+
+    final logicalWidth = (width != null && width! > 0 && width!.isFinite)
+        ? width!
+        : MediaQuery.sizeOf(context).width;
+
+    return (logicalWidth * MediaQuery.devicePixelRatioOf(context)).round();
   }
 
   Widget _getFallback() {
@@ -265,7 +285,7 @@ class CommonThumbnail extends StatelessWidget {
 
         final data = snapshot.data!;
         if (data.success && data.data != null) {
-          return _buildBlobImage(data.data!);
+          return _buildBlobImage(context, data.data!);
         }
 
         return _buildPlaceholder(PlaceholderType.error);
@@ -273,13 +293,11 @@ class CommonThumbnail extends StatelessWidget {
     );
   }
 
-  Widget _buildBlobImage(Uint8List imageData) {
+  Widget _buildBlobImage(BuildContext context, Uint8List imageData) {
     try {
       return _buildExtendedImage(
-        imageProvider: ExtendedMemoryImageProvider(
-          imageData,
-          cacheRawData: true,
-        ),
+        context: context,
+        imageProvider: ExtendedMemoryImageProvider(imageData),
       );
     } catch (_) {
       return _buildPlaceholder(PlaceholderType.error);

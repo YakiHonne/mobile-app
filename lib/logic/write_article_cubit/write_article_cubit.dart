@@ -510,4 +510,5 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
       onSuccess.call();
     }
   }
+
 }

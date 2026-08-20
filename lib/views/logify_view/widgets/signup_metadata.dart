@@ -61,10 +61,10 @@ class SignupMetadata extends HookWidget {
                         height: constraints.maxWidth * 0.35,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: kCardDark,
+                          color: kDarkThemeCard,
                           border: Border.all(
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            width: 3,
+                            width: 2,
                           ),
                           image: const DecorationImage(
                             image: AssetImage(Images.profileAvatar),
@@ -101,6 +101,7 @@ class SignupMetadata extends HookWidget {
                   context.read<LogifyCubit>().selectMetadataMedia(true);
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   backgroundColor: kTransparent,
                 ),
                 child: Text(
@@ -170,7 +171,7 @@ class SignupMetadata extends HookWidget {
     );
 
     return ListView(
-      padding: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       shrinkWrap: true,
       children: components,
     );
@@ -209,6 +210,7 @@ class SignupMetadata extends HookWidget {
                 context.read<LogifyCubit>().selectMetadataMedia(false);
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 visualDensity: VisualDensity.comfortable,
               ),

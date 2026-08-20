@@ -1,15 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/uncensored_notes_models.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
 
@@ -86,14 +87,10 @@ class UncensoredNoteComponent extends HookWidget {
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       child: Row(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.tag,
-            width: 20,
-            height: 20,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 20,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             width: kDefaultPadding / 2,
@@ -166,7 +163,7 @@ class UncensoredNoteComponent extends HookWidget {
                     child: Row(
                       children: [
                         Icon(
-                          CupertinoIcons.timer,
+                          LucideIcons.timer,
                           color: Theme.of(context).primaryColor,
                           size: 18,
                         ),
@@ -192,7 +189,7 @@ class UncensoredNoteComponent extends HookWidget {
                         child: Row(
                           children: [
                             Icon(
-                              CupertinoIcons.timer,
+                              LucideIcons.timer,
                               color: Theme.of(context).primaryColor,
                               size: 18,
                             ),
@@ -278,14 +275,10 @@ class UncensoredNoteComponent extends HookWidget {
                     openWebPage(url: note.source);
                   },
                   text: context.t.source.capitalizeFirst(),
-                  iconWidget: SvgPicture.asset(
+                  iconWidget: AppIcon(
                     FeatureIcons.globe,
-                    width: 15,
-                    height: 15,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 15,
+                    color: Theme.of(context).primaryColorDark,
                   ),
                 ),
             ],
@@ -321,14 +314,10 @@ class UncensoredNoteComponent extends HookWidget {
           ),
         ),
         if (isUncensoredNoteAuthor) ...[
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.user,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 20,
-            height: 20,
+            color: Theme.of(context).primaryColorDark,
+            size: 20,
           ),
           const SizedBox(
             width: kDefaultPadding / 4,
@@ -356,8 +345,8 @@ class UncensoredNoteComponent extends HookWidget {
         children: [
           Icon(
             sealedNote!.isHelpful
-                ? CupertinoIcons.check_mark_circled
-                : CupertinoIcons.clear_circled,
+                ? LucideIcons.circleCheck
+                : LucideIcons.circleX,
             color: color,
             size: 18,
           ),
@@ -459,7 +448,7 @@ class RatingTimerWidget extends HookWidget {
               child: Row(
                 children: [
                   Icon(
-                    CupertinoIcons.check_mark_circled,
+                    LucideIcons.circleCheck,
                     color: Theme.of(context).primaryColor,
                     size: 18,
                   ),
@@ -524,6 +513,7 @@ class TransparentTextButtonWithIcon extends StatelessWidget {
     return TextButton.icon(
       onPressed: onClicked,
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: kTransparent,
         padding: EdgeInsets.zero,
         visualDensity: const VisualDensity(
@@ -540,7 +530,7 @@ class TransparentTextButtonWithIcon extends StatelessWidget {
       ),
       label: iconWidget ??
           Icon(
-            Icons.arrow_forward_ios_rounded,
+            LucideIcons.chevronRight,
             size: 15,
             color: Theme.of(context).primaryColorDark,
           ),
@@ -565,6 +555,7 @@ class TransparentTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onClicked,
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: kTransparent,
         padding: EdgeInsets.zero,
         visualDensity: const VisualDensity(

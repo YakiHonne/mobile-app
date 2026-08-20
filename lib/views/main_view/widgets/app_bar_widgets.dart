@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
@@ -15,10 +16,13 @@ import '../../../models/wallet_model.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_cashu_view/widgets/mints_list.dart';
 import '../../wallet_view/widgets/internal_wallets_list_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/content_manager/discover_filter_list.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart';
 
 class SelectedWalletContainer extends StatelessWidget {
   const SelectedWalletContainer({super.key});
@@ -44,16 +48,11 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
                     builder: (_) {
                       return const MintsList();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -78,16 +77,11 @@ class SelectedWalletContainer extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
                     builder: (_) {
                       return const InternalWalletsListView();
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 behavior: HitTestBehavior.translucent,
@@ -116,12 +110,18 @@ class SelectedWalletContainer extends StatelessWidget {
                 width: 30,
                 height: 30,
                 child: Center(
-                  child: SvgPicture.asset(
-                    isNwc ? FeatureIcons.nwc : FeatureIcons.alby,
-                    width: 20,
-                    height: 20,
-                    fit: BoxFit.scaleDown,
-                  ),
+                  child: isNwc
+                      ? SvgPicture.asset(
+                          FeatureIcons.nwc,
+                          width: 20,
+                          height: 20,
+                        )
+                      : SvgPicture.asset(
+                          FeatureIcons.alby,
+                          width: 20,
+                          height: 20,
+                          fit: BoxFit.scaleDown,
+                        ),
                 ),
               ),
               Expanded(
@@ -139,7 +139,7 @@ class SelectedWalletContainer extends StatelessWidget {
                 width: 30,
                 height: 30,
                 child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
+                  LucideIcons.chevronDown,
                 ),
               ),
             ],
@@ -188,7 +188,7 @@ class SelectedWalletContainer extends StatelessWidget {
                 width: 30,
                 height: 30,
                 child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
+                  LucideIcons.chevronDown,
                 ),
               ),
             ],
@@ -204,7 +204,7 @@ class DmOptionsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -215,7 +215,9 @@ class DmOptionsButton extends StatelessWidget {
         icon: FeatureIcons.more,
         size: 20,
         vd: -1,
+        borderColor: Theme.of(context).dividerColor,
         backgroundColor: Theme.of(context).cardColor,
+        isGlass: isFluid(),
       ),
     );
   }
@@ -229,14 +231,10 @@ class DmOptionsButton extends StatelessWidget {
         title: context.t.readAll.capitalizeFirst(),
         onTap: dmsCubit.markAllAsRead,
         itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-        iconWidget: SvgPicture.asset(
+        iconWidget: AppIcon(
           FeatureIcons.visible,
-          height: 20,
-          width: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
       const PullDownMenuDivider.large(),
@@ -294,7 +292,7 @@ class InboxTypes extends HookWidget {
           builder: (context, snapshot) {
             final counts = snapshot.data!;
 
-            return PullDownButton(
+            return FluidPullDownButton(
               animationBuilder: (context, state, child) => child,
               routeTheme: PullDownMenuRouteTheme(
                 backgroundColor: Theme.of(context).cardColor,
@@ -382,7 +380,7 @@ class InboxTypes extends HookWidget {
                 width: 30,
                 height: 30,
                 child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
+                  LucideIcons.chevronDown,
                 ),
               ),
             ],
@@ -428,7 +426,7 @@ class NotificationTypes extends HookWidget {
 
     return BlocBuilder<NotificationsCubit, NotificationsState>(
       builder: (context, state) {
-        return PullDownButton(
+        return FluidPullDownButton(
           animationBuilder: (context, state, child) => child,
           routeTheme: PullDownMenuRouteTheme(
             backgroundColor: Theme.of(context).cardColor,
@@ -467,6 +465,7 @@ class NotificationTypes extends HookWidget {
       Function() showMenu, BuildContext context, NotificationsState state) {
     return GestureDetector(
       onTap: showMenu,
+      behavior: HitTestBehavior.translucent,
       child: SizedBox(
         width: 50.w,
         child: Center(
@@ -488,7 +487,7 @@ class NotificationTypes extends HookWidget {
                 width: 30,
                 height: 30,
                 child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
+                  LucideIcons.chevronDown,
                 ),
               ),
             ],
@@ -567,6 +566,8 @@ class FilterGlobalButton extends StatelessWidget {
 
   CustomIconButton _customIconButton(
       AppSettingsManagerState state, BuildContext context) {
+    final isGlass = themeCubit.state.isFluid;
+
     return CustomIconButton(
       onClicked: () {
         doIfCanSign(
@@ -606,15 +607,11 @@ class FilterGlobalButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -623,8 +620,8 @@ class FilterGlobalButton extends StatelessWidget {
       },
       icon: FeatureIcons.filter,
       size: 20,
-      borderColor: Theme.of(context).dividerColor,
-      backgroundColor: Theme.of(context).cardColor,
+      borderColor: isGlass ? kTransparent : Theme.of(context).dividerColor,
+      backgroundColor: isGlass ? kTransparent : Theme.of(context).cardColor,
       vd: -1,
     );
   }

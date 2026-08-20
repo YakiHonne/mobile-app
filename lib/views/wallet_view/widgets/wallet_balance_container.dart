@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../common/common_regex.dart';
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/wallet_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/wallet_switcher_fab.dart';
 import '../../widgets/animated_components/glass_button.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
 import '../../widgets/modal_with_blur.dart';
 import '../receive_view/receive_generate_invoice.dart';
 import '../redeem_code_view/redeem_code_view.dart';
 import '../send_view/qr_code_scanner.dart';
 import '../send_view/send_main_view.dart';
+import 'transactions_list.dart';
 import 'wallet_options_view.dart';
 
 class WallatBalanceContainer extends StatelessWidget {
@@ -41,6 +49,26 @@ class WallatBalanceContainer extends StatelessWidget {
               const SizedBox(
                 height: kDefaultPadding / 4,
               ),
+              BlocBuilder<MainCubit, MainState>(
+                builder: (context, mainState) {
+                  return Center(
+                    child: Column(
+                      children: [
+                        WalletSwitcherFAB(
+                          isCashuWallet: mainState.isCashuWallet,
+                        ),
+                        if (!isFluid())
+                          const SizedBox(height: kDefaultPadding / 4),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              if (isFluid()) ...[
+                const SizedBox(height: kDefaultPadding / 4),
+                _transactionsButton(context),
+                const SizedBox(height: kDefaultPadding / 4)
+              ],
               Builder(builder: (context) {
                 const size = 100.0;
 
@@ -87,14 +115,10 @@ class WallatBalanceContainer extends StatelessWidget {
                 width: 8,
               ),
             ),
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.qr,
-              width: 30,
-              height: 30,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 30,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ),
@@ -122,10 +146,14 @@ class WallatBalanceContainer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.arrow_upward_rounded,
-                size: 45,
-                color: kWhite,
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (ctx, cs) => Icon(
+                    LucideIcons.arrowUp,
+                    size: cs.maxHeight,
+                    color: kWhite,
+                  ),
+                ),
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -163,9 +191,13 @@ class WallatBalanceContainer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.arrow_downward_rounded,
-                size: 45,
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (ctx, cs) => Icon(
+                    LucideIcons.arrowDown,
+                    size: cs.maxHeight,
+                  ),
+                ),
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -195,14 +227,10 @@ class WallatBalanceContainer extends StatelessWidget {
               const SizedBox(
                 width: kDefaultPadding / 2,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.sats,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),
@@ -222,7 +250,7 @@ class WallatBalanceContainer extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
-          PullDownButton(
+          FluidPullDownButton(
             routeTheme: PullDownMenuRouteTheme(
               backgroundColor: Theme.of(context).cardColor,
             ),
@@ -264,14 +292,10 @@ class WallatBalanceContainer extends StatelessWidget {
                           color: Theme.of(context).highlightColor,
                         ),
                   ),
-                  SvgPicture.asset(
+                  AppIcon(
                     FeatureIcons.arrowDown,
-                    width: 15,
-                    height: 15,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorDark,
-                      BlendMode.srcIn,
-                    ),
+                    size: 15,
+                    color: Theme.of(context).primaryColorDark,
                   ),
                 ],
               ),
@@ -292,8 +316,54 @@ class WallatBalanceContainer extends StatelessWidget {
                   ? _lightningAddress(wallet, context)
                   : const SizedBox.shrink();
             },
-          )
+          ),
+          // ponytail: fluid appbar drops per-view actions, so transactions
+          // sits under the lightning address.
         ],
+      ),
+    );
+  }
+
+  Widget _transactionsButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => doIfCanSign(
+        func: () => showAppModalSheet(
+          context: context,
+          builder: (_) => const TransactionsList(),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        context: context,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 1.5,
+          vertical: kDefaultPadding / 3,
+        ),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: Row(
+          spacing: kDefaultPadding / 4,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const AppIcon(
+              FeatureIcons.transactions,
+              size: 15,
+            ),
+            Text(
+              context.t.transactions.capitalizeFirst(),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -338,14 +408,10 @@ class WallatBalanceContainer extends StatelessWidget {
                 const SizedBox(
                   width: kDefaultPadding / 2,
                 ),
-                SvgPicture.asset(
+                AppIcon(
                   FeatureIcons.copy,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ],
             ),
@@ -363,15 +429,11 @@ class WallatBalanceContainer extends StatelessWidget {
             HapticFeedback.mediumImpact();
 
             if (state.wallets.isNotEmpty) {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return const RedeemCodeView();
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             } else {

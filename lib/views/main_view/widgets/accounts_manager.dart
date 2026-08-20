@@ -15,13 +15,16 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../logify_view/logify_view.dart';
 import '../../wallet_view/widgets/export_wallets.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/tag_container.dart';
+import 'drawer_view.dart';
 
 /// Constants for the AccountManager
 class _AccountManagerConstants {
@@ -50,30 +53,13 @@ class AccountManager extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: _buildContainerDecoration(context),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: _AccountManagerConstants.initialChildSize,
         minChildSize: _AccountManagerConstants.minChildSize,
         maxChildSize: _AccountManagerConstants.maxChildSize,
         expand: false,
         builder: (_, controller) => _buildContent(context, controller),
-      ),
-    );
-  }
-
-  /// Builds the container decoration with rounded top corners
-  BoxDecoration _buildContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-      color: Theme.of(context).scaffoldBackgroundColor,
-      border: Border.all(
-        color: Theme.of(context).dividerColor,
-        width: 0.5,
       ),
     );
   }
@@ -185,7 +171,9 @@ class AccountManager extends HookWidget {
     final signer = settingsCubit.isExternalSignerKeyIndex(index)
         ? settingsCubit.isExternalAmber(index)
             ? AppSigner.Amber
-            : AppSigner.Bunker
+            : settingsCubit.isExternalGoogle(index)
+                ? AppSigner.Google
+                : AppSigner.Bunker
         : settingsCubit.isPrivateKeyIndex(index)
             ? AppSigner.nSec
             : AppSigner.nPub;
@@ -225,11 +213,10 @@ class AccountManager extends HookWidget {
       width: _AccountManagerConstants.slidableActionSize,
       color: kRed,
       alignment: Alignment.center,
-      child: SvgPicture.asset(
+      child: const AppIcon(
         FeatureIcons.log,
-        width: _AccountManagerConstants.slidableIconSize,
-        height: _AccountManagerConstants.slidableIconSize,
-        colorFilter: const ColorFilter.mode(kWhite, BlendMode.srcIn),
+        size: _AccountManagerConstants.slidableIconSize,
+        color: kWhite,
       ),
     );
   }
@@ -338,6 +325,7 @@ class AccountManager extends HookWidget {
   void _navigateToMain(BuildContext context) {
     YNavigator.popToRoot(context);
     context.read<MainCubit>().updateIndex(MainViews.leading);
+    closeMainDrawer(context);
   }
 }
 
@@ -364,7 +352,7 @@ class AccountManagerButton extends StatelessWidget {
     this.iconSize,
   });
 
-  final String icon;
+  final IconData icon;
   final String title;
   final VoidCallback onClicked;
   final double? iconSize;
@@ -375,20 +363,17 @@ class AccountManagerButton extends StatelessWidget {
       width: double.infinity,
       child: TextButton.icon(
         onPressed: onClicked,
-        icon: SvgPicture.asset(
+        icon: AppIcon(
           icon,
-          width: iconSize ?? _AccountManagerConstants.iconSize,
-          height: iconSize ?? _AccountManagerConstants.iconSize,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: iconSize ?? _AccountManagerConstants.iconSize,
+          color: Theme.of(context).primaryColorDark,
         ),
         label: Text(
           title,
           style: Theme.of(context).textTheme.labelLarge,
         ),
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: Theme.of(context).cardColor,
         ),
       ),
@@ -544,6 +529,8 @@ class AccountManagerItemComponent extends HookWidget {
         return kYellow;
       case AppSigner.Amber:
         return kMainColor;
+      case AppSigner.Google:
+        return const Color(0xFF4285F4);
       default:
         return kGreen;
     }

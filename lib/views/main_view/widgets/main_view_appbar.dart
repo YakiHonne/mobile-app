@@ -1,13 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
+import '../../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../../logic/unsent_events_cubit/unsent_events_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
+import '../../../utils/theme/glass_settings.dart';
 import '../../../utils/utils.dart';
 import '../../discover_view/discover_view.dart';
 import '../../notifications_view/widgets/notifications_customization.dart';
@@ -17,77 +22,31 @@ import '../../wallet_cashu_view/widgets/cashu_restore_proofs.dart';
 import '../../wallet_view/widgets/transactions_list.dart';
 import '../../widgets/animated_components/animated_line.dart';
 import '../../widgets/animated_flip_counter.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/unsent_events_view.dart';
 import 'app_bar_widgets.dart';
+import 'drawer_view.dart';
+import 'feature_tour.dart';
 
-class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function() onClicked;
-  final bool isConnected;
-  final List<ScrollController> scrollControllers;
-
-  const MainViewAppBar({
-    super.key,
-    required this.onClicked,
-    required this.isConnected,
-    required this.scrollControllers,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isConnected)
-            const SizedBox.shrink()
-          else
-            Stack(
-              children: [
-                const SizedBox(
-                  width: double.infinity,
-                  height: 15,
-                ),
-                _offlineColumn(context),
-                _eventsCount(context),
-              ],
-            ),
-          BlocBuilder<MainCubit, MainState>(
-            builder: (context, state) {
-              return AppBar(
-                elevation: isNotElevated(state) ? 0 : null,
-                scrolledUnderElevation: isNotElevated(state) ? 0 : null,
-                titleSpacing: 0,
-                leading: _buildLeading(context, state),
-                title: _buildTitle(context, state),
-                centerTitle: true,
-                actions: _buildActions(context, state),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+mixin _AppBarHelpers on StatelessWidget {
+  Function() get onClicked;
+  bool get isConnected;
+  List<ScrollController> get scrollControllers;
 
   Positioned _eventsCount(BuildContext context) {
     return Positioned(
       right: kDefaultPadding / 1.5,
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            builder: (_) {
-              return const UnsentEventsView();
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => const UnsentEventsView(),
           );
         },
         behavior: HitTestBehavior.translucent,
@@ -107,14 +66,10 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 RotatedBox(
                   quarterTurns: 1,
-                  child: SvgPicture.asset(
+                  child: AppIcon(
                     FeatureIcons.arrowUp,
-                    width: 15,
-                    height: 15,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColor,
-                      BlendMode.srcIn,
-                    ),
+                    size: 15,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ],
@@ -154,9 +109,8 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildLeading(BuildContext context, MainState state) {
     return Center(
       child: GestureDetector(
-        onTap: () {
-          Scaffold.of(context).openDrawer();
-        },
+        key: TourKeys.drawer,
+        onTap: () => openMainDrawer(context),
         child: currentSigner != null
             ? MetadataProvider(
                 child: (metadata, isNip05) => ProfilePicture2(
@@ -167,21 +121,16 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                   strokeWidth: 0,
                   strokeColor: kTransparent,
                   onClicked: () {
-                    Scaffold.of(context).openDrawer();
+                    openMainDrawer(context);
                     walletManagerCubit.getWalletBalanceInFiat();
                   },
                 ),
                 pubkey: state.pubKey,
               )
-            : SvgPicture.asset(
+            : AppIcon(
                 FeatureIcons.menu,
-                height: kToolbarHeight / 2.2,
-                width: kToolbarHeight / 2.2,
-                fit: BoxFit.scaleDown,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: kToolbarHeight / 2.2,
+                color: Theme.of(context).primaryColorDark,
               ),
       ),
     );
@@ -192,7 +141,8 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
         state.mainView == MainViews.articles ||
         state.mainView == MainViews.media) {
       return SizedBox(
-        width: 50.w,
+        key: TourKeys.title,
+        width: min(50.w, 280),
         child: Center(
           child: SourceButton(
             viewType: state.mainView == MainViews.articles
@@ -219,14 +169,14 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
     } else if (state.mainView == MainViews.wallet) {
       return const SelectedWalletContainer();
     } else if (state.mainView == MainViews.dms && canSign()) {
-      return InboxTypes(scrollController: scrollControllers[2]);
+      return InboxTypes(scrollController: scrollControllers[3]);
     } else if (state.mainView == MainViews.notifications && canSign()) {
       return const NotificationTypes();
     } else {
       return FittedBox(
         fit: BoxFit.fitHeight,
         child: Text(
-          getTitle(state.mainView, context),
+          _getTitle(state.mainView, context),
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -236,6 +186,8 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   List<Widget> _buildActions(BuildContext context, MainState state) {
+    final buttonBg =
+        themeCubit.state.isFluid ? kTransparent : Theme.of(context).cardColor;
     return [
       if (state.mainView == MainViews.leading ||
           state.mainView == MainViews.articles ||
@@ -253,26 +205,20 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (state.activeMint.isNotEmpty) {
               return CustomIconButton(
                 onClicked: () {
-                  showModalBottomSheet(
+                  showAppModalSheet(
                     context: context,
                     builder: (_) => CashuRestoreProofs(
                       mintUrl: state.activeMint,
                     ),
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },
                 icon: FeatureIcons.restore,
                 size: 20,
                 borderColor: Theme.of(context).dividerColor,
-                backgroundColor: Theme.of(context).cardColor,
+                backgroundColor: buttonBg,
                 vd: -1,
               );
             }
-
             return const SizedBox.shrink();
           },
         ),
@@ -282,6 +228,7 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
         const DmOptionsButton(),
       ] else
         CustomIconButton(
+          key: TourKeys.search,
           onClicked: () {
             if (state.mainView == MainViews.leading ||
                 state.mainView == MainViews.articles ||
@@ -291,26 +238,14 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
               doIfCanSign(
                 func: () {
                   if (state.isCashuWallet) {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      elevation: 0,
                       builder: (context) => const CashuHistory(),
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
                     );
                   } else {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
                       builder: (_) => const TransactionsList(),
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      elevation: 0,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
                     );
                   }
                 },
@@ -334,27 +269,16 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ? FeatureIcons.settings
                   : FeatureIcons.search,
           size: 20,
-          borderColor: Theme.of(context).dividerColor,
-          backgroundColor: Theme.of(context).cardColor,
+          borderColor:
+              isFluid() ? kTransparent : Theme.of(context).dividerColor,
+          backgroundColor: buttonBg,
           vd: -1,
         ),
       const SizedBox(width: kDefaultPadding / 2),
     ];
   }
 
-  @override
-  Size get preferredSize => Size.fromHeight(
-        kToolbarHeight + (isConnected ? 0 : kDefaultPadding * 1.5),
-      );
-
-  bool isNotElevated(MainState state) {
-    return state.mainView == MainViews.uncensoredNotes ||
-        state.mainView == MainViews.dms ||
-        state.mainView == MainViews.notifications ||
-        state.mainView == MainViews.smartWidgets;
-  }
-
-  String getTitle(MainViews mainView, BuildContext context) {
+  String _getTitle(MainViews mainView, BuildContext context) {
     if (mainView == MainViews.notifications) {
       return context.t.notifications.capitalizeFirst();
     } else if (mainView == MainViews.uncensoredNotes) {
@@ -374,5 +298,236 @@ class MainViewAppBar extends StatelessWidget implements PreferredSizeWidget {
     } else {
       return context.t.settings.capitalizeFirst();
     }
+  }
+}
+
+// ==================================================
+// GLASS variant — Positioned(top:0) in the body Stack
+// ==================================================
+
+class FluidMainViewAppBar extends StatelessWidget
+    with _AppBarHelpers
+    implements PreferredSizeWidget {
+  @override
+  final Function() onClicked;
+  @override
+  final bool isConnected;
+  @override
+  final List<ScrollController> scrollControllers;
+
+  const FluidMainViewAppBar({
+    super.key,
+    required this.onClicked,
+    required this.isConnected,
+    required this.scrollControllers,
+  });
+
+  static const _toolbarHeight = 48.0;
+  static const _offlineHeight = 15.0;
+  static const _buttonSize = 45.0;
+
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(_toolbarHeight + (isConnected ? 0 : _offlineHeight));
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MainCubit, MainState>(
+      builder: (context, state) {
+        return GlassAppBar(
+          toolbarHeight: _toolbarHeight,
+          buttonSettings: GlassSettings.appBar(context),
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 1.5,
+          ),
+          bottom: isConnected
+              ? null
+              : PreferredSize(
+                  preferredSize: const Size.fromHeight(_offlineHeight),
+                  child: Stack(
+                    children: [
+                      const SizedBox(width: double.infinity, height: 15),
+                      _offlineColumn(context),
+                      _eventsCount(context),
+                    ],
+                  ),
+                ),
+          // Profile picture — opens drawer
+          leading: Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding / 1.5),
+            child: GlassButton.custom(
+              key: TourKeys.drawer,
+              width: _buttonSize,
+              height: _buttonSize,
+              onTap: () {
+                openMainDrawer(context);
+                walletManagerCubit.getWalletBalanceInFiat();
+              },
+              child: currentSigner != null
+                  ? MetadataProvider(
+                      child: (metadata, isNip05) => ProfilePicture2(
+                        size: _buttonSize - 6,
+                        image: metadata.picture,
+                        pubkey: metadata.pubkey,
+                        padding: 0,
+                        strokeWidth: 0,
+                        strokeColor: kTransparent,
+                        onClicked: () {
+                          openMainDrawer(context);
+                          walletManagerCubit.getWalletBalanceInFiat();
+                        },
+                      ),
+                      pubkey: state.pubKey,
+                    )
+                  : AppIcon(
+                      FeatureIcons.menu,
+                      size: 20,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+            ),
+          ),
+
+          // Search bar — fills remaining width
+          title: GestureDetector(
+            onTap: () {
+              YNavigator.pushPage(
+                context,
+                (context) => SearchView(),
+              );
+            },
+            behavior: HitTestBehavior.translucent,
+            child: FluidBlurContainer(
+              height: 45,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: kDefaultPadding / 2,
+                children: [
+                  AppIcon(
+                    FeatureIcons.search,
+                    size: 16,
+                    color: Theme.of(context).highlightColor,
+                  ),
+                  Text(
+                    context.t.search.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            const SizedBox(
+              width: kDefaultPadding / 4,
+            ),
+            BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, notiState) {
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AppIconButton(
+                      key: TourKeys.notifications,
+                      iconSize: 22,
+                      onClicked: () {
+                        context
+                            .read<MainCubit>()
+                            .updateIndex(MainViews.notifications);
+                        notificationsCubit.markRead();
+                      },
+                      icon: state.mainView == MainViews.notifications
+                          ? FeatureIcons.notificationsFilled
+                          : FeatureIcons.notification,
+                    ),
+                    if (!notiState.isRead && canSign())
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ==================================================
+// NORMAL variant — used as Scaffold.appBar
+// ==================================================
+
+class MainViewAppBar extends StatelessWidget
+    with _AppBarHelpers
+    implements PreferredSizeWidget {
+  @override
+  final Function() onClicked;
+  @override
+  final bool isConnected;
+  @override
+  final List<ScrollController> scrollControllers;
+
+  const MainViewAppBar({
+    super.key,
+    required this.onClicked,
+    required this.isConnected,
+    required this.scrollControllers,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isConnected)
+            const SizedBox.shrink()
+          else
+            Stack(
+              children: [
+                const SizedBox(width: double.infinity, height: 15),
+                _offlineColumn(context),
+                _eventsCount(context),
+              ],
+            ),
+          BlocBuilder<MainCubit, MainState>(
+            builder: (context, state) {
+              return AppBar(
+                elevation: _isNotElevated(state) ? 0 : null,
+                scrolledUnderElevation: _isNotElevated(state) ? 0 : null,
+                titleSpacing: 0,
+                leading: _buildLeading(context, state),
+                title: _buildTitle(context, state),
+                centerTitle: true,
+                actions: _buildActions(context, state),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(
+        kToolbarHeight + (isConnected ? 0 : kDefaultPadding * 1.5),
+      );
+
+  bool _isNotElevated(MainState state) {
+    return state.mainView == MainViews.uncensoredNotes ||
+        state.mainView == MainViews.dms ||
+        state.mainView == MainViews.notifications ||
+        state.mainView == MainViews.smartWidgets;
   }
 }

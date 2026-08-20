@@ -11,6 +11,7 @@ import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import 'send_multi_wallet_selector.dart';
@@ -242,6 +243,7 @@ class SendZapsUsingInvoice extends HookWidget {
 
   ButtonStyle _buildButtonStyle(BuildContext context) {
     return TextButton.styleFrom(
+      backgroundBuilder: (_, __, child) => child!,
       backgroundColor: Theme.of(context).cardColor,
       side: BorderSide(
         color: Theme.of(context).dividerColor,
@@ -280,14 +282,10 @@ class SendZapsUsingInvoice extends HookWidget {
   }
 
   Widget _buildPaymentIcon(BuildContext context) {
-    return SvgPicture.asset(
+    return AppIcon(
       FeatureIcons.zapFilled,
-      width: 15,
-      height: 15,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
-      ),
+      size: 15,
+      color: Theme.of(context).primaryColorDark,
     );
   }
 
@@ -419,14 +417,10 @@ class DottedCopyContainer extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.copy,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).highlightColor,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).highlightColor,
               ),
             ],
           ),

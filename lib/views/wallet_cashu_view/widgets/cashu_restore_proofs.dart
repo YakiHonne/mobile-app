@@ -5,6 +5,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class CashuRestoreProofs extends HookWidget {
   const CashuRestoreProofs({
@@ -40,52 +41,34 @@ class CashuRestoreProofs extends HookWidget {
       };
     }, []);
 
-    return Material(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        initialChildSize: 0.9,
+        builder: (context, scrollController) => Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2,
           ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          expand: false,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) => Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
-            ),
-            child: Column(
-              children: [
-                const ModalBottomSheetHandle(),
-                Expanded(
-                  child: ListView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: kDefaultPadding / 2,
-                    ),
-                    children: [
-                      _buildHeader(context),
-                      const SizedBox(height: kDefaultPadding),
-                      _buildSeedInputGrid(context, controllers, updateProgress),
-                    ],
+          child: Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPadding / 2,
                   ),
+                  children: [
+                    _buildHeader(context),
+                    const SizedBox(height: kDefaultPadding),
+                    _buildSeedInputGrid(context, controllers, updateProgress),
+                  ],
                 ),
-                _buildActionSection(context, wordsCount, controllers),
-              ],
-            ),
+              ),
+              _buildActionSection(context, wordsCount, controllers),
+            ],
           ),
         ),
       ),

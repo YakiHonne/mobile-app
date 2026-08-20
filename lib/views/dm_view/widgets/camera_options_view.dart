@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class CameraOptions extends StatelessWidget {
   const CameraOptions({
@@ -23,63 +24,47 @@ class CameraOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
-      child: Container(
-        width: 100.w,
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding * 2),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding,
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: kDefaultPadding / 2,
-                  ),
-                  Text(
-                    context.t.pickYourMedia.capitalizeFirst(),
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  Text(
-                    context.t.uploadSendMedia.capitalizeFirst(),
-                    style: TextStyle(
-                      color: Theme.of(context).highlightColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  _options(context),
-                  const SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  const SizedBox(
-                    height: kDefaultPadding / 2,
-                  ),
-                ],
-              ),
+    // Sits directly on the sheet — the caller paints it in cardColor. Brings
+    // its own Material, which GlassModalSheet doesn't supply.
+    return Material(
+      type: MaterialType.transparency,
+      child: SafeArea(
+        top: false,
+        // The detent is a fixed fraction picked from an estimated content
+        // height — scroll rather than overflow when a long locale wraps.
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding,
+              vertical: kDefaultPadding / 2,
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.t.pickYourMedia.capitalizeFirst(),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                Text(
+                  context.t.uploadSendMedia.capitalizeFirst(),
+                  style: TextStyle(
+                    color: Theme.of(context).highlightColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: kDefaultPadding,
+                ),
+                _options(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -152,7 +137,7 @@ class PickChoice extends StatelessWidget {
   final String pubkey;
   final MediaType mediaType;
   final String title;
-  final String icon;
+  final IconData icon;
   final String? replyId;
   final Function() onSuccess;
   final Function() onFailed;
@@ -178,14 +163,10 @@ class PickChoice extends StatelessWidget {
           },
       child: Column(
         children: [
-          SvgPicture.asset(
+          AppIcon(
             icon,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 30,
-            height: 30,
+            size: 30,
+            color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
             height: kDefaultPadding / 2,

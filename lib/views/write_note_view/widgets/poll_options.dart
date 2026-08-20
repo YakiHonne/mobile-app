@@ -3,7 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../utils/utils.dart';
 import '../../polls_view/zap_polls_selection.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart' show showAppModalSheet;
 import '../../write_zap_poll_view/write_zap_poll_view.dart';
 
 class PollOptions extends HookWidget {
@@ -62,7 +64,7 @@ class PollOptions extends HookWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
             builder: (_) {
               return ZapPollSelection(
@@ -73,10 +75,6 @@ class PollOptions extends HookWidget {
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -93,14 +91,10 @@ class PollOptions extends HookWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.polls,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
-                width: 25,
-                height: 25,
+                color: Theme.of(context).primaryColorDark,
+                size: 25,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,
@@ -120,9 +114,8 @@ class PollOptions extends HookWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
             builder: (_) {
               return WriteZapPollView(
                 onZapPollAdded: (ev) {
@@ -132,9 +125,6 @@ class PollOptions extends HookWidget {
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -151,14 +141,10 @@ class PollOptions extends HookWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.addRaw,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
-                width: 25,
-                height: 25,
+                color: Theme.of(context).primaryColorDark,
+                size: 25,
               ),
               const SizedBox(
                 height: kDefaultPadding / 2,

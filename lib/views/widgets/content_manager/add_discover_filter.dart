@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -16,12 +15,16 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/widgets/user_to_zap_view.dart';
+import '../app_icon.dart';
 import '../container_boxes.dart';
 import '../custom_date_picker.dart';
 import '../custom_drop_down.dart';
 import '../custom_icon_buttons.dart';
 import '../data_providers.dart';
 import '../dotted_container.dart';
+import '../fluid_sheet.dart';
+import '../fluid_switch.dart';
+import '../modal_sheet_container.dart';
 import '../profile_picture.dart';
 import 'discover_filter_list.dart';
 
@@ -98,78 +101,63 @@ class AddDiscoverFilter extends HookWidget {
       },
     );
 
-    return Padding(
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (_, controller) => Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            child: Column(
-              children: [
-                _appBar(),
-                Expanded(
-                  child: _content(
-                      context,
-                      controller,
-                      titleKey,
-                      title,
-                      from,
-                      to,
-                      includedController,
-                      excludedKeywords,
-                      includedKeywords,
-                      excludedController,
-                      hideSensitive,
-                      includeThumbnail,
-                      postedBy,
-                      articleMinimumWords,
-                      articleHasMedia,
-                      videoSource,
-                      curationType,
-                      curationMinimumItem),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        minChildSize: 0.60,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, controller) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Column(
+            children: [
+              _appBar(),
+              Expanded(
+                child: _content(
+                    context,
+                    controller,
+                    titleKey,
+                    title,
+                    from,
+                    to,
+                    includedController,
+                    excludedKeywords,
+                    includedKeywords,
+                    excludedController,
+                    hideSensitive,
+                    includeThumbnail,
+                    postedBy,
+                    articleMinimumWords,
+                    articleHasMedia,
+                    videoSource,
+                    curationType,
+                    curationMinimumItem),
+              ),
+              Container(
+                height: kBottomNavigationBarHeight +
+                    MediaQuery.of(context).padding.bottom,
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom / 2,
                 ),
-                Container(
-                  height: kBottomNavigationBarHeight +
-                      MediaQuery.of(context).padding.bottom,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom / 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: RegularLoadingButton(
-                          title: discoverFilter.isDefault()
-                              ? context.t.add.capitalizeFirst()
-                              : context.t.update.capitalizeFirst(),
-                          isLoading: isLoading.value,
-                          onClicked: setFilter,
-                        ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RegularLoadingButton(
+                        title: discoverFilter.isDefault()
+                            ? context.t.add.capitalizeFirst()
+                            : context.t.update.capitalizeFirst(),
+                        isLoading: isLoading.value,
+                        onClicked: setFilter,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -475,7 +463,7 @@ class AddDiscoverFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -485,10 +473,6 @@ class AddDiscoverFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -498,14 +482,10 @@ class AddDiscoverFilter extends HookWidget {
           hintText: context.t.postedBy,
           prefixIcon: Padding(
             padding: const EdgeInsets.all(kDefaultPadding / 1.5),
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.search,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           disabledBorder: OutlineInputBorder(
@@ -688,17 +668,13 @@ class AddDiscoverFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.articles,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -762,14 +738,10 @@ class FilterDatePicker extends HookWidget {
         child: Row(
           children: [
             _selectedDate(context, selectedDate),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.calendar,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             )
           ],
         ),
@@ -854,72 +826,57 @@ class AddNotesFilter extends HookWidget {
       },
     );
 
-    return Padding(
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (_, controller) => Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            child: Column(
-              children: [
-                _appbar(),
-                Expanded(
-                  child: _content(
-                      context,
-                      controller,
-                      titleKey,
-                      title,
-                      from,
-                      to,
-                      includedController,
-                      excludedKeywords,
-                      includedKeywords,
-                      excludedController,
-                      hasMedia,
-                      postedBy),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        minChildSize: 0.60,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, controller) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Column(
+            children: [
+              _appbar(),
+              Expanded(
+                child: _content(
+                    context,
+                    controller,
+                    titleKey,
+                    title,
+                    from,
+                    to,
+                    includedController,
+                    excludedKeywords,
+                    includedKeywords,
+                    excludedController,
+                    hasMedia,
+                    postedBy),
+              ),
+              Container(
+                height: kBottomNavigationBarHeight +
+                    MediaQuery.of(context).padding.bottom,
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom / 2,
                 ),
-                Container(
-                  height: kBottomNavigationBarHeight +
-                      MediaQuery.of(context).padding.bottom,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom / 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: RegularLoadingButton(
-                          title: notesFilter.isDefault()
-                              ? context.t.add.capitalizeFirst()
-                              : context.t.update.capitalizeFirst(),
-                          isLoading: isLoading.value,
-                          onClicked: setFilter,
-                        ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RegularLoadingButton(
+                        title: notesFilter.isDefault()
+                            ? context.t.add.capitalizeFirst()
+                            : context.t.update.capitalizeFirst(),
+                        isLoading: isLoading.value,
+                        onClicked: setFilter,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1065,7 +1022,7 @@ class AddNotesFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -1075,10 +1032,6 @@ class AddNotesFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -1088,14 +1041,10 @@ class AddNotesFilter extends HookWidget {
           hintText: context.t.postedBy,
           prefixIcon: Padding(
             padding: const EdgeInsets.all(kDefaultPadding / 1.5),
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.search,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           disabledBorder: OutlineInputBorder(
@@ -1276,17 +1225,13 @@ class AddNotesFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.notes,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -1348,73 +1293,58 @@ class AddMediaFilter extends HookWidget {
       },
     );
 
-    return Padding(
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.95,
-          minChildSize: 0.60,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (_, controller) => Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            child: Column(
-              children: [
-                _appbar(),
-                Expanded(
-                  child: _content(
-                    context,
-                    controller,
-                    titleKey,
-                    title,
-                    from,
-                    to,
-                    includedController,
-                    excludedKeywords,
-                    includedKeywords,
-                    excludedController,
-                    hideSensitive,
-                    postedBy,
-                  ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.95,
+        minChildSize: 0.60,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, controller) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Column(
+            children: [
+              _appbar(),
+              Expanded(
+                child: _content(
+                  context,
+                  controller,
+                  titleKey,
+                  title,
+                  from,
+                  to,
+                  includedController,
+                  excludedKeywords,
+                  includedKeywords,
+                  excludedController,
+                  hideSensitive,
+                  postedBy,
                 ),
-                Container(
-                  height: kBottomNavigationBarHeight +
-                      MediaQuery.of(context).padding.bottom,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom / 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: RegularLoadingButton(
-                          title: mediaFilter.isDefault()
-                              ? context.t.add.capitalizeFirst()
-                              : context.t.update.capitalizeFirst(),
-                          isLoading: isLoading.value,
-                          onClicked: setFilter,
-                        ),
+              ),
+              Container(
+                height: kBottomNavigationBarHeight +
+                    MediaQuery.of(context).padding.bottom,
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom / 2,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RegularLoadingButton(
+                        title: mediaFilter.isDefault()
+                            ? context.t.add.capitalizeFirst()
+                            : context.t.update.capitalizeFirst(),
+                        isLoading: isLoading.value,
+                        onClicked: setFilter,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1560,7 +1490,7 @@ class AddMediaFilter extends HookWidget {
       BuildContext context, ValueNotifier<Set<String>> postedBy) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
           builder: (_) {
             return UserToZap(
@@ -1570,10 +1500,6 @@ class AddMediaFilter extends HookWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -1583,14 +1509,10 @@ class AddMediaFilter extends HookWidget {
           hintText: context.t.postedBy,
           prefixIcon: Padding(
             padding: const EdgeInsets.all(kDefaultPadding / 1.5),
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.search,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 20,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           disabledBorder: OutlineInputBorder(
@@ -1771,17 +1693,13 @@ class AddMediaFilter extends HookWidget {
           onClicked: () {
             YNavigator.pop(context);
             if (listAvailable) {
-              showModalBottomSheet(
+              showAppModalSheet(
                 context: context,
-                elevation: 0,
                 builder: (_) {
                   return const AppFilterList(
                     viewType: ViewDataTypes.media,
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
@@ -2024,7 +1942,7 @@ class ToggleBox extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: isToggled,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onToggle,

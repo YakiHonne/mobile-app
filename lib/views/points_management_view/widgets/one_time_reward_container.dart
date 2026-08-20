@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../models/points_system_models.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/fluid_blur_container.dart';
 
 class OneTimeRewardContainer extends StatelessWidget {
   const OneTimeRewardContainer({
@@ -23,19 +25,7 @@ class OneTimeRewardContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          kDefaultPadding / 2,
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-        color: Theme.of(context).cardColor,
-      ),
-      child: Column(
+    final content = Column(
         children: [
           Row(
             children: [
@@ -68,7 +58,7 @@ class OneTimeRewardContainer extends StatelessWidget {
               ),
               if (isCompleted)
                 const Icon(
-                  Icons.check_circle,
+                  LucideIcons.circleCheck,
                   size: 15,
                   color: kGreen,
                 ),
@@ -106,7 +96,26 @@ class OneTimeRewardContainer extends StatelessWidget {
             ],
           ),
         ],
-      ),
     );
+    return isFluid()
+        ? FluidCardContainer(
+            borderRadius: kDefaultPadding / 2,
+            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            child: content,
+          )
+        : Container(
+            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                kDefaultPadding / 2,
+              ),
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
+              ),
+              color: Theme.of(context).cardColor,
+            ),
+            child: content,
+          );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../logic/relays_progress_cubit/relays_progress_cubit.dart';
 import '../../utils/utils.dart';
+import 'buttons_containers_widgets.dart';
 import 'empty_list.dart';
 
 class RelaysProgressBar extends StatefulWidget {
@@ -102,22 +104,14 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
     return SizedBox(
       width: 30,
       height: 30,
-      child: IconButton(
-        onPressed: () {
+      child: AppIconButton(
+        icon: LucideIcons.x,
+        onClicked: () {
           context.read<RelaysProgressCubit>().dismissProgressBar();
         },
-        icon: const Icon(
-          Icons.close,
-          size: 20,
-        ),
-        style: IconButton.styleFrom(
-          padding: EdgeInsets.zero,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          visualDensity: const VisualDensity(
-            horizontal: -4,
-            vertical: -4,
-          ),
-        ),
+        iconSize: 20,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        size: 30,
       ),
     );
   }
@@ -216,6 +210,7 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
                                 .setRelaysListVisibility(false);
                           },
                           style: TextButton.styleFrom(
+                            backgroundBuilder: (_, __, child) => child!,
                             backgroundColor: Theme.of(context).primaryColorDark,
                             visualDensity: VisualDensity.compact,
                           ),

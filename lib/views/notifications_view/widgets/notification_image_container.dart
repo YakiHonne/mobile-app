@@ -8,6 +8,26 @@ import '../../../models/event_relation.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/profile_picture.dart';
 
+// ponytail: kept as SVGs (not lucide) per explicit request; source assets
+// still exist under assets/icons/features/n-*.svg.
+class _NIcons {
+  _NIcons._();
+
+  static const String mentions = 'assets/icons/features/n-mentions.svg';
+  static const String reposts = 'assets/icons/features/n-reposts.svg';
+  static const String reactions = 'assets/icons/features/n-reactions.svg';
+  static const String zaps = 'assets/icons/features/n-zaps.svg';
+  static const String articles = 'assets/icons/features/n-articles.svg';
+  static const String curations = 'assets/icons/features/n-curations.svg';
+  static const String videos = 'assets/icons/features/n-videos.svg';
+  static const String smartWidgets =
+      'assets/icons/features/n-smart-widgets.svg';
+  static const String paidNotes = 'assets/icons/features/n-paid-notes.svg';
+  static const String quotes = 'assets/icons/features/n-quotes.svg';
+  static const String replies =
+      'assets/icons/features/n-replies-comments.svg';
+}
+
 class NotificationImageContainer extends StatelessWidget {
   const NotificationImageContainer({
     super.key,
@@ -67,41 +87,41 @@ class NotificationImageContainer extends StatelessWidget {
   }
 
   String getIcon() {
-    String icon = FeatureIcons.nMentions;
+    String icon = _NIcons.mentions;
 
     switch (event.kind) {
       case EventKind.REPOST:
-        icon = FeatureIcons.nReposts;
+        icon = _NIcons.reposts;
       case EventKind.REACTION:
-        icon = FeatureIcons.nReactions;
+        icon = _NIcons.reactions;
       case EventKind.ZAP:
-        icon = FeatureIcons.nZaps;
+        icon = _NIcons.zaps;
       case EventKind.CASHU_NUTZAP:
-        icon = FeatureIcons.nZaps;
+        icon = _NIcons.zaps;
       case EventKind.LONG_FORM:
-        icon = FeatureIcons.nArticles;
+        icon = _NIcons.articles;
       case EventKind.CURATION_ARTICLES:
-        icon = FeatureIcons.nCurations;
+        icon = _NIcons.curations;
       case EventKind.CURATION_VIDEOS:
-        icon = FeatureIcons.nCurations;
+        icon = _NIcons.curations;
       case EventKind.VIDEO_HORIZONTAL:
-        icon = FeatureIcons.nVideos;
+        icon = _NIcons.videos;
       case EventKind.VIDEO_VERTICAL:
-        icon = FeatureIcons.nVideos;
+        icon = _NIcons.videos;
       case EventKind.SMART_WIDGET_ENH:
-        icon = FeatureIcons.nSmartWidgets;
+        icon = _NIcons.smartWidgets;
 
       case EventKind.TEXT_NOTE:
         if (canSign() && event.isMention(currentSigner!.getPublicKey())) {
-          icon = FeatureIcons.nMentions;
+          icon = _NIcons.mentions;
         } else if (event.isFlashNews()) {
-          icon = FeatureIcons.nPaidNotes;
+          icon = _NIcons.paidNotes;
         } else if (event.origin.isQuote()) {
-          icon = FeatureIcons.nQuotes;
+          icon = _NIcons.quotes;
         } else if (event.replyId != null ||
             event.rootId != null ||
             event.rRootId != null) {
-          icon = FeatureIcons.nReplies;
+          icon = _NIcons.replies;
         }
     }
 

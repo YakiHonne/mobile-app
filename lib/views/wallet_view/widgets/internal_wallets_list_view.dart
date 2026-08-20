@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -12,9 +13,12 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/global_keys.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/response_snackbar.dart';
 import 'export_wallets.dart';
@@ -31,18 +35,7 @@ class InternalWalletsListView extends HookWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
       builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(kDefaultPadding),
-              topRight: Radius.circular(kDefaultPadding),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        return ModalSheetContainer(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
@@ -197,14 +190,10 @@ class _WalletConnectionStatus extends StatelessWidget {
         children: [
           TextSpan(text: '${context.t.click.capitalizeFirst()} '),
           WidgetSpan(
-            child: SvgPicture.asset(
+            child: AppIcon(
               FeatureIcons.more,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           TextSpan(text: ' ${context.t.onSelectedWalletLinkIt}'),
@@ -384,7 +373,7 @@ class _SelectionIndicator extends StatelessWidget {
               color: kGreen.withValues(alpha: 0.3),
             ),
             child: const Icon(
-              Icons.check_rounded,
+              LucideIcons.check,
               size: 15,
               color: kWhite,
             ),
@@ -405,9 +394,9 @@ class _WalletIcon extends StatelessWidget {
     return SizedBox(
       height: 20,
       width: 20,
-      child: SvgPicture.asset(
-        isAlby ? FeatureIcons.alby : FeatureIcons.nwc,
-      ),
+      child: isAlby
+          ? SvgPicture.asset(FeatureIcons.alby)
+          : SvgPicture.asset(FeatureIcons.nwc),
     );
   }
 }
@@ -465,7 +454,7 @@ class _WalletItemActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -514,14 +503,10 @@ class _WalletItemActions extends StatelessWidget {
       title: context.t.linkWallet.capitalizeFirst(),
       onTap: () => _handleLinkWallet(context),
       itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.link,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -534,14 +519,10 @@ class _WalletItemActions extends StatelessWidget {
       title: context.t.copyLn.capitalizeFirst(),
       onTap: () => _handleCopyLightningAddress(context),
       itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.copy,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -555,28 +536,20 @@ class _WalletItemActions extends StatelessWidget {
         title: context.t.copyNwc.capitalizeFirst(),
         onTap: () => _handleCopyNwc(context),
         itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-        iconWidget: SvgPicture.asset(
+        iconWidget: AppIcon(
           FeatureIcons.copy,
-          height: 20,
-          width: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
       PullDownMenuItem(
         title: context.t.export.capitalizeFirst(),
         onTap: () => _handleExportWallet(context),
         itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
-        iconWidget: SvgPicture.asset(
+        iconWidget: AppIcon(
           FeatureIcons.export,
-          height: 20,
-          width: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     ];
@@ -591,11 +564,10 @@ class _WalletItemActions extends StatelessWidget {
       onTap: () => _handleDeleteWallet(context),
       itemTheme: PullDownMenuItemTheme(textStyle: textStyle),
       isDestructive: true,
-      iconWidget: SvgPicture.asset(
+      iconWidget: const AppIcon(
         FeatureIcons.trash,
-        height: 20,
-        width: 20,
-        colorFilter: const ColorFilter.mode(kRed, BlendMode.srcIn),
+        size: 20,
+        color: kRed,
       ),
     );
   }

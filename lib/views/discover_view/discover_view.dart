@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -15,6 +16,7 @@ import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../utils/utils.dart';
 import '../leading_view/leading_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/add_discover_filter.dart';
@@ -23,15 +25,23 @@ import '../widgets/content_manager/discover_sources_list.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
+import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_sheet.dart';
+import '../widgets/fluid_source_filter_row.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/discover_feed.dart';
 
 class DiscoverView extends StatefulWidget {
   DiscoverView({
     super.key,
+    this.barsVisible,
+    this.scrollController,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Discover view');
   }
+
+  final ValueNotifier<bool>? barsVisible;
+  final ScrollController? scrollController;
 
   @override
   State<DiscoverView> createState() => _DiscoverViewState();
@@ -88,7 +98,7 @@ class _DiscoverViewState extends State<DiscoverView> {
             previous.showFollowingListMessage !=
                 current.showFollowingListMessage,
         builder: (context, state) {
-          return SmartRefresher(
+          final refresher = SmartRefresher(
             controller: refreshController,
             enablePullUp: true,
             header: const RefresherClassicHeader(),
@@ -96,12 +106,16 @@ class _DiscoverViewState extends State<DiscoverView> {
             onLoading: () => buildExploreFeed.call(context, true),
             onRefresh: () => reset(context),
             child: CustomScrollView(
+              controller: widget.scrollController,
               slivers: [
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kDefaultPadding / 2,
+                if (isFluid())
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).padding.top +
+                          kToolbarHeight +
+                          50,
+                    ),
                   ),
-                ),
                 // _appbar(context),
                 if (state.showFollowingListMessage)
                   const SliverToBoxAdapter(
@@ -111,21 +125,74 @@ class _DiscoverViewState extends State<DiscoverView> {
                   const SliverToBoxAdapter(child: ContentPlaceholder())
                 else
                   const ExploreFeed(),
+                if (themeCubit.state.isFluid)
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      bottom: kBottomNavigationBarHeight +
+                          kDefaultPadding * 2 +
+                          MediaQuery.of(context).padding.bottom / 2,
+                    ),
+                  ),
               ],
             ),
+          );
+
+          if (!isFluid()) {
+            return refresher;
+          }
+
+          return Stack(
+            children: [
+              refresher,
+              Positioned(
+                left: kDefaultPadding / 2,
+                right: kDefaultPadding / 2,
+                top: MediaQuery.of(context).padding.top +
+                    kToolbarHeight +
+                    kDefaultPadding / 2,
+                child: Align(
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: widget.barsVisible ?? ValueNotifier(true),
+                    builder: (context, visible, child) => IgnorePointer(
+                      ignoring: !visible,
+                      child: AnimatedSlide(
+                        offset: visible ? Offset.zero : const Offset(0, -1),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: AnimatedOpacity(
+                          opacity: visible ? 1 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: child,
+                        ),
+                      ),
+                    ),
+                    child: FluidSourceFilterRow(
+                      viewType: ViewDataTypes.articles,
+                      onSourceChanged: () => discoverCubit.buildDiscoverFeed(
+                        exploreType: discoverCubit.exploreType,
+                        isAdding: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
 
-    widgets.add(
-      Positioned(
-        top: kDefaultPadding / 2,
-        left: 0,
-        right: 0,
-        child: LeadingNewContentComponent(widget: widget),
-      ),
-    );
+    if (!isFluid()) {
+      widgets.add(
+        Positioned(
+          top: kDefaultPadding / 2,
+          left: 0,
+          right: 0,
+          child: LeadingNewContentComponent(widget: widget),
+        ),
+      );
+    }
 
     return FadeIn(
       child: PopScope(
@@ -224,15 +291,9 @@ class SourceButton extends HookWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
-              builder: (_) {
-                return AppSourcesList(viewType: viewType);
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
+              builder: (_) => AppSourcesList(viewType: viewType),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -244,6 +305,40 @@ class SourceButton extends HookWidget {
   }
 
   Container _optionContainer(AppSettingsManagerState state) {
+    final text = Builder(
+      builder: (context) {
+        final source = viewType == ViewDataTypes.articles
+            ? appSettingsManagerCubit.getDiscoverSelectedSource()
+            : viewType == ViewDataTypes.notes
+                ? appSettingsManagerCubit.getNotesSelectedSource()
+                : appSettingsManagerCubit.getMediaSelectedSource();
+
+        final title = source.key == AppContentSource.relay
+            ? Relay.removeSocket(source.value.value?.toString() ?? '') ??
+                source.value.value?.toString() ??
+                ''
+            : source.key == AppContentSource.packs
+                ? (source.value.value as PacksModel?)?.title ?? ''
+                : source.key == AppContentSource.relaySet
+                    ? (source.value.value as UserRelaySet?)?.getTitle() ?? ''
+                    : getSourceName(
+                        name: viewType == ViewDataTypes.articles
+                            ? state.selectedDiscoverSource.value ?? ''
+                            : viewType == ViewDataTypes.notes
+                                ? state.selectedNotesSource.value ?? ''
+                                : state.selectedMediaSource.value ?? '',
+                      ).capitalizeFirst();
+
+        return Text(
+          title,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+          textAlign: TextAlign.center,
+        );
+      },
+    );
+
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(
@@ -257,46 +352,12 @@ class SourceButton extends HookWidget {
           SourceImage(
             viewType: viewType,
           ),
-          Flexible(
-            child: Builder(
-              builder: (context) {
-                final source = viewType == ViewDataTypes.articles
-                    ? appSettingsManagerCubit.getDiscoverSelectedSource()
-                    : viewType == ViewDataTypes.notes
-                        ? appSettingsManagerCubit.getNotesSelectedSource()
-                        : appSettingsManagerCubit.getMediaSelectedSource();
-
-                final title = source.key == AppContentSource.relay
-                    ? Relay.removeSocket(source.value.value?.toString() ?? '') ??
-                        source.value.value?.toString() ??
-                        ''
-                    : source.key == AppContentSource.packs
-                        ? (source.value.value as PacksModel?)?.title ?? ''
-                        : source.key == AppContentSource.relaySet
-                            ? (source.value.value as UserRelaySet?)?.getTitle() ??
-                                ''
-                            : getSourceName(
-                                name: viewType == ViewDataTypes.articles
-                                    ? state.selectedDiscoverSource.value ?? ''
-                                    : viewType == ViewDataTypes.notes
-                                        ? state.selectedNotesSource.value ?? ''
-                                        : state.selectedMediaSource.value ?? '',
-                              ).capitalizeFirst();
-
-                return Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                );
-              },
-            ),
-          ),
+          if (isFluid()) Expanded(child: text) else Flexible(child: text),
           const SizedBox(
             width: 30,
             height: 30,
             child: Icon(
-              Icons.keyboard_arrow_down_rounded,
+              LucideIcons.chevronDown,
             ),
           ),
         ],
@@ -343,7 +404,8 @@ class SourceImage extends StatelessWidget {
                     )
                   : source.key == AppContentSource.packs
                       ? CommonThumbnail(
-                          image: (source.value.value as PacksModel?)?.image ?? '',
+                          image:
+                              (source.value.value as PacksModel?)?.image ?? '',
                           width: 26,
                           height: 26,
                           isRound: true,
@@ -352,7 +414,8 @@ class SourceImage extends StatelessWidget {
                       : source.key == AppContentSource.relaySet
                           ? getRelaySetImage(
                               context: context,
-                              url: (source.value.value as UserRelaySet?)?.image ??
+                              url: (source.value.value as UserRelaySet?)
+                                      ?.image ??
                                   '',
                             )
                           : getRelayImage(
@@ -383,14 +446,10 @@ class SourceImage extends StatelessWidget {
   }) {
     final nameIcon = getSourceIcon(url);
 
-    return SvgPicture.asset(
+    return AppIcon(
       nameIcon,
-      width: 20,
-      height: 20,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).primaryColorDark,
-        BlendMode.srcIn,
-      ),
+      size: 20,
+      color: Theme.of(context).primaryColorDark,
     );
   }
 
@@ -508,15 +567,11 @@ class FilterButton extends StatelessWidget {
               }
             }
 
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return view;
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
@@ -538,14 +593,10 @@ class FilterButton extends StatelessWidget {
             width: 0.5,
           ),
         ),
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.filter,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -631,6 +682,7 @@ class LeadingNewContentComponent extends HookWidget {
           extraContent: state.extraContent,
           isShowing: isShowing,
           onClicked: () {
+            widget.barsVisible?.value = true;
             discoverCubit.appendExtra();
           },
         );
@@ -705,14 +757,9 @@ class NewContentContainer extends HookWidget {
     );
 
     final slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
+      begin: const Offset(0, -1.5),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
 
     useEffect(() {
       if (isShowing.value) {
@@ -723,39 +770,81 @@ class NewContentContainer extends HookWidget {
       return null;
     }, [isShowing.value]);
 
+    final isGlass = themeCubit.state.isFluid;
+
     final List<Widget> images = [];
-
-    for (int i = 0; i < (pubkeys.length); i++) {
+    for (int i = 0; i < pubkeys.length; i++) {
       final pubkey = pubkeys.elementAt(i);
-
       images.add(
         MetadataProvider(
           key: ValueKey(pubkey),
           pubkey: pubkey,
-          child: (metadata, p1) {
-            return RepaintBoundary(
-              child: ProfilePicture2(
-                size: 32,
-                image: metadata.picture,
-                pubkey: metadata.pubkey,
-                padding: 0,
-                strokeWidth: 2,
-                strokeColor: Theme.of(context).cardColor,
-                onClicked: onClicked,
-              ),
-            );
-          },
+          child: (metadata, _) => RepaintBoundary(
+            child: ProfilePicture2(
+              size: 30,
+              image: metadata.picture,
+              pubkey: metadata.pubkey,
+              padding: 0,
+              strokeWidth: 1,
+              strokeColor: Theme.of(context).cardColor,
+              onClicked: onClicked,
+            ),
+          ),
         ),
       );
     }
 
-    return RepaintBoundary(
-      child: AnimatedOpacity(
-        opacity: isShowing.value ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        child: SlideTransition(
-          position: slideAnimation,
-          child: GestureDetector(
+    final avatarStack = SizedBox(
+      height: 32,
+      width: 32 + (images.length - 1) * 18.0,
+      child: Stack(
+        children: [
+          for (int i = 0; i < images.length; i++)
+            Positioned(
+              left: i * 18.0,
+              child: images[images.length - 1 - i],
+            ),
+        ],
+      ),
+    );
+
+    final pill = isGlass
+        ? GestureDetector(
+            onTap: onClicked,
+            onVerticalDragEnd: (details) {
+              if ((details.primaryVelocity ?? 0) < -200) {
+                onClose();
+              }
+            },
+            behavior: HitTestBehavior.translucent,
+            child: FluidBlurContainer(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 1.5,
+                vertical: kDefaultPadding / 2.5,
+              ),
+              child: BlocBuilder<MetadataCubit, MetadataState>(
+                builder: (context, state) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: kDefaultPadding / 2,
+                  children: [
+                    avatarStack,
+                    Text(
+                      text,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                    Icon(
+                      LucideIcons.arrowUp,
+                      size: 18,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : GestureDetector(
             onTap: onClicked,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
@@ -776,78 +865,66 @@ class NewContentContainer extends HookWidget {
                     )
                   : null,
               padding: const EdgeInsets.all(kDefaultPadding / 4),
-              margin: const EdgeInsets.only(
-                bottom: kToolbarHeight,
-                left: kDefaultPadding,
-                right: kDefaultPadding,
-              ),
-              child: _item(images),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  BlocBuilder<MetadataCubit, MetadataState> _item(List<Widget> images) {
-    return BlocBuilder<MetadataCubit, MetadataState>(
-      builder: (context, state) {
-        return AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
-          firstChild: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: kDefaultPadding / 2,
-            children: [
-              Stack(
-                children: [
-                  SizedBox(
-                    height: 32,
-                    width: 32 + (images.length - 1) * 18,
+              child: BlocBuilder<MetadataCubit, MetadataState>(
+                builder: (context, state) => AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  firstChild: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: kDefaultPadding / 2,
+                    children: [
+                      avatarStack,
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              text,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    height: 1,
+                                  ),
+                            ),
+                            Text(
+                              context.t.newKey,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(height: 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CustomIconButton(
+                        onClicked: onClose,
+                        icon: FeatureIcons.closeRaw,
+                        size: 17,
+                        vd: -2,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                    ],
                   ),
-                  ...images.reversed.map(
-                    (e) => Positioned(
-                      left: images.indexOf(e) * 18,
-                      child: e,
-                    ),
-                  ),
-                ],
-              ),
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      text,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w800,
-                            height: 1,
-                          ),
-                    ),
-                    Text(
-                      context.t.newKey,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            // color: Theme.of(context).highlightColor,
-                            height: 1,
-                          ),
-                    ),
-                  ],
+                  secondChild: const SizedBox.shrink(),
+                  crossFadeState: isShowing.value
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
                 ),
               ),
-              CustomIconButton(
-                onClicked: onClose,
-                icon: FeatureIcons.closeRaw,
-                size: 17,
-                vd: -2,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              ),
-            ],
-          ),
-          secondChild: const SizedBox.shrink(),
-          crossFadeState: isShowing.value
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-        );
-      },
+            ),
+          );
+
+    return RepaintBoundary(
+      child: AnimatedOpacity(
+        opacity: isShowing.value ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 300),
+        child: SlideTransition(
+          position: slideAnimation,
+          child: pill,
+        ),
+      ),
     );
   }
 }

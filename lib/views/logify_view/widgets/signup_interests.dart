@@ -12,6 +12,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../../logic/logify_cubit/logify_cubit.dart';
 import '../../../models/app_models/interests_set.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
@@ -110,8 +111,8 @@ class SignupInterestsAndFollowings extends HookWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding,
+      padding: EdgeInsets.symmetric(
+        horizontal: isFluid() ? 0 : kDefaultPadding,
         vertical: kDefaultPadding / 2,
       ),
       child: ScrollShadow(
@@ -198,14 +199,10 @@ class InterestFollowingContainer extends HookWidget {
                   backgroundColor: Theme.of(context).primaryColor,
                   visualDensity: VisualDensity.compact,
                 ),
-                icon: SvgPicture.asset(
+                icon: const AppIcon(
                   FeatureIcons.addRaw,
-                  width: 15,
-                  height: 15,
-                  colorFilter: const ColorFilter.mode(
-                    kWhite,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: kWhite,
                 ),
               ),
             ),
@@ -316,14 +313,11 @@ class InterestFollowingContainer extends HookWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-                icon: SvgPicture.asset(
+                icon: AppIcon(
                   FeatureIcons.userToFollow,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    isAvailable ? kWhite : Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color:
+                      isAvailable ? kWhite : Theme.of(context).primaryColorDark,
                 ),
               ),
             ],
@@ -359,6 +353,7 @@ class InterestFollowingContainer extends HookWidget {
                     );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.compact,
               ),
               child: Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 
 import '../../../logic/suggestion_box_cubit/suggestions_box_cubit.dart';
@@ -11,6 +12,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../note_view/note_view.dart';
+import '../app_icon.dart';
 import '../buttons_containers_widgets.dart';
 import '../common_thumbnail.dart';
 import '../data_providers.dart';
@@ -51,19 +53,24 @@ class SuggestedArticles extends StatelessWidget {
     final usedArticles =
         articles.length > 4 ? articles.sublist(0, 4) : articles;
 
-    return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      primary: false,
-      itemBuilder: (context, index) {
-        final article = usedArticles[index];
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeBottom: true,
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        primary: false,
+        itemBuilder: (context, index) {
+          final article = usedArticles[index];
 
-        return SuggestedArticleContainer(article: article);
-      },
-      separatorBuilder: (context, index) => const SizedBox(
-        height: kDefaultPadding / 4,
+          return SuggestedArticleContainer(article: article);
+        },
+        separatorBuilder: (context, index) => const SizedBox(
+          height: kDefaultPadding / 4,
+        ),
+        itemCount: usedArticles.length,
       ),
-      itemCount: usedArticles.length,
     );
   }
 }
@@ -113,7 +120,7 @@ class SuggestedArticleContainer extends HookWidget {
               width: kDefaultPadding / 2,
             ),
             Icon(
-              Icons.keyboard_arrow_right_rounded,
+              LucideIcons.chevronRight,
               color: Theme.of(context).highlightColor,
             ),
           ],
@@ -161,14 +168,10 @@ class SuggestedArticleContainer extends HookWidget {
           const SizedBox(
             width: kDefaultPadding / 4,
           ),
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.verified,
-            width: 15,
-            height: 15,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColor,
-              BlendMode.srcIn,
-            ),
+            size: 15,
+            color: Theme.of(context).primaryColor,
           ),
         ],
         DotContainer(
@@ -324,14 +327,10 @@ class SuggestedNoteContainer extends HookWidget {
             const SizedBox(
               width: kDefaultPadding / 4,
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.verified,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColor,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColor,
             ),
           ],
         ],

@@ -15,7 +15,7 @@ class PropertySimpleBox extends StatelessWidget {
   });
 
   final String title;
-  final String icon;
+  final IconData icon;
   final Function() onClick;
 
   @override

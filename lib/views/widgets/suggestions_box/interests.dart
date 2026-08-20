@@ -20,24 +20,29 @@ class SuggestedInterests extends StatelessWidget {
       builder: (context, snapshot) {
         return BlocBuilder<SuggestionsBoxCubit, SuggestionsBoxState>(
           builder: (context, state) {
-            return ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              primary: false,
-              itemBuilder: (context, index) {
-                final interest = state.suggestions[index];
+            return MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              removeBottom: true,
+              child: ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  final interest = state.suggestions[index];
 
-                return SuggestedInterestContainer(
-                  interest: interest,
-                  isAdded:
-                      snapshot.data?.contains(interest.topic.toLowerCase()) ??
-                          false,
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                height: kDefaultPadding / 4,
+                  return SuggestedInterestContainer(
+                    interest: interest,
+                    isAdded:
+                        snapshot.data?.contains(interest.topic.toLowerCase()) ??
+                            false,
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: kDefaultPadding / 4,
+                ),
+                itemCount: state.suggestions.length,
               ),
-              itemCount: state.suggestions.length,
             );
           },
         );

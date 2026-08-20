@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_glass_tab_bar.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'mint_details.dart';
 import 'mints_list.dart';
 
@@ -22,32 +26,30 @@ class CreateCashuWallet extends HookWidget {
     final tabController = useTabController(initialLength: 2, initialIndex: 1);
     final mintInfos = useState<Map<String, MintInfo>>({});
 
-    return Material(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: DraggableScrollableSheet(
-          expand: false,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) => Column(
-            children: [
-              const ModalBottomSheetHandle(),
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        initialChildSize: 0.9,
+        builder: (context, scrollController) => Column(
+          children: [
+            const ModalBottomSheetHandle(),
+            if (isFluid())
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2,
+                ),
+                child: FluidGlassTabBar(
+                  segmented: true,
+                  controller: tabController,
+                  tabs: [
+                    GlassTab(label: context.t.active),
+                    GlassTab(label: context.t.recommended),
+                  ],
+                ),
+              )
+            else
               TabBar(
                 controller: tabController,
                 dividerHeight: 0,
@@ -65,49 +67,48 @@ class CreateCashuWallet extends HookWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: kDefaultPadding / 2),
-              Expanded(
-                child: TabBarView(
-                  controller: tabController,
-                  children: [
-                    _activeMintsList(
-                      scrollController: scrollController,
-                      mintInfos: mintInfos,
-                    ),
-                    _recommendedList(
-                      scrollController: scrollController,
-                      mintInfos: mintInfos,
-                    ),
-                  ],
-                ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Expanded(
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  _activeMintsList(
+                    scrollController: scrollController,
+                    mintInfos: mintInfos,
+                  ),
+                  _recommendedList(
+                    scrollController: scrollController,
+                    mintInfos: mintInfos,
+                  ),
+                ],
               ),
-              const SizedBox(height: kDefaultPadding / 2),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding / 2,
-                ),
-                child: RegularLoadingButton(
-                  title: context.t.createWallet,
-                  onClicked: () async {
-                    HapticFeedback.mediumImpact();
-                    final isSuccessful =
-                        await cashuWalletManagerCubit.createWallet(
-                      mintInfos.value.keys.toList(),
-                    );
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 2,
+              ),
+              child: RegularLoadingButton(
+                title: context.t.createWallet,
+                onClicked: () async {
+                  HapticFeedback.mediumImpact();
+                  final isSuccessful =
+                      await cashuWalletManagerCubit.createWallet(
+                    mintInfos.value.keys.toList(),
+                  );
 
-                    if (isSuccessful && context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  },
-                  isLoading: false,
-                ),
+                  if (isSuccessful && context.mounted) {
+                    Navigator.pop(context);
+                  }
+                },
+                isLoading: false,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).padding.bottom,
-              ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).padding.bottom,
+            ),
+          ],
         ),
       ),
     );
@@ -239,15 +240,10 @@ class SubmittedMintsList extends HookWidget {
       },
       decoration: InputDecoration(
         hintText: context.t.mintUrl,
-        prefixIcon: SvgPicture.asset(
+        prefixIcon: AppIcon(
           FeatureIcons.search,
-          width: 20,
-          height: 20,
-          fit: BoxFit.scaleDown,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
         suffixIcon: text.value.isEmpty
             ? null

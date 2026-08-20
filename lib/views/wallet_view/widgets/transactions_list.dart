@@ -10,6 +10,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/classic_footer.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../wallet_view.dart';
 
 class TransactionsList extends StatefulWidget {
@@ -44,18 +45,7 @@ class _TransactionsListState extends State<TransactionsList> {
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.40,

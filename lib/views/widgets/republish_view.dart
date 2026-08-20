@@ -7,10 +7,12 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
 import 'common_thumbnail.dart';
 import 'content_manager/add_discover_filter.dart';
 import 'data_providers.dart';
 import 'dotted_container.dart';
+import 'modal_sheet_container.dart';
 
 class RepublishView extends HookWidget {
   const RepublishView({super.key, required this.event});
@@ -53,19 +55,7 @@ class RepublishView extends HookWidget {
       [allRelays, favoriteRelays],
     );
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.95,
         minChildSize: 0.60,
@@ -105,14 +95,10 @@ class RepublishView extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: kDefaultPadding,
         children: [
-          SvgPicture.asset(
+          AppIcon(
             FeatureIcons.protected,
-            width: 20.w,
-            height: 20.w,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
+            size: 20.w,
+            color: Theme.of(context).primaryColorDark,
           ),
           Text(
             context.t.protectedEvent,
@@ -226,14 +212,10 @@ class RepublishView extends HookWidget {
                 Positioned(
                   bottom: 0,
                   right: 0,
-                  child: SvgPicture.asset(
+                  child: AppIcon(
                     FeatureIcons.favoriteFilled,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColor,
-                      BlendMode.srcIn,
-                    ),
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
                   ),
                 )
             ],

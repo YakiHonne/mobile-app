@@ -9,6 +9,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
 
@@ -78,20 +79,8 @@ class CashuSendECashView extends HookWidget {
       }
     }
 
-    return Container(
-      width: double.infinity,
-      height: 90.h, // Consistent height
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
+      height: 90.h,
       child: Column(
         children: [
           ModalBottomSheetAppbar(

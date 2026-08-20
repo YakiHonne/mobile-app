@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/relay_feed_cubit/relay_feed_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class RelayReviewBottomSheet extends StatefulWidget {
   const RelayReviewBottomSheet({super.key});
@@ -25,21 +27,9 @@ class _RelayReviewBottomSheetState extends State<RelayReviewBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
       ),
       child: SafeArea(
         child: SingleChildScrollView(
@@ -64,7 +54,7 @@ class _RelayReviewBottomSheetState extends State<RelayReviewBottomSheet> {
                   unratedColor:
                       Theme.of(context).highlightColor.withValues(alpha: 0.2),
                   itemBuilder: (context, _) => Icon(
-                    Icons.star_rounded,
+                    LucideIcons.star,
                     color: Theme.of(context).primaryColorDark,
                   ),
                   onRatingUpdate: (rating) {

@@ -251,7 +251,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
 
     _pendingRelays.add(cleanRelay);
 
-    later(() => getRelaysInfo(), null);
+    later(getRelaysInfo, null);
 
     return null;
   }

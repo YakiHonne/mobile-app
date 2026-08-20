@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/event.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -11,10 +12,15 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../discover_view/discover_view.dart';
 import '../settings_view/widgets/property_analytics_cache.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_pull_down_button.dart';
+import '../widgets/fluid_source_filter_row.dart';
+import '../widgets/upgrade_banner.dart';
 import 'widgets/leading_feed.dart';
 import 'widgets/media_box.dart';
 
@@ -22,11 +28,13 @@ class LeadingView extends StatefulWidget {
   LeadingView({
     super.key,
     required this.scrollController,
+    this.barsVisible,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Home view');
   }
 
   final ScrollController scrollController;
+  final ValueNotifier<bool>? barsVisible;
 
   @override
   State<LeadingView> createState() => _LeadingViewState();
@@ -87,6 +95,20 @@ class _LeadingViewState extends State<LeadingView> {
                 child: CustomScrollView(
                   controller: widget.scrollController,
                   slivers: [
+                    if (isFluid())
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).padding.top +
+                              kToolbarHeight +
+                              40,
+                        ),
+                      ),
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: kDefaultPadding),
+                        child: UpgradeBanner(dismissible: true),
+                      ),
+                    ),
                     if (state.showSuggestions &&
                         (state.onMediaLoading ||
                             (!state.onMediaLoading &&
@@ -127,12 +149,20 @@ class _LeadingViewState extends State<LeadingView> {
                                   .isEmpty
                               ? context.t.noResultsNoFilterMessage
                               : context.t.noResultsFilterMessage,
-                          icon: LogosIcons.logoMarkWhite,
+                          icon: FeatureIcons.search,
                           title: context.t.noResults,
                         ),
                       )
                     else
                       const LeadingFeed(key: ValueKey('Leading')),
+                    if (themeCubit.state.isFluid)
+                      SliverPadding(
+                        padding: EdgeInsets.only(
+                          bottom: kBottomNavigationBarHeight +
+                              kDefaultPadding * 2 +
+                              MediaQuery.of(context).padding.bottom / 2,
+                        ),
+                      ),
                   ],
                 ),
               );
@@ -142,14 +172,52 @@ class _LeadingViewState extends State<LeadingView> {
       ),
     );
 
-    widgets.add(
-      Positioned(
-        top: kDefaultPadding / 2,
-        left: 0,
-        right: 0,
-        child: LeadingNewContentComponent(widget: widget),
-      ),
-    );
+    if (!isFluid()) {
+      widgets.add(
+        Positioned(
+          top: kDefaultPadding / 2,
+          left: 0,
+          right: 0,
+          child: LeadingNewContentComponent(widget: widget),
+        ),
+      );
+    }
+
+    if (isFluid()) {
+      widgets.add(
+        Positioned(
+          left: kDefaultPadding / 2,
+          right: kDefaultPadding / 2,
+          top: MediaQuery.of(context).padding.top +
+              kToolbarHeight +
+              kDefaultPadding / 2,
+          child: Align(
+            child: ValueListenableBuilder<bool>(
+              valueListenable: widget.barsVisible ?? ValueNotifier(true),
+              builder: (context, visible, child) => IgnorePointer(
+                ignoring: !visible,
+                child: AnimatedSlide(
+                  offset: visible ? Offset.zero : const Offset(0, -1),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: AnimatedOpacity(
+                    opacity: visible ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: child,
+                  ),
+                ),
+              ),
+              child: FluidSourceFilterRow(
+                viewType: ViewDataTypes.notes,
+                onSourceChanged: () =>
+                    leadingCubit.buildLeadingFeed(isAdding: false),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return FadeIn(
       child: Stack(
@@ -203,8 +271,8 @@ class _LeadingViewState extends State<LeadingView> {
     );
   }
 
-  PullDownButton _pullDownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pullDownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -221,34 +289,21 @@ class _LeadingViewState extends State<LeadingView> {
             itemTheme: PullDownMenuItemTheme(
               textStyle: Theme.of(context).textTheme.labelMedium,
             ),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.notVisible,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
         ];
       },
       buttonBuilder: (context, showMenu) => RotatedBox(
         quarterTurns: 1,
-        child: IconButton(
-          onPressed: showMenu,
-          padding: EdgeInsets.zero,
-          style: IconButton.styleFrom(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            visualDensity: const VisualDensity(
-              horizontal: -4,
-              vertical: -4,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-          icon: Icon(
-            Icons.more_vert_rounded,
-            color: Theme.of(context).primaryColorDark,
-            size: 18,
-          ),
+        child: AppIconButton(
+          icon: LucideIcons.moreVertical,
+          onClicked: showMenu,
+          iconSize: 18,
+          iconColor: Theme.of(context).primaryColorDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
     );
@@ -282,6 +337,7 @@ class LeadingNewContentComponent extends HookWidget {
           extraContent: state.extraContent,
           isShowing: isShowing,
           onClicked: () {
+            widget.barsVisible?.value = true;
             leadingCubit.appendExtra(() {
               widget.scrollController.jumpTo(0.0);
             });
@@ -353,14 +409,10 @@ class ShowFollowingListMessageBox extends StatelessWidget {
             spacing: kDefaultPadding / 2,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.visible,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
               Text(
                 context.t.viewAs,
@@ -481,6 +533,7 @@ class CacheExceedsSizeContainer extends HookWidget {
               );
             },
             style: TextButton.styleFrom(
+              backgroundBuilder: (_, __, child) => child!,
               backgroundColor: kTransparent,
               visualDensity: VisualDensity.compact,
             ),

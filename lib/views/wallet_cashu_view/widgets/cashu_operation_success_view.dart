@@ -9,6 +9,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart'; // Ensure kWhite is available or import it
 import '../../settings_view/widgets/keys_view.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class CashuOperationSuccessView extends StatelessWidget {
   const CashuOperationSuccessView({
@@ -31,6 +32,7 @@ class CashuOperationSuccessView extends StatelessWidget {
         YNavigator.popToRoot(context);
       },
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: Theme.of(context).cardColor,
         side: BorderSide(
           color: Theme.of(context).dividerColor,
@@ -45,19 +47,7 @@ class CashuOperationSuccessView extends StatelessWidget {
       ),
     );
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
+    return ModalSheetContainer(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

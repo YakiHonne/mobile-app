@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -12,12 +13,14 @@ import '../../../models/curation_model.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/related_adding_views/article_widgets/article_selected_relays.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_zap_splits.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class AddItemToCurationView extends StatelessWidget {
   const AddItemToCurationView({
@@ -39,29 +42,15 @@ class AddItemToCurationView extends StatelessWidget {
         articleAuthor: articlePubkey,
         kind: kind,
       ),
-      child: Padding(
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.9,
-            minChildSize: 0.60,
-            maxChildSize: 0.9,
-            expand: false,
-            builder: (_, controller) => _contentColumn(controller),
-          ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          minChildSize: 0.60,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (_, controller) => _contentColumn(controller),
         ),
       ),
     );
@@ -103,16 +92,14 @@ class AddItemToCurationView extends StatelessWidget {
             child: Stack(
               children: [
                 if (state.articleCuration != ArticleCuration.curationsList)
-                  IconButton(
-                    onPressed: () {
+                  AppIconButton(
+                    icon: LucideIcons.chevronLeft,
+                    onClicked: () {
                       context
                           .read<ArticleCurationsCubit>()
                           .setView(ArticleCuration.curationsList);
                     },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 20,
-                    ),
+                    iconSize: 20,
                   ),
                 Center(
                   child: Text(
@@ -204,9 +191,11 @@ class AddCuration extends HookWidget {
   const AddCuration({
     super.key,
     required this.controller,
+    this.physics,
   });
 
   final ScrollController controller;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +207,7 @@ class AddCuration extends HookWidget {
       builder: (context, state) {
         return ListView(
           controller: controller,
+          physics: physics,
           padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding),
           children: [
             _contentStack(imageUrlController),
@@ -343,10 +333,9 @@ class AddCuration extends HookWidget {
                       context.read<ArticleCurationsCubit>().removeImage();
                       imageUrlController.clear();
                     },
-                    icon: SvgPicture.asset(
+                    icon: const AppIcon(
                       FeatureIcons.trash,
-                      width: 25,
-                      height: 25,
+                      size: 25,
                     ),
                   ),
                 ),
@@ -397,15 +386,10 @@ class AddCuration extends HookWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(
+                  const AppIcon(
                     FeatureIcons.image,
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.scaleDown,
-                    colorFilter: const ColorFilter.mode(
-                      kDimGrey,
-                      BlendMode.srcIn,
-                    ),
+                    size: 30,
+                    color: kDimGrey,
                   ),
                   const SizedBox(
                     height: kDefaultPadding / 2,
@@ -425,9 +409,11 @@ class ArticleSuggestedCurationList extends StatelessWidget {
   const ArticleSuggestedCurationList({
     super.key,
     required this.scrollController,
+    this.physics,
   });
 
   final ScrollController scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -459,6 +445,7 @@ class ArticleSuggestedCurationList extends StatelessWidget {
                 vertical: kDefaultPadding,
               ),
               controller: scrollController,
+              physics: physics,
               itemBuilder: (context, index) {
                 final curation = state.curations[index];
                 final canBeAddedValue =
@@ -516,7 +503,7 @@ class ArticleSuggestedCurationList extends StatelessWidget {
             );
       },
       icon: const Icon(
-        Icons.add_rounded,
+        LucideIcons.plus,
       ),
       style: IconButton.styleFrom(
         visualDensity: VisualDensity.compact,
@@ -598,7 +585,7 @@ class ArticleCurationsBottomBar extends HookWidget {
                         .setView(ArticleCuration.curationContent);
                   },
                   icon: const Icon(
-                    Icons.keyboard_arrow_left_rounded,
+                    LucideIcons.chevronLeft,
                     color: kWhite,
                   ),
                   style: IconButton.styleFrom(
@@ -660,11 +647,11 @@ class ArticleCurationsBottomBar extends HookWidget {
       ),
       label: Icon(
         state.articleCuration == ArticleCuration.curationsList
-            ? Icons.add_rounded
+            ? LucideIcons.plus
             : state.articleCuration == ArticleCuration.curationContent ||
                     state.articleCuration == ArticleCuration.zaps
-                ? Icons.arrow_forward_ios_rounded
-                : Icons.check,
+                ? LucideIcons.chevronRight
+                : LucideIcons.check,
         size: 20,
       ),
     );

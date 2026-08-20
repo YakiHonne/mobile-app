@@ -221,9 +221,9 @@ enum PlaceholderType { loading, error }
 
 enum RelayConnectivity { idle, searching, found, notFound }
 
-enum AppSigner { nSec, nPub, Amber, Bunker }
+enum AppSigner { nSec, nPub, Amber, Bunker, Google }
 
-enum ExternalKeyType { Amber, Bunker }
+enum ExternalKeyType { Amber, Bunker, Google }
 
 enum SendZapViewType {
   invoice,
@@ -267,7 +267,8 @@ enum ProfileData {
   smartWidgets,
   allMedia,
   videos,
-  pictures;
+  pictures,
+  premium;
 
   String getDisplayName(BuildContext context) {
     switch (this) {
@@ -291,6 +292,8 @@ enum ProfileData {
         return context.t.videos.capitalizeFirst();
       case ProfileData.pictures:
         return context.t.pictures.capitalizeFirst();
+      case ProfileData.premium:
+        return context.t.premium.capitalizeFirst();
     }
   }
 
@@ -316,6 +319,8 @@ enum ProfileData {
         return 'media';
       case ProfileData.pictures:
         return 'media';
+      case ProfileData.premium:
+        return 'premium';
     }
   }
 }

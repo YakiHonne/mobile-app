@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -20,9 +21,13 @@ import '../../../article_view/article_view.dart';
 import '../../../curation_view/curation_view.dart';
 import '../../../note_view/note_view.dart';
 import '../../../smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/content_placeholder.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_glass_tab_bar.dart';
+import '../../../widgets/fluid_pull_down_button.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../widgets/media_components/horizontal_video_view.dart';
 import '../../../widgets/media_components/picture_view.dart';
 import '../../../widgets/media_components/vertical_video_view.dart';
@@ -43,11 +48,14 @@ class ContentDashboard extends StatefulWidget {
   State<ContentDashboard> createState() => _ContentDashboardState();
 }
 
-class _ContentDashboardState extends State<ContentDashboard> {
+class _ContentDashboardState extends State<ContentDashboard>
+    with SingleTickerProviderStateMixin {
   final refreshController = RefreshController();
   bool isPublished = true;
   String selectedArticleType = dashboardArticleFilter.first;
   AppContentType selectedContentType = AppContentType.article;
+  late TabController _tabController;
+
   final contentTypes = [
     AppContentType.article,
     AppContentType.note,
@@ -59,12 +67,31 @@ class _ContentDashboardState extends State<ContentDashboard> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: contentTypes.length, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
     isPublished = !widget.isDraft;
     selectedArticleType =
         isPublished ? dashboardArticleFilter[0] : dashboardArticleFilter[1];
 
     context.read<DashboardContentCubit>().buildContent(
           re: AppContentType.article,
+          onAdd: false,
+          isPublished: isPublished,
+        );
+  }
+
+  void _onTabChanged() {
+    final type = contentTypes[_tabController.index];
+    if (selectedContentType == type) {
+      return;
+    }
+    setState(() {
+      selectedContentType = type;
+    });
+    isPublished = true;
+    context.read<DashboardContentCubit>().buildContent(
+          re: type,
           onAdd: false,
           isPublished: isPublished,
         );
@@ -78,6 +105,8 @@ class _ContentDashboardState extends State<ContentDashboard> {
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
     refreshController.dispose();
     super.dispose();
   }
@@ -112,67 +141,100 @@ class _ContentDashboardState extends State<ContentDashboard> {
       },
       buildWhen: (previous, current) => previous.isLoading != current.isLoading,
       builder: (context, state) {
-        return DefaultTabController(
-          length: 4,
-          child: SmartRefresher(
-            controller: refreshController,
-            enablePullUp: true,
-            header: const RefresherClassicHeader(),
-            footer: const RefresherClassicFooter(),
-            onLoading: () => buildContent.call(context, true, state.chosenRE),
-            onRefresh: () => buildContent.call(context, false, state.chosenRE),
-            child: CustomScrollView(
-              slivers: [
-                _appbar(context),
-                _pulldownButton(style),
-                if ((nostrRepository.userDrafts!.articleDraft.isNotEmpty &&
-                        state.chosenRE == AppContentType.article) ||
-                    (nostrRepository.userDrafts!.noteDraft.isNotEmpty &&
-                        state.chosenRE == AppContentType.note) ||
-                    (nostrRepository.userDrafts!.smartWidgetsDraft.isNotEmpty &&
-                        state.chosenRE == AppContentType.smartWidget)) ...[
-                  _ongoing(context),
-                  if (nostrRepository.userDrafts!.articleDraft.isNotEmpty &&
-                      state.chosenRE == AppContentType.article) ...[
-                    _articleDraft(),
-                  ] else if (nostrRepository.userDrafts!.noteDraft.isNotEmpty &&
-                      state.chosenRE == AppContentType.note) ...[
-                    _noteDraft(),
-                  ] else if (nostrRepository
-                          .userDrafts!.smartWidgetsDraft.isNotEmpty &&
-                      state.chosenRE == AppContentType.smartWidget) ...[
-                    _smartWidgetDraft(),
-                  ],
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: kDefaultPadding / 2,
-                    ),
-                  ),
+        final scrollBody = SmartRefresher(
+          controller: refreshController,
+          enablePullUp: true,
+          header: const RefresherClassicHeader(),
+          footer: const RefresherClassicFooter(),
+          onLoading: () => buildContent.call(context, true, state.chosenRE),
+          onRefresh: () => buildContent.call(context, false, state.chosenRE),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(height: fluidScaffoldTopInset(context)),
+              ),
+              if (!isFluid()) _appbar(context),
+              _pulldownButton(style),
+              if ((nostrRepository.userDrafts!.articleDraft.isNotEmpty &&
+                      state.chosenRE == AppContentType.article) ||
+                  (nostrRepository.userDrafts!.noteDraft.isNotEmpty &&
+                      state.chosenRE == AppContentType.note) ||
+                  (nostrRepository.userDrafts!.smartWidgetsDraft.isNotEmpty &&
+                      state.chosenRE == AppContentType.smartWidget)) ...[
+                _ongoing(context),
+                if (nostrRepository.userDrafts!.articleDraft.isNotEmpty &&
+                    state.chosenRE == AppContentType.article) ...[
+                  _articleDraft(),
+                ] else if (nostrRepository.userDrafts!.noteDraft.isNotEmpty &&
+                    state.chosenRE == AppContentType.note) ...[
+                  _noteDraft(),
+                ] else if (nostrRepository
+                        .userDrafts!.smartWidgetsDraft.isNotEmpty &&
+                    state.chosenRE == AppContentType.smartWidget) ...[
+                  _smartWidgetDraft(),
                 ],
-                SliverPadding(
-                  padding: const EdgeInsets.all(kDefaultPadding / 2),
-                  sliver: SliverToBoxAdapter(
-                    child: Text(
-                      context.t.saved.capitalizeFirst(),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: kDefaultPadding / 2,
                   ),
                 ),
-                if (state.isLoading)
-                  const SliverToBoxAdapter(child: ContentPlaceholder())
-                else
-                  const DashboardContentList(),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: kBottomNavigationBarHeight +
-                        MediaQuery.of(context).padding.bottom,
-                  ),
-                )
               ],
-            ),
+              SliverPadding(
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    context.t.saved.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ),
+              if (state.isLoading)
+                const SliverToBoxAdapter(child: ContentPlaceholder())
+              else
+                const DashboardContentList(),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: kBottomNavigationBarHeight +
+                      MediaQuery.of(context).padding.bottom,
+                ),
+              )
+            ],
           ),
         );
+
+        if (!isFluid()) {
+          return scrollBody;
+        }
+
+        return Stack(
+          children: [
+            scrollBody,
+            Positioned(
+              bottom:
+                  MediaQuery.of(context).padding.bottom + kDefaultPadding / 2,
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+              child: Align(
+                child: _buildFluidContentTabBar(context),
+              ),
+            ),
+          ],
+        );
       },
+    );
+  }
+
+  Widget _buildFluidContentTabBar(BuildContext context) {
+    return FluidGlassTabBar(
+      floating: true,
+      controller: _tabController,
+      tabs: contentTypes
+          .map(
+            (type) => GlassTab(
+              label: getContentType(type, context).capitalizeFirst(),
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -336,8 +398,8 @@ class _ContentDashboardState extends State<ContentDashboard> {
     );
   }
 
-  PullDownButton _postPulldownButton(BuildContext context, TextStyle style) {
-    return PullDownButton(
+  FluidPullDownButton _postPulldownButton(BuildContext context, TextStyle style) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -358,12 +420,9 @@ class _ContentDashboardState extends State<ContentDashboard> {
               );
             },
             title: context.t.postNote.capitalizeFirst(),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addNote,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: style,
@@ -379,12 +438,9 @@ class _ContentDashboardState extends State<ContentDashboard> {
               );
             },
             title: context.t.postArticle.capitalizeFirst(),
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addArticle,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             itemTheme: PullDownMenuItemTheme(
               textStyle: style,
@@ -399,12 +455,9 @@ class _ContentDashboardState extends State<ContentDashboard> {
                 ),
               );
             },
-            iconWidget: SvgPicture.asset(
+            iconWidget: AppIcon(
               FeatureIcons.addSmartWidget,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              color: Theme.of(context).primaryColorDark,
             ),
             title: context.t.postSmartWidget.capitalizeFirst(),
             itemTheme: PullDownMenuItemTheme(
@@ -419,21 +472,17 @@ class _ContentDashboardState extends State<ContentDashboard> {
         style: IconButton.styleFrom(
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.addRaw,
-          width: 15,
-          height: 15,
-          colorFilter: const ColorFilter.mode(
-            kWhite,
-            BlendMode.srcIn,
-          ),
+          size: 15,
+          color: kWhite,
         ),
       ),
     );
   }
 
-  PullDownButton _propertiesPulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _propertiesPulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -474,14 +523,10 @@ class _ContentDashboardState extends State<ContentDashboard> {
         style: IconButton.styleFrom(
           backgroundColor: Theme.of(context).cardColor,
         ),
-        icon: SvgPicture.asset(
+        icon: AppIcon(
           FeatureIcons.properties,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 20,
+          color: Theme.of(context).primaryColorDark,
         ),
       ),
     );
@@ -512,17 +557,7 @@ class _ContentDashboardState extends State<ContentDashboard> {
                 isActive: selectedContentType == type,
                 style: Theme.of(context).textTheme.labelLarge,
                 onClick: () {
-                  setState(() {
-                    selectedContentType = type;
-                  });
-
-                  isPublished = true;
-
-                  context.read<DashboardContentCubit>().buildContent(
-                        re: type,
-                        onAdd: false,
-                        isPublished: isPublished,
-                      );
+                  _tabController.animateTo(index);
                 },
               );
             },

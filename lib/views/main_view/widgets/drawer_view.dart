@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:numeral/numeral.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -13,6 +15,7 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
 import '../../../utils/utils.dart';
+import '../../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../../dashboard_view/dashboard_view.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
@@ -20,43 +23,98 @@ import '../../logify_view/logify_view.dart';
 import '../../points_management_view/points_management_view.dart';
 import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
+import '../../settings_view/blossom_management_view.dart';
 import '../../settings_view/settings_view.dart';
+import '../../subscription_view/subscription_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
+import '../../widgets/upgrade_banner.dart';
 import 'accounts_manager.dart';
 import 'profile_share_view.dart';
+
+/// GlassScaffold has no drawer slot, so fluid mode drives the drawer by hand:
+/// MainView parks it behind the body and slides the body aside on open.
+/// ponytail: no swipe-to-open — add a horizontal drag if it's missed.
+final mainDrawerOpen = ValueNotifier(false);
+
+/// Standard Material drawer width — how far the body is pushed in fluid mode.
+const kMainDrawerWidth = 304.0;
+
+/// Lets callers close the drawer from a context that isn't under the main
+/// Scaffold (modal sheets, post-pop callbacks) where `Scaffold.of` throws.
+final mainScaffoldKey = GlobalKey<ScaffoldState>();
+
+void openMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = true;
+  } else {
+    Scaffold.of(context).openDrawer();
+  }
+}
+
+void closeMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = false;
+  } else {
+    mainScaffoldKey.currentState?.closeDrawer();
+  }
+}
 
 class MainViewDrawer extends HookWidget {
   const MainViewDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isGlass = themeCubit.state.isFluid;
+
     return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
-        return Drawer(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding,
-              vertical: kDefaultPadding / 1.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                kDefaultPadding,
+        if (!isGlass) {
+          return Drawer(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding,
+                vertical: kDefaultPadding / 1.5,
               ),
-              border: Border(
-                right: BorderSide(
-                  color: Theme.of(context).dividerColor,
-                  width: 0.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding),
+                border: Border(
+                  right: BorderSide(
+                    color: Theme.of(context).dividerColor,
+                    width: 0.5,
+                  ),
                 ),
               ),
+              child: _items(context, state),
             ),
-            child: _items(context, state),
+          );
+        }
+
+        // Glass mode: bare items, a hairline marking the seam with the body.
+        return Container(
+          width: kMainDrawerWidth,
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kDefaultPadding,
+            bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding,
+            left: kDefaultPadding / 1.5,
+            right: kDefaultPadding / 1.5,
           ),
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: _items(context, state),
         );
       },
     );
@@ -65,9 +123,10 @@ class MainViewDrawer extends HookWidget {
   Column _items(BuildContext context, MainState state) {
     return Column(
       children: [
-        const SizedBox(
-          height: kToolbarHeight / 1.2,
-        ),
+        if (!isFluid())
+          const SizedBox(
+            height: kToolbarHeight / 1.2,
+          ),
         if (currentSigner == null)
           SvgPicture.asset(
             LogosIcons.logoBlack,
@@ -82,14 +141,16 @@ class MainViewDrawer extends HookWidget {
           height: kDefaultPadding,
         ),
         _drawerItems(context, state),
+        const UpgradeBanner(),
         if (currentSigner != null)
           _accountManager(context)
         else
           _login(context),
         if (canSign()) _walletManager(state),
-        const SizedBox(
-          height: kBottomNavigationBarHeight / 2,
-        ),
+        if (!isFluid())
+          const SizedBox(
+            height: kBottomNavigationBarHeight / 2,
+          ),
       ],
     );
   }
@@ -122,7 +183,7 @@ class MainViewDrawer extends HookWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 context.read<MainCubit>().updateIndex(MainViews.wallet);
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               },
               child: Column(
                 children: [
@@ -205,14 +266,10 @@ class MainViewDrawer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 3,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.sats,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 20,
+                color: Theme.of(context).primaryColorDark,
               ),
             ],
           ),
@@ -255,19 +312,15 @@ class MainViewDrawer extends HookWidget {
           await Future.delayed(const Duration(milliseconds: 500)).then(
             (value) {
               if (context.mounted) {
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               }
             },
           );
         },
-        icon: SvgPicture.asset(
+        icon: const AppIcon(
           FeatureIcons.log,
-          width: kToolbarHeight / 2.5,
-          height: kToolbarHeight / 2.5,
-          colorFilter: const ColorFilter.mode(
-            kWhite,
-            BlendMode.srcIn,
-          ),
+          size: kToolbarHeight / 2.5,
+          color: kWhite,
         ),
         label: Text(
           context.t.login.capitalizeFirst(),
@@ -314,14 +367,10 @@ class MainViewDrawer extends HookWidget {
                     vertical: -3,
                   ),
                 ),
-                icon: SvgPicture.asset(
+                icon: AppIcon(
                   FeatureIcons.qr,
-                  width: 25,
-                  height: 25,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 25,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
             ],
@@ -336,21 +385,15 @@ class MainViewDrawer extends HookWidget {
       child: DrawerItem(
         isSelected: false,
         onClicked: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
-            elevation: 0,
-            builder: (_) {
-              return BlocProvider.value(
-                value: context.read<MainCubit>(),
-                child: AccountManager(
-                  scaffoldContext: context,
-                ),
-              );
-            },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            builder: (_) => BlocProvider.value(
+              value: context.read<MainCubit>(),
+              child: AccountManager(
+                scaffoldContext: context,
+              ),
+            ),
           );
         },
         icon: FeatureIcons.repost,
@@ -365,20 +408,29 @@ class MainViewDrawer extends HookWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: ListView(
-          children: [
-            if (canSign()) ...[
-              _profileDrawerItem(state, context),
+        child: ScrollShadow(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: ListView(
+            children: [
+              if (canSign()) ...[
+                _profileDrawerItem(state, context),
+              ],
+              _articlesDrawerItem(state, context),
+              _exploreDrawerItem(state, context),
+              _relaysOrbitDrawerItem(state, context),
+              if (canSign()) ...[
+                _smartWidgetDrawerItem(state, context),
+                _dashboardDrawerItem(state, context),
+                _subscriptionDrawerItem(state, context),
+                _blossomDrawerItem(state, context),
+                // Store rules forbid surfacing external paid subscriptions in
+                // IAP builds.
+                if (!kIapEnabled)
+                  _creatorsSubscriptionsDrawerItem(state, context),
+              ],
+              _settingDrawerItem(state, context),
             ],
-            _articlesDrawerItem(state, context),
-            _exploreDrawerItem(state, context),
-            _relaysOrbitDrawerItem(state, context),
-            if (canSign()) ...[
-              _smartWidgetDrawerItem(state, context),
-              _dashboardDrawerItem(state, context),
-            ],
-            _settingDrawerItem(state, context),
-          ],
+          ),
         ),
       ),
     );
@@ -393,7 +445,7 @@ class MainViewDrawer extends HookWidget {
           (context) => SettingsView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.settings,
       selectedIcon: FeatureIcons.propertiesFilled,
@@ -410,11 +462,65 @@ class MainViewDrawer extends HookWidget {
           (context) => DashboardView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.dashboard2,
       selectedIcon: FeatureIcons.propertiesFilled,
       title: context.t.dashboard.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _subscriptionDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.hidden,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const SubscriptionView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: FeatureIcons.walletAvailable,
+      selectedIcon: FeatureIcons.walletAvailable,
+      title: context.t.subscription.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _blossomDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.hidden,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const BlossomManagementView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: FeatureIcons.media,
+      selectedIcon: FeatureIcons.media,
+      title: context.t.blossomStorage.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _creatorsSubscriptionsDrawerItem(
+    MainState state,
+    BuildContext context,
+  ) {
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const CreatorsSubscriptionsView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: LucideIcons.crown,
+      selectedIcon: LucideIcons.crown,
+      title: context.t.creatorsSubscriptions.capitalizeFirst(),
     );
   }
 
@@ -423,7 +529,7 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.articles,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.articles);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.article,
       selectedIcon: FeatureIcons.articleFilled,
@@ -440,10 +546,10 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExplorePacksView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.discover,
-      selectedIcon: FeatureIcons.articleFilled,
+      selectedIcon: FeatureIcons.discoverFilled,
       title: context.t.explore.capitalizeFirst(),
     );
   }
@@ -453,10 +559,10 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.smartWidgets,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.smartWidgets);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.smartWidget,
-      selectedIcon: FeatureIcons.smartWidgetFilled,
+      selectedIcon: FeatureIcons.smartWidget,
       title: context.t.smartWidget.capitalizeFirst(),
     );
   }
@@ -470,7 +576,7 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExploreRelaysView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.relaysOrbit,
       selectedIcon: FeatureIcons.relaysOrbit,
@@ -489,7 +595,7 @@ class MainViewDrawer extends HookWidget {
           ),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.user,
       selectedIcon: FeatureIcons.user,
@@ -509,11 +615,11 @@ class MainViewDrawer extends HookWidget {
   BlocBuilder<PointsManagementCubit, PointsManagementState> _pointsSystem() {
     return BlocBuilder<PointsManagementCubit, PointsManagementState>(
       builder: (context, state) {
-        if (state.userGlobalStats != null) {
+        if (state.isSystemLoggedIn) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              Scaffold.of(context).closeDrawer();
+              closeMainDrawer(context);
               Navigator.pushNamed(
                 context,
                 PointsStatisticsView.routeName,
@@ -534,7 +640,7 @@ class MainViewDrawer extends HookWidget {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              Scaffold.of(context).closeDrawer();
+              closeMainDrawer(context);
               showBlurredModal(
                 context: context,
                 view: const PointsLoginPopup(),
@@ -548,14 +654,10 @@ class MainViewDrawer extends HookWidget {
                 color: Theme.of(context).cardColor,
               ),
               alignment: Alignment.center,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.reward,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           );
@@ -735,8 +837,8 @@ class DrawerItem extends StatelessWidget {
 
   final bool isSelected;
   final Function() onClicked;
-  final String icon;
-  final String selectedIcon;
+  final IconData icon;
+  final IconData selectedIcon;
   final String title;
 
   @override
@@ -751,14 +853,10 @@ class DrawerItem extends StatelessWidget {
         horizontalTitleGap: kDefaultPadding / 2,
         visualDensity: const VisualDensity(vertical: -1),
         splashColor: kTransparent,
-        leading: SvgPicture.asset(
+        leading: AppIcon(
           isSelected ? selectedIcon : icon,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
-          width: 24,
-          height: 24,
+          color: Theme.of(context).primaryColorDark,
+          size: 24,
         ),
         title: Text(
           title,

@@ -8,6 +8,7 @@ import '../../../logic/profile_cubit/profile_follow_authors_cubit/profile_follow
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/user_profile_container.dart';
 
 class ProfileConnectionsView extends StatelessWidget {
@@ -27,24 +28,10 @@ class ProfileConnectionsView extends StatelessWidget {
         pubkey: pubkey,
         isFollowers: isFollowers,
       ),
-      child: Padding(
+      child: ModalSheetContainer(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
-          child: _contentColumn(context),
-        ),
+        child: _contentColumn(context),
       ),
     );
   }

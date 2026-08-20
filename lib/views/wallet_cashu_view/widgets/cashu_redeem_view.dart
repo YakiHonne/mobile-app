@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/cashu/models/mint_info.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -11,6 +12,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/qr_scanner_modal.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
@@ -68,20 +70,8 @@ class CashuRedeemView extends HookWidget {
       return null; // No cleanup needed
     }, [encodedToken]); // Run when encodedToken changes
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      margin: EdgeInsets.only(
+    return ModalSheetContainer(
+      padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Column(
@@ -138,13 +128,13 @@ class CashuRedeemView extends HookWidget {
                 decoration: InputDecoration(
                   hintText: context.t.pasteToken,
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.paste),
+                    icon: const Icon(LucideIcons.clipboardPaste),
                     onPressed: () async {
                       HapticFeedback.mediumImpact();
-                      final data = await Clipboard.getData('text/plain');
+                      final text = await getClipboardTextSafely();
 
-                      if (data?.text != null) {
-                        tokenController.text = data!.text!;
+                      if (text != null) {
+                        tokenController.text = text;
                         parseToken();
                       }
                     },

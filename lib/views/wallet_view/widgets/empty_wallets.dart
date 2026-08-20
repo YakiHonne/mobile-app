@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/modal_with_blur.dart';
+import '../../widgets/wallet_type_switch.dart';
 import 'wallet_options_view.dart';
 
 class DisconnectedWallet extends HookWidget {
@@ -28,6 +32,20 @@ class DisconnectedWallet extends HookWidget {
           height: kDefaultPadding,
         ),
         _emptyWalletAdd(context),
+        if (isFluid()) ...[
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: WalletTypeSwitch(
+              isCashu: false,
+              onTap: () {
+                context.read<MainCubit>().changeWalletType();
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -51,16 +69,16 @@ class DisconnectedWallet extends HookWidget {
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
           visualDensity: VisualDensity.comfortable,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.addRaw,
-              width: 15,
-              height: 15,
+              size: 15,
             ),
             const SizedBox(
               width: kDefaultPadding / 2,
@@ -102,14 +120,10 @@ class WalletImage extends StatelessWidget {
             color: Theme.of(context).cardColor,
           ),
           alignment: Alignment.center,
-          child: SvgPicture.asset(
+          child: AppIcon(
             FeatureIcons.walletAdd,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-            width: 55,
-            height: 55,
+            color: Theme.of(context).primaryColorDark,
+            size: 55,
           ),
         ),
         if (removeExtra == null)
@@ -145,7 +159,6 @@ class WalletImage extends StatelessWidget {
               alignment: Alignment.center,
               child: SvgPicture.asset(
                 FeatureIcons.nwc,
-                fit: BoxFit.scaleDown,
                 width: 35,
                 height: 35,
               ),

@@ -9,6 +9,7 @@ import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/article_model.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'send_amount_set.dart';
 import 'send_tips_invoice.dart';
 import 'send_zaps_results.dart';
@@ -29,6 +30,7 @@ class SendZapsView extends HookWidget {
     this.valMin,
     this.initialVal,
     this.lnbc,
+    this.extraTags,
   });
 
   final bool isZapSplit;
@@ -43,6 +45,7 @@ class SendZapsView extends HookWidget {
   final num? valMax;
   final num? valMin;
   final num? initialVal;
+  final List<List<String>>? extraTags;
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +114,12 @@ class SendZapsView extends HookWidget {
     required ValueNotifier<Map<String, dynamic>> resultData,
     required ValueNotifier<ZapPaymentMethod> zapPaymentMethod,
   }) {
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       height: 90.h,
       padding: MediaQuery.of(context).viewInsets.copyWith(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
           ),
-      decoration: _buildContainerDecoration(context),
       child: Column(
         children: [
           const ModalBottomSheetHandle(),
@@ -136,21 +137,6 @@ class SendZapsView extends HookWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  /// Build container decoration
-  BoxDecoration _buildContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(kDefaultPadding),
-        topRight: Radius.circular(kDefaultPadding),
-      ),
-      border: Border.all(
-        color: Theme.of(context).dividerColor,
-        width: 0.5,
       ),
     );
   }
@@ -198,6 +184,7 @@ class SendZapsView extends HookWidget {
       initialVal: initialVal,
       lnbc: lnbcValue.value,
       zapPaymentMethod: zapPaymentMethod,
+      extraTags: extraTags,
     );
   }
 

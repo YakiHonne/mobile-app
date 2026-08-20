@@ -13,9 +13,11 @@ class FrameContent extends HookWidget {
   const FrameContent({
     super.key,
     this.scrollController,
+    this.physics,
   });
 
   final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +155,7 @@ class FrameContent extends HookWidget {
       builder: (context, state) {
         return ListView(
           controller: scrollController,
+          physics: physics,
           padding: EdgeInsets.all(isTablet ? 10.w : kDefaultPadding / 2),
           children: components,
         );

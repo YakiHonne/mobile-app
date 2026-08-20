@@ -11,8 +11,10 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/add_content_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_sheet.dart';
 import '../../widgets/profile_picture.dart';
 
 class ArticleHeader extends StatelessWidget {
@@ -86,11 +88,6 @@ class ArticleHeader extends StatelessWidget {
                     visualDensity: const VisualDensity(
                       vertical: -1,
                     ),
-                    backgroundColor: isDisabled
-                        ? Theme.of(context).highlightColor
-                        : state.isFollowingAuthor
-                            ? Theme.of(context).cardColor
-                            : Theme.of(context).primaryColor,
                   ),
                   child: Text(
                     state.isFollowingAuthor
@@ -109,10 +106,9 @@ class ArticleHeader extends StatelessWidget {
           const SizedBox(
             width: kDefaultPadding / 4,
           ),
-          NewBorderedIconButton(
+          AppIconButton(
             onClicked: () {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return SendZapsView(
@@ -123,13 +119,12 @@ class ArticleHeader extends StatelessWidget {
                         '${EventKind.LONG_FORM}:${article.pubkey}:${article.identifier}',
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
             icon: FeatureIcons.zaps,
+            size: 40,
+            iconSize: 20,
             buttonStatus: !state.canBeZapped
                 ? ButtonStatus.disabled
                 : ButtonStatus.inactive,
@@ -151,6 +146,7 @@ class ArticleHeader extends StatelessWidget {
         );
       },
       style: TextButton.styleFrom(
+        backgroundBuilder: (_, __, child) => child!,
         backgroundColor: Theme.of(context).cardColor,
         visualDensity: VisualDensity.comfortable,
       ),
@@ -199,14 +195,10 @@ class ArticleHeader extends StatelessWidget {
                         const SizedBox(
                           width: kDefaultPadding / 4,
                         ),
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.verified,
-                          width: 15,
-                          height: 15,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).primaryColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 15,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ],
                     );

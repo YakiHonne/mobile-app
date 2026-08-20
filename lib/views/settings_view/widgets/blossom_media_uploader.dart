@@ -10,6 +10,8 @@ import 'package:path_drawing/path_drawing.dart';
 import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class BlossomMediaUploader extends HookWidget {
   const BlossomMediaUploader({super.key});
@@ -26,13 +28,7 @@ class BlossomMediaUploader extends HookWidget {
       return null;
     }, [servers]);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(kDefaultPadding),
-        ),
-      ),
+    return ModalSheetContainer(
       child: SafeArea(
         top: false,
         child: Column(
@@ -86,14 +82,10 @@ class BlossomMediaUploader extends HookWidget {
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: SvgPicture.asset(
+                            child: AppIcon(
                               FeatureIcons.media,
-                              width: 40,
-                              height: 40,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).primaryColorDark,
-                                BlendMode.srcIn,
-                              ),
+                              size: 40,
+                              color: Theme.of(context).primaryColorDark,
                             ),
                           ),
                           const SizedBox(height: kDefaultPadding),
@@ -132,14 +124,10 @@ class BlossomMediaUploader extends HookWidget {
                       color: Theme.of(context).colorScheme.error,
                       shape: BoxShape.circle,
                     ),
-                    child: SvgPicture.asset(
+                    child: const AppIcon(
                       FeatureIcons.closeRaw,
-                      colorFilter: const ColorFilter.mode(
-                        kWhite,
-                        BlendMode.srcIn,
-                      ),
-                      width: 16,
-                      height: 16,
+                      color: kWhite,
+                      size: 16,
                     ),
                   ),
                 ),
@@ -169,14 +157,10 @@ class BlossomMediaUploader extends HookWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
+                        AppIcon(
                           FeatureIcons.video,
-                          width: 40,
-                          height: 40,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).hintColor,
-                            BlendMode.srcIn,
-                          ),
+                          size: 40,
+                          color: Theme.of(context).hintColor,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -315,43 +299,28 @@ class BlossomMediaUploader extends HookWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: TextButton(
-        onPressed: canUpload
-            ? () async {
-                final bytes = await file.readAsBytes();
-                final mimeType = _getMimeType(file.path);
-                if (context.mounted) {
-                  await context.read<BlossomCubit>().uploadMedia(
-                        fileBytes: bytes,
-                        filePath: file.path,
-                        mimeType: mimeType,
-                        targetServers: selectedServers,
-                      );
-                  Navigator.pop(context);
+      child: SizedBox(
+        width: double.infinity,
+        child: TextButton(
+          onPressed: canUpload
+              ? () async {
+                  final bytes = await file.readAsBytes();
+                  final mimeType = _getMimeType(file.path);
+                  if (context.mounted) {
+                    await context.read<BlossomCubit>().uploadMedia(
+                          fileBytes: bytes,
+                          filePath: file.path,
+                          mimeType: mimeType,
+                          targetServers: selectedServers,
+                        );
+                    Navigator.pop(context);
+                  }
                 }
-              }
-            : null,
-        style: TextButton.styleFrom(
-          backgroundColor: canUpload
-              ? Theme.of(context).cardColor
-              : Theme.of(context).disabledColor,
-          foregroundColor: canUpload
-              ? Theme.of(context).primaryColorDark
-              : Theme.of(context).highlightColor,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: canUpload
-                  ? Theme.of(context).dividerColor
-                  : Colors.transparent,
-              width: 0.5,
-            ),
+              : null,
+          child: Text(
+            context.t.upload.toUpperCase(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-        child: Text(
-          context.t.upload.toUpperCase(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );

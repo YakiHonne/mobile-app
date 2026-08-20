@@ -16,14 +16,16 @@ import '../../repositories/nostr_data_repository.dart';
 import '../../utils/utils.dart';
 import '../article_view/article_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/article_container.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/content_renderer/content_renderer.dart';
 import '../widgets/content_stats.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_scaffold.dart';
+import '../widgets/fluid_sheet.dart';
 import '../widgets/media_components/horizontal_video_view.dart';
 import '../widgets/media_components/vertical_video_view.dart';
 import '../widgets/no_content_widgets.dart';
@@ -62,9 +64,11 @@ class CurationView extends HookWidget {
       )..initView(),
       child: BlocBuilder<CurationCubit, CurationState>(
         builder: (context, state) {
-          return Scaffold(
-            appBar: CustomAppBar(title: context.t.curation.capitalizeFirst()),
-            bottomNavigationBar: Visibility(
+          return FluidScaffold(
+            title: context.t.curation.capitalizeFirst(),
+            bottomBarHeight: kBottomNavigationBarHeight +
+                MediaQuery.of(context).padding.bottom,
+            bottomBar: Visibility(
               visible: !isUserMuted(curation.pubkey),
               maintainSize: true,
               maintainAnimation: true,
@@ -135,6 +139,9 @@ class CurationContentView extends StatelessWidget {
         controller: scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
             _curationInfoContainer(),
             SliverToBoxAdapter(
               child: Padding(
@@ -540,12 +547,12 @@ class CurationHeader extends HookWidget {
     );
   }
 
-  NewBorderedIconButton _zapButton(
+  CustomizedIconButton _zapButton(
       BuildContext context, Metadata metadata, CurationState state) {
-    return NewBorderedIconButton(
+    return CustomizedIconButton(
       onClicked: () {
-        showModalBottomSheet(
-          elevation: 0,
+        showAppModalSheet(
+     
           context: context,
           builder: (_) {
             return SendZapsView(
@@ -556,9 +563,7 @@ class CurationHeader extends HookWidget {
                   '${curation.kind}:${curation.pubkey}:${curation.identifier}',
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
+      
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -585,6 +590,7 @@ class CurationHeader extends HookWidget {
                   }
                 },
                 style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
                   visualDensity: const VisualDensity(
                     vertical: -1,
                   ),
@@ -646,14 +652,10 @@ class CurationHeader extends HookWidget {
                     const SizedBox(
                       width: kDefaultPadding / 4,
                     ),
-                    SvgPicture.asset(
+                    AppIcon(
                       FeatureIcons.verified,
-                      width: 15,
-                      height: 15,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColor,
-                        BlendMode.srcIn,
-                      ),
+                      size: 15,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ],
                 )

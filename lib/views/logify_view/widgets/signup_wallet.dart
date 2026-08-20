@@ -1,76 +1,102 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../../common/common_regex.dart';
 import '../../../logic/logify_cubit/logify_cubit.dart';
-import '../../../models/wallet_model.dart';
 import '../../../utils/utils.dart';
-import '../../wallet_view/widgets/empty_wallets.dart';
-import '../../wallet_view/widgets/export_wallets.dart';
-import '../../widgets/modal_with_blur.dart';
+import '../../widgets/app_icon.dart';
 
 class SignupWallet extends HookWidget {
-  const SignupWallet({super.key});
+  const SignupWallet({
+    super.key,
+    this.nameCtrl,
+    this.isWalletCreated,
+    this.errorMessage,
+  });
+
+  final TextEditingController? nameCtrl;
+  final ValueNotifier<bool>? isWalletCreated;
+  final ValueNotifier<String>? errorMessage;
 
   @override
   Widget build(BuildContext context) {
-    final isWalletAvailable = useState(
-      context.read<LogifyCubit>().state.wallet.isNotEmpty,
-    );
-
-    final isCreatingWallet = useState(false);
-    final name = useTextEditingController(
+    // Fall back to internal state when params are not provided (non-fluid flow)
+    final internalNameCtrl = useTextEditingController(
       text: context.read<LogifyCubit>().state.name,
     );
+    final internalWalletCreated = useState(
+      context.read<LogifyCubit>().state.wallet.isNotEmpty,
+    );
+    final internalError = useState('');
 
-    final errorMessage = useState('');
+    final effectiveNameCtrl = nameCtrl ?? internalNameCtrl;
+    final effectiveWalletCreated = isWalletCreated ?? internalWalletCreated;
+    final effectiveError = errorMessage ?? internalError;
 
     final c1 = Column(
       key: const ValueKey('c1'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const WalletImage(
-          removeExtra: true,
-        ),
-        const SizedBox(
-          height: kDefaultPadding,
-        ),
         Text(
-          context.t.letsGetStarted.capitalizeFirst(),
+          context.t.dontHaveWallet.capitalizeFirst(),
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.w900,
               ),
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(
-          height: kDefaultPadding / 4,
+        const SizedBox(height: kDefaultPadding * 1.5),
+        // Glowing circle with sats icon
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).primaryColorLight,
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.45),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.15),
+                blurRadius: 20,
+                spreadRadius: 4,
+              ),
+            ],
+            border: Border.all(
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+              width: 2,
+            ),
+          ),
+          child: const Center(
+            child: AppIcon(
+              FeatureIcons.sats,
+              size: 60,
+              color: kWhite,
+            ),
+          ),
         ),
-        Text(
-          context.t.createWalletSendRecSats.capitalizeFirst(),
-          style: Theme.of(context).textTheme.labelMedium,
-        ),
-        const SizedBox(height: kDefaultPadding),
+        const SizedBox(height: kDefaultPadding * 1.5),
+        // Username + domain row
         Row(
           children: [
             Flexible(
               child: TextFormField(
-                controller: name,
-                style: Theme.of(context).textTheme.labelMedium,
-                onChanged: (_) {
-                  errorMessage.value = '';
-                },
+                controller: effectiveNameCtrl,
+                style: Theme.of(context).textTheme.labelLarge,
+                onChanged: (_) => effectiveError.value = '',
                 decoration: InputDecoration(
                   hintText: context.t.yourName,
-                  hintStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  hintStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
                         color: Theme.of(context).highlightColor,
                       ),
                 ),
               ),
             ),
-            const SizedBox(
-              width: kDefaultPadding / 4,
-            ),
+            const SizedBox(width: kDefaultPadding / 2),
             Text(
               '@wallet.yakihonne.com',
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -79,30 +105,18 @@ class SignupWallet extends HookWidget {
             ),
           ],
         ),
-        if (errorMessage.value.isNotEmpty) ...[
-          const SizedBox(
-            height: kDefaultPadding / 4,
-          ),
+        if (effectiveError.value.isNotEmpty) ...[
+          const SizedBox(height: kDefaultPadding / 4),
           Align(
             alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: kDefaultPadding / 4,
-              ),
-              child: Text(
-                errorMessage.value,
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: kRed,
-                    ),
-              ),
+            child: Text(
+              effectiveError.value,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: kRed,
+                  ),
             ),
           ),
         ],
-        const SizedBox(
-          height: kDefaultPadding / 2,
-        ),
-        _outlinedButton(
-            isCreatingWallet, name, errorMessage, context, isWalletAvailable),
       ],
     );
 
@@ -119,9 +133,7 @@ class SignupWallet extends HookWidget {
                       fontWeight: FontWeight.w900,
                     ),
               ),
-              const SizedBox(
-                height: kDefaultPadding,
-              ),
+              const SizedBox(height: kDefaultPadding),
               Container(
                 padding: const EdgeInsets.all(30),
                 margin: const EdgeInsets.all(kDefaultPadding / 2),
@@ -130,19 +142,13 @@ class SignupWallet extends HookWidget {
                   color: Theme.of(context).primaryColorLight,
                   border: Border.all(color: kGreen, width: 5),
                 ),
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.walletAvailable,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
-                  width: 80,
-                  height: 80,
+                  color: Theme.of(context).primaryColorDark,
+                  size: 80,
                 ),
               ),
-              const SizedBox(
-                height: kDefaultPadding,
-              ),
+              const SizedBox(height: kDefaultPadding),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding / 1.5,
@@ -156,27 +162,17 @@ class SignupWallet extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgPicture.asset(
+                    AppIcon(
                       FeatureIcons.zap,
-                      width: 22,
-                      height: 22,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColorDark,
-                        BlendMode.srcIn,
-                      ),
+                      size: 22,
+                      color: Theme.of(context).primaryColorDark,
                     ),
-                    const SizedBox(
-                      width: kDefaultPadding / 4,
-                    ),
-                    Text(
-                      state.lightningAddress,
-                    ),
+                    const SizedBox(width: kDefaultPadding / 4),
+                    Text(state.lightningAddress),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: kDefaultPadding / 2,
-              ),
+              const SizedBox(height: kDefaultPadding / 2),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -186,9 +182,7 @@ class SignupWallet extends HookWidget {
                     checkColor: kWhite,
                     onChanged: context.read<LogifyCubit>().setIncludeWallet,
                   ),
-                  Text(
-                    context.t.linkWalletToProfile.capitalizeFirst(),
-                  ),
+                  Text(context.t.linkWalletToProfile.capitalizeFirst()),
                 ],
               ),
               Text(
@@ -206,86 +200,15 @@ class SignupWallet extends HookWidget {
     return BlocBuilder<LogifyCubit, LogifyState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: isFluid() ? 0 : kDefaultPadding,
+          ),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: isWalletAvailable.value ? c2 : c1,
+            child: effectiveWalletCreated.value ? c2 : c1,
           ),
         );
       },
-    );
-  }
-
-  SizedBox _outlinedButton(
-      ValueNotifier<bool> isCreatingWallet,
-      TextEditingController name,
-      ValueNotifier<String> errorMessage,
-      BuildContext context,
-      ValueNotifier<bool> isWalletAvailable) {
-    return SizedBox(
-      width: double.infinity,
-      child: Builder(
-        builder: (_) {
-          return OutlinedButton(
-            onPressed: () async {
-              isCreatingWallet.value = true;
-
-              if (name.text.isEmpty) {
-                errorMessage.value =
-                    context.t.usernameRequired.capitalizeFirst();
-              } else if (!emailNamingRegex.hasMatch(name.text)) {
-                errorMessage.value =
-                    context.t.onlyLettersNumber.capitalizeFirst();
-              } else {
-                await context.read<LogifyCubit>().createWallet(
-                      onSuccess: (la, wallet) async {
-                        isWalletAvailable.value = true;
-
-                        await Future.delayed(
-                          const Duration(milliseconds: 500),
-                        ).then(
-                          (_) {
-                            if (context.mounted) {
-                              showBlurredModal(
-                                context: context,
-                                isDismissable: false,
-                                view: ExportWalletOnCreation(
-                                  wallet: NostrWalletConnectModel(
-                                    id: '',
-                                    kind: 0,
-                                    lud16: la,
-                                    connectionString: wallet,
-                                    relays: Uri.parse(wallet).queryParametersAll['relay'] ?? const [],
-                                    secret: '',
-                                    walletPubkey: '',
-                                    permissions: const [],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      },
-                      name: name.text,
-                      onNameFailure: () {
-                        errorMessage.value = context.t.usernameTaken;
-                      },
-                    );
-              }
-
-              isCreatingWallet.value = false;
-            },
-            child: isCreatingWallet.value
-                ? SpinKitCircle(
-                    color: Theme.of(context).primaryColor,
-                    size: 21,
-                  )
-                : Text(
-                    context.t.createWallet.capitalizeFirst(),
-                  ),
-          );
-        },
-      ),
     );
   }
 }

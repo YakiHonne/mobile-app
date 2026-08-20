@@ -15,8 +15,11 @@ import '../../models/app_models/extended_model.dart';
 import '../../models/event_relation.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import '../main_view/widgets/app_bar_widgets.dart' show NotificationTypes;
 import '../widgets/classic_footer.dart';
+import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_blur_container.dart';
 import '../widgets/no_content_widgets.dart';
 import 'widgets/notification_global_container.dart';
 import 'widgets/notifications_customization.dart';
@@ -25,11 +28,13 @@ class NotificationsView extends HookWidget {
   NotificationsView({
     super.key,
     required this.scrollController,
+    this.barsVisible,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Notifications view');
   }
 
   final ScrollController scrollController;
+  final ValueNotifier<bool>? barsVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,7 @@ class NotificationsView extends HookWidget {
           );
         }
 
-        return DefaultTabController(
+        final tabView = DefaultTabController(
           length: 5,
           child: Column(
             children: [
@@ -113,6 +118,76 @@ class NotificationsView extends HookWidget {
               ),
             ],
           ),
+        );
+
+        if (!isFluid()) {
+          return tabView;
+        }
+
+        return Stack(
+          children: [
+            tabView,
+            Positioned(
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
+              top: MediaQuery.of(context).padding.top +
+                  kToolbarHeight +
+                  kDefaultPadding / 2,
+              child: Align(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: barsVisible ?? ValueNotifier(true),
+                  builder: (context, visible, child) => IgnorePointer(
+                    ignoring: !visible,
+                    child: AnimatedSlide(
+                      offset: visible ? Offset.zero : const Offset(0, -1),
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: AnimatedOpacity(
+                        opacity: visible ? 1 : 0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: child,
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 60.w,
+                    child: FluidBlurContainer(
+                      borderRadius: kDefaultPadding * 2,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Expanded(child: NotificationTypes()),
+                          SizedBox(
+                            height: 20,
+                            child: VerticalDivider(
+                              width: 1,
+                              thickness: 0.5,
+                              color: Theme.of(context).dividerColor,
+                            ),
+                          ),
+                          CustomIconButton(
+                            onClicked: () => doIfCanSign(
+                              func: () => YNavigator.pushPage(
+                                context,
+                                (context) => const NotificationsCustomization(),
+                              ),
+                              context: context,
+                            ),
+                            icon: FeatureIcons.settings,
+                            size: 20,
+                            backgroundColor: kTransparent,
+                            borderColor: kTransparent,
+                            vd: -1,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -161,46 +236,51 @@ class SelectedNotifications extends HookWidget {
       [index, state.events],
     );
 
-    if (usedEvents.isEmpty) {
-      return SmartRefresher(
-        controller: controller,
-        onRefresh: () =>
-            context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
-        child: EmptyList(
-          description: context.t.noNotificationCanBeFound.capitalizeFirst(),
-          icon: FeatureIcons.notification,
-        ),
-      );
-    }
+    final topInset = isFluid()
+        ? MediaQuery.of(context).padding.top + kToolbarHeight + 50
+        : 0.0;
 
     return SmartRefresher(
       controller: controller,
-      scrollController: scrollController,
-      enablePullUp: true,
+      scrollController: usedEvents.isEmpty ? null : scrollController,
+      enablePullUp: usedEvents.isNotEmpty,
       header: const RefresherClassicHeader(),
       onRefresh: () =>
           context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        separatorBuilder: (context, index) => const Divider(
-          thickness: 0.5,
-          height: 0,
-        ),
-        padding: EdgeInsets.only(
-          bottom: kDefaultPadding,
-          top: kDefaultPadding / 2,
-          left: isMobile ? kDefaultPadding / 2 : 20.w,
-          right: isMobile ? kDefaultPadding / 2 : 20.w,
-        ),
-        itemBuilder: (context, index) {
-          final ev = usedEvents[index];
-          return NotificationGlobalContainer(
-            key: ValueKey(ev.id),
-            mainEvent: ev,
-          );
-        },
-        itemCount: usedEvents.length,
-      ),
+      child: usedEvents.isEmpty
+          ? Padding(
+              padding: EdgeInsets.only(top: topInset),
+              child: EmptyList(
+                description:
+                    context.t.noNotificationCanBeFound.capitalizeFirst(),
+                icon: FeatureIcons.notification,
+              ),
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const Divider(
+                thickness: 0.5,
+                height: 0,
+              ),
+              padding: EdgeInsets.only(
+                top: topInset,
+                bottom: isFluid()
+                    ? kBottomNavigationBarHeight +
+                        kDefaultPadding * 2 +
+                        MediaQuery.of(context).padding.bottom / 2
+                    : kDefaultPadding,
+                left: isMobile ? kDefaultPadding / 2 : 20.w,
+                right: isMobile ? kDefaultPadding / 2 : 20.w,
+              ),
+              itemBuilder: (context, index) {
+                final ev = usedEvents[index];
+                return NotificationGlobalContainer(
+                  key: ValueKey(ev.id),
+                  mainEvent: ev,
+                );
+              },
+              itemCount: usedEvents.length,
+            ),
     );
   }
 
@@ -275,15 +355,19 @@ class EnableTypeNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topInset = isFluid()
+        ? MediaQuery.of(context).padding.top + kToolbarHeight + kDefaultPadding
+        : kDefaultPadding * 2;
+
     return MediaQuery.removePadding(
       context: context,
       removeBottom: true,
       child: ListView(
         shrinkWrap: true,
         primary: false,
-        padding: const EdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: kDefaultPadding,
-          vertical: kDefaultPadding * 2,
+          vertical: topInset,
         ),
         children: [
           Text(
@@ -315,6 +399,7 @@ class EnableTypeNotifications extends StatelessWidget {
                 );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.comfortable,
               ),
               child: Text(

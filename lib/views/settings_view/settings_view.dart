@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/localization_cubit/localization_cubit.dart';
@@ -14,7 +15,8 @@ import '../../utils/utils.dart';
 import '../notifications_view/widgets/notifications_customization.dart';
 import '../profile_settings_view/profile_settings_view.dart';
 import '../profile_view/profile_view.dart';
-import '../widgets/custom_app_bar.dart';
+import '../widgets/app_icon.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/keys_view.dart';
@@ -43,10 +45,8 @@ class SettingsView extends StatelessWidget {
         builder: (context, state) {
           return BlocBuilder<PropertiesCubit, PropertiesState>(
             builder: (context, state) {
-              return Scaffold(
-                appBar: CustomAppBar(
-                  title: context.t.settings.capitalizeFirst(),
-                ),
+              return FluidScaffold(
+                title: context.t.settings.capitalizeFirst(),
                 body: const PropertiesList(),
               );
             },
@@ -76,7 +76,9 @@ class PropertiesList extends HookWidget {
 
   Widget _buildDesktopLayout(BuildContext context, PropertiesState state) {
     return ListView(
-      padding: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding).copyWith(
+        top: kDefaultPadding + fluidScaffoldTopInset(context),
+      ),
       children: [
         const SizedBox(height: kDefaultPadding / 2),
         _buildProfileSection(context, isDesktop: true),
@@ -93,7 +95,8 @@ class PropertiesList extends HookWidget {
 
   Widget _buildMobileLayout(BuildContext context, PropertiesState state) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2)
+          .copyWith(top: fluidScaffoldTopInset(context)),
       children: [
         const SizedBox(height: kDefaultPadding / 2),
         _buildProfileSection(context, isDesktop: false),
@@ -253,7 +256,7 @@ class PropertiesList extends HookWidget {
   Widget _createPropertyBox(
     BuildContext context, {
     required String title,
-    required String icon,
+    required IconData icon,
     required VoidCallback onTap,
   }) {
     return PropertySimpleBox(
@@ -391,11 +394,6 @@ class _ProfileSection extends StatelessWidget {
       {required bool isDesktop}) {
     return TextButton(
       onPressed: () => _navigateToProfile(context),
-      style: TextButton.styleFrom(
-        backgroundColor: isDesktop
-            ? Theme.of(context).cardColor
-            : Theme.of(context).primaryColor,
-      ),
       child: Text(
         context.t.viewProfile.capitalizeFirst(),
         maxLines: isDesktop ? null : 1,
@@ -410,9 +408,6 @@ class _ProfileSection extends StatelessWidget {
       {required bool isDesktop}) {
     return TextButton(
       onPressed: () => _navigateToProfileSettings(context),
-      style: TextButton.styleFrom(
-        backgroundColor: Theme.of(context).cardColor,
-      ),
       child: Text(
         context.t.editProfile.capitalizeFirst(),
         maxLines: isDesktop ? null : 1,
@@ -429,7 +424,7 @@ class _ProfileSection extends StatelessWidget {
         ? Theme.of(context).textTheme.bodyMedium!
         : Theme.of(context).textTheme.labelMedium!;
 
-    final color = isPrimary ? kWhite : Theme.of(context).primaryColorDark;
+    final color = Theme.of(context).primaryColorDark;
 
     return baseStyle.copyWith(color: color);
   }
@@ -465,7 +460,7 @@ class PropertyRow extends StatelessWidget {
     this.isRaw,
   });
 
-  final String icon;
+  final IconData icon;
   final String title;
   final String? description;
   final bool isToggled;
@@ -475,14 +470,10 @@ class PropertyRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SvgPicture.asset(
+        AppIcon(
           icon,
-          width: 25,
-          height: 25,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorDark,
-            BlendMode.srcIn,
-          ),
+          size: 25,
+          color: Theme.of(context).primaryColorDark,
         ),
         const SizedBox(width: kDefaultPadding / 1.5),
         Expanded(
@@ -506,10 +497,10 @@ class PropertyRow extends StatelessWidget {
         const SizedBox(width: kDefaultPadding / 2),
         Icon(
           isRaw != null
-              ? Icons.keyboard_arrow_right_outlined
+              ? LucideIcons.chevronRight
               : isToggled
-                  ? Icons.keyboard_arrow_up_outlined
-                  : Icons.keyboard_arrow_down_outlined,
+                  ? LucideIcons.chevronUp
+                  : LucideIcons.chevronDown,
           color: Theme.of(context).primaryColorDark,
         ),
       ],
@@ -563,19 +554,15 @@ class PropertiesTextControllers extends StatelessWidget {
 
   Widget _buildActionButton(
     BuildContext context, {
-    required String icon,
+    required IconData icon,
     required VoidCallback onPressed,
   }) {
     return IconButton(
       onPressed: onPressed,
-      icon: SvgPicture.asset(
+      icon: AppIcon(
         icon,
-        width: 30,
-        height: 30,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 30,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

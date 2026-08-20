@@ -11,9 +11,12 @@ import '../../../logic/logify_cubit/logify_cubit.dart';
 import '../../../models/packs_model.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/widgets/profile_fast_access.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/user_profile_container.dart';
 
@@ -60,7 +63,7 @@ class SignupPacks extends HookWidget {
     );
 
     slivers.add(
-      isTablet
+      isTablet && !isFluid()
           ? SliverMasonryGrid.count(
               crossAxisCount: 2,
               itemBuilder: (context, index) {
@@ -69,8 +72,8 @@ class SignupPacks extends HookWidget {
                 return PackOnboardingCard(pack: pack);
               },
               childCount: packs.length,
-              crossAxisSpacing: kDefaultPadding,
-              mainAxisSpacing: kDefaultPadding,
+              crossAxisSpacing: kDefaultPadding / 1.5,
+              mainAxisSpacing: kDefaultPadding / 1.5,
             )
           : SliverList.separated(
               separatorBuilder: (context, index) => const SizedBox(
@@ -87,7 +90,6 @@ class SignupPacks extends HookWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding,
         vertical: kDefaultPadding / 2,
       ),
       child: ScrollShadow(
@@ -108,26 +110,27 @@ class PackOnboardingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return BlocProvider.value(
               value: context.read<LogifyCubit>(),
               child: OnboardingPackInfo(pack: pack),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       behavior: HitTestBehavior.translucent,
-      child: Column(
-        children: [
-          _packHeader(context),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+          ),
+          borderRadius: BorderRadius.circular(kDefaultPadding),
+        ),
+        child: _packHeader(context),
       ),
     );
   }
@@ -146,8 +149,8 @@ class PackOnboardingCard extends StatelessWidget {
       children: [
         CommonThumbnail(
           image: pack.image,
-          width: 10.w,
-          height: 10.w,
+          width: 40,
+          height: 40,
           radius: kDefaultPadding / 2,
           isRound: true,
         ),
@@ -205,14 +208,10 @@ class PackOnboardingCard extends StatelessWidget {
       ),
       child: RotatedBox(
         quarterTurns: 4,
-        child: SvgPicture.asset(
+        child: AppIcon(
           FeatureIcons.arrowRight,
-          width: 17,
-          height: 17,
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).highlightColor,
-            BlendMode.srcIn,
-          ),
+          size: 17,
+          color: Theme.of(context).highlightColor,
         ),
       ),
     );
@@ -230,19 +229,7 @@ class OnboardingPackInfo extends HookWidget {
 
     return BlocBuilder<LogifyCubit, LogifyState>(
       builder: (context, state) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 0.5,
-            ),
-          ),
+        return ModalSheetContainer(
           child: DraggableScrollableSheet(
             maxChildSize: 0.95,
             minChildSize: 0.2,
@@ -301,6 +288,8 @@ class OnboardingPackInfo extends HookWidget {
                                               isDelete: isFollowingAll);
                                     },
                                     style: TextButton.styleFrom(
+                                      backgroundBuilder: (_, __, child) =>
+                                          child!,
                                       visualDensity: VisualDensity.comfortable,
                                       backgroundColor: state.pubkeys
                                               .toSet()

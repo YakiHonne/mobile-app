@@ -115,17 +115,36 @@ class SmartWidgetSearchSuggestionRow extends HookWidget {
               widget: Row(
                 spacing: kDefaultPadding / 4,
                 children: [
-                  CustomIconButton(
-                    onClicked: () {
-                      openWebPage(
-                        url: reposUrl,
-                        openInternal: false,
-                      );
-                    },
-                    icon: FeatureIcons.github,
-                    size: 17,
-                    vd: -1.5,
-                    backgroundColor: Theme.of(context).cardColor,
+                  SizedBox(
+                    width: 35,
+                    height: 35,
+                    child: TextButton(
+                      onPressed: () {
+                        openWebPage(
+                          url: reposUrl,
+                          openInternal: false,
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundBuilder: (context, states, child) => child!,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: Theme.of(context).cardColor,
+                      ),
+                      child: SvgPicture.asset(
+                        FeatureIcons.github,
+                        width: 20,
+                        height: 20,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).primaryColorDark,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
                   ),
                   Flexible(
                     child: SmartWidgetSearchOptionBox(

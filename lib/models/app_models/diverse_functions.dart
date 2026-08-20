@@ -198,9 +198,9 @@ Future<List<String>> getDmRelays(
   final timer = Timer(
     const Duration(milliseconds: 200),
     () {
-      BotToastUtils.showInformation(
-        t.fetchingUserInboxRelays.capitalizeFirst(),
-      );
+      // BotToastUtils.showInformation(
+      //   t.fetchingUserInboxRelays.capitalizeFirst(),
+      // );
     },
   );
 
@@ -251,6 +251,18 @@ List<String> getRelayFromTag(List<List<String>> tags) {
   }
 
   return relays;
+}
+
+Map<String, String> parseEmojiTags(List<List<String>> tags) {
+  final emojis = <String, String>{};
+
+  for (final tag in tags) {
+    if (tag.length >= 3 && tag.first == 'emoji') {
+      emojis[tag[1]] = tag[2];
+    }
+  }
+
+  return emojis;
 }
 
 Future<List<String>> getInboxRelays(String pubKey,
@@ -459,6 +471,8 @@ BaseEventModel? getBaseEventModel(Event? event) {
       return PollModel.fromEvent(event);
     case EventKind.PICTURE:
       return PictureModel.fromEvent(event);
+    case EventKind.COMMENT:
+      return DetailedNoteModel.fromEvent(event);
 
     default:
       return null;
@@ -830,6 +844,30 @@ Future<double> getCachedMediaSizeInMB() async {
 int getCurrentUserDefaultZapAmount() {
   return nostrRepository.defaultZapAmounts[currentSigner!.getPublicKey()] ??
       defaultZapamount;
+}
+
+/// Upper bound for infinite-scroll feed lists. Generous on purpose: trimming
+/// only kicks in after ~10 load-more pages, where a minor scroll jump beats
+/// unbounded Event accumulation (and the OOM kill that follows).
+const int kMaxFeedItems = 500;
+
+extension BoundedList<E> on List<E> {
+  /// Caps a paginated feed list at [max] items by dropping entries from the
+  /// front. Pagination appends at the end and anchors on `.last`, and the
+  /// user's scroll position is near the end — both must be preserved.
+  List<E> capFeed([int max = kMaxFeedItems]) =>
+      length <= max ? this : sublist(length - max);
+}
+
+extension BoundedMap<K, V> on Map<K, V> {
+  /// Evicts the oldest entries beyond [max]. Dart maps preserve insertion
+  /// order, so [Map.keys.first] is the oldest entry (FIFO). Call after
+  /// inserting into a long-lived cache to keep it from growing unbounded.
+  void capSize(int max) {
+    while (length > max) {
+      remove(keys.first);
+    }
+  }
 }
 
 List<String> removeConsecutiveDuplicates(List<String> input) {

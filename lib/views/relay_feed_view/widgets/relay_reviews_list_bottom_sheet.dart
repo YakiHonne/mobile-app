@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/relay_feed_cubit/relay_feed_cubit.dart';
 import '../../../models/relay_review.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/modal_sheet_container.dart';
 import 'relay_review_bottom_sheet.dart';
 import 'relay_review_card.dart';
 
@@ -19,21 +22,9 @@ class RelayReviewListBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final reviews = context.watch<RelayFeedCubit>().state.reviews;
 
-    return Container(
-      width: double.infinity,
+    return ModalSheetContainer(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
       ),
       child: DraggableScrollableSheet(
         initialChildSize: 0.8,
@@ -92,9 +83,8 @@ class RelayReviewListBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    showModalBottomSheet(
+                    showAppModalSheet(
                       context: context,
-                      isScrollControlled: true,
                       builder: (_) => BlocProvider.value(
                         value: context.read<RelayFeedCubit>(),
                         child: const RelayReviewBottomSheet(),
@@ -139,7 +129,7 @@ class ReviewsTotalRating extends StatelessWidget {
           child: RatingBarIndicator(
             rating: rating,
             itemBuilder: (context, index) => Icon(
-              Icons.star,
+              LucideIcons.star,
               color: Theme.of(context).primaryColorDark,
             ),
             itemSize: itemSize,

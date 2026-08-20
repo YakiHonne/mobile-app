@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
-import '../../../widgets/managae_interests.dart';
+import '../../../widgets/fluid_scaffold.dart';
+import '../../../widgets/manage_interests.dart';
 
 class InterestsDashboard extends HookWidget {
   const InterestsDashboard({super.key});
@@ -54,10 +56,11 @@ class InterestsDashboard extends HookWidget {
               onPressed: () {
                 YNavigator.pushPage(
                   context,
-                  (context) => ManagaeInterests(),
+                  (context) => ManageInterests(),
                 );
               },
               style: TextButton.styleFrom(
+                backgroundBuilder: (_, __, child) => child!,
                 visualDensity: VisualDensity.comfortable,
               ),
               label: Text(
@@ -68,7 +71,7 @@ class InterestsDashboard extends HookWidget {
                     ),
               ),
               icon: const Icon(
-                Icons.add,
+                LucideIcons.plus,
                 size: 15,
               ),
             ),
@@ -87,6 +90,9 @@ class InterestsDashboard extends HookWidget {
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: CustomScrollView(
             slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(height: fluidScaffoldTopInset(context)),
+              ),
               spacer,
               _interestsContainer(context, hideData),
               spacer,
@@ -131,10 +137,12 @@ class InterestsDashboard extends HookWidget {
               onPressed: () {
                 YNavigator.pushPage(
                   context,
-                  (context) => ManagaeInterests(),
+                  (context) => ManageInterests(),
                 );
               },
               style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
+                  backgroundColor: Theme.of(context).primaryColor,
                   visualDensity: VisualDensity.comfortable),
               child: Text(
                 context.t.manageInterests.capitalize(),
@@ -226,7 +234,7 @@ class DashboardInterestContainer extends StatelessWidget {
                   ? FeatureIcons.addRaw
                   : interestStatus == InterestStatus.delete
                       ? FeatureIcons.trash
-                      : ToastsIcons.check,
+                      : LucideIcons.check,
               size: 17,
               iconColor: interestStatus == InterestStatus.delete
                   ? Theme.of(context).primaryColorDark
@@ -243,7 +251,7 @@ class DashboardInterestContainer extends StatelessWidget {
               width: kDefaultPadding / 2,
             ),
             const Icon(
-              Icons.drag_indicator_rounded,
+              LucideIcons.gripVertical,
               size: 20,
             ),
           ],

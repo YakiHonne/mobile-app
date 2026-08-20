@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../utils/utils.dart';
+import './fluid_pull_down_button.dart';
+import 'app_icon.dart';
 
 class CurrencySelectorButton extends StatelessWidget {
   const CurrencySelectorButton({
@@ -19,7 +21,7 @@ class CurrencySelectorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
       ),
@@ -61,14 +63,10 @@ class CurrencySelectorButton extends StatelessWidget {
                     color: Theme.of(context).highlightColor,
                   ),
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.arrowDown,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
           ],
         ),

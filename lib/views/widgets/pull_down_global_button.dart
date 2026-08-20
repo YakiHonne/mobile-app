@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../models/app_models/diverse_functions.dart';
@@ -6,6 +7,9 @@ import '../../models/app_models/popup_menu_common_item.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
+import 'app_icon.dart';
+import 'buttons_containers_widgets.dart';
+import 'fluid_pull_down_button.dart';
 
 class PullDownGlobalButton extends StatelessWidget {
   const PullDownGlobalButton({
@@ -76,15 +80,18 @@ class PullDownGlobalButton extends StatelessWidget {
     this.onView,
     this.onPin,
     this.widgetImage,
-    this.backgroundColor,
+    this.menuBackgroundColor,
     this.buttonColor,
     this.iconColor,
-    this.visualDensity,
+    this.iconSize,
+    this.size,
     this.onMuteActionSuccess,
     this.onRepublish,
     this.onReschedule,
     this.publishTitle,
     this.customItems,
+    this.useFluidMode = false,
+    this.iconBackgroundColor,
   });
 
   final BaseEventModel? model;
@@ -160,23 +167,27 @@ class PullDownGlobalButton extends StatelessWidget {
   final bool? isCloning;
   final String? widgetImage;
 
-  final Color? backgroundColor;
+  final Color? menuBackgroundColor;
   final Color? buttonColor;
   final Color? iconColor;
-  final double? visualDensity;
+  final Color? iconBackgroundColor;
+  final double? iconSize;
+  final double? size;
   final String? publishTitle;
   final List<PullDownMenuEntry>? customItems;
+
+  final bool? useFluidMode;
 
   @override
   Widget build(BuildContext context) {
     final isDark = themeCubit.isDark;
 
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
       routeTheme: PullDownMenuRouteTheme(
-        backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+        backgroundColor: menuBackgroundColor ?? Theme.of(context).cardColor,
       ),
       itemBuilder: (context) {
         return [
@@ -489,21 +500,14 @@ class PullDownGlobalButton extends StatelessWidget {
             ),
         ];
       },
-      buttonBuilder: (context, showMenu) => IconButton(
-        onPressed: showMenu,
-        padding: EdgeInsets.zero,
-        style: IconButton.styleFrom(
-          backgroundColor: buttonColor ?? kTransparent,
-          visualDensity: VisualDensity(
-            horizontal: visualDensity ?? -4,
-            vertical: visualDensity ?? -1,
-          ),
-        ),
-        icon: Icon(
-          Icons.more_vert_rounded,
-          color: iconColor ?? Theme.of(context).primaryColorDark,
-          size: 20,
-        ),
+      buttonBuilder: (context, showMenu) => AppIconButton(
+        onClicked: showMenu,
+        icon: LucideIcons.ellipsisVertical,
+        iconColor: iconColor ?? Theme.of(context).primaryColorDark,
+        iconSize: iconSize,
+        backgroundColor: iconBackgroundColor,
+        size: size,
+        enableFluid: useFluidMode,
       ),
     );
   }
@@ -511,7 +515,7 @@ class PullDownGlobalButton extends StatelessWidget {
   PullDownMenuItem _pullDownItem({
     required BuildContext context,
     required String title,
-    required String icon,
+    required IconData icon,
     required Function() onTap,
     Color? iconColor,
     bool isDestructive = false,
@@ -525,14 +529,10 @@ class PullDownGlobalButton extends StatelessWidget {
         textStyle: textStyle,
       ),
       isDestructive: isDestructive,
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         icon,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          iconColor ?? Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: iconColor ?? Theme.of(context).primaryColorDark,
       ),
     );
   }

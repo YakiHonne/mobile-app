@@ -1,12 +1,16 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../leading_view/widgets/leading_customization.dart';
+import '../app_icon.dart';
 import '../custom_icon_buttons.dart';
 import '../dotted_container.dart';
+import '../fluid_sheet.dart' show showAppModalSheet;
+import '../modal_sheet_container.dart';
 
 class HiddenMediaContainer extends HookWidget {
   const HiddenMediaContainer({
@@ -64,15 +68,11 @@ class HiddenMediaContainer extends HookWidget {
             top: 0,
             child: CustomIconButton(
               onClicked: () {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
                   builder: (_) {
                     return const HiddenMediaSettings();
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
@@ -125,15 +125,17 @@ class _AnimatedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final image = mediaServersCubit.getImageProxyUrl(sourceUrl: url, blur: 30);
+
     return AnimatedOpacity(
       opacity: opacity,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
       child: ExtendedImage.network(
-        mediaServersCubit.getImageProxyUrl(
-          sourceUrl: url,
-          blur: 30,
-        ),
+        image,
+        cacheWidth: (MediaQuery.sizeOf(context).width *
+                MediaQuery.devicePixelRatioOf(context))
+            .round(),
         fit: BoxFit.cover,
         loadStateChanged: (state) {
           switch (state.extendedImageLoadState) {
@@ -148,7 +150,7 @@ class _AnimatedImage extends StatelessWidget {
               );
             case LoadState.failed:
               return const Center(
-                child: Icon(Icons.broken_image_outlined, size: 28),
+                child: Icon(LucideIcons.imageOff, size: 28),
               );
           }
         },
@@ -173,14 +175,10 @@ class _OverlayContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset(
+          const AppIcon(
             FeatureIcons.visible,
-            width: 30,
-            height: 30,
-            colorFilter: const ColorFilter.mode(
-              kWhite,
-              BlendMode.srcIn,
-            ),
+            size: 30,
+            color: kWhite,
           ),
           if (includeMessage)
             Text(
@@ -201,78 +199,57 @@ class HiddenMediaSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: kDefaultPadding / 2,
-          children: [
-            const ModalBottomSheetHandle(),
-            SvgPicture.asset(
-              FeatureIcons.notVisible,
-              width: 50,
-              height: 50,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
-            ),
-            Text(
-              context.t.hiddenContent,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
-            Text(
-              context.t.hiddenContentDesc,
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                    color: Theme.of(context).highlightColor,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom,
-              ),
-              width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  YNavigator.pop(context);
-
-                  showModalBottomSheet(
-                    context: context,
-                    elevation: 0,
-                    builder: (_) {
-                      return const LeadingCustomization();
-                    },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  );
-                },
-                child: Text(
-                  context.t.settings.capitalize(),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: kWhite,
-                      ),
+    return ModalSheetContainer(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: kDefaultPadding / 2,
+        children: [
+          const ModalBottomSheetHandle(),
+          AppIcon(
+            FeatureIcons.notVisible,
+            size: 50,
+            color: Theme.of(context).primaryColorDark,
+          ),
+          Text(
+            context.t.hiddenContent,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
+          ),
+          Text(
+            context.t.hiddenContentDesc,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom,
+            ),
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () {
+                YNavigator.pop(context);
+
+                showAppModalSheet(
+                  context: context,
+                  builder: (_) {
+                    return const LeadingCustomization();
+                  },
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                );
+              },
+              child: Text(
+                context.t.settings.capitalize(),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context).primaryColorDark,
+                    ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

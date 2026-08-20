@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
 
 class OnboardingAppbar extends StatelessWidget {
   const OnboardingAppbar({
@@ -26,12 +27,9 @@ class OnboardingAppbar extends StatelessWidget {
             onPressed: onReturn,
             icon: RotatedBox(
               quarterTurns: -1,
-              child: SvgPicture.asset(
+              child: AppIcon(
                 FeatureIcons.arrowUp,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                color: Theme.of(context).primaryColorDark,
               ),
             ),
           ),

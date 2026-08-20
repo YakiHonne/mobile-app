@@ -1,12 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_bool_literals_in_conditional_expressions
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -18,6 +20,7 @@ import '../../common/animations/heartbeat_fade.dart';
 import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
+import '../../logic/users_info_list_cubit/users_info_list_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
@@ -25,25 +28,37 @@ import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
+import '../../repositories/nostr_data_repository.dart';
+import '../../repositories/nostr_functions_repository.dart';
 import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
+import '../../utils/theme/custom/buttons_theme.dart';
 import '../../utils/utils.dart';
 import '../dm_view/widgets/dm_details.dart';
 import '../note_view/note_view.dart';
 import '../profile_view/profile_view.dart';
+import '../subscription_view/subscription_view.dart';
 import '../threads_view/threads_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../write_note_view/write_note_view.dart';
+import './fluid_pull_down_button.dart';
+import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'container_boxes.dart';
 import 'custom_icon_buttons.dart';
 import 'data_providers.dart';
+import 'dotted_container.dart';
+import 'fluid_blur_container.dart';
+import 'fluid_sheet.dart';
+import 'loading_indicators.dart';
+import 'modal_sheet_container.dart';
 import 'no_content_widgets.dart';
 import 'note_stats_view.dart';
 import 'parsed_media_container.dart';
 import 'profile_picture.dart';
 import 'pull_down_global_button.dart';
 import 'response_snackbar.dart';
+import 'subscription_badge_view.dart';
 import 'zappers_view.dart';
 
 class NoteStats extends HookWidget {
@@ -53,6 +68,7 @@ class NoteStats extends HookWidget {
     required this.model,
     required this.isMain,
     this.autoTranslate = false,
+    this.isHomeFeed = false,
     this.onEventAdded,
     this.onTextTranslated,
     this.onMuteActionSuccess,
@@ -61,6 +77,7 @@ class NoteStats extends HookWidget {
   final String id;
   final BaseEventModel model;
   final bool isMain;
+  final bool isHomeFeed;
   final bool autoTranslate;
   final Function(String)? onTextTranslated;
   final Function()? onEventAdded;
@@ -175,6 +192,7 @@ class NoteStats extends HookWidget {
                                   zappers: zappers,
                                   zapsData: zapsData,
                                   selfZaps: selfZaps,
+                                  isHomeFeed: isHomeFeed,
                                 ))
                             : _buildPictureActionButtons(
                                 context: context,
@@ -194,65 +212,77 @@ class NoteStats extends HookWidget {
                       const SizedBox(
                         width: kDefaultPadding / 2,
                       ),
-                      if (model is DetailedNoteModel)
+                      if (model is DetailedNoteModel && !isFluid())
                         TranslationButton(
                           autoTranslate: autoTranslate,
                           isMain: isMain,
                           note: model as DetailedNoteModel,
                           onTextTranslated: onTextTranslated,
                         ),
-                      BlocBuilder<NotesEventsCubit, NotesEventsState>(
-                        buildWhen: (previous, current) =>
-                            previous.mutes != current.mutes,
-                        builder: (context, state) {
-                          return PullDownGlobalButton(
-                            model: model,
-                            enableCopyNpub: true,
-                            enableCopyId: true,
-                            enableBookmark: true,
-                            enableCopyText: true,
-                            enableShareImage: model is DetailedNoteModel,
-                            enableShowRawEvent: true,
-                            enableDelete: canSign() &&
-                                currentSigner!.getPublicKey() == model.pubkey,
-                            enableRepublish: true,
-                            enablePin: canSign() && model is DetailedNoteModel,
-                            onDelete: () {
-                              showCupertinoDeletionDialogue(
-                                context: context,
-                                title: context.t
-                                    .deleteContent(type: context.t.note)
-                                    .capitalizeFirst(),
-                                description: context.t
-                                    .confirmDeleteContent(type: context.t.note)
-                                    .capitalizeFirst(),
-                                buttonText: context.t.delete.capitalizeFirst(),
-                                onDelete: () async {
-                                  final isSuccessful = await notesEventsCubit
-                                      .deleteNote(model.id);
+                      if (!isFluid() || model is! DetailedNoteModel)
+                        BlocBuilder<NotesEventsCubit, NotesEventsState>(
+                          buildWhen: (previous, current) =>
+                              previous.mutes != current.mutes,
+                          builder: (context, state) {
+                            return PullDownGlobalButton(
+                              model: model,
+                              enableCopyNpub: true,
+                              enableCopyId: true,
+                              enableBookmark: true,
+                              enableCopyText: true,
+                              enableShareImage: model is DetailedNoteModel,
+                              enableShowRawEvent: true,
+                              enableDelete: canSign() &&
+                                  currentSigner!.getPublicKey() == model.pubkey,
+                              enableRepublish: true,
+                              enablePin: canSign() &&
+                                  model is DetailedNoteModel &&
+                                  (model as DetailedNoteModel).pubkey ==
+                                      currentSigner!.getPublicKey(),
+                              onDelete: () {
+                                showCupertinoDeletionDialogue(
+                                  context: context,
+                                  title: context.t
+                                      .deleteContent(type: context.t.note)
+                                      .capitalizeFirst(),
+                                  description: context.t
+                                      .confirmDeleteContent(
+                                          type: context.t.note)
+                                      .capitalizeFirst(),
+                                  buttonText:
+                                      context.t.delete.capitalizeFirst(),
+                                  onDelete: () async {
+                                    final isSuccessful = await notesEventsCubit
+                                        .deleteNote(model.id);
 
-                                  if (isSuccessful && context.mounted) {
-                                    BotToastUtils.showSuccess(
-                                        context.t.noteDeletedSuccessfully);
-                                    Navigator.pop(context);
-                                  }
-                                },
-                              );
-                            },
-                            bookmarkStatus:
-                                notesEventsCubit.state.bookmarks.contains(
-                              model.id,
-                            ),
-                            enableShare: true,
-                            enableMute: true,
-                            enableMuteEvent: model is DetailedNoteModel,
-                            muteEventStatus:
-                                state.mutesEvents.contains(model.id),
-                            iconColor: Theme.of(context).highlightColor,
-                            muteStatus: state.mutes.contains(model.pubkey),
-                          );
-                        },
-                      ),
+                                    if (isSuccessful && context.mounted) {
+                                      BotToastUtils.showSuccess(
+                                          context.t.noteDeletedSuccessfully);
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                );
+                              },
+                              bookmarkStatus:
+                                  notesEventsCubit.state.bookmarks.contains(
+                                model.id,
+                              ),
+                              enableShare: true,
+                              enableMute: true,
+                              enableMuteEvent: model is DetailedNoteModel,
+                              muteEventStatus:
+                                  state.mutesEvents.contains(model.id),
+                              iconColor: Theme.of(context).highlightColor,
+                              iconBackgroundColor: kTransparent,
+                              muteStatus: state.mutes.contains(model.pubkey),
+                            );
+                          },
+                        ),
+                      if (model is DetailedNoteModel && isFluid())
+                        _fluidStatsButton(
+                          context,
+                          zappers as Map<String, MapEntry<String, int>>,
+                        ),
                     ],
                   ),
                 ),
@@ -327,16 +357,15 @@ class NoteStats extends HookWidget {
     required dynamic zappers,
     required dynamic zapsData,
     required dynamic selfZaps,
+    required bool isHomeFeed,
   }) {
     final actions =
         nostrRepository.currentAppCustomization?.actionsArrangement ??
             defaultActionsArrangement;
 
-    return actions.entries
-        .where(
-          (action) => action.value,
-        )
-        .map((action) {
+    final widgets = actions.entries
+        .where((action) => action.value)
+        .map<Widget?>((action) {
           switch (action.key) {
             case 'reactions':
               return _reactButton(selfReaction, reactions);
@@ -344,20 +373,34 @@ class NoteStats extends HookWidget {
               return _replyButton(context, selfReply, replies);
             case 'reposts':
               if (model is DetailedNoteModel) {
+                if (isFluid()) {
+                  return _fluidRepostPulldown(
+                      context, reposts, quotes, selfRepost, selfQuote);
+                }
                 return _repostButton(context, reposts, selfRepost);
               }
-
-              return const SizedBox.shrink();
+              return null;
             case 'quotes':
+              if (isFluid()) {
+                return null;
+              }
               return _quoteButton(selfQuote, context, quotes);
             case 'zaps':
               return _zapButton(selfZaps, zappers, zapsData);
             default:
-              return const SizedBox.shrink();
+              return null;
           }
         })
-        .expand(
-            (widget) => [widget, const SizedBox(width: kDefaultPadding / 3)])
+        .whereType<Widget>()
+        .toList();
+
+    return widgets
+        .expand((widget) => [
+              widget,
+              SizedBox(
+                width: isHomeFeed ? kDefaultPadding / 1.5 : kDefaultPadding / 3,
+              )
+            ])
         .toList();
   }
 
@@ -378,27 +421,21 @@ class NoteStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.quote,
       onLongPress: () {
-        showModalBottomSheet(
+        showAppModalSheet(
           context: context,
-          elevation: 0,
           builder: (_) {
             return NetStatsView(
               id: model.id,
               type: NoteRelatedEventsType.quotes,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 final m = model;
                 bool isComment = false;
@@ -419,10 +456,6 @@ class NoteStats extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -444,22 +477,19 @@ class NoteStats extends HookWidget {
     return CustomIconButton(
       backgroundColor: kTransparent,
       icon: FeatureIcons.repost,
-      onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
-          builder: (_) {
-            return NetStatsView(
-              id: model.id,
-              type: NoteRelatedEventsType.reposts,
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        );
-      },
+      onLongPress: isFluid()
+          ? null
+          : () {
+              showAppModalSheet(
+                context: context,
+                builder: (_) {
+                  return NetStatsView(
+                    id: model.id,
+                    type: NoteRelatedEventsType.reposts,
+                  );
+                },
+              );
+            },
       onClicked: () {
         doIfCanSign(
           func: () {
@@ -484,20 +514,21 @@ class NoteStats extends HookWidget {
     return CustomIconButton(
       backgroundColor: kTransparent,
       icon: FeatureIcons.comments,
-      onLongPress: () {
-        YNavigator.pushPage(
-          context,
-          (context) => model is DetailedNoteModel
-              ? NoteView(note: model as DetailedNoteModel)
-              : ContentThreadsView(aTag: model.id),
-        );
-      },
+      onLongPress: isFluid()
+          ? null
+          : () {
+              YNavigator.pushPage(
+                context,
+                (context) => model is DetailedNoteModel
+                    ? NoteView(note: model as DetailedNoteModel)
+                    : ContentThreadsView(aTag: model.id),
+              );
+            },
       onClicked: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 if (model is DetailedNoteModel) {
                   final m = model as DetailedNoteModel;
@@ -546,10 +577,6 @@ class NoteStats extends HookWidget {
                   );
                 }
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -575,6 +602,111 @@ class NoteStats extends HookWidget {
       pubkey: model.pubkey,
       reactions: reactions,
       size: 16,
+      enableLongPress: !isFluid(),
+    );
+  }
+
+  Widget _fluidRepostPulldown(
+    BuildContext context,
+    dynamic reposts,
+    dynamic quotes,
+    dynamic selfRepost,
+    dynamic selfQuote,
+  ) {
+    final count = (reposts as Map).length + (quotes as Map).length;
+    return FluidPullDownButton(
+      animationBuilder: (context, state, child) => child,
+      routeTheme: PullDownMenuRouteTheme(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      itemBuilder: (context) => [
+        PullDownMenuItem(
+          title: context.t.repost.capitalizeFirst(),
+          onTap: () => doIfCanSign(
+            func: () => notesEventsCubit.repostNote(model as DetailedNoteModel),
+            context: context,
+          ),
+          iconWidget: AppIcon(
+            FeatureIcons.repost,
+            size: 20,
+            color: selfRepost == true
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).primaryColorDark,
+          ),
+        ),
+        PullDownMenuItem(
+          title: context.t.quote.capitalizeFirst(),
+          onTap: () => doIfCanSign(
+            func: () {
+              showAppModalSheet(
+                context: context,
+                builder: (_) {
+                  final m = model;
+                  bool isComment = false;
+                  if (m is DetailedNoteModel) {
+                    isComment = isReplaceable(m.rootKind);
+                  }
+                  return AddReply(
+                    attachedEvent: model,
+                    isMention: false,
+                    isComment: isComment,
+                    isQuote: true,
+                    onSuccess: (ev) {
+                      notesEventsCubit.addEventRelatedData(
+                        event: ev,
+                        replyNoteId: model.id,
+                      );
+                    },
+                  );
+                },
+              );
+            },
+            context: context,
+          ),
+          iconWidget: AppIcon(
+            FeatureIcons.quote,
+            size: 20,
+            color: selfQuote == true
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).primaryColorDark,
+          ),
+        ),
+      ],
+      buttonBuilder: (context, showMenu) => CustomIconButton(
+        backgroundColor: kTransparent,
+        icon: FeatureIcons.repost,
+        onClicked: showMenu,
+        value: count > 0 ? count.toString() : '0',
+        iconColor: (selfRepost == true || selfQuote == true)
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        textColor: (selfRepost == true || selfQuote == true)
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        size: 18,
+        fontSize: 15,
+      ),
+    );
+  }
+
+  Widget _fluidStatsButton(
+    BuildContext context,
+    Map<String, MapEntry<String, int>> zappers,
+  ) {
+    return CustomIconButton(
+      backgroundColor: kTransparent,
+      icon: FeatureIcons.unStats,
+      size: 16,
+      iconColor: Theme.of(context).highlightColor,
+      onClicked: () {
+        showAppModalSheet(
+          context: context,
+          builder: (_) => _NoteStatsModal(
+            id: model.id,
+            zappers: zappers,
+          ),
+        );
+      },
     );
   }
 }
@@ -593,18 +725,13 @@ class ZappersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final commonPubkeys = zapData['nextBestPubkeys'] as List;
     void openZappersList() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
-        elevation: 0,
         builder: (_) {
           return ZappersView(
             zappers: zappers,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -641,9 +768,9 @@ class ZappersRow extends StatelessWidget {
                   builder: (context) {
                     final amount = zapData['highestZap'] as int;
 
-                    if (amount <= 0) {
-                      return const SizedBox();
-                    }
+                    // if (amount <= 0) {
+                    //   return const SizedBox();
+                    // }
 
                     final id = zapData['highestZapId'] as String;
 
@@ -709,46 +836,60 @@ class ZappersRow extends StatelessWidget {
   }
 
   Flexible _dataContainer(
-      BuildContext context, int amount, String message, Metadata metadata) {
-    return Flexible(
-      child: Container(
-        height: 30,
-        padding: const EdgeInsets.all(kDefaultPadding / 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: kDefaultPadding / 4,
-          children: [
-            _zapAmount(amount, context),
-            if (message.isNotEmpty)
-              Flexible(
-                child: ScrollShadow(
-                  color: Theme.of(context).cardColor,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      message,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            height: 1,
-                          ),
-                      overflow: TextOverflow.visible,
-                      softWrap: true,
-                      maxLines: 1,
-                    ),
-                  ),
+    BuildContext context,
+    int amount,
+    String message,
+    Metadata metadata,
+  ) {
+    final row = Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 4,
+      children: [
+        _zapAmount(amount, context),
+        if (message.isNotEmpty)
+          Flexible(
+            child: ScrollShadow(
+              color: Theme.of(context).cardColor,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  message,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        height: 1,
+                      ),
+                  overflow: TextOverflow.visible,
+                  softWrap: true,
+                  maxLines: 1,
                 ),
               ),
-            _pulldownButton(context, metadata),
-          ],
-        ),
-      ),
+            ),
+          ),
+        _pulldownButton(context, metadata),
+      ],
+    );
+
+    return Flexible(
+      child: isFluid()
+          ? FluidCardContainer(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 4,
+                vertical: kDefaultPadding / 6,
+              ),
+              child: row,
+            )
+          : Container(
+              height: 30,
+              padding: const EdgeInsets.all(kDefaultPadding / 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: Theme.of(context).cardColor,
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+              ),
+              child: row,
+            ),
     );
   }
 
@@ -756,17 +897,10 @@ class ZappersRow extends StatelessWidget {
     return Row(
       spacing: kDefaultPadding / 8,
       children: [
-        SizedBox(
-          width: 15,
-          height: 15,
-          child: SvgPicture.asset(
-            FeatureIcons.zapAmount,
-            fit: BoxFit.scaleDown,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColor,
-              BlendMode.srcIn,
-            ),
-          ),
+        AppIcon(
+          FeatureIcons.zapAmount,
+          size: 15,
+          color: Theme.of(context).primaryColor,
         ),
         Text(
           amount.numeral(),
@@ -779,8 +913,8 @@ class ZappersRow extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context, Metadata metadata) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context, Metadata metadata) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -820,8 +954,7 @@ class ZappersRow extends StatelessWidget {
       onTap: () {
         doIfCanSign(
           func: () {
-            showModalBottomSheet(
-              elevation: 0,
+            showAppModalSheet(
               context: context,
               builder: (_) {
                 return SendZapsView(
@@ -830,10 +963,6 @@ class ZappersRow extends StatelessWidget {
                   zapSplits: const [],
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -842,14 +971,10 @@ class ZappersRow extends StatelessWidget {
       itemTheme: PullDownMenuItemTheme(
         textStyle: textStyle,
       ),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.zap,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -875,14 +1000,10 @@ class ZappersRow extends StatelessWidget {
       itemTheme: PullDownMenuItemTheme(
         textStyle: textStyle,
       ),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.message,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -902,14 +1023,10 @@ class ZappersRow extends StatelessWidget {
       itemTheme: PullDownMenuItemTheme(
         textStyle: textStyle,
       ),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.user,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -989,8 +1106,7 @@ class ZapButton extends HookWidget {
             final m = await metadataCubit.getAvailableMetadata(eventPubkey);
 
             if (context.mounted) {
-              showModalBottomSheet(
-                elevation: 0,
+              showAppModalSheet(
                 context: context,
                 builder: (_) {
                   return SendZapsView(
@@ -1009,10 +1125,6 @@ class ZapButton extends HookWidget {
                     },
                   );
                 },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -1044,23 +1156,20 @@ class ZapButton extends HookWidget {
         key: ValueKey(selfZaps),
         backgroundColor: kTransparent,
         icon: selfZaps ? FeatureIcons.zapAmount : FeatureIcons.zap,
-        onLongPress: () {
-          if (zappers.isNotEmpty) {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
-              builder: (_) {
-                return ZappersView(
-                  zappers: zappers,
-                );
+        onLongPress: isFluid()
+            ? null
+            : () {
+                if (zappers.isNotEmpty) {
+                  showAppModalSheet(
+                    context: context,
+                    builder: (_) {
+                      return ZappersView(
+                        zappers: zappers,
+                      );
+                    },
+                  );
+                }
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            );
-          }
-        },
         onDoubleTap: () {
           if (pubkey == eventPubkey) {
             return;
@@ -1158,6 +1267,7 @@ class TranslationButton extends HookWidget {
               {
             lc: res.value,
           };
+          nostrRepository.currentTranslations.capSize(200);
 
           final val = restoreOriginalString(
             replacedString: res.value,
@@ -1221,7 +1331,7 @@ class TranslationButton extends HookWidget {
             }
           },
           icon: FeatureIcons.translation,
-          size: 16,
+          size: 18,
           backgroundColor: kTransparent,
           iconColor: showOriginalContent.value
               ? Theme.of(context).highlightColor
@@ -1241,6 +1351,7 @@ class CustomReactionButton extends HookWidget {
     required this.reactions,
     required this.size,
     this.selfReaction,
+    this.enableLongPress = true,
     super.key,
   });
 
@@ -1250,6 +1361,7 @@ class CustomReactionButton extends HookWidget {
   final Map<String, String> reactions;
   final String? selfReaction;
   final double size;
+  final bool enableLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -1325,22 +1437,19 @@ class CustomReactionButton extends HookWidget {
       icon: getIcon(event.value),
       emoji: getEmoji(event.value),
       imageUrl: getCustomEmoji(event.value),
-      onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
-          builder: (_) {
-            return NetStatsView(
-              id: id,
-              type: NoteRelatedEventsType.reactions,
-            );
-          },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        );
-      },
+      onLongPress: enableLongPress
+          ? () {
+              showAppModalSheet(
+                context: context,
+                builder: (_) {
+                  return NetStatsView(
+                    id: id,
+                    type: NoteRelatedEventsType.reactions,
+                  );
+                },
+              );
+            }
+          : null,
       onDoubleTap: () {
         if (!nostrRepository.enableOneTapReaction) {
           onDefaultReaction();
@@ -1367,7 +1476,7 @@ class CustomReactionButton extends HookWidget {
     );
   }
 
-  String getIcon(Event? reactionEvent) {
+  IconData getIcon(Event? reactionEvent) {
     return reactionEvent != null
         ? FeatureIcons.heartFilled
         : FeatureIcons.heart;
@@ -1399,10 +1508,12 @@ class RepostNoteContainer extends HookWidget {
   const RepostNoteContainer({
     super.key,
     required this.event,
+    this.isExtended = false,
     this.onMuteActionSuccess,
   });
 
   final Event event;
+  final bool isExtended;
   final Function(String, bool)? onMuteActionSuccess;
 
   @override
@@ -1425,19 +1536,14 @@ class RepostNoteContainer extends HookWidget {
     );
 
     void onClicked() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
-        elevation: 0,
         builder: (_) {
           return NetStatsView(
             id: repostedEventId.value,
             type: NoteRelatedEventsType.reposts,
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -1448,17 +1554,25 @@ class RepostNoteContainer extends HookWidget {
           pubkey: event.pubkey,
           child: (metadata, nip05) => GestureDetector(
             onTap: onClicked,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2,
-                vertical: kDefaultPadding / 4,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-                color: Theme.of(context).cardColor,
-              ),
-              child: _repostRow(repostedEventId, metadata, onClicked),
-            ),
+            child: isFluid()
+                ? FluidBlurContainer(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                      vertical: kDefaultPadding / 4,
+                    ),
+                    child: _repostRow(repostedEventId, metadata, onClicked),
+                  )
+                : Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                      vertical: kDefaultPadding / 4,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                      color: Theme.of(context).cardColor,
+                    ),
+                    child: _repostRow(repostedEventId, metadata, onClicked),
+                  ),
           ),
         ),
         const SizedBox(
@@ -1469,6 +1583,7 @@ class RepostNoteContainer extends HookWidget {
             note: DetailedNoteModel.fromEvent(originalEvent.value),
             isMain: false,
             addLine: false,
+            isExtended: isExtended,
             enableReply: true,
             onMuteActionSuccess: onMuteActionSuccess,
           )
@@ -1518,6 +1633,7 @@ class RepostNoteContainer extends HookWidget {
                 note: DetailedNoteModel.fromEvent(event),
                 isMain: false,
                 addLine: false,
+                isExtended: isExtended,
               );
             }
           },
@@ -1543,14 +1659,10 @@ class RepostNoteContainer extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: kDefaultPadding / 3,
           children: [
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.repost,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
-              width: 15,
-              height: 15,
+              size: 15,
+              color: Theme.of(context).primaryColorDark,
             ),
             ProfilePicture2(
               size: 18,
@@ -1619,6 +1731,7 @@ class DetailedNoteContainer extends HookWidget {
     required this.note,
     required this.isMain,
     required this.addLine,
+    this.isExtended = false,
     this.loadPreviousNote = false,
     this.enableReply = false,
     this.extendLine = false,
@@ -1627,6 +1740,7 @@ class DetailedNoteContainer extends HookWidget {
     this.isFilterHidden = false,
     this.shouldConsiderHiddenReply = false,
     this.noRender = false,
+    this.showFollowButton = false,
     this.onClicked,
     this.onEventAdded,
     this.onMuteActionSuccess,
@@ -1634,6 +1748,7 @@ class DetailedNoteContainer extends HookWidget {
 
   final DetailedNoteModel note;
   final bool isMain;
+  final bool isExtended;
   final bool addLine;
   final bool loadPreviousNote;
   final bool extendLine;
@@ -1643,6 +1758,7 @@ class DetailedNoteContainer extends HookWidget {
   final bool isFilterHidden;
   final bool shouldConsiderHiddenReply;
   final bool noRender;
+  final bool showFollowButton;
   final Function()? onClicked;
   final Function()? onEventAdded;
   final Function(String, bool)? onMuteActionSuccess;
@@ -1692,7 +1808,7 @@ class DetailedNoteContainer extends HookWidget {
                 );
               });
 
-    return GestureDetector(
+    final core = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: click,
       child: Builder(
@@ -1703,6 +1819,12 @@ class DetailedNoteContainer extends HookWidget {
         },
       ),
     );
+
+    if (!note.isPremium) {
+      return core;
+    }
+
+    return PremiumContainer(child: core);
   }
 
   Column _mainColumn(
@@ -1736,15 +1858,27 @@ class DetailedNoteContainer extends HookWidget {
             ],
           ),
         ),
-        if (isMain || isReply) ...[
-          const SizedBox(
-            height: kDefaultPadding / 2,
-          ),
+        if (isExtended || isMain || isReply) ...[
+          if (enableReply &&
+              replyEvent.value != null &&
+              settingsCubit.useCompactReplies) ...[
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+            _replyBox(replyEvent),
+            const SizedBox(
+              height: kDefaultPadding / 4,
+            ),
+          ] else
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
           ParsedText(
             key: ValueKey(note.id),
             onClicked: click,
             pubkey: note.pubkey,
             text: noteContent.value.trim(),
+            emojis: note.emojis,
             enableHidingMedia: true,
             style: noRender
                 ? Theme.of(context).textTheme.labelLarge
@@ -1763,6 +1897,7 @@ class DetailedNoteContainer extends HookWidget {
             isMain: isMain,
             onEventAdded: onEventAdded,
             autoTranslate: autoTranslate,
+            isHomeFeed: isExtended,
             onTextTranslated: (text) {
               noteContent.value = text;
             },
@@ -1822,13 +1957,8 @@ class DetailedNoteContainer extends HookWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _generalInfoRow(context),
-          if (enableReply &&
-              replyEvent.value != null &&
-              settingsCubit.useCompactReplies) ...[
-            _replyBox(replyEvent),
-          ],
-          if (!isMain && !isReply) ...[
+          _generalInfoRow(context, noteContent),
+          if (!isMain && !isReply && !isExtended) ...[
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
@@ -1836,6 +1966,7 @@ class DetailedNoteContainer extends HookWidget {
               key: ValueKey(note.id),
               onClicked: click,
               text: noteContent.value.trim(),
+              emojis: note.emojis,
               enableHidingMedia: true,
               pubkey: note.pubkey,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -1883,45 +2014,74 @@ class DetailedNoteContainer extends HookWidget {
     );
   }
 
-  Row _generalInfoRow(BuildContext context) {
+  Row _generalInfoRow(BuildContext context, ValueNotifier<String> noteContent) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Row(
-            children: [
-              _noteInfo(),
-              if (!isMain && !isReply) ...[
-                DotContainer(
-                  color: Theme.of(context).primaryColorDark,
-                  size: 3,
-                ),
-                Text(
-                  StringUtil.formatTimeDifference(
-                    note.createdAt,
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                        height: 1,
-                      ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ]
-            ],
+        _noteInfo(),
+        if (isFluid()) ...[
+          TranslationButton(
+            autoTranslate: autoTranslate,
+            isMain: isMain,
+            note: note,
+            onTextTranslated: (text) => noteContent.value = text,
           ),
-        ),
-        if (note.isPaid) ...[
-          const SizedBox(
-            width: kDefaultPadding / 2,
+          BlocBuilder<NotesEventsCubit, NotesEventsState>(
+            buildWhen: (previous, current) => previous.mutes != current.mutes,
+            builder: (context, state) => PullDownGlobalButton(
+              model: note,
+              enableCopyNpub: true,
+              enableCopyId: true,
+              enableBookmark: true,
+              enableCopyText: true,
+              enableShareImage: true,
+              enableShowRawEvent: true,
+              enableDelete:
+                  canSign() && currentSigner!.getPublicKey() == note.pubkey,
+              enableRepublish: true,
+              enablePin:
+                  canSign() && note.pubkey == currentSigner!.getPublicKey(),
+              onDelete: () {
+                showCupertinoDeletionDialogue(
+                  context: context,
+                  title: context.t
+                      .deleteContent(type: context.t.note)
+                      .capitalizeFirst(),
+                  description: context.t
+                      .confirmDeleteContent(type: context.t.note)
+                      .capitalizeFirst(),
+                  buttonText: context.t.delete.capitalizeFirst(),
+                  onDelete: () async {
+                    final isSuccessful =
+                        await notesEventsCubit.deleteNote(note.id);
+                    if (isSuccessful && context.mounted) {
+                      BotToastUtils.showSuccess(
+                          context.t.noteDeletedSuccessfully);
+                      Navigator.pop(context);
+                    }
+                  },
+                );
+              },
+              bookmarkStatus:
+                  notesEventsCubit.state.bookmarks.contains(note.id),
+              enableShare: true,
+              enableMute: true,
+              enableMuteEvent: true,
+              muteEventStatus: state.mutesEvents.contains(note.id),
+              iconBackgroundColor: kTransparent,
+              iconColor: Theme.of(context).highlightColor,
+              muteStatus: state.mutes.contains(note.pubkey),
+              size: 25,
+              iconSize: 18,
+            ),
           ),
-          const PaidContainer(),
         ],
       ],
     );
   }
 
-  Flexible _noteInfo() {
-    return Flexible(
+  Expanded _noteInfo() {
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1936,23 +2096,68 @@ class DetailedNoteContainer extends HookWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _metadataRow(context, style),
-                  if (isMain || isReply) ...[
+                  Row(
+                    children: [
+                      Flexible(child: _metadataRow(context, style)),
+                      if (!isMain && !isReply && !isExtended) ...[
+                        DotContainer(
+                          color: Theme.of(context).primaryColorDark,
+                          size: 3,
+                        ),
+                        Text(
+                          StringUtil.formatTimeDifference(
+                            note.createdAt,
+                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                    height: 1,
+                                  ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ]
+                    ],
+                  ),
+                  if (isMain || isReply || note.isPaid || isExtended) ...[
                     const SizedBox(
                       height: kDefaultPadding / 4,
                     ),
-                    Text(
-                      StringUtil.formatTimeDifference(
-                        note.createdAt,
-                      ),
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(
-                              context,
-                            ).highlightColor,
-                            height: 1,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (note.isPaid)
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => showAppModalSheet(
+                              context: context,
+                              builder: (_) => const PaidNoteInfoSheet(),
+                            ),
+                            child: const PaidContainer(),
                           ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                        if (note.isPaid &&
+                            (isMain || isReply || isExtended)) ...[
+                          DotContainer(
+                            color: Theme.of(context).primaryColorDark,
+                            size: 3,
+                          ),
+                        ],
+                        if (isMain || isReply || isExtended)
+                          Text(
+                            StringUtil.formatTimeDifference(
+                              note.createdAt,
+                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).highlightColor,
+                                      height: 1,
+                                    ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
                     ),
                   ],
                 ],
@@ -1992,17 +2197,87 @@ class DetailedNoteContainer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColor, BlendMode.srcIn),
+                size: 15,
+                color: Theme.of(context).primaryColor,
               ),
+            ],
+            const SizedBox(width: kDefaultPadding / 4),
+            SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
+            if (note.isPremium) ...[
+              const SizedBox(width: kDefaultPadding / 4),
+              const PremiumBadge(),
+            ],
+            if (showFollowButton &&
+                canSign() &&
+                currentSigner!.getPublicKey() != metadata.pubkey) ...[
+              const SizedBox(
+                width: kDefaultPadding / 4,
+              ),
+              InlineFollowButton(pubkey: metadata.pubkey),
             ],
           ],
         ),
       ),
+    );
+  }
+}
+
+class InlineFollowButton extends StatelessWidget {
+  const InlineFollowButton({super.key, required this.pubkey});
+
+  final String pubkey;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<String>>(
+      initialData: contactListCubit.contacts,
+      stream: nostrRepository.contactListStream,
+      builder: (context, snapshot) {
+        final isFollowing = (snapshot.data ?? const []).contains(pubkey);
+
+        return TextButton(
+          onPressed: () {
+            doIfCanSign(
+              context: context,
+              func: () {
+                NostrFunctionsRepository.setFollowingEvent(
+                  isFollowingAuthor: isFollowing,
+                  targetPubkey: pubkey,
+                );
+              },
+            );
+          },
+          style: TbuttonsTheme.solidTextButtonStyle(
+            isFollowing
+                ? Theme.of(context).cardColor
+                : Theme.of(context).primaryColor,
+            foregroundColor:
+                isFollowing ? Theme.of(context).highlightColor : kWhite,
+            borderColor: isFollowing ? Theme.of(context).dividerColor : null,
+          ).copyWith(
+            padding: const WidgetStatePropertyAll(
+              EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 2,
+                vertical: kDefaultPadding / 1.5,
+              ),
+            ),
+            minimumSize: const WidgetStatePropertyAll(Size.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+          child: Text(
+            isFollowing
+                ? context.t.unfollow.capitalizeFirst()
+                : context.t.follow.capitalizeFirst(),
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall!
+                .copyWith(fontWeight: FontWeight.w600, color: kWhite),
+          ),
+        );
+      },
     );
   }
 }
@@ -2254,16 +2529,12 @@ class NoteReplyBox extends HookWidget {
               spacing: kDefaultPadding / 4,
               children: [
                 _metadataRow(context),
-                SvgPicture.asset(
+                AppIcon(
                   isCollapsed.value
                       ? FeatureIcons.arrowDown
                       : FeatureIcons.arrowUp,
-                  width: 18,
-                  height: 18,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).highlightColor,
-                    BlendMode.srcIn,
-                  ),
+                  size: 18,
+                  color: Theme.of(context).highlightColor,
                 ),
               ],
             ),
@@ -2343,29 +2614,424 @@ class NoteReplyBox extends HookWidget {
   }
 }
 
-class PaidContainer extends StatelessWidget {
-  const PaidContainer({
-    super.key,
-  });
+class PaidNoteInfoSheet extends StatelessWidget {
+  const PaidNoteInfoSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isBasic = subscriptionCubit.isBasic;
+
+    return ModalSheetContainer(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const ModalBottomSheetHandle(),
+          Icon(
+            LucideIcons.megaphone,
+            size: 32,
+            color: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            context.t.paid_note_sheet_title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: kDefaultPadding / 4),
+          Text(
+            isBasic
+                ? context.t.paid_note_sheet_body_upgrade
+                : context.t.paid_note_sheet_body_subscribe,
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Theme.of(context).highlightColor),
+          ),
+          const SizedBox(height: kDefaultPadding),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () {
+                YNavigator.pop(context);
+                YNavigator.pushPage(context, (_) => const SubscriptionView());
+              },
+              child: Text(isBasic
+                  ? context.t.pricing_upgrade_to_pro
+                  : context.t.pricing_cta_subscribe),
+            ),
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () => YNavigator.pop(context),
+              child: Text(context.t.close.capitalizeFirst()),
+            ),
+          ),
+          const SizedBox(height: kBottomNavigationBarHeight / 2),
+        ],
+      ),
+    );
+  }
+}
+
+class PaidContainer extends StatefulWidget {
+  const PaidContainer({super.key});
+
+  @override
+  State<PaidContainer> createState() => _PaidContainerState();
+}
+
+class _PaidContainerState extends State<PaidContainer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 3),
+  )..repeat();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (context, _) {
+        final t = _ctrl.value;
+        return ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: const [
+              Color(0xFF8B5CF6),
+              Color(0xFFEC4899),
+              Color(0xFFF59E0B),
+              Color(0xFF8B5CF6),
+            ],
+            begin: Alignment(-2 + t * 4, 0),
+            end: Alignment(-0.5 + t * 4, 0),
+          ).createShader(bounds),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                LucideIcons.megaphone,
+                size: 13,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                context.t.paid.capitalizeFirst(),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                    ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Tinted, outlined box that marks premium (nip63) content in feeds.
+class PremiumContainer extends StatelessWidget {
+  const PremiumContainer({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      foregroundPainter: _CornerBracketsPainter(
+        color: kPremiumColor.withValues(alpha: 0.4),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
+          color: Theme.of(context).cardColor,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Draws an L-shaped mark at the top-left and bottom-right corners only.
+class _CornerBracketsPainter extends CustomPainter {
+  const _CornerBracketsPainter({required this.color});
+
+  final Color color;
+
+  static const _radius = kDefaultPadding / 1.5;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Each arm gets its own linear gradient: opaque at the corner, fading to
+    // transparent at the arm's tip. Per-arm (not radial) so a wide, short box
+    // still fades along its vertical arms.
+    final armX = size.width * 0.55;
+    final armY = size.height * 0.55;
+
+    void drawArm(Path path, Offset from, Offset to) {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke
+          ..shader = ui.Gradient.linear(
+            from,
+            to,
+            [color, color.withValues(alpha: 0)],
+          ),
+      );
+    }
+
+    // Top-left: horizontal arm (carries the corner arc) + vertical arm.
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..arcToPoint(
+          const Offset(_radius, 0),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(armX, 0),
+      Offset.zero,
+      Offset(armX, 0),
+    );
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..lineTo(0, armY),
+      Offset.zero,
+      Offset(0, armY),
+    );
+
+    // Bottom-right: mirrored.
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..arcToPoint(
+          Offset(size.width - _radius, size.height),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(size.width - armX, size.height),
+      Offset(size.width, size.height),
+      Offset(size.width - armX, size.height),
+    );
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..lineTo(size.width, size.height - armY),
+      Offset(size.width, size.height),
+      Offset(size.width, size.height - armY),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CornerBracketsPainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+class PremiumBadge extends StatelessWidget {
+  const PremiumBadge({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.circular(
-          kDefaultPadding / 4,
+        borderRadius: BorderRadius.circular(kDefaultPadding),
+        color: kPremiumColor.withValues(alpha: 0.1),
+        border: Border.all(
+          color: kPremiumColor.withValues(alpha: 0.4),
+          width: 0.5,
         ),
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding / 2,
-        vertical: kDefaultPadding / 6,
+      child: Row(
+        spacing: kDefaultPadding / 4,
+        children: [
+          const AppIcon(
+            LucideIcons.crown,
+            size: 12,
+          ),
+          Text(
+            context.t.premium,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  height: 1,
+                ),
+          ),
+        ],
       ),
-      child: Text(
-        context.t.paid.capitalizeFirst(),
-        style: Theme.of(context).textTheme.labelMedium!.copyWith(
-              color: kWhite,
+    );
+  }
+}
+
+class _NoteStatsModal extends HookWidget {
+  const _NoteStatsModal({
+    required this.id,
+    required this.zappers,
+  });
+
+  final String id;
+  final Map<String, MapEntry<String, int>> zappers;
+
+  @override
+  Widget build(BuildContext context) {
+    final tabController = useTabController(initialLength: 5);
+
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: FluidBlurContainer(
+        customBorderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        customBorder: Border(
+          top: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+          left: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+          right: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+        ),
+        backgroundAlpha: isFluid() ? 0.55 : 1,
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          minChildSize: 0.60,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (_, sheetController) => Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              _fluidTabBar(context, tabController),
+              const SizedBox(height: kDefaultPadding / 2),
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.replies,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.reactions,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.reposts,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.quotes,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    _EmbeddedZappersList(
+                      zappers: zappers,
+                      controller: sheetController,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _fluidTabBar(BuildContext context, TabController controller) {
+    Widget tabIcon(IconData asset) => Tab(
+          height: 30,
+          child: Builder(
+            builder: (context) => AppIcon(
+              asset,
+              size: 20,
             ),
+          ),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: FluidBlurContainer(
+        padding: const EdgeInsets.all(3),
+        child: TabBar(
+          controller: controller,
+          dividerHeight: 0,
+          indicatorSize: TabBarIndicatorSize.tab,
+          padding: EdgeInsets.zero,
+          labelPadding: const EdgeInsets.all(3),
+          labelColor: Theme.of(context).primaryColorDark,
+          unselectedLabelColor: Theme.of(context).hintColor,
+          indicator: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(300),
+          ),
+          tabs: [
+            tabIcon(FeatureIcons.comments),
+            tabIcon(FeatureIcons.heart),
+            tabIcon(FeatureIcons.repost),
+            tabIcon(FeatureIcons.nQuotes),
+            tabIcon(FeatureIcons.nZaps),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmbeddedZappersList extends StatefulWidget {
+  const _EmbeddedZappersList({
+    required this.zappers,
+    required this.controller,
+  });
+
+  final Map<String, MapEntry<String, int>> zappers;
+  final ScrollController controller;
+
+  @override
+  State<_EmbeddedZappersList> createState() => _EmbeddedZappersListState();
+}
+
+class _EmbeddedZappersListState extends State<_EmbeddedZappersList> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => UsersInfoListCubit(
+        nostrRepository: context.read<NostrDataRepository>(),
+      ),
+      child: BlocBuilder<UsersInfoListCubit, UsersInfoListState>(
+        buildWhen: (previous, current) =>
+            previous.isLoading != current.isLoading,
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: LoadingWidget());
+          }
+          return ZappersList(
+            zappers: Map.fromEntries(
+              widget.zappers.entries.toList()
+                ..sort((a, b) => b.value.value.compareTo(a.value.value)),
+            ),
+            controller: widget.controller,
+          );
+        },
       ),
     );
   }

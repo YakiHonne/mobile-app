@@ -11,22 +11,24 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_url_validator/video_url_validator.dart';
 
+import '../../logic/dashboard_cubits/dashboard_scheduled_cubit/dashboard_scheduled_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/bookmark_list_model.dart';
@@ -45,6 +47,7 @@ import '../../utils/utils.dart';
 import '../../views/app_view/app_view.dart';
 import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
+import '../../views/dashboard_view/widgets/scheduled/scheduled_dashboard.dart';
 import '../../views/note_view/note_view.dart';
 import '../../views/profile_view/profile_view.dart';
 import '../../views/profile_view/widgets/profile_fast_access.dart';
@@ -53,8 +56,10 @@ import '../../views/search_view/search_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_display.dart';
 import '../../views/widgets/content_renderer/content_renderer.dart';
 import '../../views/widgets/dotted_container.dart';
+import '../../views/widgets/fluid_sheet.dart';
 import '../../views/widgets/media_components/horizontal_video_view.dart';
 import '../../views/widgets/media_components/vertical_video_view.dart';
+import '../../views/widgets/modal_sheet_container.dart';
 import '../../views/widgets/modal_with_blur.dart';
 import '../../views/widgets/reactions_box.dart';
 import '../../views/widgets/response_snackbar.dart';
@@ -256,11 +261,17 @@ Future<void> openWebPage({
 Future<void> launchInstantUrl(String url) async {
   String toAddUrl = url;
 
-  if (!url.startsWith('http')) {
+  if (!url.startsWith('http') && !url.contains(':')) {
     toAddUrl = 'https://$toAddUrl';
   }
 
-  final uri = Uri.parse(toAddUrl);
+  final uri = Uri.tryParse(toAddUrl);
+
+  if (uri == null) {
+    BotToastUtils.showError(t.inaccessibleLink.capitalizeFirst());
+    return;
+  }
+
   await launchUrl(
     uri,
     mode: !settingsCubit.useExternalBrowser
@@ -277,9 +288,8 @@ Future<void> openApp({
   AppSmartWidget? app,
   String? title,
 }) async {
-  showModalBottomSheet(
+  showAppModalSheet(
     context: context,
-    elevation: 0,
     builder: (_) {
       return SmartWidgetAppView(
         url: url.trim(),
@@ -289,10 +299,6 @@ Future<void> openApp({
         title: title,
       );
     },
-    isScrollControlled: true,
-    useRootNavigator: true,
-    useSafeArea: true,
-    enableDrag: false,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
   );
 }
@@ -610,6 +616,23 @@ List<dynamic> getVotes({
   ];
 }
 
+bool getPremiumStatus(Event event) {
+  bool hasNip63 = false;
+  bool hasUniqueDash = false;
+
+  for (final a in event.tags) {
+    if (a.isNotEmpty && a.first == 'nip63') {
+      hasNip63 = true;
+    }
+
+    if (a.isNotEmpty && a.first == '-') {
+      hasUniqueDash = true;
+    }
+  }
+
+  return hasNip63 && hasUniqueDash;
+}
+
 Future<String> createShareableLink(
   int kind,
   String pubkey,
@@ -688,6 +711,7 @@ class ParsedText extends HookWidget {
     this.minLines,
     this.maxWords,
     this.useDetailedNote = false,
+    this.emojis,
   });
 
   final String text;
@@ -706,6 +730,7 @@ class ParsedText extends HookWidget {
   final int? maxLines;
   final int? minLines;
   final bool? useDetailedNote;
+  final Map<String, String>? emojis;
   final ScrollPhysics? scrollPhysics;
   final bool isDm;
   final bool enableTruncation;
@@ -778,6 +803,7 @@ class ParsedText extends HookWidget {
         children: [
           ContentRenderer(
             text: content.value,
+            emojis: emojis,
             onClicked: onClicked,
             maxLines: maxLines,
             minLines: minLines,
@@ -1051,12 +1077,12 @@ int getRemainingXp(int nextLevel) {
   if (nextLevel == 1) {
     return 0;
   } else {
-    return getRemainingXp(nextLevel - 1) + (nextLevel - 1) * 50;
+    return getRemainingXp(nextLevel - 1) + (nextLevel - 1) * 4;
   }
 }
 
-int getCurrentLevel(int xp) {
-  return ((1 + sqrt(1 + (8 * xp) / 50)) / 2).floor();
+int getCurrentLevel(num xp) {
+  return ((1 + sqrt(1 + (100 * xp) / 50)) / 2).floor();
 }
 
 String formattedTime({required int timeInSecond}) {
@@ -1145,15 +1171,19 @@ void openProfileFastAccess({
   required String pubkey,
 }) {
   if (nostrRepository.currentAppCustomization?.enableProfilePreview ?? true) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      elevation: 0,
-      builder: (context) => ProfileFastAccess(
-        pubkey: pubkey,
-      ),
-      useRootNavigator: true,
-      backgroundColor: kTransparent,
-    );
+    if (isFluid()) {
+      showBlurredModal(
+        context: context,
+        view: ProfileFastAccessFluid(pubkey: pubkey),
+      );
+    } else {
+      showAppModalSheet(
+          context: context,
+          builder: (context) => ProfileFastAccess(
+                pubkey: pubkey,
+              ),
+          backgroundColor: kTransparent);
+    }
   } else {
     YNavigator.pushPage(
       context,
@@ -1437,19 +1467,8 @@ void showScheduledNoteDatePicker({
 }) {
   showCupertinoModalPopup(
     context: context,
-    builder: (_) => Container(
+    builder: (_) => ModalSheetContainer(
       height: 50.h,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(kDefaultPadding),
-          topRight: Radius.circular(kDefaultPadding),
-        ),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       child: Column(
         children: [
@@ -1477,20 +1496,61 @@ void showScheduledNoteDatePicker({
           ),
           SafeArea(
             top: false,
-            child: SizedBox(
-              width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  onDateTimeChanged(null);
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  context.t.clear.capitalizeFirst(),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => showScheduledNotesSheet(context),
+                    child: Text(
+                      context.t.scheduled.capitalizeFirst(),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: kDefaultPadding / 2),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      onDateTimeChanged(null);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      context.t.clear.capitalizeFirst(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+void showScheduledNotesSheet(BuildContext context) {
+  showAppModalSheet(
+    context: context,
+    builder: (_) => BlocProvider(
+      create: (_) => DashboardScheduledCubit(),
+      child: ModalSheetContainer(
+        padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const ModalBottomSheetHandle(),
+            Text(
+              context.t.scheduled.capitalizeFirst(),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            const Flexible(
+              child: ScheduledDashboard(
+                isModal: true,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -1537,5 +1597,48 @@ Map<String, dynamic> decodeGiftToken(String token) {
   } catch (e) {
     lg.e('Error decoding gift token: $e');
     return {};
+  }
+}
+
+bool isFluid() {
+  return themeCubit.state.isFluid;
+}
+
+/// Fluid mode + the user opted into bordered content cards.
+bool useFluidCards() {
+  return themeCubit.state.isFluid && themeCubit.state.fluidCards;
+}
+
+/// Reads the clipboard with a timeout. On iOS, a raw `Clipboard.getData`
+/// call can block the main thread for the duration of the system
+/// "Allow Paste" permission dialog; this bounds that wait so callers
+/// don't hang indefinitely if the user ignores the OS prompt.
+Future<String?> getClipboardTextSafely({
+  Duration timeout = const Duration(seconds: 3),
+}) async {
+  try {
+    final data = await Clipboard.getData(Clipboard.kTextPlain)
+        .timeout(timeout, onTimeout: () => null);
+    return data?.text;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// The native barcode view can be torn down (backgrounding, hot reload,
+/// route disposal) before an in-flight lifecycle callback fires; pause/resume
+/// then throws CameraException(404, "No barcode view found"). Harmless, so
+/// swallow it instead of crashing.
+extension SafeQrController on QRViewController {
+  Future<void> pauseCameraSafely() async {
+    try {
+      await pauseCamera();
+    } catch (_) {}
+  }
+
+  Future<void> resumeCameraSafely() async {
+    try {
+      await resumeCamera();
+    } catch (_) {}
   }
 }

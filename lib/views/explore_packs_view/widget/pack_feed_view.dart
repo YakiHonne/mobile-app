@@ -22,8 +22,8 @@ import '../../widgets/classic_footer.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/data_providers.dart';
-import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/note_stats.dart';
@@ -43,16 +43,8 @@ class PackFeedView extends StatelessWidget {
         packsModel: pack,
       ),
       lazy: false,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: SafeArea(
-            child: ModalBottomSheetAppbar(
-              title: pack.title,
-              isBack: false,
-            ),
-          ),
-        ),
+      child: FluidScaffold(
+        title: pack.title,
         body: PackContentFeed(
           pack: pack,
         ),
@@ -135,6 +127,12 @@ class _PackContentFeedState extends State<PackContentFeed> {
               onRefresh: () => buildPackFeed.call(context, false),
               child: CustomScrollView(
                 slivers: [
+                  if (isFluid())
+                    SliverPadding(
+                      padding: EdgeInsets.only(
+                        top: fluidScaffoldTopInset(context),
+                      ),
+                    ),
                   _packBox(context),
                   if (widget.pack.isStarterPack()) _appbar(context),
                   const SliverToBoxAdapter(
@@ -174,7 +172,7 @@ class _PackContentFeedState extends State<PackContentFeed> {
       automaticallyImplyLeading: false,
       leadingWidth: 0,
       titleSpacing: 0,
-      floating: true,
+      primary: false,
       title: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(8.0),
@@ -260,7 +258,7 @@ class ContentList extends StatelessWidget {
           return SliverToBoxAdapter(
             child: EmptyList(
               description: context.t.noResultsNoFilterMessage,
-              icon: LogosIcons.logoMarkWhite,
+              icon: FeatureIcons.search,
               title: context.t.noResults,
             ),
           );
@@ -300,10 +298,10 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  Padding _itemsGrid(List<BaseEventModel> content) {
-    return Padding(
+  SliverPadding _itemsGrid(List<BaseEventModel> content) {
+    return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      child: SliverMasonryGrid.count(
+      sliver: SliverMasonryGrid.count(
         crossAxisCount: 2,
         childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
@@ -384,6 +382,7 @@ class ContentList extends StatelessWidget {
         isMain: false,
         addLine: false,
         enableReply: true,
+        isExtended: true,
       );
     } else {
       return const SizedBox.shrink();

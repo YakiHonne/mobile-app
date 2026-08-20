@@ -19,11 +19,12 @@ import '../search_view/search_view.dart';
 import '../uncensored_notes_view/uncensored_notes_view.dart';
 import '../uncensored_notes_view/widgets/un_flashnews_details.dart';
 import '../uncensored_notes_view/widgets/uncensored_note_component.dart';
+import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/empty_list.dart';
 import '../widgets/flash_news_container.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/no_content_widgets.dart';
 
 class RewardsView extends HookWidget {
@@ -53,20 +54,22 @@ class RewardsView extends HookWidget {
       create: (context) =>
           RewardsCubit(uncensoredNotesCubit: uncensoredNotesCubit)..initView(),
       lazy: false,
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.rewards.capitalizeFirst(),
-        ),
+      child: FluidScaffold(
+        title: context.t.rewards.capitalizeFirst(),
         body: BlocBuilder<RewardsCubit, RewardsState>(
           builder: (context, state) {
-            return Stack(
-              children: [
-                _scrollableView(scrollController, state),
-                ResetScrollButton(
-                  scrollController: scrollController,
-                  isLeft: true,
-                ),
-              ],
+            // Pinned NestedScrollView header — see mute_list_view.
+            return Padding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+              child: Stack(
+                children: [
+                  _scrollableView(scrollController, state),
+                  ResetScrollButton(
+                    scrollController: scrollController,
+                    isLeft: true,
+                  ),
+                ],
+              ),
             );
           },
         ),
@@ -237,16 +240,12 @@ class RatingColumn extends StatelessWidget {
             children: [
               TextSpan(text: '${context.t.youHaveRated} '),
               WidgetSpan(
-                child: SvgPicture.asset(
+                child: AppIcon(
                   ratingReward.rating.ratingValue
                       ? FeatureIcons.like
                       : FeatureIcons.dislike,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorDark,
-                    BlendMode.srcIn,
-                  ),
+                  size: 15,
+                  color: Theme.of(context).primaryColorDark,
                 ),
               ),
               TextSpan(text: ' ${context.t.theFollowingNote}'),
@@ -506,14 +505,10 @@ class ClaimButton extends HookWidget {
             const SizedBox(
               width: kDefaultPadding / 4,
             ),
-            SvgPicture.asset(
+            AppIcon(
               FeatureIcons.reward,
-              width: 17,
-              height: 17,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColor,
-                BlendMode.srcIn,
-              ),
+              size: 17,
+              color: Theme.of(context).primaryColor,
             ),
             const SizedBox(
               width: kDefaultPadding / 4,
@@ -548,6 +543,7 @@ class ClaimButton extends HookWidget {
             }
           },
           style: TextButton.styleFrom(
+            backgroundBuilder: (_, __, child) => child!,
             visualDensity: const VisualDensity(
               vertical: -2,
             ),

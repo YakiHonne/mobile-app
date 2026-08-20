@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Use this class for converting String to [ResultMarkdown]
 class FormatMarkdown {
@@ -22,9 +23,6 @@ class FormatMarkdown {
     toIndex = greaterIndex;
 
     switch (type) {
-      case MarkdownType.gpt:
-        changedData = '$link';
-        replaceCursorIndex = 0;
       case MarkdownType.bold:
         changedData = '**${data.substring(fromIndex, toIndex)}**';
         replaceCursorIndex = 2;
@@ -152,8 +150,6 @@ enum MarkdownType {
   /// For ![Alt text](uploaded_image_link)
   uploadedImage,
 
-  gpt,
-
   smartWidgets,
 }
 
@@ -162,8 +158,6 @@ extension MarkownTypeExtension on MarkdownType {
   /// Get String used in widget's key
   String get key {
     switch (this) {
-      case MarkdownType.gpt:
-        return 'gpt_button';
       case MarkdownType.bold:
         return 'bold_button';
       case MarkdownType.italic:
@@ -196,34 +190,32 @@ extension MarkownTypeExtension on MarkdownType {
   /// Get Icon String
   IconData get icon {
     switch (this) {
-      case MarkdownType.gpt:
-        return Icons.cloud_upload_outlined;
       case MarkdownType.bold:
-        return Icons.format_bold;
+        return LucideIcons.bold;
       case MarkdownType.italic:
-        return Icons.format_italic;
+        return LucideIcons.italic;
       case MarkdownType.strikethrough:
-        return Icons.format_strikethrough;
+        return LucideIcons.strikethrough;
       case MarkdownType.link:
-        return Icons.link;
+        return LucideIcons.link;
       case MarkdownType.title:
-        return Icons.text_fields;
+        return LucideIcons.type;
       case MarkdownType.list:
-        return Icons.list;
+        return LucideIcons.list;
       case MarkdownType.code:
-        return Icons.code;
+        return LucideIcons.code;
       case MarkdownType.blockquote:
-        return Icons.format_quote_rounded;
+        return LucideIcons.quote;
       case MarkdownType.separator:
-        return Icons.minimize_rounded;
+        return LucideIcons.minus;
       case MarkdownType.mathEquation:
-        return CupertinoIcons.f_cursive;
+        return LucideIcons.sigma;
       case MarkdownType.image:
-        return CupertinoIcons.photo_fill_on_rectangle_fill;
+        return LucideIcons.images;
       case MarkdownType.uploadedImage:
-        return Icons.cloud_upload_outlined;
+        return LucideIcons.cloudUpload;
       case MarkdownType.smartWidgets:
-        return Icons.cloud_upload_outlined;
+        return LucideIcons.cloudUpload;
     }
   }
 }

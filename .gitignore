@@ -48,6 +48,7 @@ app.*.map.json
 # Folder
 /build/
 /functions/
+/md/
 
 # Files
 /android/key.properties
@@ -64,3 +65,5 @@ firebase.json
 .claude/
 .mcp.json
 CLAUDE.md
+AGENTS.md
+.tokensave/

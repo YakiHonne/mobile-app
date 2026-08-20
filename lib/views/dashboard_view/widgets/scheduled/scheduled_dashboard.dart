@@ -12,11 +12,18 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_scaffold.dart';
+import '../../../widgets/fluid_sheet.dart';
+import '../../../widgets/modal_sheet_container.dart';
 import '../../../widgets/parsed_content_display.dart';
 import '../home/dashboard_containers.dart';
 
 class ScheduledDashboard extends StatefulWidget {
-  const ScheduledDashboard({super.key});
+  const ScheduledDashboard({super.key, this.isModal = false});
+
+  /// Rendered in a sheet rather than a FluidScaffold — no glass app bar to
+  /// clear, so the top inset is skipped.
+  final bool isModal;
 
   @override
   State<ScheduledDashboard> createState() => _ScheduledDashboardState();
@@ -34,19 +41,8 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
         DateTime.fromMillisecondsSinceEpoch(result.scheduledAt * 1000);
     showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
+      builder: (_) => ModalSheetContainer(
         height: MediaQuery.of(context).size.height * 0.4,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-          ),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
         child: Column(
           children: [
@@ -97,13 +93,33 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isModal) {
+      return DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        // minChildSize left at its 0.25 default: a downward drag runs well past
+        // the initial size, then the host sheet's drag-to-dismiss takes over,
+        // instead of jamming against a high floor.
+        maxChildSize: 0.9,
+        snap: true,
+        snapSizes: const [0.7],
+        expand: false,
+        builder: (context, scrollController) => _content(context,
+            scrollController: scrollController),
+      );
+    }
+
+    return _content(context);
+  }
+
+  Widget _content(BuildContext context, {ScrollController? scrollController}) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return BlocBuilder<DashboardScheduledCubit, DashboardScheduledState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return Center(
-            child: SpinKitCircle(
+          return _centered(
+            scrollController,
+            SpinKitCircle(
               color: Theme.of(context).primaryColor,
               size: 25,
             ),
@@ -111,15 +127,38 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
         }
 
         if (state.notes.isEmpty) {
-          return EmptyList(
-            title: context.t.noScheduledNotesFound,
-            description: context.t.noScheduledNotesFoundDesc,
-            icon: FeatureIcons.calendar,
+          return _centered(
+            scrollController,
+            EmptyList(
+              title: context.t.noScheduledNotesFound,
+              description: context.t.noScheduledNotesFoundDesc,
+              icon: FeatureIcons.calendar,
+            ),
           );
         }
 
-        return isTablet ? _itemsGrid(state.notes) : _itemsList(state.notes);
+        return isTablet
+            ? _itemsGrid(state.notes, scrollController)
+            : _itemsList(state.notes, scrollController);
       },
+    );
+  }
+
+  /// In a drag sheet the placeholder has to sit in a scrollable, otherwise the
+  /// sheet has nothing to attach the drag gesture to.
+  Widget _centered(ScrollController? scrollController, Widget child) {
+    if (scrollController == null) {
+      return Center(child: child);
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        controller: scrollController,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Center(child: child),
+        ),
+      ),
     );
   }
 
@@ -132,15 +171,11 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
     final id = note.id;
     final isPaid = note.isPaid;
     void onClick() {
-      showModalBottomSheet(
+      showAppModalSheet(
         context: context,
         builder: (_) {
           return ParsedContentDisplay(content: content);
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
@@ -177,12 +212,15 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
     );
   }
 
-  ListView _itemsList(List<DvmPendingItem> notes) {
+  ListView _itemsList(
+      List<DvmPendingItem> notes, ScrollController? scrollController) {
     return ListView.separated(
+      controller: scrollController,
       itemBuilder: (context, index) =>
           _buildDashboardItem(context, notes[index]),
-      padding: const EdgeInsets.symmetric(
-        vertical: kDefaultPadding,
+      padding: EdgeInsets.symmetric(
+        vertical: kDefaultPadding +
+            (widget.isModal ? 0 : fluidScaffoldTopInset(context)),
         horizontal: kDefaultPadding / 2,
       ),
       itemCount: notes.length,
@@ -191,8 +229,10 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
     );
   }
 
-  MasonryGridView _itemsGrid(List<DvmPendingItem> notes) {
+  MasonryGridView _itemsGrid(
+      List<DvmPendingItem> notes, ScrollController? scrollController) {
     return MasonryGridView.count(
+      controller: scrollController,
       crossAxisCount: 2,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,

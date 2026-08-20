@@ -20,6 +20,7 @@ import '../../models/app_models/extended_model.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
+import '../../models/identity_models.dart';
 import '../../models/packs_model.dart';
 import '../../models/picture_model.dart';
 import '../../models/smart_widgets_components.dart';
@@ -32,16 +33,20 @@ import '../../utils/utils.dart';
 import '../../views/article_view/article_view.dart';
 import '../../views/curation_view/curation_view.dart';
 import '../../views/explore_packs_view/widget/pack_feed_view.dart';
+import '../../views/main_view/widgets/feature_tour.dart';
 import '../../views/note_view/note_view.dart';
 import '../../views/profile_view/profile_view.dart';
 import '../../views/relay_feed_view/relay_feed_view.dart';
 import '../../views/smart_widgets_view/widgets/smart_widget_checker.dart';
 import '../../views/uncensored_notes_view/widgets/un_flashnews_details.dart';
-import '../../views/version_news/app_news_popup.dart';
+// import '../../views/version_news/app_news_popup.dart';
+import '../../views/version_news/new_features_intro.dart';
+import '../../views/widgets/fluid_sheet.dart';
 import '../../views/widgets/media_components/horizontal_video_view.dart';
 import '../../views/widgets/media_components/picture_view.dart';
 import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/received_share_intent.dart';
+import '../../views/workshop_view/workshop_registration_view.dart';
 
 part 'main_state.dart';
 
@@ -160,19 +165,29 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<void> checkCurrentVersionNews() async {
-    final status = localDatabaseRepository.canDisplayVersionNews(appVersion);
+    // final showNews = localDatabaseRepository.canDisplayVersionNews(appVersion);
 
-    if (status) {
-      await Future.delayed(const Duration(seconds: 5)).then(
-        (_) {
-          if (context.mounted) {
-            showDialog(
-              context: context,
-              builder: (context) => const AppNewsPopup(),
-            );
-          }
-        },
-      );
+    final showTour = kAlwaysShowFeatureTour ||
+        localDatabaseRepository.canDisplayFeatureTour();
+
+    if (!showTour) {
+      return;
+    }
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!context.mounted) {
+      return;
+    }
+
+    // The features intro takes precedence — it hands off to the spotlight tour.
+    final startTour = await showDialog<bool>(
+      context: context,
+      builder: (context) => const NewFeaturesIntro(),
+    );
+
+    if ((startTour ?? false) && context.mounted) {
+      await showFeatureTour(context);
     }
   }
 
@@ -191,15 +206,11 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void openReceivedShareIntent(SharedMedia media) {
-    showModalBottomSheet(
+    showAppModalSheet(
       context: context,
-      elevation: 0,
       builder: (_) {
         return ReceivedShareIntent(media: media);
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -324,6 +335,19 @@ class MainCubit extends Cubit<MainState> {
     } else if (uriString.contains('yakihonne.com/pack/s') ||
         uriString.contains('yakihonne.com/pack/m')) {
       await _handlePackLink(uriString);
+    } else if (uriString.contains('yakihonne.com/workshop/registration')) {
+      final wid = Uri.parse(uriString).queryParameters['wid'];
+
+      if (wid != null && wid.isNotEmpty && context.mounted) {
+        doIfCanSign(
+          context: context,
+          func: () => showAppModalSheet(
+            context: context,
+            backgroundColor: Colors.transparent,
+            builder: (_) => WorkshopRegistrationView(workshopId: wid),
+          ),
+        );
+      }
     } else if (uriString.contains('yakihonne.com/r/content/')) {
       final uri = Uri.parse(uriString);
       final relay = uri.queryParameters['r'];
@@ -336,6 +360,8 @@ class MainCubit extends Cubit<MainState> {
           ),
         );
       }
+    } else if (!isNostrScheme && usernameFromYakiUrl(uriString) != null) {
+      await _handleUsername(usernameFromYakiUrl(uriString)!);
     } else {
       await handleNostrEntity(
         nostrUri: nostrUri,
@@ -619,6 +645,17 @@ class MainCubit extends Cubit<MainState> {
     }
   }
 
+  Future<void> _handleUsername(String username) async {
+    final pubkey = await HttpFunctionsRepository.getUsernamePubkey(username);
+
+    if (pubkey == null || pubkey.isEmpty) {
+      BotToastUtils.showError(context.t.userCannotBeFound.capitalizeFirst());
+      return;
+    }
+
+    await _openProfile(pubkey, []);
+  }
+
   Future<void> _handleProfile(String nostrUri) async {
     String pubkey = '';
     List<String> relays = [];
@@ -631,6 +668,10 @@ class MainCubit extends Cubit<MainState> {
       pubkey = Nip19.decodePubkey(nostrUri);
     }
 
+    await _openProfile(pubkey, relays);
+  }
+
+  Future<void> _openProfile(String pubkey, List<String> relays) async {
     if (isUserMuted(pubkey)) {
       return;
     }
@@ -670,7 +711,7 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleNote(String nostrUri) async {
     final id = Nip19.decodeNote(nostrUri);
     final event = await getForwardedEvent(
-        kinds: <int>[EventKind.TEXT_NOTE], identifier: id);
+        kinds: <int>[EventKind.TEXT_NOTE, EventKind.COMMENT], identifier: id);
 
     if (event == null) {
       BotToastUtils.showError(context.t.noteNotFound.capitalizeFirst());
@@ -711,7 +752,8 @@ class MainCubit extends Cubit<MainState> {
             context.t.verifiedNoteNotFound.capitalizeFirst(),
           );
         }
-      } else if (event.kind == EventKind.TEXT_NOTE) {
+      } else if (event.kind == EventKind.TEXT_NOTE ||
+          event.kind == EventKind.COMMENT) {
         final note = DetailedNoteModel.fromEvent(event);
         Navigator.pushNamed(context, NoteView.routeName, arguments: [note]);
       } else if (event.kind == EventKind.PICTURE) {
@@ -756,6 +798,9 @@ class MainCubit extends Cubit<MainState> {
             viewMode: true,
           ),
         );
+      } else {
+        // ponytail: unsupported kind used to fall through silently
+        BotToastUtils.showError(context.t.eventNotFound.capitalizeFirst());
       }
     }
   }
@@ -763,6 +808,14 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _handleAddress(String nostrUri) async {
     final Map<String, dynamic> nostrDecode =
         Nip19.decodeShareableEntity(nostrUri);
+
+    if (nostrDecode['special'] == null) {
+      BotToastUtils.showError(context.t.eventNotFound.capitalizeFirst());
+      return;
+    }
+
+    lg.i(nostrDecode);
+
     metadataCubit.requestMetadata(nostrDecode['author'] ?? '');
     final hexCode = hex.decode(nostrDecode['special']);
     final special = String.fromCharCodes(hexCode);
@@ -862,8 +915,6 @@ class MainCubit extends Cubit<MainState> {
     if (event != null) {
       return event;
     }
-
-    lg.i('getForwardedEvent => $event');
 
     if (pubkey != null && pubkey.isNotEmpty) {
       final relayList = await nc.getSingleUserRelayList(pubkey);

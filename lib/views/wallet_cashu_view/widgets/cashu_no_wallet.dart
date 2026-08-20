@@ -1,8 +1,13 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_sheet.dart';
+import '../../widgets/wallet_type_switch.dart';
 import 'create_cashu_wallet.dart';
 
 class CashuNoWallet extends HookWidget {
@@ -33,6 +38,20 @@ class CashuNoWallet extends HookWidget {
           height: kDefaultPadding,
         ),
         _emptyWalletAdd(context),
+        if (isFluid()) ...[
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: WalletTypeSwitch(
+              isCashu: true,
+              onTap: () {
+                context.read<MainCubit>().changeWalletType();
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -50,33 +69,26 @@ class CashuNoWallet extends HookWidget {
       ),
       child: TextButton(
         onPressed: () {
-          showModalBottomSheet(
+          showAppModalSheet(
             context: context,
             builder: (_) {
               return const CreateCashuWallet();
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
           visualDensity: VisualDensity.comfortable,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
+            const AppIcon(
               FeatureIcons.addRaw,
-              width: 15,
-              height: 15,
-              colorFilter: const ColorFilter.mode(
-                kWhite,
-                BlendMode.srcIn,
-              ),
+              size: 15,
+              color: kWhite,
             ),
             const SizedBox(
               width: kDefaultPadding / 2,

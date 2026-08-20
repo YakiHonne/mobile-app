@@ -5,21 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class EulaView extends StatelessWidget {
   const EulaView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      width: double.infinity,
+    return ModalSheetContainer(
       child: DraggableScrollableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.60,

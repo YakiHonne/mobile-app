@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
+import '../../models/creator_subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -108,6 +109,16 @@ class ProfileCubit extends Cubit<ProfileState> {
   Set<String> userWriteRelays = {};
   bool isUserWriteRelaysLoaded = false;
   ProfileData currentProfileData = ProfileData.notes;
+  int? lastRawCreatedAt;
+
+  /// Premium tab only — `false` fetches its notes, `true` fetches its articles.
+  bool premiumArticlesOnly = false;
+
+  Future<void> setPremiumArticlesOnly(bool value) {
+    premiumArticlesOnly = value;
+
+    return getUserInfos(profileData: ProfileData.premium);
+  }
 
   Future<void> getUserWriteRelays() async {
     if (!isUserWriteRelaysLoaded) {
@@ -149,6 +160,66 @@ class ProfileCubit extends Cubit<ProfileState> {
   void initView() {
     establishRequiredData();
     getUserInfos();
+    subscriptionBadgeCubit.fetchPlan(pubkey);
+    fetchCreatorSubscriptionPlans();
+  }
+
+  Future<void> fetchCreatorSubscriptionPlans() async {
+    if (isClosed) {
+      return;
+    }
+
+    _emit(state.copyWith(isCreatorSubscriptionLoading: true));
+
+    final events = await NostrFunctionsRepository.getEventsAsync(
+      kinds: [30164],
+      pubkeys: [pubkey],
+      relays: constantRelays.toList(),
+      source: EventsSource.all,
+    );
+
+    if (isClosed) {
+      return;
+    }
+
+    final seenPubkeys = <String>{};
+    final providers = <CreatorProvider>[];
+
+    for (final event in events) {
+      final hasGateway =
+          event.tags.any((t) => t.isNotEmpty && t[0] == 'gateway');
+      final hasMethod = event.tags.any((t) => t.isNotEmpty && t[0] == 'method');
+
+      if (!hasGateway || !hasMethod) {
+        continue;
+      }
+
+      final gatewayTag =
+          event.tags.firstWhere((t) => t.isNotEmpty && t[0] == 'gateway');
+      final uTag = event.tags
+          .firstWhere((t) => t.isNotEmpty && t[0] == 'u', orElse: () => []);
+
+      if (gatewayTag.length < 2) {
+        continue;
+      }
+
+      final gatewayPubkey = gatewayTag[1];
+      final url = uTag.length >= 2 ? uTag[1] : '';
+
+      if (seenPubkeys.contains(gatewayPubkey)) {
+        continue;
+      }
+
+      seenPubkeys.add(gatewayPubkey);
+      providers.add(CreatorProvider(pubkey: gatewayPubkey, url: url));
+    }
+
+    _emit(
+      state.copyWith(
+        creatorProviders: providers,
+        isCreatorSubscriptionLoading: false,
+      ),
+    );
   }
 
   void onRemoveMutedContent(
@@ -302,6 +373,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     int? until;
 
     if (!isAdding) {
+      lastRawCreatedAt = null;
       _emit(state.intialData());
     } else {
       _emit(
@@ -310,7 +382,15 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
 
-      until = state.content.isEmpty ? null : state.content.last.createdAt - 1;
+      // Premium is filtered client side, so page from the last raw event we saw,
+      // not from the last kept one.
+      until = profileData == ProfileData.premium
+          ? lastRawCreatedAt == null
+              ? null
+              : lastRawCreatedAt! - 1
+          : state.content.isEmpty
+              ? null
+              : state.content.last.createdAt - 1;
     }
 
     if (profileData == ProfileData.pinned && pinnedNotes.isEmpty) {
@@ -324,7 +404,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       return;
     }
 
-    final events = await NostrFunctionsRepository.getEventsAsync(
+    Future<List<Event>> fetchPage(int? until) =>
+        NostrFunctionsRepository.getEventsAsync(
       kinds: [
         if (profileData == ProfileData.notes) ...[
           EventKind.TEXT_NOTE,
@@ -352,6 +433,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         ],
         if (profileData == ProfileData.smartWidgets) EventKind.SMART_WIDGET_ENH,
         if (profileData == ProfileData.articles) EventKind.LONG_FORM,
+        if (profileData == ProfileData.premium)
+          premiumArticlesOnly ? EventKind.LONG_FORM : EventKind.TEXT_NOTE,
       ],
       pTags: profileData == ProfileData.mentions ? [pubkey] : null,
       pubkeys: profileData == ProfileData.mentions ||
@@ -366,16 +449,47 @@ class ProfileCubit extends Cubit<ProfileState> {
       timeout: 1,
     );
 
+    var events = await fetchPage(until);
+    var handledEvents = handleEvents(events: events, profileData: profileData);
+
+    void trackCursor() {
+      if (events.isNotEmpty) {
+        lastRawCreatedAt =
+            events.map((e) => e.createdAt).reduce((a, b) => a < b ? a : b);
+      }
+    }
+
+    trackCursor();
+
+    // ponytail: premium is filtered client side, so a page can come back with
+    // no premium event while older ones exist. Dig a couple of pages deeper
+    // before showing an empty feed; beyond that the user pulls up.
+    if (profileData == ProfileData.premium) {
+      var digs = 0;
+
+      while (handledEvents.isEmpty &&
+          events.isNotEmpty &&
+          digs < 2 &&
+          fetchId == id) {
+        digs++;
+        events = await fetchPage(lastRawCreatedAt! - 1);
+        handledEvents = handleEvents(events: events, profileData: profileData);
+        trackCursor();
+      }
+    }
+
     if (fetchId == id) {
-      final handledEvents =
-          handleEvents(events: events, profileData: profileData);
+      // Premium is filtered client side: an empty page doesn't mean the end of
+      // the feed, so keep paging as long as the relays returned raw events.
+      final noMore = profileData == ProfileData.premium
+          ? events.isEmpty
+          : handledEvents.isEmpty;
 
       _emit(
         state.copyWith(
-          loadingState:
-              handledEvents.isEmpty || profileData == ProfileData.pinned
-                  ? UpdatingState.idle
-                  : UpdatingState.success,
+          loadingState: noMore || profileData == ProfileData.pinned
+              ? UpdatingState.idle
+              : UpdatingState.success,
           content: [...state.content, ...handledEvents],
           isLoading: false,
         ),
@@ -429,6 +543,15 @@ class ProfileCubit extends Cubit<ProfileState> {
         selectedEvents = events;
       case ProfileData.pictures:
         selectedEvents = events;
+
+      case ProfileData.premium:
+        // ponytail: multi-char tags aren't relay indexed, so no #nip63 filter —
+        // we scan each page client side.
+        for (final e in events) {
+          if (e.tags.any((t) => t.isNotEmpty && t.first == 'nip63')) {
+            selectedEvents.add(e);
+          }
+        }
     }
 
     selectedEvents.sort((a, b) => b.createdAt.compareTo(a.createdAt));

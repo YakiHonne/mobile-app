@@ -1,7 +1,29 @@
 # Changelog
 
-## [2.0.5] - 2026-05-14
+## [2.0.6] - 2026-08-20
 
+### Added
+
+- Introduced Basic and Premium subscriptions, payable by card, Lightning, or points.
+- Added creator subscriptions, so you can support creators directly.
+- Added Google sign-in with key recovery, split across operators so no single one holds your key.
+- Added Yaki usernames and NIP-05 addresses, claimable from profile settings.
+- Added fluid mode, with adjustable glass quality in appearance settings.
+- Added usage indicators showing your remaining quota and when it renews.
+
+### Changed
+
+- Points can now be redeemed toward a subscription.
+- Linked the terms of use and privacy policy from the subscription screen.
+- Improved Blossom media server management.
+- Improved the article editor.
+- Completed login screen translations across all supported languages.
+
+### Fixed
+
+- General bug fixes and performance enhancements.
+
+## [2.0.5] - 2026-05-14
 
 ### Changed
 
@@ -16,31 +38,6 @@
 
 - Fixed videos thumbnails not loading in Blossom management.
 - Fixed quote functionality.
-- General bug fixes and performance enhancements.
-
-
-## [2.0.4] - 2026-04-30
-
-### Added
-
-- Launched interactive DM Gifts.
-- Introduced Blossom server management.
-- Added NIP-22 comment support for articles and videos.
-
-### Changed
-
-- Optimized relay sharing links with direct content parameters.
-- Simplified relay invitation UI to "Share".
-- Unified feed settings by moving nested replies configuration.
-- Improved relay browsing experience from the homefeed.
-- Added relay sharing capability within the Orbits view.
-- Improved relay joining with automated connection timers.
-
-### Fixed
-
-- Fixed relay filtering when posting notes in Relay Orbits.
-- Added automatic state reset for paid note progress.
-- Resolved layout and keyboard overlap on relay join requests.
 - General bug fixes and performance enhancements.
 
 ## [2.0.4] - 2026-04-30
@@ -154,7 +151,6 @@
 - Fix media upload issue.
 - Fix sharing media issue.
 
-
 ## [1.9.7] - 2025-12-23
 
 ### Added
@@ -178,7 +174,6 @@
 - App stability improvements.
 - Bug fixes & performance improvements.
 
-
 ## [1.9.6] - 2025-12-02
 
 ### Fixed
@@ -186,7 +181,6 @@
 - Fix scrolling stuck behaviour.
 - Fix nostr scheme decoding issue.
 - Fix audio controller not being dismissed properly.
-
 
 ## [1.9.5] - 2025-11-25
 

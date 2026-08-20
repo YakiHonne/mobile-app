@@ -7,6 +7,7 @@ import 'package:nostr_core_enhanced/models/metadata.dart';
 import '../../../logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
+import '../app_icon.dart';
 import '../profile_picture.dart';
 
 class SuggestedTrendingUsers24 extends StatelessWidget {
@@ -122,6 +123,7 @@ class TrendingUserContainer extends StatelessWidget {
           );
         },
         style: TextButton.styleFrom(
+          backgroundBuilder: (_, __, child) => child!,
           visualDensity: VisualDensity.comfortable,
         ),
         child: Text(
@@ -156,14 +158,10 @@ class TrendingUserContainer extends StatelessWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.verified,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColor,
               ),
             ],
           ],

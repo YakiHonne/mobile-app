@@ -10,6 +10,12 @@ import 'custom/text_theme.dart';
 class AppPreferredThemes {
   AppPreferredThemes._();
 
+  // ponytail: kills the tab ripple app-wide; per-TabBar overrides if one ever needs it back
+  static const _noRippleTabBarTheme = TabBarThemeData(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+  );
+
   static ThemeData light({Color primaryColor = kMainColor}) {
     return ThemeData(
       brightness: Brightness.light,
@@ -38,6 +44,7 @@ class AppPreferredThemes {
           TbuttonsTheme.lightTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.lightOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kOutlineLight,
       ),
@@ -51,7 +58,7 @@ class AppPreferredThemes {
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kScaffoldDark,
-      cardColor: kCardDark,
+      cardColor: kDarkThemeCard,
       primaryColor: primaryColor,
       highlightColor: kDimGrey,
       primaryColorDark: kWhite,
@@ -72,6 +79,7 @@ class AppPreferredThemes {
           TbuttonsTheme.darkTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.darkOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kOutlineDark,
       ),
@@ -85,7 +93,7 @@ class AppPreferredThemes {
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kBlackTheme,
-      cardColor: kScaffoldDark,
+      cardColor: kBlackThemeCard,
       primaryColor: primaryColor,
       highlightColor: kDimGrey,
       primaryColorDark: kWhite,
@@ -106,6 +114,7 @@ class AppPreferredThemes {
           TbuttonsTheme.blackTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.blackOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kBlackOutline,
       ),
@@ -141,9 +150,82 @@ class AppPreferredThemes {
           TbuttonsTheme.creamTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.creamOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kCreamOutline,
       ),
     );
   }
+
+// GLASS THEME — graphite base
+  static ThemeData fluidGraphite({Color primaryColor = kMainColor}) =>
+      dark(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kDarkThemeCard,
+          borderColor: kOutlineDark,
+          foregroundColor: kWhite,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — noir base
+  static ThemeData fluidNoir({Color primaryColor = kMainColor}) =>
+      black(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kBlackCard,
+          borderColor: kBlackOutline,
+          foregroundColor: kWhite,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — neige base
+  static ThemeData fluidNeige({Color primaryColor = kMainColor}) =>
+      light(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kPaleGrey2,
+          borderColor: kOutlineLight,
+          foregroundColor: kBlack,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
+
+// GLASS THEME — ivory base
+  static ThemeData fluidIvory({Color primaryColor = kMainColor}) =>
+      cream(primaryColor: primaryColor).copyWith(
+        textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
+          backgroundColor: kCreamCard,
+          borderColor: kCreamOutline,
+          foregroundColor: kBlack,
+        ),
+        outlinedButtonTheme: TbuttonsTheme.fluidOutlinedButtonTheme(
+          primaryColor: primaryColor,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          modalBackgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+        ),
+      );
 }

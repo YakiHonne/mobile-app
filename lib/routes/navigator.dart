@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../views/widgets/fluid_sheet.dart';
 import 'pages_router.dart';
 
 enum PushPageType {
@@ -216,10 +217,9 @@ class YNavigator extends Navigator {
         ),
       );
     } else {
-      return showModalBottomSheet(
+      return showAppModalSheet(
         context: context,
-        isScrollControlled: true,
-        enableDrag: !allowPageScroll,
+   
         backgroundColor: Colors.transparent,
         builder: (BuildContext context) => builder(context),
       );

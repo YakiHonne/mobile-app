@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 
 import '../../../../logic/app_settings_manager_cubit/app_settings_manager_cubit.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../app_icon.dart';
 import '../add_discover_filter.dart';
 import '../discover_sources_list.dart';
 
@@ -679,14 +681,10 @@ class CommunityFeedList extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
+            child: AppIcon(
               getSourceIcon(item.key),
-              width: 25,
-              height: 25,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).primaryColorDark,
-                BlendMode.srcIn,
-              ),
+              size: 25,
+              color: Theme.of(context).primaryColorDark,
             ),
           ),
           const SizedBox(
@@ -701,7 +699,7 @@ class CommunityFeedList extends StatelessWidget {
             ),
           ),
           const Icon(
-            Icons.drag_indicator_rounded,
+            LucideIcons.gripVertical,
             size: 20,
           ),
         ],

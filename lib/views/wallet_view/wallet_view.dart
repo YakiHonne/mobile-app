@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 
 import '../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../utils/utils.dart';
+import '../main_view/widgets/app_bar_widgets.dart' show SelectedWalletContainer;
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/no_content_widgets.dart';
@@ -77,7 +79,11 @@ class InternalWalletsView extends HookWidget {
           nostrRepository.mainCubit.updateIndex(MainViews.leading);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          padding: EdgeInsets.only(
+            left: kDefaultPadding / 2,
+            right: kDefaultPadding / 2,
+            top: MediaQuery.of(context).padding.top + kToolbarHeight,
+          ),
           child: BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
             builder: (context, state) {
               if (isDisconnected() || canRoam()) {
@@ -119,6 +125,12 @@ class InternalWalletsView extends HookWidget {
         child: Column(
           children: [
             _loadingCircle(animation, isRefreshing),
+            // ponytail: fluid appbar has no title slot, so the wallet
+            // selector lives in the view.
+            if (isFluid()) ...[
+              const SizedBox(height: kDefaultPadding / 2),
+              const SelectedWalletContainer(),
+            ],
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
@@ -128,8 +140,12 @@ class InternalWalletsView extends HookWidget {
                 setOption: (option) => iwto.value = option,
               ),
             ),
-            const SizedBox(
-              height: kDefaultPadding,
+            SizedBox(
+              height: themeCubit.state.isFluid
+                  ? kBottomNavigationBarHeight +
+                      kDefaultPadding * 2 +
+                      MediaQuery.of(context).padding.bottom / 2
+                  : kDefaultPadding,
             ),
           ],
         ),
@@ -374,8 +390,8 @@ class InternalWalletZapContainer extends HookWidget {
                   child: Center(
                     child: Icon(
                       zap.isIncoming
-                          ? Icons.arrow_downward_rounded
-                          : Icons.arrow_upward_rounded,
+                          ? LucideIcons.arrowDown
+                          : LucideIcons.arrowUp,
                       color: zap.isIncoming ? kGreen : kRed,
                       size: 25,
                     ),
@@ -396,8 +412,8 @@ class InternalWalletZapContainer extends HookWidget {
               child: Center(
                 child: Icon(
                   zap.isIncoming
-                      ? Icons.arrow_downward_rounded
-                      : Icons.arrow_upward_rounded,
+                      ? LucideIcons.arrowDown
+                      : LucideIcons.arrowUp,
                   color: zap.isIncoming ? kGreen : kRed,
                   size: 15,
                 ),

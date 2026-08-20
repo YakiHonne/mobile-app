@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../points_management_view/widgets/points_login_popup.dart';
+import '../../widgets/app_icon.dart';
 import '../../widgets/modal_with_blur.dart';
 
 class PropertyYakiChest extends StatelessWidget {
@@ -19,14 +20,10 @@ class PropertyYakiChest extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.reward,
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 25,
+                color: Theme.of(context).primaryColorDark,
               ),
               const SizedBox(
                 width: kDefaultPadding / 1.5,
@@ -67,6 +64,7 @@ class PropertyYakiChest extends StatelessWidget {
                     );
                   },
                   style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
                     visualDensity: const VisualDensity(
                       vertical: -4,
                       horizontal: 2,

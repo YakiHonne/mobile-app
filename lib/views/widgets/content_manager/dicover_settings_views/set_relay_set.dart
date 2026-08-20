@@ -7,9 +7,11 @@ import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
+import '../../app_icon.dart';
 import '../../common_thumbnail.dart';
-import '../../custom_app_bar.dart';
 import '../../custom_icon_buttons.dart';
+import '../../fluid_scaffold.dart';
+import '../../fluid_sheet.dart';
 import '../../single_image_selector.dart';
 import '../add_discover_filter.dart';
 import 'relay_settings_view.dart';
@@ -46,8 +48,7 @@ class SetRelaySet extends HookWidget {
       addRelayController.clear();
     });
 
-    final bottomAppBar = BottomAppBar(
-      color: Theme.of(context).scaffoldBackgroundColor,
+    final bottomAppBar = FluidBottomBar(
       child: Row(
         children: [
           Expanded(
@@ -77,21 +78,21 @@ class SetRelaySet extends HookWidget {
       ),
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title:
-            relaySet != null ? context.t.updateRelaySet : context.t.addRelaySet,
-      ),
-      bottomNavigationBar: bottomAppBar,
+    return FluidScaffold(
+      title:
+          relaySet != null ? context.t.updateRelaySet : context.t.addRelaySet,
+      bottomBar: bottomAppBar,
+      // M3 BottomAppBar's default height, since this one sets none.
+      bottomBarHeight: 80,
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+            top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Builder(
             builder: (context) {
               void addImage() {
-                showModalBottomSheet(
+                showAppModalSheet(
                   context: context,
-                  isScrollControlled: true,
                   builder: (_) {
                     return SingleImageSelector(
                       onUrlProvided: (url, {imeta}) {
@@ -101,9 +102,6 @@ class SetRelaySet extends HookWidget {
                     );
                   },
                   backgroundColor: kTransparent,
-                  useRootNavigator: true,
-                  elevation: 0,
-                  useSafeArea: true,
                 );
               }
 
@@ -231,9 +229,8 @@ class SetRelaySet extends HookWidget {
         ),
         SquareIconButton(
           onClicked: () {
-            showModalBottomSheet(
+            showAppModalSheet(
               context: context,
-              elevation: 0,
               builder: (_) {
                 return AvailableRelaysList(
                   onlineRelays: relaysList.value,
@@ -248,9 +245,6 @@ class SetRelaySet extends HookWidget {
                   },
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
             );
           },
         ),
@@ -309,14 +303,10 @@ class ImageSelectorWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: kDefaultPadding / 4,
                         children: [
-                          SvgPicture.asset(
+                          AppIcon(
                             FeatureIcons.imageAttachment,
-                            width: 25,
-                            height: 25,
-                            colorFilter: ColorFilter.mode(
-                              Theme.of(context).primaryColorDark,
-                              BlendMode.srcIn,
-                            ),
+                            size: 25,
+                            color: Theme.of(context).primaryColorDark,
                           ),
                           Text(
                             context.t.uploadImage.capitalizeFirst(),

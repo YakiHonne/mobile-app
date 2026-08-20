@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../dotted_container.dart';
+import '../modal_sheet_container.dart';
 
 class VideoDownload extends HookWidget {
   const VideoDownload({
@@ -29,16 +30,8 @@ class VideoDownload extends HookWidget {
       },
     );
 
-    return Container(
+    return ModalSheetContainer(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -111,6 +104,7 @@ class VideoDownload extends HookWidget {
                         YNavigator.pop(context);
                       },
                       style: TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
                         backgroundColor: Theme.of(context).cardColor,
                         side: BorderSide(
                           color: Theme.of(context).dividerColor,

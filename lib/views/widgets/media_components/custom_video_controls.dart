@@ -16,6 +16,8 @@ import 'package:chewie/src/models/subtitle_model.dart';
 import 'package:chewie/src/notifiers/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -76,7 +78,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
             )
           : const Center(
               child: Icon(
-                CupertinoIcons.exclamationmark_circle,
+                LucideIcons.circleAlert,
                 color: Colors.white,
                 size: 42,
               ),
@@ -99,8 +101,11 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
             children: [
               if (_displayBufferingIndicator)
                 _chewieController?.bufferingBuilder?.call(context) ??
-                    const Center(
-                      child: CircularProgressIndicator(),
+                    Center(
+                      child: SpinKitCircle(
+                        color: Theme.of(context).primaryColorDark,
+                        size: 32,
+                      ),
                     )
               else
                 _buildHitArea(),
@@ -198,7 +203,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
         padding: const EdgeInsets.only(left: 4.0, right: 8.0),
         margin: const EdgeInsets.only(right: 6.0),
         child: Icon(
-          Icons.more_vert,
+          LucideIcons.moreVertical,
           color: iconColor,
           size: 18,
         ),
@@ -337,8 +342,8 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
               child: Center(
                 child: Icon(
                   chewieController.isFullScreen
-                      ? CupertinoIcons.arrow_down_right_arrow_up_left
-                      : CupertinoIcons.arrow_up_left_arrow_down_right,
+                      ? LucideIcons.shrink
+                      : LucideIcons.expand,
                   color: iconColor,
                   size: 16,
                 ),
@@ -405,7 +410,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
                   right: buttonPadding,
                 ),
                 child: Icon(
-                  Icons.download,
+                  LucideIcons.download,
                   color: iconColor,
                   size: 16,
                 ),
@@ -451,7 +456,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
                   right: buttonPadding,
                 ),
                 child: Icon(
-                  _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
+                  _latestValue.volume > 0 ? LucideIcons.volume2 : LucideIcons.volumeX,
                   color: iconColor,
                   size: 16,
                 ),
@@ -528,7 +533,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
           right: 6.0,
         ),
         child: Icon(
-          Icons.subtitles,
+          LucideIcons.captions,
           color: _subtitleOn ? iconColor : Colors.grey[700],
           size: 16.0,
         ),
@@ -554,7 +559,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
           right: 6.0,
         ),
         child: Icon(
-          CupertinoIcons.gobackward_15,
+          LucideIcons.rotateCcw,
           color: iconColor,
           size: 18.0,
         ),
@@ -576,7 +581,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
           right: 8.0,
         ),
         child: Icon(
-          CupertinoIcons.goforward_15,
+          LucideIcons.rotateCw,
           color: iconColor,
           size: 18.0,
         ),
@@ -629,7 +634,7 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
             ..rotateX(math.pi)
             ..rotateZ(math.pi * 0.8),
           child: Icon(
-            Icons.speed,
+            LucideIcons.gauge,
             color: iconColor,
             size: 18.0,
           ),
@@ -907,7 +912,7 @@ class _PlaybackSpeedDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (e == _selected)
-                    Icon(Icons.check, size: 20.0, color: selectedColor),
+                    Icon(LucideIcons.check, size: 20.0, color: selectedColor),
                   Text(e.toString()),
                 ],
               ),

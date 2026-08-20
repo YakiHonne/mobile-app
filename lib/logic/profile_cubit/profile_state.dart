@@ -23,6 +23,10 @@ class ProfileState extends Equatable {
 
   final bool refresh;
 
+  // Providers parsed from kind 30164; null = not yet fetched, empty = no providers
+  final List<CreatorProvider>? creatorProviders;
+  final bool isCreatorSubscriptionLoading;
+
   const ProfileState({
     required this.profileStatus,
     required this.isLoading,
@@ -42,6 +46,8 @@ class ProfileState extends Equatable {
     required this.isFollowedByUser,
     required this.canBeZapped,
     required this.refresh,
+    this.creatorProviders,
+    this.isCreatorSubscriptionLoading = false,
   });
 
   factory ProfileState.intial({required String pubkey}) {
@@ -97,6 +103,8 @@ class ProfileState extends Equatable {
         isFollowedByUser,
         canBeZapped,
         refresh,
+        if (creatorProviders != null) ...creatorProviders!,
+        isCreatorSubscriptionLoading,
       ];
 
   ProfileState copyWith({
@@ -118,6 +126,8 @@ class ProfileState extends Equatable {
     bool? isFollowedByUser,
     bool? canBeZapped,
     bool? refresh,
+    List<CreatorProvider>? creatorProviders,
+    bool? isCreatorSubscriptionLoading,
   }) {
     return ProfileState(
       profileStatus: profileStatus ?? this.profileStatus,
@@ -138,6 +148,9 @@ class ProfileState extends Equatable {
       isFollowedByUser: isFollowedByUser ?? this.isFollowedByUser,
       canBeZapped: canBeZapped ?? this.canBeZapped,
       refresh: refresh ?? this.refresh,
+      creatorProviders: creatorProviders ?? this.creatorProviders,
+      isCreatorSubscriptionLoading:
+          isCreatorSubscriptionLoading ?? this.isCreatorSubscriptionLoading,
     );
   }
 }

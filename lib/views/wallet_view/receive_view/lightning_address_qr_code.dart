@@ -8,6 +8,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 
 class LightningtAddressQrCode extends StatelessWidget {
   const LightningtAddressQrCode({super.key, required this.lightningAddress});
@@ -46,14 +48,10 @@ class LightningtAddressQrCode extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-              SvgPicture.asset(
+              AppIcon(
                 FeatureIcons.copy,
-                width: 15,
-                height: 15,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
+                size: 15,
+                color: Theme.of(context).primaryColorDark,
               )
             ],
           ),
@@ -74,7 +72,7 @@ class ShareLightningAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     lg.i(lightningAddress);
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -146,14 +144,10 @@ class ShareLightningAddress extends StatelessWidget {
       itemTheme: PullDownMenuItemTheme(
         textStyle: textStyle,
       ),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.shareGlobal,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }
@@ -176,14 +170,10 @@ class ShareLightningAddress extends StatelessWidget {
       itemTheme: PullDownMenuItemTheme(
         textStyle: textStyle,
       ),
-      iconWidget: SvgPicture.asset(
+      iconWidget: AppIcon(
         FeatureIcons.download,
-        height: 20,
-        width: 20,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColorDark,
-          BlendMode.srcIn,
-        ),
+        size: 20,
+        color: Theme.of(context).primaryColorDark,
       ),
     );
   }

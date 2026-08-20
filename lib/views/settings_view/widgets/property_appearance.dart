@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/theme_cubit/theme_cubit.dart';
+import '../../../utils/theme/glass_settings.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 import 'settings_text.dart';
 
 class PropertyAppearance extends HookWidget {
@@ -15,13 +20,13 @@ class PropertyAppearance extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = useState(themeCubit.state.textScaleFactor);
+    final fluidMode = useState(themeCubit.state.isFluid);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.appearance,
-      ),
+    return FluidScaffold(
+      title: context.t.appearance,
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+            top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Text(
             context.t.settingsAppearanceDesc,
@@ -32,6 +37,16 @@ class PropertyAppearance extends HookWidget {
           const Divider(
             height: kDefaultPadding * 1.5,
             thickness: 0.5,
+          ),
+          _fluidMode(context, fluidMode),
+          if (fluidMode.value) ...[
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            const GlassQualityBox(),
+          ],
+          const SizedBox(
+            height: kDefaultPadding,
           ),
           const AppThemeModeBox(),
           const SizedBox(
@@ -44,6 +59,28 @@ class PropertyAppearance extends HookWidget {
           _options(context, textScaleFactor),
         ],
       ),
+    );
+  }
+
+  Row _fluidMode(BuildContext context, ValueNotifier<bool> fluidMode) {
+    return Row(
+      spacing: kDefaultPadding / 4,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.appThemeMode.capitalizeFirst(),
+            description: context.t.appThemeModeDesc,
+          ),
+        ),
+        FluidSwitch(
+          value: fluidMode.value,
+          activeTrackColor: Theme.of(context).primaryColor,
+          onChanged: (isToggled) {
+            themeCubit.setFluidMode(isToggled);
+            fluidMode.value = isToggled;
+          },
+        ),
+      ],
     );
   }
 
@@ -69,7 +106,28 @@ class PropertyAppearance extends HookWidget {
     );
   }
 
-  SliderTheme _fontSizeSlider(ValueNotifier<double> textScaleFactor) {
+  Widget _fontSizeSlider(ValueNotifier<double> textScaleFactor) {
+    final primaryColor =
+        Theme.of(nostrRepository.currentContext()).primaryColor;
+
+    void onChanged(double value) {
+      textScaleFactor.value = value;
+      themeCubit.setTextScaleFactor(value);
+    }
+
+    if (isFluid()) {
+      return GlassSlider(
+        value: textScaleFactor.value,
+        min: 0.8,
+        max: 1.25,
+        divisions: 8,
+        activeColor: primaryColor,
+        settings: GlassSettings.slider(nostrRepository.currentContext()),
+        quality: themeCubit.state.glassQuality,
+        onChanged: onChanged,
+      );
+    }
+
     return SliderTheme(
       data: SliderThemeData(
         overlayShape: SliderComponentShape.noOverlay,
@@ -81,12 +139,9 @@ class PropertyAppearance extends HookWidget {
         min: 0.8,
         max: 1.25,
         divisions: 8,
-        thumbColor: Theme.of(nostrRepository.currentContext()).primaryColor,
-        activeColor: Theme.of(nostrRepository.currentContext()).primaryColor,
-        onChanged: (double value) {
-          textScaleFactor.value = value;
-          themeCubit.setTextScaleFactor(value);
-        },
+        thumbColor: primaryColor,
+        activeColor: primaryColor,
+        onChanged: onChanged,
       ),
     );
   }
@@ -102,11 +157,111 @@ class PropertyAppearance extends HookWidget {
           ),
         ),
         const Icon(
-          Icons.font_download_outlined,
+          LucideIcons.type,
           size: kDefaultPadding,
         ),
       ],
     );
+  }
+}
+
+class GlassQualityBox extends StatelessWidget {
+  const GlassQualityBox({super.key});
+
+  // ponytail: explicit order — GlassQuality.values is declared standard,
+  // premium, minimal which reads wrong in a picker.
+  static const _qualities = [
+    GlassQuality.premium,
+    GlassQuality.standard,
+    GlassQuality.minimal,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TitleDescriptionComponent(
+              title: context.t.glassQuality.capitalizeFirst(),
+              description: context.t.glassQualityDesc,
+            ),
+            const SizedBox(
+              height: kDefaultPadding / 1.5,
+            ),
+            MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              removeTop: true,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: kDefaultPadding / 8,
+                  mainAxisSpacing: kDefaultPadding / 8,
+                  mainAxisExtent: 45,
+                ),
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  final quality = _qualities[index];
+
+                  return _qualityItem(
+                    context,
+                    quality,
+                    state.glassQuality == quality,
+                  );
+                },
+                itemCount: _qualities.length,
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _qualityItem(
+    BuildContext context,
+    GlassQuality quality,
+    bool isSelected,
+  ) {
+    return GestureDetector(
+      onTap: () => themeCubit.setGlassQuality(quality),
+      behavior: HitTestBehavior.translucent,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          color: Theme.of(context).cardColor,
+          border: isSelected
+              ? Border.all(color: Theme.of(context).primaryColor)
+              : Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          _label(context, quality),
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontWeight: FontWeight.w700,
+                color: isSelected ? Theme.of(context).primaryColor : null,
+              ),
+        ),
+      ),
+    );
+  }
+
+  String _label(BuildContext context, GlassQuality quality) {
+    switch (quality) {
+      case GlassQuality.premium:
+        return context.t.glassQualityPremium;
+      case GlassQuality.standard:
+        return context.t.glassQualityStandard;
+      case GlassQuality.minimal:
+        return context.t.glassQualityMinimal;
+    }
   }
 }
 
@@ -131,6 +286,7 @@ class AppThemeModeBox extends StatelessWidget {
             MediaQuery.removePadding(
               context: context,
               removeBottom: true,
+              removeTop: true,
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -215,11 +371,10 @@ class AppThemeModeBox extends StatelessWidget {
               left: 5,
               child: FadeIn(
                 duration: const Duration(milliseconds: 200),
-                child: SvgPicture.asset(
+                child: AppIcon(
                   FeatureIcons.verified,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                  size: 20,
+                  color: primaryColor,
                 ),
               ),
             ),
@@ -233,7 +388,7 @@ class AppThemeModeBox extends StatelessWidget {
 
     switch (mode) {
       case AppThemeMode.graphite:
-        color = kScaffoldDark;
+        color = kBlackThemeCard;
       case AppThemeMode.noir:
         color = kBlack;
       case AppThemeMode.neige:
@@ -265,6 +420,7 @@ class AppPrimaryColorBox extends StatelessWidget {
             MediaQuery.removePadding(
               context: context,
               removeBottom: true,
+              removeTop: true,
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 6,
