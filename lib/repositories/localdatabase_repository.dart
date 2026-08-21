@@ -52,6 +52,7 @@ class LocalDatabaseRepository {
   static const String _settings = 'settings';
   static const String _appCustomization = 'keys_is_external_map';
   static const String _appLanguage = 'app_language';
+  static const String _contentLanguage = 'content_language';
   static const String _appTheme = 'app_theme';
   static const String _appMainColor = 'app_main_color';
   static const String _textScaleFactor = 'text_scale_factor';
@@ -353,6 +354,15 @@ class LocalDatabaseRepository {
 
   Future<String?> getLanguage() async {
     return _getPrefsData<String>(_appLanguage);
+  }
+
+  /// Content translation target language ('' = follow the app language)
+  Future<void> setContentLanguage({required String language}) async {
+    await _setPrefsData(_contentLanguage, language);
+  }
+
+  String getContentLanguage() {
+    return _getPrefsData<String>(_contentLanguage) ?? '';
   }
 
   /// Text Scale Factor

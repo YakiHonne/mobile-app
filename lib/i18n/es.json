@@ -1262,6 +1262,8 @@
   "secureDmDesc": "Usa el estándar más reciente de mensajería privada (NIP-17) con encriptación avanzada. Deshabilita para usar formato antiguo NIP-4 por compatibilidad.",
   "wotConfigDesc": "Mecanismo descentralizado de confianza usando atestaciones sociales para establecer reputación dentro del protocolo Nostr.",
   "appLangDesc": "Elige el idioma para interfaz, menús y botones de YakiHonne.",
+  "contentLanguage": "Idioma del contenido",
+  "contentLangDesc": "Idioma usado al traducir notas y artículos. Por defecto, el idioma de la app.",
   "contentTransDesc": "Selecciona servicio de traducción para publicaciones en idiomas extranjeros.",
   "planDesc": "Tu nivel actual de plan de traducción y límites de uso.",
   "manageWalletsDesc": "Agrega y organiza tus billeteras Lightning para enviar y recibir zaps Bitcoin en Nostr.",

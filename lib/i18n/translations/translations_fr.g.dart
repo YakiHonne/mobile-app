@@ -1302,6 +1302,8 @@ class TranslationsFr extends Translations {
 	@override String get secureDmDesc => 'Utilisez le standard le plus récent de messagerie privée (NIP-17) avec chiffrement avancé. Désactivez pour utiliser l\'ancien format NIP-4 pour la compatibilité.';
 	@override String get wotConfigDesc => 'Mécanisme décentralisé de confiance utilisant des attestations sociales pour établir une réputation au sein du protocole Nostr.';
 	@override String get appLangDesc => 'Choisissez la langue pour l\'interface, menus et boutons de YakiHonne.';
+	@override String get contentLanguage => 'Langue du contenu';
+	@override String get contentLangDesc => 'Langue utilisée pour traduire les notes et articles. Par défaut, la langue de l\'application.';
 	@override String get contentTransDesc => 'Sélectionnez le service de traduction pour les publications en langues étrangères.';
 	@override String get planDesc => 'Votre niveau actuel de plan de traduction et limites d\'utilisation.';
 	@override String get manageWalletsDesc => 'Ajoutez et organisez vos portefeuilles Lightning pour envoyer et recevoir des zaps Bitcoin sur Nostr.';
@@ -3487,6 +3489,8 @@ extension on TranslationsFr {
 			'secureDmDesc' => 'Utilisez le standard le plus récent de messagerie privée (NIP-17) avec chiffrement avancé. Désactivez pour utiliser l\'ancien format NIP-4 pour la compatibilité.',
 			'wotConfigDesc' => 'Mécanisme décentralisé de confiance utilisant des attestations sociales pour établir une réputation au sein du protocole Nostr.',
 			'appLangDesc' => 'Choisissez la langue pour l\'interface, menus et boutons de YakiHonne.',
+			'contentLanguage' => 'Langue du contenu',
+			'contentLangDesc' => 'Langue utilisée pour traduire les notes et articles. Par défaut, la langue de l\'application.',
 			'contentTransDesc' => 'Sélectionnez le service de traduction pour les publications en langues étrangères.',
 			'planDesc' => 'Votre niveau actuel de plan de traduction et limites d\'utilisation.',
 			'manageWalletsDesc' => 'Ajoutez et organisez vos portefeuilles Lightning pour envoyer et recevoir des zaps Bitcoin sur Nostr.',
@@ -3758,14 +3762,14 @@ extension on TranslationsFr {
 			'selectingTokens' => 'Sélection des jetons',
 			'requestingMeltQuote' => 'Demande de devis de fonte (melt)',
 			'melting' => 'Fonte en cours',
-			'requestingMintQuote' => 'Demande de devis de frappe (mint)',
-			'minting' => 'Frappe en cours',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'Demande de devis de frappe (mint)',
+			'minting' => 'Frappe en cours',
 			'cantSwapWithWallet' => 'Impossible d\'échanger directement avec une destination de portefeuille lightning. Veuillez sélectionner un mint pour échanger entre mints ou utiliser le champ \'vers\' pour sélectionner une destination de portefeuille.',
 			'selectDestination' => 'Sélectionner la destination',
 			'internalWallets' => 'Portefeuilles internes',
@@ -4276,14 +4280,14 @@ extension on TranslationsFr {
 			'pomKeyExistingWarning' => ({required Object count}) => 'Cette clé possède déjà une identité Nostr. Des fragments seront stockés sur ${count} serveurs opérateurs.',
 			'pomContinue' => 'Continuer',
 			'pomExportKey' => 'Exporter vers un fichier',
-			'pomExportError' => 'Impossible d\'exporter la clé',
-			'pomAdvancedOptions' => 'Options avancées',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'Impossible d\'exporter la clé',
+			'pomAdvancedOptions' => 'Options avancées',
 			'pomOperatorsTitle' => 'Opérateurs',
 			'pomOperatorsDesc' => 'Votre clé est répartie entre ces serveurs. Aucun ne peut l\'utiliser seul, et vous pouvez la récupérer à partir de quelques-uns d\'entre eux.',
 			'pomOperatorAddHint' => 'Ajouter l\'URL d\'un opérateur',

@@ -1262,6 +1262,8 @@
   "secureDmDesc": "先進暗号化最新プライベートメッセージングスタンダード (NIP-17) 使用。互換のため旧NIP-4フォーマット使用で無効化。",
   "wotConfigDesc": "Nostrプロトコル内レピュテーション確立のためソーシャルアテステーション使用分散トラストメカニズム。",
   "appLangDesc": "YakiHonneインターフェース、メニュー、ボタンため好み言語選択。",
+  "contentLanguage": "コンテンツの言語",
+  "contentLangDesc": "ノートや記事を翻訳する言語。既定はアプリの言語です。",
   "contentTransDesc": "外国語投稿のため翻訳サービス選択。",
   "planDesc": "現在の翻訳プランレベルと使用制限。",
   "manageWalletsDesc": "Nostr上Bitcoin zap送受信のためLightningウォレット追加・整理、カスタム額と外部統合。",

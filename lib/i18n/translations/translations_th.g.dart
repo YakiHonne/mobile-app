@@ -1302,6 +1302,8 @@ class TranslationsTh extends Translations {
 	@override String get secureDmDesc => 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ปิดใช้งานเพื่อใช้รูปแบบ NIP-4 เก่าเพื่อความเข้ากันได้';
 	@override String get wotConfigDesc => 'กลไกความไว้วางใจแบบกระจายที่ใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล Nostr';
 	@override String get appLangDesc => 'เลือกภาษาที่ต้องการสำหรับอินเทอร์เฟซ YakiHonne เมนูและปุ่ม';
+	@override String get contentLanguage => 'ภาษาของเนื้อหา';
+	@override String get contentLangDesc => 'ภาษาที่ใช้เมื่อแปลโน้ตและบทความ ค่าเริ่มต้นคือภาษาของแอป';
 	@override String get contentTransDesc => 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ';
 	@override String get planDesc => 'ระดับแผนการแปลปัจจุบันและขีดจำกัดการใช้งานของคุณ';
 	@override String get manageWalletsDesc => 'เพิ่มและจัดระเบียบกระเป๋าเงิน Lightning เพื่อส่ง/รับ Zap บน Nostr ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก';
@@ -3487,6 +3489,8 @@ extension on TranslationsTh {
 			'secureDmDesc' => 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ปิดใช้งานเพื่อใช้รูปแบบ NIP-4 เก่าเพื่อความเข้ากันได้',
 			'wotConfigDesc' => 'กลไกความไว้วางใจแบบกระจายที่ใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล Nostr',
 			'appLangDesc' => 'เลือกภาษาที่ต้องการสำหรับอินเทอร์เฟซ YakiHonne เมนูและปุ่ม',
+			'contentLanguage' => 'ภาษาของเนื้อหา',
+			'contentLangDesc' => 'ภาษาที่ใช้เมื่อแปลโน้ตและบทความ ค่าเริ่มต้นคือภาษาของแอป',
 			'contentTransDesc' => 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ',
 			'planDesc' => 'ระดับแผนการแปลปัจจุบันและขีดจำกัดการใช้งานของคุณ',
 			'manageWalletsDesc' => 'เพิ่มและจัดระเบียบกระเป๋าเงิน Lightning เพื่อส่ง/รับ Zap บน Nostr ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก',
@@ -3758,14 +3762,14 @@ extension on TranslationsTh {
 			'selectingTokens' => 'กำลังเลือกโทเค็น',
 			'requestingMeltQuote' => 'กำลังขอใบเสนอราคา melt',
 			'melting' => 'กำลังหลอม (Melting)',
-			'requestingMintQuote' => 'กำลังขอใบเสนอราคา mint',
-			'minting' => 'กำลังสร้าง (Minting)',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'กำลังขอใบเสนอราคา mint',
+			'minting' => 'กำลังสร้าง (Minting)',
 			'cantSwapWithWallet' => 'ไม่สามารถแลกเปลี่ยนโดยตรงกับปลายทางกระเป๋าเงิน Lightning ได้ โปรดเลือก Mint เพื่อแลกเปลี่ยนระหว่าง Mints หรือใช้ช่อง \'ถึง\' เพื่อเลือกปลายทางกระเป๋าเงิน',
 			'selectDestination' => 'เลือกปลายทาง',
 			'internalWallets' => 'กระเป๋าเงินภายใน',
@@ -4276,14 +4280,14 @@ extension on TranslationsTh {
 			'pomKeyExistingWarning' => ({required Object count}) => 'คีย์นี้มีตัวตนบน Nostr อยู่แล้ว ชิ้นส่วนของคีย์จะถูกเก็บไว้กับเซิร์ฟเวอร์ผู้ให้บริการ ${count} แห่ง',
 			'pomContinue' => 'ดำเนินการต่อ',
 			'pomExportKey' => 'ส่งออกเป็นไฟล์',
-			'pomExportError' => 'ไม่สามารถส่งออกคีย์ได้',
-			'pomAdvancedOptions' => 'ตัวเลือกขั้นสูง',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'ไม่สามารถส่งออกคีย์ได้',
+			'pomAdvancedOptions' => 'ตัวเลือกขั้นสูง',
 			'pomOperatorsTitle' => 'ผู้ให้บริการ',
 			'pomOperatorsDesc' => 'คีย์ของคุณถูกแบ่งไว้ตามเซิร์ฟเวอร์เหล่านี้ ไม่มีรายใดใช้งานได้เพียงลำพัง และคุณกู้คืนได้จากบางรายเท่านั้น',
 			'pomOperatorAddHint' => 'เพิ่ม URL ผู้ให้บริการ',

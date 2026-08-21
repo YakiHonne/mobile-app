@@ -1242,7 +1242,7 @@ class TranslationButton extends HookWidget {
 
       isTranslating.value = true;
 
-      final lc = LocaleSettings.currentLocale.languageCode;
+      final lc = localizationCubit.targetTranslationLanguage;
       final n =
           nostrRepository.currentTranslations[generateSpecialId(note.content)];
 

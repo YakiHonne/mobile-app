@@ -1302,6 +1302,8 @@ class TranslationsIt extends Translations {
 	@override String get secureDmDesc => 'Usa standard più recente messaggistica privata (NIP-17) con crittografia avanzata. Disabilita per usare vecchio formato NIP-4 per compatibilità.';
 	@override String get wotConfigDesc => 'Meccanismo fiducia decentralizzato usando attestazioni sociali per stabilire reputazione all\'interno protocollo Nostr.';
 	@override String get appLangDesc => 'Scegli lingua preferita per interfaccia YakiHonne, menu e pulsanti.';
+	@override String get contentLanguage => 'Lingua dei contenuti';
+	@override String get contentLangDesc => 'Lingua usata per tradurre note e articoli. Predefinita: lingua dell\'app.';
 	@override String get contentTransDesc => 'Seleziona servizio traduzione per post in lingue straniere.';
 	@override String get planDesc => 'Tuo livello attuale piano traduzione e limiti uso.';
 	@override String get manageWalletsDesc => 'Aggiungi e organizza portafogli Lightning per inviare/ricevere zaps Bitcoin su Nostr.';
@@ -3487,6 +3489,8 @@ extension on TranslationsIt {
 			'secureDmDesc' => 'Usa standard più recente messaggistica privata (NIP-17) con crittografia avanzata. Disabilita per usare vecchio formato NIP-4 per compatibilità.',
 			'wotConfigDesc' => 'Meccanismo fiducia decentralizzato usando attestazioni sociali per stabilire reputazione all\'interno protocollo Nostr.',
 			'appLangDesc' => 'Scegli lingua preferita per interfaccia YakiHonne, menu e pulsanti.',
+			'contentLanguage' => 'Lingua dei contenuti',
+			'contentLangDesc' => 'Lingua usata per tradurre note e articoli. Predefinita: lingua dell\'app.',
 			'contentTransDesc' => 'Seleziona servizio traduzione per post in lingue straniere.',
 			'planDesc' => 'Tuo livello attuale piano traduzione e limiti uso.',
 			'manageWalletsDesc' => 'Aggiungi e organizza portafogli Lightning per inviare/ricevere zaps Bitcoin su Nostr.',
@@ -3758,14 +3762,14 @@ extension on TranslationsIt {
 			'selectingTokens' => 'Selezione token',
 			'requestingMeltQuote' => 'Richiesta preventivo melt',
 			'melting' => 'Melt in corso',
-			'requestingMintQuote' => 'Richiesta preventivo mint',
-			'minting' => 'Conio in corso',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'Richiesta preventivo mint',
+			'minting' => 'Conio in corso',
 			'cantSwapWithWallet' => 'Impossibile scambiare direttamente con una destinazione portafoglio lightning. Seleziona un mint per scambiare tra mint o usa il campo \'a\' per selezionare una destinazione portafoglio.',
 			'selectDestination' => 'Seleziona destinazione',
 			'internalWallets' => 'Portafogli interni',
@@ -4276,14 +4280,14 @@ extension on TranslationsIt {
 			'pomKeyExistingWarning' => ({required Object count}) => 'Questa chiave ha già un\'identità su Nostr. I suoi frammenti verranno conservati presso ${count} server operatori.',
 			'pomContinue' => 'Continua',
 			'pomExportKey' => 'Esporta su file',
-			'pomExportError' => 'Impossibile esportare la chiave',
-			'pomAdvancedOptions' => 'Opzioni avanzate',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'Impossibile esportare la chiave',
+			'pomAdvancedOptions' => 'Opzioni avanzate',
 			'pomOperatorsTitle' => 'Operatori',
 			'pomOperatorsDesc' => 'La tua chiave è suddivisa tra questi server. Nessuno può usarla da solo e puoi recuperarla da alcuni di essi.',
 			'pomOperatorAddHint' => 'Aggiungi URL operatore',

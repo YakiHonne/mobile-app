@@ -3830,6 +3830,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Choose the language for YakiHonne's interface, menus, and buttons.'
 	String get appLangDesc => 'Choose the language for YakiHonne\'s interface, menus, and buttons.';
 
+	/// en: 'Content language'
+	String get contentLanguage => 'Content language';
+
+	/// en: 'Language used when translating notes and articles. Defaults to the app language.'
+	String get contentLangDesc => 'Language used when translating notes and articles. Defaults to the app language.';
+
 	/// en: 'Select translation service for posts in foreign languages.'
 	String get contentTransDesc => 'Select translation service for posts in foreign languages.';
 
@@ -7798,6 +7804,8 @@ extension on Translations {
 			'secureDmDesc' => 'Use the latest private messaging standard (NIP-17) with advanced encryption. Disable to use the older NIP-4 format for compatibility.',
 			'wotConfigDesc' => 'A decentralized trust mechanism using social attestations to establish reputation within the Nostr protocol.',
 			'appLangDesc' => 'Choose the language for YakiHonne\'s interface, menus, and buttons.',
+			'contentLanguage' => 'Content language',
+			'contentLangDesc' => 'Language used when translating notes and articles. Defaults to the app language.',
 			'contentTransDesc' => 'Select translation service for posts in foreign languages.',
 			'planDesc' => 'Your current translation plan tier and usage limits.',
 			'manageWalletsDesc' => 'Add and organize your Lightning wallets for sending and receiving Bitcoin zaps on Nostr.',
@@ -8069,14 +8077,14 @@ extension on Translations {
 			'selectingTokens' => 'Selecting tokens',
 			'requestingMeltQuote' => 'Requesting melt quote',
 			'melting' => 'Melting',
-			'requestingMintQuote' => 'Requesting mint quote',
-			'minting' => 'Minting',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'Requesting mint quote',
+			'minting' => 'Minting',
 			'cantSwapWithWallet' => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.',
 			'selectDestination' => 'Select destination',
 			'internalWallets' => 'Internal wallets',
@@ -8587,14 +8595,14 @@ extension on Translations {
 			'pomKeyExistingWarning' => ({required Object count}) => 'This key already has a Nostr identity. Shards of it will be stored with ${count} operator servers.',
 			'pomContinue' => 'Continue',
 			'pomExportKey' => 'Export to file',
-			'pomExportError' => 'Could not export the key',
-			'pomAdvancedOptions' => 'Advanced options',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'Could not export the key',
+			'pomAdvancedOptions' => 'Advanced options',
 			'pomOperatorsTitle' => 'Operators',
 			'pomOperatorsDesc' => 'Your key is split across these servers. None of them can use it alone, and you can recover it from any few of them.',
 			'pomOperatorAddHint' => 'Add operator URL',

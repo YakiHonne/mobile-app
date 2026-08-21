@@ -1302,6 +1302,8 @@ class TranslationsAr extends Translations {
 	@override String get secureDmDesc => 'استخدم أحدث معيار للرسائل الخاصة (NIP-17) مع تشفير متقدم. تعطيل لاستخدام تنسيق NIP-4 القديم للتوافق.';
 	@override String get wotConfigDesc => 'آلية ثقة لامركزية تستخدم الشهادات الاجتماعية لإنشاء سمعة داخل بروتوكول Nostr.';
 	@override String get appLangDesc => 'اختر اللغة لواجهة YakiHonne، القوائم، والأزرار.';
+	@override String get contentLanguage => 'لغة المحتوى';
+	@override String get contentLangDesc => 'اللغة المستخدمة عند ترجمة الملاحظات والمقالات. الافتراضي هو لغة التطبيق.';
 	@override String get contentTransDesc => 'اختر خدمة الترجمة للمنشورات باللغات الأجنبية.';
 	@override String get planDesc => 'مستوى خطة الترجمة الحالي وحدود الاستخدام.';
 	@override String get manageWalletsDesc => 'أضف ونظم محافظ Lightning الخاصة بك لإرسال واستلام زابات Bitcoin على Nostr.';
@@ -3487,6 +3489,8 @@ extension on TranslationsAr {
 			'secureDmDesc' => 'استخدم أحدث معيار للرسائل الخاصة (NIP-17) مع تشفير متقدم. تعطيل لاستخدام تنسيق NIP-4 القديم للتوافق.',
 			'wotConfigDesc' => 'آلية ثقة لامركزية تستخدم الشهادات الاجتماعية لإنشاء سمعة داخل بروتوكول Nostr.',
 			'appLangDesc' => 'اختر اللغة لواجهة YakiHonne، القوائم، والأزرار.',
+			'contentLanguage' => 'لغة المحتوى',
+			'contentLangDesc' => 'اللغة المستخدمة عند ترجمة الملاحظات والمقالات. الافتراضي هو لغة التطبيق.',
 			'contentTransDesc' => 'اختر خدمة الترجمة للمنشورات باللغات الأجنبية.',
 			'planDesc' => 'مستوى خطة الترجمة الحالي وحدود الاستخدام.',
 			'manageWalletsDesc' => 'أضف ونظم محافظ Lightning الخاصة بك لإرسال واستلام زابات Bitcoin على Nostr.',
@@ -3758,14 +3762,14 @@ extension on TranslationsAr {
 			'selectingTokens' => 'اختيار الرموز',
 			'requestingMeltQuote' => 'طلب عرض melt',
 			'melting' => 'جاري الـ Melting',
-			'requestingMintQuote' => 'طلب عرض mint',
-			'minting' => 'جاري الـ Minting',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'طلب عرض mint',
+			'minting' => 'جاري الـ Minting',
 			'cantSwapWithWallet' => 'لا يمكن المبادلة مباشرة مع وجهة محفظة lightning. يرجى اختيار mint للمبادلة بين mints أو استخدام حقل \'إلى\' لاختيار وجهة محفظة.',
 			'selectDestination' => 'اختر وجهة',
 			'internalWallets' => 'محافظ داخلية',
@@ -4276,14 +4280,14 @@ extension on TranslationsAr {
 			'pomKeyExistingWarning' => ({required Object count}) => 'هذا المفتاح له هوية على Nostr بالفعل. ستُحفظ أجزاء منه لدى ${count} من خوادم المشغّلين.',
 			'pomContinue' => 'متابعة',
 			'pomExportKey' => 'تصدير إلى ملف',
-			'pomExportError' => 'تعذّر تصدير المفتاح',
-			'pomAdvancedOptions' => 'خيارات متقدمة',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'تعذّر تصدير المفتاح',
+			'pomAdvancedOptions' => 'خيارات متقدمة',
 			'pomOperatorsTitle' => 'المشغّلون',
 			'pomOperatorsDesc' => 'يتم تقسيم مفتاحك بين هذه الخوادم. لا يمكن لأي منها استخدامه بمفرده، ويمكنك استعادته من عدد قليل منها.',
 			'pomOperatorAddHint' => 'أضف رابط المشغّل',

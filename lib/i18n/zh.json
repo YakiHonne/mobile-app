@@ -1262,6 +1262,8 @@
   "secureDmDesc": "使用先进加密的最新私聊标准（NIP-17）。为兼容禁用使用旧NIP-4格式。",
   "wotConfigDesc": "使用社交认证在Nostr协议内建立声誉的去中心化信任机制。",
   "appLangDesc": "选择YakiHonne界面、菜单和按钮的首选语言。",
+  "contentLanguage": "内容语言",
+  "contentLangDesc": "翻译笔记和文章时使用的语言，默认与应用语言一致。",
   "contentTransDesc": "选择外国语言帖子翻译服务。",
   "planDesc": "您的当前翻译计划级别和使用限制。",
   "manageWalletsDesc": "添加并组织Lightning钱包以在Nostr上发送/接收zap，使用自定义金额和外部集成。",

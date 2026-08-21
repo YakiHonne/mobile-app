@@ -1302,6 +1302,8 @@ class TranslationsHi extends Translations {
 	@override String get secureDmDesc => 'एडवांस्ड एन्क्रिप्शन के साथ नवीनतम प्राइवेट मैसेजिंग स्टैंडर्ड (NIP-17) उपयोग करें. कॉम्पैटिबिलिटी के लिए पुराने NIP-4 फॉर्मेट उपयोग करने के लिए अक्षम करें.';
 	@override String get wotConfigDesc => 'Nostr प्रोटोकॉल के भीतर प्रतिष्ठा स्थापित करने के लिए सोशल अटेस्टेशन का उपयोग करने वाला विकेंद्रीकृत ट्रस्ट मैकेनिज्म.';
 	@override String get appLangDesc => 'YakiHonne इंटरफेस, मेनू और बटन के लिए पसंदीदा भाषा चुनें.';
+	@override String get contentLanguage => 'सामग्री की भाषा';
+	@override String get contentLangDesc => 'नोट्स और लेखों का अनुवाद करते समय उपयोग की जाने वाली भाषा. डिफ़ॉल्ट ऐप की भाषा है.';
 	@override String get contentTransDesc => 'विदेशी भाषाओं में पोस्ट के लिए अनुवाद सेवा चुनें.';
 	@override String get planDesc => 'आपका वर्तमान अनुवाद प्लान लेवल और उपयोग सीमाएँ.';
 	@override String get manageWalletsDesc => 'Nostr पर कस्टमाइजेबल राशियों और एक्सटर्नल इंटीग्रेशन के साथ Zap भेजने/प्राप्त करने के लिए Lightning वॉलेट जोड़ें और ऑर्गनाइज करें.';
@@ -3487,6 +3489,8 @@ extension on TranslationsHi {
 			'secureDmDesc' => 'एडवांस्ड एन्क्रिप्शन के साथ नवीनतम प्राइवेट मैसेजिंग स्टैंडर्ड (NIP-17) उपयोग करें. कॉम्पैटिबिलिटी के लिए पुराने NIP-4 फॉर्मेट उपयोग करने के लिए अक्षम करें.',
 			'wotConfigDesc' => 'Nostr प्रोटोकॉल के भीतर प्रतिष्ठा स्थापित करने के लिए सोशल अटेस्टेशन का उपयोग करने वाला विकेंद्रीकृत ट्रस्ट मैकेनिज्म.',
 			'appLangDesc' => 'YakiHonne इंटरफेस, मेनू और बटन के लिए पसंदीदा भाषा चुनें.',
+			'contentLanguage' => 'सामग्री की भाषा',
+			'contentLangDesc' => 'नोट्स और लेखों का अनुवाद करते समय उपयोग की जाने वाली भाषा. डिफ़ॉल्ट ऐप की भाषा है.',
 			'contentTransDesc' => 'विदेशी भाषाओं में पोस्ट के लिए अनुवाद सेवा चुनें.',
 			'planDesc' => 'आपका वर्तमान अनुवाद प्लान लेवल और उपयोग सीमाएँ.',
 			'manageWalletsDesc' => 'Nostr पर कस्टमाइजेबल राशियों और एक्सटर्नल इंटीग्रेशन के साथ Zap भेजने/प्राप्त करने के लिए Lightning वॉलेट जोड़ें और ऑर्गनाइज करें.',
@@ -3758,14 +3762,14 @@ extension on TranslationsHi {
 			'selectingTokens' => 'टोकन चुने जा रहे हैं',
 			'requestingMeltQuote' => 'मेल्ट (melt) कोट का अनुरोध',
 			'melting' => 'पिघल रहा है (Melting)',
-			'requestingMintQuote' => 'मिंट कोट का अनुरोध',
-			'minting' => 'मिंटिंग (Minting)',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'मिंट कोट का अनुरोध',
+			'minting' => 'मिंटिंग (Minting)',
 			'cantSwapWithWallet' => 'लाइटनिंग वॉलेट गंतव्य के साथ सीधे स्वैप नहीं किया जा सकता। कृपया मिंट्स के बीच स्वैप करने के लिए मिंट चुनें या वॉलेट गंतव्य चुनने के लिए \'to\' फ़ील्ड का उपयोग करें।',
 			'selectDestination' => 'गंतव्य चुनें',
 			'internalWallets' => 'आंतरिक वॉलेट्स',
@@ -4276,14 +4280,14 @@ extension on TranslationsHi {
 			'pomKeyExistingWarning' => ({required Object count}) => 'इस कुंजी की Nostr पहचान पहले से मौजूद है। इसके हिस्से ${count} ऑपरेटर सर्वरों पर संग्रहित होंगे।',
 			'pomContinue' => 'जारी रखें',
 			'pomExportKey' => 'फ़ाइल में निर्यात करें',
-			'pomExportError' => 'कुंजी निर्यात नहीं की जा सकी',
-			'pomAdvancedOptions' => 'उन्नत विकल्प',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'कुंजी निर्यात नहीं की जा सकी',
+			'pomAdvancedOptions' => 'उन्नत विकल्प',
 			'pomOperatorsTitle' => 'ऑपरेटर',
 			'pomOperatorsDesc' => 'आपकी कुंजी इन सर्वरों में बाँटी जाती है। कोई भी अकेले इसका उपयोग नहीं कर सकता, और आप इनमें से कुछ से ही इसे पुनर्प्राप्त कर सकते हैं।',
 			'pomOperatorAddHint' => 'ऑपरेटर URL जोड़ें',

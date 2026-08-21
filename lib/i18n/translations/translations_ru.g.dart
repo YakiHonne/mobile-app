@@ -1302,6 +1302,8 @@ class TranslationsRu extends Translations {
 	@override String get secureDmDesc => 'Использовать новейший стандарт приватных сообщений (NIP-17) с продвинутым шифрованием. Отключите для совместимости со старым форматом NIP-4.';
 	@override String get wotConfigDesc => 'Децентрализованный механизм доверия на основе социальных аттестаций для формирования репутации в протоколе Nostr.';
 	@override String get appLangDesc => 'Выберите язык интерфейса YakiHonne (меню, кнопки и т.д.).';
+	@override String get contentLanguage => 'Язык контента';
+	@override String get contentLangDesc => 'Язык перевода заметок и статей. По умолчанию — язык приложения.';
 	@override String get contentTransDesc => 'Выберите сервис перевода для постов на иностранных языках.';
 	@override String get planDesc => 'Ваш текущий тариф перевода и лимиты использования.';
 	@override String get manageWalletsDesc => 'Добавляйте и управляйте Lightning-кошельками для отправки и получения Bitcoin-запов в Nostr.';
@@ -3487,6 +3489,8 @@ extension on TranslationsRu {
 			'secureDmDesc' => 'Использовать новейший стандарт приватных сообщений (NIP-17) с продвинутым шифрованием. Отключите для совместимости со старым форматом NIP-4.',
 			'wotConfigDesc' => 'Децентрализованный механизм доверия на основе социальных аттестаций для формирования репутации в протоколе Nostr.',
 			'appLangDesc' => 'Выберите язык интерфейса YakiHonne (меню, кнопки и т.д.).',
+			'contentLanguage' => 'Язык контента',
+			'contentLangDesc' => 'Язык перевода заметок и статей. По умолчанию — язык приложения.',
 			'contentTransDesc' => 'Выберите сервис перевода для постов на иностранных языках.',
 			'planDesc' => 'Ваш текущий тариф перевода и лимиты использования.',
 			'manageWalletsDesc' => 'Добавляйте и управляйте Lightning-кошельками для отправки и получения Bitcoin-запов в Nostr.',
@@ -3758,14 +3762,14 @@ extension on TranslationsRu {
 			'selectingTokens' => 'Выбор токенов',
 			'requestingMeltQuote' => 'Запрос котировки melt',
 			'melting' => 'Плавление (Melt)',
-			'requestingMintQuote' => 'Запрос котировки mint',
-			'minting' => 'Чеканка (Mint)',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'Запрос котировки mint',
+			'minting' => 'Чеканка (Mint)',
 			'cantSwapWithWallet' => 'Невозможно обменять напрямую с кошельком lightning. Пожалуйста, выберите mint для обмена между mints или используйте поле \'на\' для выбора кошелька.',
 			'selectDestination' => 'Выбрать место назначения',
 			'internalWallets' => 'Внутренние кошельки',
@@ -4276,14 +4280,14 @@ extension on TranslationsRu {
 			'pomKeyExistingWarning' => ({required Object count}) => 'У этого ключа уже есть личность в Nostr. Его фрагменты будут храниться на ${count} серверах операторов.',
 			'pomContinue' => 'Продолжить',
 			'pomExportKey' => 'Экспортировать в файл',
-			'pomExportError' => 'Не удалось экспортировать ключ',
-			'pomAdvancedOptions' => 'Дополнительные параметры',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => 'Не удалось экспортировать ключ',
+			'pomAdvancedOptions' => 'Дополнительные параметры',
 			'pomOperatorsTitle' => 'Операторы',
 			'pomOperatorsDesc' => 'Ваш ключ разделён между этими серверами. Никто из них не может использовать его в одиночку, а восстановить ключ можно с помощью нескольких.',
 			'pomOperatorAddHint' => 'Добавить URL оператора',

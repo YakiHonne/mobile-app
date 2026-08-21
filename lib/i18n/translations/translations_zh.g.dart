@@ -1302,6 +1302,8 @@ class TranslationsZh extends Translations {
 	@override String get secureDmDesc => '使用先进加密的最新私聊标准（NIP-17）。为兼容禁用使用旧NIP-4格式。';
 	@override String get wotConfigDesc => '使用社交认证在Nostr协议内建立声誉的去中心化信任机制。';
 	@override String get appLangDesc => '选择YakiHonne界面、菜单和按钮的首选语言。';
+	@override String get contentLanguage => '内容语言';
+	@override String get contentLangDesc => '翻译笔记和文章时使用的语言，默认与应用语言一致。';
 	@override String get contentTransDesc => '选择外国语言帖子翻译服务。';
 	@override String get planDesc => '您的当前翻译计划级别和使用限制。';
 	@override String get manageWalletsDesc => '添加并组织Lightning钱包以在Nostr上发送/接收zap，使用自定义金额和外部集成。';
@@ -3487,6 +3489,8 @@ extension on TranslationsZh {
 			'secureDmDesc' => '使用先进加密的最新私聊标准（NIP-17）。为兼容禁用使用旧NIP-4格式。',
 			'wotConfigDesc' => '使用社交认证在Nostr协议内建立声誉的去中心化信任机制。',
 			'appLangDesc' => '选择YakiHonne界面、菜单和按钮的首选语言。',
+			'contentLanguage' => '内容语言',
+			'contentLangDesc' => '翻译笔记和文章时使用的语言，默认与应用语言一致。',
 			'contentTransDesc' => '选择外国语言帖子翻译服务。',
 			'planDesc' => '您的当前翻译计划级别和使用限制。',
 			'manageWalletsDesc' => '添加并组织Lightning钱包以在Nostr上发送/接收zap，使用自定义金额和外部集成。',
@@ -3758,14 +3762,14 @@ extension on TranslationsZh {
 			'selectingTokens' => '正在选择代币',
 			'requestingMeltQuote' => '正在请求熔铸 (melt) 报价',
 			'melting' => '正在熔铸',
-			'requestingMintQuote' => '正在请求铸造 (mint) 报价',
-			'minting' => '正在铸造',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => '正在请求铸造 (mint) 报价',
+			'minting' => '正在铸造',
 			'cantSwapWithWallet' => '无法直接与闪电钱包目的地交换。请选择一个 Mint 在 Mints 之间交换，或使用“到”字段选择钱包目的地。',
 			'selectDestination' => '选择目的地',
 			'internalWallets' => '内部钱包',
@@ -4276,14 +4280,14 @@ extension on TranslationsZh {
 			'pomKeyExistingWarning' => ({required Object count}) => '此密钥已有 Nostr 身份。其分片将保存在 ${count} 台运营方服务器上。',
 			'pomContinue' => '继续',
 			'pomExportKey' => '导出到文件',
-			'pomExportError' => '无法导出密钥',
-			'pomAdvancedOptions' => '高级选项',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => '无法导出密钥',
+			'pomAdvancedOptions' => '高级选项',
 			'pomOperatorsTitle' => '运营方',
 			'pomOperatorsDesc' => '你的密钥会拆分保存在这些服务器上。任何一方都无法单独使用，你可以通过其中几方恢复密钥。',
 			'pomOperatorAddHint' => '添加运营方网址',

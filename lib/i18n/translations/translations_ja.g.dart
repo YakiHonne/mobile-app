@@ -1302,6 +1302,8 @@ class TranslationsJa extends Translations {
 	@override String get secureDmDesc => '先進暗号化最新プライベートメッセージングスタンダード (NIP-17) 使用。互換のため旧NIP-4フォーマット使用で無効化。';
 	@override String get wotConfigDesc => 'Nostrプロトコル内レピュテーション確立のためソーシャルアテステーション使用分散トラストメカニズム。';
 	@override String get appLangDesc => 'YakiHonneインターフェース、メニュー、ボタンため好み言語選択。';
+	@override String get contentLanguage => 'コンテンツの言語';
+	@override String get contentLangDesc => 'ノートや記事を翻訳する言語。既定はアプリの言語です。';
 	@override String get contentTransDesc => '外国語投稿のため翻訳サービス選択。';
 	@override String get planDesc => '現在の翻訳プランレベルと使用制限。';
 	@override String get manageWalletsDesc => 'Nostr上Bitcoin zap送受信のためLightningウォレット追加・整理、カスタム額と外部統合。';
@@ -3487,6 +3489,8 @@ extension on TranslationsJa {
 			'secureDmDesc' => '先進暗号化最新プライベートメッセージングスタンダード (NIP-17) 使用。互換のため旧NIP-4フォーマット使用で無効化。',
 			'wotConfigDesc' => 'Nostrプロトコル内レピュテーション確立のためソーシャルアテステーション使用分散トラストメカニズム。',
 			'appLangDesc' => 'YakiHonneインターフェース、メニュー、ボタンため好み言語選択。',
+			'contentLanguage' => 'コンテンツの言語',
+			'contentLangDesc' => 'ノートや記事を翻訳する言語。既定はアプリの言語です。',
 			'contentTransDesc' => '外国語投稿のため翻訳サービス選択。',
 			'planDesc' => '現在の翻訳プランレベルと使用制限。',
 			'manageWalletsDesc' => 'Nostr上Bitcoin zap送受信のためLightningウォレット追加・整理、カスタム額と外部統合。',
@@ -3758,14 +3762,14 @@ extension on TranslationsJa {
 			'selectingTokens' => 'トークンを選択中',
 			'requestingMeltQuote' => 'Melt見積もりを依頼中',
 			'melting' => 'Melt中',
-			'requestingMintQuote' => 'Mint見積もりを依頼中',
-			'minting' => 'Mint中',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'requestingMintQuote' => 'Mint見積もりを依頼中',
+			'minting' => 'Mint中',
 			'cantSwapWithWallet' => 'Lightningウォレットの宛先と直接スワップすることはできません。Mint間でスワップするにはMintを選択するか、「先」フィールドを使用してウォレットの宛先を選択してください。',
 			'selectDestination' => '宛先を選択',
 			'internalWallets' => '内部ウォレット',
@@ -4276,14 +4280,14 @@ extension on TranslationsJa {
 			'pomKeyExistingWarning' => ({required Object count}) => 'この鍵には既に Nostr のアイデンティティがあります。その断片が ${count} 台のオペレーターサーバーに保存されます。',
 			'pomContinue' => '続行',
 			'pomExportKey' => 'ファイルに書き出す',
-			'pomExportError' => '鍵を書き出せませんでした',
-			'pomAdvancedOptions' => '詳細オプション',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomExportError' => '鍵を書き出せませんでした',
+			'pomAdvancedOptions' => '詳細オプション',
 			'pomOperatorsTitle' => 'オペレーター',
 			'pomOperatorsDesc' => '鍵はこれらのサーバー間で分割されます。単独では利用できず、いくつかのサーバーから復元できます。',
 			'pomOperatorAddHint' => 'オペレーターの URL を追加',
