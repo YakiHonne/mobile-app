@@ -15,7 +15,7 @@ const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
 // ** App version
 // Keep in sync with `version:` in pubspec.yaml — test/app_version_test.dart
 // fails if they drift.
-const String appVersion = 'v2.0.6+201';
+const String appVersion = 'v2.0.6+202';
 
 //** network
 const yakiProBlossomServer = 'https://blossom.yakihonne.com';
@@ -23,7 +23,7 @@ const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
 // App Store guideline 3.1.2 requires both to be linked from the paywall, and
 // 5.1.1(i) requires the privacy policy anywhere accounts exist.
-const termsUrl = 'https://yakihonne.com/terms';
+const termsUrl = 'https://yakihonne.com/terms-app';
 const privacyUrl = 'https://yakihonne.com/privacy';
 const baseUrl2 = 'www.yakihonne.com';
 const baseUrl3 = 'yakihonne.com';
