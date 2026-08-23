@@ -495,7 +495,7 @@ class _LoginOptions extends StatelessWidget {
             enabled: true,
             onTap: () => loginStep.value = _LoginStep.remote,
           ),
-          if (Platform.isIOS) ...[
+          if (!Platform.isIOS) ...[
             const SizedBox(height: kDefaultPadding / 2),
             _MethodCard(
               icon: FeatureIcons.shareGlobal,
