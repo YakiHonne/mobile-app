@@ -15,7 +15,7 @@ const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
 // ** App version
 // Keep in sync with `version:` in pubspec.yaml — test/app_version_test.dart
 // fails if they drift.
-const String appVersion = 'v2.0.6+202';
+const String appVersion = 'v2.0.6+203';
 
 //** network
 const yakiProBlossomServer = 'https://blossom.yakihonne.com';
