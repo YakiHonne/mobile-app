@@ -5,10 +5,9 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import '../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
-import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/smart_widget_widgets/smart_widget_content.dart';
 
 class AddSmartWidgetSpecificationView extends StatelessWidget {
@@ -71,16 +70,10 @@ class AddSmartWidgetSpecificationView extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pop(context);
 
-                    showAppModalSheet(
-                      context: context,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.smartWidget,
-                          event: sw,
-                        );
-                      },
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: sw,
+                      contentType: AppContentType.smartWidget,
                     );
                   },
                 );

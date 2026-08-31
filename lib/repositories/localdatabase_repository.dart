@@ -83,6 +83,7 @@ class LocalDatabaseRepository {
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
   static const String _unsentEvents = 'unsent_events';
   static const String _unsentEventsPubkeys = 'unsent_events_pubkeys';
+  static const String _previousNotes = 'previous_notes';
   static const String _unpaidNotes = 'unpaid_notes';
   static const String _appViewConfig = 'app_view_config';
 
@@ -93,6 +94,7 @@ class LocalDatabaseRepository {
   static const String _filterStatus = 'filter_status';
   static const String _defaultZapAmounts = 'default_zap_amounts';
   static const String _paidNoteAdsSeenCounts = 'paid_note_ads_seen_counts';
+  static const String _paidNoteAdsLastFetchedAt = 'paid_note_ads_last_fetched_at';
   static const String _defaultReaction = 'default_reaction';
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
@@ -629,6 +631,25 @@ class LocalDatabaseRepository {
     await _setPrefsData(_unsentEventsPubkeys, jsonEncode(unsentEventsPubkeys));
   }
 
+  /// Resolved ancestor chains (root-first event ids) for thread views. Lets
+  /// repeat opens reconstruct the thread from the event cache without another
+  /// network walk.
+  Future<void> setPreviousNoteChain(String noteId, List<String> chain) async {
+    await _setPrefsData('$_previousNotes-$noteId', chain);
+  }
+
+  List<String>? getPreviousNoteChain(String noteId) {
+    final chain = _getPrefsData<List<String>>('$_previousNotes-$noteId');
+    if (chain == null || chain.isEmpty) {
+      return null;
+    }
+    return chain;
+  }
+
+  Future<void> removePreviousNoteChain(String noteId) async {
+    await prefs.remove('$_previousNotes-$noteId');
+  }
+
   Future<void> removeUnsentEventsPubkeys() async {
     await prefs.remove(_unsentEventsPubkeys);
   }
@@ -883,6 +904,14 @@ class LocalDatabaseRepository {
       lg.i('Error parsing paid note ads seen counts: $e');
       return {};
     }
+  }
+
+  Future<void> setPaidNoteAdsLastFetchedAt(int timestampMs) async {
+    await _setPrefsData(_paidNoteAdsLastFetchedAt, timestampMs);
+  }
+
+  Future<int> getPaidNoteAdsLastFetchedAt() async {
+    return _getPrefsData<int>(_paidNoteAdsLastFetchedAt, defaultValue: 0) ?? 0;
   }
 
   /// Messaging Configuration

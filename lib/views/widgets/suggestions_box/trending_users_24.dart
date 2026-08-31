@@ -22,7 +22,7 @@ class SuggestedTrendingUsers24 extends StatelessWidget {
           stream: nostrRepository.contactListStream,
           builder: (context, snapshot) {
             return SizedBox(
-              height: 205,
+              height: 207,
               child: ListView.separated(
                 key: const PageStorageKey('trending-users-24'),
                 separatorBuilder: (context, index) => const SizedBox(

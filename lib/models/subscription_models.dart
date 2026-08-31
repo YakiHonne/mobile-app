@@ -36,11 +36,28 @@ class SubscriptionStatus extends Equatable {
     this.trialEndsAt = 0,
     this.accessBlocked = false,
     this.lastPaymentMethod = '',
+    this.lastPaymentMethodDisplay = '',
     this.lastSubscription = 0,
     this.nextSubscription = 0,
     this.cancelAtPeriodEnd = false,
     this.pendingPlan = '',
     this.pendingPlanSince = 0,
+    this.pendingPriceId = '',
+    this.pendingOriginalPriceId = '',
+    this.pendingPlanViaPoints = false,
+    this.lastSubscriptionRedeemed = false,
+    this.lastReminderAt = 0,
+    this.lastIapEventId = '',
+    this.trialUsed = false,
+    this.stripeCustomerId = '',
+    this.stripeSubscriptionId = '',
+    this.stripeScheduleId = '',
+    this.airwallexCustomerId = '',
+    this.airwallexPaymentSourceId = '',
+    this.airwallexSubscriptionId = '',
+    this.airwallexPendingChangePeriodStartsAt = '',
+    this.androidPurchaseToken = '',
+    this.appleOriginalTransactionId = '',
     this.history = const [],
     this.username = '',
     this.nip05 = const AccountNip05(),
@@ -58,11 +75,31 @@ class SubscriptionStatus extends Equatable {
       trialEndsAt: trialEndsAt,
       accessBlocked: j['access_blocked'] as bool? ?? false,
       lastPaymentMethod: j['last_payment_method'] as String? ?? '',
+      lastPaymentMethodDisplay: j['last_payment_method_display'] as String? ?? '',
       lastSubscription: (j['last_subscription'] as num?)?.toInt() ?? 0,
       nextSubscription: (j['next_subscription'] as num?)?.toInt() ?? 0,
       cancelAtPeriodEnd: j['cancel_at_period_end'] as bool? ?? false,
       pendingPlan: j['pending_plan'] as String? ?? '',
       pendingPlanSince: (j['pending_plan_since'] as num?)?.toInt() ?? 0,
+      pendingPriceId: j['pending_price_id'] as String? ?? '',
+      pendingOriginalPriceId: j['pending_original_price_id'] as String? ?? '',
+      pendingPlanViaPoints: j['pending_plan_via_points'] as bool? ?? false,
+      lastSubscriptionRedeemed:
+          j['last_subscription_redeemed'] as bool? ?? false,
+      lastReminderAt: (j['last_reminder_at'] as num?)?.toInt() ?? 0,
+      lastIapEventId: j['last_iap_event_id'] as String? ?? '',
+      trialUsed: j['trial_used'] as bool? ?? false,
+      stripeCustomerId: j['stripe_customer_id'] as String? ?? '',
+      stripeSubscriptionId: j['stripe_subscription_id'] as String? ?? '',
+      stripeScheduleId: j['stripe_schedule_id'] as String? ?? '',
+      airwallexCustomerId: j['airwallex_customer_id'] as String? ?? '',
+      airwallexPaymentSourceId: j['airwallex_payment_source_id'] as String? ?? '',
+      airwallexSubscriptionId: j['airwallex_subscription_id'] as String? ?? '',
+      airwallexPendingChangePeriodStartsAt:
+          j['airwallex_pending_change_period_starts_at']?.toString() ?? '',
+      androidPurchaseToken: j['android_purchase_token'] as String? ?? '',
+      appleOriginalTransactionId:
+          j['apple_original_transaction_id'] as String? ?? '',
       history: (j['history'] as List<dynamic>? ?? [])
           .map(
             (e) => SubscriptionPaymentRecord.fromJson(
@@ -95,11 +132,28 @@ class SubscriptionStatus extends Equatable {
   final int trialEndsAt;
   final bool accessBlocked;
   final String lastPaymentMethod;
+  final String lastPaymentMethodDisplay;
   final int lastSubscription;
   final int nextSubscription;
   final bool cancelAtPeriodEnd;
   final String pendingPlan;
   final int pendingPlanSince;
+  final String pendingPriceId;
+  final String pendingOriginalPriceId;
+  final bool pendingPlanViaPoints;
+  final bool lastSubscriptionRedeemed;
+  final int lastReminderAt;
+  final String lastIapEventId;
+  final bool trialUsed;
+  final String stripeCustomerId;
+  final String stripeSubscriptionId;
+  final String stripeScheduleId;
+  final String airwallexCustomerId;
+  final String airwallexPaymentSourceId;
+  final String airwallexSubscriptionId;
+  final String airwallexPendingChangePeriodStartsAt;
+  final String androidPurchaseToken;
+  final String appleOriginalTransactionId;
   final List<SubscriptionPaymentRecord> history;
 
   /// Claimed `yakihonne.com/<username>` handle, empty when never claimed.
@@ -139,11 +193,28 @@ class SubscriptionStatus extends Equatable {
         trialEndsAt,
         accessBlocked,
         lastPaymentMethod,
+        lastPaymentMethodDisplay,
         lastSubscription,
         nextSubscription,
         cancelAtPeriodEnd,
         pendingPlan,
         pendingPlanSince,
+        pendingPriceId,
+        pendingOriginalPriceId,
+        pendingPlanViaPoints,
+        lastSubscriptionRedeemed,
+        lastReminderAt,
+        lastIapEventId,
+        trialUsed,
+        stripeCustomerId,
+        stripeSubscriptionId,
+        stripeScheduleId,
+        airwallexCustomerId,
+        airwallexPaymentSourceId,
+        airwallexSubscriptionId,
+        airwallexPendingChangePeriodStartsAt,
+        androidPurchaseToken,
+        appleOriginalTransactionId,
         history,
         username,
         nip05,
@@ -167,26 +238,6 @@ class AccountNip05 extends Equatable {
 
   @override
   List<Object?> get props => [isActive, name];
-}
-
-class UserOnlineStats {
-  const UserOnlineStats({
-    required this.subscriptionStatus,
-    required this.consumablePoints,
-    required this.xp,
-  });
-
-  factory UserOnlineStats.fromJson(Map<String, dynamic> j) => UserOnlineStats(
-        subscriptionStatus: SubscriptionStatus.fromJson(j),
-        consumablePoints:
-            (j['current_points'] as Map<String, dynamic>?)?['points'] as num? ??
-                0,
-        xp: j['xp'] as num? ?? 0,
-      );
-
-  final SubscriptionStatus subscriptionStatus;
-  final num consumablePoints;
-  final num xp;
 }
 
 class UsageItem extends Equatable {

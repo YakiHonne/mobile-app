@@ -101,7 +101,6 @@ class _PictureViewState extends State<PictureView> {
             entry: entry,
             isGallery: false,
             isRound: false,
-            addBlackLayer: true,
           ),
         ),
         Positioned(
@@ -239,7 +238,8 @@ class MediaInfoColumn extends StatelessWidget {
                             ],
                           ),
                         const SizedBox(width: kDefaultPadding / 4),
-                        SubscriptionBadgeView(pubkey: metadata.pubkey, size: 16),
+                        SubscriptionBadgeView(
+                            pubkey: metadata.pubkey, size: 16),
                       ],
                     ),
                     Text(

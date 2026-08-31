@@ -450,10 +450,7 @@ class _AiDiffSheet extends StatelessWidget {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final isDark = theme.brightness == Brightness.dark;
 
-    return BlocListener<AskAiCubit, AskAiState>(
-      listenWhen: (p, c) => !p.applied && c.applied,
-      listener: (ctx, _) => Navigator.of(ctx).pop(),
-      child: BlocBuilder<AskAiCubit, AskAiState>(
+    return BlocBuilder<AskAiCubit, AskAiState>(
         builder: (ctx, state) {
           final cubit = ctx.read<AskAiCubit>();
           final changedHunks = state.hunks.where((h) => h.isChanged).toList();
@@ -534,7 +531,6 @@ class _AiDiffSheet extends StatelessWidget {
             ],
           );
         },
-      ),
     );
   }
 }

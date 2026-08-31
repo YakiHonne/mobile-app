@@ -159,6 +159,18 @@ class SecondReaderCubit extends Cubit<SecondReaderState> {
     emit(state.copyWith(reactions: [], error: () => null));
   }
 
+  /// Clears every persisted second-reader conversation (reactions for all
+  /// personas and the remembered last persona), so nothing of the chat
+  /// survives a draft deletion.
+  static void clearAllPersisted() {
+    for (final key in prefs.getKeys()) {
+      if (key.startsWith(_kReactionsPrefix)) {
+        prefs.remove(key);
+      }
+    }
+    prefs.remove(_kLastPersonaKey);
+  }
+
   void dismissError() {
     emit(state.copyWith(error: () => null));
   }

@@ -19,6 +19,12 @@ class PictureCubit extends Cubit<PictureState> {
 
     mutesSubscription = nostrRepository.mutesStream.listen(
       (mm) {
+        final isMuted = isUserMuted(pictureModel.pubkey);
+        if (isMuted == _wasMuted) {
+          return;
+        }
+        _wasMuted = isMuted;
+
         if (!isClosed) {
           _emit(
             state.copyWith(
@@ -32,6 +38,7 @@ class PictureCubit extends Cubit<PictureState> {
 
   late StreamSubscription mutesSubscription;
   PictureModel pictureModel;
+  late bool _wasMuted = isUserMuted(pictureModel.pubkey);
 
   Future<void> setAuthor() async {
     bool isFollowing = false;

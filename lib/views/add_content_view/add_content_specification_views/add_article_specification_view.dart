@@ -5,10 +5,9 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
-import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/article_widgets/article_details.dart';
 
 class AddArticleSpecificationView extends HookWidget {
@@ -75,16 +74,10 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showAppModalSheet(
-                      context: context,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.article,
-                          event: article,
-                        );
-                      },
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: article,
+                      contentType: AppContentType.article,
                     );
                   }
                 },
@@ -109,31 +102,17 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showAppModalSheet(
-                      context: context,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.article,
-                          event: article,
-                        );
-                      },
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: article,
+                      contentType: AppContentType.article,
                     );
                   }
                 },
               );
         },
-        style: TextButton.styleFrom(
-          backgroundBuilder: (_, __, child) => child!,
-          backgroundColor: Theme.of(context).cardColor,
-          visualDensity: VisualDensity.standard,
-        ),
         child: Text(
           context.t.saveDraft.capitalize(),
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).primaryColorDark,
-              ),
         ),
       ),
     );

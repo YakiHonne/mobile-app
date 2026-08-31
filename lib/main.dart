@@ -1,3 +1,5 @@
+import 'dart:io' show HandshakeException, SocketException;
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,18 +50,8 @@ class AppConstants {
 void main() async {
   await AppInitializer.initApp();
 
-  // TEMP DEBUG (article editor hang investigation) — remove when done.
-  // Native sampling showed the loop is in microtasks/GC, not layout or build,
-  // so the build/layout flags are off; instrumentation lives in the editor's
-  // auto_scrollable_widget.dart instead.
-
-  // ponytail: liquid_glass_widgets trial — prewarms the shaders so the first
-  // glass frame doesn't flash white. Remove along with wrap() below to revert.
   await LiquidGlassWidgets.initialize();
 
-  // ponytail: kills the blue keyboard focus ring GlassTextField paints when
-  // FocusManager flips to traditional highlight mode (typing on the search
-  // field). Touch-only app — the ring has no purpose here.
   FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
 
   if (nostrRepository.isCrashlyticsEnabled) {
@@ -68,7 +60,14 @@ void main() async {
         ..dsn = dotenv.env['GLITCH_TIP_DSN']
         ..tracesSampleRate = 0.01
         ..enableAppHangTracking = false
-        ..enableAutoSessionTracking = false,
+        ..enableAutoSessionTracking = false
+        ..beforeSend = (event, hint) {
+          final ex = event.throwable;
+          if (ex is SocketException || ex is HandshakeException) {
+            return null;
+          }
+          return event;
+        },
       appRunner: () async {
         runnerApp();
       },
@@ -80,15 +79,6 @@ void main() async {
 
 void runnerApp() {
   runApp(
-    // ponytail: user-picked quality replaces per-surface tuning and
-    // GlassAdaptiveScope auto-tuning — there is no GlassAdaptiveScope in the
-    // app, so no ceiling is applied to anything.
-    //
-    // Setting a theme quality is not just a floor: it sits at the same step as
-    // GlassIsolationScope.defaultQuality and wins over it
-    // (glass_theme_helpers.dart:216), so GlassScaffold's premium-bar hint is
-    // suppressed. Every surface renders at the user's pick. That is the
-    // trade for one honest setting instead of a per-surface matrix.
     BlocBuilder<ThemeCubit, ThemeState>(
       bloc: themeCubit,
       buildWhen: (p, c) => p.glassQuality != c.glassQuality,

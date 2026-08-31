@@ -65,7 +65,7 @@ class CashuNoWallet extends HookWidget {
             Colors.pinkAccent,
           ],
         ),
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+        borderRadius: BorderRadius.circular(100),
       ),
       child: TextButton(
         onPressed: () {
@@ -80,7 +80,7 @@ class CashuNoWallet extends HookWidget {
         style: TextButton.styleFrom(
           backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
-          visualDensity: VisualDensity.comfortable,
+          visualDensity: VisualDensity.compact,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -95,7 +95,7 @@ class CashuNoWallet extends HookWidget {
             ),
             Text(
               context.t.addWallet.capitalizeFirst(),
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: kWhite,
                   ),
             ),

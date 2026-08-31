@@ -232,6 +232,7 @@ class TranslationsEs extends Translations {
 	@override String get copyNoteId => 'Copiar ID de nota';
 	@override String get noteIdCopied => '¡ID de nota copiado! 👏';
 	@override String get confirmDeleteDraft => 'Estás a punto de eliminar este borrador, ¿deseas proceder?';
+	@override String get confirmDeleteDraftChats => 'Estás a punto de eliminar este borrador junto con el chat del asistente de IA y el chat del segundo lector, ¿deseas proceder?';
 	@override String get reposted => 'republicado';
 	@override String get postInNote => 'Publicar en nota';
 	@override String get clone => 'clonar';
@@ -626,6 +627,8 @@ class TranslationsEs extends Translations {
 	@override String get createYakiWallet => 'Crear billetera YakiHonne';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'Crear billetera a través del canal YakiHonne';
+	@override String get yakiPoints => 'Puntos Yaki';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'O usa tu billetera';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'Conexión nativa de billetera Nostr';
@@ -671,6 +674,7 @@ class TranslationsEs extends Translations {
 	@override String get views => 'Vistas';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'creado ${date1}, editado ${date2}';
 	@override String get loading => 'Cargando';
+	@override String get loadingThread => 'Cargando el hilo';
 	@override String get releaseToLoad => 'Suelta para cargar';
 	@override String get finished => '¡terminado!';
 	@override String get noMoreData => 'No hay más datos';
@@ -703,6 +707,8 @@ class TranslationsEs extends Translations {
 	@override String get user => 'usuario';
 	@override String get view => 'vista';
 	@override String get itsLive => '¡Está en vivo!';
+	@override String contentIsLive({required Object contentType}) => '¡${contentType} está en vivo!';
+	@override String get justNow => 'ahora mismo';
 	@override String get spreadWordSharingContent => 'Difunde la palabra compartiendo contenido en todas partes.';
 	@override String get successfulRelays => 'Relays exitosos';
 	@override String get noRelaysCanBeFound => 'No se encontraron relays';
@@ -889,7 +895,9 @@ class TranslationsEs extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} te mencionó en un widget inteligente';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} te mencionó en una encuesta';
 	@override String userPublishedPaidNote({required Object name}) => '${name} publicó una nota pagada';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} publicó una nueva nota premium';
 	@override String userPublishedArticle({required Object name}) => '${name} publicó un artículo';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} publicó un nuevo artículo premium';
 	@override String userPublishedVideo({required Object name}) => '${name} publicó un video';
 	@override String userPublishedCuration({required Object name}) => '${name} publicó una curación';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} publicó un widget inteligente';
@@ -982,6 +990,7 @@ class TranslationsEs extends Translations {
 	@override String get apiKeyRequired => 'Clave API (requerida)';
 	@override String get getApiKey => 'Obtener clave API';
 	@override String get seeTranslation => 'Ver traducción';
+	@override String get seenOn => 'Visto en';
 	@override String get seeOriginal => 'Ver original';
 	@override String get plan => 'Plan';
 	@override String get free => 'Gratis';
@@ -1368,6 +1377,7 @@ class TranslationsEs extends Translations {
 	@override String get actionsPopups => 'Notificaciones de acciones';
 	@override String get actionsPopupsDesc => 'Habilitar o deshabilitar notificaciones para mensajes de éxito, error e información.';
 	@override String get waitingForNetwork => 'Esperando red...';
+	@override String get reconnecting => 'Reconectando...';
 	@override String get whatsNew => 'Qué hay de nuevo';
 	@override String get appCustom => 'Personalización de app';
 	@override String get poll => 'Encuesta';
@@ -1855,6 +1865,7 @@ class TranslationsEs extends Translations {
 	@override String get sub_connect_btn => 'Conectar a Yaki';
 	@override String get sub_usage_period_daily => 'diario';
 	@override String get sub_usage_period_monthly => 'mensual';
+	@override String get pricing => 'Precios';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / mes';
@@ -1874,6 +1885,16 @@ class TranslationsEs extends Translations {
 	@override String get pricing_ln_discount_on => 'Los precios en sats ya incluyen un 10 % de descuento por Lightning.';
 	@override String get pricing_most_popular => 'El más popular';
 	@override String get pricing_footer => 'Cancela cuando quieras desde los ajustes. Facturación mensual.';
+	@override String get pricing_free_cta_downgrade => 'Cambiar a Gratis';
+	@override String get pricing_free_feature_classic_editor => 'Editor clásico';
+	@override String get pricing_free_feature_nostr_identity => 'Identidad nativa de Nostr';
+	@override String get pricing_free_feature_points => 'Paga notas y suscripciones con Yaki Points';
+	@override String get pricing_free_feature_publishing => 'Publicación de artículos y notas';
+	@override String get pricing_free_feature_storage => '500 MB de almacenamiento Blossom';
+	@override String get pricing_free_feature_translations => 'Traducciones diarias limitadas';
+	@override String get pricing_free_feature_wallet => '1 wallet YakiHonne';
+	@override String get pricing_free_name => 'Gratis';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'Pagar con Lightning';
 	@override String get pricing_waiting => 'Esperando el pago…';
 	@override String get pricing_cancel => 'Cancelar';
@@ -2020,6 +2041,7 @@ class TranslationsEs extends Translations {
 	@override String get second_reader_fixed_with_ai => 'Corregido con IA';
 	@override String get second_reader_marked_read => 'Marcado como leído';
 	@override String get second_reader_fix_with_ai => 'Corregir con IA';
+	@override String get second_reader_improve_with_ai => 'Mejorar con IA';
 	@override String get second_reader_ignore => 'Ignorar';
 	@override String get second_reader_switch => 'Cambiar';
 	@override String get editor_classic => 'Clásico';
@@ -2032,6 +2054,8 @@ class TranslationsEs extends Translations {
 	@override String get creator_subscribe_error => 'No se pudo iniciar la suscripción';
 	@override String get creator_no_plans => 'No hay planes de suscripción disponibles';
 	@override String get creator_lightning_unavailable => 'Dirección Lightning no disponible';
+	@override String get creator_view_subscriptions => 'Ver mis suscripciones';
+	@override String get creator_subscribed => 'Suscrito';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'Iniciar sesión con Google';
 	@override String get recoverWithGoogle => 'Recuperar con Google';
@@ -2407,6 +2431,7 @@ extension on TranslationsEs {
 			'copyNoteId' => 'Copiar ID de nota',
 			'noteIdCopied' => '¡ID de nota copiado! 👏',
 			'confirmDeleteDraft' => 'Estás a punto de eliminar este borrador, ¿deseas proceder?',
+			'confirmDeleteDraftChats' => 'Estás a punto de eliminar este borrador junto con el chat del asistente de IA y el chat del segundo lector, ¿deseas proceder?',
 			'reposted' => 'republicado',
 			'postInNote' => 'Publicar en nota',
 			'clone' => 'clonar',
@@ -2725,13 +2750,13 @@ extension on TranslationsEs {
 			'findPaidNoteMisleading' => 'Consideras esta nota pagada engañosa.',
 			'selectOneReason' => 'Selecciona al menos una razón',
 			'rateHelpful' => 'Calificar como útil',
-			'rateNotHelpful' => 'Calificar como no útil',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => 'Calificar como no útil',
 			'ratedHelpful' => 'Calificado como útil',
 			'ratedNotHelpful' => 'Calificado como no útil',
 			'youRatedHelpful' => 'lo calificaste como útil',
@@ -2807,6 +2832,8 @@ extension on TranslationsEs {
 			'createYakiWallet' => 'Crear billetera YakiHonne',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'Crear billetera a través del canal YakiHonne',
+			'yakiPoints' => 'Puntos Yaki',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'O usa tu billetera',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'Conexión nativa de billetera Nostr',
@@ -2852,6 +2879,7 @@ extension on TranslationsEs {
 			'views' => 'Vistas',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'creado ${date1}, editado ${date2}',
 			'loading' => 'Cargando',
+			'loadingThread' => 'Cargando el hilo',
 			'releaseToLoad' => 'Suelta para cargar',
 			'finished' => '¡terminado!',
 			'noMoreData' => 'No hay más datos',
@@ -2884,6 +2912,8 @@ extension on TranslationsEs {
 			'user' => 'usuario',
 			'view' => 'vista',
 			'itsLive' => '¡Está en vivo!',
+			'contentIsLive' => ({required Object contentType}) => '¡${contentType} está en vivo!',
+			'justNow' => 'ahora mismo',
 			'spreadWordSharingContent' => 'Difunde la palabra compartiendo contenido en todas partes.',
 			'successfulRelays' => 'Relays exitosos',
 			'noRelaysCanBeFound' => 'No se encontraron relays',
@@ -3070,7 +3100,9 @@ extension on TranslationsEs {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} te mencionó en un widget inteligente',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} te mencionó en una encuesta',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} publicó una nota pagada',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} publicó una nueva nota premium',
 			'userPublishedArticle' => ({required Object name}) => '${name} publicó un artículo',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} publicó un nuevo artículo premium',
 			'userPublishedVideo' => ({required Object name}) => '${name} publicó un video',
 			'userPublishedCuration' => ({required Object name}) => '${name} publicó una curación',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} publicó un widget inteligente',
@@ -3163,6 +3195,7 @@ extension on TranslationsEs {
 			'apiKeyRequired' => 'Clave API (requerida)',
 			'getApiKey' => 'Obtener clave API',
 			'seeTranslation' => 'Ver traducción',
+			'seenOn' => 'Visto en',
 			'seeOriginal' => 'Ver original',
 			'plan' => 'Plan',
 			'free' => 'Gratis',
@@ -3235,6 +3268,12 @@ extension on TranslationsEs {
 			'manageWallets' => 'Gestionar billeteras',
 			'roundDuration' => 'Duración de ronda',
 			'startAt' => ({required Object date}) => 'Inicio en: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'Iniciar sesión',
 			'addPicture' => 'Agregar imagen',
 			'editPicture' => 'Editar imagen',
@@ -3244,12 +3283,6 @@ extension on TranslationsEs {
 			'mutedUserDesc' => 'Has silenciado a este usuario, considera desilenciar para ver el contenido',
 			'commentHidden' => 'Este comentario está oculto',
 			'upcoming' => 'Próximas',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'Exportar credenciales',
 			'loginToYakihonne' => 'Iniciar sesión en YakiHonne',
 			'loginBuiltOnNostr' => '✦ Construido sobre Nostr',
@@ -3555,6 +3588,7 @@ extension on TranslationsEs {
 			'actionsPopups' => 'Notificaciones de acciones',
 			'actionsPopupsDesc' => 'Habilitar o deshabilitar notificaciones para mensajes de éxito, error e información.',
 			'waitingForNetwork' => 'Esperando red...',
+			'reconnecting' => 'Reconectando...',
 			'whatsNew' => 'Qué hay de nuevo',
 			'appCustom' => 'Personalización de app',
 			'poll' => 'Encuesta',
@@ -3752,6 +3786,12 @@ extension on TranslationsEs {
 			'restoreWallet' => 'Restaurar billetera',
 			'restoreWalletDesc' => 'Restaurar pruebas de tu billetera en este mint para guardarlas en NOSTR',
 			'seedPhraseLocallyOnly' => 'Tu frase semilla solo se usa localmente para derivar las claves de tu billetera.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'Pruebas restauradas',
 			'noProofsFound' => 'No se encontraron pruebas',
 			'errorRestoringProofs' => 'Error al restaurar pruebas',
@@ -3762,12 +3802,6 @@ extension on TranslationsEs {
 			'selectingTokens' => 'Seleccionando tokens',
 			'requestingMeltQuote' => 'Solicitando cotización de melt',
 			'melting' => 'Derritiendo',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => 'Solicitando cotización de mint',
 			'minting' => 'Acuñando',
 			'cantSwapWithWallet' => 'No se puede canjear directamente con una billetera lightning de destino. Por favor selecciona un mint para canjear entre mints o usa el campo \'a\' para seleccionar una billetera de destino.',
@@ -4048,6 +4082,7 @@ extension on TranslationsEs {
 			'sub_connect_btn' => 'Conectar a Yaki',
 			'sub_usage_period_daily' => 'diario',
 			'sub_usage_period_monthly' => 'mensual',
+			'pricing' => 'Precios',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / mes',
@@ -4067,6 +4102,16 @@ extension on TranslationsEs {
 			'pricing_ln_discount_on' => 'Los precios en sats ya incluyen un 10 % de descuento por Lightning.',
 			'pricing_most_popular' => 'El más popular',
 			'pricing_footer' => 'Cancela cuando quieras desde los ajustes. Facturación mensual.',
+			'pricing_free_cta_downgrade' => 'Cambiar a Gratis',
+			'pricing_free_feature_classic_editor' => 'Editor clásico',
+			'pricing_free_feature_nostr_identity' => 'Identidad nativa de Nostr',
+			'pricing_free_feature_points' => 'Paga notas y suscripciones con Yaki Points',
+			'pricing_free_feature_publishing' => 'Publicación de artículos y notas',
+			'pricing_free_feature_storage' => '500 MB de almacenamiento Blossom',
+			'pricing_free_feature_translations' => 'Traducciones diarias limitadas',
+			'pricing_free_feature_wallet' => '1 wallet YakiHonne',
+			'pricing_free_name' => 'Gratis',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'Pagar con Lightning',
 			'pricing_waiting' => 'Esperando el pago…',
 			'pricing_cancel' => 'Cancelar',
@@ -4213,6 +4258,7 @@ extension on TranslationsEs {
 			'second_reader_fixed_with_ai' => 'Corregido con IA',
 			'second_reader_marked_read' => 'Marcado como leído',
 			'second_reader_fix_with_ai' => 'Corregir con IA',
+			'second_reader_improve_with_ai' => 'Mejorar con IA',
 			'second_reader_ignore' => 'Ignorar',
 			'second_reader_switch' => 'Cambiar',
 			'editor_classic' => 'Clásico',
@@ -4225,6 +4271,8 @@ extension on TranslationsEs {
 			'creator_subscribe_error' => 'No se pudo iniciar la suscripción',
 			'creator_no_plans' => 'No hay planes de suscripción disponibles',
 			'creator_lightning_unavailable' => 'Dirección Lightning no disponible',
+			'creator_view_subscriptions' => 'Ver mis suscripciones',
+			'creator_subscribed' => 'Suscrito',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'Iniciar sesión con Google',
 			'recoverWithGoogle' => 'Recuperar con Google',
@@ -4256,6 +4304,12 @@ extension on TranslationsEs {
 			'pomUnlinkSuccess' => 'Cuenta desvinculada. Se ha cerrado tu sesión.',
 			'pomUnlinkFailed' => 'No se pudo desvincular tu cuenta. Inténtalo de nuevo.',
 			'pomKeyCopied' => 'Clave privada copiada',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'Servidor de identidad',
 			'pomServerDesc' => 'Tu cuenta reside en este servidor central. Puedes usar el nuestro, otro proveedor o el tuyo propio.',
 			'pomServerDefault' => 'Predeterminado',
@@ -4280,12 +4334,6 @@ extension on TranslationsEs {
 			'pomKeyExistingWarning' => ({required Object count}) => 'Esta clave ya tiene una identidad en Nostr. Sus fragmentos se guardarán en ${count} servidores operadores.',
 			'pomContinue' => 'Continuar',
 			'pomExportKey' => 'Exportar a un archivo',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => 'No se pudo exportar la clave',
 			'pomAdvancedOptions' => 'Opciones avanzadas',
 			'pomOperatorsTitle' => 'Operadores',

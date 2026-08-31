@@ -29,12 +29,6 @@ class MarkdownTextInput extends StatefulWidget {
   /// Validator for the TextFormField
   final String? Function(String? value)? validators;
 
-  /// Title changed
-  final Function(String) onTitleChanged;
-
-  /// Title controller
-  final TextEditingController titleController;
-
   /// String displayed at hintText in TextFormField
   final String? label;
 
@@ -70,8 +64,6 @@ class MarkdownTextInput extends StatefulWidget {
   /// Constructor for [MarkdownTextInput]
   const MarkdownTextInput(
     this.onTextChanged,
-    this.onTitleChanged,
-    this.titleController,
     this.initialValue,
     this.isMenuDismissed, {
     super.key,
@@ -233,37 +225,6 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     return CustomScrollView(
       controller: _scrollController,
       slivers: <Widget>[
-        SliverToBoxAdapter(
-          child: TextFormField(
-            minLines: 1,
-            maxLines: 2,
-            textDirection: _detectTextDirection(widget.titleController.text),
-            textCapitalization: TextCapitalization.sentences,
-            keyboardType: TextInputType.text,
-            onFieldSubmitted: (event) => focusNode.requestFocus(),
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-            controller: widget.titleController,
-            decoration: InputDecoration(
-              hintText: context.t.giveMeCatchyTitle,
-              hintStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).highlightColor,
-                  ),
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
-              focusColor: Theme.of(context).primaryColorLight,
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: kDefaultPadding / 2,
-                horizontal: kDefaultPadding / 1.5,
-              ),
-            ),
-            onChanged: widget.onTitleChanged,
-          ),
-        ),
         SliverToBoxAdapter(
           child: ValueListenableBuilder(
             valueListenable: _controller,

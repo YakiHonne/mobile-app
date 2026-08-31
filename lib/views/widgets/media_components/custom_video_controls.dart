@@ -382,85 +382,73 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
     );
   }
 
-  GestureDetector _buildDownloadButton(
+  // Download + mute share one blurred pill instead of two: they sit right
+  // next to each other with the same opacity/duration, so one BackdropFilter
+  // pass over the combined (barely wider) area replaces two separate ones.
+  Widget _buildDownloadMuteButtons(
     VideoPlayerController controller,
     Color backgroundColor,
     Color iconColor,
     double barHeight,
     double buttonPadding,
   ) {
-    return GestureDetector(
-      onTap: () {
-        _cancelAndRestartTimer();
-        widget.onDownload?.call();
-      },
-      child: AnimatedOpacity(
-        opacity: notifier.hideStuff ? 0.0 : 1.0,
-        duration: const Duration(milliseconds: 300),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 10.0),
-            child: ColoredBox(
-              color: backgroundColor,
-              child: Container(
-                height: barHeight,
-                padding: EdgeInsets.only(
-                  left: buttonPadding,
-                  right: buttonPadding,
+    return AnimatedOpacity(
+      opacity: notifier.hideStuff ? 0.0 : 1.0,
+      duration: const Duration(milliseconds: 300),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10.0),
+          child: ColoredBox(
+            color: backgroundColor,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _cancelAndRestartTimer();
+                    widget.onDownload?.call();
+                  },
+                  child: Container(
+                    height: barHeight,
+                    padding: EdgeInsets.only(
+                      left: buttonPadding,
+                      right: buttonPadding,
+                    ),
+                    child: Icon(
+                      LucideIcons.download,
+                      color: iconColor,
+                      size: 16,
+                    ),
+                  ),
                 ),
-                child: Icon(
-                  LucideIcons.download,
-                  color: iconColor,
-                  size: 16,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+                GestureDetector(
+                  onTap: () {
+                    _cancelAndRestartTimer();
 
-  GestureDetector _buildMuteButton(
-    VideoPlayerController controller,
-    Color backgroundColor,
-    Color iconColor,
-    double barHeight,
-    double buttonPadding,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        _cancelAndRestartTimer();
-
-        if (_latestValue.volume == 0) {
-          controller.setVolume(_latestVolume ?? 0.5);
-        } else {
-          _latestVolume = controller.value.volume;
-          controller.setVolume(0.0);
-        }
-      },
-      child: AnimatedOpacity(
-        opacity: notifier.hideStuff ? 0.0 : 1.0,
-        duration: const Duration(milliseconds: 300),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 10.0),
-            child: ColoredBox(
-              color: backgroundColor,
-              child: Container(
-                height: barHeight,
-                padding: EdgeInsets.only(
-                  left: buttonPadding,
-                  right: buttonPadding,
+                    if (_latestValue.volume == 0) {
+                      controller.setVolume(_latestVolume ?? 0.5);
+                    } else {
+                      _latestVolume = controller.value.volume;
+                      controller.setVolume(0.0);
+                    }
+                  },
+                  child: Container(
+                    height: barHeight,
+                    padding: EdgeInsets.only(
+                      left: buttonPadding,
+                      right: buttonPadding,
+                    ),
+                    child: Icon(
+                      _latestValue.volume > 0
+                          ? LucideIcons.volume2
+                          : LucideIcons.volumeX,
+                      color: iconColor,
+                      size: 16,
+                    ),
+                  ),
                 ),
-                child: Icon(
-                  _latestValue.volume > 0 ? LucideIcons.volume2 : LucideIcons.volumeX,
-                  color: iconColor,
-                  size: 16,
-                ),
-              ),
+              ],
             ),
           ),
         ),
@@ -666,25 +654,14 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
               buttonPadding,
             ),
           const Spacer(),
-          if (chewieController.allowMuting) ...[
-            _buildDownloadButton(
+          if (chewieController.allowMuting)
+            _buildDownloadMuteButtons(
               controller,
               backgroundColor,
               iconColor,
               barHeight,
               buttonPadding,
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            _buildMuteButton(
-              controller,
-              backgroundColor,
-              iconColor,
-              barHeight,
-              buttonPadding,
-            ),
-          ],
         ],
       ),
     );

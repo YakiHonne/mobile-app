@@ -47,6 +47,10 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
   DateTime? scheduledPaid;
   List<String>? relays;
 
+  /// Identifies the in-flight SSE verification; superseded runs (reset or
+  /// restarted) are detected by identity and their results discarded.
+  CancelToken _verificationToken = CancelToken();
+
   void addImage(List<Map<String, String>> mediaData) {
     if (!isClosed) {
       final links = mediaData.map((e) => e['url'] ?? '').toList();
@@ -105,7 +109,8 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
         (useSourceRelay ? appSettingsManagerCubit.getNoteSourceRelay() : null);
 
     String updatedContent = content;
-    final pTags = getPtags(content);
+    final pTags = <String>[];
+    final mentions = getPtags(content);
 
     List<List<String>>? replyData;
     final int? createdAt;
@@ -163,11 +168,17 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       }
     }
 
+    pTags.removeWhere(
+      (p) => mentions.contains(p),
+    );
+
     final tags = [
+      getClientTag(),
       if (relay != null && useSourceRelay) ['-'],
       if (qTag != null) ['q', qTag],
       if (hasSmartWidget) ['l', 'smart-widget'],
-      if (pTags.isNotEmpty) ...pTags.map((p) => ['p', p, '', 'mention']),
+      if (pTags.isNotEmpty) ...pTags.map((p) => ['p', p]),
+      if (mentions.isNotEmpty) ...mentions.map((m) => ['p', m, '', 'mention']),
       if (hashtags.isNotEmpty) ...hashtags.map((t) => ['t', t.split('#')[1]]),
       if (nadresses.isNotEmpty)
         ...Nip33.coordinatesToTagsWithMentions(nadresses),
@@ -216,20 +227,7 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       }
     }
 
-    int kind = EventKind.TEXT_NOTE;
-    if (replyContent != null && replyContent['parentKind'] != null) {
-      final pKind = replyContent['parentKind'] as int;
-      if (pKind == EventKind.LONG_FORM ||
-          pKind == EventKind.VIDEO_HORIZONTAL ||
-          pKind == EventKind.VIDEO_VERTICAL ||
-          pKind == EventKind.VIDEO_VIEW ||
-          pKind == EventKind.LEGACY_VIDEO_HORIZONTAL ||
-          pKind == EventKind.LEGACY_VIDEO_VERTICAL ||
-          pKind == EventKind.COMMENT) {
-        kind = EventKind.COMMENT;
-        tags.add(['k', pKind.toString()]);
-      }
-    }
+    const kind = EventKind.TEXT_NOTE;
 
     final cancel = BotToastUtils.showLoading();
 
@@ -343,116 +341,180 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     }
   }
 
-  Future<void> submitEvent(Function() onSuccess) async {
-    final cancel = BotToastUtils.showLoading();
+  Future<void> verifyAndPublish() async {
+    if (toBeSubmittedEvent == null ||
+        state.verification == PaidNoteVerification.verifying ||
+        state.verification == PaidNoteVerification.publishing) {
+      return;
+    }
 
-    final isChecked = await NostrFunctionsRepository.checkPayment(
+    _verificationToken = CancelToken();
+    final token = _verificationToken;
+
+    emit(state.copyWith(
+      verification: PaidNoteVerification.verifying,
+      paymentStatus: '',
+    ));
+
+    final isChecked = await HttpFunctionsRepository.waitForPaidNotePayment(
       toBeSubmittedEvent!.id,
+      cancelToken: token,
+      onEvent: (status) {
+        if (!isClosed &&
+            identical(token, _verificationToken) &&
+            state.verification == PaidNoteVerification.verifying) {
+          emit(state.copyWith(paymentStatus: status));
+        }
+      },
     );
 
-    if (isChecked) {
-      bool isSuccessful;
-      final rs = relays ?? currentUserRelayList.writes;
+    // A reset or a newer run superseded this one — drop the stale result.
+    if (!identical(token, _verificationToken)) {
+      return;
+    }
 
-      if (scheduledPaid != null) {
-        isSuccessful = await submitEventScheduled(
-          event: toBeSubmittedEvent!,
-          relays: rs,
-        );
-      } else {
-        isSuccessful = await NostrFunctionsRepository.sendEvent(
-          event: toBeSubmittedEvent!,
-          relays: rs,
-          setProgress: true,
-        );
+    if (!isChecked) {
+      if (!isClosed) {
+        emit(state.copyWith(
+          verification: PaidNoteVerification.awaitingConfirm,
+        ));
       }
+      return;
+    }
 
-      if (isSuccessful) {
-        BotToastUtils.showSuccess(
-          scheduledPaid != null
-              ? t.paidNoteScheduled.capitalizeFirst()
-              : t.paidNotePublished.capitalizeFirst(),
-        );
+    await publishVerifiedNote();
+  }
 
-        localDatabaseRepository.removeUnpaidNote(
-          currentSigner!.getPublicKey(),
-          toBeSubmittedEvent!.id,
-        );
+  /// Cancels any in-flight SSE wait and clears the verification state. Used
+  /// when the user backs out of a payment view or closes the sheet.
+  void resetVerification() {
+    if (state.verification == PaidNoteVerification.publishing ||
+        state.verification == PaidNoteVerification.published) {
+      return;
+    }
 
-        resetDraft(null);
-        onSuccess.call();
-      } else {
-        BotToastUtils.showError(
-          t.errorSendingEvent.capitalizeFirst(),
-        );
-      }
+    _verificationToken = CancelToken();
 
-      cancel.call();
-    } else {
-      cancel.call();
-      BotToastUtils.showError(
-        t.invoiceNotPayed.capitalizeFirst(),
-      );
+    if (!isClosed &&
+        (state.verification == PaidNoteVerification.verifying ||
+            state.verification == PaidNoteVerification.awaitingConfirm ||
+            state.paymentStatus.isNotEmpty)) {
+      emit(state.copyWith(
+        verification: PaidNoteVerification.idle,
+        paymentStatus: '',
+      ));
     }
   }
 
-  // Redeems points then publishes — no invoice check needed.
-  Future<void> redeemPointsAndPublish(
-    Function() onSuccess,
-    Function(String) onError,
-  ) async {
+  /// Broadcasts [toBeSubmittedEvent] after a confirmed payment. Shared by the
+  /// `paid` the note is published; otherwise the user is told the invoice is
+  /// still unpaid and the fallback stays on screen.
+  Future<void> checkPaymentStatus() async {
+    if (toBeSubmittedEvent == null ||
+        state.verification == PaidNoteVerification.verifying ||
+        state.verification == PaidNoteVerification.publishing) {
+      return;
+    }
+
+    emit(state.copyWith(
+      verification: PaidNoteVerification.verifying,
+      paymentStatus: '',
+    ));
+
+    final isPaid = await HttpFunctionsRepository.getPaidNoteStatus(
+      toBeSubmittedEvent!.id,
+    );
+
+    if (!isPaid) {
+      if (!isClosed) {
+        BotToastUtils.showError(
+          t.invoiceNotPayed.capitalizeFirst(),
+        );
+        emit(state.copyWith(
+          verification: PaidNoteVerification.awaitingConfirm,
+        ));
+      }
+      return;
+    }
+
+    await publishVerifiedNote();
+  }
+
+  /// Broadcasts [toBeSubmittedEvent] after a confirmed payment. Shared by the
+  /// lightning (SSE) and points paths.
+  Future<void> publishVerifiedNote() async {
     if (toBeSubmittedEvent == null) {
       return;
     }
-    final cancel = BotToastUtils.showLoading();
-    try {
-      final redeemed =
-          await HttpFunctionsRepository.publishPaidNoteWithPoints();
 
+    if (!isClosed) {
+      emit(state.copyWith(verification: PaidNoteVerification.publishing));
+    }
+
+    final rs = relays ?? currentUserRelayList.writes;
+
+    bool isSuccessful;
+    if (scheduledPaid != null) {
+      isSuccessful = await submitEventScheduled(
+        event: toBeSubmittedEvent!,
+        relays: rs,
+      );
+    } else {
+      isSuccessful = await NostrFunctionsRepository.sendEvent(
+        event: toBeSubmittedEvent!,
+        relays: rs,
+        setProgress: true,
+      );
+    }
+
+    if (isClosed) {
+      return;
+    }
+
+    if (isSuccessful) {
+      localDatabaseRepository.removeUnpaidNote(
+        currentSigner!.getPublicKey(),
+        toBeSubmittedEvent!.id,
+      );
+
+      resetDraft(null);
+      emit(state.copyWith(verification: PaidNoteVerification.published));
+    } else {
+      BotToastUtils.showError(
+        t.errorSendingEvent.capitalizeFirst(),
+      );
+      emit(state.copyWith(
+        verification: PaidNoteVerification.awaitingConfirm,
+      ));
+    }
+  }
+
+  // Redeems points then publishes — no invoice/SSE check needed.
+  Future<void> redeemPointsAndPublish(
+    Function(String) onError,
+  ) async {
+    if (toBeSubmittedEvent == null ||
+        state.verification == PaidNoteVerification.publishing) {
+      return;
+    }
+
+    try {
+      final redeemed = await HttpFunctionsRepository.publishPaidNoteWithPoints(
+          toBeSubmittedEvent!.id);
+      lg.i(redeemed);
       if (!redeemed) {
         onError(t.points_insufficient);
         return;
       }
 
-      unawaited(pointsManagementCubit.getRecentStats());
+      unawaited(pointsManagementCubit.getCurrenUserStats());
 
-      final rs = relays ?? currentUserRelayList.writes;
-      bool isSuccessful;
-      if (scheduledPaid != null) {
-        isSuccessful = await submitEventScheduled(
-          event: toBeSubmittedEvent!,
-          relays: rs,
-        );
-      } else {
-        isSuccessful = await NostrFunctionsRepository.sendEvent(
-          event: toBeSubmittedEvent!,
-          relays: rs,
-          setProgress: true,
-        );
-      }
-
-      if (isSuccessful) {
-        BotToastUtils.showSuccess(
-          scheduledPaid != null
-              ? t.paidNoteScheduled.capitalizeFirst()
-              : t.paidNotePublished.capitalizeFirst(),
-        );
-        localDatabaseRepository.removeUnpaidNote(
-          currentSigner!.getPublicKey(),
-          toBeSubmittedEvent!.id,
-        );
-        resetDraft(null);
-        onSuccess.call();
-      } else {
-        BotToastUtils.showError(t.errorSendingEvent.capitalizeFirst());
-      }
+      await publishVerifiedNote();
     } on DioException catch (e) {
       onError(
         (e.response?.data as Map<String, dynamic>?)?['message'] as String? ??
             t.points_insufficient,
       );
-    } finally {
-      cancel.call();
     }
   }
 
@@ -509,7 +571,9 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
 
     final updatedContent = sanitizeContent(content);
 
-    final tags = <List<String>>[];
+    final tags = <List<String>>[
+      getClientTag(),
+    ];
 
     // NIP-22 tags
     String? rootId;
@@ -521,6 +585,8 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
     String? parentAddress;
     int? parentKind;
     String? parentPubkey;
+
+    final pTags = <String>[];
 
     if (ae is DetailedNoteModel) {
       rootId = ae.rootId;
@@ -578,7 +644,9 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       tags.add(['k', parentKind.toString()]);
     }
 
-    tags.add(['p', parentPubkey, '']);
+    if (parentPubkey != currentSigner!.getPublicKey()) {
+      pTags.add(parentPubkey);
+    }
 
     final hashtags = getTtags(content);
     final nadresses = getNaddr(content);
@@ -595,8 +663,6 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       }
     }
 
-    // Only add q tag if it's NOT the article/video or parent comment we are replying to
-    // (since they are already in NIP-22 tags)
     if (qTag != null &&
         qTag != rootAddress &&
         qTag != rootId &&
@@ -617,16 +683,27 @@ class WriteNoteCubit extends Cubit<WriteNoteState> {
       tags.addAll(Nip33.coordinatesToTagsWithMentions(nadresses));
     }
 
+    final mentions = getPtags(content);
+
     if (replyContent != null && replyContent['pTags'] != null) {
-      final pTags = (replyContent['pTags'] as List<String>?)
-              ?.where((e) => e.isNotEmpty) ??
-          [];
-      tags.addAll(pTags
-          .where((p) => p != signer.getPublicKey())
-          .map((p) => ['p', p, '', 'mention']));
+      pTags.addAll(((replyContent['pTags'] as List<String>?)
+                  ?.where((e) => e.isNotEmpty) ??
+              [])
+          .toList());
     }
 
-    // Add imeta
+    pTags.removeWhere(
+      (p) => mentions.contains(p),
+    );
+
+    if (pTags.isNotEmpty) {
+      tags.addAll(pTags.map((p) => ['p', p]));
+    }
+
+    if (mentions.isNotEmpty) {
+      tags.addAll(mentions.map((m) => ['p', m, '', 'mention']));
+    }
+
     for (final imeta in state.imetas) {
       if (imeta['url'] != null &&
           (state.medias.contains(imeta['url']) ||

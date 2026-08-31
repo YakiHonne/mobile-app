@@ -12,7 +12,6 @@
 // import '../../../utils/utils.dart';
 // import '../../widgets/common_thumbnail.dart';
 // import '../../widgets/dotted_container.dart';
-// import '../../widgets/publish_content_final_step.dart';
 // import '../../widgets/single_image_selector.dart';
 // import '../related_adding_views/article_widgets/article_details.dart';
 

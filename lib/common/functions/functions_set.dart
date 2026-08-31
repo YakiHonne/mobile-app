@@ -519,6 +519,17 @@ bool isReplaceable(int? kind) {
       kind == EventKind.STARTER_PACKS;
 }
 
+bool shouldReplyAsComment(DetailedNoteModel m) {
+  return m.kind == EventKind.COMMENT || isReplaceable(m.rootKind);
+}
+
+Set<String> eventRelayHints(Event event) {
+  return event.tags
+      .where((tag) => tag.length > 2 && tag[2].isNotEmpty)
+      .map((tag) => tag[2])
+      .toSet();
+}
+
 bool isSupportedEvent(int? kind) {
   return kind == EventKind.LONG_FORM ||
       kind == EventKind.CURATION_ARTICLES ||
@@ -1372,6 +1383,8 @@ void showReactionPopup(
 }
 
 String getProperRelayUrl(String url) {
+  url = url.trim().replaceAll(RegExp(r'^\s*wss?:/*\s*|^\s*https?://\s*', caseSensitive: false), '');
+
   if (relayRegExp.hasMatch(url)) {
     return url;
   } else if (urlRegExp.hasMatch(url)) {
@@ -1426,6 +1439,13 @@ String cleanUrl(String url) {
     port: uri.hasPort ? uri.port : null,
     path: uri.path,
   ).toString();
+}
+
+String normalizeMediaUrl(String url) {
+  if (url.startsWith('http://blossom.yakihonne.com/')) {
+    return url.replaceFirst('http://', 'https://');
+  }
+  return url;
 }
 
 Future<List<String>> getEventSeenOnRelays({

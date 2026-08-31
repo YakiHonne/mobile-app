@@ -232,6 +232,7 @@ class TranslationsZh extends Translations {
 	@override String get copyNoteId => '复制笔记ID';
 	@override String get noteIdCopied => '笔记ID复制成功！ 👏';
 	@override String get confirmDeleteDraft => '您即将删除此草稿，是否继续？';
+	@override String get confirmDeleteDraftChats => '您即将删除此草稿以及 AI 助手聊天和第二读者聊天，是否继续？';
 	@override String get reposted => '转载';
 	@override String get postInNote => '发布在笔记中';
 	@override String get clone => '克隆';
@@ -626,6 +627,8 @@ class TranslationsZh extends Translations {
 	@override String get createYakiWallet => '创建YakiHonne钱包';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => '通过YakiHonne通道创建钱包';
+	@override String get yakiPoints => 'Yaki积分';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => '或使用您的钱包';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => '原生Nostr钱包连接';
@@ -671,6 +674,7 @@ class TranslationsZh extends Translations {
 	@override String get views => '查看';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => '创建 ${date1}，编辑 ${date2}';
 	@override String get loading => '加载中';
+	@override String get loadingThread => '正在加载话题串';
 	@override String get releaseToLoad => '释放加载';
 	@override String get finished => '完成！';
 	@override String get noMoreData => '无更多数据';
@@ -703,6 +707,8 @@ class TranslationsZh extends Translations {
 	@override String get user => '用户';
 	@override String get view => '查看';
 	@override String get itsLive => '它是直播！';
+	@override String contentIsLive({required Object contentType}) => '${contentType} 已上线！';
+	@override String get justNow => '刚刚';
 	@override String get spreadWordSharingContent => '通过到处分享内容传播消息。';
 	@override String get successfulRelays => '成功中继';
 	@override String get noRelaysCanBeFound => '未找到中继';
@@ -889,7 +895,9 @@ class TranslationsZh extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} 在智能部件中提及您';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} 在投票中提及您';
 	@override String userPublishedPaidNote({required Object name}) => '${name} 发布了付费笔记';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} 发布了新的高级笔记';
 	@override String userPublishedArticle({required Object name}) => '${name} 发布了文章';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} 发布了新的高级文章';
 	@override String userPublishedVideo({required Object name}) => '${name} 发布了视频';
 	@override String userPublishedCuration({required Object name}) => '${name} 发布了策展';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} 发布了智能部件';
@@ -982,6 +990,7 @@ class TranslationsZh extends Translations {
 	@override String get apiKeyRequired => 'API密钥（必需）';
 	@override String get getApiKey => '获取API密钥';
 	@override String get seeTranslation => '查看翻译';
+	@override String get seenOn => '发现于';
 	@override String get seeOriginal => '查看原版';
 	@override String get plan => '计划';
 	@override String get free => '免费';
@@ -1368,6 +1377,7 @@ class TranslationsZh extends Translations {
 	@override String get actionsPopups => '操作弹窗';
 	@override String get actionsPopupsDesc => '启用或禁用成功、错误和信息消息的弹窗。';
 	@override String get waitingForNetwork => '等待网络...';
+	@override String get reconnecting => '正在重新连接...';
 	@override String get whatsNew => '有什么新';
 	@override String get appCustom => 'app自定义';
 	@override String get poll => '投票';
@@ -1855,6 +1865,7 @@ class TranslationsZh extends Translations {
 	@override String get sub_connect_btn => '连接到 Yaki';
 	@override String get sub_usage_period_daily => '每日';
 	@override String get sub_usage_period_monthly => '每月';
+	@override String get pricing => '定价';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / 月';
@@ -1874,6 +1885,16 @@ class TranslationsZh extends Translations {
 	@override String get pricing_ln_discount_on => 'sats 价格已包含 10% 的 Lightning 折扣。';
 	@override String get pricing_most_popular => '最受欢迎';
 	@override String get pricing_footer => '可随时在设置中取消。按月计费。';
+	@override String get pricing_free_cta_downgrade => '切换为免费版';
+	@override String get pricing_free_feature_classic_editor => '经典编辑器';
+	@override String get pricing_free_feature_nostr_identity => 'Nostr 原生身份';
+	@override String get pricing_free_feature_points => '使用 Yaki Points 支付笔记与订阅';
+	@override String get pricing_free_feature_publishing => '文章与笔记发布';
+	@override String get pricing_free_feature_storage => '500 MB Blossom 存储';
+	@override String get pricing_free_feature_translations => '每日翻译次数有限';
+	@override String get pricing_free_feature_wallet => '1 个 YakiHonne 钱包';
+	@override String get pricing_free_name => '免费';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => '使用 Lightning 支付';
 	@override String get pricing_waiting => '等待付款中…';
 	@override String get pricing_cancel => '取消';
@@ -2020,6 +2041,7 @@ class TranslationsZh extends Translations {
 	@override String get second_reader_fixed_with_ai => '已用 AI 修改';
 	@override String get second_reader_marked_read => '已标为已读';
 	@override String get second_reader_fix_with_ai => '用 AI 修改';
+	@override String get second_reader_improve_with_ai => '用 AI 改进';
 	@override String get second_reader_ignore => '忽略';
 	@override String get second_reader_switch => '切换';
 	@override String get editor_classic => '经典版';
@@ -2032,6 +2054,8 @@ class TranslationsZh extends Translations {
 	@override String get creator_subscribe_error => '无法发起订阅';
 	@override String get creator_no_plans => '暂无可用的订阅方案';
 	@override String get creator_lightning_unavailable => 'Lightning 地址不可用';
+	@override String get creator_view_subscriptions => '查看我的订阅';
+	@override String get creator_subscribed => '已订阅';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => '使用 Google 登录';
 	@override String get recoverWithGoogle => '通过 Google 恢复';
@@ -2407,6 +2431,7 @@ extension on TranslationsZh {
 			'copyNoteId' => '复制笔记ID',
 			'noteIdCopied' => '笔记ID复制成功！ 👏',
 			'confirmDeleteDraft' => '您即将删除此草稿，是否继续？',
+			'confirmDeleteDraftChats' => '您即将删除此草稿以及 AI 助手聊天和第二读者聊天，是否继续？',
 			'reposted' => '转载',
 			'postInNote' => '发布在笔记中',
 			'clone' => '克隆',
@@ -2725,13 +2750,13 @@ extension on TranslationsZh {
 			'findPaidNoteMisleading' => '您认为此付费笔记误导。',
 			'selectOneReason' => '至少选择一个原因',
 			'rateHelpful' => '评为有用',
-			'rateNotHelpful' => '评为无用',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => '评为无用',
 			'ratedHelpful' => '评为有用',
 			'ratedNotHelpful' => '评为无用',
 			'youRatedHelpful' => '您评为有用',
@@ -2807,6 +2832,8 @@ extension on TranslationsZh {
 			'createYakiWallet' => '创建YakiHonne钱包',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => '通过YakiHonne通道创建钱包',
+			'yakiPoints' => 'Yaki积分',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => '或使用您的钱包',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => '原生Nostr钱包连接',
@@ -2852,6 +2879,7 @@ extension on TranslationsZh {
 			'views' => '查看',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => '创建 ${date1}，编辑 ${date2}',
 			'loading' => '加载中',
+			'loadingThread' => '正在加载话题串',
 			'releaseToLoad' => '释放加载',
 			'finished' => '完成！',
 			'noMoreData' => '无更多数据',
@@ -2884,6 +2912,8 @@ extension on TranslationsZh {
 			'user' => '用户',
 			'view' => '查看',
 			'itsLive' => '它是直播！',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} 已上线！',
+			'justNow' => '刚刚',
 			'spreadWordSharingContent' => '通过到处分享内容传播消息。',
 			'successfulRelays' => '成功中继',
 			'noRelaysCanBeFound' => '未找到中继',
@@ -3070,7 +3100,9 @@ extension on TranslationsZh {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} 在智能部件中提及您',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} 在投票中提及您',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} 发布了付费笔记',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} 发布了新的高级笔记',
 			'userPublishedArticle' => ({required Object name}) => '${name} 发布了文章',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} 发布了新的高级文章',
 			'userPublishedVideo' => ({required Object name}) => '${name} 发布了视频',
 			'userPublishedCuration' => ({required Object name}) => '${name} 发布了策展',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} 发布了智能部件',
@@ -3163,6 +3195,7 @@ extension on TranslationsZh {
 			'apiKeyRequired' => 'API密钥（必需）',
 			'getApiKey' => '获取API密钥',
 			'seeTranslation' => '查看翻译',
+			'seenOn' => '发现于',
 			'seeOriginal' => '查看原版',
 			'plan' => '计划',
 			'free' => '免费',
@@ -3235,6 +3268,12 @@ extension on TranslationsZh {
 			'manageWallets' => '管理钱包',
 			'roundDuration' => '回合持续时间',
 			'startAt' => ({required Object date}) => '开始于: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => '登录',
 			'addPicture' => '添加图片',
 			'editPicture' => '编辑图片',
@@ -3244,12 +3283,6 @@ extension on TranslationsZh {
 			'mutedUserDesc' => '您已静音此用户，请考虑取消静音以查看内容',
 			'commentHidden' => '此评论已隐藏',
 			'upcoming' => '即将到来',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => '导出凭证',
 			'loginToYakihonne' => '登录YakiHonne',
 			'loginBuiltOnNostr' => '✦ 基于 Nostr 构建',
@@ -3555,6 +3588,7 @@ extension on TranslationsZh {
 			'actionsPopups' => '操作弹窗',
 			'actionsPopupsDesc' => '启用或禁用成功、错误和信息消息的弹窗。',
 			'waitingForNetwork' => '等待网络...',
+			'reconnecting' => '正在重新连接...',
 			'whatsNew' => '有什么新',
 			'appCustom' => 'app自定义',
 			'poll' => '投票',
@@ -3752,6 +3786,12 @@ extension on TranslationsZh {
 			'restoreWallet' => '恢复钱包',
 			'restoreWalletDesc' => '恢复您在此 Mint 中的钱包证明以将其保存到 NOSTR',
 			'seedPhraseLocallyOnly' => '您的助记词仅在本地用于派生您的钱包密钥。',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => '证明已恢复',
 			'noProofsFound' => '未找到证明',
 			'errorRestoringProofs' => '恢复证明时出错',
@@ -3762,12 +3802,6 @@ extension on TranslationsZh {
 			'selectingTokens' => '正在选择代币',
 			'requestingMeltQuote' => '正在请求熔铸 (melt) 报价',
 			'melting' => '正在熔铸',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => '正在请求铸造 (mint) 报价',
 			'minting' => '正在铸造',
 			'cantSwapWithWallet' => '无法直接与闪电钱包目的地交换。请选择一个 Mint 在 Mints 之间交换，或使用“到”字段选择钱包目的地。',
@@ -4048,6 +4082,7 @@ extension on TranslationsZh {
 			'sub_connect_btn' => '连接到 Yaki',
 			'sub_usage_period_daily' => '每日',
 			'sub_usage_period_monthly' => '每月',
+			'pricing' => '定价',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / 月',
@@ -4067,6 +4102,16 @@ extension on TranslationsZh {
 			'pricing_ln_discount_on' => 'sats 价格已包含 10% 的 Lightning 折扣。',
 			'pricing_most_popular' => '最受欢迎',
 			'pricing_footer' => '可随时在设置中取消。按月计费。',
+			'pricing_free_cta_downgrade' => '切换为免费版',
+			'pricing_free_feature_classic_editor' => '经典编辑器',
+			'pricing_free_feature_nostr_identity' => 'Nostr 原生身份',
+			'pricing_free_feature_points' => '使用 Yaki Points 支付笔记与订阅',
+			'pricing_free_feature_publishing' => '文章与笔记发布',
+			'pricing_free_feature_storage' => '500 MB Blossom 存储',
+			'pricing_free_feature_translations' => '每日翻译次数有限',
+			'pricing_free_feature_wallet' => '1 个 YakiHonne 钱包',
+			'pricing_free_name' => '免费',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => '使用 Lightning 支付',
 			'pricing_waiting' => '等待付款中…',
 			'pricing_cancel' => '取消',
@@ -4213,6 +4258,7 @@ extension on TranslationsZh {
 			'second_reader_fixed_with_ai' => '已用 AI 修改',
 			'second_reader_marked_read' => '已标为已读',
 			'second_reader_fix_with_ai' => '用 AI 修改',
+			'second_reader_improve_with_ai' => '用 AI 改进',
 			'second_reader_ignore' => '忽略',
 			'second_reader_switch' => '切换',
 			'editor_classic' => '经典版',
@@ -4225,6 +4271,8 @@ extension on TranslationsZh {
 			'creator_subscribe_error' => '无法发起订阅',
 			'creator_no_plans' => '暂无可用的订阅方案',
 			'creator_lightning_unavailable' => 'Lightning 地址不可用',
+			'creator_view_subscriptions' => '查看我的订阅',
+			'creator_subscribed' => '已订阅',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => '使用 Google 登录',
 			'recoverWithGoogle' => '通过 Google 恢复',
@@ -4256,6 +4304,12 @@ extension on TranslationsZh {
 			'pomUnlinkSuccess' => '账户已解除关联，你已被登出。',
 			'pomUnlinkFailed' => '无法解除账户关联，请重试。',
 			'pomKeyCopied' => '已复制私钥',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => '身份中心服务器',
 			'pomServerDesc' => '你的账户位于此中心服务器上。可以使用我们的、其他提供方的，或你自己的服务器。',
 			'pomServerDefault' => '默认',
@@ -4280,12 +4334,6 @@ extension on TranslationsZh {
 			'pomKeyExistingWarning' => ({required Object count}) => '此密钥已有 Nostr 身份。其分片将保存在 ${count} 台运营方服务器上。',
 			'pomContinue' => '继续',
 			'pomExportKey' => '导出到文件',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => '无法导出密钥',
 			'pomAdvancedOptions' => '高级选项',
 			'pomOperatorsTitle' => '运营方',

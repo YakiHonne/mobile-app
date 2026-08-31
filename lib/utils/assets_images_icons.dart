@@ -291,6 +291,7 @@ class FeatureIcons {
   static const IconData pin = LucideIcons.pin;
   static const IconData unpin = LucideIcons.pinOff;
   static const IconData downloadCloud = LucideIcons.cloudDownload;
+  static const IconData storageCloud = LucideIcons.cloud;
   static const IconData swap = LucideIcons.arrowLeftRight;
   static const IconData addMint = LucideIcons.plus;
   static const IconData removeMint = LucideIcons.minus;

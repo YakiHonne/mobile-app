@@ -232,6 +232,7 @@ class TranslationsJa extends Translations {
 	@override String get copyNoteId => 'ノートIDをコピー';
 	@override String get noteIdCopied => 'ノートIDがコピーされました！ 👏';
 	@override String get confirmDeleteDraft => 'この下書きを削除しようとしています、続行しますか？';
+	@override String get confirmDeleteDraftChats => 'この下書きと一緒にAIアシスタントのチャットとセカンドリーダーのチャットも削除されます、続行しますか？';
 	@override String get reposted => 'リポスト';
 	@override String get postInNote => 'ノートに投稿';
 	@override String get clone => 'クローン';
@@ -626,6 +627,8 @@ class TranslationsJa extends Translations {
 	@override String get createYakiWallet => 'YakiHonneウォレットを作成';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'YakiHonneチャネル経由でウォレットを作成';
+	@override String get yakiPoints => 'Yakiポイント';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'または自分のウォレットを使用';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'ネイティブNostrウォレット接続';
@@ -671,6 +674,7 @@ class TranslationsJa extends Translations {
 	@override String get views => 'ビュー';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => '作成 ${date1}、編集 ${date2}';
 	@override String get loading => 'ロード中';
+	@override String get loadingThread => 'スレッドを読み込み中';
 	@override String get releaseToLoad => 'リリースしてロード';
 	@override String get finished => '完了！';
 	@override String get noMoreData => 'データなし';
@@ -703,6 +707,8 @@ class TranslationsJa extends Translations {
 	@override String get user => 'ユーザー';
 	@override String get view => 'ビュー';
 	@override String get itsLive => 'ライブです！';
+	@override String contentIsLive({required Object contentType}) => '${contentType}がライブです！';
+	@override String get justNow => 'たった今';
 	@override String get spreadWordSharingContent => 'コンテンツを共有して言葉を広める。';
 	@override String get successfulRelays => '成功したリレー';
 	@override String get noRelaysCanBeFound => 'リレーが見つかりません';
@@ -889,7 +895,9 @@ class TranslationsJa extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} がスマートウィジェットであなたをメンション';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} がポールであなたをメンション';
 	@override String userPublishedPaidNote({required Object name}) => '${name} が有料ノート公開';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} が新しいプレミアムノートを公開';
 	@override String userPublishedArticle({required Object name}) => '${name} が記事公開';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} が新しいプレミアム記事を公開';
 	@override String userPublishedVideo({required Object name}) => '${name} が動画公開';
 	@override String userPublishedCuration({required Object name}) => '${name} がキュレーション公開';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} がスマートウィジェット公開';
@@ -982,6 +990,7 @@ class TranslationsJa extends Translations {
 	@override String get apiKeyRequired => 'APIキー (必須)';
 	@override String get getApiKey => 'APIキー取得';
 	@override String get seeTranslation => '翻訳を見る';
+	@override String get seenOn => '確認されたリレー';
 	@override String get seeOriginal => 'オリジナルを見る';
 	@override String get plan => 'プラン';
 	@override String get free => '無料';
@@ -1368,6 +1377,7 @@ class TranslationsJa extends Translations {
 	@override String get actionsPopups => 'アクションポップアップ';
 	@override String get actionsPopupsDesc => '成功、エラー、情報のメッセージに対するポップアップを有効または無効にします。';
 	@override String get waitingForNetwork => 'ネットワーク待ち...';
+	@override String get reconnecting => '再接続中...';
 	@override String get whatsNew => '新着';
 	@override String get appCustom => 'アプリカスタム';
 	@override String get poll => 'ポール';
@@ -1855,6 +1865,7 @@ class TranslationsJa extends Translations {
 	@override String get sub_connect_btn => 'Yakiに接続';
 	@override String get sub_usage_period_daily => '1日ごと';
 	@override String get sub_usage_period_monthly => '1か月ごと';
+	@override String get pricing => '料金';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / 月';
@@ -1874,6 +1885,16 @@ class TranslationsJa extends Translations {
 	@override String get pricing_ln_discount_on => 'sats価格にはすでにLightning割引10%が含まれています。';
 	@override String get pricing_most_popular => '一番人気';
 	@override String get pricing_footer => '設定からいつでも解約できます。月額請求です。';
+	@override String get pricing_free_cta_downgrade => '無料に切り替え';
+	@override String get pricing_free_feature_classic_editor => 'クラシックエディタ';
+	@override String get pricing_free_feature_nostr_identity => 'Nostrネイティブのアイデンティティ';
+	@override String get pricing_free_feature_points => 'Yaki Pointsでノートと購読を支払い';
+	@override String get pricing_free_feature_publishing => '記事とノートの公開';
+	@override String get pricing_free_feature_storage => '500 MBのBlossomストレージ';
+	@override String get pricing_free_feature_translations => '毎日の翻訳は制限付き';
+	@override String get pricing_free_feature_wallet => 'YakiHonneウォレット1つ';
+	@override String get pricing_free_name => '無料';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'Lightningで支払う';
 	@override String get pricing_waiting => '支払いを待っています…';
 	@override String get pricing_cancel => 'キャンセル';
@@ -2020,6 +2041,7 @@ class TranslationsJa extends Translations {
 	@override String get second_reader_fixed_with_ai => 'AIで修正しました';
 	@override String get second_reader_marked_read => '既読にしました';
 	@override String get second_reader_fix_with_ai => 'AIで修正';
+	@override String get second_reader_improve_with_ai => 'AIで改善';
 	@override String get second_reader_ignore => '無視';
 	@override String get second_reader_switch => '切り替え';
 	@override String get editor_classic => 'クラシック';
@@ -2032,6 +2054,8 @@ class TranslationsJa extends Translations {
 	@override String get creator_subscribe_error => 'サブスクリプションを開始できませんでした';
 	@override String get creator_no_plans => '利用可能なサブスクリプションプランがありません';
 	@override String get creator_lightning_unavailable => 'Lightningアドレスを利用できません';
+	@override String get creator_view_subscriptions => '自分のサブスクリプションを見る';
+	@override String get creator_subscribed => '登録済み';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'Googleでログイン';
 	@override String get recoverWithGoogle => 'Google経由で復元';
@@ -2407,6 +2431,7 @@ extension on TranslationsJa {
 			'copyNoteId' => 'ノートIDをコピー',
 			'noteIdCopied' => 'ノートIDがコピーされました！ 👏',
 			'confirmDeleteDraft' => 'この下書きを削除しようとしています、続行しますか？',
+			'confirmDeleteDraftChats' => 'この下書きと一緒にAIアシスタントのチャットとセカンドリーダーのチャットも削除されます、続行しますか？',
 			'reposted' => 'リポスト',
 			'postInNote' => 'ノートに投稿',
 			'clone' => 'クローン',
@@ -2725,13 +2750,13 @@ extension on TranslationsJa {
 			'findPaidNoteMisleading' => 'この有料ノートを誤解を招くと思います。',
 			'selectOneReason' => '少なくとも1つの理由を選択',
 			'rateHelpful' => '役立つと評価',
-			'rateNotHelpful' => '役に立たないと評価',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => '役に立たないと評価',
 			'ratedHelpful' => '役立つと評価',
 			'ratedNotHelpful' => '役に立たないと評価',
 			'youRatedHelpful' => '役立つと評価しました',
@@ -2807,6 +2832,8 @@ extension on TranslationsJa {
 			'createYakiWallet' => 'YakiHonneウォレットを作成',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'YakiHonneチャネル経由でウォレットを作成',
+			'yakiPoints' => 'Yakiポイント',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'または自分のウォレットを使用',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'ネイティブNostrウォレット接続',
@@ -2852,6 +2879,7 @@ extension on TranslationsJa {
 			'views' => 'ビュー',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => '作成 ${date1}、編集 ${date2}',
 			'loading' => 'ロード中',
+			'loadingThread' => 'スレッドを読み込み中',
 			'releaseToLoad' => 'リリースしてロード',
 			'finished' => '完了！',
 			'noMoreData' => 'データなし',
@@ -2884,6 +2912,8 @@ extension on TranslationsJa {
 			'user' => 'ユーザー',
 			'view' => 'ビュー',
 			'itsLive' => 'ライブです！',
+			'contentIsLive' => ({required Object contentType}) => '${contentType}がライブです！',
+			'justNow' => 'たった今',
 			'spreadWordSharingContent' => 'コンテンツを共有して言葉を広める。',
 			'successfulRelays' => '成功したリレー',
 			'noRelaysCanBeFound' => 'リレーが見つかりません',
@@ -3070,7 +3100,9 @@ extension on TranslationsJa {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} がスマートウィジェットであなたをメンション',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} がポールであなたをメンション',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} が有料ノート公開',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} が新しいプレミアムノートを公開',
 			'userPublishedArticle' => ({required Object name}) => '${name} が記事公開',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} が新しいプレミアム記事を公開',
 			'userPublishedVideo' => ({required Object name}) => '${name} が動画公開',
 			'userPublishedCuration' => ({required Object name}) => '${name} がキュレーション公開',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} がスマートウィジェット公開',
@@ -3163,6 +3195,7 @@ extension on TranslationsJa {
 			'apiKeyRequired' => 'APIキー (必須)',
 			'getApiKey' => 'APIキー取得',
 			'seeTranslation' => '翻訳を見る',
+			'seenOn' => '確認されたリレー',
 			'seeOriginal' => 'オリジナルを見る',
 			'plan' => 'プラン',
 			'free' => '無料',
@@ -3235,6 +3268,12 @@ extension on TranslationsJa {
 			'manageWallets' => 'ウォレット管理',
 			'roundDuration' => 'ラウンド期間',
 			'startAt' => ({required Object date}) => '開始: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'ログイン',
 			'addPicture' => '画像追加',
 			'editPicture' => '画像編集',
@@ -3244,12 +3283,6 @@ extension on TranslationsJa {
 			'mutedUserDesc' => 'このユーザーをミュートしました、コンテンツ表示のためミュート解除を検討',
 			'commentHidden' => 'このコメントは隠されています',
 			'upcoming' => '今後',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => '資格情報エクスポート',
 			'loginToYakihonne' => 'YakiHonneにログイン',
 			'loginBuiltOnNostr' => '✦ Nostr上に構築',
@@ -3555,6 +3588,7 @@ extension on TranslationsJa {
 			'actionsPopups' => 'アクションポップアップ',
 			'actionsPopupsDesc' => '成功、エラー、情報のメッセージに対するポップアップを有効または無効にします。',
 			'waitingForNetwork' => 'ネットワーク待ち...',
+			'reconnecting' => '再接続中...',
 			'whatsNew' => '新着',
 			'appCustom' => 'アプリカスタム',
 			'poll' => 'ポール',
@@ -3752,6 +3786,12 @@ extension on TranslationsJa {
 			'restoreWallet' => 'ウォレットを復元',
 			'restoreWalletDesc' => 'このMintでウォレットの証明を復元し、NOSTRに保存します',
 			'seedPhraseLocallyOnly' => 'シードフレーズは、ウォレットキーを導出するためにローカルでのみ使用されます。',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => '証明が復元されました',
 			'noProofsFound' => '証明が見つかりませんでした',
 			'errorRestoringProofs' => '証明の復元中にエラーが発生しました',
@@ -3762,12 +3802,6 @@ extension on TranslationsJa {
 			'selectingTokens' => 'トークンを選択中',
 			'requestingMeltQuote' => 'Melt見積もりを依頼中',
 			'melting' => 'Melt中',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => 'Mint見積もりを依頼中',
 			'minting' => 'Mint中',
 			'cantSwapWithWallet' => 'Lightningウォレットの宛先と直接スワップすることはできません。Mint間でスワップするにはMintを選択するか、「先」フィールドを使用してウォレットの宛先を選択してください。',
@@ -4048,6 +4082,7 @@ extension on TranslationsJa {
 			'sub_connect_btn' => 'Yakiに接続',
 			'sub_usage_period_daily' => '1日ごと',
 			'sub_usage_period_monthly' => '1か月ごと',
+			'pricing' => '料金',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / 月',
@@ -4067,6 +4102,16 @@ extension on TranslationsJa {
 			'pricing_ln_discount_on' => 'sats価格にはすでにLightning割引10%が含まれています。',
 			'pricing_most_popular' => '一番人気',
 			'pricing_footer' => '設定からいつでも解約できます。月額請求です。',
+			'pricing_free_cta_downgrade' => '無料に切り替え',
+			'pricing_free_feature_classic_editor' => 'クラシックエディタ',
+			'pricing_free_feature_nostr_identity' => 'Nostrネイティブのアイデンティティ',
+			'pricing_free_feature_points' => 'Yaki Pointsでノートと購読を支払い',
+			'pricing_free_feature_publishing' => '記事とノートの公開',
+			'pricing_free_feature_storage' => '500 MBのBlossomストレージ',
+			'pricing_free_feature_translations' => '毎日の翻訳は制限付き',
+			'pricing_free_feature_wallet' => 'YakiHonneウォレット1つ',
+			'pricing_free_name' => '無料',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'Lightningで支払う',
 			'pricing_waiting' => '支払いを待っています…',
 			'pricing_cancel' => 'キャンセル',
@@ -4213,6 +4258,7 @@ extension on TranslationsJa {
 			'second_reader_fixed_with_ai' => 'AIで修正しました',
 			'second_reader_marked_read' => '既読にしました',
 			'second_reader_fix_with_ai' => 'AIで修正',
+			'second_reader_improve_with_ai' => 'AIで改善',
 			'second_reader_ignore' => '無視',
 			'second_reader_switch' => '切り替え',
 			'editor_classic' => 'クラシック',
@@ -4225,6 +4271,8 @@ extension on TranslationsJa {
 			'creator_subscribe_error' => 'サブスクリプションを開始できませんでした',
 			'creator_no_plans' => '利用可能なサブスクリプションプランがありません',
 			'creator_lightning_unavailable' => 'Lightningアドレスを利用できません',
+			'creator_view_subscriptions' => '自分のサブスクリプションを見る',
+			'creator_subscribed' => '登録済み',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'Googleでログイン',
 			'recoverWithGoogle' => 'Google経由で復元',
@@ -4256,6 +4304,12 @@ extension on TranslationsJa {
 			'pomUnlinkSuccess' => 'アカウントの連携を解除しました。サインアウトしました。',
 			'pomUnlinkFailed' => 'アカウントの連携を解除できませんでした。もう一度お試しください。',
 			'pomKeyCopied' => '秘密鍵をコピーしました',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'アイデンティティサーバー',
 			'pomServerDesc' => 'アカウントはこのセントラルサーバー上にあります。当社のもの、他のプロバイダー、またはご自身のものを利用できます。',
 			'pomServerDefault' => 'デフォルト',
@@ -4280,12 +4334,6 @@ extension on TranslationsJa {
 			'pomKeyExistingWarning' => ({required Object count}) => 'この鍵には既に Nostr のアイデンティティがあります。その断片が ${count} 台のオペレーターサーバーに保存されます。',
 			'pomContinue' => '続行',
 			'pomExportKey' => 'ファイルに書き出す',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => '鍵を書き出せませんでした',
 			'pomAdvancedOptions' => '詳細オプション',
 			'pomOperatorsTitle' => 'オペレーター',

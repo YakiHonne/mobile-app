@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/leading_cubit/leading_cubit.dart';
 import '../../../logic/theme_cubit/theme_cubit.dart';
@@ -19,14 +18,14 @@ class LeadingFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = deviceIsTablet;
     final useSingleColumn =
         nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
 
     return BlocBuilder<LeadingCubit, LeadingState>(
       builder: (context, state) {
         if (isTablet && !useSingleColumn) {
-          return _gridItems(state);
+          return _gridItems(context, state);
         } else {
           return _listItems(state);
         }
@@ -54,9 +53,10 @@ class LeadingFeed extends StatelessWidget {
               state.paidNoteAds.isNotEmpty &&
               index > 0 &&
               index % adGap == 0) {
-            final ad =
-                state.paidNoteAds[(index ~/ adGap) % state.paidNoteAds.length];
-            return PaidNoteAdCard(event: ad);
+            final ad = context.read<LeadingCubit>().paidNoteAdForIndex(index);
+            if (ad != null) {
+              return PaidNoteAdCard(event: ad);
+            }
           }
 
           return BlocBuilder<ThemeCubit, ThemeState>(
@@ -118,7 +118,7 @@ class LeadingFeed extends StatelessWidget {
     );
   }
 
-  SliverPadding _gridItems(LeadingState state) {
+  SliverPadding _gridItems(BuildContext context, LeadingState state) {
     final adGap = subscriptionCubit.isBasic ? 15 : 7;
     final showAds =
         !subscriptionCubit.isPremium && state.paidNoteAds.isNotEmpty;
@@ -126,14 +126,13 @@ class LeadingFeed extends StatelessWidget {
     // Interleave paid note ads into the flat content list so grid mode gets
     // the same tier-based pacing as list mode (no separator slot in a grid).
     final cells = <_GridCell>[];
-    var adIndex = 0;
     for (var i = 0; i < state.content.length; i++) {
       cells.add(_GridCell.content(state.content[i]));
       if (showAds && (i + 1) % adGap == 0) {
-        cells.add(
-          _GridCell.ad(state.paidNoteAds[adIndex % state.paidNoteAds.length]),
-        );
-        adIndex++;
+        final ad = context.read<LeadingCubit>().paidNoteAdForIndex(i);
+        if (ad != null) {
+          cells.add(_GridCell.ad(ad));
+        }
       }
     }
 

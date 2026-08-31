@@ -7,6 +7,7 @@ import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class CameraOptions extends StatelessWidget {
   const CameraOptions({
@@ -24,45 +25,42 @@ class CameraOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sits directly on the sheet — the caller paints it in cardColor. Brings
-    // its own Material, which GlassModalSheet doesn't supply.
     return Material(
-      type: MaterialType.transparency,
-      child: SafeArea(
-        top: false,
-        // The detent is a fixed fraction picked from an estimated content
-        // height — scroll rather than overflow when a long locale wraps.
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding,
-              vertical: kDefaultPadding / 2,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.t.pickYourMedia.capitalizeFirst(),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
-                Text(
-                  context.t.uploadSendMedia.capitalizeFirst(),
-                  style: TextStyle(
-                    color: Theme.of(context).highlightColor,
+      child: ModalSheetContainer(
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding,
+                vertical: kDefaultPadding / 2,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.t.pickYourMedia.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: kDefaultPadding,
-                ),
-                _options(context),
-              ],
+                  const SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  Text(
+                    context.t.uploadSendMedia.capitalizeFirst(),
+                    style: TextStyle(
+                      color: Theme.of(context).highlightColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: kDefaultPadding,
+                  ),
+                  _options(context),
+                ],
+              ),
             ),
           ),
         ),

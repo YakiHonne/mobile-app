@@ -232,6 +232,7 @@ class TranslationsAr extends Translations {
 	@override String get copyNoteId => 'نسخ معرف الملاحظة';
 	@override String get noteIdCopied => 'تم نسخ معرف الملاحظة! 👏';
 	@override String get confirmDeleteDraft => 'أنت على وشك حذف هذه المسودة، هل ترغب في المتابعة؟';
+	@override String get confirmDeleteDraftChats => 'أنت على وشك حذف هذه المسودة مع محادثة مساعد الذكاء الاصطناعي ومحادثة القارئ الثاني، هل ترغب في المتابعة؟';
 	@override String get reposted => 'تم إعادة النشر';
 	@override String get postInNote => 'نشر في ملاحظة';
 	@override String get clone => 'استنساخ';
@@ -626,6 +627,8 @@ class TranslationsAr extends Translations {
 	@override String get createYakiWallet => 'إنشاء محفظة YakiHonne';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'إنشاء محفظة عبر قناة YakiHonne';
+	@override String get yakiPoints => 'نقاط Yaki';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'أو استخدم محفظتك الخاصة';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'اتصال محفظة Nostr الأصلي';
@@ -671,6 +674,7 @@ class TranslationsAr extends Translations {
 	@override String get views => 'المشاهدات';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'تم الإنشاء ${date1}، تم التعديل ${date2}';
 	@override String get loading => 'تحميل';
+	@override String get loadingThread => 'جارٍ تحميل المناقشة';
 	@override String get releaseToLoad => 'أطلق للتحميل';
 	@override String get finished => 'انتهى!';
 	@override String get noMoreData => 'لا مزيد من البيانات';
@@ -703,6 +707,8 @@ class TranslationsAr extends Translations {
 	@override String get user => 'مستخدم';
 	@override String get view => 'عرض';
 	@override String get itsLive => 'هو مباشر!';
+	@override String contentIsLive({required Object contentType}) => '${contentType} مباشر الآن!';
+	@override String get justNow => 'الآن';
 	@override String get spreadWordSharingContent => 'نشر الكلمة من خلال مشاركة المحتوى في كل مكان.';
 	@override String get successfulRelays => 'الترحيلات الناجحة';
 	@override String get noRelaysCanBeFound => 'لم يتم العثور على ترحيلات';
@@ -889,7 +895,9 @@ class TranslationsAr extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} ذكرك في ودجيت ذكي';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} ذكرك في استطلاع';
 	@override String userPublishedPaidNote({required Object name}) => '${name} نشر ملاحظة مدفوعة';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} نشر ملاحظة مميزة جديدة';
 	@override String userPublishedArticle({required Object name}) => '${name} نشر مقالة';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} نشر مقالة مميزة جديدة';
 	@override String userPublishedVideo({required Object name}) => '${name} نشر فيديو';
 	@override String userPublishedCuration({required Object name}) => '${name} نشر تنسيق';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} نشر ودجيت ذكي';
@@ -982,6 +990,7 @@ class TranslationsAr extends Translations {
 	@override String get apiKeyRequired => 'مفتاح API (مطلوب)';
 	@override String get getApiKey => 'الحصول على مفتاح API';
 	@override String get seeTranslation => 'عرض الترجمة';
+	@override String get seenOn => 'شوهد على';
 	@override String get seeOriginal => 'عرض الأصلي';
 	@override String get plan => 'الخطة';
 	@override String get free => 'مجاني';
@@ -1368,6 +1377,7 @@ class TranslationsAr extends Translations {
 	@override String get actionsPopups => 'إشعارات الإجراءات';
 	@override String get actionsPopupsDesc => 'تمكين أو تعطيل الإشعارات المنبثقة للنجاح والأخطاء والمعلومات.';
 	@override String get waitingForNetwork => 'انتظار الشبكة...';
+	@override String get reconnecting => 'إعادة الاتصال...';
 	@override String get whatsNew => 'ما الجديد';
 	@override String get appCustom => 'تخصيص التطبيق';
 	@override String get poll => 'استطلاع';
@@ -1855,6 +1865,7 @@ class TranslationsAr extends Translations {
 	@override String get sub_connect_btn => 'الاتصال بـ Yaki';
 	@override String get sub_usage_period_daily => 'يوميًا';
 	@override String get sub_usage_period_monthly => 'شهريًا';
+	@override String get pricing => 'التسعير';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'ساتوشي / شهريًا';
@@ -1874,6 +1885,16 @@ class TranslationsAr extends Translations {
 	@override String get pricing_ln_discount_on => 'أسعار الساتوشي تتضمن بالفعل خصم Lightning بنسبة 10%.';
 	@override String get pricing_most_popular => 'الأكثر شيوعًا';
 	@override String get pricing_footer => 'ألغِ في أي وقت من الإعدادات. الفوترة شهرية.';
+	@override String get pricing_free_cta_downgrade => 'الانتقال إلى الخطة المجانية';
+	@override String get pricing_free_feature_classic_editor => 'المحرر الكلاسيكي';
+	@override String get pricing_free_feature_nostr_identity => 'هوية أصلية على Nostr';
+	@override String get pricing_free_feature_points => 'ادفع الملاحظات والاشتراكات بـ Yaki Points';
+	@override String get pricing_free_feature_publishing => 'نشر المقالات والملاحظات';
+	@override String get pricing_free_feature_storage => '500 ميجابايت تخزين Blossom';
+	@override String get pricing_free_feature_translations => 'ترجمات يومية محدودة';
+	@override String get pricing_free_feature_wallet => 'محفظة YakiHonne واحدة';
+	@override String get pricing_free_name => 'مجانًا';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'الدفع عبر Lightning';
 	@override String get pricing_waiting => 'في انتظار الدفع…';
 	@override String get pricing_cancel => 'إلغاء';
@@ -2020,6 +2041,7 @@ class TranslationsAr extends Translations {
 	@override String get second_reader_fixed_with_ai => 'تم الإصلاح بالذكاء الاصطناعي';
 	@override String get second_reader_marked_read => 'تم وضع علامة كمقروء';
 	@override String get second_reader_fix_with_ai => 'إصلاح بالذكاء الاصطناعي';
+	@override String get second_reader_improve_with_ai => 'تحسين بالذكاء الاصطناعي';
 	@override String get second_reader_ignore => 'تجاهل';
 	@override String get second_reader_switch => 'تبديل';
 	@override String get editor_classic => 'كلاسيكي';
@@ -2032,6 +2054,8 @@ class TranslationsAr extends Translations {
 	@override String get creator_subscribe_error => 'تعذّر بدء الاشتراك';
 	@override String get creator_no_plans => 'لا توجد خطط اشتراك متاحة';
 	@override String get creator_lightning_unavailable => 'عنوان Lightning غير متوفر';
+	@override String get creator_view_subscriptions => 'عرض اشتراكاتي';
+	@override String get creator_subscribed => 'مشترك';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'تسجيل الدخول بحساب Google';
 	@override String get recoverWithGoogle => 'الاستعادة عبر Google';
@@ -2407,6 +2431,7 @@ extension on TranslationsAr {
 			'copyNoteId' => 'نسخ معرف الملاحظة',
 			'noteIdCopied' => 'تم نسخ معرف الملاحظة! 👏',
 			'confirmDeleteDraft' => 'أنت على وشك حذف هذه المسودة، هل ترغب في المتابعة؟',
+			'confirmDeleteDraftChats' => 'أنت على وشك حذف هذه المسودة مع محادثة مساعد الذكاء الاصطناعي ومحادثة القارئ الثاني، هل ترغب في المتابعة؟',
 			'reposted' => 'تم إعادة النشر',
 			'postInNote' => 'نشر في ملاحظة',
 			'clone' => 'استنساخ',
@@ -2725,13 +2750,13 @@ extension on TranslationsAr {
 			'findPaidNoteMisleading' => 'ترى هذه الملاحظة المدفوعة مضللة.',
 			'selectOneReason' => 'اختر سببًا واحدًا على الأقل',
 			'rateHelpful' => 'تقييم مفيد',
-			'rateNotHelpful' => 'تقييم غير مفيد',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => 'تقييم غير مفيد',
 			'ratedHelpful' => 'تم التقييم مفيد',
 			'ratedNotHelpful' => 'تم التقييم غير مفيد',
 			'youRatedHelpful' => 'قيمت هذا كمفيد',
@@ -2807,6 +2832,8 @@ extension on TranslationsAr {
 			'createYakiWallet' => 'إنشاء محفظة YakiHonne',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'إنشاء محفظة عبر قناة YakiHonne',
+			'yakiPoints' => 'نقاط Yaki',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'أو استخدم محفظتك الخاصة',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'اتصال محفظة Nostr الأصلي',
@@ -2852,6 +2879,7 @@ extension on TranslationsAr {
 			'views' => 'المشاهدات',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'تم الإنشاء ${date1}، تم التعديل ${date2}',
 			'loading' => 'تحميل',
+			'loadingThread' => 'جارٍ تحميل المناقشة',
 			'releaseToLoad' => 'أطلق للتحميل',
 			'finished' => 'انتهى!',
 			'noMoreData' => 'لا مزيد من البيانات',
@@ -2884,6 +2912,8 @@ extension on TranslationsAr {
 			'user' => 'مستخدم',
 			'view' => 'عرض',
 			'itsLive' => 'هو مباشر!',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} مباشر الآن!',
+			'justNow' => 'الآن',
 			'spreadWordSharingContent' => 'نشر الكلمة من خلال مشاركة المحتوى في كل مكان.',
 			'successfulRelays' => 'الترحيلات الناجحة',
 			'noRelaysCanBeFound' => 'لم يتم العثور على ترحيلات',
@@ -3070,7 +3100,9 @@ extension on TranslationsAr {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} ذكرك في ودجيت ذكي',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} ذكرك في استطلاع',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} نشر ملاحظة مدفوعة',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} نشر ملاحظة مميزة جديدة',
 			'userPublishedArticle' => ({required Object name}) => '${name} نشر مقالة',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} نشر مقالة مميزة جديدة',
 			'userPublishedVideo' => ({required Object name}) => '${name} نشر فيديو',
 			'userPublishedCuration' => ({required Object name}) => '${name} نشر تنسيق',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} نشر ودجيت ذكي',
@@ -3163,6 +3195,7 @@ extension on TranslationsAr {
 			'apiKeyRequired' => 'مفتاح API (مطلوب)',
 			'getApiKey' => 'الحصول على مفتاح API',
 			'seeTranslation' => 'عرض الترجمة',
+			'seenOn' => 'شوهد على',
 			'seeOriginal' => 'عرض الأصلي',
 			'plan' => 'الخطة',
 			'free' => 'مجاني',
@@ -3235,6 +3268,12 @@ extension on TranslationsAr {
 			'manageWallets' => 'إدارة المحافظ',
 			'roundDuration' => 'مدة الجولة',
 			'startAt' => ({required Object date}) => 'البدء في: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'تسجيل الدخول',
 			'addPicture' => 'إضافة صورة',
 			'editPicture' => 'تحرير الصورة',
@@ -3244,12 +3283,6 @@ extension on TranslationsAr {
 			'mutedUserDesc' => 'لقد كتمت هذا المستخدم، فكر في إلغاء الكتم لعرض المحتوى',
 			'commentHidden' => 'هذا التعليق مخفي',
 			'upcoming' => 'قادم',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'تصدير البيانات الاعتمادية',
 			'loginToYakihonne' => 'تسجيل الدخول إلى YakiHonne',
 			'loginBuiltOnNostr' => '✦ مبني على Nostr',
@@ -3555,6 +3588,7 @@ extension on TranslationsAr {
 			'actionsPopups' => 'إشعارات الإجراءات',
 			'actionsPopupsDesc' => 'تمكين أو تعطيل الإشعارات المنبثقة للنجاح والأخطاء والمعلومات.',
 			'waitingForNetwork' => 'انتظار الشبكة...',
+			'reconnecting' => 'إعادة الاتصال...',
 			'whatsNew' => 'ما الجديد',
 			'appCustom' => 'تخصيص التطبيق',
 			'poll' => 'استطلاع',
@@ -3752,6 +3786,12 @@ extension on TranslationsAr {
 			'restoreWallet' => 'استعادة المحفظة',
 			'restoreWalletDesc' => 'استعادة إثباتات محفظتك في هذا Mint لحفظها على NOSTR',
 			'seedPhraseLocallyOnly' => 'يتم استخدام عبارة الاسترداد الخاصة بك محليًا فقط لاشتقاق مفاتيح محفظتك.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'تم استعادة الإثباتات',
 			'noProofsFound' => 'لم يتم العثور على إثباتات',
 			'errorRestoringProofs' => 'حدث خطأ أثناء استعادة الإثباتات',
@@ -3762,12 +3802,6 @@ extension on TranslationsAr {
 			'selectingTokens' => 'اختيار الرموز',
 			'requestingMeltQuote' => 'طلب عرض melt',
 			'melting' => 'جاري الـ Melting',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => 'طلب عرض mint',
 			'minting' => 'جاري الـ Minting',
 			'cantSwapWithWallet' => 'لا يمكن المبادلة مباشرة مع وجهة محفظة lightning. يرجى اختيار mint للمبادلة بين mints أو استخدام حقل \'إلى\' لاختيار وجهة محفظة.',
@@ -4048,6 +4082,7 @@ extension on TranslationsAr {
 			'sub_connect_btn' => 'الاتصال بـ Yaki',
 			'sub_usage_period_daily' => 'يوميًا',
 			'sub_usage_period_monthly' => 'شهريًا',
+			'pricing' => 'التسعير',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'ساتوشي / شهريًا',
@@ -4067,6 +4102,16 @@ extension on TranslationsAr {
 			'pricing_ln_discount_on' => 'أسعار الساتوشي تتضمن بالفعل خصم Lightning بنسبة 10%.',
 			'pricing_most_popular' => 'الأكثر شيوعًا',
 			'pricing_footer' => 'ألغِ في أي وقت من الإعدادات. الفوترة شهرية.',
+			'pricing_free_cta_downgrade' => 'الانتقال إلى الخطة المجانية',
+			'pricing_free_feature_classic_editor' => 'المحرر الكلاسيكي',
+			'pricing_free_feature_nostr_identity' => 'هوية أصلية على Nostr',
+			'pricing_free_feature_points' => 'ادفع الملاحظات والاشتراكات بـ Yaki Points',
+			'pricing_free_feature_publishing' => 'نشر المقالات والملاحظات',
+			'pricing_free_feature_storage' => '500 ميجابايت تخزين Blossom',
+			'pricing_free_feature_translations' => 'ترجمات يومية محدودة',
+			'pricing_free_feature_wallet' => 'محفظة YakiHonne واحدة',
+			'pricing_free_name' => 'مجانًا',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'الدفع عبر Lightning',
 			'pricing_waiting' => 'في انتظار الدفع…',
 			'pricing_cancel' => 'إلغاء',
@@ -4213,6 +4258,7 @@ extension on TranslationsAr {
 			'second_reader_fixed_with_ai' => 'تم الإصلاح بالذكاء الاصطناعي',
 			'second_reader_marked_read' => 'تم وضع علامة كمقروء',
 			'second_reader_fix_with_ai' => 'إصلاح بالذكاء الاصطناعي',
+			'second_reader_improve_with_ai' => 'تحسين بالذكاء الاصطناعي',
 			'second_reader_ignore' => 'تجاهل',
 			'second_reader_switch' => 'تبديل',
 			'editor_classic' => 'كلاسيكي',
@@ -4225,6 +4271,8 @@ extension on TranslationsAr {
 			'creator_subscribe_error' => 'تعذّر بدء الاشتراك',
 			'creator_no_plans' => 'لا توجد خطط اشتراك متاحة',
 			'creator_lightning_unavailable' => 'عنوان Lightning غير متوفر',
+			'creator_view_subscriptions' => 'عرض اشتراكاتي',
+			'creator_subscribed' => 'مشترك',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'تسجيل الدخول بحساب Google',
 			'recoverWithGoogle' => 'الاستعادة عبر Google',
@@ -4256,6 +4304,12 @@ extension on TranslationsAr {
 			'pomUnlinkSuccess' => 'تم إلغاء ربط الحساب. تم تسجيل خروجك.',
 			'pomUnlinkFailed' => 'تعذّر إلغاء ربط حسابك. يرجى المحاولة مرة أخرى.',
 			'pomKeyCopied' => 'تم نسخ المفتاح الخاص',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'خادم الهوية',
 			'pomServerDesc' => 'حسابك موجود على هذا الخادم المركزي. يمكنك استخدام خادمنا أو مزوّد آخر أو خادمك الخاص.',
 			'pomServerDefault' => 'افتراضي',
@@ -4280,12 +4334,6 @@ extension on TranslationsAr {
 			'pomKeyExistingWarning' => ({required Object count}) => 'هذا المفتاح له هوية على Nostr بالفعل. ستُحفظ أجزاء منه لدى ${count} من خوادم المشغّلين.',
 			'pomContinue' => 'متابعة',
 			'pomExportKey' => 'تصدير إلى ملف',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => 'تعذّر تصدير المفتاح',
 			'pomAdvancedOptions' => 'خيارات متقدمة',
 			'pomOperatorsTitle' => 'المشغّلون',

@@ -9,7 +9,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/relay_feed_cubit/relay_feed_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
@@ -772,7 +771,7 @@ class ContentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = deviceIsTablet;
     final useSingleColumn =
         nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
 

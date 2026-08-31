@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../utils/utils.dart';
 
@@ -49,7 +50,7 @@ class FluidCardContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           color: cardColor,
           border: Border(
-            top: BorderSide(color: borderColor, width: 2),
+            top: BorderSide(color: borderColor, width: 1.5),
             left: BorderSide(color: borderColor, width: 0.5),
             right: BorderSide(color: borderColor, width: 0.5),
             bottom: BorderSide(color: borderColor, width: 0.5),
@@ -83,6 +84,7 @@ class FluidBlurContainer extends StatelessWidget {
     this.useClipRect = false,
     this.borderWidth,
     this.borderColor,
+    this.backgroundLighten = 0.0,
   });
 
   final Widget child;
@@ -125,17 +127,41 @@ class FluidBlurContainer extends StatelessWidget {
   /// full-width bars that should not clip child content at the corners.
   final bool useClipRect;
 
+  /// Blend amount toward white (0.0-1.0) applied to the background fill —
+  /// use to make a surface read as visibly lighter/more prominent.
+  final double backgroundLighten;
+
   @override
   Widget build(BuildContext context) {
     final effectiveBR =
         customBorderRadius ?? BorderRadius.circular(borderRadius);
 
+    // Minimal quality means "no shader, no BackdropFilter either" — the same
+    // GPU-saving floor the user picked for the liquid_glass_widgets surfaces
+    // applies here too, instead of this raw BackdropFilter ignoring it.
+    final effectiveBlur =
+        blur && themeCubit.state.glassQuality != GlassQuality.minimal;
+
     // Light themes let more of the (variable) content behind show through at
     // the same alpha, so black text can lose contrast; dark themes don't have
     // this problem since the blurred backdrop stays dark either way.
-    final effectiveAlpha = themeCubit.isDark
-        ? backgroundAlpha
-        : (backgroundAlpha + 0.2).clamp(0.0, 1.0);
+    // Without a blur, the fill is the only thing separating this surface from
+    // whatever sits behind it (often the same scaffoldBackgroundColor, e.g.
+    // the search pill over the main app bar) — push it near-solid so it
+    // still reads as a distinct plate instead of blending in.
+    final effectiveAlpha = effectiveBlur
+        ? (themeCubit.isDark
+            ? backgroundAlpha
+            : (backgroundAlpha + 0.2).clamp(0.0, 1.0))
+        : (backgroundAlpha + 0.35).clamp(0.0, 1.0);
+
+    final baseColor = backgroundLighten > 0
+        ? Color.lerp(
+            Theme.of(context).scaffoldBackgroundColor,
+            kWhite,
+            backgroundLighten,
+          )!
+        : Theme.of(context).scaffoldBackgroundColor;
 
     final inner = showDecoration
         ? Container(
@@ -143,9 +169,7 @@ class FluidBlurContainer extends StatelessWidget {
             width: width,
             padding: padding,
             decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .scaffoldBackgroundColor
-                  .withValues(alpha: effectiveAlpha),
+              color: baseColor.withValues(alpha: effectiveAlpha),
               borderRadius: useClipRect ? null : effectiveBR,
               border: customBorder ??
                   (showBorder
@@ -160,7 +184,7 @@ class FluidBlurContainer extends StatelessWidget {
           )
         : child;
 
-    final blurred = blur
+    final blurred = effectiveBlur
         ? BackdropFilter(
             filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
             child: inner,

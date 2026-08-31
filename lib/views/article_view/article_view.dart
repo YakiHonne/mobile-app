@@ -29,6 +29,7 @@ import '../widgets/fluid_scaffold.dart';
 import '../widgets/fluid_sheet.dart';
 import '../widgets/mark_down_widget.dart';
 import '../widgets/no_content_widgets.dart';
+import '../widgets/note_stats.dart';
 import '../widgets/profile_picture.dart';
 import '../widgets/scroll_to_top.dart';
 import 'widgets/articles_header.dart';
@@ -396,6 +397,12 @@ class ArticleView extends HookWidget {
           const SizedBox(
             height: kDefaultPadding / 2,
           ),
+          if (article.isPremium) ...[
+            const Center(child: PremiumBadge(large: true)),
+            const SizedBox(
+              height: kDefaultPadding / 2,
+            ),
+          ],
           _postedFromRow(context),
           if (articleSummary.value.trim().isNotEmpty) ...[
             const SizedBox(
@@ -659,6 +666,8 @@ class ArticleView extends HookWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  _fluidAuthorRow(context, state),
+                  const SizedBox(height: kDefaultPadding / 4),
                   _postedFromRow(context),
                   const SizedBox(height: kDefaultPadding / 2),
                   Builder(
@@ -679,10 +688,12 @@ class ArticleView extends HookWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: kDefaultPadding),
-                  _fluidAuthorRow(context, state),
-                  if (articleSummary.value.trim().isNotEmpty) ...[
+                  const SizedBox(height: kDefaultPadding / 2),
+                  if (article.isPremium) ...[
+                    const Center(child: PremiumBadge(large: true)),
                     const SizedBox(height: kDefaultPadding),
+                  ],
+                  if (articleSummary.value.trim().isNotEmpty) ...[
                     SelectableText(
                       articleSummary.value.trim(),
                       textAlign: TextAlign.center,

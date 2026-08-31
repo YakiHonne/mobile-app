@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.6+203
+version: 2.0.7+205
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -23,7 +23,7 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
-  chewie: ^1.13.0
+  chewie: ^1.15.0
   connectivity_plus: ^6.0.5
   convert: ^3.1.1
   cookie_jar: ^4.0.8
@@ -60,6 +60,7 @@ dependencies:
       url: https://github.com/YakiHonne/flutter_math.git
       ref: main
   flutter_native_splash: ^2.4.1
+  flutter_quill: ^11.5.0
   flutter_rating_bar: ^4.0.1
   flutter_reorderable_grid_view: ^5.2.0
   flutter_scroll_shadow: ^1.2.3
@@ -75,16 +76,22 @@ dependencies:
       ref: master
   glassmorphism: ^3.0.0
   html: ^0.15.4
+  htmltopdfwidgets: ^2.1.1
   image_editor_plus: ^1.0.8
   image_gallery_saver_plus: ^4.0.1
   image_picker: ^1.2.1
+  in_app_purchase: ^3.2.0
+  in_app_purchase_android: ^0.5.0
+  in_app_purchase_storekit: ^0.4.11
   interactiveviewer_gallery_plus: ^0.1.0
   intl: ^0.20.2
   just_audio: ^0.10.5
+  liquid_glass_widgets: ^0.27.0
   logger: ^2.4.0
   lottie: ^3.1.2
   lucide_icons_flutter: ^3.1.15
   markdown: ^7.3.0
+  markdown_quill: ^4.3.0
   markdown_widget: ^2.3.2+6
   mention_tag_text_field: ^0.0.8
   modal_bottom_sheet: ^3.0.0
@@ -92,9 +99,7 @@ dependencies:
   # nostr_core_enhanced:
   #   path: ../nostr_core_enhanced/
   nostr_core_enhanced:
-    git:
-      url: https://github.com/YakiHonne/nostr_core_enhanced.git
-      ref: main
+    path: ../nostr_core_enhanced/
   numeral: ^3.0.0
   open_filex: ^4.7.0
   override_text_scale_factor: ^1.0.2
@@ -103,6 +108,7 @@ dependencies:
   path_drawing: ^1.0.1
   path_provider: ^2.1.5
   permission_handler: ^12.0.1
+  pointycastle: ^4.0.0
   pretty_qr_code: ^3.4.0
   pull_down_button: ^0.10.2
   pull_to_refresh: ^2.0.0
@@ -124,11 +130,9 @@ dependencies:
   slang: ^4.8.1
   slang_flutter: ^4.4.0
   string_validator: ^1.0.2
+  tutorial_coach_mark: ^1.2.13
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
-  in_app_purchase: ^3.2.0
-  in_app_purchase_android: ^0.5.0
-  in_app_purchase_storekit: ^0.4.11
   url_launcher: ^6.1.14
   uuid: ^4.3.3
   video_player: ^2.9.2
@@ -137,12 +141,6 @@ dependencies:
   visibility_detector: ^0.4.0+2
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.3
-  pointycastle: ^4.0.0
-  tutorial_coach_mark: ^1.2.13
-  liquid_glass_widgets: ^0.27.0
-  flutter_quill: ^11.5.0
-  markdown_quill: ^4.3.0
-  htmltopdfwidgets: ^2.1.1
 
 sentry:
   upload_debug_symbols: true

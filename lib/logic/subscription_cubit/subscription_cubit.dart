@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/points_system_models.dart';
 import '../../models/subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../utils/utils.dart';
@@ -20,16 +21,18 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
 
   bool get isPaid => isBasic || isPremium;
 
-  void emitOnlineStats(UserOnlineStats stats) {
-    emit(state.copyWith(subscriptionStatus: stats.subscriptionStatus));
+  void emitOnlineStats(SubscriptionStatus status) {
+    emit(state.copyWith(subscriptionStatus: status));
   }
 
   /// Called on login and app start — loads subscription status for feature gating.
   Future<void> refreshStatus() async {
     emit(state.copyWith(refreshing: true));
     try {
-      final data = await HttpFunctionsRepository.getUserOnlineStats();
+      final data = await HttpFunctionsRepository.getUserStats();
       if (data != null) {
+        pointsManagementCubit.setUserStats(data);
+
         emit(state.copyWith(
           subscriptionStatus: data.subscriptionStatus,
           refreshing: false,
@@ -47,23 +50,21 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
   Future<void> loadViewData() async {
     emit(state.copyWith(refreshing: true, usageRefreshing: true));
     final results = await Future.wait([
-      HttpFunctionsRepository.getUserOnlineStats(),
+      HttpFunctionsRepository.getUserStats(),
       HttpFunctionsRepository.subscriptionGetUsage(),
     ]);
 
-    final onlineStats = results[0] as UserOnlineStats?;
+    final userStats = results[0] as UserGlobalStats?;
     final usageData = results[1] as UsageData?;
 
     emit(state.copyWith(
-      subscriptionStatus: onlineStats?.subscriptionStatus,
+      subscriptionStatus: userStats?.subscriptionStatus,
       usageData: usageData,
       refreshing: false,
       usageRefreshing: false,
     ));
   }
 
-  /// Fetches usage on its own — used at app start and after an AI call spends
-  /// quota, where the subscription status is not also needed.
   Future<void> refreshUsage() async {
     emit(state.copyWith(usageRefreshing: true));
     try {

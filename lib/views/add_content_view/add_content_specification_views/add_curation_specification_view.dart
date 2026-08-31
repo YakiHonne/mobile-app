@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
-import '../../widgets/fluid_sheet.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/curation_widgets/curation_specifications.dart';
 
 class AddCurationSpecificationView extends StatelessWidget {
@@ -67,15 +66,10 @@ class AddCurationSpecificationView extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pop(context);
 
-              showAppModalSheet(
-                context: context,
-                builder: (_) {
-                  return PublishContentFinalStep(
-                    appContentType: AppContentType.curation,
-                    event: curation,
-                  );
-                },
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              showContentPublishedModalSheet(
+                context,
+                event: curation,
+                contentType: AppContentType.curation,
               );
             },
           );

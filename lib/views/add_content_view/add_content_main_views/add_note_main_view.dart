@@ -8,9 +8,12 @@ import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
 import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
+import '../../../models/detailed_note_model.dart';
 import '../../../models/flash_news_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/fluid_sheet.dart';
 import '../../widgets/parsed_content_display.dart';
@@ -106,6 +109,20 @@ class AddNoteMainView extends HookWidget {
                       onSuccess: (ev) {
                         Navigator.pop(context);
                         onSuccess?.call(ev);
+                        if (!isPaid.value) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            final rootContext =
+                                YNavigator.navigatorKey.currentContext ??
+                                    nostrRepository.currentContext();
+                            if (rootContext.mounted) {
+                              showContentPublishedModalSheet(
+                                rootContext,
+                                event: DetailedNoteModel.fromEvent(ev),
+                                contentType: AppContentType.note,
+                              );
+                            }
+                          });
+                        }
                       },
                     );
               },

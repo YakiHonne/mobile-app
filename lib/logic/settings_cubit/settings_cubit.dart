@@ -12,6 +12,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../initializers.dart';
 import '../../models/app_client_model.dart';
 import '../../models/app_models/settings_data.dart';
+import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
@@ -668,7 +669,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
         final appClients = Map<String, AppClientModel>.from(state.appClients);
 
-        nc.doQuery(
+        NostrFunctionsRepository.queryEvents(
           [
             Filter(
               kinds: [EventKind.APPLICATION_INFO],
@@ -711,7 +712,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> getYakiHonneApp() async {
     final appClients = Map<String, AppClientModel>.from(state.appClients);
 
-    await nc.doQuery(
+    await NostrFunctionsRepository.queryEvents(
       [
         Filter(
           kinds: [EventKind.APPLICATION_INFO],

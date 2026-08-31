@@ -14,8 +14,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/creator_subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../widgets/fluid_blur_container.dart';
 import '../widgets/fluid_glass_tab_bar.dart';
@@ -179,9 +181,8 @@ class _ProviderCard extends HookWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: kIapEnabled || provider.url.isEmpty
-                  ? null
-                  : () => _onSubscribe(context),
+              onPressed:
+                  provider.url.isEmpty ? null : () => _onSubscribe(context),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -204,6 +205,7 @@ class _ProviderCard extends HookWidget {
 
   void _onSubscribe(BuildContext context) {
     if (_isOurGateway) {
+      YNavigator.pop(context);
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -240,6 +242,7 @@ class CreatorSubscribePlansView extends HookWidget {
 
     useEffect(() {
       _fetchPlans(subscriptionData, isLoading);
+      creatorSubscriptionsCubit.fetch();
       return null;
     }, []);
 
@@ -545,9 +548,7 @@ class _PlanCard extends HookWidget {
                     size: 20,
                   )
                 : TextButton(
-                    onPressed: kIapEnabled
-                        ? null
-                        : () => _onSubscribe(context, isLoading),
+                    onPressed: () => _onSubscribe(context, isLoading),
                     child: Text(
                       context.t.creator_subscribe_now.capitalizeFirst(),
                     ),
@@ -569,18 +570,34 @@ class _PlanCard extends HookWidget {
   }
 
   void _openLightningZap(BuildContext context) {
-    final amountSats = int.tryParse(plan.amount) ?? 0;
+    final amountSats = num.tryParse(plan.amount)?.round() ?? 0;
     showAppModalSheet(
       context: context,
-      builder: (_) => SendZapsView(
+      builder: (sheetContext) => SendZapsView(
         metadata: creatorMetadata,
         isZapSplit: false,
         zapSplits: const [],
         initialVal: amountSats > 0 ? amountSats : null,
+        lockAmount: true,
         extraTags: [
           ['P', gatewayPubkey],
           ['interval', plan.interval],
         ],
+        successActionLabel: sheetContext.t.creator_view_subscriptions,
+        onSuccessAction: () {
+          creatorSubscriptionsCubit.fetch(force: true);
+          // Close the sheet, then pop the plans view itself before pushing —
+          // pushReplacement races the sheet's still-animating pop and ends up
+          // replacing the sheet instead of the plans view underneath it.
+          Navigator.pop(sheetContext);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (_) => const CreatorsSubscriptionsView(),
+            ),
+          );
+        },
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );

@@ -80,6 +80,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'publish'
 	String get publish => 'publish';
 
+	/// en: 'Publish article'
+	String get publishArticle => 'Publish article';
+
 	/// en: 'The smart widget should have atleast one component.'
 	String get smHaveOneWidget => 'The smart widget should have atleast one component.';
 
@@ -331,6 +334,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Summary (Optional)'
 	String get summaryOptional => 'Summary (Optional)';
+
+	/// en: 'Summary'
+	String get summary => 'Summary';
 
 	/// en: 'Smart widgets drafts'
 	String get smartWidgetsDrafts => 'Smart widgets drafts';
@@ -620,11 +626,14 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'You're about to delete this draft, do you wish to proceed?'
 	String get confirmDeleteDraft => 'You\'re about to delete this draft, do you wish to proceed?';
 
+	/// en: 'You're about to delete this draft along with your AI assistant chat and second reader chat, do you wish to proceed?'
+	String get confirmDeleteDraftChats => 'You\'re about to delete this draft along with your AI assistant chat and second reader chat, do you wish to proceed?';
+
 	/// en: 'reposted'
 	String get reposted => 'reposted';
 
-	/// en: 'Post in a note'
-	String get postInNote => 'Post in a note';
+	/// en: 'Post in note'
+	String get postInNote => 'Post in note';
 
 	/// en: 'clone'
 	String get clone => 'clone';
@@ -835,6 +844,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: '{{time}}m read'
 	String readTime({required Object time}) => '${time}m read';
+
+	/// en: '{{count}} words'
+	String wordsCount({required Object count}) => '${count} words';
 
 	/// en: 'watch now'
 	String get watchNow => 'watch now';
@@ -1174,6 +1186,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Cover url'
 	String get coverUrl => 'Cover url';
+
+	/// en: 'Cover image'
+	String get coverImage => 'Cover image';
 
 	/// en: 'Enter your picture url'
 	String get enterPictureUrl => 'Enter your picture url';
@@ -1802,6 +1817,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Create wallet using YakiHonne's channel'
 	String get yakiNwcDesc => 'Create wallet using YakiHonne\'s channel';
 
+	/// en: 'Yaki Points'
+	String get yakiPoints => 'Yaki Points';
+
+	/// en: 'Yaki Pro'
+	String get yakiPro => 'Yaki Pro';
+
 	/// en: 'Or use your wallet'
 	String get orUseYourWallet => 'Or use your wallet';
 
@@ -1937,6 +1958,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Loading'
 	String get loading => 'Loading';
 
+	/// en: 'Loading thread'
+	String get loadingThread => 'Loading thread';
+
 	/// en: 'Release to load more'
 	String get releaseToLoad => 'Release to load more';
 
@@ -2032,6 +2056,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'It's live!'
 	String get itsLive => 'It\'s live!';
+
+	/// en: '{{contentType}} is live!'
+	String contentIsLive({required Object contentType}) => '${contentType} is live!';
+
+	/// en: 'just now'
+	String get justNow => 'just now';
 
 	/// en: 'Spread the word by sharing your content everywhere.'
 	String get spreadWordSharingContent => 'Spread the word by sharing your content everywhere.';
@@ -2591,8 +2621,14 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: '{{name}} published a paid note'
 	String userPublishedPaidNote({required Object name}) => '${name} published a paid note';
 
+	/// en: '{{name}} published a new premium note'
+	String userPublishedPremiumNote({required Object name}) => '${name} published a new premium note';
+
 	/// en: '{{name}} published an article'
 	String userPublishedArticle({required Object name}) => '${name} published an article';
+
+	/// en: '{{name}} published a new premium article'
+	String userPublishedPremiumArticle({required Object name}) => '${name} published a new premium article';
 
 	/// en: '{{name}} published a video'
 	String userPublishedVideo({required Object name}) => '${name} published a video';
@@ -2869,6 +2905,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'See translation'
 	String get seeTranslation => 'See translation';
+
+	/// en: 'Seen on'
+	String get seenOn => 'Seen on';
 
 	/// en: 'See original'
 	String get seeOriginal => 'See original';
@@ -4028,6 +4067,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Waiting for network...'
 	String get waitingForNetwork => 'Waiting for network...';
 
+	/// en: 'Reconnecting...'
+	String get reconnecting => 'Reconnecting...';
+
 	/// en: 'What's new'
 	String get whatsNew => 'What\'s new';
 
@@ -4684,6 +4726,18 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Check Payment Status'
 	String get checkPaymentStatus => 'Check Payment Status';
+
+	/// en: 'Waiting for payment confirmation…'
+	String get paidNoteWaitingPayment => 'Waiting for payment confirmation…';
+
+	/// en: 'Payment received — publishing your note…'
+	String get paidNotePublishing => 'Payment received — publishing your note…';
+
+	/// en: 'you're all set'
+	String get paidNoteSuccessTitle => 'you\'re all set';
+
+	/// en: 'no external wallet is available to complete this payment'
+	String get paidNoteNoExternalWallet => 'no external wallet is available to complete this payment';
 
 	/// en: 'Deposit Succeeded'
 	String get depositSuccess => 'Deposit Succeeded';
@@ -5489,6 +5543,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'monthly'
 	String get sub_usage_period_monthly => 'monthly';
 
+	/// en: 'Pricing'
+	String get pricing => 'Pricing';
+
 	/// en: '$ USD'
 	String get pricing_toggle_usd => '\$ USD';
 
@@ -5545,6 +5602,36 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Cancel anytime from settings. Billed monthly.'
 	String get pricing_footer => 'Cancel anytime from settings. Billed monthly.';
+
+	/// en: 'Downgrade'
+	String get pricing_free_cta_downgrade => 'Downgrade';
+
+	/// en: 'Classic editor'
+	String get pricing_free_feature_classic_editor => 'Classic editor';
+
+	/// en: 'Nostr-native identity'
+	String get pricing_free_feature_nostr_identity => 'Nostr-native identity';
+
+	/// en: 'Pay notes & subscriptions with Yaki Points'
+	String get pricing_free_feature_points => 'Pay notes & subscriptions with Yaki Points';
+
+	/// en: 'Articles & Notes publishing'
+	String get pricing_free_feature_publishing => 'Articles & Notes publishing';
+
+	/// en: '500 MB Blossom storage'
+	String get pricing_free_feature_storage => '500 MB Blossom storage';
+
+	/// en: 'Limited daily translations'
+	String get pricing_free_feature_translations => 'Limited daily translations';
+
+	/// en: '1 YakiHonne wallet'
+	String get pricing_free_feature_wallet => '1 YakiHonne wallet';
+
+	/// en: 'Free'
+	String get pricing_free_name => 'Free';
+
+	/// en: '$0'
+	String get pricing_free_price => '\$0';
 
 	/// en: 'Pay with Lightning'
 	String get pricing_pay_lightning => 'Pay with Lightning';
@@ -5984,6 +6071,9 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Fix with AI'
 	String get second_reader_fix_with_ai => 'Fix with AI';
 
+	/// en: 'Improve with AI'
+	String get second_reader_improve_with_ai => 'Improve with AI';
+
 	/// en: 'Ignore'
 	String get second_reader_ignore => 'Ignore';
 
@@ -6019,6 +6109,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Lightning address not available'
 	String get creator_lightning_unavailable => 'Lightning address not available';
+
+	/// en: 'View My Subscriptions'
+	String get creator_view_subscriptions => 'View My Subscriptions';
+
+	/// en: 'Subscribed'
+	String get creator_subscribed => 'Subscribed';
 
 	/// en: '/ {{interval}}'
 	String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
@@ -6542,6 +6638,7 @@ extension on Translations {
 			'saveDraft' => 'Save draft',
 			'deleteDraft' => 'Delete draft',
 			'publish' => 'publish',
+			'publishArticle' => 'Publish article',
 			'smHaveOneWidget' => 'The smart widget should have atleast one component.',
 			'smHaveTitle' => 'The smart widget should at least have a title',
 			'whatsOnYourMind' => 'What\'s on your mind?',
@@ -6626,6 +6723,7 @@ extension on Translations {
 			'image' => 'image',
 			'button' => 'button',
 			'summaryOptional' => 'Summary (Optional)',
+			'summary' => 'Summary',
 			'smartWidgetsDrafts' => 'Smart widgets drafts',
 			'noSmartWidget' => 'No smart widgets drafts can be found',
 			'noSmartWidgetCanBeFound' => 'No smart widgets can be found',
@@ -6722,8 +6820,9 @@ extension on Translations {
 			'copyNoteId' => 'Copy note ID',
 			'noteIdCopied' => 'Note id was copied! 👏',
 			'confirmDeleteDraft' => 'You\'re about to delete this draft, do you wish to proceed?',
+			'confirmDeleteDraftChats' => 'You\'re about to delete this draft along with your AI assistant chat and second reader chat, do you wish to proceed?',
 			'reposted' => 'reposted',
-			'postInNote' => 'Post in a note',
+			'postInNote' => 'Post in note',
 			'clone' => 'clone',
 			'checkValidity' => 'Check validity',
 			'copyNaddr' => 'copy naddr',
@@ -6794,6 +6893,7 @@ extension on Translations {
 			'showArticlesNotesSuggestions' => 'Show articles/notes suggestions',
 			'showSuggestedInterests' => 'Show suggested interests',
 			'readTime' => ({required Object time}) => '${time}m read',
+			'wordsCount' => ({required Object count}) => '${count} words',
 			'watchNow' => 'watch now',
 			'bookmark' => 'bookmark',
 			'suggestions' => 'Suggestions',
@@ -6907,6 +7007,7 @@ extension on Translations {
 			'more' => 'More',
 			'pictureUrl' => 'Picture url',
 			'coverUrl' => 'Cover url',
+			'coverImage' => 'Cover image',
 			'enterPictureUrl' => 'Enter your picture url',
 			'enterCoverUrl' => 'Enter your cover url',
 			'userNoArticles' => ({required Object name}) => '${name} has no articles',
@@ -7036,17 +7137,17 @@ extension on Translations {
 			'writeNote' => 'Write a note',
 			'whatThinkThis' => 'What do you think about this ?',
 			'sourceRecommended' => 'Source (recommended)',
-			'findPaidNoteCorrect' => 'You find this paid note correct.',
-			'findPaidNoteMisleading' => 'You find this paid note misleading.',
-			'selectOneReason' => 'Select at least one reason',
-			'rateHelpful' => 'Rate helpful',
-			'rateNotHelpful' => 'Rate not helpful',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'findPaidNoteCorrect' => 'You find this paid note correct.',
+			'findPaidNoteMisleading' => 'You find this paid note misleading.',
+			'selectOneReason' => 'Select at least one reason',
+			'rateHelpful' => 'Rate helpful',
+			'rateNotHelpful' => 'Rate not helpful',
 			'ratedHelpful' => 'Rated helpful',
 			'ratedNotHelpful' => 'Rated not helpful',
 			'youRatedHelpful' => 'you rated this as helpful',
@@ -7122,6 +7223,8 @@ extension on Translations {
 			'createYakiWallet' => 'Create YakiHonne\'s wallet',
 			'yakiNwc' => 'YakiHonne\'s NWC',
 			'yakiNwcDesc' => 'Create wallet using YakiHonne\'s channel',
+			'yakiPoints' => 'Yaki Points',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'Or use your wallet',
 			'nostrWalletConnect' => 'Nostr wallet connect',
 			'nostrWalletConnectDesc' => 'Native nostr wallet connection',
@@ -7167,6 +7270,7 @@ extension on Translations {
 			'views' => 'Views',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'created at ${date1}, edited on ${date2}',
 			'loading' => 'Loading',
+			'loadingThread' => 'Loading thread',
 			'releaseToLoad' => 'Release to load more',
 			'finished' => 'finished!',
 			'noMoreData' => 'No more data',
@@ -7199,6 +7303,8 @@ extension on Translations {
 			'user' => 'user',
 			'view' => 'view',
 			'itsLive' => 'It\'s live!',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} is live!',
+			'justNow' => 'just now',
 			'spreadWordSharingContent' => 'Spread the word by sharing your content everywhere.',
 			'successfulRelays' => 'Successful relays',
 			'noRelaysCanBeFound' => 'No relays can be found',
@@ -7385,7 +7491,9 @@ extension on Translations {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} mentioned you in a smart widget',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} mentioned you in a poll',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} published a paid note',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} published a new premium note',
 			'userPublishedArticle' => ({required Object name}) => '${name} published an article',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} published a new premium article',
 			'userPublishedVideo' => ({required Object name}) => '${name} published a video',
 			'userPublishedCuration' => ({required Object name}) => '${name} published a curation',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} published a smart widget',
@@ -7478,6 +7586,7 @@ extension on Translations {
 			'apiKeyRequired' => 'Api key (required)',
 			'getApiKey' => 'Get API Key',
 			'seeTranslation' => 'See translation',
+			'seenOn' => 'Seen on',
 			'seeOriginal' => 'See original',
 			'plan' => 'Plan',
 			'free' => 'Free',
@@ -7546,6 +7655,12 @@ extension on Translations {
 			'export' => 'Export',
 			'logout' => 'Log out',
 			'exportAndLogout' => 'Export & log out',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'exportWalletsDesc' => 'It looks like you have wallets linked to your account. Please download your wallet secrets before logging out.',
 			'manageWallets' => 'Manage wallets',
 			'roundDuration' => 'Round duration',
@@ -7559,12 +7674,6 @@ extension on Translations {
 			'mutedUserDesc' => 'You have muted this user, consider unmuting to view this content',
 			'commentHidden' => 'This comment is hidden',
 			'upcoming' => 'Upcoming',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'Export credentials',
 			'loginToYakihonne' => 'Log in to Yakihonne',
 			'loginBuiltOnNostr' => '✦ Built on Nostr',
@@ -7870,6 +7979,7 @@ extension on Translations {
 			'actionsPopups' => 'Actions popups',
 			'actionsPopupsDesc' => 'Enable or disable popups for success, error, and information messages.',
 			'waitingForNetwork' => 'Waiting for network...',
+			'reconnecting' => 'Reconnecting...',
 			'whatsNew' => 'What\'s new',
 			'appCustom' => 'App custom',
 			'poll' => 'Poll',
@@ -8063,6 +8173,12 @@ extension on Translations {
 			'mintUnavailable' => 'Mint you are trying to add is not available',
 			'inactiveMints' => 'Inactive mints',
 			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'errorAddingMint' => 'Error occured while adding mint',
 			'restoreWallet' => 'Restore wallet',
 			'restoreWalletDesc' => 'Restore proofs of your wallet in this mint to save them on NOSTR',
@@ -8077,12 +8193,6 @@ extension on Translations {
 			'selectingTokens' => 'Selecting tokens',
 			'requestingMeltQuote' => 'Requesting melt quote',
 			'melting' => 'Melting',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => 'Requesting mint quote',
 			'minting' => 'Minting',
 			'cantSwapWithWallet' => 'Can\'t swap directly with a lightning wallet destination. Please select a mint to swap between mints or use the \'to\' field to select a wallet destination.',
@@ -8095,6 +8205,10 @@ extension on Translations {
 			'gettingMintInfo' => 'Getting mint info',
 			'generatingInvoice' => 'Generating invoice',
 			'checkPaymentStatus' => 'Check Payment Status',
+			'paidNoteWaitingPayment' => 'Waiting for payment confirmation…',
+			'paidNotePublishing' => 'Payment received — publishing your note…',
+			'paidNoteSuccessTitle' => 'you\'re all set',
+			'paidNoteNoExternalWallet' => 'no external wallet is available to complete this payment',
 			'depositSuccess' => 'Deposit Succeeded',
 			'sendEcash' => 'Send eCash',
 			'sendEcashDesc' => 'Create and share a Cashu token',
@@ -8363,6 +8477,7 @@ extension on Translations {
 			'sub_connect_btn' => 'Connect to Yaki',
 			'sub_usage_period_daily' => 'daily',
 			'sub_usage_period_monthly' => 'monthly',
+			'pricing' => 'Pricing',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / month',
@@ -8382,6 +8497,16 @@ extension on Translations {
 			'pricing_ln_discount_on' => 'Sats prices already include a 10% Lightning discount.',
 			'pricing_most_popular' => 'Most popular',
 			'pricing_footer' => 'Cancel anytime from settings. Billed monthly.',
+			'pricing_free_cta_downgrade' => 'Downgrade',
+			'pricing_free_feature_classic_editor' => 'Classic editor',
+			'pricing_free_feature_nostr_identity' => 'Nostr-native identity',
+			'pricing_free_feature_points' => 'Pay notes & subscriptions with Yaki Points',
+			'pricing_free_feature_publishing' => 'Articles & Notes publishing',
+			'pricing_free_feature_storage' => '500 MB Blossom storage',
+			'pricing_free_feature_translations' => 'Limited daily translations',
+			'pricing_free_feature_wallet' => '1 YakiHonne wallet',
+			'pricing_free_name' => 'Free',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'Pay with Lightning',
 			'pricing_waiting' => 'Waiting for payment…',
 			'pricing_cancel' => 'Cancel',
@@ -8528,6 +8653,7 @@ extension on Translations {
 			'second_reader_fixed_with_ai' => 'Fixed with AI',
 			'second_reader_marked_read' => 'Marked as read',
 			'second_reader_fix_with_ai' => 'Fix with AI',
+			'second_reader_improve_with_ai' => 'Improve with AI',
 			'second_reader_ignore' => 'Ignore',
 			'second_reader_switch' => 'Switch',
 			'editor_classic' => 'Classic',
@@ -8540,6 +8666,8 @@ extension on Translations {
 			'creator_subscribe_error' => 'Could not initiate subscription',
 			'creator_no_plans' => 'No subscription plans available',
 			'creator_lightning_unavailable' => 'Lightning address not available',
+			'creator_view_subscriptions' => 'View My Subscriptions',
+			'creator_subscribed' => 'Subscribed',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'Login with Google',
 			'recoverWithGoogle' => 'Recover via Google',
@@ -8563,6 +8691,12 @@ extension on Translations {
 			'pomDownloadKey' => 'Download key',
 			'pomUnlinkTitle' => 'Unlink account',
 			'pomUnlinkIntro' => 'First recover your private key and copy it — you\'ll need it to sign back in after unlinking.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkContinue' => 'I\'ve saved my key — continue',
 			'pomUnlinkConfirmTitle' => 'Unlink this account?',
 			'pomUnlinkConfirmDesc' => ({required Object host}) => 'Your account will be removed from ${host}. You\'ll be signed out and must sign back in with your private key.',
@@ -8595,12 +8729,6 @@ extension on Translations {
 			'pomKeyExistingWarning' => ({required Object count}) => 'This key already has a Nostr identity. Shards of it will be stored with ${count} operator servers.',
 			'pomContinue' => 'Continue',
 			'pomExportKey' => 'Export to file',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => 'Could not export the key',
 			'pomAdvancedOptions' => 'Advanced options',
 			'pomOperatorsTitle' => 'Operators',

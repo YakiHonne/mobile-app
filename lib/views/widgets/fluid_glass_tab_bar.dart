@@ -105,14 +105,10 @@ class FluidGlassTabBar extends StatelessWidget {
               )
             : GlassTabBar.inline(
                 barHeight: barHeight,
-                // The label row is inset by tabPadding but the indicator's slot
-                // math uses the full bar width, so any horizontal tabPadding
-                // shifts labels off the pill centre — worst at the edge tabs.
                 tabPadding: EdgeInsets.zero,
                 settings: GlassSettings.inlineTabBar(context),
                 selectedIndex: tabController.index,
                 onTabSelected: select,
-
                 selectedIconColor: theme.primaryColorDark,
                 unselectedIconColor: theme.hintColor,
                 unselectedLabelStyle: theme.textTheme.labelMedium!.copyWith(

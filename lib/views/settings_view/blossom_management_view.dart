@@ -104,8 +104,10 @@ class BlossomManagementContent extends StatelessWidget {
                   ),
                 )
               else if (state.filteredMedia.isEmpty)
+                // EmptyList is a shrink-wrapping scrollable; default
+                // hasScrollBody:false sizes its child via getMaxIntrinsicHeight,
+                // which a shrink-wrapping viewport refuses to compute.
                 SliverFillRemaining(
-                  hasScrollBody: false,
                   child: EmptyList(
                     description: context.t.noContentFound,
                     icon: FeatureIcons.media,
@@ -739,6 +741,7 @@ void _showMediaDetails(BuildContext context, BlossomAggregatedMedia item) {
 }
 
 void _confirmDelete(BuildContext context, String hash) {
+  final cubit = context.read<BlossomCubit>();
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -752,7 +755,7 @@ void _confirmDelete(BuildContext context, String hash) {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            context.read<BlossomCubit>().deleteMedia(hash);
+            cubit.deleteMedia(hash);
           },
           child: Text(
             context.t.delete,

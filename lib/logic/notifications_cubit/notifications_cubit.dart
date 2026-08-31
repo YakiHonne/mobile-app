@@ -67,11 +67,72 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       emit(
         state.copyWith(
           events: <Event>[],
+          premiumEvents: <Event>[],
           index: 0,
           isRead: true,
+          isLoading: false,
           refresh: !state.refresh,
         ),
       );
+    }
+  }
+
+  /// Content from creators the user is actively subscribed to, restricted to
+  /// their premium-gated posts (nip63 + NIP-70 protected `-` tag). Fetched
+  /// from each creator's NIP-65 write relays, mirroring how ProfileCubit
+  /// fetches a single creator's premium tab (getOutboxRelays + client-side
+  /// nip63 filtering), just broadened to every subscribed creator.
+  Future<void> fetchPremiumContent({bool force = false}) async {
+    if (state.isPremiumLoading || (!force && state.premiumEvents.isNotEmpty)) {
+      return;
+    }
+
+    final pubkeys = creatorSubscriptionsCubit.state.subscriptions
+        .where((s) => s.isActive)
+        .map((s) => s.creatorPubkey)
+        .toList();
+
+    if (pubkeys.isEmpty) {
+      if (!isClosed) {
+        emit(state.copyWith(premiumEvents: <Event>[]));
+      }
+      return;
+    }
+
+    if (!isClosed) {
+      emit(state.copyWith(isPremiumLoading: true));
+    }
+
+    try {
+      final relaysPerCreator = await Future.wait(
+        pubkeys.map((p) => getOutboxRelays(p, showMessage: false)),
+      );
+      final writeRelays = relaysPerCreator.expand((r) => r).toSet();
+
+      final events = await NostrFunctionsRepository.getEventsAsync(
+        pubkeys: pubkeys,
+        kinds: [EventKind.TEXT_NOTE, EventKind.LONG_FORM],
+        relays: writeRelays.toList(),
+        source: EventsSource.all,
+      );
+
+      final premiumEvents = events.where(getPremiumStatus).toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            premiumEvents: premiumEvents,
+            isPremiumLoading: false,
+          ),
+        );
+      }
+    } catch (e) {
+      lg.e('Error loading premium notifications: $e');
+
+      if (!isClosed) {
+        emit(state.copyWith(isPremiumLoading: false));
+      }
     }
   }
 
@@ -114,6 +175,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       if (!isRefresh) {
         _unemittedEvents.clear();
       }
+
       _hasPendingUpdates = false;
 
       if (!isClosed) {
@@ -126,32 +188,52 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         );
       }
 
-      final events = await NostrFunctionsRepository.queryNotifications(
-        pubkey: pubkey,
-        limit: 40,
-      );
+      try {
+        final events = await NostrFunctionsRepository.queryNotifications(
+          pubkey: pubkey,
+          limit: 40,
+        );
 
-      // ponytail: the query above can resolve after the account has already
-      // switched (no cancellation support upstream); drop stale results
-      // instead of leaking the old account's notifications into the new one.
-      if (currentSigner?.getPublicKey() != pubkey) {
-        return;
+        if (currentSigner?.getPublicKey() != pubkey) {
+          _resetLoadingIfLoggedOut();
+          return;
+        }
+
+        await eventLaterHandle(events, pubkey: pubkey);
+
+        final subscriptionId =
+            await NostrFunctionsRepository.subscribeToNotifications(
+          pubkey: pubkey,
+          onEvents: (event) => onEvent(event, pubkey),
+          since: since != null ? since! + 1 : null,
+        );
+
+        if (currentSigner?.getPublicKey() != pubkey) {
+          nc.closeRequests(<String>[subscriptionId]);
+        } else {
+          notificationsSubscriptionId = subscriptionId;
+        }
+      } catch (e) {
+        lg.e('Error loading notifications: $e');
+
+        if (!isClosed && currentSigner?.getPublicKey() == pubkey) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+            ),
+          );
+        }
       }
+    }
+  }
 
-      await eventLaterHandle(events, pubkey: pubkey);
-
-      final subscriptionId =
-          await NostrFunctionsRepository.subscribeToNotifications(
-        pubkey: pubkey,
-        onEvents: (event) => onEvent(event, pubkey),
-        since: since != null ? since! + 1 : null,
+  void _resetLoadingIfLoggedOut() {
+    if (!isClosed && currentSigner == null) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+        ),
       );
-
-      if (currentSigner?.getPublicKey() != pubkey) {
-        nc.closeRequests(<String>[subscriptionId]);
-      } else {
-        notificationsSubscriptionId = subscriptionId;
-      }
     }
   }
 
@@ -168,10 +250,18 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       final filtered = await filteredWotEvents(events);
 
       if (pubkey != null && currentSigner?.getPublicKey() != pubkey) {
+        _resetLoadingIfLoggedOut();
         return;
       }
 
       if (filtered.isEmpty) {
+        if (!isClosed && state.isLoading) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+            ),
+          );
+        }
         return;
       }
 
@@ -234,10 +324,17 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       if (conf.isEnabled && conf.notifications) {
         final pubkeys = events.map((e) => e.pubkey).toSet();
 
-        final wotScores = await nc.calculatePeerPubkeyWotList(
-          peerPubkeys: pubkeys.toList(),
-          originPubkey: currentSigner!.getPublicKey(),
-        );
+        Map<String, num?> wotScores;
+
+        try {
+          wotScores = await nc.calculatePeerPubkeyWotList(
+            peerPubkeys: pubkeys.toList(),
+            originPubkey: currentSigner!.getPublicKey(),
+          );
+        } catch (e) {
+          lg.e('Error calculating WoT scores: $e');
+          return events;
+        }
 
         final filtered = <Event>[];
 
@@ -367,6 +464,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         index: index,
       ),
     );
+
+    if (index == 5) {
+      fetchPremiumContent();
+    }
   }
 
   void markRead() {
@@ -395,6 +496,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       kinds.addAll(
         [
           EventKind.TEXT_NOTE,
+          EventKind.COMMENT,
           EventKind.LONG_FORM,
           EventKind.SMART_WIDGET_ENH,
         ],

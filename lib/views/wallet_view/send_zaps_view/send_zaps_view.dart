@@ -31,6 +31,9 @@ class SendZapsView extends HookWidget {
     this.initialVal,
     this.lnbc,
     this.extraTags,
+    this.lockAmount = false,
+    this.successActionLabel,
+    this.onSuccessAction,
   });
 
   final bool isZapSplit;
@@ -46,6 +49,13 @@ class SendZapsView extends HookWidget {
   final num? valMin;
   final num? initialVal;
   final List<List<String>>? extraTags;
+
+  /// When true, [initialVal] is displayed but not editable.
+  final bool lockAmount;
+
+  /// Optional call-to-action shown under a successful payment result.
+  final String? successActionLabel;
+  final VoidCallback? onSuccessAction;
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +195,7 @@ class SendZapsView extends HookWidget {
       lnbc: lnbcValue.value,
       zapPaymentMethod: zapPaymentMethod,
       extraTags: extraTags,
+      lockAmount: lockAmount,
     );
   }
 
@@ -214,6 +225,8 @@ class SendZapsView extends HookWidget {
     return SendZapsResult(
       data: resultData.value,
       onSwitchToSend: () => _handleSwitchToSend(type),
+      actionLabel: successActionLabel,
+      onAction: onSuccessAction,
     );
   }
 

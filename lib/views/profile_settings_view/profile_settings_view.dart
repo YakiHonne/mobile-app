@@ -10,7 +10,6 @@ import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../settings_view/widgets/relays_update.dart';
-import '../subscription_view/pricing/subscription_gate.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/dotted_container.dart';
 import '../widgets/fluid_scaffold.dart';
@@ -315,13 +314,10 @@ class ProfileSettingsMetadata extends HookWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Part of the paid identity — a trial does not entitle a user to
-            // claim a name, and there is nothing to gate into: the name is
-            // claimed by the update button, not by its own action.
-            if (isSubscribed(excludeTrial: true)) ...[
-              const YakiUsernameField(),
-              spacer,
-            ],
+            // Always visible. For a non-subscriber (trial included) the row
+            // itself routes to pricing on tap instead of offering an edit.
+            const YakiUsernameField(),
+            spacer,
             // The two short names pair on one row; everything below is a
             // full-width row of the same card field.
             Row(

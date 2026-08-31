@@ -22,6 +22,7 @@ import 'logic/bot_utils_loading_progress_cubit/bot_utils_loading_progress_cubit.
 import 'logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import 'logic/contact_list_cubit/contact_list_cubit.dart';
 import 'logic/crashlytics_cubit/crashlytics_cubit.dart';
+import 'logic/creator_subscriptions_cubit/creator_subscriptions_cubit.dart';
 import 'logic/discover_cubit/discover_cubit.dart';
 import 'logic/dms_cubit/dms_cubit.dart';
 import 'logic/leading_cubit/leading_cubit.dart';
@@ -205,6 +206,7 @@ class AppInitializer {
     pointsManagementCubit = PointsManagementCubit();
     subscriptionCubit = SubscriptionCubit();
     subscriptionBadgeCubit = SubscriptionBadgeCubit();
+    creatorSubscriptionsCubit = CreatorSubscriptionsCubit();
     relaysProgressCubit = RelaysProgressCubit();
     suggestionsBoxCubit = SuggestionsBoxCubit();
     contactListCubit = ContactListCubit();
@@ -345,6 +347,7 @@ class AppInitializer {
       nostrRepository.loadCurrentUserRelatedData();
       settingsCubit.getYakiHonneApp();
       cashuWalletManagerCubit.init();
+      creatorSubscriptionsCubit.fetch();
     });
   }
 

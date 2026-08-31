@@ -288,8 +288,9 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
       var usernameRefused = false;
 
-      // Gated here too, not just in the UI: the row is hidden for a trial, so
-      // a claim from one would mean stale state rather than a real intent.
+      // Gated here too, not just in the UI: the row is a locked preview for a
+      // trial, so a claim from one would mean stale state rather than a real
+      // intent.
       if ((subscriptionCubit.state.subscriptionStatus?.isActivePaidSub ??
               false) &&
           shouldClaimUsernameOnUpdate(
@@ -485,6 +486,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
               state.copyWith(
                 imageLink: isPicture ? picture : state.imageLink,
                 bannerLink: !isPicture ? picture : state.bannerLink,
+                refresh: !state.refresh,
               ),
             );
           }

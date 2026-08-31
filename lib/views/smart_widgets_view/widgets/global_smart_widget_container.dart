@@ -12,9 +12,8 @@ import '../../../repositories/nostr_functions_repository.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/add_content_view.dart';
-import '../../widgets/fluid_sheet.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/note_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../../widgets/pull_down_global_button.dart';
 import '../../widgets/response_snackbar.dart';
 import 'smart_widget_container.dart';
@@ -206,15 +205,10 @@ class GlobalSmartWidgetHeader extends StatelessWidget {
           NostrFunctionsRepository.publishClonedSmartWidget(
             sm: currentSw.value,
             onSuccess: (sw) {
-              showAppModalSheet(
-                context: context,
-                builder: (_) {
-                  return PublishContentFinalStep(
-                    appContentType: AppContentType.smartWidget,
-                    event: sw,
-                  );
-                },
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              showContentPublishedModalSheet(
+                context,
+                event: sw,
+                contentType: AppContentType.smartWidget,
               );
             },
           );

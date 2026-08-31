@@ -61,6 +61,9 @@ class HorizontalVideoView extends HookWidget {
         video: video,
       )..initView(),
       child: BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
+        buildWhen: (previous, current) =>
+            previous.mutes.contains(video.pubkey) !=
+            current.mutes.contains(video.pubkey),
         builder: (context, state) {
           return Scaffold(
             appBar: CustomAppBar(

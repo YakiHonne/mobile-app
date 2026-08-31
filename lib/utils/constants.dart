@@ -8,21 +8,20 @@ import 'package:logger/logger.dart';
 
 import 'utils.dart';
 
-// APK/sideload builds pass --dart-define=IAP_ENABLED=false to fall back to
-// Stripe + Lightning; defaults to true (IAP) so the toggle lives in the
-// build command instead of a source edit someone has to remember to revert.
 const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
+
+bool get deviceIsTablet {
+  final view = WidgetsBinding.instance.platformDispatcher.views.first;
+  return view.physicalSize.shortestSide / view.devicePixelRatio >= 600;
+}
+
 // ** App version
-// Keep in sync with `version:` in pubspec.yaml — test/app_version_test.dart
-// fails if they drift.
-const String appVersion = 'v2.0.6+203';
+const String appVersion = 'v2.0.7+205';
 
 //** network
 const yakiProBlossomServer = 'https://blossom.yakihonne.com';
 const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
-// App Store guideline 3.1.2 requires both to be linked from the paywall, and
-// 5.1.1(i) requires the privacy policy anywhere accounts exist.
 const termsUrl = 'https://yakihonne.com/terms-app';
 const privacyUrl = 'https://yakihonne.com/privacy';
 const baseUrl2 = 'www.yakihonne.com';
@@ -31,7 +30,6 @@ const apiBaseUrl = 'https://api.yakihonne.com/';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const apiUrl = 'https://api.yakihonne.com/api/v1/';
 // const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
-// const apiUrl = 'http://192.168.100.114:5001/api/v1/';
 const compressImageUrl = 'https://api.yakihonne.com/api/img';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
@@ -152,6 +150,8 @@ const noGreen = Color(0xff03AC13);
 
 //**  paddings
 const kDefaultPadding = 20.0;
+
+const kMaxContentWidth = 640.0;
 
 const defaultZapamount = 21;
 
@@ -506,7 +506,6 @@ const bookmarksTypes = [
 const mandatoryRelays = [
   'wss://nostr-01.yakihonne.com',
   'wss://nostr-02.yakihonne.com',
-  'wss://nostr-03.dorafactory.org',
 ];
 
 const constantRelays = [

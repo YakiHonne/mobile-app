@@ -23,9 +23,11 @@ class CommonThumbnail extends StatelessWidget {
     this.isTopRound,
     this.isLeftRound,
     this.fit,
+    this.borderColor,
     this.useDefaultNoMedia = true,
     this.isPfp = false,
     this.fullResolution = false,
+    this.backgroundColor,
   });
 
   final String image;
@@ -34,6 +36,7 @@ class CommonThumbnail extends StatelessWidget {
   final double? width;
   final double? height;
   final double? radius;
+  final Color? borderColor;
   final bool? isRound;
   final bool? isTopRound;
   final bool? isLeftRound;
@@ -41,8 +44,7 @@ class CommonThumbnail extends StatelessWidget {
   final bool useDefaultNoMedia;
   final bool isPfp;
 
-  /// Decode at the image's native resolution instead of capping at the
-  /// display size. Only for zoomable full-screen viewers.
+  final Color? backgroundColor;
   final bool fullResolution;
 
   @override
@@ -68,7 +70,7 @@ class CommonThumbnail extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: backgroundColor ?? Theme.of(context).cardColor,
         borderRadius: _getBorderRadius(),
       ),
       child: _buildNetworkImage(
@@ -132,7 +134,7 @@ class CommonThumbnail extends StatelessWidget {
 
   Widget _buildNetworkImage(BuildContext context, String image) {
     return ExtendedImage.network(
-      image,
+      normalizeMediaUrl(image),
       width: width,
       height: _getEffectiveHeight(),
       cacheWidth: _getCacheWidth(context),
@@ -224,6 +226,7 @@ class CommonThumbnail extends StatelessWidget {
           isTopRounded: commonProps.isTopRounded,
           isLeftRounded: commonProps.isLeftRounded,
           isPfp: isPfp,
+          borderColor: borderColor,
         );
     }
   }
@@ -251,7 +254,7 @@ class CommonThumbnail extends StatelessWidget {
   Border? _getBorder(BuildContext context) {
     return radius != null
         ? null
-        : Border.all(color: Theme.of(context).primaryColorLight);
+        : Border.all(color: borderColor ?? Theme.of(context).primaryColorLight);
   }
 
   double? _getEffectiveHeight() {

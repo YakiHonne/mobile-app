@@ -81,6 +81,7 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     required String id,
     required bool isIdentifier,
     List<int>? kinds,
+    List<String>? relays,
   }) async {
     _accessTimes[id] = Helpers.now;
 
@@ -94,6 +95,7 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
       eventId: id,
       isIdentifier: isIdentifier,
       kinds: kinds,
+      relays: relays,
     );
 
     if (newEv != null) {
@@ -248,7 +250,22 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     }
   }
 
+  String? _pendingPushNotificationId;
+
+  void flushPendingPushNotification() {
+    final id = _pendingPushNotificationId;
+    if (id != null) {
+      _pendingPushNotificationId = null;
+      handlePushNotificationEventId(id);
+    }
+  }
+
   Future<void> handlePushNotificationEventId(String id) async {
+    if (!nostrRepository.isMainCubitReady) {
+      _pendingPushNotificationId = id;
+      return;
+    }
+
     final context = nostrRepository.currentContext();
     BotToastUtils.showInformation(context.t.fetchingNotificationEvent);
 

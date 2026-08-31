@@ -232,6 +232,7 @@ class TranslationsHi extends Translations {
 	@override String get copyNoteId => 'नोट ID कॉपी करें';
 	@override String get noteIdCopied => 'नोट ID कॉपी किया गया! 👏';
 	@override String get confirmDeleteDraft => 'आप इस ड्राफ्ट को हटाने वाले हैं, क्या आप आगे बढ़ना चाहते हैं?';
+	@override String get confirmDeleteDraftChats => 'आप इस ड्राफ्ट के साथ अपना AI असिस्टेंट चैट और सेकंड रीडर चैट भी हटाने वाले हैं, क्या आप आगे बढ़ना चाहते हैं?';
 	@override String get reposted => 'रिपोस्टेड';
 	@override String get postInNote => 'नोट में पोस्ट करें';
 	@override String get clone => 'क्लोन';
@@ -626,6 +627,8 @@ class TranslationsHi extends Translations {
 	@override String get createYakiWallet => 'YakiHonne वॉलेट बनाएँ';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'YakiHonne चैनल के माध्यम से वॉलेट बनाएँ';
+	@override String get yakiPoints => 'याकी पॉइंट्स';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'या अपना वॉलेट उपयोग करें';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'नेटिव Nostr वॉलेट कनेक्शन';
@@ -671,6 +674,7 @@ class TranslationsHi extends Translations {
 	@override String get views => 'व्यूज';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'बनाया ${date1}, संपादित ${date2}';
 	@override String get loading => 'लोडिंग';
+	@override String get loadingThread => 'थ्रेड लोड हो रहा है';
 	@override String get releaseToLoad => 'लोड करने के लिए छोड़ें';
 	@override String get finished => 'समाप्त!';
 	@override String get noMoreData => 'कोई और डेटा नहीं';
@@ -703,6 +707,8 @@ class TranslationsHi extends Translations {
 	@override String get user => 'उपयोगकर्ता';
 	@override String get view => 'व्यू';
 	@override String get itsLive => 'यह लाइव है!';
+	@override String contentIsLive({required Object contentType}) => '${contentType} लाइव है!';
+	@override String get justNow => 'अभी-अभी';
 	@override String get spreadWordSharingContent => 'सामग्री साझा करके शब्द फैलाएँ.';
 	@override String get successfulRelays => 'सफल रिले';
 	@override String get noRelaysCanBeFound => 'कोई रिले नहीं मिला';
@@ -889,7 +895,9 @@ class TranslationsHi extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} ने आपको एक स्मार्ट विजेट में मेंशन किया';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} ने आपको एक पोल में मेंशन किया';
 	@override String userPublishedPaidNote({required Object name}) => '${name} ने एक पेड नोट प्रकाशित किया';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} ने एक नया प्रीमियम नोट प्रकाशित किया';
 	@override String userPublishedArticle({required Object name}) => '${name} ने एक लेख प्रकाशित किया';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} ने एक नया प्रीमियम लेख प्रकाशित किया';
 	@override String userPublishedVideo({required Object name}) => '${name} ने एक वीडियो प्रकाशित किया';
 	@override String userPublishedCuration({required Object name}) => '${name} ने एक क्यूरेशन प्रकाशित किया';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} ने एक स्मार्ट विजेट प्रकाशित किया';
@@ -982,6 +990,7 @@ class TranslationsHi extends Translations {
 	@override String get apiKeyRequired => 'API कुंजी (आवश्यक)';
 	@override String get getApiKey => 'API कुंजी प्राप्त करें';
 	@override String get seeTranslation => 'अनुवाद देखें';
+	@override String get seenOn => 'यहाँ देखा गया';
 	@override String get seeOriginal => 'मूल देखें';
 	@override String get plan => 'प्लान';
 	@override String get free => 'फ्री';
@@ -1368,6 +1377,7 @@ class TranslationsHi extends Translations {
 	@override String get actionsPopups => 'एक्शन पॉपअप्स';
 	@override String get actionsPopupsDesc => 'सफलता, त्रुटि और सूचना संदेशों के लिए पॉपअप सक्षम या अक्षम करें.';
 	@override String get waitingForNetwork => 'नेटवर्क की प्रतीक्षा...';
+	@override String get reconnecting => 'पुनः कनेक्ट हो रहा है...';
 	@override String get whatsNew => 'क्या नया है';
 	@override String get appCustom => 'ऐप कस्टम';
 	@override String get poll => 'पोल';
@@ -1855,6 +1865,7 @@ class TranslationsHi extends Translations {
 	@override String get sub_connect_btn => 'Yaki से कनेक्ट करें';
 	@override String get sub_usage_period_daily => 'दैनिक';
 	@override String get sub_usage_period_monthly => 'मासिक';
+	@override String get pricing => 'मूल्य निर्धारण';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / माह';
@@ -1874,6 +1885,16 @@ class TranslationsHi extends Translations {
 	@override String get pricing_ln_discount_on => 'sats की कीमतों में पहले से ही 10% Lightning छूट शामिल है।';
 	@override String get pricing_most_popular => 'सबसे लोकप्रिय';
 	@override String get pricing_footer => 'सेटिंग्स से कभी भी रद्द करें। मासिक बिलिंग।';
+	@override String get pricing_free_cta_downgrade => 'मुफ़्त में बदलें';
+	@override String get pricing_free_feature_classic_editor => 'क्लासिक एडिटर';
+	@override String get pricing_free_feature_nostr_identity => 'Nostr-मूल पहचान';
+	@override String get pricing_free_feature_points => 'Yaki Points से नोट और सदस्यता का भुगतान करें';
+	@override String get pricing_free_feature_publishing => 'लेख और नोट प्रकाशन';
+	@override String get pricing_free_feature_storage => '500 MB Blossom स्टोरेज';
+	@override String get pricing_free_feature_translations => 'सीमित दैनिक अनुवाद';
+	@override String get pricing_free_feature_wallet => '1 YakiHonne वॉलेट';
+	@override String get pricing_free_name => 'मुफ़्त';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'Lightning से भुगतान करें';
 	@override String get pricing_waiting => 'भुगतान की प्रतीक्षा हो रही है…';
 	@override String get pricing_cancel => 'रद्द करें';
@@ -2020,6 +2041,7 @@ class TranslationsHi extends Translations {
 	@override String get second_reader_fixed_with_ai => 'AI से ठीक किया गया';
 	@override String get second_reader_marked_read => 'पढ़ा हुआ चिह्नित किया गया';
 	@override String get second_reader_fix_with_ai => 'AI से ठीक करें';
+	@override String get second_reader_improve_with_ai => 'AI से सुधारें';
 	@override String get second_reader_ignore => 'अनदेखा करें';
 	@override String get second_reader_switch => 'बदलें';
 	@override String get editor_classic => 'क्लासिक';
@@ -2032,6 +2054,8 @@ class TranslationsHi extends Translations {
 	@override String get creator_subscribe_error => 'सदस्यता शुरू नहीं की जा सकी';
 	@override String get creator_no_plans => 'कोई सदस्यता योजना उपलब्ध नहीं है';
 	@override String get creator_lightning_unavailable => 'Lightning पता उपलब्ध नहीं है';
+	@override String get creator_view_subscriptions => 'मेरी सदस्यताएँ देखें';
+	@override String get creator_subscribed => 'सदस्यता ली गई';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'Google से लॉग इन करें';
 	@override String get recoverWithGoogle => 'Google के ज़रिए पुनर्प्राप्त करें';
@@ -2407,6 +2431,7 @@ extension on TranslationsHi {
 			'copyNoteId' => 'नोट ID कॉपी करें',
 			'noteIdCopied' => 'नोट ID कॉपी किया गया! 👏',
 			'confirmDeleteDraft' => 'आप इस ड्राफ्ट को हटाने वाले हैं, क्या आप आगे बढ़ना चाहते हैं?',
+			'confirmDeleteDraftChats' => 'आप इस ड्राफ्ट के साथ अपना AI असिस्टेंट चैट और सेकंड रीडर चैट भी हटाने वाले हैं, क्या आप आगे बढ़ना चाहते हैं?',
 			'reposted' => 'रिपोस्टेड',
 			'postInNote' => 'नोट में पोस्ट करें',
 			'clone' => 'क्लोन',
@@ -2725,13 +2750,13 @@ extension on TranslationsHi {
 			'findPaidNoteMisleading' => 'आप इस पेड नोट को भ्रामक मानते हैं.',
 			'selectOneReason' => 'कम से कम एक कारण चुनें',
 			'rateHelpful' => 'हेल्पफुल के रूप में रेट करें',
-			'rateNotHelpful' => 'नॉट हेल्पफुल के रूप में रेट करें',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => 'नॉट हेल्पफुल के रूप में रेट करें',
 			'ratedHelpful' => 'हेल्पफुल रेट किया गया',
 			'ratedNotHelpful' => 'नॉट हेल्पफुल रेट किया गया',
 			'youRatedHelpful' => 'आपने इसे हेल्पफुल के रूप में रेट किया',
@@ -2807,6 +2832,8 @@ extension on TranslationsHi {
 			'createYakiWallet' => 'YakiHonne वॉलेट बनाएँ',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'YakiHonne चैनल के माध्यम से वॉलेट बनाएँ',
+			'yakiPoints' => 'याकी पॉइंट्स',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'या अपना वॉलेट उपयोग करें',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'नेटिव Nostr वॉलेट कनेक्शन',
@@ -2852,6 +2879,7 @@ extension on TranslationsHi {
 			'views' => 'व्यूज',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'बनाया ${date1}, संपादित ${date2}',
 			'loading' => 'लोडिंग',
+			'loadingThread' => 'थ्रेड लोड हो रहा है',
 			'releaseToLoad' => 'लोड करने के लिए छोड़ें',
 			'finished' => 'समाप्त!',
 			'noMoreData' => 'कोई और डेटा नहीं',
@@ -2884,6 +2912,8 @@ extension on TranslationsHi {
 			'user' => 'उपयोगकर्ता',
 			'view' => 'व्यू',
 			'itsLive' => 'यह लाइव है!',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} लाइव है!',
+			'justNow' => 'अभी-अभी',
 			'spreadWordSharingContent' => 'सामग्री साझा करके शब्द फैलाएँ.',
 			'successfulRelays' => 'सफल रिले',
 			'noRelaysCanBeFound' => 'कोई रिले नहीं मिला',
@@ -3070,7 +3100,9 @@ extension on TranslationsHi {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} ने आपको एक स्मार्ट विजेट में मेंशन किया',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} ने आपको एक पोल में मेंशन किया',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} ने एक पेड नोट प्रकाशित किया',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} ने एक नया प्रीमियम नोट प्रकाशित किया',
 			'userPublishedArticle' => ({required Object name}) => '${name} ने एक लेख प्रकाशित किया',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} ने एक नया प्रीमियम लेख प्रकाशित किया',
 			'userPublishedVideo' => ({required Object name}) => '${name} ने एक वीडियो प्रकाशित किया',
 			'userPublishedCuration' => ({required Object name}) => '${name} ने एक क्यूरेशन प्रकाशित किया',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} ने एक स्मार्ट विजेट प्रकाशित किया',
@@ -3163,6 +3195,7 @@ extension on TranslationsHi {
 			'apiKeyRequired' => 'API कुंजी (आवश्यक)',
 			'getApiKey' => 'API कुंजी प्राप्त करें',
 			'seeTranslation' => 'अनुवाद देखें',
+			'seenOn' => 'यहाँ देखा गया',
 			'seeOriginal' => 'मूल देखें',
 			'plan' => 'प्लान',
 			'free' => 'फ्री',
@@ -3235,6 +3268,12 @@ extension on TranslationsHi {
 			'manageWallets' => 'वॉलेट्स प्रबंधित करें',
 			'roundDuration' => 'राउंड अवधि',
 			'startAt' => ({required Object date}) => 'शुरू: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'लॉगिन',
 			'addPicture' => 'पिक्चर जोड़ें',
 			'editPicture' => 'पिक्चर संपादित करें',
@@ -3244,12 +3283,6 @@ extension on TranslationsHi {
 			'mutedUserDesc' => 'आपने इस उपयोगकर्ता को म्यूट किया है, सामग्री देखने के लिए अनम्यूट करने पर विचार करें',
 			'commentHidden' => 'यह कमेंट छिपा है',
 			'upcoming' => 'आगामी',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'क्रेडेंशियल्स एक्सपोर्ट करें',
 			'loginToYakihonne' => 'YakiHonne में लॉगिन करें',
 			'loginBuiltOnNostr' => '✦ Nostr पर निर्मित',
@@ -3555,6 +3588,7 @@ extension on TranslationsHi {
 			'actionsPopups' => 'एक्शन पॉपअप्स',
 			'actionsPopupsDesc' => 'सफलता, त्रुटि और सूचना संदेशों के लिए पॉपअप सक्षम या अक्षम करें.',
 			'waitingForNetwork' => 'नेटवर्क की प्रतीक्षा...',
+			'reconnecting' => 'पुनः कनेक्ट हो रहा है...',
 			'whatsNew' => 'क्या नया है',
 			'appCustom' => 'ऐप कस्टम',
 			'poll' => 'पोल',
@@ -3752,6 +3786,12 @@ extension on TranslationsHi {
 			'restoreWallet' => 'वॉलेट पुनर्स्थापित करें',
 			'restoreWalletDesc' => 'NOSTR पर सहेजने के लिए इस मिंट में अपने वॉलेट के प्रमाण पुनर्स्थापित करें',
 			'seedPhraseLocallyOnly' => 'आपका सीड फ्रेज़ केवल आपके वॉलेट कीज़ प्राप्त करने के लिए स्थानीय रूप से उपयोग किया जाता है।',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'प्रमाण पुनर्स्थापित',
 			'noProofsFound' => 'कोई प्रमाण नहीं मिला',
 			'errorRestoringProofs' => 'प्रमाण पुनर्स्थापित करते समय त्रुटि हुई',
@@ -3762,12 +3802,6 @@ extension on TranslationsHi {
 			'selectingTokens' => 'टोकन चुने जा रहे हैं',
 			'requestingMeltQuote' => 'मेल्ट (melt) कोट का अनुरोध',
 			'melting' => 'पिघल रहा है (Melting)',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'requestingMintQuote' => 'मिंट कोट का अनुरोध',
 			'minting' => 'मिंटिंग (Minting)',
 			'cantSwapWithWallet' => 'लाइटनिंग वॉलेट गंतव्य के साथ सीधे स्वैप नहीं किया जा सकता। कृपया मिंट्स के बीच स्वैप करने के लिए मिंट चुनें या वॉलेट गंतव्य चुनने के लिए \'to\' फ़ील्ड का उपयोग करें।',
@@ -4048,6 +4082,7 @@ extension on TranslationsHi {
 			'sub_connect_btn' => 'Yaki से कनेक्ट करें',
 			'sub_usage_period_daily' => 'दैनिक',
 			'sub_usage_period_monthly' => 'मासिक',
+			'pricing' => 'मूल्य निर्धारण',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / माह',
@@ -4067,6 +4102,16 @@ extension on TranslationsHi {
 			'pricing_ln_discount_on' => 'sats की कीमतों में पहले से ही 10% Lightning छूट शामिल है।',
 			'pricing_most_popular' => 'सबसे लोकप्रिय',
 			'pricing_footer' => 'सेटिंग्स से कभी भी रद्द करें। मासिक बिलिंग।',
+			'pricing_free_cta_downgrade' => 'मुफ़्त में बदलें',
+			'pricing_free_feature_classic_editor' => 'क्लासिक एडिटर',
+			'pricing_free_feature_nostr_identity' => 'Nostr-मूल पहचान',
+			'pricing_free_feature_points' => 'Yaki Points से नोट और सदस्यता का भुगतान करें',
+			'pricing_free_feature_publishing' => 'लेख और नोट प्रकाशन',
+			'pricing_free_feature_storage' => '500 MB Blossom स्टोरेज',
+			'pricing_free_feature_translations' => 'सीमित दैनिक अनुवाद',
+			'pricing_free_feature_wallet' => '1 YakiHonne वॉलेट',
+			'pricing_free_name' => 'मुफ़्त',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'Lightning से भुगतान करें',
 			'pricing_waiting' => 'भुगतान की प्रतीक्षा हो रही है…',
 			'pricing_cancel' => 'रद्द करें',
@@ -4213,6 +4258,7 @@ extension on TranslationsHi {
 			'second_reader_fixed_with_ai' => 'AI से ठीक किया गया',
 			'second_reader_marked_read' => 'पढ़ा हुआ चिह्नित किया गया',
 			'second_reader_fix_with_ai' => 'AI से ठीक करें',
+			'second_reader_improve_with_ai' => 'AI से सुधारें',
 			'second_reader_ignore' => 'अनदेखा करें',
 			'second_reader_switch' => 'बदलें',
 			'editor_classic' => 'क्लासिक',
@@ -4225,6 +4271,8 @@ extension on TranslationsHi {
 			'creator_subscribe_error' => 'सदस्यता शुरू नहीं की जा सकी',
 			'creator_no_plans' => 'कोई सदस्यता योजना उपलब्ध नहीं है',
 			'creator_lightning_unavailable' => 'Lightning पता उपलब्ध नहीं है',
+			'creator_view_subscriptions' => 'मेरी सदस्यताएँ देखें',
+			'creator_subscribed' => 'सदस्यता ली गई',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'Google से लॉग इन करें',
 			'recoverWithGoogle' => 'Google के ज़रिए पुनर्प्राप्त करें',
@@ -4256,6 +4304,12 @@ extension on TranslationsHi {
 			'pomUnlinkSuccess' => 'खाता अनलिंक हो गया। आप साइन आउट कर दिए गए हैं।',
 			'pomUnlinkFailed' => 'आपका खाता अनलिंक नहीं हो सका। कृपया पुनः प्रयास करें।',
 			'pomKeyCopied' => 'निजी कुंजी कॉपी हो गई',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'पहचान सर्वर',
 			'pomServerDesc' => 'आपका खाता इस केंद्रीय सर्वर पर रहता है। आप हमारा, कोई अन्य प्रदाता, या अपना सर्वर चुन सकते हैं।',
 			'pomServerDefault' => 'डिफ़ॉल्ट',
@@ -4280,12 +4334,6 @@ extension on TranslationsHi {
 			'pomKeyExistingWarning' => ({required Object count}) => 'इस कुंजी की Nostr पहचान पहले से मौजूद है। इसके हिस्से ${count} ऑपरेटर सर्वरों पर संग्रहित होंगे।',
 			'pomContinue' => 'जारी रखें',
 			'pomExportKey' => 'फ़ाइल में निर्यात करें',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomExportError' => 'कुंजी निर्यात नहीं की जा सकी',
 			'pomAdvancedOptions' => 'उन्नत विकल्प',
 			'pomOperatorsTitle' => 'ऑपरेटर',
