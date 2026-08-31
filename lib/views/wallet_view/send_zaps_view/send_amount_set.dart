@@ -41,6 +41,7 @@ class SendAmountSet extends HookWidget {
     this.initialVal,
     this.lnbc,
     this.extraTags,
+    this.lockAmount = false,
   });
 
   final Metadata metadata;
@@ -58,6 +59,9 @@ class SendAmountSet extends HookWidget {
   final num? valMin;
   final num? initialVal;
   final List<List<String>>? extraTags;
+
+  /// When true, the amount field is displayed but not editable.
+  final bool lockAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +81,9 @@ class SendAmountSet extends HookWidget {
     final focusNode = useFocusNode();
 
     useEffect(() {
+      if (lockAmount) {
+        return null;
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Small delay to let the widget tree settle before focusing
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -101,7 +108,7 @@ class SendAmountSet extends HookWidget {
           isUsingSats,
           focusNode,
         ),
-        if (_shouldShowMinMaxButtons())
+        if (!lockAmount && _shouldShowMinMaxButtons())
           _buildMinMaxButtons(context, amount, amountController),
         _buildActionSection(
           context,
@@ -260,6 +267,9 @@ class SendAmountSet extends HookWidget {
       textAlign: TextAlign.center,
       style: _getAmountInputStyle(context),
       decoration: _getAmountInputDecoration(context),
+      readOnly: lockAmount,
+      showCursor: !lockAmount,
+      enableInteractiveSelection: !lockAmount,
     );
   }
 

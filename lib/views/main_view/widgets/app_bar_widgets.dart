@@ -504,6 +504,7 @@ class NotificationTypes extends HookWidget {
       context.t.zaps,
       context.t.replies,
       context.t.followings,
+      context.t.premium,
     ];
   }
 }
@@ -550,8 +551,8 @@ class FilterGlobalButton extends StatelessWidget {
             _customIconButton(state, context),
             if (filter != null)
               Positioned(
-                right: 1,
-                top: 3,
+                left: 3,
+                top: 7,
                 child: DotContainer(
                   color: Theme.of(context).primaryColor,
                   size: 8,

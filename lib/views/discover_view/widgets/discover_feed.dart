@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/discover_cubit/discover_cubit.dart';
 import '../../../models/article_model.dart';
@@ -26,7 +25,7 @@ class ExploreFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = deviceIsTablet;
     final useSingleColumn =
         nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
 

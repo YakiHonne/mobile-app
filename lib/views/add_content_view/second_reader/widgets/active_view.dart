@@ -343,24 +343,31 @@ class ReactionCard extends StatelessWidget {
                       else
                         Row(
                           children: [
-                            // Gates on chat-articles, not second-reader: this
-                            // prefills Ask AI and spends *that* quota.
-                            UsageGate(
-                              builder: (_) {
-                                final blocked =
-                                    isUsageBlocked(kUsageKeyAskAi);
-                                return CardActionButton(
-                                  label: blocked
-                                      ? context.t.usage_limit_reached_short
-                                      : context.t.second_reader_fix_with_ai,
-                                  color: blocked
-                                      ? theme.hintColor
-                                      : theme.primaryColor,
-                                  onTap: blocked ? () {} : onFix,
-                                );
-                              },
-                            ),
-                            const SizedBox(width: kDefaultPadding / 2),
+                            if (reaction.sentiment !=
+                                ReactionSentiment.positive) ...[
+                              // Gates on chat-articles, not second-reader: this
+                              // prefills Ask AI and spends *that* quota.
+                              UsageGate(
+                                builder: (_) {
+                                  final blocked =
+                                      isUsageBlocked(kUsageKeyAskAi);
+                                  return CardActionButton(
+                                    label: blocked
+                                        ? context.t.usage_limit_reached_short
+                                        : reaction.sentiment ==
+                                                ReactionSentiment.neutral
+                                            ? context.t
+                                                .second_reader_improve_with_ai
+                                            : context.t.second_reader_fix_with_ai,
+                                    color: blocked
+                                        ? theme.hintColor
+                                        : theme.primaryColor,
+                                    onTap: blocked ? () {} : onFix,
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: kDefaultPadding / 2),
+                            ],
                             CardActionButton(
                               label: context.t.second_reader_ignore,
                               color: theme.hintColor,

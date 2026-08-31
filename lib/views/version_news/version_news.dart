@@ -242,14 +242,15 @@ class _VersionNewsState extends State<VersionNews> {
 /// Shown under [appVersion], so this list must be rewritten every release —
 /// it shipped once already holding the previous version's notes.
 final List<String> releaseNotes = [
-  'Introduced Basic and Premium subscriptions, payable by card, Lightning, or points.',
-  'Added creator subscriptions, so you can support creators directly.',
-  'Added Google sign-in with key recovery, split across operators so no single one holds your key.',
-  'Added Yaki usernames and NIP-05 addresses, claimable from profile settings.',
-  'Added fluid mode, with adjustable glass quality in appearance settings.',
-  'Added usage indicators showing your remaining quota and when it renews.',
-  'Points can now be redeemed toward a subscription.',
-  'Improved Blossom media server management and the article editor.',
+  'Leading notes and replies now support kind 1111 comments, both reading and posting.',
+  'Rewritten paid-note publishing with live payment tracking and automatic publishing once paid, plus a new published-confirmation screen.',
+  'Redesigned pricing with a Free plan card and a full plan comparison.',
+  'Your username now always shows in edit profile; claim it for free or subscribe if needed.',
+  'Second Reader now matches the AI action to each paragraph, and the AI assistant stays open after processing.',
+  'The editor warns before discarding article, AI discussion, and Second Reader data.',
+  'Article view now shows a premium badge, the relay an event was seen on, word count, and read time.',
+  'Videos support landscape and have smoother controls.',
+  'Removed the 800 sats zap preset.',
   'General bug fixes and performance enhancements.',
 ];
 

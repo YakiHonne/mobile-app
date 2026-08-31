@@ -44,6 +44,8 @@ class PropertyLanguagePreferences extends StatelessWidget {
               _buildDescription(context),
               const _SectionDivider(),
               const _AppLanguageSection(),
+              const SizedBox(height: kDefaultPadding / 2),
+              const _ContentLanguageSection(),
               const SizedBox(height: kDefaultPadding),
               const ContentTranslation(),
             ],
@@ -174,6 +176,145 @@ class _AppLanguageSection extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+// ==========================================
+// CONTENT LANGUAGE SECTION
+// ==========================================
+
+class _ContentLanguageSection extends StatelessWidget {
+  const _ContentLanguageSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = context.select<LocalizationCubit, String>(
+      (cubit) => cubit.state.contentLanguage,
+    );
+
+    return Row(
+      spacing: kDefaultPadding / 2,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.contentLanguage.capitalizeFirst(),
+            description: context.t.contentLangDesc,
+          ),
+        ),
+        GestureDetector(
+          onTap: () => showAppModalSheet(
+            context: context,
+            builder: (context) => const _ContentLanguagePicker(),
+          ),
+          behavior: HitTestBehavior.translucent,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    translationLanguages[selected] ??
+                        context.t.appLanguage.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding / 4),
+                const Icon(LucideIcons.chevronsUpDown, size: 18),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContentLanguagePicker extends HookWidget {
+  const _ContentLanguagePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    final search = useState('');
+    final selected = context.select<LocalizationCubit, String>(
+      (cubit) => cubit.state.contentLanguage,
+    );
+
+    final languages = <MapEntry<String, String>>[
+      MapEntry('', context.t.appLanguage.capitalizeFirst()),
+      ...translationLanguages.entries,
+    ].where((e) {
+      final query = search.value.toLowerCase().trim();
+      return e.value.toLowerCase().contains(query) || e.key.startsWith(query);
+    }).toList();
+
+    return ModalSheetContainer(
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.40,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (context, scrollController) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              Text(
+                context.t.contentLanguage.capitalizeFirst(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              const SizedBox(height: kDefaultPadding / 2),
+              TextFormField(
+                onChanged: (value) => search.value = value,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: context.t.search.capitalizeFirst(),
+                  prefixIcon: const Icon(LucideIcons.search, size: 18),
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                ),
+              ),
+              const Divider(thickness: 0.5, height: kDefaultPadding),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: languages.length,
+                  itemBuilder: (context, index) {
+                    final language = languages[index];
+                    final isSelected = language.key == selected;
+
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        language.value,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      trailing: isSelected
+                          ? Icon(
+                              LucideIcons.check,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            )
+                          : null,
+                      onTap: () {
+                        context
+                            .read<LocalizationCubit>()
+                            .setContentLanguage(language.key);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

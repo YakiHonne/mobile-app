@@ -902,8 +902,8 @@ class NostrFunctionsRepository {
           if (filters[5] != null) filters[5]!,
         ],
         currentUserRelayList.relays.keys.toList(),
-        timeOut: 2,
         startingTimeout: 3,
+        closeRelaysOnFinish: false,
         source: EventsSource.all,
         eventCallBack: (event, relay) {
           if (canNotificationBeAdded(event, eventsToBeEmitted, pubkey, c)) {
@@ -969,6 +969,7 @@ class NostrFunctionsRepository {
       filter = Filter(
         kinds: [
           EventKind.TEXT_NOTE,
+          EventKind.COMMENT,
           EventKind.LONG_FORM,
           EventKind.SMART_WIDGET_ENH,
         ],
@@ -1350,6 +1351,7 @@ class NostrFunctionsRepository {
     NostrCore? core,
     EventsSource? source,
     int? timeout,
+    bool closeRelaysOnFinish = true,
   }) async {
     final events = <String, Event>{};
     final selectedRelays = relays ??
@@ -1391,7 +1393,7 @@ class NostrFunctionsRepository {
       since: since,
     );
 
-    await (core ?? nc).doQuery(
+    await queryEvents(
       [
         if (f1 != null) f1,
         if (includeIds) f2,
@@ -1400,6 +1402,7 @@ class NostrFunctionsRepository {
       timeOut: timeout ?? 1,
       includeExpired: includeExpired,
       source: source ?? EventsSource.cacheFirst,
+      closeRelaysOnFinish: closeRelaysOnFinish,
       eventCallBack: (event, relay) {
         if (compareById) {
           if (events[event.id] == null) {
@@ -1535,6 +1538,18 @@ class NostrFunctionsRepository {
       );
 
       filters.addAll([f1, f2, f3]);
+
+      if (includeComments) {
+        filters.add(
+          Filter(
+            capitalE: nds,
+            authors: pubkeys,
+            kinds: [EventKind.COMMENT],
+            since: since,
+            until: until,
+          ),
+        );
+      }
     }
 
     if (atgs.isNotEmpty) {
@@ -1569,6 +1584,18 @@ class NostrFunctionsRepository {
       );
 
       filters.addAll([f1, f2, f3]);
+
+      if (includeComments) {
+        filters.add(
+          Filter(
+            capitalA: atgs,
+            authors: pubkeys,
+            kinds: [EventKind.COMMENT],
+            since: since,
+            until: until,
+          ),
+        );
+      }
     }
 
     final seenIds = <String>{};
@@ -1624,6 +1651,17 @@ class NostrFunctionsRepository {
     );
 
     if (hasAtag) {
+      return true;
+    }
+
+    final hasRootTag = event.tags.any(
+      (tag) =>
+          tag.length > 1 &&
+          (tag.first == 'E' || tag.first == 'A') &&
+          (noteIds.contains(tag[1]) || aTags.contains(tag[1])),
+    );
+
+    if (hasRootTag) {
       return true;
     }
 
@@ -2645,7 +2683,8 @@ class NostrFunctionsRepository {
             tags: event.tags,
           );
 
-          if (authorCreatedAt.compareTo(author.createdAt) < 1) {
+          if (authorCreatedAt.compareTo(author.createdAt) < 1 &&
+              !controller.isClosed) {
             authorCreatedAt = author.createdAt;
             controller.add(author);
           }
@@ -2889,6 +2928,23 @@ class NostrFunctionsRepository {
       limit: limit,
     );
 
+    final f2 = l == null
+        ? Filter(
+            kinds: [
+              EventKind.COMMENT,
+            ],
+            k: [
+              EventKind.TEXT_NOTE.toString(),
+              EventKind.COMMENT.toString(),
+            ],
+            authors: pubkeys,
+            t: tags,
+            until: until,
+            since: since,
+            limit: limit,
+          )
+        : null;
+
     void setEvents(Map<String, Event> events, Event event) {
       bool isMuted = isUserMuted(event.pubkey);
 
@@ -2929,6 +2985,10 @@ class NostrFunctionsRepository {
             events[event.id] = event;
           }
         }
+      } else if (event.kind == EventKind.COMMENT && events[event.id] == null) {
+        if (!removeReplies && isNoteThreadComment(event)) {
+          events[event.id] = event;
+        }
       } else if (event.kind == EventKind.REPOST && events[event.id] == null) {
         events[event.id] = event;
       }
@@ -2946,8 +3006,11 @@ class NostrFunctionsRepository {
                     : DEFAULT_BOOTSTRAP_RELAYS);
 
     try {
-      await (core ?? nc).doQuery(
-        [f1],
+      await queryEvents(
+        [
+          f1,
+          if (f2 != null) f2,
+        ],
         rs,
         timeOut: 1,
         includeExpired: includeExpired,
@@ -2955,6 +3018,7 @@ class NostrFunctionsRepository {
         eventCallBack: (ev, relay) {
           setEvents(fallBackEventToBeEmitted, ev);
         },
+        core: core,
       );
     } catch (e, stack) {
       lg.i(stack);
@@ -3017,7 +3081,7 @@ class NostrFunctionsRepository {
             : DEFAULT_BOOTSTRAP_RELAYS;
 
     try {
-      await (core ?? nc).doQuery(
+      await queryEvents(
         [f1],
         relays,
         timeOut: 1,
@@ -3025,6 +3089,7 @@ class NostrFunctionsRepository {
         eventCallBack: (ev, relay) {
           setEvents(fallBackEventToBeEmitted, ev);
         },
+        core: core,
       );
     } catch (e, stack) {
       lg.i(stack);
@@ -3185,7 +3250,7 @@ class NostrFunctionsRepository {
     try {
       final f = feedRelaySet?.urls.toList();
 
-      await (core ?? nc).doQuery(
+      await queryEvents(
         [
           if (f1 != null) f1,
           if (f2 != null) f2,
@@ -3196,6 +3261,7 @@ class NostrFunctionsRepository {
             : f != null && f.isNotEmpty
                 ? f
                 : DEFAULT_BOOTSTRAP_RELAYS,
+        core: core,
         eventCallBack: (ev, relay) {
           if (!isUserMuted(ev.pubkey)) {
             if (ev.kind == EventKind.LONG_FORM) {
@@ -3738,6 +3804,23 @@ class NostrFunctionsRepository {
     return list;
   }
 
+  static bool isNoteThreadComment(Event event) {
+    if (event.kind != EventKind.COMMENT) {
+      return false;
+    }
+
+    for (final tag in event.tags) {
+      if (tag.length >= 2 &&
+          tag.first == 'k' &&
+          (tag[1] == EventKind.TEXT_NOTE.toString() ||
+              tag[1] == EventKind.COMMENT.toString())) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   static Future<List<Event>> getLeadingRelayData({
     required List<String> relays,
     bool includeExpired = true,
@@ -3746,8 +3829,11 @@ class NostrFunctionsRepository {
     int? since,
     int? limit,
   }) async {
-    return getEventsAsync(
-      kinds: [EventKind.TEXT_NOTE],
+    final events = await getEventsAsync(
+      kinds: [
+        EventKind.TEXT_NOTE,
+        EventKind.COMMENT,
+      ],
       until: until,
       since: since,
       limit: limit,
@@ -3757,6 +3843,10 @@ class NostrFunctionsRepository {
       pubkeys: pubkeys,
       includeExpired: includeExpired,
     );
+
+    return events
+        .where((e) => e.kind != EventKind.COMMENT || isNoteThreadComment(e))
+        .toList();
   }
 
   static Future<List<Event>> getLeadingPacksData({
@@ -3766,8 +3856,11 @@ class NostrFunctionsRepository {
     int? limit,
     bool includeExpired = true,
   }) async {
-    return getEventsAsync(
-      kinds: [EventKind.TEXT_NOTE],
+    final events = await getEventsAsync(
+      kinds: [
+        EventKind.TEXT_NOTE,
+        EventKind.COMMENT,
+      ],
       until: until,
       since: since,
       limit: limit,
@@ -3776,6 +3869,10 @@ class NostrFunctionsRepository {
       source: EventsSource.all,
       pubkeys: pubkeys,
     );
+
+    return events
+        .where((e) => e.kind != EventKind.COMMENT || isNoteThreadComment(e))
+        .toList();
   }
 
   static Future<List<Event>> getMediaRelayData({
@@ -4818,19 +4915,22 @@ class NostrFunctionsRepository {
       {int timeOut = 5,
       int? startingTimeout,
       bool includeExpired = true,
+      bool closeRelaysOnFinish = true,
       EventsSource source = EventsSource.cacheFirst,
+      NostrCore? core,
       void Function(Event, String)? eventCallBack,
       void Function(String, OKEvent, String, List<String>)?
           eoseCallBack}) async {
     final targetRelays = relays.map((e) => Relay.clean(e) ?? e).toList();
-    final missingRelays = nc.missingRelays(targetRelays);
+    final client = core ?? nc;
+    final missingRelays = client.missingRelays(targetRelays);
 
     if (missingRelays.isNotEmpty) {
-      await nc.connectRelays(missingRelays, waitForAuth: true);
+      await client.connectRelays(missingRelays, waitForAuth: true);
     }
 
     try {
-      await nc.doQuery(
+      await client.doQuery(
         filters,
         targetRelays,
         timeOut: timeOut,
@@ -4842,8 +4942,8 @@ class NostrFunctionsRepository {
     } catch (e) {
       lg.e('Error querying events: $e');
     } finally {
-      if (missingRelays.isNotEmpty) {
-        await nc.closeConnect(missingRelays);
+      if (closeRelaysOnFinish && missingRelays.isNotEmpty) {
+        await client.closeConnect(missingRelays);
       }
     }
   }
@@ -5082,7 +5182,7 @@ class NostrFunctionsRepository {
         if (lable != null && lable.isNotEmpty) ['l', lable, type!],
         if (pTag != null && pTag.isNotEmpty) ['p', pTag],
       ],
-      content: 'this event is to be deleted',
+      content: '',
       signer: currentSigner,
     );
 

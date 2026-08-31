@@ -24,9 +24,13 @@ class FluidToast {
       return;
     }
 
-    _entry?.remove();
+    if (_entry?.mounted ?? false) {
+      _entry!.remove();
+    }
+    _entry = null;
 
     late OverlayEntry entry;
+    var removed = false;
     entry = OverlayEntry(
       builder: (context) => _FluidToastWidget(
         message: message,
@@ -36,7 +40,10 @@ class FluidToast {
           if (_entry == entry) {
             _entry = null;
           }
-          entry.remove();
+          if (!removed && entry.mounted) {
+            removed = true;
+            entry.remove();
+          }
         },
       ),
     );

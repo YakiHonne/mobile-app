@@ -232,6 +232,7 @@ class TranslationsTh extends Translations {
 	@override String get copyNoteId => 'คัดลอก ID โน้ต';
 	@override String get noteIdCopied => 'คัดลอก ID โน้ตสำเร็จ! 👏';
 	@override String get confirmDeleteDraft => 'คุณกำลังจะลบแบบร่างนี้ คุณต้องการดำเนินการต่อหรือไม่?';
+	@override String get confirmDeleteDraftChats => 'คุณกำลังจะลบแบบร่างนี้พร้อมกับแชทผู้ช่วย AI และแชทของผู้อ่านคนที่สอง คุณต้องการดำเนินการต่อหรือไม่?';
 	@override String get reposted => 'รีโพสต์';
 	@override String get postInNote => 'โพสต์ในโน้ต';
 	@override String get clone => 'โคลน';
@@ -626,6 +627,8 @@ class TranslationsTh extends Translations {
 	@override String get createYakiWallet => 'สร้างกระเป๋าเงิน YakiHonne';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'สร้างกระเป๋าเงินผ่านช่องทาง YakiHonne';
+	@override String get yakiPoints => 'แต้ม Yaki';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'หรือใช้กระเป๋าเงินของคุณ';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'การเชื่อมต่อกระเป๋าเงิน Nostr ดั้งเดิม';
@@ -671,6 +674,7 @@ class TranslationsTh extends Translations {
 	@override String get views => 'การดู';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'สร้าง ${date1}, แก้ไข ${date2}';
 	@override String get loading => 'กำลังโหลด';
+	@override String get loadingThread => 'กำลังโหลดเธรด';
 	@override String get releaseToLoad => 'ปล่อยเพื่อโหลด';
 	@override String get finished => 'เสร็จสิ้น!';
 	@override String get noMoreData => 'ไม่มีข้อมูลเพิ่มเติม';
@@ -703,6 +707,8 @@ class TranslationsTh extends Translations {
 	@override String get user => 'ผู้ใช้';
 	@override String get view => 'ดู';
 	@override String get itsLive => 'มันไลฟ์!';
+	@override String contentIsLive({required Object contentType}) => '${contentType} ไลฟ์แล้ว!';
+	@override String get justNow => 'เมื่อสักครู่นี้';
 	@override String get spreadWordSharingContent => 'กระจายคำโดยการแชร์เนื้อหาทุกที่';
 	@override String get successfulRelays => 'รีเลย์ที่สำเร็จ';
 	@override String get noRelaysCanBeFound => 'ไม่พบรีเลย์';
@@ -889,7 +895,9 @@ class TranslationsTh extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} กล่าวถึงคุณในวิดเจ็ตอัจฉริยะ';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} กล่าวถึงคุณในโพล';
 	@override String userPublishedPaidNote({required Object name}) => '${name} เผยแพร่โน้ตที่ชำระเงิน';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} เผยแพร่โน้ตพรีเมียมใหม่';
 	@override String userPublishedArticle({required Object name}) => '${name} เผยแพร่บทความ';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} เผยแพร่บทความพรีเมียมใหม่';
 	@override String userPublishedVideo({required Object name}) => '${name} เผยแพร่วิดีโอ';
 	@override String userPublishedCuration({required Object name}) => '${name} เผยแพร่การคัดสรร';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} เผยแพร่วิดเจ็ตอัจฉริยะ';
@@ -982,6 +990,7 @@ class TranslationsTh extends Translations {
 	@override String get apiKeyRequired => 'คีย์ API (จำเป็น)';
 	@override String get getApiKey => 'รับคีย์ API';
 	@override String get seeTranslation => 'ดูการแปล';
+	@override String get seenOn => 'พบบน';
 	@override String get seeOriginal => 'ดูต้นฉบับ';
 	@override String get plan => 'แผน';
 	@override String get free => 'ฟรี';
@@ -1302,6 +1311,8 @@ class TranslationsTh extends Translations {
 	@override String get secureDmDesc => 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ปิดใช้งานเพื่อใช้รูปแบบ NIP-4 เก่าเพื่อความเข้ากันได้';
 	@override String get wotConfigDesc => 'กลไกความไว้วางใจแบบกระจายที่ใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล Nostr';
 	@override String get appLangDesc => 'เลือกภาษาที่ต้องการสำหรับอินเทอร์เฟซ YakiHonne เมนูและปุ่ม';
+	@override String get contentLanguage => 'ภาษาของเนื้อหา';
+	@override String get contentLangDesc => 'ภาษาที่ใช้เมื่อแปลโน้ตและบทความ ค่าเริ่มต้นคือภาษาของแอป';
 	@override String get contentTransDesc => 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ';
 	@override String get planDesc => 'ระดับแผนการแปลปัจจุบันและขีดจำกัดการใช้งานของคุณ';
 	@override String get manageWalletsDesc => 'เพิ่มและจัดระเบียบกระเป๋าเงิน Lightning เพื่อส่ง/รับ Zap บน Nostr ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก';
@@ -1366,6 +1377,7 @@ class TranslationsTh extends Translations {
 	@override String get actionsPopups => 'ป๊อปอัปการทำงาน';
 	@override String get actionsPopupsDesc => 'เปิดหรือปิดป๊อปอัปสำหรับข้อความสำเร็จ ข้อผิดพลาด และข้อมูล';
 	@override String get waitingForNetwork => 'รอเครือข่าย...';
+	@override String get reconnecting => 'กำลังเชื่อมต่อใหม่...';
 	@override String get whatsNew => 'มีอะไรใหม่';
 	@override String get appCustom => 'ปรับแต่งแอป';
 	@override String get poll => 'โพล';
@@ -1853,6 +1865,7 @@ class TranslationsTh extends Translations {
 	@override String get sub_connect_btn => 'เชื่อมต่อกับ Yaki';
 	@override String get sub_usage_period_daily => 'รายวัน';
 	@override String get sub_usage_period_monthly => 'รายเดือน';
+	@override String get pricing => 'ราคา';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / เดือน';
@@ -1872,6 +1885,16 @@ class TranslationsTh extends Translations {
 	@override String get pricing_ln_discount_on => 'ราคาที่แสดงเป็น sats รวมส่วนลด Lightning 10% ไว้แล้ว';
 	@override String get pricing_most_popular => 'ได้รับความนิยมสูงสุด';
 	@override String get pricing_footer => 'ยกเลิกได้ทุกเมื่อจากการตั้งค่า เรียกเก็บเงินรายเดือน';
+	@override String get pricing_free_cta_downgrade => 'เปลี่ยนเป็นแพ็กเกจฟรี';
+	@override String get pricing_free_feature_classic_editor => 'โปรแกรมแก้ไขแบบคลาสสิก';
+	@override String get pricing_free_feature_nostr_identity => 'ตัวตนบน Nostr โดยตรง';
+	@override String get pricing_free_feature_points => 'ชำระโน้ตและสมาชิกด้วย Yaki Points';
+	@override String get pricing_free_feature_publishing => 'เผยแพร่บทความและโน้ต';
+	@override String get pricing_free_feature_storage => 'พื้นที่ Blossom 500 MB';
+	@override String get pricing_free_feature_translations => 'แปลได้จำนวนจำกัดต่อวัน';
+	@override String get pricing_free_feature_wallet => 'กระเป๋าเงิน YakiHonne 1 ใบ';
+	@override String get pricing_free_name => 'ฟรี';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'จ่ายด้วย Lightning';
 	@override String get pricing_waiting => 'กำลังรอการชำระเงิน…';
 	@override String get pricing_cancel => 'ยกเลิก';
@@ -2018,6 +2041,7 @@ class TranslationsTh extends Translations {
 	@override String get second_reader_fixed_with_ai => 'แก้ไขด้วย AI แล้ว';
 	@override String get second_reader_marked_read => 'ทำเครื่องหมายว่าอ่านแล้ว';
 	@override String get second_reader_fix_with_ai => 'แก้ไขด้วย AI';
+	@override String get second_reader_improve_with_ai => 'ปรับปรุงด้วย AI';
 	@override String get second_reader_ignore => 'ข้าม';
 	@override String get second_reader_switch => 'สลับ';
 	@override String get editor_classic => 'คลาสสิก';
@@ -2030,6 +2054,8 @@ class TranslationsTh extends Translations {
 	@override String get creator_subscribe_error => 'ไม่สามารถเริ่มการสมัครสมาชิกได้';
 	@override String get creator_no_plans => 'ไม่มีแพ็กเกจสมาชิกที่ใช้ได้';
 	@override String get creator_lightning_unavailable => 'ไม่มีที่อยู่ Lightning';
+	@override String get creator_view_subscriptions => 'ดูการสมัครสมาชิกของฉัน';
+	@override String get creator_subscribed => 'สมัครแล้ว';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'เข้าสู่ระบบด้วย Google';
 	@override String get recoverWithGoogle => 'กู้คืนผ่าน Google';
@@ -2405,6 +2431,7 @@ extension on TranslationsTh {
 			'copyNoteId' => 'คัดลอก ID โน้ต',
 			'noteIdCopied' => 'คัดลอก ID โน้ตสำเร็จ! 👏',
 			'confirmDeleteDraft' => 'คุณกำลังจะลบแบบร่างนี้ คุณต้องการดำเนินการต่อหรือไม่?',
+			'confirmDeleteDraftChats' => 'คุณกำลังจะลบแบบร่างนี้พร้อมกับแชทผู้ช่วย AI และแชทของผู้อ่านคนที่สอง คุณต้องการดำเนินการต่อหรือไม่?',
 			'reposted' => 'รีโพสต์',
 			'postInNote' => 'โพสต์ในโน้ต',
 			'clone' => 'โคลน',
@@ -2723,13 +2750,13 @@ extension on TranslationsTh {
 			'findPaidNoteMisleading' => 'คุณคิดว่าโน้ตที่ชำระเงินนี้ทำให้เข้าใจผิด',
 			'selectOneReason' => 'เลือกอย่างน้อยหนึ่งเหตุผล',
 			'rateHelpful' => 'ให้คะแนนเป็นประโยชน์',
-			'rateNotHelpful' => 'ให้คะแนนไม่เป็นประโยชน์',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => 'ให้คะแนนไม่เป็นประโยชน์',
 			'ratedHelpful' => 'ให้คะแนนเป็นประโยชน์',
 			'ratedNotHelpful' => 'ให้คะแนนไม่เป็นประโยชน์',
 			'youRatedHelpful' => 'คุณให้คะแนนว่ามีประโยชน์',
@@ -2805,6 +2832,8 @@ extension on TranslationsTh {
 			'createYakiWallet' => 'สร้างกระเป๋าเงิน YakiHonne',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'สร้างกระเป๋าเงินผ่านช่องทาง YakiHonne',
+			'yakiPoints' => 'แต้ม Yaki',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'หรือใช้กระเป๋าเงินของคุณ',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'การเชื่อมต่อกระเป๋าเงิน Nostr ดั้งเดิม',
@@ -2850,6 +2879,7 @@ extension on TranslationsTh {
 			'views' => 'การดู',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'สร้าง ${date1}, แก้ไข ${date2}',
 			'loading' => 'กำลังโหลด',
+			'loadingThread' => 'กำลังโหลดเธรด',
 			'releaseToLoad' => 'ปล่อยเพื่อโหลด',
 			'finished' => 'เสร็จสิ้น!',
 			'noMoreData' => 'ไม่มีข้อมูลเพิ่มเติม',
@@ -2882,6 +2912,8 @@ extension on TranslationsTh {
 			'user' => 'ผู้ใช้',
 			'view' => 'ดู',
 			'itsLive' => 'มันไลฟ์!',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} ไลฟ์แล้ว!',
+			'justNow' => 'เมื่อสักครู่นี้',
 			'spreadWordSharingContent' => 'กระจายคำโดยการแชร์เนื้อหาทุกที่',
 			'successfulRelays' => 'รีเลย์ที่สำเร็จ',
 			'noRelaysCanBeFound' => 'ไม่พบรีเลย์',
@@ -3068,7 +3100,9 @@ extension on TranslationsTh {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} กล่าวถึงคุณในวิดเจ็ตอัจฉริยะ',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} กล่าวถึงคุณในโพล',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} เผยแพร่โน้ตที่ชำระเงิน',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} เผยแพร่โน้ตพรีเมียมใหม่',
 			'userPublishedArticle' => ({required Object name}) => '${name} เผยแพร่บทความ',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} เผยแพร่บทความพรีเมียมใหม่',
 			'userPublishedVideo' => ({required Object name}) => '${name} เผยแพร่วิดีโอ',
 			'userPublishedCuration' => ({required Object name}) => '${name} เผยแพร่การคัดสรร',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} เผยแพร่วิดเจ็ตอัจฉริยะ',
@@ -3161,6 +3195,7 @@ extension on TranslationsTh {
 			'apiKeyRequired' => 'คีย์ API (จำเป็น)',
 			'getApiKey' => 'รับคีย์ API',
 			'seeTranslation' => 'ดูการแปล',
+			'seenOn' => 'พบบน',
 			'seeOriginal' => 'ดูต้นฉบับ',
 			'plan' => 'แผน',
 			'free' => 'ฟรี',
@@ -3233,6 +3268,12 @@ extension on TranslationsTh {
 			'manageWallets' => 'จัดการกระเป๋าเงิน',
 			'roundDuration' => 'ระยะเวลารอบ',
 			'startAt' => ({required Object date}) => 'เริ่มที่: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'เข้าสู่ระบบ',
 			'addPicture' => 'เพิ่มภาพ',
 			'editPicture' => 'แก้ไขภาพ',
@@ -3242,12 +3283,6 @@ extension on TranslationsTh {
 			'mutedUserDesc' => 'คุณปิดเสียงผู้ใช้นี้ พิจารณาเปิดเสียงเพื่อดูเนื้อหา',
 			'commentHidden' => 'ความคิดเห็นนี้ถูกซ่อน',
 			'upcoming' => 'ที่จะมาถึง',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'ส่งออกข้อมูลรับรอง',
 			'loginToYakihonne' => 'เข้าสู่ระบบ YakiHonne',
 			'loginBuiltOnNostr' => '✦ สร้างบน Nostr',
@@ -3487,6 +3522,8 @@ extension on TranslationsTh {
 			'secureDmDesc' => 'ใช้มาตรฐานการส่งข้อความส่วนตัวล่าสุด (NIP-17) ด้วยการเข้ารหัสขั้นสูง ปิดใช้งานเพื่อใช้รูปแบบ NIP-4 เก่าเพื่อความเข้ากันได้',
 			'wotConfigDesc' => 'กลไกความไว้วางใจแบบกระจายที่ใช้การยืนยันทางสังคมเพื่อสร้างชื่อเสียงภายในโปรโตคอล Nostr',
 			'appLangDesc' => 'เลือกภาษาที่ต้องการสำหรับอินเทอร์เฟซ YakiHonne เมนูและปุ่ม',
+			'contentLanguage' => 'ภาษาของเนื้อหา',
+			'contentLangDesc' => 'ภาษาที่ใช้เมื่อแปลโน้ตและบทความ ค่าเริ่มต้นคือภาษาของแอป',
 			'contentTransDesc' => 'เลือกบริการแปลสำหรับโพสต์ในภาษาต่างประเทศ',
 			'planDesc' => 'ระดับแผนการแปลปัจจุบันและขีดจำกัดการใช้งานของคุณ',
 			'manageWalletsDesc' => 'เพิ่มและจัดระเบียบกระเป๋าเงิน Lightning เพื่อส่ง/รับ Zap บน Nostr ด้วยจำนวนที่ปรับแต่งได้และการรวมภายนอก',
@@ -3551,6 +3588,7 @@ extension on TranslationsTh {
 			'actionsPopups' => 'ป๊อปอัปการทำงาน',
 			'actionsPopupsDesc' => 'เปิดหรือปิดป๊อปอัปสำหรับข้อความสำเร็จ ข้อผิดพลาด และข้อมูล',
 			'waitingForNetwork' => 'รอเครือข่าย...',
+			'reconnecting' => 'กำลังเชื่อมต่อใหม่...',
 			'whatsNew' => 'มีอะไรใหม่',
 			'appCustom' => 'ปรับแต่งแอป',
 			'poll' => 'โพล',
@@ -3748,6 +3786,12 @@ extension on TranslationsTh {
 			'restoreWallet' => 'กู้คืนกระเป๋าเงิน',
 			'restoreWalletDesc' => 'กู้คืนหลักฐานของกระเป๋าเงินของคุณใน Mint นี้เพื่อบันทึกไว้ใน NOSTR',
 			'seedPhraseLocallyOnly' => 'วลีเริ่มต้นของคุณจะถูกใช้เฉพาะในเครื่องเพื่อรับคีย์กระเป๋าเงินของคุณ',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'กู้คืนหลักฐานแล้ว',
 			'noProofsFound' => 'ไม่พบหลักฐาน',
 			'errorRestoringProofs' => 'เกิดข้อผิดพลาดขณะกู้คืนหลักฐาน',
@@ -3760,12 +3804,6 @@ extension on TranslationsTh {
 			'melting' => 'กำลังหลอม (Melting)',
 			'requestingMintQuote' => 'กำลังขอใบเสนอราคา mint',
 			'minting' => 'กำลังสร้าง (Minting)',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'cantSwapWithWallet' => 'ไม่สามารถแลกเปลี่ยนโดยตรงกับปลายทางกระเป๋าเงิน Lightning ได้ โปรดเลือก Mint เพื่อแลกเปลี่ยนระหว่าง Mints หรือใช้ช่อง \'ถึง\' เพื่อเลือกปลายทางกระเป๋าเงิน',
 			'selectDestination' => 'เลือกปลายทาง',
 			'internalWallets' => 'กระเป๋าเงินภายใน',
@@ -4044,6 +4082,7 @@ extension on TranslationsTh {
 			'sub_connect_btn' => 'เชื่อมต่อกับ Yaki',
 			'sub_usage_period_daily' => 'รายวัน',
 			'sub_usage_period_monthly' => 'รายเดือน',
+			'pricing' => 'ราคา',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / เดือน',
@@ -4063,6 +4102,16 @@ extension on TranslationsTh {
 			'pricing_ln_discount_on' => 'ราคาที่แสดงเป็น sats รวมส่วนลด Lightning 10% ไว้แล้ว',
 			'pricing_most_popular' => 'ได้รับความนิยมสูงสุด',
 			'pricing_footer' => 'ยกเลิกได้ทุกเมื่อจากการตั้งค่า เรียกเก็บเงินรายเดือน',
+			'pricing_free_cta_downgrade' => 'เปลี่ยนเป็นแพ็กเกจฟรี',
+			'pricing_free_feature_classic_editor' => 'โปรแกรมแก้ไขแบบคลาสสิก',
+			'pricing_free_feature_nostr_identity' => 'ตัวตนบน Nostr โดยตรง',
+			'pricing_free_feature_points' => 'ชำระโน้ตและสมาชิกด้วย Yaki Points',
+			'pricing_free_feature_publishing' => 'เผยแพร่บทความและโน้ต',
+			'pricing_free_feature_storage' => 'พื้นที่ Blossom 500 MB',
+			'pricing_free_feature_translations' => 'แปลได้จำนวนจำกัดต่อวัน',
+			'pricing_free_feature_wallet' => 'กระเป๋าเงิน YakiHonne 1 ใบ',
+			'pricing_free_name' => 'ฟรี',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'จ่ายด้วย Lightning',
 			'pricing_waiting' => 'กำลังรอการชำระเงิน…',
 			'pricing_cancel' => 'ยกเลิก',
@@ -4209,6 +4258,7 @@ extension on TranslationsTh {
 			'second_reader_fixed_with_ai' => 'แก้ไขด้วย AI แล้ว',
 			'second_reader_marked_read' => 'ทำเครื่องหมายว่าอ่านแล้ว',
 			'second_reader_fix_with_ai' => 'แก้ไขด้วย AI',
+			'second_reader_improve_with_ai' => 'ปรับปรุงด้วย AI',
 			'second_reader_ignore' => 'ข้าม',
 			'second_reader_switch' => 'สลับ',
 			'editor_classic' => 'คลาสสิก',
@@ -4221,6 +4271,8 @@ extension on TranslationsTh {
 			'creator_subscribe_error' => 'ไม่สามารถเริ่มการสมัครสมาชิกได้',
 			'creator_no_plans' => 'ไม่มีแพ็กเกจสมาชิกที่ใช้ได้',
 			'creator_lightning_unavailable' => 'ไม่มีที่อยู่ Lightning',
+			'creator_view_subscriptions' => 'ดูการสมัครสมาชิกของฉัน',
+			'creator_subscribed' => 'สมัครแล้ว',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'เข้าสู่ระบบด้วย Google',
 			'recoverWithGoogle' => 'กู้คืนผ่าน Google',
@@ -4252,6 +4304,12 @@ extension on TranslationsTh {
 			'pomUnlinkSuccess' => 'ยกเลิกการเชื่อมโยงบัญชีแล้ว คุณได้ออกจากระบบ',
 			'pomUnlinkFailed' => 'ไม่สามารถยกเลิกการเชื่อมโยงบัญชีได้ โปรดลองอีกครั้ง',
 			'pomKeyCopied' => 'คัดลอกคีย์ส่วนตัวแล้ว',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'เซิร์ฟเวอร์ตัวตน',
 			'pomServerDesc' => 'บัญชีของคุณอยู่บนเซิร์ฟเวอร์กลางนี้ คุณสามารถใช้ของเรา ผู้ให้บริการรายอื่น หรือของคุณเอง',
 			'pomServerDefault' => 'ค่าเริ่มต้น',
@@ -4278,12 +4336,6 @@ extension on TranslationsTh {
 			'pomExportKey' => 'ส่งออกเป็นไฟล์',
 			'pomExportError' => 'ไม่สามารถส่งออกคีย์ได้',
 			'pomAdvancedOptions' => 'ตัวเลือกขั้นสูง',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomOperatorsTitle' => 'ผู้ให้บริการ',
 			'pomOperatorsDesc' => 'คีย์ของคุณถูกแบ่งไว้ตามเซิร์ฟเวอร์เหล่านี้ ไม่มีรายใดใช้งานได้เพียงลำพัง และคุณกู้คืนได้จากบางรายเท่านั้น',
 			'pomOperatorAddHint' => 'เพิ่ม URL ผู้ให้บริการ',

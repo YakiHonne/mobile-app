@@ -134,8 +134,20 @@ class EventRelation {
           } else {
             rootId = tag[1];
           }
+        } else if (tagKey == 'E') {
+          if (rootId == null) {
+            rootId = value;
+            if (tagLength > 2 && tag[2].isNotEmpty) {
+              rootRelayAddr = tag[2];
+            }
+          }
         } else if (tagKey == 'a') {
           if (tagLength >= 2) {
+            rRootId = value.split(':').last;
+            tagAList.add(rRootId!);
+          }
+        } else if (tagKey == 'A') {
+          if (rRootId == null && tagLength >= 2) {
             rRootId = value.split(':').last;
             tagAList.add(rRootId!);
           }

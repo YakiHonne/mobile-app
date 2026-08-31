@@ -18,6 +18,8 @@ class PlanCard extends StatelessWidget {
     this.isPoints = false,
     this.pointsCost = 0,
     this.pointsEligible = false,
+    this.showButton = true,
+    this.showApprox = true,
     this.scrollable = false,
   });
 
@@ -30,6 +32,14 @@ class PlanCard extends StatelessWidget {
   final bool anyLoading;
   final bool isCurrent;
   final bool isUpgrade;
+
+  /// The free tier is a static card — no CTA at all.
+  final bool showButton;
+
+  /// Suppresses the alternate-currency "≈ … / month" line. The free tier has
+  /// nothing to convert, so showing "≈ 0 sats / month" is just noise.
+  final bool showApprox;
+
   final VoidCallback? onCheckout;
 
   /// Set inside the phone PageView, where the card is stretched to a fixed
@@ -126,7 +136,7 @@ class PlanCard extends StatelessWidget {
               ),
             ],
           ),
-          if (isPoints || isLn || !kIapEnabled)
+          if (showApprox && (isPoints || isLn || !kIapEnabled))
             Text(
               isPoints
                   ? (pointsEligible
@@ -168,36 +178,38 @@ class PlanCard extends StatelessWidget {
                     child: SingleChildScrollView(child: _features(theme))))
           else
             _features(theme),
-          const SizedBox(height: kDefaultPadding / 4),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              // The themed fill ignores the disabled state, so the current
-              // plan would otherwise look like a live CTA.
-              style: isCurrent
-                  ? TextButton.styleFrom(
-                      disabledBackgroundColor: theme.disabledColor.withValues(
-                        alpha: 0.15,
+          if (showButton) ...[
+            const SizedBox(height: kDefaultPadding / 4),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                // The themed fill ignores the disabled state, so the current
+                // plan would otherwise look like a live CTA.
+                style: isCurrent
+                    ? TextButton.styleFrom(
+                        disabledBackgroundColor: theme.disabledColor.withValues(
+                          alpha: 0.15,
+                        ),
+                        disabledForegroundColor: theme.hintColor,
+                      )
+                    : null,
+                // Store/Stripe/Lightning loading lives on the checkout screen —
+                // only the points redeem still spins here.
+                onPressed: isCurrent || anyLoading ? null : onCheckout,
+                child: isLoading
+                    ? SpinKitCircle(color: theme.primaryColor, size: 16)
+                    : Text(
+                        isCurrent
+                            ? context.t.pricing_current_plan
+                            : isUpgrade
+                                ? context.t.pricing_upgrade_to_pro
+                                : isPoints
+                                    ? context.t.pricing_redeem_with_points
+                                    : context.t.pricing_cta_subscribe,
                       ),
-                      disabledForegroundColor: theme.hintColor,
-                    )
-                  : null,
-              // Store/Stripe/Lightning loading lives on the checkout screen —
-              // only the points redeem still spins here.
-              onPressed: isCurrent || anyLoading ? null : onCheckout,
-              child: isLoading
-                  ? SpinKitCircle(color: theme.primaryColor, size: 16)
-                  : Text(
-                      isCurrent
-                          ? context.t.pricing_current_plan
-                          : isUpgrade
-                              ? context.t.pricing_upgrade_to_pro
-                              : isPoints
-                                  ? context.t.pricing_redeem_with_points
-                                  : context.t.pricing_cta_subscribe,
-                    ),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

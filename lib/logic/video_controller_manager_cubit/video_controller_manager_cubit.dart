@@ -18,6 +18,13 @@ part 'video_controller_manager_state.dart';
 class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   VideoControllerManagerCubit() : super(const VideoControllerManagerState());
 
+  // Phones are locked to portraitUp (initializers._configureSystemUI), so
+  // fullscreen video must restore that lock on exit; tablets rotate freely.
+  static List<DeviceOrientation> get _afterFullScreenOrientations =>
+      deviceIsTablet
+          ? DeviceOrientation.values
+          : const [DeviceOrientation.portraitUp];
+
   // ── Registry — plain mutable fields, never copied into state ──────────────
   final _videoControllers = <String, VideoPlayerController>{};
   final _chewieControllers = <String, ChewieController>{};
@@ -36,6 +43,10 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   final _inProcessUrls = <String>{};
   final _toBeAdded = <String>{};
 
+  // Resolved URLs currently in a fullscreen route — releaseVideo keeps their
+  // controller alive until exitFullScreen.
+  final _fullScreenUrls = <String>{};
+
   // ── Public getters (unchanged API) ────────────────────────────────────────
   VideoPlayerController? getVideoController(String url) =>
       _videoControllers[url];
@@ -45,8 +56,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   /// Returns a stream that emits whenever [url]'s controller changes.
   /// Each widget subscribes only to its own URL — no cross-video rebuilds.
   Stream<void> watchUrl(String url) {
-    return (_urlStreams[url] ??= StreamController<void>.broadcast())
-        .stream;
+    return (_urlStreams[url] ??= StreamController<void>.broadcast()).stream;
   }
 
   void _notifyUrl(String url) {
@@ -161,8 +171,11 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
         routePageBuilder: (context, animation, secondaryAnimation,
                 controllerProvider) =>
             FullScreenVideoPlayer(url: usedUrl, provider: controllerProvider),
-        deviceOrientationsOnEnterFullScreen:
-            Platform.isAndroid ? [DeviceOrientation.portraitUp] : null,
+        // deviceOrientationsOnEnterFullScreen left null => chewie auto-rotates:
+        // landscape videos force landscape, portrait videos stay portrait. On
+        // phones we restore the portrait lock on exit (initializers pins
+        // phones to portraitUp).
+        deviceOrientationsAfterFullScreen: _afterFullScreenOrientations,
         customControls: removeControls != null
             ? TapPlayPauseControls(controller: videoController)
             : CustomCupertinoControls(
@@ -213,6 +226,18 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       return;
     }
 
+    final fs = _chewieControllers[resolvedUrl]?.isFullScreen ?? false;
+
+    if (_fullScreenUrls.contains(resolvedUrl) || fs) {
+      _fullScreenUrls.add(resolvedUrl);
+      _urlOwners.remove(resolvedUrl);
+      return;
+    }
+
+    _disposeUrl(resolvedUrl);
+  }
+
+  void _disposeUrl(String resolvedUrl) {
     _urlOwners.remove(resolvedUrl);
     _urlAliases.removeWhere((_, target) => target == resolvedUrl);
     _chewieControllers.remove(resolvedUrl)?.dispose();
@@ -220,9 +245,20 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
     // Notify before closing so the widget can show the loading placeholder
     _notifyUrl(resolvedUrl);
-
-    // Close and remove the per-URL stream — no more listeners needed
     _urlStreams.remove(resolvedUrl)?.close();
+  }
+
+  void enterFullScreen(String url) {
+    _fullScreenUrls.add(_urlAliases[url] ?? url);
+  }
+
+  void exitFullScreen(String url) {
+    final resolvedUrl = _urlAliases[url] ?? url;
+    _fullScreenUrls.remove(resolvedUrl);
+
+    if ((_urlOwners[resolvedUrl] ?? const <String>{}).isEmpty) {
+      _disposeUrl(resolvedUrl);
+    }
   }
 
   // ── Playback helpers ──────────────────────────────────────────────────────
@@ -244,10 +280,11 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     try {
       bool hasBeenDisposed = false;
 
+      final normalizedUrl = normalizeMediaUrl(url);
       final videoController = enableSound
-          ? VideoPlayerController.networkUrl(Uri.parse(url))
+          ? VideoPlayerController.networkUrl(Uri.parse(normalizedUrl))
           : VideoPlayerController.networkUrl(
-              Uri.parse(url),
+              Uri.parse(normalizedUrl),
               videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
             );
 

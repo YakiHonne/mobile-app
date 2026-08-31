@@ -24,8 +24,7 @@ class _NIcons {
       'assets/icons/features/n-smart-widgets.svg';
   static const String paidNotes = 'assets/icons/features/n-paid-notes.svg';
   static const String quotes = 'assets/icons/features/n-quotes.svg';
-  static const String replies =
-      'assets/icons/features/n-replies-comments.svg';
+  static const String replies = 'assets/icons/features/n-replies-comments.svg';
 }
 
 class NotificationImageContainer extends StatelessWidget {
@@ -33,10 +32,12 @@ class NotificationImageContainer extends StatelessWidget {
     super.key,
     required this.metadata,
     required this.event,
+    this.isPremium = false,
   });
 
   final Metadata metadata;
   final EventRelation event;
+  final bool isPremium;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +55,9 @@ class NotificationImageContainer extends StatelessWidget {
               image: metadata.picture,
               pubkey: metadata.pubkey,
               padding: 0,
-              strokeWidth: 0,
+              strokeWidth: isPremium ? 1 : 0,
               reduceSize: true,
-              strokeColor: kTransparent,
+              strokeColor: isPremium ? kPremiumColor : kTransparent,
               onClicked: () {
                 openProfileFastAccess(
                   context: context,
@@ -122,6 +123,8 @@ class NotificationImageContainer extends StatelessWidget {
             event.rootId != null ||
             event.rRootId != null) {
           icon = _NIcons.replies;
+        } else {
+          icon = _NIcons.paidNotes;
         }
     }
 

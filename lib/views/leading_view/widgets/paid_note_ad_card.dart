@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -7,32 +7,9 @@ import '../../../models/detailed_note_model.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/note_stats.dart';
 
-class PaidNoteAdCard extends StatefulWidget {
+class PaidNoteAdCard extends StatelessWidget {
   const PaidNoteAdCard({super.key, required this.event});
   final Event event;
-
-  @override
-  State<PaidNoteAdCard> createState() => _PaidNoteAdCardState();
-}
-
-class _PaidNoteAdCardState extends State<PaidNoteAdCard>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 3),
-  )..repeat();
-
-  @override
-  void initState() {
-    super.initState();
-    leadingCubit.markPaidNoteAdSeen(widget.event.id);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +22,10 @@ class _PaidNoteAdCardState extends State<PaidNoteAdCard>
           indent: kDefaultPadding * 3,
           endIndent: kDefaultPadding * 3,
         ),
-        AnimatedBuilder(
-          animation: _ctrl,
-          builder: (context, child) => CustomPaint(
-            foregroundPainter: _SpinningBorderPainter(
-              rotation: _ctrl.value * 2 * math.pi,
-            ),
-            child: child,
+        CustomPaint(
+          foregroundPainter: const _CornerBracketsPainter(
+            topLeftColor: Color(0xFF8B5CF6),
+            bottomRightColor: Color(0xFFEC4899),
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -79,8 +53,8 @@ class _PaidNoteAdCardState extends State<PaidNoteAdCard>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DetailedNoteContainer(
-                  key: PageStorageKey<String>('ad_${widget.event.id}'),
-                  note: DetailedNoteModel.fromEvent(widget.event),
+                  key: PageStorageKey<String>('ad_${event.id}'),
+                  note: DetailedNoteModel.fromEvent(event),
                   isMain: false,
                   addLine: false,
                   isExtended: true,
@@ -102,55 +76,88 @@ class _PaidNoteAdCardState extends State<PaidNoteAdCard>
   }
 }
 
-// Matches the web's paid-note-ad-border-spinner conic gradient, adapted from
-// GlassButton's _BorderPainter: SweepGradient + GradientRotation + glow stroke.
-class _SpinningBorderPainter extends CustomPainter {
-  const _SpinningBorderPainter({required this.rotation});
-  final double rotation;
+/// Static L-shaped marks at the top-left (purple) and bottom-right (pink)
+/// corners, mirroring PremiumContainer's bracket style.
+class _CornerBracketsPainter extends CustomPainter {
+  const _CornerBracketsPainter({
+    required this.topLeftColor,
+    required this.bottomRightColor,
+  });
 
-  // Fractions of the CSS conic-gradient stops:
-  //   transparent 0–300°, purple 330°, pink 345°, amber 355°, transparent 360°
-  static const _colors = [
-    Colors.transparent,
-    Colors.transparent,
-    Color(0xFF8B5CF6),
-    Color(0xFFEC4899),
-    Color(0xFFF59E0B),
-    Colors.transparent,
-  ];
+  final Color topLeftColor;
+  final Color bottomRightColor;
 
-  static const _stops = [0.0, 0.667, 0.800, 0.900, 0.967, 1.0];
+  static const _radius = kDefaultPadding / 1.5;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final path = Path()
-      ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(16)));
+    // Each arm gets its own linear gradient: opaque at the corner, fading to
+    // transparent at the arm's tip. Per-arm (not radial) so a wide, short box
+    // still fades along its vertical arms.
+    final armX = size.width * 0.55;
+    final armY = size.height * 0.55;
 
-    final gradient = SweepGradient(
-      colors: _colors,
-      stops: _stops,
-      transform: GradientRotation(rotation),
+    void drawArm(Path path, Offset from, Offset to, Color color) {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke
+          ..shader = ui.Gradient.linear(
+            from,
+            to,
+            [color, color.withValues(alpha: 0)],
+          ),
+      );
+    }
+
+    // Top-left: horizontal arm (carries the corner arc) + vertical arm.
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..arcToPoint(
+          const Offset(_radius, 0),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(armX, 0),
+      Offset.zero,
+      Offset(armX, 0),
+      topLeftColor,
+    );
+    drawArm(
+      Path()
+        ..moveTo(0, _radius)
+        ..lineTo(0, armY),
+      Offset.zero,
+      Offset(0, armY),
+      topLeftColor,
     );
 
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4)
-        ..shader = gradient.createShader(rect),
+    // Bottom-right: mirrored.
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..arcToPoint(
+          Offset(size.width - _radius, size.height),
+          radius: const Radius.circular(_radius),
+        )
+        ..lineTo(size.width - armX, size.height),
+      Offset(size.width, size.height),
+      Offset(size.width - armX, size.height),
+      bottomRightColor,
     );
-
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..shader = gradient.createShader(rect),
+    drawArm(
+      Path()
+        ..moveTo(size.width, size.height - _radius)
+        ..lineTo(size.width, size.height - armY),
+      Offset(size.width, size.height),
+      Offset(size.width, size.height - armY),
+      bottomRightColor,
     );
   }
 
   @override
-  bool shouldRepaint(_SpinningBorderPainter old) => old.rotation != rotation;
+  bool shouldRepaint(_CornerBracketsPainter oldDelegate) =>
+      oldDelegate.topLeftColor != topLeftColor ||
+      oldDelegate.bottomRightColor != bottomRightColor;
 }

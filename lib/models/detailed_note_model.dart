@@ -145,6 +145,7 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
     String? rootPubkey;
     String? rootId;
     String? rootAddress;
+    String? parentId;
 
     for (final tag in event.tags) {
       if (tag.isNotEmpty) {
@@ -156,6 +157,9 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
             root = false;
             isOriginEtag = true;
             originEventId = tag[1];
+          } else if (event.kind == EventKind.COMMENT) {
+            root = false;
+            parentId = tag[1];
           }
         } else if (tag.first == 'a' && tag.length > 3 && tag[3] == 'root') {
           root = false;
@@ -210,6 +214,14 @@ class DetailedNoteModel extends Equatable implements BaseEventModel {
         isOriginEtag = true;
         root = false;
       }
+    }
+
+    final hasOrigin = originEventId?.isNotEmpty ?? false;
+    if (replyTo.isEmpty &&
+        parentId != null &&
+        parentId.isNotEmpty &&
+        (!hasOrigin || parentId != originEventId)) {
+      replyTo = parentId;
     }
 
     if (replyTo.isNotEmpty &&

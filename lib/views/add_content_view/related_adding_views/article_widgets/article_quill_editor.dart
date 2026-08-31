@@ -267,14 +267,10 @@ class ArticlePremiumEditor extends StatefulWidget {
     required this.initialContent,
     required this.cubit,
     required this.onDeleteDraft,
-    required this.titleController,
-    required this.onTitleChanged,
   });
   final String initialContent;
   final WriteArticleCubit cubit;
   final VoidCallback onDeleteDraft;
-  final TextEditingController titleController;
-  final ValueChanged<String> onTitleChanged;
 
   @override
   State<ArticlePremiumEditor> createState() => ArticlePremiumEditorState();
@@ -402,7 +398,7 @@ class ArticlePremiumEditorState extends State<ArticlePremiumEditor> {
   /// editor's in-memory state. It also means images survive — htmltopdfwidgets
   /// fetches and embeds them, which a Delta-based converter would skip.
   Future<void> _exportPdf() async {
-    final title = widget.titleController.text.trim();
+    final title = widget.cubit.state.title.trim();
     // Read off context before the awaits below, not after.
     final errorMessage = context.t.errorSendingEvent;
     // Generating and fetching images takes long enough to need feedback.
@@ -458,6 +454,7 @@ class ArticlePremiumEditorState extends State<ArticlePremiumEditor> {
     // _setMarkdown cancels the pending debounce, so no stale setContentText
     // lands after the draft is deleted.
     _setMarkdown('');
+    _askAiCubit.clear();
     widget.onDeleteDraft();
   }
 
@@ -717,31 +714,6 @@ class ArticlePremiumEditorState extends State<ArticlePremiumEditor> {
               color: theme.scaffoldBackgroundColor,
               child: Column(
                 children: [
-                  TextFormField(
-                    controller: widget.titleController,
-                    onChanged: widget.onTitleChanged,
-                    maxLines: 2,
-                    minLines: 1,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: theme.textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: context.t.giveMeCatchyTitle,
-                      hintStyle: theme.textTheme.headlineSmall!.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: theme.highlightColor,
-                      ),
-                      fillColor: theme.scaffoldBackgroundColor,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPadding / 2,
-                        horizontal: kDefaultPadding / 1.5,
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: QuillEditor.basic(
                       controller: _controller,

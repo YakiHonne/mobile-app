@@ -232,6 +232,7 @@ class TranslationsRu extends Translations {
 	@override String get copyNoteId => 'Скопировать ID заметки';
 	@override String get noteIdCopied => 'ID заметки скопирован! 👏';
 	@override String get confirmDeleteDraft => 'Вы собираетесь удалить этот черновик, продолжить?';
+	@override String get confirmDeleteDraftChats => 'Вы собираетесь удалить этот черновик вместе с чатом ИИ-ассистента и чатом второго читателя, продолжить?';
 	@override String get reposted => 'репост';
 	@override String get postInNote => 'Опубликовать в заметке';
 	@override String get clone => 'клонировать';
@@ -626,6 +627,8 @@ class TranslationsRu extends Translations {
 	@override String get createYakiWallet => 'Создать кошелёк YakiHonne';
 	@override String get yakiNwc => 'NWC YakiHonne';
 	@override String get yakiNwcDesc => 'Создать кошелёк через канал YakiHonne';
+	@override String get yakiPoints => 'Баллы Yaki';
+	@override String get yakiPro => 'Yaki Pro';
 	@override String get orUseYourWallet => 'Или используйте свой кошелёк';
 	@override String get nostrWalletConnect => 'Nostr Wallet Connect';
 	@override String get nostrWalletConnectDesc => 'Нативное подключение кошелька Nostr';
@@ -671,6 +674,7 @@ class TranslationsRu extends Translations {
 	@override String get views => 'Просмотры';
 	@override String createdAtEditedAt({required Object date1, required Object date2}) => 'создано ${date1}, отредактировано ${date2}';
 	@override String get loading => 'Загрузка';
+	@override String get loadingThread => 'Загрузка ветки';
 	@override String get releaseToLoad => 'Отпустите для загрузки';
 	@override String get finished => 'завершено!';
 	@override String get noMoreData => 'Больше данных нет';
@@ -703,6 +707,8 @@ class TranslationsRu extends Translations {
 	@override String get user => 'пользователь';
 	@override String get view => 'просмотр';
 	@override String get itsLive => 'В прямом эфире!';
+	@override String contentIsLive({required Object contentType}) => '${contentType} в эфире!';
+	@override String get justNow => 'только что';
 	@override String get spreadWordSharingContent => 'Распространяйте информацию, делясь контентом повсюду.';
 	@override String get successfulRelays => 'Успешные релеи';
 	@override String get noRelaysCanBeFound => 'Релеи не найдены';
@@ -889,7 +895,9 @@ class TranslationsRu extends Translations {
 	@override String userMentionedYouInSmartWidget({required Object name}) => '${name} упомянул вас в смарт-виджете';
 	@override String userMentionedYouInPoll({required Object name}) => '${name} упомянул вас в опросе';
 	@override String userPublishedPaidNote({required Object name}) => '${name} опубликовал платную заметку';
+	@override String userPublishedPremiumNote({required Object name}) => '${name} опубликовал новую премиум-заметку';
 	@override String userPublishedArticle({required Object name}) => '${name} опубликовал статью';
+	@override String userPublishedPremiumArticle({required Object name}) => '${name} опубликовал новую премиум-статью';
 	@override String userPublishedVideo({required Object name}) => '${name} опубликовал видео';
 	@override String userPublishedCuration({required Object name}) => '${name} опубликовал подборку';
 	@override String userPublishedSmartWidget({required Object name}) => '${name} опубликовал смарт-виджет';
@@ -982,6 +990,7 @@ class TranslationsRu extends Translations {
 	@override String get apiKeyRequired => 'API-ключ (обязательно)';
 	@override String get getApiKey => 'Получить API-ключ';
 	@override String get seeTranslation => 'Смотреть перевод';
+	@override String get seenOn => 'Найдено на';
 	@override String get seeOriginal => 'Смотреть оригинал';
 	@override String get plan => 'Тариф';
 	@override String get free => 'Бесплатный';
@@ -1302,6 +1311,8 @@ class TranslationsRu extends Translations {
 	@override String get secureDmDesc => 'Использовать новейший стандарт приватных сообщений (NIP-17) с продвинутым шифрованием. Отключите для совместимости со старым форматом NIP-4.';
 	@override String get wotConfigDesc => 'Децентрализованный механизм доверия на основе социальных аттестаций для формирования репутации в протоколе Nostr.';
 	@override String get appLangDesc => 'Выберите язык интерфейса YakiHonne (меню, кнопки и т.д.).';
+	@override String get contentLanguage => 'Язык контента';
+	@override String get contentLangDesc => 'Язык перевода заметок и статей. По умолчанию — язык приложения.';
 	@override String get contentTransDesc => 'Выберите сервис перевода для постов на иностранных языках.';
 	@override String get planDesc => 'Ваш текущий тариф перевода и лимиты использования.';
 	@override String get manageWalletsDesc => 'Добавляйте и управляйте Lightning-кошельками для отправки и получения Bitcoin-запов в Nostr.';
@@ -1366,6 +1377,7 @@ class TranslationsRu extends Translations {
 	@override String get actionsPopups => 'Всплывающие окна действий';
 	@override String get actionsPopupsDesc => 'Включить или отключить всплывающие окна для сообщений об успехе, ошибке и информации.';
 	@override String get waitingForNetwork => 'Ожидание сети...';
+	@override String get reconnecting => 'Переподключение...';
 	@override String get whatsNew => 'Что нового';
 	@override String get appCustom => 'Кастомизация приложения';
 	@override String get poll => 'Опрос';
@@ -1853,6 +1865,7 @@ class TranslationsRu extends Translations {
 	@override String get sub_connect_btn => 'Подключиться к Yaki';
 	@override String get sub_usage_period_daily => 'ежедневно';
 	@override String get sub_usage_period_monthly => 'ежемесячно';
+	@override String get pricing => 'Цены';
 	@override String get pricing_toggle_usd => '\$ USD';
 	@override String get pricing_toggle_sats => '⚡ Sats';
 	@override String get pricing_sats_period => 'sats / месяц';
@@ -1872,6 +1885,16 @@ class TranslationsRu extends Translations {
 	@override String get pricing_ln_discount_on => 'Цены в sats уже включают скидку Lightning в 10%.';
 	@override String get pricing_most_popular => 'Самый популярный';
 	@override String get pricing_footer => 'Отменить можно в любой момент в настройках. Оплата ежемесячная.';
+	@override String get pricing_free_cta_downgrade => 'Перейти на бесплатный';
+	@override String get pricing_free_feature_classic_editor => 'Классический редактор';
+	@override String get pricing_free_feature_nostr_identity => 'Нативная идентичность Nostr';
+	@override String get pricing_free_feature_points => 'Оплата заметок и подписок Yaki Points';
+	@override String get pricing_free_feature_publishing => 'Публикация статей и заметок';
+	@override String get pricing_free_feature_storage => '500 МБ хранилища Blossom';
+	@override String get pricing_free_feature_translations => 'Лимит ежедневных переводов';
+	@override String get pricing_free_feature_wallet => '1 кошелёк YakiHonne';
+	@override String get pricing_free_name => 'Бесплатно';
+	@override String get pricing_free_price => '\$0';
 	@override String get pricing_pay_lightning => 'Оплатить через Lightning';
 	@override String get pricing_waiting => 'Ожидание платежа…';
 	@override String get pricing_cancel => 'Отмена';
@@ -2018,6 +2041,7 @@ class TranslationsRu extends Translations {
 	@override String get second_reader_fixed_with_ai => 'Исправлено с помощью ИИ';
 	@override String get second_reader_marked_read => 'Отмечено как прочитанное';
 	@override String get second_reader_fix_with_ai => 'Исправить с помощью ИИ';
+	@override String get second_reader_improve_with_ai => 'Улучшить с помощью ИИ';
 	@override String get second_reader_ignore => 'Игнорировать';
 	@override String get second_reader_switch => 'Сменить';
 	@override String get editor_classic => 'Классический';
@@ -2030,6 +2054,8 @@ class TranslationsRu extends Translations {
 	@override String get creator_subscribe_error => 'Не удалось оформить подписку';
 	@override String get creator_no_plans => 'Нет доступных тарифов подписки';
 	@override String get creator_lightning_unavailable => 'Lightning-адрес недоступен';
+	@override String get creator_view_subscriptions => 'Мои подписки';
+	@override String get creator_subscribed => 'Оформлено';
 	@override String creator_subscribe_per_interval({required Object interval}) => '/ ${interval}';
 	@override String get loginWithGoogle => 'Войти через Google';
 	@override String get recoverWithGoogle => 'Восстановить через Google';
@@ -2405,6 +2431,7 @@ extension on TranslationsRu {
 			'copyNoteId' => 'Скопировать ID заметки',
 			'noteIdCopied' => 'ID заметки скопирован! 👏',
 			'confirmDeleteDraft' => 'Вы собираетесь удалить этот черновик, продолжить?',
+			'confirmDeleteDraftChats' => 'Вы собираетесь удалить этот черновик вместе с чатом ИИ-ассистента и чатом второго читателя, продолжить?',
 			'reposted' => 'репост',
 			'postInNote' => 'Опубликовать в заметке',
 			'clone' => 'клонировать',
@@ -2723,13 +2750,13 @@ extension on TranslationsRu {
 			'findPaidNoteMisleading' => 'Вы считаете эту платную заметку вводящей в заблуждение.',
 			'selectOneReason' => 'Выберите хотя бы одну причину',
 			'rateHelpful' => 'Оценить как полезно',
-			'rateNotHelpful' => 'Оценить как не полезно',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'rateNotHelpful' => 'Оценить как не полезно',
 			'ratedHelpful' => 'Оценено как полезно',
 			'ratedNotHelpful' => 'Оценено как не полезно',
 			'youRatedHelpful' => 'вы оценили это как полезно',
@@ -2805,6 +2832,8 @@ extension on TranslationsRu {
 			'createYakiWallet' => 'Создать кошелёк YakiHonne',
 			'yakiNwc' => 'NWC YakiHonne',
 			'yakiNwcDesc' => 'Создать кошелёк через канал YakiHonne',
+			'yakiPoints' => 'Баллы Yaki',
+			'yakiPro' => 'Yaki Pro',
 			'orUseYourWallet' => 'Или используйте свой кошелёк',
 			'nostrWalletConnect' => 'Nostr Wallet Connect',
 			'nostrWalletConnectDesc' => 'Нативное подключение кошелька Nostr',
@@ -2850,6 +2879,7 @@ extension on TranslationsRu {
 			'views' => 'Просмотры',
 			'createdAtEditedAt' => ({required Object date1, required Object date2}) => 'создано ${date1}, отредактировано ${date2}',
 			'loading' => 'Загрузка',
+			'loadingThread' => 'Загрузка ветки',
 			'releaseToLoad' => 'Отпустите для загрузки',
 			'finished' => 'завершено!',
 			'noMoreData' => 'Больше данных нет',
@@ -2882,6 +2912,8 @@ extension on TranslationsRu {
 			'user' => 'пользователь',
 			'view' => 'просмотр',
 			'itsLive' => 'В прямом эфире!',
+			'contentIsLive' => ({required Object contentType}) => '${contentType} в эфире!',
+			'justNow' => 'только что',
 			'spreadWordSharingContent' => 'Распространяйте информацию, делясь контентом повсюду.',
 			'successfulRelays' => 'Успешные релеи',
 			'noRelaysCanBeFound' => 'Релеи не найдены',
@@ -3068,7 +3100,9 @@ extension on TranslationsRu {
 			'userMentionedYouInSmartWidget' => ({required Object name}) => '${name} упомянул вас в смарт-виджете',
 			'userMentionedYouInPoll' => ({required Object name}) => '${name} упомянул вас в опросе',
 			'userPublishedPaidNote' => ({required Object name}) => '${name} опубликовал платную заметку',
+			'userPublishedPremiumNote' => ({required Object name}) => '${name} опубликовал новую премиум-заметку',
 			'userPublishedArticle' => ({required Object name}) => '${name} опубликовал статью',
+			'userPublishedPremiumArticle' => ({required Object name}) => '${name} опубликовал новую премиум-статью',
 			'userPublishedVideo' => ({required Object name}) => '${name} опубликовал видео',
 			'userPublishedCuration' => ({required Object name}) => '${name} опубликовал подборку',
 			'userPublishedSmartWidget' => ({required Object name}) => '${name} опубликовал смарт-виджет',
@@ -3161,6 +3195,7 @@ extension on TranslationsRu {
 			'apiKeyRequired' => 'API-ключ (обязательно)',
 			'getApiKey' => 'Получить API-ключ',
 			'seeTranslation' => 'Смотреть перевод',
+			'seenOn' => 'Найдено на',
 			'seeOriginal' => 'Смотреть оригинал',
 			'plan' => 'Тариф',
 			'free' => 'Бесплатный',
@@ -3233,6 +3268,12 @@ extension on TranslationsRu {
 			'manageWallets' => 'Управление кошельками',
 			'roundDuration' => 'Продолжительность раунда',
 			'startAt' => ({required Object date}) => 'Начало: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'Войти',
 			'addPicture' => 'Добавить изображение',
 			'editPicture' => 'Редактировать изображение',
@@ -3242,12 +3283,6 @@ extension on TranslationsRu {
 			'mutedUserDesc' => 'Вы заглушили этого пользователя, рассмотрите возможность снятия заглушки для просмотра контента',
 			'commentHidden' => 'Этот комментарий скрыт',
 			'upcoming' => 'Предстоящие',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'exportCredentials' => 'Экспортировать учетные данные',
 			'loginToYakihonne' => 'Войти в YakiHonne',
 			'loginBuiltOnNostr' => '✦ Создано на Nostr',
@@ -3487,6 +3522,8 @@ extension on TranslationsRu {
 			'secureDmDesc' => 'Использовать новейший стандарт приватных сообщений (NIP-17) с продвинутым шифрованием. Отключите для совместимости со старым форматом NIP-4.',
 			'wotConfigDesc' => 'Децентрализованный механизм доверия на основе социальных аттестаций для формирования репутации в протоколе Nostr.',
 			'appLangDesc' => 'Выберите язык интерфейса YakiHonne (меню, кнопки и т.д.).',
+			'contentLanguage' => 'Язык контента',
+			'contentLangDesc' => 'Язык перевода заметок и статей. По умолчанию — язык приложения.',
 			'contentTransDesc' => 'Выберите сервис перевода для постов на иностранных языках.',
 			'planDesc' => 'Ваш текущий тариф перевода и лимиты использования.',
 			'manageWalletsDesc' => 'Добавляйте и управляйте Lightning-кошельками для отправки и получения Bitcoin-запов в Nostr.',
@@ -3551,6 +3588,7 @@ extension on TranslationsRu {
 			'actionsPopups' => 'Всплывающие окна действий',
 			'actionsPopupsDesc' => 'Включить или отключить всплывающие окна для сообщений об успехе, ошибке и информации.',
 			'waitingForNetwork' => 'Ожидание сети...',
+			'reconnecting' => 'Переподключение...',
 			'whatsNew' => 'Что нового',
 			'appCustom' => 'Кастомизация приложения',
 			'poll' => 'Опрос',
@@ -3748,6 +3786,12 @@ extension on TranslationsRu {
 			'restoreWallet' => 'Восстановить кошелек',
 			'restoreWalletDesc' => 'Восстановить доказательства вашего кошелька в этом mint, чтобы сохранить их на NOSTR',
 			'seedPhraseLocallyOnly' => 'Ваша сид-фраза используется только локально для получения ключей вашего кошелька.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'Доказательства восстановлены',
 			'noProofsFound' => 'Доказательства не найдены',
 			'errorRestoringProofs' => 'Ошибка при восстановлении доказательств',
@@ -3760,12 +3804,6 @@ extension on TranslationsRu {
 			'melting' => 'Плавление (Melt)',
 			'requestingMintQuote' => 'Запрос котировки mint',
 			'minting' => 'Чеканка (Mint)',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'cantSwapWithWallet' => 'Невозможно обменять напрямую с кошельком lightning. Пожалуйста, выберите mint для обмена между mints или используйте поле \'на\' для выбора кошелька.',
 			'selectDestination' => 'Выбрать место назначения',
 			'internalWallets' => 'Внутренние кошельки',
@@ -4044,6 +4082,7 @@ extension on TranslationsRu {
 			'sub_connect_btn' => 'Подключиться к Yaki',
 			'sub_usage_period_daily' => 'ежедневно',
 			'sub_usage_period_monthly' => 'ежемесячно',
+			'pricing' => 'Цены',
 			'pricing_toggle_usd' => '\$ USD',
 			'pricing_toggle_sats' => '⚡ Sats',
 			'pricing_sats_period' => 'sats / месяц',
@@ -4063,6 +4102,16 @@ extension on TranslationsRu {
 			'pricing_ln_discount_on' => 'Цены в sats уже включают скидку Lightning в 10%.',
 			'pricing_most_popular' => 'Самый популярный',
 			'pricing_footer' => 'Отменить можно в любой момент в настройках. Оплата ежемесячная.',
+			'pricing_free_cta_downgrade' => 'Перейти на бесплатный',
+			'pricing_free_feature_classic_editor' => 'Классический редактор',
+			'pricing_free_feature_nostr_identity' => 'Нативная идентичность Nostr',
+			'pricing_free_feature_points' => 'Оплата заметок и подписок Yaki Points',
+			'pricing_free_feature_publishing' => 'Публикация статей и заметок',
+			'pricing_free_feature_storage' => '500 МБ хранилища Blossom',
+			'pricing_free_feature_translations' => 'Лимит ежедневных переводов',
+			'pricing_free_feature_wallet' => '1 кошелёк YakiHonne',
+			'pricing_free_name' => 'Бесплатно',
+			'pricing_free_price' => '\$0',
 			'pricing_pay_lightning' => 'Оплатить через Lightning',
 			'pricing_waiting' => 'Ожидание платежа…',
 			'pricing_cancel' => 'Отмена',
@@ -4209,6 +4258,7 @@ extension on TranslationsRu {
 			'second_reader_fixed_with_ai' => 'Исправлено с помощью ИИ',
 			'second_reader_marked_read' => 'Отмечено как прочитанное',
 			'second_reader_fix_with_ai' => 'Исправить с помощью ИИ',
+			'second_reader_improve_with_ai' => 'Улучшить с помощью ИИ',
 			'second_reader_ignore' => 'Игнорировать',
 			'second_reader_switch' => 'Сменить',
 			'editor_classic' => 'Классический',
@@ -4221,6 +4271,8 @@ extension on TranslationsRu {
 			'creator_subscribe_error' => 'Не удалось оформить подписку',
 			'creator_no_plans' => 'Нет доступных тарифов подписки',
 			'creator_lightning_unavailable' => 'Lightning-адрес недоступен',
+			'creator_view_subscriptions' => 'Мои подписки',
+			'creator_subscribed' => 'Оформлено',
 			'creator_subscribe_per_interval' => ({required Object interval}) => '/ ${interval}',
 			'loginWithGoogle' => 'Войти через Google',
 			'recoverWithGoogle' => 'Восстановить через Google',
@@ -4252,6 +4304,12 @@ extension on TranslationsRu {
 			'pomUnlinkSuccess' => 'Аккаунт отвязан. Вы вышли из системы.',
 			'pomUnlinkFailed' => 'Не удалось отвязать аккаунт. Попробуйте ещё раз.',
 			'pomKeyCopied' => 'Приватный ключ скопирован',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'Сервер идентичности',
 			'pomServerDesc' => 'Ваш аккаунт размещён на этом центральном сервере. Можно использовать наш, другого провайдера или собственный.',
 			'pomServerDefault' => 'По умолчанию',
@@ -4278,12 +4336,6 @@ extension on TranslationsRu {
 			'pomExportKey' => 'Экспортировать в файл',
 			'pomExportError' => 'Не удалось экспортировать ключ',
 			'pomAdvancedOptions' => 'Дополнительные параметры',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomOperatorsTitle' => 'Операторы',
 			'pomOperatorsDesc' => 'Ваш ключ разделён между этими серверами. Никто из них не может использовать его в одиночку, а восстановить ключ можно с помощью нескольких.',
 			'pomOperatorAddHint' => 'Добавить URL оператора',

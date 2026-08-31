@@ -15,7 +15,7 @@ void confirmDeleteDraft(BuildContext context, VoidCallback onConfirmed) {
   showCupertinoDeletionDialogue(
     context: context,
     title: context.t.deleteDraft.capitalizeFirst(),
-    description: context.t.confirmDeleteDraft.capitalizeFirst(),
+    description: context.t.confirmDeleteDraftChats.capitalizeFirst(),
     buttonText: context.t.delete.capitalizeFirst(),
     onDelete: () {
       YNavigator.pop(context);

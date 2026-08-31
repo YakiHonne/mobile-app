@@ -94,7 +94,7 @@ class AddArticleMainView extends HookWidget {
   ) {
     return BlocBuilder<WriteArticleCubit, WriteArticleState>(
       builder: (context, state) {
-        final enabled = state.title.isNotEmpty && state.content.isNotEmpty;
+        final enabled = state.content.isNotEmpty;
 
         return Padding(
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

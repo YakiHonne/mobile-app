@@ -35,12 +35,30 @@ import 'widgets/feature_tour.dart';
 import 'widgets/flip_to_share_wrapper.dart';
 import 'widgets/main_view_appbar.dart';
 
-/// Side inset that parks the new-content pill in the gap between the collapsed
-/// tab pill and the "+" pill, matching the Apple Podcasts mini-player layout.
+class MultiSafeScrollController extends ScrollController {
+  @override
+  ScrollPosition get position =>
+      positions.length <= 1 ? super.position : positions.last;
+}
+
 const _kCollapsedPillInset = kGlassNavCollapsedPillWidth + kDefaultPadding / 2;
 
-/// Matches Flutter's own drawer slide.
 const _kDrawerAnimation = Duration(milliseconds: 246);
+
+const _kScrollTopFadeDuration = Duration(milliseconds: 180);
+
+Widget _fadeInTab(Widget child) {
+  return TweenAnimationBuilder<double>(
+    tween: Tween(begin: 0.0, end: 1.0),
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeOut,
+    builder: (context, opacity, child) => Opacity(
+      opacity: opacity,
+      child: child,
+    ),
+    child: child,
+  );
+}
 
 final indexMap = {
   MainViews.leading: 0,
@@ -57,20 +75,12 @@ class MainView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize hooks at the top level of build
     final mainScrollControllers = useMemoized(
         () => [
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
+              for (var i = 0; i < 7; i++) MultiSafeScrollController(),
             ],
         []);
 
-    // Dispose ScrollControllers to prevent memory leaks
     useEffect(() {
       return () {
         for (final controller in mainScrollControllers) {
@@ -84,6 +94,10 @@ class MainView extends HookWidget {
         YakihonneCycle(buildContext: context);
 
         nostrRepository.mainCubit = MainCubit(context: context);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          singleEventCubit.flushPendingPushNotification();
+        });
 
         return nostrRepository.mainCubit;
       },
@@ -107,6 +121,11 @@ class MainViewContent extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final barsVisible = useState(true);
+    // Drives the fade-out/jump/fade-in used to "scroll" to top from deep in
+    // a feed. 0 = fully visible, 1 = faded out.
+    final scrollTopFade = useAnimationController(
+      duration: _kScrollTopFadeDuration,
+    );
     // Published by the glass nav bar so the new-content pill can drop into the
     // gap between the collapsed tab pill and the "+" pill.
     final navCollapsed = useState(false);
@@ -121,6 +140,25 @@ class MainViewContent extends HookWidget {
     // Read current view index at hook level (outside BlocBuilder)
     final mainState = context.watch<MainCubit>().state;
     final currentIndex = indexMap[mainState.mainView] ?? 0;
+
+    final visitedTabs = useState<Set<int>>({currentIndex});
+    final isFirstVisit = !visitedTabs.value.contains(currentIndex);
+    final effectiveVisitedTabs =
+        isFirstVisit ? {...visitedTabs.value, currentIndex} : visitedTabs.value;
+
+    final settledGlassIndex = useState(currentIndex);
+
+    useEffect(() {
+      if (isFirstVisit) {
+        visitedTabs.value = effectiveVisitedTabs;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          settledGlassIndex.value = currentIndex;
+        });
+      } else {
+        settledGlassIndex.value = currentIndex;
+      }
+      return null;
+    }, [currentIndex]);
 
     // Scroll listener — valid here since we're inside a HookWidget.build
     useEffect(() {
@@ -157,79 +195,111 @@ class MainViewContent extends HookWidget {
         final currentIndex = indexMap[state.mainView] ?? 0;
         final isGlass = context.read<ThemeCubit>().state.isFluid;
 
-        void onScrollTop() {
+        Future<void> onScrollTop() async {
           // Re-tapping the active tab (or the app bar) also brings the bars —
           // and with them the source-filter row — back if a scroll hid them.
           barsVisible.value = true;
-          if (mainScrollControllers[currentIndex].hasClients) {
-            mainScrollControllers[currentIndex].animateTo(
-              0.0,
-              duration: const Duration(seconds: 1),
-              curve: Curves.easeOut,
-            );
+          final controller = mainScrollControllers[currentIndex];
+          if (!controller.hasClients || controller.offset == 0.0) {
+            return;
           }
+
+          // No smooth scroll at all: any visible scroll motion reads as
+          // sloppy from deep in a feed, so fade out, snap to top, fade back
+          // in instead of animating the scroll offset.
+          await scrollTopFade.forward();
+          if (controller.hasClients) {
+            controller.jumpTo(0.0);
+          }
+          await scrollTopFade.reverse();
         }
 
         final showFab = state.mainView == MainViews.leading ||
             state.mainView == MainViews.media;
 
-        final body = SafeArea(
-          top: !isGlass,
-          bottom: !isGlass,
-          child: IndexedStack(
-            index: currentIndex,
-            children: [
-              LeadingView(
-                key: const PageStorageKey('leading'),
-                scrollController: mainScrollControllers[0],
-                barsVisible: barsVisible,
-              ),
-              MediaView(
-                key: const PageStorageKey('media'),
-                scrollController: mainScrollControllers[1],
-                barsVisible: barsVisible,
-              ),
-              BlocBuilder<MainCubit, MainState>(
-                builder: (context, state) => _walletWidget(state),
-              ),
-              DmsView(
-                key: const PageStorageKey('dms'),
-                // Index must match indexMap[MainViews.dms]; anything else
-                // hands the bars a controller nothing is scrolling.
-                scrollController: mainScrollControllers[3],
-              ),
-              NotificationsView(
-                key: const PageStorageKey('notifications'),
-                barsVisible: barsVisible,
-                scrollController: mainScrollControllers[4],
-              ),
-              SmartWidgetsSearch(
-                key: const PageStorageKey('smartwidgets'),
-              ),
-              DiscoverView(
-                key: const PageStorageKey('discover'),
-                barsVisible: barsVisible,
-                scrollController: mainScrollControllers[6],
-              ),
-            ],
+        final body = FadeTransition(
+          opacity: Tween<double>(begin: 1, end: 0).animate(scrollTopFade),
+          child: SafeArea(
+            top: !isGlass,
+            bottom: !isGlass,
+            child: IndexedStack(
+              index: currentIndex,
+              children: [
+                LeadingView(
+                  key: const PageStorageKey('leading'),
+                  scrollController: mainScrollControllers[0],
+                  barsVisible: barsVisible,
+                ),
+                if (effectiveVisitedTabs.contains(1))
+                  _fadeInTab(
+                    MediaView(
+                      key: const PageStorageKey('media'),
+                      scrollController: mainScrollControllers[1],
+                      barsVisible: barsVisible,
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(2))
+                  _fadeInTab(
+                    BlocBuilder<MainCubit, MainState>(
+                      builder: (context, state) => _walletWidget(state),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(3))
+                  _fadeInTab(
+                    DmsView(
+                      key: const PageStorageKey('dms'),
+                      // Index must match indexMap[MainViews.dms]; anything
+                      // else hands the bars a controller nothing is
+                      // scrolling.
+                      scrollController: mainScrollControllers[3],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(4))
+                  _fadeInTab(
+                    NotificationsView(
+                      key: const PageStorageKey('notifications'),
+                      barsVisible: barsVisible,
+                      scrollController: mainScrollControllers[4],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(5))
+                  _fadeInTab(
+                    SmartWidgetsSearch(
+                      key: const PageStorageKey('smartwidgets'),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(6))
+                  _fadeInTab(
+                    DiscoverView(
+                      key: const PageStorageKey('discover'),
+                      barsVisible: barsVisible,
+                      scrollController: mainScrollControllers[6],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+            ),
           ),
         );
 
         final glassScrollController = mainScrollControllers[
-            currentIndex.clamp(0, mainScrollControllers.length - 1)];
+            settledGlassIndex.value.clamp(0, mainScrollControllers.length - 1)];
 
-        // Content-aware brightness anchors its initial (and post-theme-change)
-        // verdict on MediaQuery.platformBrightness — the *device* setting. On a
-        // dark-mode phone running the light theme that starts the bar dark, so
-        // pin it to the app theme and let sampling take over from there.
         final glassBody = MediaQuery(
           data: MediaQuery.of(context)
               .copyWith(platformBrightness: Theme.of(context).brightness),
           child: GlassContentAwareScope(
-            // The scaffold background is painted outside the sampled boundary,
-            // so the capture is transparent wherever the feed doesn't paint.
-            // Without this the scope fills those pixels from the device
-            // brightness and votes dark over a light feed.
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             child: GlassScaffold(
               // Sampling off: the edge fade repaints the scaffold colour
@@ -399,17 +469,8 @@ class MainViewContent extends HookWidget {
     }
   }
 
-  /// Bottom inset for the new-content pill, measured from the raw Stack the
-  /// `GlassScaffold` `bodyOverlays` live in.
-  ///
-  /// `GlassScaffold` wraps its bottom bar in `SafeArea(bottom: android)`, so
-  /// on Android the bar — and with it the tab and "+" pills — sits
-  /// `padding.bottom` above the screen's bottom edge, while the overlay is not.
-  /// Add that offset back, then anchor to the bar's own geometry: the pill
-  /// bottoms float `kDefaultPadding` (the package `verticalPadding`) above the
-  /// bar's bottom edge. Collapsed, the pill drops to bar level to sit in the
-  /// gap; expanded, it floats above the whole bar.
-  double _newContentPillBottom(BuildContext context, {required bool collapsed}) {
+  double _newContentPillBottom(BuildContext context,
+      {required bool collapsed}) {
     if (collapsed) {
       final safeBottom = defaultTargetPlatform == TargetPlatform.android
           ? MediaQuery.of(context).padding.bottom

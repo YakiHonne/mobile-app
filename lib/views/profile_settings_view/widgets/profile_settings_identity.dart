@@ -20,8 +20,9 @@ import '../../widgets/identity_field.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/modal_with_blur.dart';
 
-/// Yaki username row. Hidden unless the user is subscribed; once a name is
-/// claimed it renders read-only, since a username cannot be changed.
+/// Yaki username row. Always visible: outside a paying plan the whole
+/// container is a tap target that routes to pricing, while a subscriber edits
+/// or — once a name is claimed — reads it back (a username cannot be changed).
 class YakiUsernameField extends HookWidget {
   const YakiUsernameField({super.key});
 
@@ -50,6 +51,7 @@ class YakiUsernameField extends HookWidget {
       builder: (context, state) {
         final claimed = state.username.isNotEmpty;
         final theme = Theme.of(context);
+        final subscribed = isSubscribed(excludeTrial: true);
 
         // A claimed name is settled and unchangeable: the crown marks it as the
         // paid handle, and copying is the only action left on it.
@@ -67,10 +69,22 @@ class YakiUsernameField extends HookWidget {
               : null,
         );
 
+        // Outside the plan the row is a locked preview: the whole container is
+        // a tap target that drops the user onto pricing instead of letting a
+        // trial type a name it cannot claim. AbsorbPointer keeps the field's
+        // own tap recognizer from swallowing the gesture.
+        final row = subscribed
+            ? field
+            : GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => requireSubscription(context, excludeTrial: true),
+                child: AbsorbPointer(child: field),
+              );
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            field,
+            row,
             // No description and no claim button: an available name is claimed
             // by the update-profile press, alongside the metadata.
             if (state.identityError.isNotEmpty) ...[

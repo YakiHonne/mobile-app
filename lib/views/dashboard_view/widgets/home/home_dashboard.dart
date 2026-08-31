@@ -185,7 +185,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                 GestureDetector(
                                   behavior: HitTestBehavior.translucent,
                                   onTap: () {
-                                    Scaffold.of(context).closeDrawer();
+                                    Scaffold.maybeOf(context)?.closeDrawer();
                                     showBlurredModal(
                                       context: context,
                                       view: const PointsLoginPopup(),

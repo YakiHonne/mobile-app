@@ -16,12 +16,8 @@ import '../../add_content_view/add_content_view.dart';
 import '../../add_content_view/add_media_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
-import '../../widgets/fluid_blur_container.dart';
 import 'feature_tour.dart';
 
-/// Widest the bottom bar's content grows to. Past a phone's width, stretching
-/// the tabs edge-to-edge leaves them scattered and out of thumb reach, so the
-/// bar caps and centers. A no-op on phones, which are all narrower than this.
 const double kMaxBottomBarWidth = 480;
 
 class MainViewBottomNavigationBar extends StatelessWidget {
@@ -54,8 +50,6 @@ class MainViewBottomNavigationBar extends StatelessWidget {
             ),
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
-          // Background and top border still span the screen; only the icon row
-          // is capped so five tabs don't scatter across a tablet's width.
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: kMaxBottomBarWidth),
@@ -187,212 +181,8 @@ class MainViewBottomNavigationBar extends StatelessWidget {
   }
 }
 
-class FluidBottomNavigationBar extends StatefulWidget {
-  const FluidBottomNavigationBar({
-    super.key,
-    required this.onClicked,
-  });
-
-  final VoidCallback onClicked;
-
-  @override
-  State<FluidBottomNavigationBar> createState() =>
-      _FluidBottomNavigationBarState();
-}
-
-class _FluidBottomNavigationBarState extends State<FluidBottomNavigationBar> {
-  bool _isOpen = false;
-  OverlayEntry? _overlayEntry;
-
-  void _openPicker(BuildContext context) {
-    final box =
-        TourKeys.create.currentContext!.findRenderObject()! as RenderBox;
-    final buttonTopY = box.localToGlobal(Offset.zero).dy;
-    final bottomOffset =
-        MediaQuery.of(context).size.height - buttonTopY + kDefaultPadding / 1.5;
-
-    setState(() => _isOpen = true);
-    late final OverlayEntry entry;
-    entry = OverlayEntry(
-      builder: (_) => _PickerOverlay(
-        parentContext: context,
-        bottomOffset: bottomOffset,
-        tipOffset: 0,
-        onDismissed: () {
-          entry.remove();
-          _overlayEntry = null;
-          if (mounted) {
-            setState(() => _isOpen = false);
-          }
-        },
-      ),
-    );
-    _overlayEntry = entry;
-    Overlay.of(context, rootOverlay: true).insert(entry);
-  }
-
-  @override
-  void dispose() {
-    _overlayEntry?.remove();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MainCubit, MainState>(
-      builder: (context, state) {
-        return FluidBlurContainer(
-          sigma: 20,
-          borderRadius: kDefaultPadding * 2,
-          height: kBottomNavigationBarHeight + kDefaultPadding / 2,
-          width: 90.w,
-          padding: const EdgeInsets.all(kDefaultPadding / 3),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _homeButton(state, context),
-              _mediaButton(state, context),
-              _plusButton(context),
-              _walletButton(state, context),
-              _dmsButton(state),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _plusButton(BuildContext context) {
-    return GestureDetector(
-      key: TourKeys.create,
-      onTap: () {
-        HapticFeedback.mediumImpact();
-        doIfCanSign(
-          func: () => _openPicker(context),
-          context: context,
-        );
-      },
-      child: Container(
-        width: kBottomNavigationBarHeight - kDefaultPadding / 2,
-        height: kBottomNavigationBarHeight - kDefaultPadding / 2,
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: AnimatedRotation(
-            turns: _isOpen ? 0.125 : 0,
-            duration: const Duration(milliseconds: 100),
-            child: const AppIcon(
-              FeatureIcons.addRaw,
-              size: 22,
-              color: kWhite,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _dmsButton(MainState state) {
-    return BlocBuilder<DmsCubit, DmsState>(
-      builder: (context, dmState) {
-        return Stack(
-          children: [
-            BottomNavBarItem(
-              key: TourKeys.dms,
-              icon: FeatureIcons.dms,
-              selectedIcon: FeatureIcons.dms,
-              isSelected: state.mainView == MainViews.dms,
-              isGlass: true,
-              onLongPress: dmsCubit.markAllAsRead,
-              onClicked: () {
-                context.read<MainCubit>().updateIndex(MainViews.dms);
-                HapticFeedback.mediumImpact();
-              },
-            ),
-            if (canSign())
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: kDefaultPadding * 2,
-                    bottom: kDefaultPadding,
-                  ),
-                  child: FutureBuilder(
-                    future: dmsCubit.gotMessages(),
-                    builder: (context, snapshot) => DotContainer(
-                      color: Theme.of(context).primaryColor,
-                      isNotMarging: true,
-                      size: snapshot.hasData && snapshot.data! ? 8 : 0,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _walletButton(MainState state, BuildContext context) {
-    return BottomNavBarItem(
-      key: TourKeys.wallet,
-      icon: FeatureIcons.wallet,
-      selectedIcon: FeatureIcons.wallet,
-      isSelected: state.mainView == MainViews.wallet,
-      isGlass: true,
-      onClicked: () {
-        walletManagerCubit.requestBalance();
-        context.read<MainCubit>().updateIndex(MainViews.wallet);
-        HapticFeedback.mediumImpact();
-      },
-    );
-  }
-
-  Widget _mediaButton(MainState state, BuildContext context) {
-    return BottomNavBarItem(
-      key: TourKeys.media,
-      icon: FeatureIcons.camera,
-      selectedIcon: FeatureIcons.camera,
-      isSelected: state.mainView == MainViews.media,
-      isGlass: true,
-      onClicked: () {
-        if (state.mainView == MainViews.media) {
-          widget.onClicked.call();
-        }
-        context.read<MainCubit>().updateIndex(MainViews.media);
-        HapticFeedback.mediumImpact();
-      },
-    );
-  }
-
-  Widget _homeButton(MainState state, BuildContext context) {
-    return BottomNavBarItem(
-      key: TourKeys.home,
-      icon: FeatureIcons.home,
-      selectedIcon: FeatureIcons.home,
-      isSelected: state.mainView == MainViews.leading,
-      isGlass: true,
-      onClicked: () {
-        if (state.mainView == MainViews.leading) {
-          widget.onClicked.call();
-        }
-        context.read<MainCubit>().updateIndex(MainViews.leading);
-        HapticFeedback.mediumImpact();
-      },
-    );
-  }
-}
-
-/// Width the collapsed tab pill and the "+" pill each occupy, so overlays can
-/// inset themselves into the gap between the two while the bar is collapsed.
 const kGlassNavCollapsedPillWidth = kBottomNavigationBarHeight;
 
-// ponytail: the glass-mode bottom nav. Reuses FluidBottomNavigationBar's
-// picker overlay. Collapse-on-scroll and light/dark adaptation come from the
-// package (scrollController + adaptiveBrightness); the latter only works
-// because MainView wraps the body in GlassContentAwareScope/Content.
 class LiquidGlassBottomNavigationBar extends StatefulWidget {
   const LiquidGlassBottomNavigationBar({
     super.key,
@@ -403,10 +193,8 @@ class LiquidGlassBottomNavigationBar extends StatefulWidget {
 
   final VoidCallback onClicked;
 
-  /// Drives collapse (scroll down) / expand (scroll up) of the tab pill.
   final ScrollController? scrollController;
 
-  /// Published collapse state, so overlays above the bar can move with it.
   final ValueNotifier<bool>? isCollapsed;
 
   @override
@@ -425,13 +213,10 @@ class _LiquidGlassBottomNavigationBarState
 
   OverlayEntry? _overlayEntry;
 
-  // Anchors the "+" compose pill measurements for the content-type picker.
   final GlobalKey _barKey = GlobalKey();
 
-  // Scrolled far enough down that the tab pill collapses to the selected icon.
   bool _isMini = false;
 
-  // Previous scroll position, for measuring direction between notifications.
   double? _lastScrollPixels;
 
   @override
@@ -441,9 +226,6 @@ class _LiquidGlassBottomNavigationBarState
     WidgetsBinding.instance.addPostFrameCallback((_) => _rebaseline());
   }
 
-  /// Snapshot the current offset so the next [_onScroll] measures a delta
-  /// against it. Skips unless exactly one scrollable is attached — see
-  /// [_onScroll].
   void _rebaseline() {
     if (!mounted) {
       return;
@@ -461,24 +243,15 @@ class _LiquidGlassBottomNavigationBarState
     if (oldWidget.scrollController != widget.scrollController) {
       oldWidget.scrollController?.removeListener(_onScroll);
       widget.scrollController?.addListener(_onScroll);
-      // Deltas must be measured against the incoming tab's own position, not
-      // the outgoing one's. It has no clients until laid out, so rebaseline
-      // after this frame.
       _lastScrollPixels = null;
       WidgetsBinding.instance.addPostFrameCallback((_) => _rebaseline());
     }
   }
 
-  // Collapse follows scroll *direction*, not absolute offset: scrolling down
-  // collapses, scrolling up expands anywhere in the list. Mirrors the delta
-  // threshold GlassTabBar.bottom uses internally.
   static const _scrollDeltaThreshold = 12.0;
 
   void _onScroll() {
     final controller = widget.scrollController;
-    // `position` throws "Too many elements" when a view has the controller
-    // attached to more than one scrollable — transiently true while a tab
-    // swaps its list out. Nothing sensible to measure then, so skip.
     if (controller == null || controller.positions.length != 1) {
       return;
     }
@@ -488,7 +261,6 @@ class _LiquidGlassBottomNavigationBarState
     final previous = _lastScrollPixels;
     _lastScrollPixels = pixels;
 
-    // Ignore the rubber-band overscroll at either end.
     if (previous == null || position.outOfRange) {
       return;
     }
@@ -506,39 +278,29 @@ class _LiquidGlassBottomNavigationBarState
       return;
     }
     setState(() => _isMini = mini);
-    // Let overlays above the bar (the new-content pill) move with it.
     widget.isCollapsed?.value = mini;
   }
 
   void _openPicker(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     const barHeight = kBottomNavigationBarHeight + kDefaultPadding / 2;
-    // Collapsed the compose pill shrinks to the search bar height.
     final pillSize = _isMini ? kBottomNavigationBarHeight : barHeight;
 
     final barBox = _barKey.currentContext!.findRenderObject()! as RenderBox;
-    // The pill floats `kDefaultPadding` (package `verticalPadding`) above the
-    // bar's bottom edge; park the bubble's tip just above it.
     final pillTopY = barBox.localToGlobal(Offset(0, barBox.size.height)).dy -
         kDefaultPadding -
         pillSize;
     final bottomOffset = size.height - pillTopY + kDefaultPadding / 2;
 
-    // The compose pill is the trailing element: its center sits half its own
-    // width in from the bar's right edge (after the horizontal padding).
     final pillCenterX = barBox
         .localToGlobal(
             Offset(barBox.size.width - kDefaultPadding - pillSize / 2, 0))
         .dx;
 
-    // The bubble spans the bar, not the screen: on a tablet the bar is capped
-    // and centered, so anchoring to the screen edges would leave the bubble
-    // floating away from the "+" it points at. On phones the bar fills the
-    // screen, so these reduce to the original kDefaultPadding insets.
     final barLeftX = barBox.localToGlobal(Offset.zero).dx;
     final bubbleLeft = barLeftX + kDefaultPadding;
-    final bubbleRight = size.width - (barLeftX + barBox.size.width) +
-        kDefaultPadding;
+    final bubbleRight =
+        size.width - (barLeftX + barBox.size.width) + kDefaultPadding;
     final bubbleWidth = size.width - bubbleLeft - bubbleRight;
     final tipOffset = pillCenterX - (bubbleLeft + bubbleWidth / 2);
 
@@ -567,8 +329,6 @@ class _LiquidGlassBottomNavigationBarState
     super.dispose();
   }
 
-  // The unread dot sits on the DMs glyph. The icon itself passes no color so
-  // it keeps inheriting the bar's content-aware IconTheme.
   Widget _dmsIcon() {
     const icon = AppIcon(FeatureIcons.dms);
 
@@ -598,9 +358,6 @@ class _LiquidGlassBottomNavigationBarState
     );
   }
 
-  // Package defaults, with the tint pinned to the theme: its 0x3DFFFFFF white
-  // wash reads too bright over dark themes.
-
   @override
   Widget build(BuildContext context) {
     final barsListenable = mainBarsVisible;
@@ -609,9 +366,6 @@ class _LiquidGlassBottomNavigationBarState
       return _buildBody(context, forcedExpanded: false);
     }
 
-    // While the bars are pinned on screen (the feature tour does this) the tab
-    // pill must stay expanded, or the tour's measured targets drift with the
-    // collapse animation.
     return ValueListenableBuilder<bool>(
       valueListenable: barsListenable,
       builder: (context, barsVisible, _) =>
@@ -625,9 +379,6 @@ class _LiquidGlassBottomNavigationBarState
         final index = _views.indexOf(state.mainView);
         final hasSelection = index >= 0;
 
-        // The package asserts selectedIndex is in-bounds; notifications and
-        // smart widgets are main views with no bar tab, so pin a valid index
-        // and gate the indicator highlight on hasSelection instead.
         final selectedIndex = hasSelection ? index : 0;
         final tabs = [
           const GlassTab(icon: AppIcon(FeatureIcons.home)),
@@ -636,29 +387,14 @@ class _LiquidGlassBottomNavigationBarState
           GlassTab(icon: _dmsIcon()),
         ];
 
-        // The searchable variant gives the iOS 26 "collapse into the selected
-        // icon" morph (the Apple Music demo pattern): on scroll the tab pill
-        // shrinks to a pill showing the selected glyph, tap it to expand.
-        // ponytail: there is no separate extra button — the search pill IS the
-        // "+" compose action, so the bar never grows a field and never shows
-        // two trailing buttons.
         return GlassTabBar.searchable(
           key: _barKey,
           selectedIndex: selectedIndex,
           isSearchActive: _isMini && !forcedExpanded,
           barHeight: kBottomNavigationBarHeight + kDefaultPadding / 2,
           searchBarHeight: kBottomNavigationBarHeight,
-          // Views outside the bar (notifications, smart widgets) leave every
-          // tab in its unselected state instead of falling back to home.
           showIndicator: hasSelection,
-          // Here the controller only drives whiten-at-bottom legibility;
-          // collapse is driven by isSearchActive above.
-          scrollController: widget.scrollController,
-          // ponytail: no adaptiveBrightness — the bar pins to the app theme,
-          // like native feed bars, instead of flipping against the content.
           settings: GlassSettings.bottomBar(context),
-          // ponytail: follows the Appearance > Glass quality setting instead of
-          // pinning premium, so Minimal actually lightens the heaviest surface.
           quality: themeCubit.state.glassQuality,
           iconSize: 25,
           onTabSelected: (i) {
@@ -672,18 +408,13 @@ class _LiquidGlassBottomNavigationBarState
             }
             context.read<MainCubit>().updateIndex(view);
             HapticFeedback.mediumImpact();
-            // The parent swaps in the new tab's controller; drop the outgoing
-            // tab's collapsed state and let didUpdateWidget recompute it.
             _setMini(false);
           },
           searchConfig: GlassSearchBarConfig(
-            // Never grow into a text field — this pill is the compose button.
             expandWhenActive: false,
             showsCancelButton: false,
             collapsedTabWidth: kBottomNavigationBarHeight,
             searchIcon: const AppIcon(FeatureIcons.addRaw, size: 25),
-            // `true` is the compose pill; `false` is the collapsed tab pill
-            // asking to expand back to the full bar.
             onSearchToggle: (isComposeTap) {
               HapticFeedback.mediumImpact();
               if (isComposeTap) {
@@ -693,8 +424,6 @@ class _LiquidGlassBottomNavigationBarState
                 );
                 return;
               }
-              // Tapping the collapsed tab pill only expands the bar back —
-              // no other navigation or scroll-to-top side effect.
               _setMini(false);
             },
             collapsedLogoBuilder: (context) => Center(
@@ -807,8 +536,6 @@ class BottomNavBarItem extends StatelessWidget {
   }
 }
 
-// Full-screen overlay entry: dims the background and animates the bubble
-// in from the + button's position with a bounce.
 class _PickerOverlay extends StatefulWidget {
   const _PickerOverlay({
     required this.parentContext,
@@ -822,14 +549,9 @@ class _PickerOverlay extends StatefulWidget {
   final BuildContext parentContext;
   final double bottomOffset;
 
-  /// Insets of the bubble from the screen's edges. Default to the full-width
-  /// phone layout; the glass bar passes the (possibly capped and centered)
-  /// bar's own bounds instead.
   final double bubbleLeft;
   final double bubbleRight;
 
-  /// Horizontal shift of the bubble's pointer from the bubble's center, so it
-  /// can aim at the "+" pill instead of dead-center.
   final double tipOffset;
   final VoidCallback onDismissed;
 
@@ -858,8 +580,6 @@ class _PickerOverlayState extends State<_PickerOverlay>
 
   void _dismiss() => _controller.reverse().whenComplete(widget.onDismissed);
 
-  // Alignment matching the bubble's pointer position (bottom edge, shifted
-  // horizontally by tipOffset) so the bubble visibly grows from the "+" pill.
   Alignment _growFrom(double bubbleWidth) {
     final x = bubbleWidth <= 0
         ? 0.0
@@ -895,14 +615,11 @@ class _PickerOverlayState extends State<_PickerOverlay>
           right: widget.bubbleRight,
           bottom: widget.bottomOffset,
           child: GestureDetector(
-            // Prevent taps on the picker itself from dismissing.
             onTap: () {},
             child: FadeTransition(
               opacity: _fade,
               child: ScaleTransition(
                 scale: _scale,
-                // Grow out of the "+" pill instead of the bubble's center: the
-                // anchor tracks the pointer (bottom, shifted by tipOffset).
                 alignment: _growFrom(
                   MediaQuery.sizeOf(context).width -
                       widget.bubbleLeft -
@@ -1078,7 +795,6 @@ class _ContentTypePicker extends StatelessWidget {
   }
 }
 
-// Clips the widget into a rounded rect with a V-tip at the bottom.
 class _BubbleClipper extends CustomClipper<Path> {
   const _BubbleClipper({
     required this.radius,
@@ -1104,7 +820,6 @@ class _BubbleClipper extends CustomClipper<Path> {
       old.tipOffset != tipOffset;
 }
 
-// Fills and strokes the same bubble shape so the border matches the clip.
 class _BubblePainter extends CustomPainter {
   const _BubblePainter({
     required this.fillColor,
@@ -1146,9 +861,6 @@ class _BubblePainter extends CustomPainter {
       old.tipOffset != tipOffset;
 }
 
-// Shared path: rounded rect with a downward V-tip at the bottom. The tip sides
-// are quadratic beziers that leave the bottom edge horizontally, so the V flows
-// out of the heavily rounded body instead of cutting sharp lines into it.
 Path _buildPath(Size size, double radius, double vTipWidth, double vTipHeight,
     double tipOffset) {
   final cx = size.width / 2 + tipOffset;

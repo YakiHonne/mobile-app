@@ -34,10 +34,6 @@ class ArticleContent extends HookWidget {
       isTablet ? ArticleWritingState.editPreview : ArticleWritingState.edit,
     );
 
-    final title = useTextEditingController(
-      text: context.read<WriteArticleCubit>().state.title,
-    );
-
     final content = useTextEditingController(
       text: context.read<WriteArticleCubit>().state.content,
     );
@@ -55,7 +51,6 @@ class ArticleContent extends HookWidget {
       listenWhen: (previous, current) =>
           previous.tryToLoad != current.tryToLoad,
       listener: (context, state) {
-        title.text = state.title;
         content.text = state.content;
       },
       builder: (context, state) {
@@ -73,9 +68,6 @@ class ArticleContent extends HookWidget {
                       cubit: context.read<WriteArticleCubit>(),
                       onDeleteDraft:
                           context.read<WriteArticleCubit>().deleteDraft,
-                      titleController: title,
-                      onTitleChanged:
-                          context.read<WriteArticleCubit>().setTitleText,
                     )
                   : Padding(
                       padding:
@@ -83,12 +75,9 @@ class ArticleContent extends HookWidget {
                       child: MarkdownTextInput(
                         (c) =>
                             context.read<WriteArticleCubit>().setContentText(c),
-                        (t) =>
-                            context.read<WriteArticleCubit>().setTitleText(t),
-                        title,
-                        removeBottomPadding: isSubscriber,
                         state.content,
                         isMenuDismissed,
+                        removeBottomPadding: isSubscriber,
                         onDeleteDraft: onDeleteDraft,
                         onMetadataInserted: (imeta) {
                           context.read<WriteArticleCubit>().addImeta(imeta);

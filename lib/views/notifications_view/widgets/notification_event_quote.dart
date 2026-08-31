@@ -302,6 +302,16 @@ class NotificationEventMain extends HookWidget {
         ];
 
         return getRichtext(spans);
+      } else if (getPremiumStatus(mainEvent.origin)) {
+        final spans = [
+          TextSpan(
+            text: context.t.userPublishedPremiumNote(
+              name: metadata.getName().trim(),
+            ),
+          ),
+        ];
+
+        return getRichtext(spans);
       } else {
         return const SizedBox.shrink();
       }
@@ -320,9 +330,13 @@ class NotificationEventMain extends HookWidget {
 
       switch (mainEvent.kind) {
         case EventKind.LONG_FORM:
-          text = context.t.userPublishedArticle(
-            name: metadata.getName().trim(),
-          );
+          text = getPremiumStatus(mainEvent.origin)
+              ? context.t.userPublishedPremiumArticle(
+                  name: metadata.getName().trim(),
+                )
+              : context.t.userPublishedArticle(
+                  name: metadata.getName().trim(),
+                );
         case EventKind.CURATION_ARTICLES:
           text = context.t.userPublishedCuration(
             name: metadata.getName().trim(),

@@ -49,6 +49,10 @@ class ExplorePacksCubit extends Cubit<ExplorePacksState> {
       until: isAdding ? state.packs.last.createdAt.toSecondsSinceEpoch() : null,
     );
 
+    if (isClosed) {
+      return;
+    }
+
     final packs = events.map((event) => PacksModel.fromEvent(event)).toList();
     final usedPacks = packs.where((pack) => pack.pubkeys.isNotEmpty).toList();
 

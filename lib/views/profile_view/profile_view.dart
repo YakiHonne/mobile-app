@@ -230,6 +230,7 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                     width: 50.w,
                     child: FluidBlurContainer(
                       borderRadius: kDefaultPadding * 2,
+                      backgroundLighten: 0.12,
                       padding: const EdgeInsets.symmetric(
                         vertical: kDefaultPadding / 4,
                       ),
@@ -744,6 +745,7 @@ class ProfileAppBar extends StatelessWidget {
           height: constraints.maxHeight,
           radius: 0,
           isRound: false,
+          borderColor: kTransparent,
         ),
       ),
     );

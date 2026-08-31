@@ -14,6 +14,7 @@ import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
+import 'paid_notes_ad_cache.dart';
 
 part 'leading_state.dart';
 
@@ -55,10 +56,9 @@ class LeadingCubit extends Cubit<LeadingState> {
   final extraIds = <String>{};
   int? score;
   Timer? currentExtraTimer;
-  Timer? _paidNoteAdsRefreshTimer;
 
-  // Ads dropped from rotation once seen this many times, mirrors web's cap.
-  static const int maxAdSeenCount = 5;
+  final _adCache = PaidNotesAdCache();
+  static const int _adFreshnessMs = 24 * 60 * 60 * 1000;
 
   // =============================================================================
   // STREAMS & LISTENERS
@@ -147,8 +147,20 @@ class LeadingCubit extends Cubit<LeadingState> {
     if (subscriptionCubit.isPremium) {
       return;
     }
+
+    final lastFetchedAt =
+        await localDatabaseRepository.getPaidNoteAdsLastFetchedAt();
+    final isFresh =
+        DateTime.now().millisecondsSinceEpoch - lastFetchedAt < _adFreshnessMs;
+    if (isFresh && _adCache.rotation.isNotEmpty) {
+      _emitAdGate();
+      return;
+    }
+
+    final seenCounts = await localDatabaseRepository.getPaidNoteAdsSeenCounts();
     final threeDaysAgo =
         (DateTime.now().millisecondsSinceEpoch ~/ 1000) - (3 * 24 * 3600);
+
     try {
       var events = await NostrFunctionsRepository.getEventsAsync(
         lTags: [FN_SEARCH_VALUE],
@@ -164,31 +176,51 @@ class LeadingCubit extends Cubit<LeadingState> {
         );
       }
 
-      final seenCounts = await localDatabaseRepository.getPaidNoteAdsSeenCounts();
-      final freshEvents =
-          events.where((e) => (seenCounts[e.id] ?? 0) < maxAdSeenCount).toList();
-
-      if (!isClosed && events.isNotEmpty) {
-        emit(
-          state.copyWith(
-            paidNoteAds: freshEvents.isNotEmpty ? freshEvents : events,
-          ),
-        );
-      }
+      await localDatabaseRepository.setPaidNoteAdsLastFetchedAt(
+        DateTime.now().millisecondsSinceEpoch,
+      );
+      _adCache.setPool(events, seenCounts);
+      _emitAdGate();
     } catch (_) {}
+  }
 
-    _paidNoteAdsRefreshTimer ??= Timer.periodic(
-      const Duration(hours: 24),
-      (_) => fetchPaidNoteAds(),
+  void _emitAdGate() {
+    if (isClosed) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        paidNoteAds: _adCache.hasServableAds ? _adCache.pool : const [],
+      ),
     );
   }
 
-  /// Records a paid note ad impression so it rotates out after
-  /// [maxAdSeenCount] views instead of repeating indefinitely.
-  Future<void> markPaidNoteAdSeen(String eventId) async {
-    final counts = await localDatabaseRepository.getPaidNoteAdsSeenCounts();
-    counts[eventId] = (counts[eventId] ?? 0) + 1;
-    await localDatabaseRepository.setPaidNoteAdsSeenCounts(counts: counts);
+  /// Pull-to-refresh / source change: keep the pool, just release the slot
+  /// assignments so the feed continues pulling the next queued ads. Only
+  /// refetch once the rotation can no longer serve anything (all ads capped).
+  void _onFeedRefresh() {
+    if (subscriptionCubit.isPremium) {
+      return;
+    }
+    _adCache.clearAssignments();
+    if (_adCache.pool.isNotEmpty && !_adCache.hasServableAds) {
+      fetchPaidNoteAds();
+      return;
+    }
+    _emitAdGate();
+  }
+
+  /// Ad to render at feed slot [index], or null if none left this pass.
+  Event? paidNoteAdForIndex(int index) {
+    if (subscriptionCubit.isPremium) {
+      return null;
+    }
+    return _adCache.forIndex(
+      index,
+      onConsumed: () => localDatabaseRepository.setPaidNoteAdsSeenCounts(
+        counts: _adCache.seenCounts,
+      ),
+    );
   }
 
   void onRemoveMutedContent(String pubkey) {
@@ -362,6 +394,7 @@ class LeadingCubit extends Cubit<LeadingState> {
         appSettingsManagerCubit.getNotesSelectedSource();
 
     if (!isAdding) {
+      _onFeedRefresh();
       clearData(currentSelectedSource.key);
     } else {
       if (!isClosed) {
@@ -680,7 +713,6 @@ class LeadingCubit extends Cubit<LeadingState> {
     feedStream.cancel();
     mutesStream.cancel();
     noteDeletionStream.cancel();
-    _paidNoteAdsRefreshTimer?.cancel();
     // Note: score is an int, not a StreamSubscription
     return super.close();
   }

@@ -11,6 +11,7 @@ import '../../models/article_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../second_reader_cubit/second_reader_cubit.dart';
 
 part 'write_article_state.dart';
 
@@ -85,6 +86,7 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
 
   void deleteDraft() {
     nostrRepository.deleteArticleDraft();
+    SecondReaderCubit.clearAllPersisted();
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -292,8 +294,6 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
       description: description,
     );
 
-    lg.i(articleAutoSaveModel.toJson());
-
     nostrRepository.saveArticleDraft(
       article: articleAutoSaveModel.toJson(),
     );
@@ -391,38 +391,38 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
 
     try {
       final content = sanitizeContent(state.content);
-      
+
       final eventTags = <List<String>>[
-          getClientTag(),
-          [
-            'd',
-            if (article != null) article!.identifier else randomHexString(16)
-          ],
-          ['image', state.imageLink],
-          ['title', state.title],
-          ['summary', state.excerpt],
-          [
-            'published_at',
-            if (article != null)
-              article!.publishedAt.toSecondsSinceEpoch().toString()
-            else
-              currentUnixTimestampSeconds().toString(),
-          ],
-          if (state.isSensitive) ...[
-            ['content-warning', ''],
-            ['L', 'content-warning']
-          ],
-          ...state.keywords.map((tag) => ['t', tag]),
-          if (state.isZapSplitEnabled)
-            ...state.zapsSplits.map(
-              (e) => [
-                'zap',
-                e.pubkey,
-                mandatoryRelays.first,
-                e.percentage.toString(),
-              ],
-            ),
-        ];
+        getClientTag(),
+        [
+          'd',
+          if (article != null) article!.identifier else randomHexString(16)
+        ],
+        ['image', state.imageLink],
+        ['title', state.title],
+        ['summary', state.excerpt],
+        [
+          'published_at',
+          if (article != null)
+            article!.publishedAt.toSecondsSinceEpoch().toString()
+          else
+            currentUnixTimestampSeconds().toString(),
+        ],
+        if (state.isSensitive) ...[
+          ['content-warning', ''],
+          ['L', 'content-warning']
+        ],
+        ...state.keywords.map((tag) => ['t', tag]),
+        if (state.isZapSplitEnabled)
+          ...state.zapsSplits.map(
+            (e) => [
+              'zap',
+              e.pubkey,
+              mandatoryRelays.first,
+              e.percentage.toString(),
+            ],
+          ),
+      ];
 
       for (final imeta in state.imetas) {
         if (imeta['url'] != null &&
@@ -510,5 +510,4 @@ class WriteArticleCubit extends Cubit<WriteArticleState> {
       onSuccess.call();
     }
   }
-
 }

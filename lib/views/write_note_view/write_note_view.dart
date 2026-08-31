@@ -18,12 +18,14 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../smart_widgets_view/widgets/smart_widget_container.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
+import '../widgets/content_published_modal.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
@@ -199,8 +201,22 @@ class AddReply extends HookWidget {
                       );
                     },
                     onSuccess: (ev) {
-                      Navigator.pop(nostrRepository.currentContext());
+                      Navigator.pop(context);
                       onSuccess?.call(ev);
+                      if (replyContent == null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          final rootContext =
+                              YNavigator.navigatorKey.currentContext ??
+                                  nostrRepository.currentContext();
+                          if (rootContext.mounted) {
+                            showContentPublishedModalSheet(
+                              rootContext,
+                              event: DetailedNoteModel.fromEvent(ev),
+                              contentType: AppContentType.note,
+                            );
+                          }
+                        });
+                      }
                     },
                   );
             }

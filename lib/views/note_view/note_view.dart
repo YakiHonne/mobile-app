@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -24,11 +23,8 @@ import 'widgets/nested_reply_item.dart';
 // Constants
 const _kFadeDuration = Duration(milliseconds: 300);
 const _kStaggerDelay = Duration(milliseconds: 50);
-// Fraction of the viewport reserved above the anchored main note so the parent
-// above it peeks through, signalling there's content to scroll up to.
 const _kParentPeek = 0.015;
-// Parent count at/above which the eager Column is swapped for a lazy SliverList.
-// const _kParentsSliverThreshold = 15;
+const _kSearchReservedPx = 48.0;
 
 class NoteView extends HookWidget {
   NoteView({
@@ -62,10 +58,13 @@ class NoteView extends HookWidget {
     // Just fetch the parents. Positioning is handled by the center-anchored
     // CustomScrollView below: the main note is the `center` sliver, so parents
     // grow upward above it without ever moving it — no scroll chasing needed.
+    final isThreadSearching = useState(false);
+
     final loadPrevious = useCallback(
       () => notesEventsCubit.getNotePrevious(
         currentNote.value,
-        (_) {}, // Silent loading
+        (loading) => isThreadSearching.value = loading,
+        isActive: () => context.mounted,
       ),
       [currentNote.value.id],
     );
@@ -192,6 +191,12 @@ class NoteView extends HookWidget {
       builder: (context, state) {
         final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
         final mutedThread = state.mutesEvents.contains(currentNote.value.id);
+        final mediaQuery = MediaQuery.of(context);
+        final viewportHeight =
+            mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
+        final searchAnchor =
+            (_kSearchReservedPx / viewportHeight).clamp(0.0, 1.0);
+
         return FluidScaffold(
           title: context.t.thread.capitalizeFirst(),
           onBackClicked: () => _handleBack(context, threadIds, updateNote),
@@ -200,14 +205,9 @@ class NoteView extends HookWidget {
             duration: _kFadeDuration,
             curve: Curves.easeInOut,
             child: Padding(
-              // Inset the whole view rather than a leading sliver: this scroll
-              // view uses `center` + `anchor`, so slivers before the centre lay
-              // out upward and a SliverPadding there would move the anchor.
               padding: const EdgeInsets.symmetric(
                 horizontal: kDefaultPadding / 2,
               ).copyWith(top: fluidScaffoldTopInset(context)),
-              // Refresh replies when stats/mutes change (was inside the old
-              // NoteRepliesList).
               child: BlocListener<NotesEventsCubit, NotesEventsState>(
                 listenWhen: (prev, curr) =>
                     prev.eventsStats[currentNote.value.id] !=
@@ -217,39 +217,29 @@ class NoteView extends HookWidget {
                 listener: (_, __) => updateReplies(),
                 child: CustomScrollView(
                   controller: scrollController,
-                  // The main note is the fixed scroll anchor: header + parents
-                  // sit in the single sliver BEFORE it and grow upward without
-                  // ever moving it; replies come after. No scroll chasing.
                   center: targetKey,
-                  // Leave a peek of the parent above the main note when it's a
-                  // reply, so the user sees there's content to scroll up to.
-                  // Stable per note (derived from currentNote, not async loads)
-                  // so it never causes a jump.
-                  anchor: currentNote.value.isRoot ? 0.0 : _kParentPeek,
+                  anchor: currentNote.value.isRoot
+                      ? 0.0
+                      : (isThreadSearching.value &&
+                              (previousNotes.isEmpty ||
+                                  !previousNotes.first.isRoot))
+                          ? searchAnchor
+                          : _kParentPeek,
                   slivers: [
-                    // Everything before `center` lays out upward, reverse list
-                    // order — so header (top) comes first, parents (adjacent to
-                    // the main note) last.
                     SliverToBoxAdapter(
                       child: _HeaderContent(
                         note: currentNote.value,
-                        previousNotes: previousNotes,
                         rootEvent: rootEvent.value,
                       ),
                     ),
 
-                    // Parents. Cheap eager Column for short chains; lazy
-                    // SliverList once they get long enough to matter.
+                    if (isThreadSearching.value &&
+                        (previousNotes.isEmpty || !previousNotes.first.isRoot))
+                      const SliverToBoxAdapter(
+                        child: _ThreadSearchIndicator(),
+                      ),
+
                     if (previousNotes.isNotEmpty)
-                      // if (previousNotes.length < _kParentsSliverThreshold)
-                      //   SliverToBoxAdapter(
-                      //     child: _PreviousNotesColumn(
-                      //       notes: previousNotes,
-                      //       onNoteSelected: updateNote,
-                      //       isTransitioning: isTransitioning.value,
-                      //     ),
-                      //   )
-                      // else
                       _PreviousNotesSliver(
                         notes: previousNotes,
                         onNoteSelected: updateNote,
@@ -311,6 +301,34 @@ class NoteView extends HookWidget {
   }
 }
 
+class _ThreadSearchIndicator extends StatelessWidget {
+  const _ThreadSearchIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: kDefaultPadding / 2,
+        children: [
+          SpinKitCircle(
+            color: Theme.of(context).primaryColor,
+            size: 15,
+          ),
+          Text(
+            context.t.loadingThread,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).highlightColor,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class MutedNote extends StatelessWidget {
   const MutedNote({super.key, required this.id});
   final String id;
@@ -356,7 +374,9 @@ class MutedNote extends StatelessWidget {
                   muteKey: id,
                   isPubkey: false,
                   onSuccess: () {
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               );
@@ -375,29 +395,17 @@ class MutedNote extends StatelessWidget {
 class _HeaderContent extends HookWidget {
   const _HeaderContent({
     required this.note,
-    required this.previousNotes,
     required this.rootEvent,
   });
 
   final DetailedNoteModel note;
-  final List<DetailedNoteModel> previousNotes;
   final String? rootEvent;
 
   bool get isAddressable =>
       (note.originId ?? '').isNotEmpty && !(note.isOriginEtag ?? false);
 
-  bool get shouldShowIndicator {
-    return isAddressable
-        ? (previousNotes.isEmpty && note.replyTo.isNotEmpty) ||
-            (previousNotes.isNotEmpty && previousNotes.first.replyTo.isNotEmpty)
-        : (!note.isRoot && previousNotes.isEmpty) ||
-            (previousNotes.isNotEmpty && !previousNotes.first.isRoot);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final hasBeenFound = useState(false);
-
     return Column(
       children: [
         const SizedBox(height: kDefaultPadding / 2),
@@ -409,36 +417,7 @@ class _HeaderContent extends HookWidget {
         if (!isAddressable && rootEvent != null)
           Align(
             alignment: Alignment.centerLeft,
-            child: _buildNonAddressableContainer((hbf) async {
-              await Future.delayed(const Duration(milliseconds: 500));
-              hasBeenFound.value = hbf;
-            }),
-          ),
-        if (isAddressable
-            ? shouldShowIndicator
-            : (shouldShowIndicator && !hasBeenFound.value))
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  LucideIcons.moreHorizontal,
-                  size: 20,
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
-                ),
-                const SizedBox(width: kDefaultPadding / 3),
-                Text(
-                  context.t.thread,
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: Theme.of(context)
-                            .primaryColor
-                            .withValues(alpha: 0.7),
-                        fontStyle: FontStyle.italic,
-                      ),
-                ),
-              ],
-            ),
+            child: _buildNonAddressableContainer((_) {}),
           ),
       ],
     );
@@ -498,61 +477,6 @@ class _HeaderContent extends HookWidget {
   }
 }
 
-// Parents as an eager Column, used for short ancestor chains. In its own
-// sliver-before-center box, so it renders top-to-bottom (root first, direct
-// parent last, adjacent to the main note). Swapped for _PreviousNotesSliver
-// once the chain reaches _kParentsSliverThreshold.
-// class _PreviousNotesColumn extends StatelessWidget {
-//   const _PreviousNotesColumn({
-//     required this.notes,
-//     required this.onNoteSelected,
-//     required this.isTransitioning,
-//   });
-
-//   final List<DetailedNoteModel> notes;
-//   final Function(DetailedNoteModel) onNoteSelected;
-//   final bool isTransitioning;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         for (var index = 0; index < notes.length; index++) ...[
-//           if (index != 0) const SizedBox(height: kDefaultPadding / 2),
-//           TweenAnimationBuilder<double>(
-//             key: ValueKey(notes[index].id),
-//             tween: Tween(begin: 0.0, end: 1.0),
-//             duration: _kFadeDuration + (_kStaggerDelay * index),
-//             curve: Curves.easeOut,
-//             builder: (context, value, child) {
-//               return Opacity(
-//                 opacity: value,
-//                 child: Transform.translate(
-//                   offset: Offset(0, 10 * (1 - value)),
-//                   child: child,
-//                 ),
-//               );
-//             },
-//             child: DetailedNoteContainer(
-//               note: notes[index],
-//               isMain: false,
-//               addLine: true,
-//               extendLine: index == notes.length - 1,
-//               onClicked:
-//                   isTransitioning ? null : () => onNoteSelected(notes[index]),
-//             ),
-//           ),
-//         ],
-//       ],
-//     );
-//   }
-// }
-
-// Parents as a lazy SliverList, for long ancestor chains. Placed before the
-// `center` anchor, so its children lay out bottom-to-top: index 0 sits adjacent
-// to the main note. The chain is fed reversed (direct parent first) so the
-// visual order matches the Column, and only the nearest item extends its line
-// down to the main note.
 class _PreviousNotesSliver extends StatelessWidget {
   const _PreviousNotesSliver({
     required this.notes,
@@ -612,25 +536,8 @@ List<Widget> _buildReplySlivers(
 
   if (isLoading) {
     return [
-      SliverToBoxAdapter(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(kDefaultPadding * 2),
-            child: Column(
-              children: [
-                SpinKitCircle(
-                  color: Theme.of(context).primaryColor,
-                  size: 30,
-                ),
-                const SizedBox(height: kDefaultPadding / 2),
-                Text(
-                  context.t.loading,
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-              ],
-            ),
-          ),
-        ),
+      const SliverToBoxAdapter(
+        child: SizedBox(height: kDefaultPadding * 2),
       ),
     ];
   }

@@ -1,15 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:numeral/numeral.dart';
 
+import '../../../logic/creator_subscriptions_cubit/creator_subscriptions_cubit.dart';
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../creator_subscribe_view/creator_subscribe_view.dart';
+import '../../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../../main_view/widgets/profile_share_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
@@ -276,29 +279,51 @@ class _CreatorSubscribeButton extends StatelessWidget {
               current.isCreatorSubscriptionLoading ||
           previous.isSameUser != current.isSameUser,
       builder: (context, state) {
-        if (kIapEnabled || state.isSameUser) {
-          return const SizedBox.shrink();
-        }
-
-        if (state.isCreatorSubscriptionLoading) {
+        if (state.isSameUser) {
           return const SizedBox.shrink();
         }
 
         final providers = state.creatorProviders;
-        if (providers == null || providers.isEmpty) {
+        final canSubscribe = providers != null && providers.isNotEmpty;
+
+        if (!canSubscribe) {
           return const SizedBox.shrink();
         }
 
         return Padding(
           padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
-          child: OutlinedButton.icon(
-            onPressed: () => CreatorProvidersSheet.show(
-              context,
-              providers: providers,
-              creatorMetadata: state.user,
-            ),
-            icon: const Icon(LucideIcons.star, size: 16),
-            label: Text(context.t.creator_subscribe.capitalizeFirst()),
+          child:
+              BlocBuilder<CreatorSubscriptionsCubit, CreatorSubscriptionsState>(
+            bloc: creatorSubscriptionsCubit,
+            builder: (context, _) {
+              final isSubscribed =
+                  creatorSubscriptionsCubit.isSubscribedTo(state.user.pubkey);
+
+              if (isSubscribed) {
+                return OutlinedButton.icon(
+                  onPressed: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => const CreatorsSubscriptionsView(),
+                    ),
+                  ),
+                  icon: const Icon(LucideIcons.check, size: 16),
+                  label: Text(context.t.creator_subscribed.capitalizeFirst()),
+                );
+              }
+
+              return TextButton.icon(
+                onPressed: canSubscribe
+                    ? () => CreatorProvidersSheet.show(
+                          context,
+                          providers: providers,
+                          creatorMetadata: state.user,
+                        )
+                    : null,
+                icon: const Icon(LucideIcons.crown, size: 16),
+                label: Text(context.t.creator_subscribe.capitalizeFirst()),
+              );
+            },
           ),
         );
       },

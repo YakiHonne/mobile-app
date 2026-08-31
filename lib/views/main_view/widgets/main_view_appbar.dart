@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -39,44 +40,48 @@ mixin _AppBarHelpers on StatelessWidget {
   bool get isConnected;
   List<ScrollController> get scrollControllers;
 
+  GestureDetector _eventsCountRow(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showAppModalSheet(
+          context: context,
+          builder: (_) => const UnsentEventsView(),
+        );
+      },
+      behavior: HitTestBehavior.translucent,
+      child: BlocBuilder<UnsentEventsCubit, UnsentEventsState>(
+        builder: (context, state) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: kDefaultPadding / 8,
+            children: [
+              AnimatedFlipCounter(
+                value: state.events.length,
+                textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                enableAbbreviation: true,
+              ),
+              RotatedBox(
+                quarterTurns: 1,
+                child: AppIcon(
+                  FeatureIcons.arrowUp,
+                  size: 15,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   Positioned _eventsCount(BuildContext context) {
     return Positioned(
       right: kDefaultPadding / 1.5,
-      child: GestureDetector(
-        onTap: () {
-          showAppModalSheet(
-            context: context,
-            builder: (_) => const UnsentEventsView(),
-          );
-        },
-        behavior: HitTestBehavior.translucent,
-        child: BlocBuilder<UnsentEventsCubit, UnsentEventsState>(
-          builder: (context, state) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: kDefaultPadding / 8,
-              children: [
-                AnimatedFlipCounter(
-                  value: state.events.length,
-                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                  enableAbbreviation: true,
-                ),
-                RotatedBox(
-                  quarterTurns: 1,
-                  child: AppIcon(
-                    FeatureIcons.arrowUp,
-                    size: 15,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+      child: _eventsCountRow(context),
     );
   }
 
@@ -88,7 +93,7 @@ mixin _AppBarHelpers on StatelessWidget {
         spacing: kDefaultPadding / 4,
         children: [
           Text(
-            context.t.waitingForNetwork,
+            context.t.reconnecting,
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).highlightColor,
@@ -103,6 +108,31 @@ mixin _AppBarHelpers on StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _offlineStatusRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 3,
+      children: [
+        SpinKitFadingCircle(
+          color: Theme.of(context).primaryColor,
+          size: 15,
+        ),
+        Expanded(
+          child: Text(
+            context.t.reconnecting,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).highlightColor,
+                ),
+          ),
+        ),
+        _eventsCountRow(context),
+      ],
     );
   }
 
@@ -323,12 +353,10 @@ class FluidMainViewAppBar extends StatelessWidget
   });
 
   static const _toolbarHeight = 48.0;
-  static const _offlineHeight = 15.0;
   static const _buttonSize = 45.0;
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(_toolbarHeight + (isConnected ? 0 : _offlineHeight));
+  Size get preferredSize => const Size.fromHeight(_toolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -340,18 +368,6 @@ class FluidMainViewAppBar extends StatelessWidget
           padding: const EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 1.5,
           ),
-          bottom: isConnected
-              ? null
-              : PreferredSize(
-                  preferredSize: const Size.fromHeight(_offlineHeight),
-                  child: Stack(
-                    children: [
-                      const SizedBox(width: double.infinity, height: 15),
-                      _offlineColumn(context),
-                      _eventsCount(context),
-                    ],
-                  ),
-                ),
           // Profile picture — opens drawer
           leading: Padding(
             padding: const EdgeInsets.only(right: kDefaultPadding / 1.5),
@@ -387,36 +403,73 @@ class FluidMainViewAppBar extends StatelessWidget
             ),
           ),
 
-          // Search bar — fills remaining width
-          title: GestureDetector(
-            onTap: () {
-              YNavigator.pushPage(
-                context,
-                (context) => SearchView(),
-              );
-            },
-            behavior: HitTestBehavior.translucent,
-            child: FluidBlurContainer(
-              height: 45,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: kDefaultPadding / 2,
-                children: [
-                  AppIcon(
-                    FeatureIcons.search,
-                    size: 16,
-                    color: Theme.of(context).highlightColor,
-                  ),
-                  Text(
-                    context.t.search.capitalizeFirst(),
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+          // Search bar — fills remaining width, or collapses to an icon-only
+          // circle (with a network-status pill alongside) while offline.
+          title: isConnected
+              ? GestureDetector(
+                  onTap: () {
+                    YNavigator.pushPage(
+                      context,
+                      (context) => SearchView(),
+                    );
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: FluidBlurContainer(
+                    height: 45,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: kDefaultPadding / 2,
+                      children: [
+                        AppIcon(
+                          FeatureIcons.search,
+                          size: 16,
                           color: Theme.of(context).highlightColor,
                         ),
+                        Text(
+                          context.t.search.capitalizeFirst(),
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                )
+              : Row(
+                  spacing: kDefaultPadding / 4,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        YNavigator.pushPage(
+                          context,
+                          (context) => SearchView(),
+                        );
+                      },
+                      behavior: HitTestBehavior.translucent,
+                      child: FluidBlurContainer(
+                        height: _buttonSize,
+                        width: _buttonSize,
+                        child: Center(
+                          child: AppIcon(
+                            FeatureIcons.search,
+                            size: 16,
+                            color: Theme.of(context).highlightColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: FluidBlurContainer(
+                        height: _buttonSize,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: kDefaultPadding / 2,
+                        ),
+                        child: _offlineStatusRow(context),
+                      ),
+                    ),
+                  ],
+                ),
           actions: [
             const SizedBox(
               width: kDefaultPadding / 4,

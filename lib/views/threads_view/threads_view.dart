@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../models/detailed_note_model.dart';
 import '../../utils/utils.dart';
@@ -26,7 +25,7 @@ class ContentThreadsView extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useScrollController();
     final contentReplies = useState(<DetailedNoteModel>[]);
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = deviceIsTablet;
 
     final f = useCallback(
       () async {

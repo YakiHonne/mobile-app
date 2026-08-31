@@ -618,15 +618,14 @@ Widget itemBuilder({
   } else {
     return Builder(
       builder: (context) {
-        return SafeArea(
-          child: CommonThumbnail(
-            image: entry.key,
-            fit: BoxFit.contain,
-            radius: isRound ? kDefaultPadding / 2 : 0,
-            useDefaultNoMedia: false,
-            isRound: isRound,
-            fullResolution: true,
-          ),
+        return CommonThumbnail(
+          image: entry.key,
+          fit: BoxFit.contain,
+          radius: isRound ? kDefaultPadding / 2 : 0,
+          useDefaultNoMedia: false,
+          isRound: isRound,
+          fullResolution: true,
+          backgroundColor: kTransparent,
         );
       },
     );

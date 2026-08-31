@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.0.7] - 2026-08-31
+
+### Added
+
+- Kind 1111 (NIP-22) comment support in notes and replies.
+- Free plan card and a side-by-side plan comparison in pricing.
+- Premium badge and a "Seen on" relay indicator.
+- Landscape support for video playback.
+
+### Changed
+
+- Rewritten paid-note payment flow with live tracking, auto-publish, and a new published-confirmation screen.
+- Username now always shown in edit profile, with connect and upgrade prompts when needed.
+- Second Reader AI actions now match each paragraph's feedback, and the AI assistant stays open after processing.
+
+### Fixed
+
+- SSE stream now re-logs in on an expired session and retries.
+- Payment sheet no longer leaves stale invoices behind when closed.
+- Removed the 800 sats payment preset from zaps.
+- General bug fixes and performance enhancements.
+
 ## [2.0.6] - 2026-08-20
 
 ### Added

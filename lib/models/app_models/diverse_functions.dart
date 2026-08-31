@@ -368,6 +368,14 @@ Set<String> getPtags(String content) {
   }
 }
 
+bool isPubkeyInContent(String content, String pubkey) {
+  if (content.contains(pubkey)) {
+    return true;
+  }
+
+  return getPtags(content).contains(pubkey);
+}
+
 List<EventCoordinates> getNaddr(String content) {
   try {
     final matches = nostrNaddrRegex.allMatches(content);

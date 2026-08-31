@@ -293,7 +293,9 @@ class AccountManager extends HookWidget {
         context.read<MainCubit>().setDefault();
         context.read<WalletsManagerCubit>().deleteWalletConfiguration();
         Navigator.of(context).popUntil((route) => route.isFirst);
-        Scaffold.of(scaffoldContext).closeDrawer();
+        if (scaffoldContext.mounted) {
+          Scaffold.maybeOf(scaffoldContext)?.closeDrawer();
+        }
       }
     }
 

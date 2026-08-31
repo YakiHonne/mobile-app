@@ -8,10 +8,8 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../subscription_view/pricing/pricing_screen.dart';
+import 'app_icon.dart';
 
-/// Upsell banner for signed-in users without a subscription.
-/// [dismissible] persists the dismissal per pubkey (leading view); the drawer
-/// uses the non-dismissible variant so it is always there.
 class UpgradeBanner extends HookWidget {
   const UpgradeBanner({super.key, this.dismissible = false});
 
@@ -21,8 +19,6 @@ class UpgradeBanner extends HookWidget {
   Widget build(BuildContext context) {
     final pubkey = currentSigner?.getPublicKey() ?? '';
 
-    // Read prefs every build rather than seeding a hook once — prefs are
-    // in-memory, and this stays correct when the account is switched.
     final refresh = useState(0);
     final dismissed = dismissible &&
         localDatabaseRepository.getUpgradeBannerDismissed(pubkey);
@@ -37,17 +33,13 @@ class UpgradeBanner extends HookWidget {
       builder: (context, state) {
         final status = state.subscriptionStatus;
 
-        // ponytail: null status = not fetched yet, stay quiet rather than
-        // flashing the banner at paying users on cold start.
         if (status == null || status.isActivePaidSub) {
           return const SizedBox.shrink();
         }
 
         final padding = EdgeInsets.only(
-          // The drawer column already carries its own horizontal padding.
           left: dismissible ? kDefaultPadding / 2 : 0,
           right: dismissible ? kDefaultPadding / 2 : 0,
-
           bottom: kDefaultPadding / 4,
         );
 
@@ -56,9 +48,11 @@ class UpgradeBanner extends HookWidget {
             padding: padding,
             child: _TrialStrip(
               daysLeft: status.trialDaysRemaining,
-              // The drawer column is narrow — the row layout squeezes the
-              // text next to the button there.
               stacked: !dismissible,
+              onDismiss: () {
+                localDatabaseRepository.setUpgradeBannerDismissed(pubkey);
+                refresh.value++;
+              },
             ),
           );
         }
@@ -112,12 +106,19 @@ class UpgradeBanner extends HookWidget {
 /// Trial strip shown while the subscription is active but still in trial:
 /// remaining days plus a shortcut to the plans.
 class _TrialStrip extends StatelessWidget {
-  const _TrialStrip({required this.daysLeft, this.stacked = false});
+  const _TrialStrip({
+    required this.daysLeft,
+    this.stacked = false,
+    this.onDismiss,
+  });
 
   final int daysLeft;
 
   /// Button below the text instead of beside it — for narrow containers.
   final bool stacked;
+
+  /// Dismisses the whole banner using the same per-user pref as the upgrade.
+  final VoidCallback? onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +188,14 @@ class _TrialStrip extends StatelessWidget {
               if (!stacked) ...[
                 const SizedBox(width: kDefaultPadding / 4),
                 button,
+                const SizedBox(width: kDefaultPadding / 4),
+                GestureDetector(
+                  onTap: onDismiss,
+                  child: const AppIcon(
+                    FeatureIcons.close,
+                    size: 20,
+                  ),
+                ),
               ],
             ],
           ),

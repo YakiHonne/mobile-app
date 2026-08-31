@@ -37,28 +37,22 @@ class _PricingScreenState extends State<PricingScreen> {
   List<PricingPlan> _plans = [];
   bool _plansLoading = true;
   late final PageController _pageCtrl;
-  int _page = 0;
+  int _page = 1;
 
   bool get _useIap => kIapEnabled;
 
-  // Ensures the backend account exists before any checkout path runs —
-  // mirrors yaki_pro's routing-level auth gate, scoped to this screen since
-  // mobile-app's Nostr sign-in has no backend round-trip of its own.
-  // isSystemLoggedIn (a session flag) isn't a substitute: it only means
-  // "/login succeeded at some point," not "the account still exists now"
-  // (e.g. after a backend reset/migration). Started once in initState and
-  // awaited everywhere checkout can be triggered, so it's a single in-flight
-  // call, not a re-fetch per tap.
   late final Future<void> _accountSessionFuture;
 
   @override
   void initState() {
     super.initState();
-    // Slightly under a full page so the neighbouring card peeks in, making the
-    // horizontal swipe discoverable.
-    _pageCtrl = PageController(viewportFraction: 0.88)
+    // Slightly under a full page so the neighbouring cards peek in on both
+    // sides, making the horizontal swipe discoverable. Page 1 (the first
+    // fetched plan) is the entry point — the hard-coded free card sits on the
+    // left edge.
+    _pageCtrl = PageController(viewportFraction: 0.88, initialPage: 1)
       ..addListener(() {
-        final p = _pageCtrl.page?.round() ?? 0;
+        final p = _pageCtrl.page?.round() ?? 1;
         if (p != _page) {
           setState(() => _page = p);
         }
@@ -148,7 +142,7 @@ class _PricingScreenState extends State<PricingScreen> {
         return;
       }
       await subscriptionCubit.refreshStatus();
-      unawaited(pointsManagementCubit.getRecentStats());
+      unawaited(pointsManagementCubit.getCurrenUserStats());
       _fetchEligibility();
       if (mounted) {
         setState(() => _loadingPlanId = null);
@@ -166,6 +160,35 @@ class _PricingScreenState extends State<PricingScreen> {
     }
   }
 
+  /// Hard-coded free tier, always shown ahead of the backend-paid plans. It has
+  /// no checkout path — a free user sees "Current Plan", a paid one sees a
+  /// disabled "Downgrade" CTA (cancelling a sub reverts to this tier).
+  PricingPlan _freePlan(BuildContext context) => (
+        id: 'free',
+        plan: 'free',
+        priceId: '',
+        productId: '',
+        iapProductId: '',
+        yakiproIapProductId: '',
+        paymentProvider: 'free',
+        name: context.t.pricing_free_name,
+        price: context.t.pricing_free_price,
+        satsRaw: 0,
+        sats: '0',
+        period: kPricingPeriod,
+        desc: '',
+        highlighted: false,
+        features: [
+          (text: context.t.pricing_free_feature_publishing, dim: false),
+          (text: context.t.pricing_free_feature_nostr_identity, dim: false),
+          (text: context.t.pricing_free_feature_classic_editor, dim: false),
+          (text: context.t.pricing_free_feature_storage, dim: false),
+          (text: context.t.pricing_free_feature_wallet, dim: false),
+          (text: context.t.pricing_free_feature_translations, dim: false),
+          (text: context.t.pricing_free_feature_points, dim: false),
+        ],
+      );
+
   Widget _planCard(
     PricingPlan plan,
     bool isActivePaidSub,
@@ -173,21 +196,27 @@ class _PricingScreenState extends State<PricingScreen> {
     bool isWebManaged, {
     bool scrollable = false,
   }) {
+    final isFree = plan.plan == 'free';
     final pointsEligible =
-        _isPoints && (_eligibility?.eligibleFor(plan.plan) ?? false);
+        !isFree && _isPoints && (_eligibility?.eligibleFor(plan.plan) ?? false);
     return PlanCard(
       plan: plan,
-      isLn: !_useIap && _isLn,
-      isPoints: _isPoints,
-      pointsCost: _eligibility?.costFor(plan.plan) ?? 0,
+      isLn: !isFree && !_useIap && _isLn,
+      isPoints: !isFree && _isPoints,
+      pointsCost: isFree ? 0 : (_eligibility?.costFor(plan.plan) ?? 0),
       pointsEligible: pointsEligible,
-      isLoading: _loadingPlanId == plan.plan,
+      isLoading: !isFree && _loadingPlanId == plan.plan,
       anyLoading: _loadingPlanId != null,
-      isCurrent: isActivePaidSub && userPlan == plan.plan,
-      isUpgrade:
-          isActivePaidSub && plan.plan == 'premium' && userPlan == 'basic',
+      isCurrent:
+          isFree ? !isActivePaidSub : isActivePaidSub && userPlan == plan.plan,
+      isUpgrade: !isFree &&
+          isActivePaidSub &&
+          plan.plan == 'premium' &&
+          userPlan == 'basic',
+      showButton: !isFree,
+      showApprox: !isFree,
       scrollable: scrollable,
-      onCheckout: (isWebManaged || (_isPoints && !pointsEligible))
+      onCheckout: isFree || (isWebManaged || (_isPoints && !pointsEligible))
           ? null
           : () => _checkout(plan),
     );
@@ -198,7 +227,7 @@ class _PricingScreenState extends State<PricingScreen> {
     final theme = Theme.of(context);
     final bottomPad = MediaQuery.of(context).padding.bottom;
     final pubkey = currentSigner?.getPublicKey() ?? '';
-    final plans = _plans;
+    final plans = [_freePlan(context), ..._plans];
     final userPlan = subscriptionCubit.state.subscriptionStatus?.plan ?? '';
     final lastPaymentMethod =
         subscriptionCubit.state.subscriptionStatus?.lastPaymentMethod ?? '';
@@ -316,15 +345,16 @@ class _PricingScreenState extends State<PricingScreen> {
                   height: 500,
                   child: PageView.builder(
                     controller: _pageCtrl,
-                    padEnds: false,
+                    // Default padEnds keeps the focused card centred, so the
+                    // previous and next cards both peek in around it.
                     itemCount: plans.length,
                     itemBuilder: (context, i) {
                       final plan = plans[i];
                       return Padding(
-                        padding: EdgeInsets.fromLTRB(
+                        padding: const EdgeInsets.fromLTRB(
+                          kDefaultPadding / 2,
                           kDefaultPadding,
-                          kDefaultPadding,
-                          i == plans.length - 1 ? kDefaultPadding : 0,
+                          kDefaultPadding / 2,
                           kDefaultPadding / 2,
                         ),
                         child: _planCard(

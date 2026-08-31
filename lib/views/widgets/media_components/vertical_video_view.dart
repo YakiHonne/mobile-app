@@ -80,6 +80,9 @@ class VerticalVideoView extends HookWidget {
             ),
             bottomNavigationBar: isFluid() ? null : _bottomNavBar(context),
             body: BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
+              buildWhen: (previous, current) =>
+                  previous.mutes.contains(video.pubkey) !=
+                  current.mutes.contains(video.pubkey),
               builder: (context, state) {
                 return isUserMuted(video.pubkey)
                     ? Center(

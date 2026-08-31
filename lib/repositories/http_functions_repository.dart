@@ -1199,7 +1199,9 @@ class HttpFunctionsRepository {
     try {
       final currentUserPubkey = currentSigner?.getPublicKey();
 
-      if ((currentSigner?.canSign() ?? false) && currentUserPubkey == null) {
+      if (currentSigner == null ||
+          !currentSigner!.canSign() ||
+          currentUserPubkey == null) {
         return null;
       }
 
@@ -1325,26 +1327,13 @@ class HttpFunctionsRepository {
 
   static Future<UserGlobalStats?> getUserStats() async {
     try {
-      final response = await get('${apiUrl}yaki-chest/stats');
+      final response = await get('${apiUrl}online');
 
       if (response != null) {
         return UserGlobalStats.fromMap(response);
       } else {
         return null;
       }
-    } catch (e, s) {
-      lg.i(s);
-      return null;
-    }
-  }
-
-  static Future<UserOnlineStats?> getUserOnlineStats() async {
-    try {
-      final response = await get('${apiUrl}online');
-      if (response != null) {
-        return UserOnlineStats.fromJson(response);
-      }
-      return null;
     } catch (e, s) {
       lg.i(s);
       return null;
@@ -1823,8 +1812,12 @@ class HttpFunctionsRepository {
     return data?['success'] == true;
   }
 
-  static Future<bool> publishPaidNoteWithPoints() async {
-    final data = await post('${apiUrl}points/publish-paid-note', {});
+  static Future<bool> publishPaidNoteWithPoints(
+    String noteId,
+  ) async {
+    final data = await post('${apiUrl}points/publish-paid-note', {
+      'note_id': noteId,
+    });
     return data?['success'] == true;
   }
 
@@ -1950,6 +1943,140 @@ class HttpFunctionsRepository {
         }
       }
     } catch (_) {}
+  }
+
+  // -- Paid notes payment verification --
+
+  /// One-shot status check: GET /paid-notes/status/:note_id
+  /// Re-logins once on an expired session and retries.
+  static Future<bool> getPaidNoteStatus(String noteId) async {
+    var res = await get('${apiUrl}paid-notes/status/$noteId');
+
+    if (res == null) {
+      final login = await loginToAppSystem();
+      if (login != null) {
+        res = await get('${apiUrl}paid-notes/status/$noteId');
+      }
+    }
+
+    return res?['status'] == 'paid';
+  }
+
+  static Future<ResponseBody?> _openPaidNoteStream(
+    String noteId,
+    CancelToken? cancelToken,
+  ) async {
+    Future<ResponseBody?> attempt() async {
+      try {
+        final dio = await getDio();
+        final response = await dio.get<ResponseBody>(
+          '${apiUrl}paid-notes/payment-stream/$noteId',
+          options: Options(
+            responseType: ResponseType.stream,
+            // Base receiveTimeout (15s) would abort during the silent gap
+            // between `waiting` and the terminal event.
+            receiveTimeout: const Duration(minutes: 1),
+          ),
+          cancelToken: cancelToken,
+        );
+        return response.data;
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 401 && cancelToken?.isCancelled != true) {
+          final login = await loginToAppSystem();
+          if (login == null) {
+            return null;
+          }
+          try {
+            final dio = await getDio();
+            final response = await dio.get<ResponseBody>(
+              '${apiUrl}paid-notes/payment-stream/$noteId',
+              options: Options(
+                responseType: ResponseType.stream,
+                receiveTimeout: const Duration(minutes: 1),
+              ),
+              cancelToken: cancelToken,
+            );
+            return response.data;
+          } catch (_) {
+            return null;
+          }
+        }
+        return null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    return attempt();
+  }
+
+  static Future<bool> waitForPaidNotePayment(
+    String noteId, {
+    CancelToken? cancelToken,
+    void Function(String status)? onEvent,
+  }) async {
+    StreamSubscription? sub;
+    Timer? timer;
+
+    try {
+      final body = await _openPaidNoteStream(noteId, cancelToken);
+
+      if (body == null || (cancelToken?.isCancelled ?? false)) {
+        return false;
+      }
+
+      final completer = Completer<bool>();
+
+      void finish(bool paid) {
+        if (!completer.isCompleted) {
+          completer.complete(paid);
+        }
+      }
+
+      timer = Timer(const Duration(seconds: 35), () => finish(false));
+      lg.i(body);
+      sub = body.stream.listen(
+        (chunk) {
+          final text = utf8.decode(chunk);
+          for (final line in text.split('\n')) {
+            final trimmed = line.trim();
+            if (!trimmed.startsWith('data:')) {
+              continue;
+            }
+
+            final jsonStr = trimmed.substring(5).trim();
+            if (jsonStr.isEmpty || completer.isCompleted) {
+              continue;
+            }
+
+            try {
+              final parsed = jsonDecode(jsonStr) as Map<String, dynamic>;
+              final status = parsed['status'] as String?;
+              lg.i(status);
+              if (status == 'paid') {
+                onEvent?.call('paid');
+                finish(true);
+              } else if (status == 'unpaid') {
+                onEvent?.call('unpaid');
+                finish(false);
+              } else if (status == 'waiting') {
+                onEvent?.call('waiting');
+              }
+            } catch (_) {}
+          }
+        },
+        onError: (_) => finish(false),
+        onDone: () => finish(false),
+        cancelOnError: true,
+      );
+
+      return await completer.future;
+    } catch (_) {
+      return false;
+    } finally {
+      timer?.cancel();
+      await sub?.cancel();
+    }
   }
 
   // -- AI article chat --

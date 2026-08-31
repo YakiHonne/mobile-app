@@ -406,48 +406,49 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     Future<List<Event>> fetchPage(int? until) =>
         NostrFunctionsRepository.getEventsAsync(
-      kinds: [
-        if (profileData == ProfileData.notes) ...[
-          EventKind.TEXT_NOTE,
-          EventKind.REPOST
-        ],
-        if (profileData == ProfileData.pinned ||
-            profileData == ProfileData.replies ||
-            profileData == ProfileData.mentions) ...[
-          EventKind.TEXT_NOTE,
-        ],
-        if (profileData == ProfileData.curations) ...[
-          EventKind.CURATION_ARTICLES,
-          EventKind.CURATION_VIDEOS,
-        ],
-        if (profileData == ProfileData.videos ||
-            profileData == ProfileData.allMedia) ...[
-          EventKind.VIDEO_HORIZONTAL,
-          EventKind.VIDEO_VERTICAL,
-          EventKind.LEGACY_VIDEO_HORIZONTAL,
-          EventKind.LEGACY_VIDEO_VERTICAL,
-        ],
-        if (profileData == ProfileData.pictures ||
-            profileData == ProfileData.allMedia) ...[
-          EventKind.PICTURE,
-        ],
-        if (profileData == ProfileData.smartWidgets) EventKind.SMART_WIDGET_ENH,
-        if (profileData == ProfileData.articles) EventKind.LONG_FORM,
-        if (profileData == ProfileData.premium)
-          premiumArticlesOnly ? EventKind.LONG_FORM : EventKind.TEXT_NOTE,
-      ],
-      pTags: profileData == ProfileData.mentions ? [pubkey] : null,
-      pubkeys: profileData == ProfileData.mentions ||
-              profileData == ProfileData.pinned
-          ? null
-          : [pubkey],
-      ids: profileData == ProfileData.pinned ? pinnedNotes.toList() : null,
-      until: until,
-      limit: 100,
-      relays: userWriteRelays.toList(),
-      source: EventsSource.all,
-      timeout: 1,
-    );
+          kinds: [
+            if (profileData == ProfileData.notes) ...[
+              EventKind.TEXT_NOTE,
+              EventKind.REPOST
+            ],
+            if (profileData == ProfileData.pinned ||
+                profileData == ProfileData.replies ||
+                profileData == ProfileData.mentions) ...[
+              EventKind.TEXT_NOTE,
+            ],
+            if (profileData == ProfileData.curations) ...[
+              EventKind.CURATION_ARTICLES,
+              EventKind.CURATION_VIDEOS,
+            ],
+            if (profileData == ProfileData.videos ||
+                profileData == ProfileData.allMedia) ...[
+              EventKind.VIDEO_HORIZONTAL,
+              EventKind.VIDEO_VERTICAL,
+              EventKind.LEGACY_VIDEO_HORIZONTAL,
+              EventKind.LEGACY_VIDEO_VERTICAL,
+            ],
+            if (profileData == ProfileData.pictures ||
+                profileData == ProfileData.allMedia) ...[
+              EventKind.PICTURE,
+            ],
+            if (profileData == ProfileData.smartWidgets)
+              EventKind.SMART_WIDGET_ENH,
+            if (profileData == ProfileData.articles) EventKind.LONG_FORM,
+            if (profileData == ProfileData.premium)
+              premiumArticlesOnly ? EventKind.LONG_FORM : EventKind.TEXT_NOTE,
+          ],
+          pTags: profileData == ProfileData.mentions ? [pubkey] : null,
+          pubkeys: profileData == ProfileData.mentions ||
+                  profileData == ProfileData.pinned
+              ? null
+              : [pubkey],
+          ids: profileData == ProfileData.pinned ? pinnedNotes.toList() : null,
+          until: until,
+          limit: 100,
+          relays: userWriteRelays.toList(),
+          source: EventsSource.all,
+          timeout: 1,
+        );
 
     var events = await fetchPage(until);
     var handledEvents = handleEvents(events: events, profileData: profileData);

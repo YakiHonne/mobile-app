@@ -257,12 +257,7 @@ class RelayInfoCubit extends Cubit<RelayInfoState> with LaterFunction {
   }
 
   Future<void> getSearchRelay() async {
-    await nc.doQuery(
-      [
-        Filter(),
-      ],
-      [],
-    );
+    await NostrFunctionsRepository.queryEvents([Filter()], []);
   }
 
   Future<List<String>> getActiveGlobalRelays() async {
