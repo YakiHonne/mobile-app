@@ -84,6 +84,7 @@ class MediaPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return isVideo
         ? VideoWidget(
+            key: ValueKey(media.path),
             media: media,
             onRetake: onRetake,
             dimensions: dimensions,

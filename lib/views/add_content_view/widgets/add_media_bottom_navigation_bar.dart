@@ -13,6 +13,7 @@ import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 import 'package:nostr_core_enhanced/utils/string_utils.dart';
 
 import '../../../common/media_handler/media_handler.dart';
+import '../../../common/media_handler/video_editor_view.dart';
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
@@ -169,6 +170,42 @@ class MediaOptionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        if (isVideo.value) ...[
+          GestureDetector(
+            onTap: () async {
+              final edited = await Navigator.push<File?>(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => VideoEditorView(source: media.value!),
+                ),
+              );
+
+              if (edited != null) {
+                onMediaSelected(edited, true);
+              }
+            },
+            child: Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context)
+                    .scaffoldBackgroundColor
+                    .withValues(alpha: 0.5),
+                border: Border.all(
+                  color: Theme.of(context).primaryColorDark,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                LucideIcons.scissors,
+                size: 22,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
+        ],
         GestureDetector(
           onTap: () async {
             if (!isVideo.value) {

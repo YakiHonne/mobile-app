@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/event.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pro_video_editor/pro_video_editor.dart' as pve;
 
 import '../../common/common_regex.dart';
 import '../../common/media_handler/media_handler.dart';
@@ -39,8 +41,36 @@ class AddMediaCubit extends Cubit<AddMediaState> {
     emit(state.copyWith(status: PublishMediaStatus.uploading));
 
     try {
+      var uploadFile = media;
+      var uploadDimensions = dimensions;
+      String? uploadDuration;
+
+      if (isVideo) {
+        try {
+          // ponytail: files from VideoEditorView are already re-encoded on
+          // export; only compress raw picks above ~20MB.
+          final fromEditor =
+              media.path.split('/').last.startsWith('edited_');
+          if (!fromEditor && media.lengthSync() > 20 * 1024 * 1024) {
+            final compressed = await _compressVideo(media);
+            if (compressed != null) {
+              uploadFile = compressed;
+            }
+          }
+
+          final meta = await pve.ProVideoEditor.instance
+              .getMetadata(pve.EditorVideo.file(uploadFile.path));
+          uploadDimensions =
+              '${meta.resolution.width.toInt()}x${meta.resolution.height.toInt()}';
+          if (meta.duration > Duration.zero) {
+            uploadDuration =
+                (meta.duration.inMilliseconds / 1000).round().toString();
+          }
+        } catch (_) {}
+      }
+
       final data = await MediaHandler.uploadMediaWithData(
-        media,
+        uploadFile,
         message: isVideo ? gc.t.uploadingVideo : gc.t.uploadingImage,
         onSendProgress: (int sent, int total) {
           emit(state.copyWith(progress: sent / total));
@@ -66,7 +96,7 @@ class AddMediaCubit extends Cubit<AddMediaState> {
       }
 
       mimeType ??=
-          '${isVideo ? 'video' : 'image'}/${media.path.split('.').last}';
+          '${isVideo ? 'video' : 'image'}/${uploadFile.path.split('.').last}';
 
       if (data['blurhash'] != null) {
         blurhash = data['blurhash'];
@@ -76,11 +106,13 @@ class AddMediaCubit extends Cubit<AddMediaState> {
         dim = data['dim'];
       }
 
-      dim ??= dimensions;
+      dim ??= uploadDimensions;
 
       if (data['duration'] != null) {
         duration = data['duration'];
       }
+
+      duration ??= uploadDuration;
 
       if (data['size'] != null) {
         size = data['size'];
@@ -146,6 +178,44 @@ class AddMediaCubit extends Cubit<AddMediaState> {
       BotToastUtils.showError(
         gc.t.errorUploadingMedia.capitalizeFirst(),
       );
+    }
+  }
+
+  // ponytail: re-encode every picked/edited video through pro_video_editor with
+  // a bitrate + fps cap. Sources already under the cap take its fast path.
+  // Returns null (upload the original) on any failure.
+  Future<File?> _compressVideo(File source) async {
+    final cancel = BotToastUtils.showLoading();
+    try {
+      final dir = await getTemporaryDirectory();
+      final output =
+          '${dir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.mp4';
+
+      final path = await pve.ProVideoEditor.instance.renderVideoToFile(
+        output,
+        pve.VideoRenderData(
+          videoSegments: [
+            pve.VideoSegment(video: pve.EditorVideo.file(source.path)),
+          ],
+          bitrate: 6000000,
+          maxFrameRate: 30,
+          shouldOptimizeForNetworkUse: true,
+        ),
+      );
+
+      final compressed = File(path);
+      if (!compressed.existsSync()) {
+        return null;
+      }
+
+      final original = source.lengthSync();
+      final result = compressed.lengthSync();
+      return result > 0 && result < original ? compressed : null;
+    } catch (e) {
+      lg.i('Video compression failed: $e');
+      return null;
+    } finally {
+      cancel.call();
     }
   }
 }

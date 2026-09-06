@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_linux
   gtk
   pasteboard
+  pro_video_editor
   sentry_flutter
   url_launcher_linux
 )
