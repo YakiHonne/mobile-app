@@ -5,9 +5,9 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import '../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/smart_widget_widgets/smart_widget_content.dart';
 
 class AddSmartWidgetSpecificationView extends StatelessWidget {
@@ -22,7 +22,7 @@ class AddSmartWidgetSpecificationView extends StatelessWidget {
         return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.85,
             minChildSize: 0.60,
             maxChildSize: 0.85,
@@ -70,20 +70,10 @@ class AddSmartWidgetSpecificationView extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pop(context);
 
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.smartWidget,
-                          event: sw,
-                        );
-                      },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: sw,
+                      contentType: AppContentType.smartWidget,
                     );
                   },
                 );

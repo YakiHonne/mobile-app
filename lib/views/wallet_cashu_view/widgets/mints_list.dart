@@ -15,6 +15,7 @@ import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'mint_details.dart';
 
@@ -461,7 +462,7 @@ class MintContainer extends StatelessWidget {
                 ],
               )
             else
-              PullDownButton(
+              FluidPullDownButton(
                 animationBuilder: (context, state, child) {
                   return child;
                 },

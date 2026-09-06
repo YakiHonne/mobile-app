@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_sheet_container.dart';
 
 class ExternalWalletsListView extends StatelessWidget {
@@ -18,16 +18,7 @@ class ExternalWalletsListView extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.8,
-            minChildSize: 0.40,
-            maxChildSize: 0.8,
-            expand: false,
-            builder: (context, scrollController) => _WalletListContent(
-              state: state,
-              scrollController: scrollController,
-            ),
-          ),
+          child: _WalletListContent(state: state),
         );
       },
     );
@@ -37,11 +28,9 @@ class ExternalWalletsListView extends StatelessWidget {
 class _WalletListContent extends StatelessWidget {
   const _WalletListContent({
     required this.state,
-    required this.scrollController,
   });
 
   final WalletsManagerState state;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +78,7 @@ class _WalletListContent extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.useDefaultWallet,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {

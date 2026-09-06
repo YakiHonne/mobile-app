@@ -73,6 +73,7 @@ class NoMediaPlaceHolder extends StatelessWidget {
     this.isLeftRounded,
     this.height,
     this.width,
+    this.borderColor,
   });
 
   final bool isPfp;
@@ -82,6 +83,7 @@ class NoMediaPlaceHolder extends StatelessWidget {
   final double? value;
   final double? height;
   final double? width;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +96,7 @@ class NoMediaPlaceHolder extends StatelessWidget {
         isTopRounded: isTopRounded,
         isLeftRounded: isLeftRounded,
         value: value,
+        borderColor: borderColor,
       ),
     );
 
@@ -213,6 +216,7 @@ class NoImage2PlaceHolder extends StatelessWidget {
     this.isTopRounded,
     this.isLeftRounded,
     this.value,
+    this.borderColor,
     this.size,
   });
 
@@ -222,6 +226,7 @@ class NoImage2PlaceHolder extends StatelessWidget {
   final bool? isLeftRounded;
   final double? value;
   final double? size;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +254,7 @@ class NoImage2PlaceHolder extends StatelessWidget {
         borderRadius: radius,
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border.all(
-          color: Theme.of(context).dividerColor,
+          color: borderColor ?? Theme.of(context).dividerColor,
           width: 0.5,
         ),
       ),

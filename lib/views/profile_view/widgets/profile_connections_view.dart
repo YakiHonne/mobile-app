@@ -36,8 +36,8 @@ class ProfileConnectionsView extends StatelessWidget {
     );
   }
 
-  DraggableScrollableSheet _contentColumn(BuildContext context) {
-    return DraggableScrollableSheet(
+  Widget _contentColumn(BuildContext context) {
+    return AdaptiveDraggableSheet(
       initialChildSize: 0.9,
       minChildSize: 0.60,
       maxChildSize: 0.9,

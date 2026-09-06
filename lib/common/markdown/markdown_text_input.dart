@@ -12,6 +12,7 @@ import '../../views/add_content_view/related_adding_views/article_widgets/articl
 import '../../views/widgets/app_icon.dart';
 import '../../views/widgets/custom_icon_buttons.dart';
 import '../../views/widgets/fluid_blur_container.dart';
+import '../../views/widgets/fluid_pull_down_button.dart';
 import '../../views/widgets/smart_widget_selection.dart';
 import '../common_regex.dart';
 import 'format_markdown.dart';
@@ -26,12 +27,6 @@ class MarkdownTextInput extends StatefulWidget {
 
   /// Validator for the TextFormField
   final String? Function(String? value)? validators;
-
-  /// Title changed
-  final Function(String) onTitleChanged;
-
-  /// Title controller
-  final TextEditingController titleController;
 
   /// String displayed at hintText in TextFormField
   final String? label;
@@ -68,8 +63,6 @@ class MarkdownTextInput extends StatefulWidget {
   /// Constructor for [MarkdownTextInput]
   const MarkdownTextInput(
     this.onTextChanged,
-    this.onTitleChanged,
-    this.titleController,
     this.initialValue,
     this.isMenuDismissed, {
     super.key,
@@ -231,37 +224,6 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     return CustomScrollView(
       controller: _scrollController,
       slivers: <Widget>[
-        SliverToBoxAdapter(
-          child: TextFormField(
-            minLines: 1,
-            maxLines: 2,
-            textDirection: _detectTextDirection(widget.titleController.text),
-            textCapitalization: TextCapitalization.sentences,
-            keyboardType: TextInputType.text,
-            onFieldSubmitted: (event) => focusNode.requestFocus(),
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-            controller: widget.titleController,
-            decoration: InputDecoration(
-              hintText: context.t.giveMeCatchyTitle,
-              hintStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).highlightColor,
-                  ),
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
-              focusColor: Theme.of(context).primaryColorLight,
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: kDefaultPadding / 2,
-                horizontal: kDefaultPadding / 1.5,
-              ),
-            ),
-            onChanged: widget.onTitleChanged,
-          ),
-        ),
         SliverToBoxAdapter(
           child: ValueListenableBuilder(
             valueListenable: _controller,
@@ -539,8 +501,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     );
   }
 
-  PullDownButton _writingState(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _writingState(BuildContext context) {
+    return FluidPullDownButton(
       itemBuilder: (context) {
         return ArticleWritingState.values
             .map(
@@ -714,8 +676,8 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Future<void> selectImage(MarkdownType type, BuildContext context) async {
-    showModalBottomSheet(
-      context: context,
+    showAdaptiveModal(
+      context,
       builder: (_) {
         return ImageSelector(
           onTap: (link, {imeta}) {
@@ -729,18 +691,15 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
   Future<void> selectSmartWidget(
       MarkdownType type, BuildContext context) async {
-    showModalBottomSheet(
-      context: context,
+    showAdaptiveModal(
+      context,
+      dialogHeight: 620,
       builder: (_) {
         return SmartWidgetSelection(
           onWidgetAdded: (sw) {
@@ -749,10 +708,6 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           },
         );
       },
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }

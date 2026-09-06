@@ -122,8 +122,9 @@ class ContentZapSplits extends StatelessWidget {
   TextButton _addUserButton(BuildContext context) {
     return TextButton.icon(
       onPressed: () {
-        showModalBottomSheet(
-          context: context,
+        showAdaptiveModal(
+          context,
+          dialogHeight: 620,
           builder: (_) {
             return ZapSplitUsers(
               currentPubkeys: zaps.map((e) => e.pubkey).toList(),
@@ -135,10 +136,6 @@ class ContentZapSplits extends StatelessWidget {
               },
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

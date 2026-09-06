@@ -78,6 +78,7 @@ class NoteContainer extends StatelessWidget {
               child: ParsedText(
                 text: note.content,
                 pubkey: note.pubkey,
+                emojis: note.emojis,
                 disableNoteParsing: disableVisualParsing,
                 scrollPhysics: scrollPhysics,
                 enableHidingMedia: enableHidingMedia,

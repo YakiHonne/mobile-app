@@ -205,48 +205,53 @@ class MediaHandler {
   }
 
   static Future<void> saveNetworkImage(String url) async {
-    final response = await Dio().get(
-      url,
-      options: Options(responseType: ResponseType.bytes),
-    );
-
-    final ctx = nostrRepository.mainCubit.context;
-    dynamic res;
-
-    // Detect GIF based on extension or content type
-    final isGif = url.toLowerCase().endsWith('.gif') ||
-        (response.headers.value('content-type')?.contains('gif') ?? false);
-
-    if (isGif) {
-      // 🔹 Save GIF as a file (keeps animation)
-      final tempDir = await getTemporaryDirectory();
-      final filePath =
-          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.gif';
-      final file = File(filePath);
-      await file.writeAsBytes(response.data);
-
-      // 🔹 This saves the file *into the Gallery*
-      res = await ImageGallerySaverPlus.saveFile(file.path,
-          isReturnPathOfIOS: true);
-    } else {
-      // 🔹 Normal static image (JPG/PNG)
-      res = await ImageGallerySaverPlus.saveImage(
-        Uint8List.fromList(response.data),
-        quality: 60,
-        isReturnImagePathOfIOS: true,
+    try {
+      final response = await Dio().get(
+        url,
+        options: Options(responseType: ResponseType.bytes),
       );
-    }
 
-    if (ctx.mounted) {
-      if (res != null && res is Map && res['isSuccess']) {
-        BotToastUtils.showSuccess(
-          ctx.t.saveImageGallery.capitalizeFirst(),
-        );
+      final ctx = nostrRepository.mainCubit.context;
+      dynamic res;
+
+      // Detect GIF based on extension or content type
+      final isGif = url.toLowerCase().endsWith('.gif') ||
+          (response.headers.value('content-type')?.contains('gif') ?? false);
+
+      if (isGif) {
+        // 🔹 Save GIF as a file (keeps animation)
+        final tempDir = await getTemporaryDirectory();
+        final filePath =
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.gif';
+        final file = File(filePath);
+        await file.writeAsBytes(response.data);
+
+        // 🔹 This saves the file *into the Gallery*
+        res = await ImageGallerySaverPlus.saveFile(file.path,
+            isReturnPathOfIOS: true);
       } else {
-        BotToastUtils.showSuccess(
-          ctx.t.errorSavingImage.capitalizeFirst(),
+        // 🔹 Normal static image (JPG/PNG)
+        res = await ImageGallerySaverPlus.saveImage(
+          Uint8List.fromList(response.data),
+          quality: 60,
+          isReturnImagePathOfIOS: true,
         );
       }
+
+      if (ctx.mounted) {
+        if (res != null && res is Map && res['isSuccess']) {
+          BotToastUtils.showSuccess(
+            ctx.t.saveImageGallery.capitalizeFirst(),
+          );
+        } else {
+          BotToastUtils.showSuccess(
+            ctx.t.errorSavingImage.capitalizeFirst(),
+          );
+        }
+      }
+    } catch (e) {
+      lg.i(e);
+      BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
     }
   }
 
@@ -300,9 +305,9 @@ class MediaHandler {
   }
 }
 
-/// Utility class for media operations
 class MediaUtils {
   static Future<void> shareImage(String link) async {
+    final cancel = BotToastUtils.showLoading();
     try {
       final response = await Dio().get(
         link,
@@ -310,24 +315,29 @@ class MediaUtils {
       );
 
       final mimeType = _getMimeType(link, response);
-      final image = XFile.fromData(
-        response.data,
-        mimeType: mimeType,
-        name: "YakiHonne's image",
+      final extension = link.split('.').last.split('?').first.toLowerCase();
+      final directory = await getTemporaryDirectory();
+      final file = File(
+        '${directory.path}/${uuid.v4()}.'
+        '${isImageExtension(extension) ? extension : 'png'}',
       );
-
+      await file.writeAsBytes(response.data);
+      cancel();
       await shareContent(
         text: "Share YakiHonne's content with the others",
         subject: "Share YakiHonne's content with the others",
-        files: [image],
+        files: [XFile(file.path, mimeType: mimeType)],
       );
     } catch (e) {
       BotToastUtils.showError(t.errorSharingMedia);
+    } finally {
+      cancel();
     }
   }
 
   static Future<void> copyImageToClipboard(String link) async {
     final ctx = nostrRepository.mainCubit.context;
+    final cancel = BotToastUtils.showLoading();
 
     try {
       final response = await Dio().get(
@@ -360,6 +370,8 @@ class MediaUtils {
       if (ctx.mounted) {
         BotToastUtils.showError(ctx.t.errorCopyImage);
       }
+    } finally {
+      cancel();
     }
   }
 

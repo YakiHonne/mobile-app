@@ -92,16 +92,14 @@ class AddItemToCurationView extends StatelessWidget {
             child: Stack(
               children: [
                 if (state.articleCuration != ArticleCuration.curationsList)
-                  IconButton(
-                    onPressed: () {
+                  AppIconButton(
+                    icon: LucideIcons.chevronLeft,
+                    onClicked: () {
                       context
                           .read<ArticleCurationsCubit>()
                           .setView(ArticleCuration.curationsList);
                     },
-                    icon: const Icon(
-                      LucideIcons.chevronLeft,
-                      size: 20,
-                    ),
+                    iconSize: 20,
                   ),
                 Center(
                   child: Text(
@@ -193,9 +191,11 @@ class AddCuration extends HookWidget {
   const AddCuration({
     super.key,
     required this.controller,
+    this.physics,
   });
 
   final ScrollController controller;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +207,7 @@ class AddCuration extends HookWidget {
       builder: (context, state) {
         return ListView(
           controller: controller,
+          physics: physics,
           padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding),
           children: [
             _contentStack(imageUrlController),
@@ -408,9 +409,11 @@ class ArticleSuggestedCurationList extends StatelessWidget {
   const ArticleSuggestedCurationList({
     super.key,
     required this.scrollController,
+    this.physics,
   });
 
   final ScrollController scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -442,6 +445,7 @@ class ArticleSuggestedCurationList extends StatelessWidget {
                 vertical: kDefaultPadding,
               ),
               controller: scrollController,
+              physics: physics,
               itemBuilder: (context, index) {
                 final curation = state.curations[index];
                 final canBeAddedValue =

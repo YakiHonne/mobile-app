@@ -25,7 +25,7 @@ class RelayReviewListBottomSheet extends StatelessWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.8,
         minChildSize: 0.5,
         maxChildSize: 0.9,
@@ -82,9 +82,9 @@ class RelayReviewListBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
+                    showAdaptiveModal(
+                      context,
+                      dialogHeight: 620,
                       builder: (_) => BlocProvider.value(
                         value: context.read<RelayFeedCubit>(),
                         child: const RelayReviewBottomSheet(),

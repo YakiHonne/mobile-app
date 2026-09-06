@@ -16,6 +16,7 @@ import '../widgets/app_icon.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_renderer/hidden_media_container.dart';
 import '../widgets/custom_icon_buttons.dart';
+import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/link_previewer.dart';
 
 class GalleryImageView extends StatelessWidget {
@@ -477,9 +478,9 @@ class OpenGalleryWidget extends HookWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context,
+  FluidPullDownButton _pulldownButton(BuildContext context,
       ValueNotifier<MapEntry<String, UrlType>> currentSource) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -617,15 +618,14 @@ Widget itemBuilder({
   } else {
     return Builder(
       builder: (context) {
-        return SafeArea(
-          child: CommonThumbnail(
-            image: entry.key,
-            fit: BoxFit.contain,
-            radius: isRound ? kDefaultPadding / 2 : 0,
-            useDefaultNoMedia: false,
-            isRound: isRound,
-            fullResolution: true,
-          ),
+        return CommonThumbnail(
+          image: entry.key,
+          fit: BoxFit.contain,
+          radius: isRound ? kDefaultPadding / 2 : 0,
+          useDefaultNoMedia: false,
+          isRound: isRound,
+          fullResolution: true,
+          backgroundColor: kTransparent,
         );
       },
     );

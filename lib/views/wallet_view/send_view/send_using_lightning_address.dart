@@ -13,7 +13,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import 'send_success_view.dart';
 import 'send_using_invoice.dart';
 
@@ -129,14 +129,13 @@ class SendUsingLightningAddress extends HookWidget {
       },
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.lightningAddress,
-      ),
+    return FluidScaffold(
+      title: context.t.lightningAddress,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
         child: Column(
           children: [
+            SizedBox(height: fluidScaffoldTopInset(context)),
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) => SingleChildScrollView(

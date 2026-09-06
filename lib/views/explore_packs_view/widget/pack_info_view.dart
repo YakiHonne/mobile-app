@@ -30,7 +30,7 @@ class PackInfoView extends StatelessWidget {
       child: BlocBuilder<ExplorePackDetailsCubit, ExplorePackDetailsState>(
         builder: (context, state) {
           return ModalSheetContainer(
-            child: DraggableScrollableSheet(
+            child: AdaptiveDraggableSheet(
               maxChildSize: 0.95,
               minChildSize: 0.2,
               initialChildSize: 0.95,

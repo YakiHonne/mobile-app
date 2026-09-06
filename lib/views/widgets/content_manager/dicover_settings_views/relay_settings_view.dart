@@ -24,6 +24,8 @@ import '../../custom_icon_buttons.dart';
 import '../../data_providers.dart';
 import '../../dotted_container.dart';
 import '../../empty_list.dart';
+import '../../fluid_pull_down_button.dart';
+import '../../modal_sheet_container.dart';
 import '../../toggle_container.dart';
 import '../add_discover_filter.dart';
 import 'browse_relay_sets.dart';
@@ -168,16 +170,12 @@ class RelaySettingsView extends HookWidget {
                   ),
                   CustomIconButton(
                     onClicked: () {
-                      showModalBottomSheet(
-                        context: context,
-                        elevation: 0,
+                      showAdaptiveModal(
+                        context,
+                        dialogHeight: 620,
                         builder: (_) {
                           return const BrowseRelaySets();
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        enableDrag: false,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );
@@ -634,7 +632,7 @@ class RelaySetContainer extends HookWidget {
               const SizedBox(
                 width: kDefaultPadding / 4,
               ),
-              PullDownButton(
+              FluidPullDownButton(
                 animationBuilder: (context, state, child) => child,
                 routeTheme: PullDownMenuRouteTheme(
                   backgroundColor: Theme.of(context).cardColor,
@@ -1012,7 +1010,7 @@ class ShareRelayFeed extends StatelessWidget {
           width: 0.5,
         ),
       ),
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.60,
         minChildSize: 0.60,
         maxChildSize: 0.60,
@@ -1163,20 +1161,8 @@ class SharePackFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 0.5,
-        ),
-      ),
-      child: DraggableScrollableSheet(
+    return ModalSheetContainer(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.60,
         minChildSize: 0.60,
         maxChildSize: 0.60,

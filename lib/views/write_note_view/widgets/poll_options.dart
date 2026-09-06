@@ -63,8 +63,9 @@ class PollOptions extends HookWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-            context: context,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 620,
             builder: (_) {
               return ZapPollSelection(
                 onZapPollAdded: (ev) {
@@ -74,10 +75,6 @@ class PollOptions extends HookWidget {
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
-            elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },
@@ -117,9 +114,9 @@ class PollOptions extends HookWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          showAdaptiveModal(
+            context,
+            dialogHeight: 640,
             builder: (_) {
               return WriteZapPollView(
                 onZapPollAdded: (ev) {
@@ -129,9 +126,6 @@ class PollOptions extends HookWidget {
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
         },

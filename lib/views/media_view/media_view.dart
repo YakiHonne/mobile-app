@@ -13,6 +13,7 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
@@ -75,7 +76,7 @@ class _MediaViewState extends State<MediaView> {
           builder: (context, state) {
             final refresher = Padding(
               padding: EdgeInsets.zero,
-              child: SmartRefresher(
+              child: AdaptiveSmartRefresher(
                 controller: refreshController,
                 scrollController: widget.scrollController,
                 enablePullUp: true,

@@ -16,9 +16,11 @@ class VideoSpecifications extends HookWidget {
   const VideoSpecifications({
     super.key,
     this.scrollController,
+    this.physics,
   });
 
   final ScrollController? scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +204,7 @@ class VideoSpecifications extends HookWidget {
         return ListView(
           padding: EdgeInsets.all(isTablet ? 10.w : kDefaultPadding / 2),
           controller: scrollController,
+          physics: physics,
           children: components,
         );
       },

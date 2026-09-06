@@ -9,6 +9,7 @@ import '../../logic/smart_widgets_cubit/smart_widgets_cubit.dart';
 import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
 import '../smart_widgets_view/widgets/global_smart_widget_container.dart';
+import 'adaptive_smart_refresher.dart';
 import 'classic_footer.dart';
 import 'dotted_container.dart';
 import 'empty_list.dart';
@@ -69,7 +70,7 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
             }
           },
           builder: (context, state) {
-            return DraggableScrollableSheet(
+            return AdaptiveDraggableSheet(
               initialChildSize: 0.80,
               minChildSize: 0.40,
               maxChildSize: 0.80,
@@ -108,7 +109,7 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
             icon: FeatureIcons.smartWidget,
           );
         } else {
-          return SmartRefresher(
+          return AdaptiveSmartRefresher(
             controller: refreshController,
             enablePullDown: false,
             enablePullUp: true,

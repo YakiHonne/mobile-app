@@ -226,7 +226,12 @@ class AppSettingsManagerCubit extends Cubit<AppSettingsManagerState> {
     );
 
     if (ase != null) {
-      final as = AppSharedSettings.fromEvent(ase);
+      AppSharedSettings as;
+      try {
+        as = AppSharedSettings.fromEvent(ase);
+      } catch (_) {
+        return;
+      }
 
       if (as.toJson() != appSharedSettings.toJson()) {
         appSharedSettings = as;

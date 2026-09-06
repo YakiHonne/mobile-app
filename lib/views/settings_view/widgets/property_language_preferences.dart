@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, unused_element
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,9 +12,11 @@ import '../../../models/translate_services_model.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'settings_text.dart';
 
@@ -32,16 +33,18 @@ class PropertyLanguagePreferences extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LocalizationCubit, LocalizationState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.languagePreferences.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.languagePreferences.capitalizeFirst(),
           body: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+              top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+            ),
             children: [
               _buildDescription(context),
               const _SectionDivider(),
               const _AppLanguageSection(),
+              const SizedBox(height: kDefaultPadding / 2),
+              const _ContentLanguageSection(),
               const SizedBox(height: kDefaultPadding),
               const ContentTranslation(),
             ],
@@ -90,7 +93,7 @@ class _CustomPullDownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -177,6 +180,146 @@ class _AppLanguageSection extends StatelessWidget {
 }
 
 // ==========================================
+// CONTENT LANGUAGE SECTION
+// ==========================================
+
+class _ContentLanguageSection extends StatelessWidget {
+  const _ContentLanguageSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = context.select<LocalizationCubit, String>(
+      (cubit) => cubit.state.contentLanguage,
+    );
+
+    return Row(
+      spacing: kDefaultPadding / 2,
+      children: [
+        Expanded(
+          child: TitleDescriptionComponent(
+            title: context.t.contentLanguage.capitalizeFirst(),
+            description: context.t.contentLangDesc,
+          ),
+        ),
+        GestureDetector(
+          onTap: () => showAdaptiveModal(
+            context,
+            dialogHeight: 620,
+            builder: (context) => const _ContentLanguagePicker(),
+          ),
+          behavior: HitTestBehavior.translucent,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    translationLanguages[selected] ??
+                        context.t.appLanguage.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding / 4),
+                const Icon(LucideIcons.chevronsUpDown, size: 18),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContentLanguagePicker extends HookWidget {
+  const _ContentLanguagePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    final search = useState('');
+    final selected = context.select<LocalizationCubit, String>(
+      (cubit) => cubit.state.contentLanguage,
+    );
+
+    final languages = <MapEntry<String, String>>[
+      MapEntry('', context.t.appLanguage.capitalizeFirst()),
+      ...translationLanguages.entries,
+    ].where((e) {
+      final query = search.value.toLowerCase().trim();
+      return e.value.toLowerCase().contains(query) || e.key.startsWith(query);
+    }).toList();
+
+    return ModalSheetContainer(
+      child: AdaptiveDraggableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.40,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (context, scrollController) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: Column(
+            children: [
+              const ModalBottomSheetHandle(),
+              Text(
+                context.t.contentLanguage.capitalizeFirst(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              const SizedBox(height: kDefaultPadding / 2),
+              TextFormField(
+                onChanged: (value) => search.value = value,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: context.t.search.capitalizeFirst(),
+                  prefixIcon: const Icon(LucideIcons.search, size: 18),
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).highlightColor,
+                      ),
+                ),
+              ),
+              const Divider(thickness: 0.5, height: kDefaultPadding),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: languages.length,
+                  itemBuilder: (context, index) {
+                    final language = languages[index];
+                    final isSelected = language.key == selected;
+
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        language.value,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      trailing: isSelected
+                          ? Icon(
+                              LucideIcons.check,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            )
+                          : null,
+                      onTap: () {
+                        context
+                            .read<LocalizationCubit>()
+                            .setContentLanguage(language.key);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ==========================================
 // CONTENT TRANSLATION SECTION
 // ==========================================
 
@@ -236,7 +379,7 @@ class _AutoTranslation extends StatelessWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.enableAutoTranslation,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -398,13 +541,10 @@ class _TranslationServiceSelector extends StatelessWidget {
   }
 
   void _showCustomServiceModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
+    showAdaptiveModal(
+      context,
+      dialogHeight: 620,
       builder: (_) => const ManageCustomServices(),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -637,35 +777,35 @@ class ManageCustomServices extends HookWidget {
     return BlocBuilder<LocalizationCubit, LocalizationState>(
       builder: (context, state) {
         return ModalSheetContainer(
-          child: DraggableScrollableSheet(
-              initialChildSize: 0.85,
-              minChildSize: 0.40,
-              maxChildSize: 0.85,
-              expand: false,
-              builder: (context, scrollController) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    SliverToBoxAdapter(child: _buildHeader(context)),
-                    if (state.translationServices.customServices.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: _ExistingCustomServices(
-                            services: state.translationServices.customServices),
-                      ),
+          child: AdaptiveDraggableSheet(
+            initialChildSize: 0.85,
+            minChildSize: 0.40,
+            maxChildSize: 0.85,
+            expand: false,
+            builder: (context, scrollController) => Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverToBoxAdapter(child: _buildHeader(context)),
+                  if (state.translationServices.customServices.isNotEmpty)
                     SliverToBoxAdapter(
-                      child: _AddNewServiceForm(
-                        displayApiKey: displayApiKey,
-                        apiKeyController: apiKeyController,
-                        urlController: urlController,
-                        paidPlan: paidPlan,
-                      ),
+                      child: _ExistingCustomServices(
+                          services: state.translationServices.customServices),
                     ),
-                  ],
-                ),
+                  SliverToBoxAdapter(
+                    child: _AddNewServiceForm(
+                      displayApiKey: displayApiKey,
+                      apiKeyController: apiKeyController,
+                      urlController: urlController,
+                      paidPlan: paidPlan,
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
         );
       },
     );

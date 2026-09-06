@@ -3,7 +3,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
@@ -167,15 +166,12 @@ class OnboardingOptionsView extends StatelessWidget {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    showCupertinoModalBottomSheet(
-                      context: context,
-                      elevation: 0,
+                    showAdaptiveModal(
+                      context,
+                      dialogHeight: 620,
                       builder: (_) {
                         return const EulaView();
                       },
-                      useRootNavigator: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
                     );
                   },
               ),

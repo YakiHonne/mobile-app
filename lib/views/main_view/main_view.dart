@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/discover_cubit/discover_cubit.dart';
@@ -17,8 +20,8 @@ import '../../utils/app_cycle.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../add_content_view/add_media_view.dart';
-import '../discover_view/discover_view.dart' hide LeadingNewContentBox;
 import '../discover_view/discover_view.dart' as discover;
+import '../discover_view/discover_view.dart' hide LeadingNewContentBox;
 import '../dm_view/dm_view.dart';
 import '../leading_view/leading_view.dart';
 import '../media_view/media_view.dart';
@@ -28,6 +31,7 @@ import '../wallet_cashu_view/cashu_view.dart';
 import '../wallet_view/wallet_view.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_scaffold.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'widgets/desktop_sidebar.dart';
 import 'widgets/detail_pane.dart';
@@ -35,6 +39,31 @@ import 'widgets/drawer_view.dart';
 import 'widgets/feature_tour.dart';
 import 'widgets/flip_to_share_wrapper.dart';
 import 'widgets/main_view_appbar.dart';
+
+class MultiSafeScrollController extends ScrollController {
+  @override
+  ScrollPosition get position =>
+      positions.length <= 1 ? super.position : positions.last;
+}
+
+const _kCollapsedPillInset = kGlassNavCollapsedPillWidth + kDefaultPadding / 2;
+
+const _kDrawerAnimation = Duration(milliseconds: 246);
+
+const _kScrollTopFadeDuration = Duration(milliseconds: 180);
+
+Widget _fadeInTab(Widget child) {
+  return TweenAnimationBuilder<double>(
+    tween: Tween(begin: 0.0, end: 1.0),
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeOut,
+    builder: (context, opacity, child) => Opacity(
+      opacity: opacity,
+      child: child,
+    ),
+    child: child,
+  );
+}
 
 final indexMap = {
   MainViews.leading: 0,
@@ -51,20 +80,12 @@ class MainView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize hooks at the top level of build
     final mainScrollControllers = useMemoized(
         () => [
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
-              ScrollController(),
+              for (var i = 0; i < 7; i++) MultiSafeScrollController(),
             ],
         []);
 
-    // Dispose ScrollControllers to prevent memory leaks
     useEffect(() {
       return () {
         for (final controller in mainScrollControllers) {
@@ -78,6 +99,10 @@ class MainView extends HookWidget {
         YakihonneCycle(buildContext: context);
 
         nostrRepository.mainCubit = MainCubit(context: context);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          singleEventCubit.flushPendingPushNotification();
+        });
 
         return nostrRepository.mainCubit;
       },
@@ -101,6 +126,14 @@ class MainViewContent extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final barsVisible = useState(true);
+    // Drives the fade-out/jump/fade-in used to "scroll" to top from deep in
+    // a feed. 0 = fully visible, 1 = faded out.
+    final scrollTopFade = useAnimationController(
+      duration: _kScrollTopFadeDuration,
+    );
+    // Published by the glass nav bar so the new-content pill can drop into the
+    // gap between the collapsed tab pill and the "+" pill.
+    final navCollapsed = useState(false);
     final isGlass = context.watch<ThemeCubit>().state.isFluid;
 
     // The tour pins these on screen while it measures its targets.
@@ -113,6 +146,25 @@ class MainViewContent extends HookWidget {
     final mainState = context.watch<MainCubit>().state;
     final currentIndex = indexMap[mainState.mainView] ?? 0;
 
+    final visitedTabs = useState<Set<int>>({currentIndex});
+    final isFirstVisit = !visitedTabs.value.contains(currentIndex);
+    final effectiveVisitedTabs =
+        isFirstVisit ? {...visitedTabs.value, currentIndex} : visitedTabs.value;
+
+    final settledGlassIndex = useState(currentIndex);
+
+    useEffect(() {
+      if (isFirstVisit) {
+        visitedTabs.value = effectiveVisitedTabs;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          settledGlassIndex.value = currentIndex;
+        });
+      } else {
+        settledGlassIndex.value = currentIndex;
+      }
+      return null;
+    }, [currentIndex]);
+
     // Scroll listener — valid here since we're inside a HookWidget.build
     useEffect(() {
       // Desktop's chrome is docked, so there is nothing to hide on scroll —
@@ -124,7 +176,9 @@ class MainViewContent extends HookWidget {
       final controller = mainScrollControllers[safeIndex];
 
       void listener() {
-        if (!controller.hasClients) {
+        // Not `hasClients`: that still passes with two attached scrollables,
+        // and `position` throws "Too many elements" on those.
+        if (controller.positions.length != 1) {
           return;
         }
         final dir = controller.position.userScrollDirection;
@@ -148,56 +202,101 @@ class MainViewContent extends HookWidget {
         final currentIndex = indexMap[state.mainView] ?? 0;
         final isGlass = context.read<ThemeCubit>().state.isFluid;
 
-        void onScrollTop() {
-          if (mainScrollControllers[currentIndex].hasClients) {
-            mainScrollControllers[currentIndex].animateTo(
-              0.0,
-              duration: const Duration(seconds: 1),
-              curve: Curves.easeOut,
-            );
+        Future<void> onScrollTop() async {
+          // Re-tapping the active tab (or the app bar) also brings the bars —
+          // and with them the source-filter row — back if a scroll hid them.
+          barsVisible.value = true;
+          final controller = mainScrollControllers[currentIndex];
+          if (!controller.hasClients || controller.offset == 0.0) {
+            return;
           }
+
+          // No smooth scroll at all: any visible scroll motion reads as
+          // sloppy from deep in a feed, so fade out, snap to top, fade back
+          // in instead of animating the scroll offset.
+          await scrollTopFade.forward();
+          if (controller.hasClients) {
+            controller.jumpTo(0.0);
+          }
+          await scrollTopFade.reverse();
         }
 
         final showFab = state.mainView == MainViews.leading ||
             state.mainView == MainViews.media;
 
-        final body = SafeArea(
-          top: !isGlass,
-          bottom: !isGlass,
-          child: IndexedStack(
-            index: currentIndex,
-            children: [
-              LeadingView(
-                key: const PageStorageKey('leading'),
-                scrollController: mainScrollControllers[0],
-                barsVisible: barsVisible,
-              ),
-              MediaView(
-                key: const PageStorageKey('media'),
-                scrollController: mainScrollControllers[1],
-                barsVisible: barsVisible,
-              ),
-              BlocBuilder<MainCubit, MainState>(
-                builder: (context, state) => _walletWidget(state),
-              ),
-              DmsView(
-                key: const PageStorageKey('dms'),
-                scrollController: mainScrollControllers[2],
-              ),
-              NotificationsView(
-                key: const PageStorageKey('notifications'),
-                barsVisible: barsVisible,
-                scrollController: mainScrollControllers[4],
-              ),
-              SmartWidgetsSearch(
-                key: const PageStorageKey('smartwidgets'),
-              ),
-              DiscoverView(
-                key: const PageStorageKey('discover'),
-                barsVisible: barsVisible,
-                scrollController: mainScrollControllers[6],
-              ),
-            ],
+        final body = FadeTransition(
+          opacity: Tween<double>(begin: 1, end: 0).animate(scrollTopFade),
+          child: SafeArea(
+            top: !isGlass,
+            bottom: !isGlass,
+            child: IndexedStack(
+              index: currentIndex,
+              children: [
+                LeadingView(
+                  key: const PageStorageKey('leading'),
+                  scrollController: mainScrollControllers[0],
+                  barsVisible: barsVisible,
+                ),
+                if (effectiveVisitedTabs.contains(1))
+                  _fadeInTab(
+                    MediaView(
+                      key: const PageStorageKey('media'),
+                      scrollController: mainScrollControllers[1],
+                      barsVisible: barsVisible,
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(2))
+                  _fadeInTab(
+                    BlocBuilder<MainCubit, MainState>(
+                      builder: (context, state) => _walletWidget(state),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(3))
+                  _fadeInTab(
+                    DmsView(
+                      key: const PageStorageKey('dms'),
+                      // Index must match indexMap[MainViews.dms]; anything
+                      // else hands the bars a controller nothing is
+                      // scrolling.
+                      scrollController: mainScrollControllers[3],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(4))
+                  _fadeInTab(
+                    NotificationsView(
+                      key: const PageStorageKey('notifications'),
+                      barsVisible: barsVisible,
+                      scrollController: mainScrollControllers[4],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(5))
+                  _fadeInTab(
+                    SmartWidgetsSearch(
+                      key: const PageStorageKey('smartwidgets'),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (effectiveVisitedTabs.contains(6))
+                  _fadeInTab(
+                    DiscoverView(
+                      key: const PageStorageKey('discover'),
+                      barsVisible: barsVisible,
+                      scrollController: mainScrollControllers[6],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+            ),
           ),
         );
 
@@ -244,9 +343,13 @@ class MainViewContent extends HookWidget {
 
                               final feedWidth = showPane
                                   ? constraints.maxWidth - kDetailPaneWidth - 1
-                                  : constraints.maxWidth;
+                                  : constraints.maxWidth
+                                      .clamp(0.0, kMaxFeedColumnWidth);
 
                               return Row(
+                                mainAxisAlignment: showPane
+                                    ? MainAxisAlignment.start
+                                    : MainAxisAlignment.center,
                                 children: [
                                   // One scope per column, each measuring its
                                   // own width. Re-scoping the whole panel and
@@ -308,109 +411,166 @@ class MainViewContent extends HookWidget {
           );
         }
 
-        return Scaffold(
-          resizeToAvoidBottomInset: true,
-          drawerScrimColor: isGlass ? Colors.transparent : null,
-          bottomNavigationBar: isGlass
-              ? null
-              : MainViewBottomNavigationBar(onClicked: onScrollTop),
-          floatingActionButton: isGlass
-              ? null
-              : (showFab
-                  ? _createContent(context, state.mainView)
-                  : const SizedBox()),
-          appBar: isGlass
-              ? null
-              : MainViewAppBar(
+        final glassScrollController = mainScrollControllers[
+            settledGlassIndex.value.clamp(0, mainScrollControllers.length - 1)];
+
+        final glassBody = MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(platformBrightness: Theme.of(context).brightness),
+          child: GlassContentAwareScope(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            child: GlassScaffold(
+              // Sampling off: the edge fade repaints the scaffold colour
+              // directly instead of a captured texture frozen at the old
+              // theme, so it tracks theme changes immediately.
+              enableBackgroundSampling: false,
+              bottomEdgeFade: true,
+              topEdgeFade: true,
+              contentAwareBrightness: true,
+              bottomBarHeight: kBottomNavigationBarHeight + kDefaultPadding / 2,
+              appBar: FluidMainViewAppBar(
+                isConnected: state.isConnected,
+                scrollControllers: mainScrollControllers,
+                onClicked: onScrollTop,
+              ),
+              bottomBar: Center(
+                child: ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(maxWidth: kMaxBottomBarWidth),
+                  child: LiquidGlassBottomNavigationBar(
+                    key: TourKeys.navBar,
+                    onClicked: onScrollTop,
+                    scrollController: glassScrollController,
+                    isCollapsed: navCollapsed,
+                  ),
+                ),
+              ),
+              bodyOverlays: [
+                // New content pill. Expanded it floats above the nav bar;
+                // collapsed it drops to bar level and insets either side so
+                // it sits in the gap between the tab pill and the "+".
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  left: navCollapsed.value ? _kCollapsedPillInset : 0,
+                  right: navCollapsed.value ? _kCollapsedPillInset : 0,
+                  bottom: _newContentPillBottom(
+                    context,
+                    collapsed: navCollapsed.value,
+                  ),
+                  // Capped and centered like the bar itself, so the collapsed
+                  // pill still lands in the gap between the tab pill and the
+                  // "+" instead of drifting into a tablet's empty gutter.
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints:
+                          const BoxConstraints(maxWidth: kMaxBottomBarWidth),
+                      child: _FluidNewContentOverlay(
+                        key: ValueKey(state.mainView),
+                        mainView: state.mainView,
+                        scrollController: glassScrollController,
+                        barsVisible: barsVisible,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              body: body,
+            ),
+          ),
+        );
+
+        return isGlass
+            ? ValueListenableBuilder<bool>(
+                valueListenable: mainDrawerOpen,
+                builder: (context, drawerOpen, _) => PopScope(
+                  canPop: !drawerOpen,
+                  onPopInvokedWithResult: (didPop, _) {
+                    if (!didPop) {
+                      mainDrawerOpen.value = false;
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      // Drawer sits behind the body; the body slides right to
+                      // reveal it. The drawer itself eases in with a light
+                      // zoom + slide, and reverses on close.
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: AnimatedSlide(
+                          duration: _kDrawerAnimation,
+                          curve: Curves.fastOutSlowIn,
+                          offset: Offset(drawerOpen ? 0 : -0.15, 0),
+                          child: AnimatedScale(
+                            duration: _kDrawerAnimation,
+                            curve: Curves.fastOutSlowIn,
+                            alignment: Alignment.centerLeft,
+                            scale: drawerOpen ? 1 : 0.92,
+                            child: AnimatedOpacity(
+                              duration: _kDrawerAnimation,
+                              opacity: drawerOpen ? 1 : 0,
+                              child: const MainViewDrawer(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AnimatedSlide(
+                        duration: _kDrawerAnimation,
+                        curve: Curves.fastOutSlowIn,
+                        offset: Offset(
+                          drawerOpen
+                              ? kMainDrawerWidth /
+                                  MediaQuery.sizeOf(context).width
+                              : 0,
+                          0,
+                        ),
+                        child: Stack(
+                          children: [
+                            glassBody,
+                            // Scrim: dims (or in dark mode, lifts) the pushed
+                            // body, and takes the tap that closes the drawer.
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                ignoring: !drawerOpen,
+                                child: AnimatedOpacity(
+                                  duration: _kDrawerAnimation,
+                                  curve: Curves.fastOutSlowIn,
+                                  opacity: drawerOpen ? 1 : 0,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => mainDrawerOpen.value = false,
+                                    child: ColoredBox(
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor
+                                          .withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Scaffold(
+                key: mainScaffoldKey,
+                resizeToAvoidBottomInset: true,
+                bottomNavigationBar:
+                    MainViewBottomNavigationBar(onClicked: onScrollTop),
+                floatingActionButton: showFab
+                    ? _createContent(context, state.mainView)
+                    : const SizedBox(),
+                appBar: MainViewAppBar(
                   isConnected: state.isConnected,
                   scrollControllers: mainScrollControllers,
                   onClicked: onScrollTop,
                 ),
-          drawer: const MainViewDrawer(),
-          extendBody: isGlass,
-          body: isGlass
-              ? Stack(
-                  children: [
-                    body,
-                    // App bar — slides up off-screen
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: ClipRect(
-                        child: IgnorePointer(
-                          ignoring: !barsVisible.value,
-                          child: AnimatedSlide(
-                            offset: barsVisible.value
-                                ? Offset.zero
-                                : const Offset(0, -1),
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: FluidMainViewAppBar(
-                              isConnected: state.isConnected,
-                              scrollControllers: mainScrollControllers,
-                              onClicked: onScrollTop,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // New content overlay — floats above nav bar when visible,
-                    // drops to above safe area when nav bar is hidden.
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      left: 0,
-                      right: 0,
-                      bottom: barsVisible.value
-                          ? MediaQuery.of(context).padding.bottom / 2 +
-                              kDefaultPadding / 4 +
-                              kBottomNavigationBarHeight +
-                              kDefaultPadding
-                          : MediaQuery.of(context).padding.bottom +
-                              kDefaultPadding / 2,
-                      child: _FluidNewContentOverlay(
-                        key: ValueKey(state.mainView),
-                        mainView: state.mainView,
-                        scrollController: mainScrollControllers[
-                            (indexMap[state.mainView] ?? 0)
-                                .clamp(0, mainScrollControllers.length - 1)],
-                        barsVisible: barsVisible,
-                      ),
-                    ),
-                    // Nav bar — slides down off-screen, clipped at screen edge
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: ClipRect(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).padding.bottom / 2 +
-                                kDefaultPadding / 4,
-                          ),
-                          child: IgnorePointer(
-                            ignoring: !barsVisible.value,
-                            child: AnimatedSlide(
-                              offset: barsVisible.value
-                                  ? Offset.zero
-                                  : const Offset(0, 2),
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              child: Center(
-                                child: FluidBottomNavigationBar(
-                                  onClicked: onScrollTop,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : body,
-        );
+                drawer: const MainViewDrawer(),
+                body: body,
+              );
       },
     );
   }
@@ -425,6 +585,17 @@ class MainViewContent extends HookWidget {
         key: const PageStorageKey('wallet'),
       );
     }
+  }
+
+  double _newContentPillBottom(BuildContext context,
+      {required bool collapsed}) {
+    if (collapsed) {
+      final safeBottom = defaultTargetPlatform == TargetPlatform.android
+          ? MediaQuery.of(context).padding.bottom
+          : 0.0;
+      return safeBottom + kDefaultPadding;
+    }
+    return fluidBottomBarInset(context, above: kDefaultPadding / 2);
   }
 
   RepaintBoundary _createContent(BuildContext context, MainViews mainView) {

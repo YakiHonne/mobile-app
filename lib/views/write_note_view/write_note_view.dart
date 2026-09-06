@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -19,15 +18,18 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../models/smart_widgets_components.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../smart_widgets_view/widgets/smart_widget_container.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
+import '../widgets/content_published_modal.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/dotted_container.dart';
+import '../widgets/fluid_switch.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import '../widgets/parsed_media_container.dart';
@@ -161,7 +163,7 @@ class AddReply extends HookWidget {
       ValueNotifier<DateTime?> scheduled) {
     return BlocBuilder<WriteNoteCubit, WriteNoteState>(
       builder: (context, state) {
-        return CustomIconButton(
+        return AppIconButton(
           onClicked: () {
             if (isComment ?? false) {
               context.read<WriteNoteCubit>().postComment(
@@ -183,8 +185,9 @@ class AddReply extends HookWidget {
                     useSourceRelay: false,
                     isPaid: false,
                     onPaymentProcess: () {
-                      showModalBottomSheet(
-                        context: context,
+                      showAdaptiveModal(
+                        context,
+                        dialogHeight: 620,
                         builder: (_) {
                           return BlocProvider.value(
                             value: context.read<WriteNoteCubit>(),
@@ -193,24 +196,33 @@ class AddReply extends HookWidget {
                             ),
                           );
                         },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        elevation: 0,
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                       );
                     },
                     onSuccess: (ev) {
-                      Navigator.pop(nostrRepository.currentContext());
+                      Navigator.pop(context);
                       onSuccess?.call(ev);
+                      if (replyContent == null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          final rootContext =
+                              YNavigator.navigatorKey.currentContext ??
+                                  nostrRepository.currentContext();
+                          if (rootContext.mounted) {
+                            showContentPublishedModalSheet(
+                              rootContext,
+                              event: DetailedNoteModel.fromEvent(ev),
+                              contentType: AppContentType.note,
+                            );
+                          }
+                        });
+                      }
                     },
                   );
             }
           },
           icon: FeatureIcons.send,
-          size: 20,
-          vd: 0,
+          iconSize: 20,
           iconColor: kWhite,
           backgroundColor: Theme.of(context).primaryColor,
         );
@@ -406,7 +418,7 @@ class NoteSelectedRelay extends StatelessWidget {
                 if (!isExternal) ...[
                   Transform.scale(
                     scale: 0.7,
-                    child: CupertinoSwitch(
+                    child: FluidSwitch(
                       value: useSourceRelay!.value,
                       onChanged: (isToggled) {
                         useSourceRelay!.value = !useSourceRelay!.value;

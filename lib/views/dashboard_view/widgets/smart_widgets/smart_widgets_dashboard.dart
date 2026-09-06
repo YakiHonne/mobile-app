@@ -16,11 +16,14 @@ import '../../../../utils/utils.dart';
 import '../../../add_content_view/add_content_view.dart';
 import '../../../add_content_view/tools_view/tools_view.dart';
 import '../../../smart_widgets_view/widgets/smart_widget_checker.dart';
+import '../../../widgets/adaptive_smart_refresher.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/content_placeholder.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_pull_down_button.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../home/dashboard_containers.dart';
 
 class SmartWidgetsDashboard extends StatefulWidget {
@@ -91,7 +94,7 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
       },
       buildWhen: (previous, current) => previous.isLoading != current.isLoading,
       builder: (context, state) {
-        return SmartRefresher(
+        return AdaptiveSmartRefresher(
           controller: refreshController,
           enablePullUp: true,
           header: const RefresherClassicHeader(),
@@ -109,6 +112,9 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
+        SliverToBoxAdapter(
+          child: SizedBox(height: fluidScaffoldTopInset(context)),
+        ),
         SliverToBoxAdapter(
           child: BlocBuilder<DashboardContentCubit, DashboardContentState>(
             builder: (context, state) {
@@ -236,8 +242,8 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
     );
   }
 
-  PullDownButton _globalPulldownButton(BuildContext context, TextStyle style) {
-    return PullDownButton(
+  FluidPullDownButton _globalPulldownButton(BuildContext context, TextStyle style) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

@@ -60,9 +60,15 @@ class PropertyVersion extends StatelessWidget {
         );
 
     Widget legalButton(String title, String path) {
-      return GestureDetector(
-        onTap: () => openWebPage(url: '$baseUrl$path'),
-        child: Text(title, style: style),
+      return Flexible(
+        child: GestureDetector(
+          onTap: () => openWebPage(url: '$baseUrl$path'),
+          child: Text(
+            title,
+            style: style,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       );
     }
 

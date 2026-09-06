@@ -7,8 +7,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/points_management_cubit/points_management_cubit.dart';
+import '../../../utils/theme/custom/buttons_theme.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/fluid_blur_container.dart';
 
 class PointsLoginPopup extends HookWidget {
   const PointsLoginPopup({super.key});
@@ -16,16 +16,19 @@ class PointsLoginPopup extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
-    final fluid = isFluid();
 
     return Container(
       width: isTablet ? 50.w : double.infinity,
       margin: const EdgeInsets.all(kDefaultPadding),
-      child: FluidBlurContainer(
-        blur: fluid,
-        sigma: 20,
-        backgroundAlpha: fluid ? 0.55 : 1.0,
-        borderRadius: kDefaultPadding,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding),
+          border: Border.all(
+            width: 0.5,
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
         padding: const EdgeInsets.all(kDefaultPadding),
         child: BlocBuilder<PointsManagementCubit, PointsManagementState>(
           builder: (context, state) {
@@ -287,6 +290,8 @@ class YakiLoginChest extends StatelessWidget {
                 );
               }
             },
+            style: TbuttonsTheme.solidTextButtonStyle(
+                Theme.of(context).primaryColor),
             child: Text(context.t.login.capitalizeFirst()),
           ),
         ),

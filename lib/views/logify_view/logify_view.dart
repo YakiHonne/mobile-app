@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../logic/logify_cubit/logify_cubit.dart';
 import '../../utils/utils.dart';
@@ -24,40 +25,44 @@ class LogifyView extends HookWidget {
     final logifySelection = useState(false);
     final fluid = isFluid();
 
+    final scaffold = fluid
+        ? GlassScaffold(
+            body: FluidLogifyView(
+              onPop: onPop,
+            ),
+          )
+        : Scaffold(
+            extendBodyBehindAppBar: true,
+            body: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).primaryColorLight,
+                        Theme.of(context)
+                            .primaryColorLight
+                            .withValues(alpha: 0.1),
+                        Theme.of(context).primaryColorLight,
+                      ],
+                    ),
+                    color: kScaffoldDark,
+                  ),
+                ),
+                LogifyViewPageBuilder(
+                  controller: pageController,
+                  logifySelection: logifySelection,
+                  onPop: onPop,
+                ),
+              ],
+            ),
+          );
+
     return BlocProvider(
       create: (context) => LogifyCubit(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        body: Stack(
-          children: [
-            if (fluid)
-              FluidLogifyView(onPop: onPop)
-            else ...[
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Theme.of(context).primaryColorLight,
-                      Theme.of(context)
-                          .primaryColorLight
-                          .withValues(alpha: 0.1),
-                      Theme.of(context).primaryColorLight,
-                    ],
-                  ),
-                  color: kScaffoldDark,
-                ),
-              ),
-              LogifyViewPageBuilder(
-                controller: pageController,
-                logifySelection: logifySelection,
-                onPop: onPop,
-              ),
-            ],
-          ],
-        ),
-      ),
+      child: scaffold,
     );
   }
 }

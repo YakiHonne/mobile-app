@@ -22,7 +22,7 @@ class BrowseRelaySets extends StatelessWidget {
         final list = state.userRelaySets.entries.toList();
 
         return ModalSheetContainer(
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.95,
             minChildSize: 0.60,
             maxChildSize: 0.95,

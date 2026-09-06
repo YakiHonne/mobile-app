@@ -65,4 +65,6 @@ firebase.json
 .claude/
 .mcp.json
 CLAUDE.md
+AGENTS.md
+opencode.json
 .tokensave/

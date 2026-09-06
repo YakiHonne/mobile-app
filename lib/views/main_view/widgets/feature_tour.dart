@@ -16,6 +16,11 @@ class TourKeys {
   static final dms = GlobalKey();
   static final notifications = GlobalKey();
   static final create = GlobalKey();
+
+  /// The whole glass nav bar (`LiquidGlassBottomNavigationBar`). Its tabs are
+  /// rendered inside the liquid_glass package where a per-tab GlobalKey would
+  /// be duplicated, so the tour derives the tab rects from this key instead.
+  static final navBar = GlobalKey();
 }
 
 /// Set by `MainViewContent` so the tour can pin the glass bars on screen while
@@ -30,9 +35,17 @@ class _Step {
     this.title,
     this.description, {
     this.circle = false,
-  });
+  }) : position = null;
 
-  final GlobalKey key;
+  const _Step.position(
+    this.position,
+    this.title,
+    this.description, {
+    this.circle = false,
+  }) : key = null;
+
+  final GlobalKey? key;
+  final TargetPosition? position;
   final String title;
   final String description;
   final bool circle;
@@ -41,7 +54,14 @@ class _Step {
   /// be a fixed flag — notifications is a nav tab in normal mode but an app-bar
   /// button in fluid mode.
   bool isLow(BuildContext context) {
-    final box = key.currentContext?.findRenderObject() as RenderBox?;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final targetPosition = position;
+    if (targetPosition != null) {
+      return targetPosition.center.dy > screenHeight / 2;
+    }
+
+    final box = key?.currentContext?.findRenderObject() as RenderBox?;
 
     if (box == null || !box.hasSize) {
       return false;
@@ -49,7 +69,7 @@ class _Step {
 
     final centerY = box.localToGlobal(box.size.center(Offset.zero)).dy;
 
-    return centerY > MediaQuery.of(context).size.height / 2;
+    return centerY > screenHeight / 2;
   }
 }
 
@@ -74,6 +94,83 @@ List<_Step> _steps(BuildContext context) {
   ];
 }
 
+/// Steps for the glass nav bar (`LiquidGlassBottomNavigationBar`). Its tabs are
+/// painted by the liquid_glass package, so they can't carry [TourKeys] like the
+/// normal/fluid bars. Instead the rects are derived from the bar's own layout:
+/// the tab pill fills everything except the square "+" compose pill at the end.
+List<_Step> _glassNavSteps(BuildContext context) {
+  final box = TourKeys.navBar.currentContext?.findRenderObject() as RenderBox?;
+
+  if (box == null || !box.hasSize) {
+    return const [];
+  }
+
+  final origin = box.localToGlobal(Offset.zero);
+
+  // Mirrors the searchable bar's own geometry (defaults): the pills sit inside
+  // the horizontal/vertical padding, the tab pill spans all remaining space
+  // after the square search pill and the gap between them.
+  const hPad = 20.0;
+  const vPad = 20.0;
+  const spacing = 8.0;
+  const barHeight = kBottomNavigationBarHeight + kDefaultPadding / 2;
+
+  final contentX = origin.dx + hPad;
+  final contentY = origin.dy + vPad;
+  final contentW = box.size.width - hPad * 2;
+
+  final perTab = (contentW - barHeight - spacing) / 4;
+
+  Rect tab(int i) => Rect.fromLTWH(
+        contentX + i * perTab,
+        contentY,
+        perTab,
+        barHeight,
+      );
+
+  final compose = Rect.fromLTWH(
+    contentX + contentW - barHeight,
+    contentY,
+    barHeight,
+    barHeight,
+  );
+
+  final t = context.t;
+
+  return [
+    _Step.position(
+      TargetPosition(tab(0).size, tab(0).topLeft),
+      t.home.capitalizeFirst(),
+      t.tourHome,
+      circle: true,
+    ),
+    _Step.position(
+      TargetPosition(tab(1).size, tab(1).topLeft),
+      t.media.capitalizeFirst(),
+      t.tourMedia,
+      circle: true,
+    ),
+    _Step.position(
+      TargetPosition(tab(2).size, tab(2).topLeft),
+      t.wallet.capitalizeFirst(),
+      t.tourWallet,
+      circle: true,
+    ),
+    _Step.position(
+      TargetPosition(tab(3).size, tab(3).topLeft),
+      t.tourMessagesTitle,
+      t.tourMessages,
+      circle: true,
+    ),
+    _Step.position(
+      TargetPosition(compose.size, compose.topLeft),
+      t.tourCreateTitle,
+      t.tourCreate,
+      circle: true,
+    ),
+  ];
+}
+
 Future<void> showFeatureTour(BuildContext context) async {
   // Glass bars slide off screen on scroll — pin them so targets can be measured.
   mainBarsVisible?.value = true;
@@ -84,9 +181,13 @@ Future<void> showFeatureTour(BuildContext context) async {
   }
 
   // The fluid and normal bars expose different items (no FAB in fluid, no
-  // notifications tab in fluid), so drop whatever isn't currently mounted.
-  final steps =
-      _steps(context).where((s) => s.key.currentContext != null).toList();
+  // notifications tab in fluid), so drop whatever isn't currently mounted. The
+  // glass bar keeps its tabs inside the package, so its steps are derived from
+  // the bar's rect and appended on top.
+  final steps = [
+    ..._steps(context).where((s) => s.key?.currentContext != null),
+    if (TourKeys.navBar.currentContext != null) ..._glassNavSteps(context),
+  ];
 
   if (steps.isEmpty) {
     markFeatureTourSeen();
@@ -125,6 +226,7 @@ TargetFocus _target(
   return TargetFocus(
     identify: step.title,
     keyTarget: step.key,
+    targetPosition: step.position,
     shape: step.circle ? ShapeLightFocus.Circle : ShapeLightFocus.RRect,
     radius: kDefaultPadding / 2,
     contents: [

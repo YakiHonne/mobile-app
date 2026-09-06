@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,6 +22,7 @@ import '../custom_drop_down.dart';
 import '../custom_icon_buttons.dart';
 import '../data_providers.dart';
 import '../dotted_container.dart';
+import '../fluid_switch.dart';
 import '../modal_sheet_container.dart';
 import '../profile_picture.dart';
 import 'discover_filter_list.dart';
@@ -1944,7 +1944,7 @@ class ToggleBox extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: isToggled,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onToggle,

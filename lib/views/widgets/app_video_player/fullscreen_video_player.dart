@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
+import '../../../utils/utils.dart';
 import '../../gallery_view/gallery_view.dart';
 import 'dismissible_page.dart';
 
@@ -22,10 +23,12 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   @override
   void initState() {
     super.initState();
+    videoControllerManagerCubit.enterFullScreen(widget.url);
   }
 
   @override
   void dispose() {
+    videoControllerManagerCubit.exitFullScreen(widget.url);
     super.dispose();
   }
 

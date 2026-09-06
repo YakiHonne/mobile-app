@@ -7,7 +7,7 @@ import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 
 class MintDetails extends StatelessWidget {
   const MintDetails({super.key, required this.mintInfo});
@@ -16,15 +16,15 @@ class MintDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.details.capitalizeFirst(),
-      ),
+    return FluidScaffold(
+      title: context.t.details.capitalizeFirst(),
       body: Column(
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+                top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+              ),
               children: [
                 Center(
                   child: CommonThumbnail(

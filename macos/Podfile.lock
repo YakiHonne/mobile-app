@@ -15,8 +15,6 @@ PODS:
   - fc_native_video_thumbnail (0.0.1):
     - Flutter
     - FlutterMacOS
-  - file_picker (0.0.1):
-    - FlutterMacOS
   - file_selector_macos (0.0.1):
     - FlutterMacOS
   - flutter_file_manager_macos (0.0.1):
@@ -41,6 +39,8 @@ PODS:
     - FlutterMacOS
   - path_provider_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
+  - quill_native_bridge_macos (0.0.1):
     - FlutterMacOS
   - Sentry/HybridSDK (8.52.1)
   - sentry_flutter (9.4.1):
@@ -74,7 +74,6 @@ DEPENDENCIES:
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - emoji_picker_flutter (from `Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos`)
   - fc_native_video_thumbnail (from `Flutter/ephemeral/.symlinks/plugins/fc_native_video_thumbnail/darwin`)
-  - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - flutter_file_manager_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_file_manager_macos/macos`)
   - flutter_inappwebview_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_inappwebview_macos/macos`)
@@ -85,6 +84,7 @@ DEPENDENCIES:
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - pasteboard (from `Flutter/ephemeral/.symlinks/plugins/pasteboard/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - quill_native_bridge_macos (from `Flutter/ephemeral/.symlinks/plugins/quill_native_bridge_macos/macos`)
   - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -114,8 +114,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos
   fc_native_video_thumbnail:
     :path: Flutter/ephemeral/.symlinks/plugins/fc_native_video_thumbnail/darwin
-  file_picker:
-    :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   file_selector_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
   flutter_file_manager_macos:
@@ -136,6 +134,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/pasteboard/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  quill_native_bridge_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/quill_native_bridge_macos/macos
   sentry_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos
   share_plus:
@@ -161,7 +161,6 @@ SPEC CHECKSUMS:
   device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
   emoji_picker_flutter: 51ca408e289d84d1e460016b2a28721ec754fcf7
   fc_native_video_thumbnail: b511cec81fad66be9b28dd54b9adb39d40fcd6cc
-  file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   file_selector_macos: 6280b52b459ae6c590af5d78fc35c7267a3c4b31
   flutter_file_manager_macos: 45c6a349b742ca01da6a7142721b86de88035648
   flutter_inappwebview_macos: c2d68649f9f8f1831bfcd98d73fd6256366d9d1d
@@ -173,16 +172,17 @@ SPEC CHECKSUMS:
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  quill_native_bridge_macos: 2b005cb56902bb740e0cd9620aa399dfac6b4882
   Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
   sentry_flutter: 1802094c8f8dc5f0d733a77eeb91068b9abf9d76
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
   url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
-  video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
+  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
 PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.17.0

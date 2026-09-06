@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/modal_with_blur.dart';
+import '../../widgets/wallet_type_switch.dart';
 import 'wallet_options_view.dart';
 
 class DisconnectedWallet extends HookWidget {
@@ -29,6 +32,20 @@ class DisconnectedWallet extends HookWidget {
           height: kDefaultPadding,
         ),
         _emptyWalletAdd(context),
+        if (isFluid()) ...[
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: WalletTypeSwitch(
+              isCashu: false,
+              onTap: () {
+                context.read<MainCubit>().changeWalletType();
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -42,7 +59,7 @@ class DisconnectedWallet extends HookWidget {
             Colors.yellow,
           ],
         ),
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+        borderRadius: BorderRadius.circular(100),
       ),
       child: TextButton(
         onPressed: () {
@@ -54,7 +71,7 @@ class DisconnectedWallet extends HookWidget {
         style: TextButton.styleFrom(
           backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
-          visualDensity: VisualDensity.comfortable,
+          visualDensity: VisualDensity.compact,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -68,7 +85,7 @@ class DisconnectedWallet extends HookWidget {
             ),
             Text(
               context.t.addWallet.capitalizeFirst(),
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: kBlack,
                   ),
             ),

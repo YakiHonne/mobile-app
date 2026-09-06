@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../logic/second_reader_cubit/second_reader_cubit.dart';
+import '../../../../logic/subscription_cubit/usage_limit.dart';
 import '../../../../utils/utils.dart';
 import 'sheet_header.dart';
 
@@ -20,84 +21,95 @@ class SecondReaderPickerView extends StatelessWidget {
       builder: (ctx, state) {
         final cubit = ctx.read<SecondReaderCubit>();
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SecondReaderSheetHeader(title: context.t.second_reader_title),
-            Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
-            if (state.error != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  kDefaultPadding,
-                  kDefaultPadding / 2,
-                  kDefaultPadding,
-                  0,
-                ),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kDefaultPadding / 2,
-                    vertical: kDefaultPadding / 2,
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.95,
+          builder: (context, scrollController) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SecondReaderSheetHeader(title: context.t.second_reader_title),
+              Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
+              if (state.error != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    kDefaultPadding,
+                    kDefaultPadding / 2,
+                    kDefaultPadding,
+                    0,
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.07),
-                    borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-                    border: Border.all(
-                      color: Colors.red.withValues(alpha: 0.25),
-                      width: 0.5,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                      vertical: kDefaultPadding / 2,
                     ),
-                  ),
-                  child: Text(
-                    state.error == 'min_words'
-                        ? context.t.second_reader_min_words
-                        : context.t.second_reader_error,
-                    style:
-                        theme.textTheme.bodySmall?.copyWith(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            Flexible(
-              child: state.isAnalyzing
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(kDefaultPadding * 2),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SpinKitCircle(color: theme.primaryColor, size: 32),
-                            const SizedBox(height: kDefaultPadding),
-                            Text(
-                              context.t.second_reader_loading,
-                              style: theme.textTheme.bodyMedium
-                                  ?.copyWith(color: theme.hintColor),
-                            ),
-                          ],
-                        ),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                      border: Border.all(
+                        color: Colors.red.withValues(alpha: 0.25),
+                        width: 0.5,
                       ),
-                    )
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(
-                        kDefaultPadding,
-                        kDefaultPadding * 0.75,
-                        kDefaultPadding,
-                        kDefaultPadding * 2,
-                      ),
-                      itemCount: secondReaderPersonas.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: kDefaultPadding / 2),
-                      itemBuilder: (_, i) {
-                        final persona = secondReaderPersonas[i];
-                        return PersonaCard(
-                          persona: persona,
-                          isLastUsed: persona.id == state.lastUsedPersonaId,
-                          onTap: () => cubit.selectPersona(persona, content),
-                        );
+                    ),
+                    child: Text(
+                      switch (state.error) {
+                        'min_words' => context.t.second_reader_min_words,
+                        kSecondReaderUsageError => usageLimitFor(
+                              kUsageKeySecondReader,
+                            )?.message ??
+                            context.t.second_reader_error,
+                        _ => context.t.second_reader_error,
                       },
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: Colors.red),
+                      textAlign: TextAlign.center,
                     ),
-            ),
-          ],
+                  ),
+                ),
+              Flexible(
+                child: state.isAnalyzing
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(kDefaultPadding * 2),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SpinKitCircle(
+                                  color: theme.primaryColor, size: 32),
+                              const SizedBox(height: kDefaultPadding),
+                              Text(
+                                context.t.second_reader_loading,
+                                style: theme.textTheme.bodyMedium
+                                    ?.copyWith(color: theme.hintColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(
+                          kDefaultPadding,
+                          kDefaultPadding * 0.75,
+                          kDefaultPadding,
+                          kDefaultPadding * 2,
+                        ),
+                        itemCount: secondReaderPersonas.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: kDefaultPadding / 2),
+                        itemBuilder: (_, i) {
+                          final persona = secondReaderPersonas[i];
+                          return PersonaCard(
+                            persona: persona,
+                            isLastUsed: persona.id == state.lastUsedPersonaId,
+                            onTap: () => cubit.selectPersona(persona, content),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
         );
       },
     );

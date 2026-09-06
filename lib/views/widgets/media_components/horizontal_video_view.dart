@@ -60,13 +60,15 @@ class HorizontalVideoView extends HookWidget {
         video: video,
       )..initView(),
       child: BlocBuilder<HorizontalVideoCubit, HorizontalVideoState>(
+        buildWhen: (previous, current) =>
+            previous.mutes.contains(video.pubkey) !=
+            current.mutes.contains(video.pubkey),
         builder: (context, state) {
           return Scaffold(
             appBar: CustomAppBar(
               title: context.t.video.capitalizeFirst(),
             ),
-            bottomNavigationBar:
-                isFluid() ? null : _bottomNavBar(context),
+            bottomNavigationBar: isFluid() ? null : _bottomNavBar(context),
             body: isUserMuted(video.pubkey)
                 ? Center(
                     child: MutedUserContent(
@@ -532,7 +534,7 @@ class HorizontalVideoView extends HookWidget {
   GestureDetector _videoInfo(BuildContext context, HorizontalVideoState state) {
     return GestureDetector(
       onTap: () {
-        // showModalBottomSheet(
+        // showAppModalSheet(
         //   context: context,
         //   elevation: 0,
         //   builder: (_) {

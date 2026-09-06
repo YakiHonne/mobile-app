@@ -12,12 +12,16 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../discover_view/discover_view.dart';
 import '../settings_view/widgets/property_analytics_cache.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
+import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/fluid_source_filter_row.dart';
+import '../widgets/upgrade_banner.dart';
 import 'widgets/leading_feed.dart';
 import 'widgets/media_box.dart';
 
@@ -76,7 +80,7 @@ class _LeadingViewState extends State<LeadingView> {
               }
             },
             builder: (context, state) {
-              return SmartRefresher(
+              return AdaptiveSmartRefresher(
                 controller: refreshController,
                 enablePullUp: true,
                 header: const RefresherClassicHeader(),
@@ -98,6 +102,12 @@ class _LeadingViewState extends State<LeadingView> {
                           height: fluidFeedTopInset(context, extra: 40),
                         ),
                       ),
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: kDefaultPadding),
+                        child: UpgradeBanner(dismissible: true),
+                      ),
+                    ),
                     if (state.showSuggestions &&
                         (state.onMediaLoading ||
                             (!state.onMediaLoading &&
@@ -258,8 +268,8 @@ class _LeadingViewState extends State<LeadingView> {
     );
   }
 
-  PullDownButton _pullDownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pullDownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },
@@ -285,22 +295,12 @@ class _LeadingViewState extends State<LeadingView> {
       },
       buttonBuilder: (context, showMenu) => RotatedBox(
         quarterTurns: 1,
-        child: IconButton(
-          onPressed: showMenu,
-          padding: EdgeInsets.zero,
-          style: IconButton.styleFrom(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            visualDensity: const VisualDensity(
-              horizontal: -4,
-              vertical: -4,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-          icon: Icon(
-            LucideIcons.moreVertical,
-            color: Theme.of(context).primaryColorDark,
-            size: 18,
-          ),
+        child: AppIconButton(
+          icon: LucideIcons.moreVertical,
+          onClicked: showMenu,
+          iconSize: 18,
+          iconColor: Theme.of(context).primaryColorDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
     );

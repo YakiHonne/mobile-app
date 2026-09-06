@@ -6,8 +6,8 @@ import 'package:nostr_core_enhanced/models/models.dart';
 
 import '../../../utils/utils.dart';
 import '../../widgets/content_manager/dicover_settings_views/relay_settings_view.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 
 class RelayInfoView extends HookWidget {
@@ -36,14 +36,12 @@ class RelayInfoView extends HookWidget {
     useMemoized(() {
       metadataCubit.requestMetadata(relayInfo.pubkey);
     });
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: relayInfo.name,
-      ),
+    return FluidScaffold(
+      title: relayInfo.name,
       body: ListView(
         padding: const EdgeInsets.all(
           kDefaultPadding / 2,
-        ),
+        ).copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Row(
             children: [

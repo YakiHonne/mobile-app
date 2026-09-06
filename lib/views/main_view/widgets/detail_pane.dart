@@ -14,16 +14,24 @@ const double kDetailPaneMinPanelWidth = 1024;
 /// start cramping. Move it if it reads wrong.
 const double kDetailPaneWidth = 520;
 
+/// ponytail: hard cap on the single feed column so a wide monitor keeps a
+/// readable line length instead of stretching notes edge to edge. Centered in
+/// the panel when the detail pane is not showing. Chosen, not derived.
+const double kMaxFeedColumnWidth = 680;
+
 /// The named routes that open in the detail pane instead of over the whole
-/// window. Opt-in on purpose: everything absent from this set — compose and
-/// editor flows, video players, the gallery, settings, wallet, onboarding —
-/// keeps its full-screen push.
+/// window. Opt-in on purpose: compose and editor flows, the full-screen
+/// `openGallery` viewer, wallet and onboarding keep their full-screen push —
+/// they are wizard-like or need the whole window. The one shared caveat for everything
+/// here: the pane's stack is discarded on a DMs round-trip, so a half-filled
+/// form in the pane is lost if you visit DMs and come back.
 const Set<String> kDetailPaneRoutes = {
   '/noteView',
   '/articleView',
   '/curationView',
   '/profileView',
   '/unFlashNewsDetails',
+  '/pointsStatisticsView',
 };
 
 /// Widget type names that open in the pane when pushed via
@@ -35,6 +43,21 @@ const Set<String> kDetailPanePages = {
   'CurationView',
   'ProfileView',
   'UnFlashNewsDetails',
+  // Media viewers opened from the media grid / profile media tab.
+  'PictureView',
+  'VerticalVideoView',
+  'HorizontalVideoView',
+  // Sidebar destinations. All render at the panel width — their one raw `.w`
+  // site each is breakpoint-gated (fails at 520pt) except SubscriptionView's
+  // tab-bar pill, which now has a desktop branch.
+  'ExplorePacksView',
+  'ExploreRelaysView',
+  'CreatorsSubscriptionsView',
+  'PricingScreen',
+  'DashboardView',
+  'SubscriptionView',
+  'BlossomManagementView',
+  'SettingsView',
 };
 
 /// The pane's own navigator. Non-null `currentState` is the single source of
@@ -112,34 +135,41 @@ class DetailPane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // ponytail: the pane is opaque. Each pushed view keeps the real scaffold
+    // colour so it fully occludes the view underneath it during the push
+    // animation instead of blending with it; the ColoredBox is the base layer
+    // for the empty state and any transient gap.
+    final paneBackground = theme.scaffoldBackgroundColor;
 
-    // One override for the whole pane instead of per-view opt-outs. The
-    // scaffold and app bar themes are opaque in every variant, glass included,
-    // so a nested Scaffold would otherwise punch a solid rectangle through
-    // MainView's FluidBlurContainer. Doing it here keeps NoteView, ArticleView,
-    // ProfileView, CurationView and UnFlashNewsDetails untouched.
     return Theme(
       data: theme.copyWith(
-        scaffoldBackgroundColor: kTransparent,
         appBarTheme: theme.appBarTheme.copyWith(
-          backgroundColor: kTransparent,
           scrolledUnderElevation: 0,
         ),
       ),
-      child: Navigator(
-        key: detailPaneNavigatorKey,
-        onGenerateRoute: (settings) {
-          if (settings.name == Navigator.defaultRouteName) {
-            return PageRouteBuilder(
-              settings: settings,
-              pageBuilder: (context, _, __) => const _DetailPaneEmpty(),
-            );
-          }
+      child: ColoredBox(
+        color: paneBackground,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: kDefaultPadding / 2,
+            top: kDefaultPadding / 2,
+          ),
+          child: Navigator(
+            key: detailPaneNavigatorKey,
+            onGenerateRoute: (settings) {
+              if (settings.name == Navigator.defaultRouteName) {
+                return PageRouteBuilder(
+                  settings: settings,
+                  pageBuilder: (context, _, __) => const _DetailPaneEmpty(),
+                );
+              }
 
-          // Same route table as the root navigator, so pane-internal
-          // `pushNamed` resolves here with no extra wiring.
-          return onGenerateRoute(settings);
-        },
+              // Same route table as the root navigator, so pane-internal
+              // `pushNamed` resolves here with no extra wiring.
+              return onGenerateRoute(settings);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -150,14 +180,9 @@ class _DetailPaneEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Pane routes are deliberately transparent — the pane sits inside MainView's
-    // FluidBlurContainer, and an opaque scaffold would punch a solid rectangle
-    // through the glass. So the empty state gets out of the way instead of
-    // getting covered: it stays on the stack (`YNavigator.pop` falls through to
-    // `SystemNavigator.pop()` on an unseeded navigator and would quit the app)
-    // but paints nothing while something is pushed above it. `isCurrent` comes
-    // from `_ModalScopeStatus`, which notifies on change, so this rebuilds on
-    // every push and pop for free.
+    // Stays on the stack so `canPop` is always true (`YNavigator.pop` falls
+    // through to `SystemNavigator.pop()` on an unseeded navigator and would quit
+    // the app), but paints nothing while a view is pushed above it.
     if (!(ModalRoute.of(context)?.isCurrent ?? true)) {
       return const SizedBox.shrink();
     }

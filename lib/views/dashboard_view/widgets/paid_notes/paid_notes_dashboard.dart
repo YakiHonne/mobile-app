@@ -10,6 +10,7 @@ import '../../../../models/unpaid_note.dart';
 import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/empty_list.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../write_note_view/widgets/paid_note_process.dart';
 import '../home/dashboard_containers.dart';
 
@@ -48,14 +49,19 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     if (_notes.isEmpty) {
-      return EmptyList(
-        title: context.t.noPaidNotesCanBeFound,
-        description: 'You have no pending paid notes.',
-        icon: FeatureIcons.wallet,
+      return Padding(
+        padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+        child: EmptyList(
+          title: context.t.noPaidNotesCanBeFound,
+          description: 'You have no pending paid notes.',
+          icon: FeatureIcons.wallet,
+        ),
       );
     }
 
-    return isTablet ? _itemsGrid(_notes) : _itemsList(_notes);
+    return isTablet
+        ? _itemsGrid(context, _notes)
+        : _itemsList(context, _notes);
   }
 
   Widget _buildDashboardItem(BuildContext context, UnpaidNote unpaidNote) {
@@ -63,8 +69,9 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
     final note = DetailedNoteModel.fromEvent(event);
 
     void onClick() {
-      showModalBottomSheet(
-        context: context,
+      showAdaptiveModal(
+        context,
+        dialogHeight: 620,
         builder: (_) {
           return BlocProvider(
             create: (_) {
@@ -79,10 +86,6 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
             ),
           );
         },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ).then((_) {
         _loadNotes();
@@ -117,21 +120,21 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
     );
   }
 
-  ListView _itemsList(List<UnpaidNote> notes) {
+  ListView _itemsList(BuildContext context, List<UnpaidNote> notes) {
     return ListView.separated(
       itemBuilder: (context, index) =>
           _buildDashboardItem(context, notes[index]),
       padding: const EdgeInsets.symmetric(
         vertical: kDefaultPadding,
         horizontal: kDefaultPadding / 2,
-      ),
+      ).copyWith(top: kDefaultPadding + fluidScaffoldTopInset(context)),
       itemCount: notes.length,
       separatorBuilder: (context, index) =>
           const SizedBox(height: kDefaultPadding / 2),
     );
   }
 
-  MasonryGridView _itemsGrid(List<UnpaidNote> notes) {
+  MasonryGridView _itemsGrid(BuildContext context, List<UnpaidNote> notes) {
     return MasonryGridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: kDefaultPadding / 2,
@@ -140,7 +143,7 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
       padding: const EdgeInsets.symmetric(
         vertical: kDefaultPadding,
         horizontal: kDefaultPadding / 2,
-      ),
+      ).copyWith(top: kDefaultPadding + fluidScaffoldTopInset(context)),
       itemBuilder: (context, index) =>
           _buildDashboardItem(context, notes[index]),
     );

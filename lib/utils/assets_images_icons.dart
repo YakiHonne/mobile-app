@@ -5,7 +5,14 @@ class LogosIcons {
   LogosIcons._();
 
   static const String logoMark = 'assets/icons/logos/logo-mark-black.svg';
+  static const String logoMarkBlack = 'assets/icons/logos/logo-mark-black.svg';
+  static const String logoMarkPurple =
+      'assets/icons/logos/logo-mark-purple.svg';
+  static const String logoMarkWhite = 'assets/icons/logos/logo-mark-white.svg';
   static const String logo = 'assets/icons/logos/logo-black.svg';
+  static const String logoBlack = 'assets/icons/logos/logo-black.svg';
+  static const String logoPurple = 'assets/icons/logos/logo-purple.svg';
+  static const String logoWhite = 'assets/icons/logos/logo-white.svg';
   static const String alby = 'assets/icons/logos/alby.svg';
 }
 
@@ -38,6 +45,7 @@ class Images {
   static const String spBackground = 'assets/images/sp-background.png';
   static const String underMaintenance = 'assets/images/under-maintenance.png';
   static const String ai = 'assets/images/ai.png';
+  static const String upgrade = 'assets/images/upgrade.png';
   static const String boxView = 'assets/images/box-view.png';
   static const String threadView = 'assets/images/thread-view.png';
   static const String blurredImageWhite = 'assets/images/blur-white.png';
@@ -285,6 +293,7 @@ class FeatureIcons {
   static const IconData pin = LucideIcons.pin;
   static const IconData unpin = LucideIcons.pinOff;
   static const IconData downloadCloud = LucideIcons.cloudDownload;
+  static const IconData storageCloud = LucideIcons.cloud;
   static const IconData swap = LucideIcons.arrowLeftRight;
   static const IconData addMint = LucideIcons.plus;
   static const IconData removeMint = LucideIcons.minus;

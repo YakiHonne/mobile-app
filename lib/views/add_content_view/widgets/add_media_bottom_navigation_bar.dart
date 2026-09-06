@@ -190,9 +190,8 @@ class MediaOptionsRow extends StatelessWidget {
                 onMediaSelected(file, false);
               }
             } else {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
+              showAdaptiveModal(
+                context,
                 builder: (_) {
                   return SingleImageSelector(
                     onUrlProvided: (url, {imeta}) {
@@ -203,10 +202,7 @@ class MediaOptionsRow extends StatelessWidget {
                     description: gc.t.chooseThumbnailVideo,
                   );
                 },
-                backgroundColor: kTransparent,
-                useRootNavigator: true,
-                elevation: 0,
-                useSafeArea: true,
+                backgroundColor: Theme.of(context).cardColor,
               );
             }
           },
@@ -246,7 +242,7 @@ class MediaOptionsRow extends StatelessWidget {
 
         //     return GestureDetector(
         //       onTap: () {
-        //         showModalBottomSheet(
+        //         showAppModalSheet(
         //           context: context,
         //           elevation: 0,
         //           builder: (_) {
@@ -357,61 +353,55 @@ class MediaDescription extends HookWidget {
     return ModalSheetContainer(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: DraggableScrollableSheet(
-        initialChildSize: 0.90,
-        minChildSize: 0.40,
-        maxChildSize: 0.90,
-        expand: false,
-        builder: (context, scrollController) => Column(
-          children: [
-            const Center(child: ModalBottomSheetHandle()),
-            Text(
-              context.t.description.capitalizeFirst(),
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding / 2),
-                child: ClipboardPasteMentionTextField(
-                  controller: controller,
-                  autofocus: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  onChanged: (value) {
-                    description.value = getRawText(controller);
-                  },
-                  onMention: (value) async {
-                    mention.value = value;
-                  },
-                  mentionTagDecoration: MentionTagDecoration(
-                    maxWords: null,
-                    mentionTextStyle: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  style: Theme.of(context).textTheme.bodyMedium!,
-                  decoration: InputDecoration(
-                    hintText: context.t.writeSomething.capitalizeFirst(),
-                    fillColor: Theme.of(context).scaffoldBackgroundColor,
-                    focusColor: Theme.of(context).primaryColorLight,
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                  ),
+      child: Column(
+        children: [
+          const Center(child: ModalBottomSheetHandle()),
+          Text(
+            context.t.description.capitalizeFirst(),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              child: ClipboardPasteMentionTextField(
+                controller: controller,
+                autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                onChanged: (value) {
+                  description.value = getRawText(controller);
+                },
+                onMention: (value) async {
+                  mention.value = value;
+                },
+                mentionTagDecoration: MentionTagDecoration(
+                  maxWords: null,
+                  mentionTextStyle: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Theme.of(context).primaryColor),
+                ),
+                style: Theme.of(context).textTheme.bodyMedium!,
+                decoration: InputDecoration(
+                  hintText: context.t.writeSomething.capitalizeFirst(),
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
+                  focusColor: Theme.of(context).primaryColorLight,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
                 ),
               ),
             ),
-            MentionBox(
-              mention: mention,
-              controller: controller,
-              onTextChanged: () {},
-            ),
-            const SizedBox(height: kDefaultPadding),
-          ],
-        ),
+          ),
+          MentionBox(
+            mention: mention,
+            controller: controller,
+            onTextChanged: () {},
+          ),
+          const SizedBox(height: kDefaultPadding),
+        ],
       ),
     );
   }

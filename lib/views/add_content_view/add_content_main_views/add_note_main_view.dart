@@ -8,9 +8,12 @@ import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
 import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_note_cubit/write_note_cubit.dart';
+import '../../../models/detailed_note_model.dart';
 import '../../../models/flash_news_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/parsed_content_display.dart';
 import '../../write_note_view/widgets/paid_note_process.dart';
@@ -88,8 +91,9 @@ class AddNoteMainView extends HookWidget {
                       selectedExternalRelay: selectedExternalRelay,
                       scheduled: scheduled.value,
                       onPaymentProcess: () {
-                        showModalBottomSheet(
-                          context: context,
+                        showAdaptiveModal(
+                          context,
+                          dialogHeight: 620,
                           builder: (_) {
                             return BlocProvider.value(
                               value: context.read<WriteNoteCubit>(),
@@ -98,10 +102,6 @@ class AddNoteMainView extends HookWidget {
                               ),
                             );
                           },
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          useSafeArea: true,
-                          elevation: 0,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );
@@ -109,6 +109,20 @@ class AddNoteMainView extends HookWidget {
                       onSuccess: (ev) {
                         Navigator.pop(context);
                         onSuccess?.call(ev);
+                        if (!isPaid.value) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            final rootContext =
+                                YNavigator.navigatorKey.currentContext ??
+                                    nostrRepository.currentContext();
+                            if (rootContext.mounted) {
+                              showContentPublishedModalSheet(
+                                rootContext,
+                                event: DetailedNoteModel.fromEvent(ev),
+                                contentType: AppContentType.note,
+                              );
+                            }
+                          });
+                        }
                       },
                     );
               },
@@ -239,18 +253,17 @@ class AddNoteMainView extends HookWidget {
               );
             }
           },
-          style: TextButton.styleFrom(
+          child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
+              horizontal: kDefaultPadding / 1.5,
             ),
-            visualDensity: VisualDensity.compact,
-          ),
-          child: Text(
-            context.t.preview,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).highlightColor,
-                ),
+            child: Text(context.t.preview,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isFluid()
+                          ? Theme.of(context).primaryColorDark
+                          : kWhite,
+                    )),
           ),
         ),
         const SizedBox(

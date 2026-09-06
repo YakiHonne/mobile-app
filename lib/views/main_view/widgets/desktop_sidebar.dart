@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/notifications_cubit/notifications_cubit.dart';
+import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/add_content_view.dart';
 import '../../add_content_view/add_media_view.dart';
+import '../../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../../dashboard_view/dashboard_view.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
 import '../../logify_view/logify_view.dart';
+import '../../points_management_view/points_management_view.dart';
+import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
 import '../../search_view/search_view.dart';
+import '../../settings_view/blossom_management_view.dart';
 import '../../settings_view/settings_view.dart';
+import '../../subscription_view/pricing/pricing_screen.dart';
 import '../../subscription_view/subscription_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
 import 'accounts_manager.dart';
@@ -236,6 +244,67 @@ class DesktopSidebar extends StatelessWidget {
               onClicked: () => YNavigator.pushPage(
                 context,
                 (context) => const SubscriptionView(),
+              ),
+            ),
+            _item(
+              icon: LucideIcons.crown,
+              selectedIcon: LucideIcons.crown,
+              title: context.t.creatorsSubscriptions.capitalizeFirst(),
+              isSelected: false,
+              onClicked: () => YNavigator.pushPage(
+                context,
+                (context) => const CreatorsSubscriptionsView(),
+              ),
+            ),
+            _item(
+              icon: FeatureIcons.sats,
+              selectedIcon: FeatureIcons.sats,
+              title: context.t.pricing.capitalizeFirst(),
+              isSelected: false,
+              onClicked: () => YNavigator.pushPage(
+                context,
+                (context) => const PricingScreen(),
+              ),
+            ),
+            _item(
+              icon: FeatureIcons.storageCloud,
+              selectedIcon: FeatureIcons.storageCloud,
+              title: context.t.blossomStorage.capitalizeFirst(),
+              isSelected: false,
+              onClicked: () => YNavigator.pushPage(
+                context,
+                (context) => const BlossomManagementView(),
+              ),
+            ),
+            BlocBuilder<PointsManagementCubit, PointsManagementState>(
+              builder: (context, pointsState) => _item(
+                icon: FeatureIcons.favorite,
+                selectedIcon: FeatureIcons.favorite,
+                title: context.t.yakiPoints,
+                isSelected: false,
+                onClicked: () {
+                  if (pointsState.isSystemLoggedIn) {
+                    YNavigator.pushNamed(
+                      context,
+                      PointsStatisticsView.routeName,
+                    );
+                  } else {
+                    showBlurredModal(
+                      context: context,
+                      view: const PointsLoginPopup(),
+                    );
+                  }
+                },
+              ),
+            ),
+            _item(
+              icon: LucideIcons.badgeCheck,
+              selectedIcon: LucideIcons.badgeCheck,
+              title: context.t.yakiPro,
+              isSelected: false,
+              onClicked: () => openWebPage(
+                url: 'https://pro.yakihonne.com/yakipro-mobile-app-links',
+                openInternal: false,
               ),
             ),
           ],

@@ -28,8 +28,6 @@ class NostrPasswordManager {
         'domain': baseUrl3,
       });
 
-      lg.i(result);
-
       if (result == null) {
         return null;
       }

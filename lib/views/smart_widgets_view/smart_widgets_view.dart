@@ -10,6 +10,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../logic/smart_widgets_cubit/smart_widgets_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../utils/utils.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
@@ -110,9 +111,9 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
     );
   }
 
-  SmartRefresher _items(
+  Widget _items(
       BuildContext context, bool isTablet, SmartWidgetsState state) {
-    return SmartRefresher(
+    return AdaptiveSmartRefresher(
       controller: refreshController,
       enablePullDown: false,
       enablePullUp: true,

@@ -29,6 +29,7 @@ import '../../../profile_view/widgets/profile_connections_view.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/fluid_blur_container.dart';
+import '../../../widgets/fluid_scaffold.dart';
 import '../../../widgets/media_components/horizontal_video_view.dart';
 import '../../../widgets/media_components/vertical_video_view.dart';
 import '../../../widgets/modal_with_blur.dart';
@@ -69,6 +70,12 @@ class _HomeDashboardState extends State<HomeDashboard> {
       border: Border.all(
         color: Theme.of(context).dividerColor,
         width: 0.3,
+      ),
+    );
+
+    widgets.add(
+      SliverToBoxAdapter(
+        child: SizedBox(height: fluidScaffoldTopInset(context)),
       ),
     );
 
@@ -177,7 +184,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                 GestureDetector(
                                   behavior: HitTestBehavior.translucent,
                                   onTap: () {
-                                    Scaffold.of(context).closeDrawer();
+                                    Scaffold.maybeOf(context)?.closeDrawer();
                                     showBlurredModal(
                                       context: context,
                                       view: const PointsLoginPopup(),
@@ -247,18 +254,15 @@ class _HomeDashboardState extends State<HomeDashboard> {
       BlocBuilder<DashboardHomeCubit, DashboardHomeState>(
         builder: (context, state) {
           void followingFollowers(bool isFollowers) {
-            showModalBottomSheet(
-              context: context,
-              elevation: 0,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 620,
               builder: (_) {
                 return ProfileConnectionsView(
                   pubkey: currentSigner!.getPublicKey(),
                   isFollowers: isFollowers,
                 );
               },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           }
@@ -311,7 +315,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                     child: DashboardStatsContainer(
                       firstVal: (state.stats['notes'] ?? 0).numeral(),
                       firstdesc: context.t.notes.capitalizeFirst(),
-                      icon: FeatureIcons.uncensoredNote,
+                      icon: FeatureIcons.note,
                       onClicked: () {
                         YNavigator.pushPage(
                           context,
@@ -329,7 +333,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                     child: DashboardStatsContainer(
                       firstVal: (state.stats['replies'] ?? 0).numeral(),
                       firstdesc: context.t.replies.capitalizeFirst(),
-                      icon: FeatureIcons.uncensoredNote,
+                      icon: FeatureIcons.comments,
                       onClicked: () {
                         YNavigator.pushPage(
                           context,

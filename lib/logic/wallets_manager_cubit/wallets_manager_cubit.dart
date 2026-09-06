@@ -219,7 +219,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   Future<String?> _createWalletOnServer(String name) async {
     try {
-      final data = await HttpFunctionsRepository.post(
+      final Object? data = await HttpFunctionsRepository.post(
         '${apiUrl}wallet',
         {
           'username': name,
@@ -227,11 +227,17 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         },
       ).timeout(const Duration(seconds: 5));
 
-      return data?['connectionSecret'];
+      final secret = data is Map ? data['connectionSecret'] : null;
+
+      return secret is String ? secret : null;
     } on DioException catch (e) {
       lg.i(e.response?.data['message']);
       BotToastUtils.showError(
           e.response?.data['message'] ?? t.errorCreatingWallet);
+      return null;
+    } catch (e) {
+      lg.i(e);
+      BotToastUtils.showError(t.errorCreatingWallet);
       return null;
     }
   }
@@ -1875,11 +1881,12 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     _setZapLoadingState();
 
     final destination = await wnc.db.loadUserRelayList(user.pubkey);
-    final relays = <String>[
+    final relays = <String>{
       ...(destination?.reads ?? <String>[]),
-      ...currentUserRelayList.urls
-    ];
-
+      ...currentUserRelayList.urls,
+      ...mandatoryRelays,
+    }.toList();
+    lg.i(relays);
     final invoice =
         (externalInvoice != null ? MapEntry(externalInvoice, null) : null) ??
             await ZapAction.genInvoiceCode(
@@ -2009,7 +2016,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       pollOption: pollOption,
       extraTags: extraTags,
       currentSigner!,
-      currentUserRelayList.reads,
+      {...currentUserRelayList.reads, ...mandatoryRelays}.toList(),
       specifiedWallet: wallets[state.defaultExternalWallet]!['deeplink'],
       onZapped: (invoice, isSuccessful) {
         _setZapLoadingState(false);
@@ -2135,6 +2142,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     bool? removeNostrEvent,
     List<List<String>>? extraTags,
   }) async {
+    lg.i(comment);
     if (sats == 0) {
       BotToastUtils.showError(
         mainContext.t.setSatsMoreThanZero.capitalizeFirst(),
@@ -2146,10 +2154,11 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     _setInvoiceGenerationLoadingState();
 
     final destination = await wnc.db.loadUserRelayList(user.pubkey);
-    final List<String> relays = <String>[
+    final List<String> relays = <String>{
       ...(destination?.reads ?? <String>[]),
-      ...currentUserRelayList.reads
-    ];
+      ...currentUserRelayList.reads,
+      ...mandatoryRelays,
+    }.toList();
 
     final code = await ZapAction.genInvoiceCode(
       sats,
@@ -2161,6 +2170,8 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       removeNostrEvent: removeNostrEvent,
       extraTags: extraTags,
     );
+
+    lg.i(code);
 
     _setInvoiceGenerationLoadingState(false);
 

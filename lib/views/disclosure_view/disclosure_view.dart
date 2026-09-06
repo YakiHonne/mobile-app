@@ -37,17 +37,14 @@ class DisclosureView extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        showModalBottomSheet(
-                          context: context,
-                          elevation: 0,
+                        showAdaptiveModal(
+                          context,
                           builder: (_) {
                             return BlocProvider.value(
                               value: context.read<CrashlyticsCubit>(),
                               child: const SetAnalyticsStatus(),
                             );
                           },
-                          useRootNavigator: true,
-                          useSafeArea: true,
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                         );

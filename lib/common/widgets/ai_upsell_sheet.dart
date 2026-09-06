@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../../views/subscription_view/pricing/pricing_screen.dart';
+import '../../views/widgets/modal_sheet_container.dart';
 
 class AiUpsellSheet extends StatelessWidget {
   const AiUpsellSheet({
@@ -21,12 +22,7 @@ class AiUpsellSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultPadding)),
-        border: Border.all(color: theme.dividerColor, width: 0.5),
-      ),
+    return ModalSheetContainer(
       padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding * 1.5),
       child: Column(
         mainAxisSize: MainAxisSize.min,

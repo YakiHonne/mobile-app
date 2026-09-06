@@ -16,7 +16,7 @@ import '../notifications_view/widgets/notifications_customization.dart';
 import '../profile_settings_view/profile_settings_view.dart';
 import '../profile_view/profile_view.dart';
 import '../widgets/app_icon.dart';
-import '../widgets/custom_app_bar.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/no_content_widgets.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/keys_view.dart';
@@ -45,10 +45,8 @@ class SettingsView extends StatelessWidget {
         builder: (context, state) {
           return BlocBuilder<PropertiesCubit, PropertiesState>(
             builder: (context, state) {
-              return Scaffold(
-                appBar: CustomAppBar(
-                  title: context.t.settings.capitalizeFirst(),
-                ),
+              return FluidScaffold(
+                title: context.t.settings.capitalizeFirst(),
                 body: const PropertiesList(),
               );
             },
@@ -78,7 +76,9 @@ class PropertiesList extends HookWidget {
 
   Widget _buildDesktopLayout(BuildContext context, PropertiesState state) {
     return ListView(
-      padding: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding).copyWith(
+        top: kDefaultPadding + fluidScaffoldTopInset(context),
+      ),
       children: [
         const SizedBox(height: kDefaultPadding / 2),
         _buildProfileSection(context, isDesktop: true),
@@ -95,7 +95,8 @@ class PropertiesList extends HookWidget {
 
   Widget _buildMobileLayout(BuildContext context, PropertiesState state) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2)
+          .copyWith(top: fluidScaffoldTopInset(context)),
       children: [
         const SizedBox(height: kDefaultPadding / 2),
         _buildProfileSection(context, isDesktop: false),

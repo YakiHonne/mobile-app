@@ -6,7 +6,8 @@ import '../../../../routes/navigator.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/common_thumbnail.dart';
 import '../../../widgets/custom_icon_buttons.dart';
-import '../../../widgets/managae_interests.dart';
+import '../../../widgets/fluid_scaffold.dart';
+import '../../../widgets/manage_interests.dart';
 
 class InterestsDashboard extends HookWidget {
   const InterestsDashboard({super.key});
@@ -55,7 +56,7 @@ class InterestsDashboard extends HookWidget {
               onPressed: () {
                 YNavigator.pushPage(
                   context,
-                  (context) => ManagaeInterests(),
+                  (context) => ManageInterests(),
                 );
               },
               style: TextButton.styleFrom(
@@ -89,6 +90,9 @@ class InterestsDashboard extends HookWidget {
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: CustomScrollView(
             slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(height: fluidScaffoldTopInset(context)),
+              ),
               spacer,
               _interestsContainer(context, hideData),
               spacer,
@@ -133,11 +137,12 @@ class InterestsDashboard extends HookWidget {
               onPressed: () {
                 YNavigator.pushPage(
                   context,
-                  (context) => ManagaeInterests(),
+                  (context) => ManageInterests(),
                 );
               },
               style: TextButton.styleFrom(
                   backgroundBuilder: (_, __, child) => child!,
+                  backgroundColor: Theme.of(context).primaryColor,
                   visualDensity: VisualDensity.comfortable),
               child: Text(
                 context.t.manageInterests.capitalize(),

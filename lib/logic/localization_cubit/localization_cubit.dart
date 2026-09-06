@@ -43,7 +43,28 @@ class LocalizationCubit extends Cubit<LocalizationState> {
   Future<void> init() async {
     await initTranslationService();
     await initLocale();
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          contentLanguage: localDatabaseRepository.getContentLanguage(),
+        ),
+      );
+    }
     // listenToLocaleChanges();
+  }
+
+  /// Target language used for content translation.
+  /// Empty [LocalizationState.contentLanguage] falls back to the app language.
+  String get targetTranslationLanguage => state.contentLanguage.isEmpty
+      ? LocaleSettings.currentLocale.languageCode
+      : state.contentLanguage;
+
+  /// Set the content translation language ('' = follow the app language).
+  Future<void> setContentLanguage(String language) async {
+    await localDatabaseRepository.setContentLanguage(language: language);
+    if (!isClosed) {
+      emit(state.copyWith(contentLanguage: language));
+    }
   }
 
   /// Initialize the locale from storage or system.
@@ -202,7 +223,7 @@ class LocalizationCubit extends Cubit<LocalizationState> {
   Future<MapEntry<bool, String>> translateContent({
     required String content,
   }) async {
-    final lc = LocaleSettings.currentLocale.languageCode;
+    final lc = targetTranslationLanguage;
 
     if (state.translationServices.isUsingCustomService) {
       final tServices = state.translationServices.customServiceName!;

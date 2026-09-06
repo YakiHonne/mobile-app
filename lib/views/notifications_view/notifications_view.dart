@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -39,14 +41,14 @@ class NotificationsView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final tabController = useTabController(
-      initialLength: 5,
+      initialLength: 6,
       initialIndex: notificationsCubit.state.index,
     );
 
     useEffect(() {
       void listener() {
         if (!tabController.indexIsChanging &&
-            dmsCubit.state.index != tabController.index) {
+            notificationsCubit.state.index != tabController.index) {
           context.read<NotificationsCubit>().setIndex(tabController.index);
         }
       }
@@ -59,14 +61,18 @@ class NotificationsView extends HookWidget {
       listenWhen: (previous, current) => previous.index != current.index,
       listener: (context, state) {
         tabController.animateTo(state.index);
-        scrollController.animateTo(
-          0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
       },
       buildWhen: (previous, current) =>
-          previous.index != current.index || previous.events != current.events,
+          previous.index != current.index ||
+          previous.events != current.events ||
+          previous.premiumEvents != current.premiumEvents,
       builder: (context, state) {
         if (isDisconnected() || canRoam()) {
           return const SizedBox(
@@ -81,7 +87,7 @@ class NotificationsView extends HookWidget {
         }
 
         final tabView = DefaultTabController(
-          length: 5,
+          length: 6,
           child: Column(
             children: [
               Expanded(
@@ -111,6 +117,11 @@ class NotificationsView extends HookWidget {
                     SelectedNotifications(
                       index: 4,
                       key: const ValueKey('4'),
+                      scrollController: scrollController,
+                    ),
+                    SelectedNotifications(
+                      index: 5,
+                      key: const ValueKey('5'),
                       scrollController: scrollController,
                     ),
                   ],
@@ -151,7 +162,10 @@ class NotificationsView extends HookWidget {
                     ),
                   ),
                   child: SizedBox(
-                    width: 60.w,
+                    // ponytail: 60.w is the phone pill; the cap only bites on
+                    // desktop/tablet, where the window-relative .w would blow
+                    // past the notifications panel. Matches FluidSourceFilterRow.
+                    width: min(60.w, 380),
                     child: FluidBlurContainer(
                       borderRadius: kDefaultPadding * 2,
                       child: Row(
@@ -208,21 +222,40 @@ class SelectedNotifications extends HookWidget {
   Widget build(BuildContext context) {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
     final controller = useMemoized(() => RefreshController());
+    // TabBarView keeps neighboring tabs alive for swiping, so the shared
+    // scrollController (used to hide the app bar) can only ever be attached
+    // to the currently visible tab — every other tab gets its own, or
+    // ScrollController.attach throws '_positions.length == 1'.
+    final localScrollController = useMemoized(() => ScrollController());
+    useEffect(() => localScrollController.dispose, [localScrollController]);
 
     final state = context.watch<NotificationsCubit>().state;
+    final isLoading = index == 5 ? state.isPremiumLoading : state.isLoading;
+    final isActiveTab = index == state.index;
+    final usedScrollController =
+        isActiveTab ? scrollController : localScrollController;
 
     useEffect(() {
-      if (!state.isLoading) {
+      if (!isLoading) {
         controller.refreshCompleted();
       }
       return null;
-    }, [state.isLoading]);
+    }, [isLoading]);
 
-    if (enableNotifications()) {
+    if (index != 5 && enableNotifications()) {
       return const EnableTypeNotifications();
     }
 
-    if (state.isLoading && state.events.isEmpty) {
+    if (index == 5) {
+      if (state.isPremiumLoading && state.premiumEvents.isEmpty) {
+        return Center(
+          child: SpinKitCircle(
+            size: 30,
+            color: Theme.of(context).primaryColorDark,
+          ),
+        );
+      }
+    } else if (state.isLoading && state.events.isEmpty) {
       return Center(
         child: SpinKitCircle(
           size: 30,
@@ -232,8 +265,8 @@ class SelectedNotifications extends HookWidget {
     }
 
     final usedEvents = useMemoized(
-      () => getUsedEvents(index, state.events),
-      [index, state.events],
+      () => index == 5 ? state.premiumEvents : getUsedEvents(index, state.events),
+      [index, state.events, state.premiumEvents],
     );
 
     final topInset = isFluid()
@@ -242,11 +275,12 @@ class SelectedNotifications extends HookWidget {
 
     return SmartRefresher(
       controller: controller,
-      scrollController: usedEvents.isEmpty ? null : scrollController,
+      scrollController: usedEvents.isEmpty ? null : usedScrollController,
       enablePullUp: usedEvents.isNotEmpty,
       header: const RefresherClassicHeader(),
-      onRefresh: () =>
-          context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
+      onRefresh: () => index == 5
+          ? context.read<NotificationsCubit>().fetchPremiumContent(force: true)
+          : context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
       child: usedEvents.isEmpty
           ? Padding(
               padding: EdgeInsets.only(top: topInset),
@@ -269,8 +303,11 @@ class SelectedNotifications extends HookWidget {
                         kDefaultPadding * 2 +
                         MediaQuery.of(context).padding.bottom / 2
                     : kDefaultPadding,
-                left: isMobile ? kDefaultPadding / 2 : 20.w,
-                right: isMobile ? kDefaultPadding / 2 : 20.w,
+                // 20.w is a % of the *window*; inside the desktop notifications
+                // panel that crushed the list into a narrow centre strip. Cap it
+                // so wide layouts still get a readable gutter, not a broken one.
+                left: isMobile ? kDefaultPadding / 2 : min(20.w, 100),
+                right: isMobile ? kDefaultPadding / 2 : min(20.w, 100),
               ),
               itemBuilder: (context, index) {
                 final ev = usedEvents[index];
@@ -344,6 +381,7 @@ bool isInKinds(Event event) {
       event.kind == EventKind.CURATION_VIDEOS ||
       event.kind == EventKind.SMART_WIDGET_ENH ||
       event.kind == EventKind.TEXT_NOTE ||
+      event.kind == EventKind.COMMENT ||
       event.kind == EventKind.VIDEO_HORIZONTAL ||
       event.kind == EventKind.VIDEO_VERTICAL;
 }
@@ -356,7 +394,9 @@ class EnableTypeNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topInset = isFluid()
-        ? MediaQuery.of(context).padding.top + kToolbarHeight + kDefaultPadding
+        ? MediaQuery.of(context).padding.top +
+            kToolbarHeight +
+            kDefaultPadding * 3
         : kDefaultPadding * 2;
 
     return MediaQuery.removePadding(
@@ -398,10 +438,6 @@ class EnableTypeNotifications extends StatelessWidget {
                   (context) => const NotificationsCustomization(),
                 );
               },
-              style: TextButton.styleFrom(
-                backgroundBuilder: (_, __, child) => child!,
-                visualDensity: VisualDensity.comfortable,
-              ),
               child: Text(
                 context.t.settings.capitalizeFirst(),
               ),

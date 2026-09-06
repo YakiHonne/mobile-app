@@ -1,15 +1,22 @@
-import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repositories/http_functions_repository.dart';
+import '../subscription_cubit/usage_limit.dart';
 
 part 'ask_ai_state.dart';
 
 class AskAiCubit extends Cubit<AskAiState> {
-  AskAiCubit({required this.editorState}) : super(const AskAiState());
+  AskAiCubit({
+    required this.readMarkdown,
+    required this.writeMarkdown,
+  }) : super(const AskAiState());
 
-  final EditorState editorState;
+  /// Reads the editor's current content as markdown.
+  final String Function() readMarkdown;
+
+  /// Replaces the editor's whole content with the given markdown.
+  final Future<void> Function(String) writeMarkdown;
 
   @override
   void emit(AskAiState state) {
@@ -19,11 +26,11 @@ class AskAiCubit extends Cubit<AskAiState> {
   }
 
   Future<void> send(String message) async {
-    if (message.trim().isEmpty || state.isLoading) {
+    if (message.trim().isEmpty || state.isLoading || isUsageBlocked(kUsageKeyAskAi)) {
       return;
     }
 
-    final currentMarkdown = documentToMarkdown(editorState.document);
+    final currentMarkdown = readMarkdown();
     final userMsg = ChatMessage(role: ChatRole.user, text: message);
 
     emit(
@@ -47,9 +54,14 @@ class AskAiCubit extends Cubit<AskAiState> {
       final aiContent = result?['content'] as String?;
 
       if (aiContent == null || aiContent.isEmpty) {
+        // A quota rejection needs no chat bubble: the fresh snapshot trips
+        // UsageGate and raises the banner, which would otherwise say it twice.
+        await checkUsageLimit(kUsageKeyAskAi);
         emit(state.copyWith(isLoading: false, error: () => 'error'));
         return;
       }
+
+      refreshUsageAfterCall();
 
       final hunks = _buildParagraphDiff(currentMarkdown, aiContent);
       final hasChanges = hunks.any((h) => h.isChanged);
@@ -68,6 +80,7 @@ class AskAiCubit extends Cubit<AskAiState> {
         ),
       );
     } catch (_) {
+      await checkUsageLimit(kUsageKeyAskAi);
       emit(state.copyWith(isLoading: false, error: () => 'error'));
     }
   }
@@ -112,20 +125,7 @@ class AskAiCubit extends Cubit<AskAiState> {
       }
     }
 
-    final merged = paragraphs.join('\n\n');
-    final newDoc = markdownToDocument(merged);
-    final newNodes = newDoc.root.children.toList();
-
-    final transaction = editorState.transaction;
-    final existing = editorState.document.root.children.toList();
-    for (var i = existing.length - 1; i >= 0; i--) {
-      transaction.deleteNode(existing[i]);
-    }
-    for (var i = 0; i < newNodes.length; i++) {
-      transaction.insertNode([i], newNodes[i]);
-    }
-
-    await editorState.apply(transaction);
+    await writeMarkdown(paragraphs.join('\n\n'));
     emit(state.copyWith(applied: true, view: AskAiView.chat));
   }
 

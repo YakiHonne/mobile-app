@@ -316,7 +316,8 @@ class InterestFollowingContainer extends HookWidget {
                 icon: AppIcon(
                   FeatureIcons.userToFollow,
                   size: 15,
-                  color: isAvailable ? kWhite : Theme.of(context).primaryColorDark,
+                  color:
+                      isAvailable ? kWhite : Theme.of(context).primaryColorDark,
                 ),
               ),
             ],

@@ -9,6 +9,7 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 
 class LightningtAddressQrCode extends StatelessWidget {
   const LightningtAddressQrCode({super.key, required this.lightningAddress});
@@ -71,7 +72,7 @@ class ShareLightningAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     lg.i(lightningAddress);
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

@@ -6,6 +6,7 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
+import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
 import '../../../models/cashu/nutzap.dart';
@@ -197,6 +198,7 @@ class NotificationEventMain extends HookWidget {
             child: ParsedText(
               text: attachedText,
               enableHidingMedia: true,
+              emojis: parseEmojiTags(mainEvent.origin.tags),
               pubkey: mainEvent.pubkey,
               scrollPhysics: const NeverScrollableScrollPhysics(),
               isNotification: true,
@@ -274,6 +276,7 @@ class NotificationEventMain extends HookWidget {
                   scrollPhysics: const NeverScrollableScrollPhysics(),
                   disableNoteParsing: false,
                   enableHidingMedia: true,
+                  emojis: parseEmojiTags(ev.tags),
                   pubkey: ev.pubkey,
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: Theme.of(context).highlightColor,
@@ -299,6 +302,16 @@ class NotificationEventMain extends HookWidget {
         ];
 
         return getRichtext(spans);
+      } else if (getPremiumStatus(mainEvent.origin)) {
+        final spans = [
+          TextSpan(
+            text: context.t.userPublishedPremiumNote(
+              name: metadata.getName().trim(),
+            ),
+          ),
+        ];
+
+        return getRichtext(spans);
       } else {
         return const SizedBox.shrink();
       }
@@ -317,9 +330,13 @@ class NotificationEventMain extends HookWidget {
 
       switch (mainEvent.kind) {
         case EventKind.LONG_FORM:
-          text = context.t.userPublishedArticle(
-            name: metadata.getName().trim(),
-          );
+          text = getPremiumStatus(mainEvent.origin)
+              ? context.t.userPublishedPremiumArticle(
+                  name: metadata.getName().trim(),
+                )
+              : context.t.userPublishedArticle(
+                  name: metadata.getName().trim(),
+                );
         case EventKind.CURATION_ARTICLES:
           text = context.t.userPublishedCuration(
             name: metadata.getName().trim(),
@@ -375,6 +392,7 @@ class NotificationEventMain extends HookWidget {
             scrollPhysics: const NeverScrollableScrollPhysics(),
             disableNoteParsing: false,
             enableHidingMedia: true,
+            emojis: parseEmojiTags(mainEvent.origin.tags),
             pubkey: mainEvent.pubkey,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   color: Theme.of(context).highlightColor,
@@ -564,6 +582,7 @@ class NotificationEventMain extends HookWidget {
             child: ParsedText(
               text: attachedText,
               enableHidingMedia: true,
+              emojis: parseEmojiTags(ev.tags),
               pubkey: mainEvent.kind == EventKind.TEXT_NOTE
                   ? mainEvent.pubkey
                   : ev.pubkey,

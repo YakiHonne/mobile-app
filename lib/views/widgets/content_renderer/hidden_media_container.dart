@@ -67,15 +67,11 @@ class HiddenMediaContainer extends HookWidget {
             top: 0,
             child: CustomIconButton(
               onClicked: () {
-                showModalBottomSheet(
-                  context: context,
+                showAdaptiveModal(
+                  context,
                   builder: (_) {
                     return const HiddenMediaSettings();
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
@@ -128,17 +124,14 @@ class _AnimatedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final image = mediaServersCubit.getImageProxyUrl(sourceUrl: url, blur: 30);
+
     return AnimatedOpacity(
       opacity: opacity,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
       child: ExtendedImage.network(
-        mediaServersCubit.getImageProxyUrl(
-          sourceUrl: url,
-          blur: 30,
-        ),
-        // ponytail: the proxy sends no width param, so this blur-30 placeholder
-        // arrives at full source resolution. Cap the decode at screen width.
+        image,
         cacheWidth: (MediaQuery.sizeOf(context).width *
                 MediaQuery.devicePixelRatioOf(context))
             .round(),
@@ -150,7 +143,6 @@ class _AnimatedImage extends StatelessWidget {
             case LoadState.completed:
               WidgetsBinding.instance
                   .addPostFrameCallback((_) => onImageLoaded());
-
               return ExtendedRawImage(
                 image: state.extendedImageInfo?.image,
                 fit: BoxFit.cover,

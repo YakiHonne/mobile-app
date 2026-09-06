@@ -17,6 +17,7 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/response_snackbar.dart';
@@ -453,7 +454,7 @@ class _WalletItemActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -13,11 +14,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/creator_subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../repositories/nostr_functions_repository.dart';
+import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import '../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
-import '../widgets/custom_app_bar.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_glass_tab_bar.dart';
+import '../widgets/fluid_scaffold.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/profile_picture.dart';
 
@@ -40,15 +44,9 @@ class CreatorProvidersSheet extends HookWidget {
     required List<CreatorProvider> providers,
     required Metadata creatorMetadata,
   }) {
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      backgroundColor: isFluid()
-          ? Colors.transparent
-          : Theme.of(context).scaffoldBackgroundColor,
+    showAdaptiveModal(
+      context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (_) => CreatorProvidersSheet(
         providers: providers,
         creatorMetadata: creatorMetadata,
@@ -183,7 +181,7 @@ class _ProviderCard extends HookWidget {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed:
-                  kIapEnabled || provider.url.isEmpty ? null : () => _onSubscribe(context),
+                  provider.url.isEmpty ? null : () => _onSubscribe(context),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -206,6 +204,7 @@ class _ProviderCard extends HookWidget {
 
   void _onSubscribe(BuildContext context) {
     if (_isOurGateway) {
+      YNavigator.pop(context);
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -242,37 +241,41 @@ class CreatorSubscribePlansView extends HookWidget {
 
     useEffect(() {
       _fetchPlans(subscriptionData, isLoading);
+      creatorSubscriptionsCubit.fetch();
       return null;
     }, []);
 
     final methods = subscriptionData.value?.methods ?? [];
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: context.t.creator_subscription_plans.capitalizeFirst(),
-      ),
-      body: SafeArea(
-        child: isLoading.value
-            ? Center(
-                child: SpinKitCircle(
-                  color: Theme.of(context).primaryColorDark,
-                  size: 32,
-                ),
-              )
-            : methods.isEmpty
-                ? Center(
-                    child: Text(
-                      context.t.creator_no_plans.capitalizeFirst(),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).hintColor,
-                          ),
-                    ),
-                  )
-                : _PlansTabView(
-                    creatorMetadata: creatorMetadata,
-                    gatewayPubkey: gatewayPubkey,
-                    methods: methods,
+    return FluidScaffold(
+      title: context.t.creator_subscription_plans.capitalizeFirst(),
+      body: Padding(
+        padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+        // top: false — the inset already includes the status bar.
+        child: SafeArea(
+          top: false,
+          child: isLoading.value
+              ? Center(
+                  child: SpinKitCircle(
+                    color: Theme.of(context).primaryColorDark,
+                    size: 32,
                   ),
+                )
+              : methods.isEmpty
+                  ? Center(
+                      child: Text(
+                        context.t.creator_no_plans.capitalizeFirst(),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).hintColor,
+                            ),
+                      ),
+                    )
+                  : _PlansTabView(
+                      creatorMetadata: creatorMetadata,
+                      gatewayPubkey: gatewayPubkey,
+                      methods: methods,
+                    ),
+        ),
       ),
     );
   }
@@ -356,29 +359,13 @@ class _MethodTabBar extends StatelessWidget {
     if (isFluid()) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        child: FluidBlurContainer(
-          backgroundAlpha: 0.75,
-          padding: const EdgeInsets.all(3),
-          child: TabBar(
-            controller: tabController,
-            dividerHeight: 0,
-            indicatorSize: TabBarIndicatorSize.tab,
-            padding: EdgeInsets.zero,
-            labelPadding: const EdgeInsets.all(3),
-            indicator: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(300),
-            ),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(fontWeight: FontWeight.w700),
-            unselectedLabelStyle: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(fontWeight: FontWeight.w500),
-            tabs: tabs,
-          ),
+        child: FluidGlassTabBar(
+          controller: tabController,
+          tabs: methods
+              .map(
+                (m) => GlassTab(label: m.displayName.capitalizeFirst()),
+              )
+              .toList(),
         ),
       );
     }
@@ -560,7 +547,7 @@ class _PlanCard extends HookWidget {
                     size: 20,
                   )
                 : TextButton(
-                    onPressed: kIapEnabled ? null : () => _onSubscribe(context, isLoading),
+                    onPressed: () => _onSubscribe(context, isLoading),
                     child: Text(
                       context.t.creator_subscribe_now.capitalizeFirst(),
                     ),
@@ -582,18 +569,34 @@ class _PlanCard extends HookWidget {
   }
 
   void _openLightningZap(BuildContext context) {
-    final amountSats = int.tryParse(plan.amount) ?? 0;
+    final amountSats = num.tryParse(plan.amount)?.round() ?? 0;
     showAdaptiveModal(
       context,
-      builder: (_) => SendZapsView(
+      builder: (sheetContext) => SendZapsView(
         metadata: creatorMetadata,
         isZapSplit: false,
         zapSplits: const [],
         initialVal: amountSats > 0 ? amountSats : null,
+        lockAmount: true,
         extraTags: [
           ['P', gatewayPubkey],
           ['interval', plan.interval],
         ],
+        successActionLabel: sheetContext.t.creator_view_subscriptions,
+        onSuccessAction: () {
+          creatorSubscriptionsCubit.fetch(force: true);
+          // Close the sheet, then pop the plans view itself before pushing —
+          // pushReplacement races the sheet's still-animating pop and ends up
+          // replacing the sheet instead of the plans view underneath it.
+          Navigator.pop(sheetContext);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (_) => const CreatorsSubscriptionsView(),
+            ),
+          );
+        },
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );

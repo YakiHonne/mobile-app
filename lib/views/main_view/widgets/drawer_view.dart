@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:numeral/numeral.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -13,6 +15,7 @@ import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
 import '../../../utils/utils.dart';
+import '../../creators_subscriptions_view/creators_subscriptions_view.dart';
 import '../../dashboard_view/dashboard_view.dart';
 import '../../explore_packs_view/explore_packs_view.dart';
 import '../../explore_relays_view/explore_relays_view.dart';
@@ -20,17 +23,47 @@ import '../../logify_view/logify_view.dart';
 import '../../points_management_view/points_management_view.dart';
 import '../../points_management_view/widgets/points_login_popup.dart';
 import '../../profile_view/profile_view.dart';
+import '../../settings_view/blossom_management_view.dart';
 import '../../settings_view/settings_view.dart';
+import '../../subscription_view/pricing/pricing_screen.dart';
 import '../../subscription_view/subscription_view.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
-import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
+import '../../widgets/upgrade_banner.dart';
 import 'accounts_manager.dart';
 import 'profile_share_view.dart';
+
+/// GlassScaffold has no drawer slot, so fluid mode drives the drawer by hand:
+/// MainView parks it behind the body and slides the body aside on open.
+/// ponytail: no swipe-to-open — add a horizontal drag if it's missed.
+final mainDrawerOpen = ValueNotifier(false);
+
+/// Standard Material drawer width — how far the body is pushed in fluid mode.
+const kMainDrawerWidth = 304.0;
+
+/// Lets callers close the drawer from a context that isn't under the main
+/// Scaffold (modal sheets, post-pop callbacks) where `Scaffold.of` throws.
+final mainScaffoldKey = GlobalKey<ScaffoldState>();
+
+void openMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = true;
+  } else {
+    Scaffold.of(context).openDrawer();
+  }
+}
+
+void closeMainDrawer(BuildContext context) {
+  if (isFluid()) {
+    mainDrawerOpen.value = false;
+  } else {
+    mainScaffoldKey.currentState?.closeDrawer();
+  }
+}
 
 class MainViewDrawer extends HookWidget {
   const MainViewDrawer({super.key});
@@ -64,29 +97,23 @@ class MainViewDrawer extends HookWidget {
           );
         }
 
-        // Glass mode: floating panel with blur, left/top/bottom margins
-        return Drawer(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + kDefaultPadding,
-              bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding,
-              left: kDefaultPadding / 2,
-              right: kDefaultPadding / 2,
-            ),
-            child: FluidBlurContainer(
-              sigma: 20,
-              borderRadius: kDefaultPadding * 1.5,
-              padding: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 1.5,
-                vertical: kDefaultPadding / 1.5,
+        return Container(
+          width: kMainDrawerWidth,
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kDefaultPadding / 4,
+            bottom: MediaQuery.of(context).padding.bottom + kDefaultPadding / 4,
+            left: kDefaultPadding / 1.5,
+            right: kDefaultPadding / 1.5,
+          ),
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
               ),
-              child: _items(context, state),
             ),
           ),
+          child: _items(context, state),
         );
       },
     );
@@ -108,11 +135,12 @@ class MainViewDrawer extends HookWidget {
             ),
           )
         else
-          _userRow(state),
+          _userRow(state, context),
         const SizedBox(
           height: kDefaultPadding,
         ),
         _drawerItems(context, state),
+        const UpgradeBanner(),
         if (currentSigner != null)
           _accountManager(context)
         else
@@ -154,7 +182,7 @@ class MainViewDrawer extends HookWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 context.read<MainCubit>().updateIndex(MainViews.wallet);
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               },
               child: Column(
                 children: [
@@ -283,7 +311,7 @@ class MainViewDrawer extends HookWidget {
           await Future.delayed(const Duration(milliseconds: 500)).then(
             (value) {
               if (context.mounted) {
-                Scaffold.of(context).closeDrawer();
+                closeMainDrawer(context);
               }
             },
           );
@@ -381,40 +409,31 @@ class MainViewDrawer extends HookWidget {
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: ListView(
-          children: [
-            if (canSign()) ...[
-              _profileDrawerItem(state, context),
+        child: ScrollShadow(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: ListView(
+            children: [
+              if (canSign()) ...[
+                _subscriptionDrawerItem(state, context),
+                _creatorsSubscriptionsDrawerItem(state, context),
+                _pricingDrawerItem(state, context),
+              ],
+              _articlesDrawerItem(state, context),
+              _exploreDrawerItem(state, context),
+              _relaysOrbitDrawerItem(state, context),
+              if (canSign()) ...[
+                _smartWidgetDrawerItem(state, context),
+                _dashboardDrawerItem(state, context),
+                _blossomDrawerItem(state, context),
+              ],
+              if (canSign()) ...[
+                _yakiPointsDrawerItem(state, context),
+                _yakiProDrawerItem(state, context),
+              ],
             ],
-            _articlesDrawerItem(state, context),
-            _exploreDrawerItem(state, context),
-            _relaysOrbitDrawerItem(state, context),
-            if (canSign()) ...[
-              _smartWidgetDrawerItem(state, context),
-              _dashboardDrawerItem(state, context),
-              _subscriptionDrawerItem(state, context),
-            ],
-            _settingDrawerItem(state, context),
-          ],
+          ),
         ),
       ),
-    );
-  }
-
-  DrawerItem _settingDrawerItem(MainState state, BuildContext context) {
-    return DrawerItem(
-      isSelected: state.mainView == MainViews.hidden,
-      onClicked: () {
-        YNavigator.pushPage(
-          context,
-          (context) => SettingsView(),
-        );
-
-        Scaffold.of(context).closeDrawer();
-      },
-      icon: FeatureIcons.settings,
-      selectedIcon: FeatureIcons.propertiesFilled,
-      title: context.t.settings.capitalizeFirst(),
     );
   }
 
@@ -427,7 +446,7 @@ class MainViewDrawer extends HookWidget {
           (context) => DashboardView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.dashboard2,
       selectedIcon: FeatureIcons.propertiesFilled,
@@ -444,11 +463,145 @@ class MainViewDrawer extends HookWidget {
           (context) => const SubscriptionView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.walletAvailable,
       selectedIcon: FeatureIcons.walletAvailable,
       title: context.t.subscription.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _blossomDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: state.mainView == MainViews.hidden,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const BlossomManagementView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: FeatureIcons.storageCloud,
+      selectedIcon: FeatureIcons.storageCloud,
+      title: context.t.blossomStorage.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _creatorsSubscriptionsDrawerItem(
+    MainState state,
+    BuildContext context,
+  ) {
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const CreatorsSubscriptionsView(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: LucideIcons.crown,
+      selectedIcon: LucideIcons.crown,
+      title: context.t.creatorsSubscriptions.capitalizeFirst(),
+    );
+  }
+
+  DrawerItem _pricingDrawerItem(MainState state, BuildContext context) {
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => const PricingScreen(),
+        );
+
+        closeMainDrawer(context);
+      },
+      icon: FeatureIcons.sats,
+      selectedIcon: FeatureIcons.sats,
+      title: context.t.pricing.capitalizeFirst(),
+    );
+  }
+
+  Widget _yakiPointsDrawerItem(MainState state, BuildContext context) {
+    return BlocBuilder<PointsManagementCubit, PointsManagementState>(
+      builder: (context, pointsState) {
+        final isLoggedIn = pointsState.isSystemLoggedIn;
+
+        return DrawerItem(
+          isSelected: false,
+          onClicked: () {
+            closeMainDrawer(context);
+            if (isLoggedIn) {
+              Navigator.pushNamed(
+                context,
+                PointsStatisticsView.routeName,
+              );
+            } else {
+              showBlurredModal(
+                context: context,
+                view: const PointsLoginPopup(),
+              );
+            }
+          },
+          icon: FeatureIcons.favorite,
+          selectedIcon: FeatureIcons.favorite,
+          title: context.t.yakiPoints,
+          trailing: isLoggedIn
+              ? Padding(
+                  padding: const EdgeInsets.only(right: kDefaultPadding / 4),
+                  child: PointsPercentage(
+                    currentXp: pointsState.currentXp,
+                    nextLevelXp: pointsState.nextLevelXp,
+                    additionalXp: pointsState.additionalXp,
+                    currentLevelXp: pointsState.currentLevelXp,
+                    currentLevel: pointsState.currentLevel,
+                    percentage: pointsState.percentage,
+                    backgroundColor:
+                        Theme.of(context).highlightColor.withValues(alpha: 0.1),
+                    size: 25,
+                    showText: false,
+                  ),
+                )
+              : TextButton(
+                  onPressed: () {
+                    closeMainDrawer(context);
+                    showBlurredModal(
+                      context: context,
+                      view: const PointsLoginPopup(),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 2,
+                    ),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(context.t.connect),
+                ),
+        );
+      },
+    );
+  }
+
+  DrawerItem _yakiProDrawerItem(MainState state, BuildContext context) {
+    const yakiProUrl = 'https://pro.yakihonne.com/yakipro-mobile-app-links';
+
+    return DrawerItem(
+      isSelected: false,
+      onClicked: () {
+        openWebPage(url: yakiProUrl, openInternal: false).then((_) {
+          if (context.mounted) {
+            closeMainDrawer(context);
+          }
+        });
+      },
+      icon: LucideIcons.badgeCheck,
+      selectedIcon: LucideIcons.badgeCheck,
+      title: context.t.yakiPro,
     );
   }
 
@@ -457,7 +610,7 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.articles,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.articles);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.article,
       selectedIcon: FeatureIcons.articleFilled,
@@ -474,7 +627,7 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExplorePacksView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.discover,
       selectedIcon: FeatureIcons.discoverFilled,
@@ -487,7 +640,7 @@ class MainViewDrawer extends HookWidget {
       isSelected: state.mainView == MainViews.smartWidgets,
       onClicked: () {
         context.read<MainCubit>().updateIndex(MainViews.smartWidgets);
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.smartWidget,
       selectedIcon: FeatureIcons.smartWidget,
@@ -504,7 +657,7 @@ class MainViewDrawer extends HookWidget {
           (context) => const ExploreRelaysView(),
         );
 
-        Scaffold.of(context).closeDrawer();
+        closeMainDrawer(context);
       },
       icon: FeatureIcons.relaysOrbit,
       selectedIcon: FeatureIcons.relaysOrbit,
@@ -512,85 +665,28 @@ class MainViewDrawer extends HookWidget {
     );
   }
 
-  DrawerItem _profileDrawerItem(MainState state, BuildContext context) {
-    return DrawerItem(
-      isSelected: state.mainView == MainViews.hidden,
-      onClicked: () {
-        YNavigator.pushPage(
-          context,
-          (context) => ProfileView(
-            pubkey: state.pubKey,
-          ),
-        );
-
-        Scaffold.of(context).closeDrawer();
-      },
-      icon: FeatureIcons.user,
-      selectedIcon: FeatureIcons.user,
-      title: context.t.profile.capitalizeFirst(),
-    );
-  }
-
-  Row _userRow(MainState state) {
+  Row _userRow(MainState state, BuildContext context) {
     return Row(
       children: [
         _profileRow(state),
-        if (canSign()) _pointsSystem(),
+        if (canSign()) _settingsButton(context),
       ],
     );
   }
 
-  BlocBuilder<PointsManagementCubit, PointsManagementState> _pointsSystem() {
-    return BlocBuilder<PointsManagementCubit, PointsManagementState>(
-      builder: (context, state) {
-        if (state.isSystemLoggedIn) {
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              Navigator.pushNamed(
-                context,
-                PointsStatisticsView.routeName,
-              );
-            },
-            child: PointsPercentage(
-              currentXp: state.currentXp,
-              nextLevelXp: state.nextLevelXp,
-              additionalXp: state.additionalXp,
-              currentLevelXp: state.currentLevelXp,
-              currentLevel: state.currentLevel,
-              percentage: state.percentage,
-              backgroundColor:
-                  Theme.of(context).highlightColor.withValues(alpha: 0.1),
-            ),
-          );
-        } else {
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              showBlurredModal(
-                context: context,
-                view: const PointsLoginPopup(),
-              );
-            },
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).cardColor,
-              ),
-              alignment: Alignment.center,
-              child: AppIcon(
-                FeatureIcons.reward,
-                size: 25,
-                color: Theme.of(context).primaryColorDark,
-              ),
-            ),
-          );
-        }
+  CustomIconButton _settingsButton(BuildContext context) {
+    return CustomIconButton(
+      onClicked: () {
+        YNavigator.pushPage(
+          context,
+          (context) => SettingsView(),
+        );
+
+        closeMainDrawer(context);
       },
+      icon: FeatureIcons.settings,
+      size: 26,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
@@ -599,9 +695,11 @@ class MainViewDrawer extends HookWidget {
       child: Builder(
         builder: (context) {
           void f() {
-            openProfileFastAccess(
-              context: context,
-              pubkey: state.pubKey,
+            YNavigator.pushPage(
+              context,
+              (context) => ProfileView(
+                pubkey: state.pubKey,
+              ),
             );
           }
 
@@ -613,7 +711,7 @@ class MainViewDrawer extends HookWidget {
               child: (metadata, isNip05) => Row(
                 children: [
                   ProfilePicture2(
-                    size: 45,
+                    size: 40,
                     image: metadata.picture,
                     pubkey: metadata.pubkey,
                     padding: 0,
@@ -626,6 +724,7 @@ class MainViewDrawer extends HookWidget {
                   ),
                   Expanded(
                     child: Row(
+                      spacing: kDefaultPadding / 4,
                       children: [
                         Flexible(
                           child: Column(
@@ -646,6 +745,10 @@ class MainViewDrawer extends HookWidget {
                               ),
                             ],
                           ),
+                        ),
+                        const AppIcon(
+                          FeatureIcons.arrowRight,
+                          size: 20,
                         ),
                       ],
                     ),
@@ -670,6 +773,8 @@ class PointsPercentage extends HookWidget {
     required this.currentLevel,
     required this.percentage,
     this.backgroundColor,
+    this.size = 55,
+    this.showText = true,
   });
 
   final int currentXp;
@@ -679,6 +784,8 @@ class PointsPercentage extends HookWidget {
   final int currentLevel;
   final double percentage;
   final Color? backgroundColor;
+  final double size;
+  final bool showText;
 
   @override
   Widget build(BuildContext context) {
@@ -702,10 +809,13 @@ class PointsPercentage extends HookWidget {
     );
 
     return SizedBox(
-      width: 55,
-      height: 55,
+      width: size,
+      height: size,
       child: Stack(
-        children: [_animatedCircle(animation), _xpColumn(context)],
+        children: [
+          _animatedCircle(animation),
+          if (showText) _xpColumn(context),
+        ],
       ),
     );
   }
@@ -715,7 +825,7 @@ class PointsPercentage extends HookWidget {
       child: AnimatedBuilder(
         animation: animation,
         builder: (context, child) => CircularProgressIndicator(
-          strokeWidth: 3,
+          strokeWidth: (size * 3 / 55).clamp(2.0, 3.0),
           value: animation.value,
           color: getPercentageColor(animation.value * 100),
           strokeCap: StrokeCap.round,
@@ -761,6 +871,7 @@ class DrawerItem extends StatelessWidget {
     required this.icon,
     required this.selectedIcon,
     required this.title,
+    this.trailing,
   });
 
   final bool isSelected;
@@ -768,6 +879,7 @@ class DrawerItem extends StatelessWidget {
   final IconData icon;
   final IconData selectedIcon;
   final String title;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -792,15 +904,16 @@ class DrawerItem extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               ),
         ),
-        trailing: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: isSelected ? 4 : 0,
-          height: isSelected ? 4 : 0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(kDefaultPadding),
-            color: Theme.of(context).primaryColorDark,
-          ),
-        ),
+        trailing: trailing ??
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: isSelected ? 4 : 0,
+              height: isSelected ? 4 : 0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultPadding),
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
       ),
     );
   }

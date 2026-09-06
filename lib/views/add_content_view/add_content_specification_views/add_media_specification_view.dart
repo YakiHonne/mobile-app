@@ -12,7 +12,6 @@
 // import '../../../utils/utils.dart';
 // import '../../widgets/common_thumbnail.dart';
 // import '../../widgets/dotted_container.dart';
-// import '../../widgets/publish_content_final_step.dart';
 // import '../../widgets/single_image_selector.dart';
 // import '../related_adding_views/article_widgets/article_details.dart';
 
@@ -119,7 +118,7 @@
 //                       Navigator.pop(context);
 //                       Navigator.pop(context);
 
-//                       showModalBottomSheet(
+//                       showAppModalSheet(
 //                         context: context,
 //                         elevation: 0,
 //                         builder: (_) {
@@ -359,7 +358,7 @@
 //       flex: 2,
 //       child: Builder(builder: (context) {
 //         void addImage() {
-//           showModalBottomSheet(
+//           showAppModalSheet(
 //             context: context,
 //             isScrollControlled: true,
 //             builder: (_) {

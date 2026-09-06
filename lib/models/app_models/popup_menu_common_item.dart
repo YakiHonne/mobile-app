@@ -66,7 +66,9 @@ class PdmCommonActions {
         muteKey: metadata.pubkey,
         onSuccess: () {
           onMuteActionSuccess?.call(pubkey, !isMuted);
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
         },
       ),
     );
@@ -98,7 +100,9 @@ class PdmCommonActions {
         isPubkey: false,
         onSuccess: () {
           onMuteActionSuccess?.call(id, !isMuted);
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
         },
       ),
     );

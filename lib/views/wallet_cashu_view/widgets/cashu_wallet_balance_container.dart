@@ -425,21 +425,39 @@ class CashuWallatBalanceContainer extends StatelessWidget {
     required IconData icon,
     required VoidCallback onTap,
   }) {
-    return TextButton.icon(
-      onPressed: onTap,
-      style: TextButton.styleFrom(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 2,
-          vertical: kDefaultPadding / 4,
+          horizontal: kDefaultPadding / 1.5,
+          vertical: kDefaultPadding / 3,
         ),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
+          ),
+        ),
+        child: Row(
+          spacing: kDefaultPadding / 4,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppIcon(
+              icon,
+              size: 15,
+            ),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            )
+          ],
+        ),
       ),
-      icon: AppIcon(
-        icon,
-        size: 15,
-      ),
-      label: Text(title),
     );
   }
 }

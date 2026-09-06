@@ -14,6 +14,7 @@ import '../../models/bookmark_list_model.dart';
 import '../../models/flash_news_model.dart';
 import '../../repositories/nostr_data_repository.dart';
 import '../widgets/app_icon.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/common_thumbnail.dart';
 import '../widgets/dotted_container.dart';
 import '../widgets/empty_list.dart';
@@ -85,14 +86,12 @@ class AddBookmarkView extends StatelessWidget {
             child: Stack(
               children: [
                 if (!state.isBookmarksLists)
-                  IconButton(
-                    onPressed: () {
+                  AppIconButton(
+                    onClicked: () {
                       context.read<AddBookmarkCubit>().setView(true);
                     },
-                    icon: const Icon(
-                      LucideIcons.chevronLeft,
-                      size: 20,
-                    ),
+                    icon: LucideIcons.chevronLeft,
+                    iconSize: 20,
                   ),
                 Center(
                   child: Text(
@@ -375,7 +374,9 @@ class AddBookmarkBottomBar extends HookWidget {
                 }
               },
               icon: Icon(
-                articleState.isBookmarksLists ? LucideIcons.plus : LucideIcons.check,
+                articleState.isBookmarksLists
+                    ? LucideIcons.plus
+                    : LucideIcons.check,
                 size: 20,
               ),
               label: Text(

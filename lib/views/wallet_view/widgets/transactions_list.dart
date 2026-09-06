@@ -7,6 +7,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../models/article_model.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/adaptive_smart_refresher.dart';
 import '../../widgets/classic_footer.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
@@ -64,7 +65,7 @@ class _TransactionsListState extends State<TransactionsList> {
               }
             },
             builder: (context, state) {
-              return SmartRefresher(
+              return AdaptiveSmartRefresher(
                 controller: refreshController,
                 scrollController: scrollController,
                 enablePullDown: false,

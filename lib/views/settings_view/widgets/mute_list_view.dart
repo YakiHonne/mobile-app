@@ -15,9 +15,9 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../profile_view/profile_view.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/note_container.dart';
 import '../../widgets/profile_picture.dart';
@@ -41,13 +41,18 @@ class MuteListView extends HookWidget {
 
     return BlocProvider(
       create: (context) => MuteListCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.muteList.capitalizeFirst(),
-        ),
-        body: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
+      child: FluidScaffold(
+        title: context.t.muteList.capitalizeFirst(),
+        // The header is a pinned SliverAppBar holding the TabBar; it pins to
+        // the viewport top, which under `extendBody` is behind the glass bar.
+        // Insetting the whole NestedScrollView keeps the tabs reachable at the
+        // cost of nothing travelling behind the bar. Same call in
+        // bookmarks_list_details and rewards_view.
+        body: Padding(
+          padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+          child: DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
@@ -89,6 +94,7 @@ class MuteListView extends HookWidget {
                   ],
                 );
               },
+            ),
             ),
           ),
         ),

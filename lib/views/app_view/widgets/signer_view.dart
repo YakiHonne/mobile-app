@@ -25,7 +25,7 @@ class SignerView extends HookWidget {
         useState(localDatabaseRepository.getAutomaticSigning());
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         expand: false,
         maxChildSize: 0.85,
         minChildSize: 0.5,

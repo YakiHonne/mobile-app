@@ -31,7 +31,7 @@ class ZapSplitUsers extends HookWidget {
     final pubkeysList = useState(currentPubkeys);
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.9,
         minChildSize: 0.60,
         maxChildSize: 0.9,

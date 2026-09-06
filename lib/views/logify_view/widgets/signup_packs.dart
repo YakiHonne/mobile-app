@@ -62,7 +62,7 @@ class SignupPacks extends HookWidget {
     );
 
     slivers.add(
-      isTablet
+      isTablet && !isFluid()
           ? SliverMasonryGrid.count(
               crossAxisCount: 2,
               itemBuilder: (context, index) {
@@ -71,8 +71,8 @@ class SignupPacks extends HookWidget {
                 return PackOnboardingCard(pack: pack);
               },
               childCount: packs.length,
-              crossAxisSpacing: kDefaultPadding,
-              mainAxisSpacing: kDefaultPadding,
+              crossAxisSpacing: kDefaultPadding / 1.5,
+              mainAxisSpacing: kDefaultPadding / 1.5,
             )
           : SliverList.separated(
               separatorBuilder: (context, index) => const SizedBox(
@@ -109,28 +109,28 @@ class PackOnboardingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
+          dialogHeight: 620,
           builder: (_) {
             return BlocProvider.value(
               value: context.read<LogifyCubit>(),
               child: OnboardingPackInfo(pack: pack),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: isFluid()
-              ? kTransparent
-              : Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       behavior: HitTestBehavior.translucent,
-      child: Column(
-        children: [
-          _packHeader(context),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+          ),
+          borderRadius: BorderRadius.circular(kDefaultPadding),
+        ),
+        child: _packHeader(context),
       ),
     );
   }
@@ -149,8 +149,8 @@ class PackOnboardingCard extends StatelessWidget {
       children: [
         CommonThumbnail(
           image: pack.image,
-          width: 10.w,
-          height: 10.w,
+          width: 40,
+          height: 40,
           radius: kDefaultPadding / 2,
           isRound: true,
         ),
@@ -230,7 +230,7 @@ class OnboardingPackInfo extends HookWidget {
     return BlocBuilder<LogifyCubit, LogifyState>(
       builder: (context, state) {
         return ModalSheetContainer(
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             maxChildSize: 0.95,
             minChildSize: 0.2,
             initialChildSize: 0.95,

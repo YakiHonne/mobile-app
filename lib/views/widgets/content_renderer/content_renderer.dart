@@ -1,4 +1,5 @@
 import 'package:convert/convert.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +70,7 @@ class ContentRenderer extends HookWidget {
     this.useDetailedNote = false,
     this.hideMedia,
     this.height,
+    this.emojis,
   });
 
   final String text;
@@ -98,6 +100,7 @@ class ContentRenderer extends HookWidget {
   final double? height;
   final bool? useDetailedNote;
   final bool? hideMedia;
+  final Map<String, String>? emojis;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +173,7 @@ class ContentRenderer extends HookWidget {
         context,
         scrollPhysics,
       ),
-      [trimmed, resolvedUrlTypes.value, Theme.of(context)],
+      [trimmed, resolvedUrlTypes.value, Theme.of(context), emojis],
     );
 
     return _OptimizedSelectableText(
@@ -897,9 +900,83 @@ class ContentRenderer extends HookWidget {
   }
 
   TextSpan _buildTextSpan(String text, BuildContext context) {
+    final baseStyle = style ?? Theme.of(context).textTheme.bodyMedium;
+    final emojis = this.emojis ?? const <String, String>{};
+
+    if (emojis.isEmpty) {
+      return TextSpan(
+        text: text,
+        style: baseStyle,
+      );
+    }
+
     return TextSpan(
-      text: text,
-      style: style ?? Theme.of(context).textTheme.bodyMedium,
+      style: baseStyle,
+      children: _buildEmojiTextSpans(text, baseStyle, emojis),
+    );
+  }
+
+  List<InlineSpan> _buildEmojiTextSpans(
+    String text,
+    TextStyle? baseStyle,
+    Map<String, String> emojis,
+  ) {
+    final spans = <InlineSpan>[];
+    final regex = RegExp(r':([a-zA-Z0-9_+-]+):');
+    var lastMatchEnd = 0;
+
+    for (final match in regex.allMatches(text)) {
+      final url = emojis[match.group(1)];
+
+      if (url == null || url.isEmpty) {
+        continue;
+      }
+
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
+      }
+
+      spans.add(
+        _buildEmojiSpan(url, baseStyle, ':${match.group(1)}:'),
+      );
+      lastMatchEnd = match.end;
+    }
+
+    if (lastMatchEnd < text.length) {
+      spans.add(TextSpan(text: text.substring(lastMatchEnd)));
+    }
+
+    return spans.isEmpty ? [TextSpan(text: text)] : spans;
+  }
+
+  WidgetSpan _buildEmojiSpan(
+    String url,
+    TextStyle? baseStyle,
+    String fallbackText,
+  ) {
+    final fontSize = baseStyle?.fontSize ?? 14;
+    final size = fontSize * 1.2;
+
+    return WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: ExtendedImage.network(
+        url,
+        width: size,
+        height: size,
+        cacheWidth: (size * 3).round(),
+        fit: BoxFit.cover,
+        loadStateChanged: (state) {
+          if (state.extendedImageLoadState == LoadState.loading ||
+              state.extendedImageLoadState == LoadState.failed) {
+            return Text(
+              fallbackText,
+              style: baseStyle,
+            );
+          }
+
+          return null;
+        },
+      ),
     );
   }
 
@@ -1767,16 +1844,14 @@ class MediaContainer extends HookWidget {
 
     return RepaintBoundary(
       child: media.length > 1
-          ? LayoutBuilder(
-              builder: (context, constraints) => GalleryImageView(
-                media: {for (final e in media) e.key: e.value},
-                seperatorColor: Theme.of(context).scaffoldBackgroundColor,
-                width: constraints.maxWidth,
-                onDownload: MediaUtils.shareImage,
-                height: 180,
-                isHidden: hideMedia,
-                invertColor: invertColor,
-              ),
+          ? GalleryImageView(
+              media: {for (final e in media) e.key: e.value},
+              seperatorColor: Theme.of(context).scaffoldBackgroundColor,
+              width: double.infinity,
+              onDownload: MediaUtils.shareImage,
+              height: 180,
+              isHidden: hideMedia,
+              invertColor: invertColor,
             )
           : _buildSingleMedia(context),
     );

@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../logic/notifications_cubit/customize_notifications_cubit/customize_notifications_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../settings_view/widgets/settings_text.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 
 class NotificationsCustomization extends StatelessWidget {
   const NotificationsCustomization({super.key});
@@ -14,15 +14,15 @@ class NotificationsCustomization extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CustomizeNotificationsCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.notifications.capitalizeFirst(),
-        ),
+      child: FluidScaffold(
+        title: context.t.notifications.capitalizeFirst(),
         body: BlocBuilder<CustomizeNotificationsCubit,
             CustomizeNotificationsState>(
           builder: (context, state) {
             return ListView(
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+                top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
+              ),
               children: [
                 Text(
                   context.t.settingsNotificationsDesc,
@@ -169,7 +169,7 @@ class SwitchRow extends StatelessWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: val,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: onSwitched,

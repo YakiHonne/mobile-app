@@ -10,10 +10,16 @@ class SendZapsResult extends StatelessWidget {
     super.key,
     required this.onSwitchToSend,
     required this.data,
+    this.actionLabel,
+    this.onAction,
   });
 
   final VoidCallback onSwitchToSend;
   final Map<String, dynamic> data;
+
+  /// Optional call-to-action shown under a successful payment.
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +76,8 @@ class SendZapsResult extends StatelessWidget {
         if (data['message'] != null)
           _buildMessageText(context, data['message']),
         if (data['ln'] != null) _buildLightningAddress(context),
+        if (actionLabel != null && onAction != null)
+          TextButton(onPressed: onAction, child: Text(actionLabel!)),
       ],
     );
   }

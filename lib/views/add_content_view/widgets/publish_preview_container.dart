@@ -79,18 +79,14 @@ class PublishPreviewContainer extends HookWidget {
       flex: 2,
       child: Builder(builder: (context) {
         void addImage() {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
+          showAdaptiveModal(
+            context,
             builder: (_) {
               return SingleImageSelector(
                 onUrlProvided: onImageLinkChanged,
               );
             },
-            backgroundColor: kTransparent,
-            useRootNavigator: true,
-            elevation: 0,
-            useSafeArea: true,
+            backgroundColor: Theme.of(context).cardColor,
           );
         }
 

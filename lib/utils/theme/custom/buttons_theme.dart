@@ -216,9 +216,10 @@ class TbuttonsTheme {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
               border: Border(
-                top: BorderSide(
-                  color: borderColor,
-                ),
+                top: BorderSide(color: borderColor, width: 1.5),
+                left: BorderSide(color: borderColor, width: 0.5),
+                right: BorderSide(color: borderColor, width: 0.5),
+                bottom: BorderSide(color: borderColor, width: 0.5),
               ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -274,7 +275,12 @@ class TbuttonsTheme {
           borderRadius: BorderRadius.circular(25),
           border: borderColor == null
               ? null
-              : Border(top: BorderSide(color: borderColor)),
+              : Border(
+                  top: BorderSide(color: borderColor, width: 1.5),
+                  left: BorderSide(color: borderColor, width: 0.5),
+                  right: BorderSide(color: borderColor, width: 0.5),
+                  bottom: BorderSide(color: borderColor, width: 0.5),
+                ),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

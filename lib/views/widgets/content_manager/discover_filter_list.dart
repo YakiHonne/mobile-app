@@ -12,6 +12,7 @@ import '../../../utils/utils.dart';
 import '../app_icon.dart';
 import '../custom_icon_buttons.dart';
 import '../dotted_container.dart';
+import '../fluid_pull_down_button.dart';
 import '../modal_sheet_container.dart';
 import 'add_discover_filter.dart';
 
@@ -363,8 +364,8 @@ class FilterContainer extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

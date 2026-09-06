@@ -132,10 +132,13 @@ class ProfileFastAccess extends HookWidget {
                   arguments: [metadata.pubkey],
                 );
               },
-              style: TextButton.styleFrom(
-                backgroundBuilder: (_, __, child) => child!,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              ),
+              style: isFluid()
+                  ? TextButton.styleFrom(
+                      backgroundBuilder: (_, __, child) => child!,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                    )
+                  : null,
               icon: Text(
                 context.t.visitProfile.capitalizeFirst(),
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -166,10 +169,12 @@ class ProfileFastAccess extends HookWidget {
                     ),
                   );
                 },
-                style: TextButton.styleFrom(
-                  backgroundBuilder: (_, __, child) => child!,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                ),
+                style: isFluid()
+                    ? TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
+                        backgroundColor: Theme.of(context).primaryColorDark,
+                      )
+                    : null,
                 icon: Text(
                   context.t.editProfile.capitalizeFirst(),
                   style: Theme.of(context).textTheme.labelLarge,
@@ -557,29 +562,35 @@ class CommonUsersRow extends StatelessWidget {
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
-                Builder(builder: (context) {
-                  final number =
-                      (commonPubkeys.length - usersToBeShown.length).toString();
-                  return Text(
-                    (useOthers
-                            ? context.t.othersNumber(number: number)
-                            : context.t.mutualsNum(number: number))
-                        .capitalizeFirst(),
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: Theme.of(context).highlightColor,
-                        ),
-                  );
-                }),
+                Flexible(
+                  child: Builder(builder: (context) {
+                    final number = (commonPubkeys.length - usersToBeShown.length)
+                        .toString();
+                    return Text(
+                      (useOthers
+                              ? context.t.othersNumber(number: number)
+                              : context.t.mutualsNum(number: number))
+                          .capitalizeFirst(),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(context).highlightColor,
+                          ),
+                    );
+                  }),
+                ),
               ] else if (!useOthers) ...[
                 const SizedBox(
                   width: kDefaultPadding / 4,
                 ),
-                Text(
-                  (useOthers ? context.t.others : context.t.mutuals)
-                      .capitalizeFirst(),
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                      ),
+                Flexible(
+                  child: Text(
+                    (useOthers ? context.t.others : context.t.mutuals)
+                        .capitalizeFirst(),
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
                 ),
               ],
             ],
@@ -935,6 +946,7 @@ class _FluidActionButtons extends StatelessWidget {
               );
             },
             icon: FeatureIcons.startDms,
+            iconColor: kWhite,
             buttonStatus:
                 canBeFollowed ? ButtonStatus.inactive : ButtonStatus.disabled,
           ),
@@ -954,6 +966,7 @@ class _FluidActionButtons extends StatelessWidget {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },
+              iconColor: kWhite,
               icon: FeatureIcons.zaps,
               buttonStatus:
                   canBeZapped ? ButtonStatus.inactive : ButtonStatus.disabled,
@@ -970,7 +983,8 @@ class _FluidActionButtons extends StatelessWidget {
               arguments: [metadata.pubkey],
             );
           },
-          icon: FeatureIcons.shareExternal,
+          iconColor: kWhite,
+          icon: FeatureIcons.user,
           buttonStatus: ButtonStatus.inactive,
         ),
       ],

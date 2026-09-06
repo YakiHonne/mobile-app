@@ -18,10 +18,11 @@ import '../../../utils/utils.dart';
 import '../../add_bookmark_view/add_bookmark_view.dart';
 import '../../search_view/search_view.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/flash_tags_row.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/response_snackbar.dart';
 import 'un_flashnews_add_note.dart';
@@ -55,11 +56,9 @@ class UnFlashNewsDetails extends HookWidget {
       create: (context) => UnFlashNewsDetailsCubit(
         unFlashNews: unFlashNews,
       ),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.details.capitalizeFirst(),
-          notElevated: true,
-        ),
+      child: FluidScaffold(
+        title: context.t.details.capitalizeFirst(),
+        notElevated: true,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: DefaultTabController(
@@ -67,9 +66,10 @@ class UnFlashNewsDetails extends HookWidget {
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: SizedBox(
-                      height: kDefaultPadding / 2,
+                      height:
+                          kDefaultPadding / 2 + fluidScaffoldTopInset(context),
                     ),
                   ),
                   _unStateColumn(pubkey),
@@ -233,11 +233,10 @@ class UnFlashNewsDetails extends HookWidget {
           Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 1),
       toolbarHeight: 45,
       titleSpacing: 0,
-      actions: const [SizedBox.shrink()],
-      elevation: 0,
-      title: SizedBox(
+      actions: const [SizedBox.shrink()],      title: SizedBox(
         width: double.infinity,
         child: ButtonsTabBar(
+          splashColor: kTransparent,
           backgroundColor: Theme.of(context).primaryColorDark,
           unselectedDecoration: BoxDecoration(
             color: Theme.of(context).cardColor,
@@ -424,9 +423,9 @@ class UnFlashNewsDetails extends HookWidget {
                   alignment: Alignment.centerRight,
                   child: TextButton.icon(
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        elevation: 0,
+                      showAdaptiveModal(
+                        context,
+                        dialogHeight: 620,
                         builder: (_) {
                           return BlocProvider.value(
                             value: context.read<UnFlashNewsDetailsCubit>(),
@@ -443,14 +442,7 @@ class UnFlashNewsDetails extends HookWidget {
                               },
                             ),
                           );
-                        },
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        useSafeArea: true,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor,
-                      );
+                        },                      );
                     },
                     icon: Icon(
                       LucideIcons.plus,
@@ -545,9 +537,9 @@ class UnFlashNewsDetails extends HookWidget {
     );
   }
 
-  PullDownButton _pulldowbButton(
+  FluidPullDownButton _pulldowbButton(
       BuildContext context, UnFlashNewsDetailsState unState) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

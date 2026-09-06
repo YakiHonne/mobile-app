@@ -13,6 +13,7 @@ import '../../logic/polls_cubit/polls_cubit.dart';
 import '../../models/poll_model.dart';
 import '../../utils/utils.dart';
 import '../smart_widgets_view/widgets/smart_widget_container.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/dotted_container.dart';
@@ -74,7 +75,7 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
             }
           },
           builder: (context, state) {
-            return DraggableScrollableSheet(
+            return AdaptiveDraggableSheet(
               initialChildSize: 0.80,
               minChildSize: 0.40,
               maxChildSize: 0.80,
@@ -119,9 +120,9 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
     );
   }
 
-  SmartRefresher _items(BuildContext context, bool isTablet,
+  Widget _items(BuildContext context, bool isTablet,
       ScrollController scrollController, PollsState state) {
-    return SmartRefresher(
+    return AdaptiveSmartRefresher(
       controller: refreshController,
       enablePullDown: false,
       enablePullUp: true,

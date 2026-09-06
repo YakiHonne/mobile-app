@@ -1,7 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
@@ -9,6 +13,7 @@ import '../../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../../logic/unsent_events_cubit/unsent_events_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
+import '../../../utils/theme/glass_settings.dart';
 import '../../../utils/utils.dart';
 import '../../discover_view/discover_view.dart';
 import '../../notifications_view/widgets/notifications_customization.dart';
@@ -19,12 +24,14 @@ import '../../wallet_view/widgets/transactions_list.dart';
 import '../../widgets/animated_components/animated_line.dart';
 import '../../widgets/animated_flip_counter.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/unsent_events_view.dart';
 import 'app_bar_widgets.dart';
+import 'drawer_view.dart';
 import 'feature_tour.dart';
 
 mixin _AppBarHelpers on StatelessWidget {
@@ -32,48 +39,52 @@ mixin _AppBarHelpers on StatelessWidget {
   bool get isConnected;
   List<ScrollController> get scrollControllers;
 
+  GestureDetector _eventsCountRow(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showAdaptiveModal(
+          context,
+          dialogHeight: 620,
+          // Kept explicit: this site was opaque even in fluid mode before the
+          // migration, and mobile must not change.
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          builder: (_) => const UnsentEventsView(),
+        );
+      },
+      behavior: HitTestBehavior.translucent,
+      child: BlocBuilder<UnsentEventsCubit, UnsentEventsState>(
+        builder: (context, state) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: kDefaultPadding / 8,
+            children: [
+              AnimatedFlipCounter(
+                value: state.events.length,
+                textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                enableAbbreviation: true,
+              ),
+              RotatedBox(
+                quarterTurns: 1,
+                child: AppIcon(
+                  FeatureIcons.arrowUp,
+                  size: 15,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   Positioned _eventsCount(BuildContext context) {
     return Positioned(
       right: kDefaultPadding / 1.5,
-      child: GestureDetector(
-        onTap: () {
-          showAdaptiveModal(
-            context,
-            dialogHeight: 620,
-            // Kept explicit: this site was opaque even in fluid mode before the
-            // migration, and mobile must not change.
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            builder: (_) => const UnsentEventsView(),
-          );
-        },
-        behavior: HitTestBehavior.translucent,
-        child: BlocBuilder<UnsentEventsCubit, UnsentEventsState>(
-          builder: (context, state) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: kDefaultPadding / 8,
-              children: [
-                AnimatedFlipCounter(
-                  value: state.events.length,
-                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                  enableAbbreviation: true,
-                ),
-                RotatedBox(
-                  quarterTurns: 1,
-                  child: AppIcon(
-                    FeatureIcons.arrowUp,
-                    size: 15,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+      child: _eventsCountRow(context),
     );
   }
 
@@ -85,7 +96,7 @@ mixin _AppBarHelpers on StatelessWidget {
         spacing: kDefaultPadding / 4,
         children: [
           Text(
-            context.t.waitingForNetwork,
+            context.t.reconnecting,
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).highlightColor,
@@ -103,11 +114,36 @@ mixin _AppBarHelpers on StatelessWidget {
     );
   }
 
+  Widget _offlineStatusRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 3,
+      children: [
+        SpinKitFadingCircle(
+          color: Theme.of(context).primaryColor,
+          size: 15,
+        ),
+        Expanded(
+          child: Text(
+            context.t.reconnecting,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).highlightColor,
+                ),
+          ),
+        ),
+        _eventsCountRow(context),
+      ],
+    );
+  }
+
   Widget _buildLeading(BuildContext context, MainState state) {
     return Center(
       child: GestureDetector(
         key: TourKeys.drawer,
-        onTap: () => Scaffold.of(context).openDrawer(),
+        onTap: () => openMainDrawer(context),
         child: currentSigner != null
             ? MetadataProvider(
                 child: (metadata, isNip05) => ProfilePicture2(
@@ -118,7 +154,7 @@ mixin _AppBarHelpers on StatelessWidget {
                   strokeWidth: 0,
                   strokeColor: kTransparent,
                   onClicked: () {
-                    Scaffold.of(context).openDrawer();
+                    openMainDrawer(context);
                     walletManagerCubit.getWalletBalanceInFiat();
                   },
                 ),
@@ -139,7 +175,7 @@ mixin _AppBarHelpers on StatelessWidget {
         state.mainView == MainViews.media) {
       return SizedBox(
         key: TourKeys.title,
-        width: 50.w,
+        width: min(50.w, 280),
         child: Center(
           child: SourceButton(
             viewType: state.mainView == MainViews.articles
@@ -166,7 +202,7 @@ mixin _AppBarHelpers on StatelessWidget {
     } else if (state.mainView == MainViews.wallet) {
       return const SelectedWalletContainer();
     } else if (state.mainView == MainViews.dms && canSign()) {
-      return InboxTypes(scrollController: scrollControllers[2]);
+      return InboxTypes(scrollController: scrollControllers[3]);
     } else if (state.mainView == MainViews.notifications && canSign()) {
       return const NotificationTypes();
     } else {
@@ -310,7 +346,9 @@ mixin _AppBarHelpers on StatelessWidget {
 // GLASS variant — Positioned(top:0) in the body Stack
 // ==================================================
 
-class FluidMainViewAppBar extends StatelessWidget with _AppBarHelpers {
+class FluidMainViewAppBar extends StatelessWidget
+    with _AppBarHelpers
+    implements PreferredSizeWidget {
   @override
   final Function() onClicked;
   @override
@@ -325,128 +363,166 @@ class FluidMainViewAppBar extends StatelessWidget with _AppBarHelpers {
     required this.scrollControllers,
   });
 
+  static const _toolbarHeight = 48.0;
+  static const _buttonSize = 45.0;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(_toolbarHeight);
+
   @override
   Widget build(BuildContext context) {
-    return FluidBlurContainer(
-      sigma: 20,
-      useClipRect: true,
-      showBorder: false,
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!isConnected)
-              Stack(
-                children: [
-                  const SizedBox(width: double.infinity, height: 15),
-                  _offlineColumn(context),
-                  _eventsCount(context),
-                ],
-              ),
-            BlocBuilder<MainCubit, MainState>(
-              builder: (context, state) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kDefaultPadding / 1.5,
-                    vertical: kDefaultPadding / 2,
+    return BlocBuilder<MainCubit, MainState>(
+      builder: (context, state) {
+        return GlassAppBar(
+          toolbarHeight: _toolbarHeight,
+          buttonSettings: GlassSettings.appBar(context),
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 1.5,
+          ),
+          // Profile picture — opens drawer
+          leading: Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding / 1.5),
+            child: GlassButton.custom(
+              key: TourKeys.drawer,
+              width: _buttonSize,
+              height: _buttonSize,
+              onTap: () {
+                openMainDrawer(context);
+                walletManagerCubit.getWalletBalanceInFiat();
+              },
+              child: currentSigner != null
+                  ? MetadataProvider(
+                      child: (metadata, isNip05) => ProfilePicture2(
+                        size: _buttonSize - 6,
+                        image: metadata.picture,
+                        pubkey: metadata.pubkey,
+                        padding: 0,
+                        strokeWidth: 0,
+                        strokeColor: kTransparent,
+                        onClicked: () {
+                          openMainDrawer(context);
+                          walletManagerCubit.getWalletBalanceInFiat();
+                        },
+                      ),
+                      pubkey: state.pubKey,
+                    )
+                  : AppIcon(
+                      FeatureIcons.menu,
+                      size: 20,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+            ),
+          ),
+
+          // Search bar — fills remaining width, or collapses to an icon-only
+          // circle (with a network-status pill alongside) while offline.
+          title: isConnected
+              ? GestureDetector(
+                  onTap: () {
+                    YNavigator.pushPage(
+                      context,
+                      (context) => SearchView(),
+                    );
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: FluidBlurContainer(
+                    height: 45,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: kDefaultPadding / 2,
+                      children: [
+                        AppIcon(
+                          FeatureIcons.search,
+                          size: 16,
+                          color: Theme.of(context).highlightColor,
+                        ),
+                        Text(
+                          context.t.search.capitalizeFirst(),
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Theme.of(context).highlightColor,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      // Profile picture — opens drawer
-                      _buildLeading(context, state),
-                      const SizedBox(width: kDefaultPadding / 1.5),
-                      // Search bar — fills remaining width
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => YNavigator.pushPage(
-                            context,
-                            (context) => SearchView(),
-                          ),
-                          child: Container(
-                            height: 38,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .cardColor
-                                  .withValues(alpha: 0.6),
-                              borderRadius:
-                                  BorderRadius.circular(kDefaultPadding * 2),
-                              border: Border.all(
-                                color: Theme.of(context).dividerColor,
-                                width: 0.5,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: kDefaultPadding / 2,
-                              children: [
-                                AppIcon(
-                                  FeatureIcons.search,
-                                  size: 16,
-                                  color: Theme.of(context).highlightColor,
-                                ),
-                                Text(
-                                  context.t.search.capitalizeFirst(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(
-                                        color: Theme.of(context).highlightColor,
-                                      ),
-                                ),
-                              ],
-                            ),
+                )
+              : Row(
+                  spacing: kDefaultPadding / 4,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        YNavigator.pushPage(
+                          context,
+                          (context) => SearchView(),
+                        );
+                      },
+                      behavior: HitTestBehavior.translucent,
+                      child: FluidBlurContainer(
+                        height: _buttonSize,
+                        width: _buttonSize,
+                        child: Center(
+                          child: AppIcon(
+                            FeatureIcons.search,
+                            size: 16,
+                            color: Theme.of(context).highlightColor,
                           ),
                         ),
                       ),
-                      const SizedBox(width: kDefaultPadding / 1.5),
-                      // Notification button
-                      BlocBuilder<NotificationsCubit, NotificationsState>(
-                        builder: (context, notiState) {
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              GestureDetector(
-                                key: TourKeys.notifications,
-                                onTap: () {
-                                  context
-                                      .read<MainCubit>()
-                                      .updateIndex(MainViews.notifications);
-                                  notificationsCubit.markRead();
-                                },
-                                child: AppIcon(
-                                  state.mainView == MainViews.notifications
-                                      ? FeatureIcons.notificationsFilled
-                                      : FeatureIcons.notification,
-                                  size: 26,
-                                  color: Theme.of(context).primaryColorDark,
-                                ),
-                              ),
-                              if (!notiState.isRead && canSign())
-                                Positioned(
-                                  top: -1,
-                                  right: -1,
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
+                    ),
+                    Expanded(
+                      child: FluidBlurContainer(
+                        height: _buttonSize,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: kDefaultPadding / 2,
+                        ),
+                        child: _offlineStatusRow(context),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
+          actions: [
+            const SizedBox(
+              width: kDefaultPadding / 4,
+            ),
+            BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, notiState) {
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AppIconButton(
+                      key: TourKeys.notifications,
+                      iconSize: 22,
+                      onClicked: () {
+                        context
+                            .read<MainCubit>()
+                            .updateIndex(MainViews.notifications);
+                        notificationsCubit.markRead();
+                      },
+                      icon: state.mainView == MainViews.notifications
+                          ? FeatureIcons.notificationsFilled
+                          : FeatureIcons.notification,
+                    ),
+                    if (!notiState.isRead && canSign())
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
                 );
               },
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

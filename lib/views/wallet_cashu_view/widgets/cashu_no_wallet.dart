@@ -1,9 +1,12 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/wallet_type_switch.dart';
 import 'create_cashu_wallet.dart';
 
 class CashuNoWallet extends HookWidget {
@@ -34,6 +37,20 @@ class CashuNoWallet extends HookWidget {
           height: kDefaultPadding,
         ),
         _emptyWalletAdd(context),
+        if (isFluid()) ...[
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: WalletTypeSwitch(
+              isCashu: true,
+              onTap: () {
+                context.read<MainCubit>().changeWalletType();
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -47,7 +64,7 @@ class CashuNoWallet extends HookWidget {
             Colors.pinkAccent,
           ],
         ),
-        borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+        borderRadius: BorderRadius.circular(100),
       ),
       child: TextButton(
         onPressed: () {
@@ -62,7 +79,7 @@ class CashuNoWallet extends HookWidget {
         style: TextButton.styleFrom(
           backgroundBuilder: (_, __, child) => child!,
           backgroundColor: kTransparent,
-          visualDensity: VisualDensity.comfortable,
+          visualDensity: VisualDensity.compact,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -77,7 +94,7 @@ class CashuNoWallet extends HookWidget {
             ),
             Text(
               context.t.addWallet.capitalizeFirst(),
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: kWhite,
                   ),
             ),

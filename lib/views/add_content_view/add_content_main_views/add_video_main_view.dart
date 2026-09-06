@@ -29,18 +29,15 @@ class AddVideoMainView extends StatelessWidget {
               actionButtonText: context.t.next,
               isActionButtonEnabled: enabled,
               onActionClicked: () {
-                showModalBottomSheet(
-                  context: context,
+                showAdaptiveModal(
+                  context,
+                  dialogHeight: 640,
                   builder: (_) {
                     return BlocProvider<WriteVideoCubit>.value(
                       value: context.read<WriteVideoCubit>(),
                       child: const AddVideoSpecificationView(),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

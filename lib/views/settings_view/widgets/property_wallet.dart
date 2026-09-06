@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +18,10 @@ import '../../../utils/utils.dart';
 import '../../wallet_view/widgets/export_wallets.dart';
 import '../../wallet_view/widgets/wallet_options_view.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
+import '../../widgets/fluid_switch.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/response_snackbar.dart';
 import 'settings_text.dart';
@@ -44,10 +45,8 @@ class PropertyWallets extends HookWidget {
 
     return BlocBuilder<PropertiesCubit, PropertiesState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.wallets.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.wallets.capitalizeFirst(),
           body: BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
             builder: (context, lState) {
               final wallets = lState.wallets.entries.toList();
@@ -56,6 +55,9 @@ class PropertyWallets extends HookWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 child: ListView(
+                  padding: EdgeInsets.only(
+                    top: fluidScaffoldTopInset(context),
+                  ),
                   children: [
                     const SizedBox(
                       height: kDefaultPadding / 2,
@@ -131,7 +133,7 @@ class PropertyWallets extends HookWidget {
                 description: context.t.fiatCurrencyDesc,
               ),
             ),
-            PullDownButton(
+            FluidPullDownButton(
               routeTheme: PullDownMenuRouteTheme(
                 backgroundColor: Theme.of(context).cardColor,
               ),
@@ -204,7 +206,7 @@ class PropertyWallets extends HookWidget {
             ),
             Transform.scale(
               scale: 0.8,
-              child: CupertinoSwitch(
+              child: FluidSwitch(
                 value: state.useDefaultWallet,
                 activeTrackColor: Theme.of(context).primaryColor,
                 onChanged: (isToggled) {
@@ -232,7 +234,7 @@ class PropertyWallets extends HookWidget {
         ),
         Transform.scale(
           scale: 0.8,
-          child: CupertinoSwitch(
+          child: FluidSwitch(
             value: state.enableOneTapZap,
             activeTrackColor: Theme.of(context).primaryColor,
             onChanged: (isToggled) {
@@ -453,9 +455,9 @@ class PropertyWallets extends HookWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context, bool linked,
+  FluidPullDownButton _pulldownButton(BuildContext context, bool linked,
       MapEntry<String, WalletModel> wallet, bool isAlby) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

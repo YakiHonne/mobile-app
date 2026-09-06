@@ -11,6 +11,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../repositories/http_functions_repository.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
+import '../../../widgets/dotted_container.dart';
+import '../../../widgets/modal_sheet_container.dart';
 
 enum LnPayStatus { waiting, paid, error }
 
@@ -81,26 +83,12 @@ class _LightningInvoiceSheetState extends State<LightningInvoiceSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final bottomPad = MediaQuery.of(context).padding.bottom;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultPadding)),
-      ),
-      padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, bottomPad + kDefaultPadding),
+    return ModalSheetContainer(
+      padding: const EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              margin: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: kDefaultPadding),
-              decoration: BoxDecoration(color: theme.dividerColor, borderRadius: BorderRadius.circular(2)),
-            ),
-          ),
+          const ModalBottomSheetHandle(),
           if (_status == LnPayStatus.paid)
             _PaidState(planName: widget.planName, renewsAt: _renewsAt)
           else

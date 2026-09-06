@@ -1,7 +1,8 @@
 # Desktop Implementation Guide
 
 Reference for shipping YakiHonne to macOS, Windows and Linux. All findings are sourced from
-the current tree (branch `nc013`) — resolved dependency versions come from `pubspec.lock`,
+the current tree (branch `DESKTOP`, merged with `main` v2.0.7 on 2026-09-01) — resolved
+dependency versions come from `pubspec.lock`,
 platform support from each plugin's declared `flutter.platforms` key, not from documentation.
 
 **For what is done and what is left, jump to the [Implementation tracker](#implementation-tracker).**
@@ -396,7 +397,18 @@ that one is the original plan, this is what actually happened.
 running**: analyze and tests say nothing about it · `[~]` partially done, the rest named inline ·
 `[ ]` not started.
 
-Tree state behind this audit: `flutter analyze` clean; `flutter test` = 16 passing,
+**2026-09-01 — merged `main` (v2.0.7, PRs nc013/nc014).** `main`'s "fluid mode" rebuilt the
+glass shell on `liquid_glass_widgets` (`GlassScaffold` + `LiquidGlassBottomNavigationBar`,
+replacing this branch's `AnimatedSlide` stack) and standardized every sheet call on
+`showAppModalSheet`. Merge rule: keep `showAdaptiveModal` (desktop-adaptive) at every sheet
+site; take `main` for its feature refactors (`requireSubscription`, `_LoginBrandColumn`,
+Quill editor — this branch's AppFlowy `_AppFlowyEditorSection` is gone). Mobile chrome is now
+`main`'s `GlassScaffold`; the `if (isDesktopPlatform)` sidebar/detail-pane branch is untouched.
+Post-merge: `flutter analyze` clean, `flutter build macos --debug` ✓, 109/111 tests
+(`widget_test.dart` + the commented-out `pom_operator_lists_test.dart` are pre-existing, same
+on `main`).
+
+Tree state behind the original audit: `flutter analyze` clean; `flutter test` = 16 passing,
 1 pre-existing failure (`test/widget_test.dart`, the stock counter smoke test, untouched since the
 initial commit — it pumps the real app and always fails). Neither command proves a plugin exists
 at runtime or that a layout ever rendered.
@@ -457,24 +469,78 @@ at runtime or that a layout ever rendered.
 - [x] Panel-scoped `MediaQuery` (`_PanelScope`): each column measures its own width, so
       `largerThan(MOBILE)` sites inside the feed stop reading the whole window. Feed and media
       grids pick their column count from the panel (`feedGridColumns`, `mediaGridColumns`).
-- [~] Bottom sheets → dialogs. `showAdaptiveModal` (`functions_set.dart:297`) is the wrapper:
-      byte-identical `showModalBottomSheet` on mobile, centered `Dialog` on desktop, with a
-      focus-independent Escape handler and an `isCurrent` guard so nested sub-sheets pop one at a
-      time. **101 call sites across 45 files converted; 84 raw
-      `showModalBottomSheet` / `showCupertinoModalBottomSheet` calls remain.**
+- [c] Bottom sheets → dialogs. `showAdaptiveModal` (`functions_set.dart:297`) is the wrapper:
+      `showModalBottomSheet` on mobile, centered `Dialog` on desktop, with a focus-independent
+      Escape handler and an `isCurrent` guard so nested sub-sheets pop one at a time.
+      **~97 call sites across 42 files use it.** The 2026-09-01 `main` merge introduced `main`'s
+      own `showAppModalSheet` wrapper (`fluid_sheet.dart` — `showModalBottomSheet` only, no
+      desktop branch) at **96 more sites**. Every one of those is a bottom sheet on desktop.
+      Not a blind swap: `context` moves from named to positional, scroll bodies need an explicit
+      `dialogHeight:` (620 is the common value, from the earlier pass), and any raw
+      `DraggableScrollableSheet` at the body root must become `AdaptiveDraggableSheet`
+      (`modal_sheet_container.dart` — now also forwards `snap` / `snapSizes`).
+      **Sweep complete (2026-09-01).** All `showAppModalSheet` call sites migrated to
+      `showAdaptiveModal` across ~90 files — compose, per-note, profile, settings, packs,
+      dashboard, wallet, DM, logify, subscriptions, the whole `add_content_view` editor
+      (article/curation/video/smart-widget specs, quill editor math/table/image/zap sheets,
+      smart-widget templates/drafts/frames), `YNavigator.presentPage` (one generic wrapper →
+      26 cashu/wallet flows desktop-adaptive at once; every target verified `drag=0`).
+      `main`'s `fluid_sheet.dart` wrapper reduced to a `@Deprecated` forwarder to
+      `showAdaptiveModal` — kept (not deleted) so `showAppModalSheet` sites merged from `main`
+      later bind to something desktop-correct on arrival instead of silently regressing.
+      Method: `context` named→positional; `DraggableScrollableSheet` at a body root →
+      `AdaptiveDraggableSheet` (~28 body widgets; `modal_sheet_container.dart` gained
+      `snap`/`snapSizes` passthrough); `dialogHeight:` (620 default, 640 editor specs, 560
+      short lists) only where the body scrolls, omitted for `mainAxisSize.min` content.
+      Cross-checked every swapped body's other call sites — none reaches desktop outside
+      `showAdaptiveModal`'s bounded box. `flutter analyze` clean, 117/119 tests (2 pre-existing).
+      Not seen on screen: dialog sizing per sheet, Escape-to-close, and especially the
+      `presentPage` cashu/wallet cluster — those bodies are page-shaped (`QrScannerModal`,
+      `CashuPayView`, `CashuRedeemView`, `CashuTokenDetailsView`) and now render in a 560×720
+      box; check for cramping first. Six sheets got `dialogHeight` guessed from file-scoped
+      grep on multi-class files (`_YakiNip05Sheet`, `_WalletAddressSheet`, `_MathEquationSheet`,
+      `_TableSheet`, `RequestRelayJoin`, `_RelayListRequiredSheet`, `MediaDescription`,
+      `_RedeemCodeSheet`) — bounded so they can't crash, but may render taller than needed.
 - [c] Escape-to-close on those dialogs has never been seen working — `cliclick` keystrokes do not
       reach the Flutter window, so only the user can confirm it.
-- [ ] **No content max-width cap.** The original plan's centrepiece is still missing. Confirmed by
-      grep across `leading_view`, `discover_view`, `media_view` and `main_view`: the only
-      `maxWidth` in the whole panel path is `feature_tour.dart:170` (340pt, a tour card). The rail
-      and the 520pt detail pane absorb width, but at 1920 the feed column is still ~1300pt and at
-      2560 it is ~1900pt. Decide between a hard cap on the feed column and filling the surplus
-      with a right-hand gutter (below) — one of the two, not neither.
+- [c] **Content max-width cap.** `kMaxFeedColumnWidth` = 680 (`detail_pane.dart`). In
+      `main_view.dart` the single feed column (no detail pane) is clamped to it and centered
+      in the panel with `MainAxisAlignment.center`, so a wide monitor gets symmetric glass
+      margins instead of edge-to-edge notes. `_PanelScope` is fed the clamped width, so `.w`
+      and `largerThan(MOBILE)` inside the feed now compute against 680, not the window — this
+      is what defuses most of the remaining `sizer` sites for free. When the detail pane
+      *is* showing (panel ≥ 1024pt) the feed keeps its `panel − 520 − 1` width left-aligned
+      and the pane stays `Expanded` — unchanged, that path was already verified. Chosen
+      strategy: hard cap, centered (not a right-hand gutter). Never seen on screen.
 - [~] `sizer`: axis is correct now, but **157 raw `.w` and 53 `.h`** still measure the *window*,
       not the panel — a re-scoped `MediaQuery` does not reach them. They need explicit gating
       site by site; the ones inside the detail pane and the DM columns are the visible offenders.
-- [ ] Refresh affordance. 20 files drive `SmartRefresher` / `pull_to_refresh`; pull-to-refresh is
-      meaningless with a wheel and not one of them has a desktop refresh button yet.
+- [x] **Infinite scroll on desktop.** `AdaptiveSmartRefresher`
+      (`views/widgets/adaptive_smart_refresher.dart`) wraps `SmartRefresher`; on
+      `isDesktopPlatform` it adds a `NotificationListener<ScrollNotification>` that drives
+      `controller.footerMode.value` straight to `LoadStatus.loading` when the feed is within
+      400pt of the bottom — that fires the footer indicator's listener, which calls
+      `onLoading`, synchronously so a second notification in the same frame sees `loading` and
+      bails. Reuses the view's existing `RefreshController` and `onLoading` closure, so
+      `loadComplete()` / `loadNoData()` in each `BlocConsumer` still line up. The
+      `shouldLoadMore` predicate guards re-entry (`LoadStatus.loading`), end-of-feed
+      (`noMore`), nested/horizontal scrollables (`depth != 0`, non-vertical axis) and
+      non-scrollable lists (`maxScrollExtent <= 0`). `test/desktop_pagination_test.dart`
+      covers the predicate and pumps the wrapper — a fling to the bottom fires `onLoading`
+      exactly once (`flutter test` runs on macOS, so the desktop branch is live). Swapped at
+      15 call sites: `leading_view`,
+      `discover_view`, `media_view`, `profile_view`, `explore_packs_view` (×2),
+      `relay_feed_view`, `uncensored_notes_view`, `smart_widgets_view` (view + dashboard ×2),
+      `polls_view`, `wallet_view` transactions, `smart_widget_selection`,
+      `curation_articles_list`. **Never seen running** — same tooling limit as
+      Escape-to-close. Known ceiling (`ponytail:` comment in the wrapper): a feed whose page
+      one doesn't overflow the window never triggers; a visible "load more" button is the fix
+      if a short filtered list needs it.
+      `notifications_view` and `home_dashboard` carry `enablePullUp` with no `onLoading` —
+      neither is a paged list, so no change.
+- [ ] Refresh affordance (pull-*down*). Same 20 files; `onRefresh` is also mouse-unreachable.
+      Lower priority than pagination — stale-but-present beats truncated — but each feed still
+      needs a visible refresh button on desktop.
 - [~] Hover states: the sidebar's own `_Hoverable`, plus whatever the ~10 files using `InkWell` /
       `MouseRegion` get for free. Feed cards, avatars, and the custom `GestureDetector` areas
       throughout give a cursor no feedback.
@@ -500,6 +566,10 @@ at runtime or that a layout ever rendered.
       override at the pane root keeps the five content views unedited. Allowlisted via
       `kDetailPaneRoutes` / `kDetailPanePages`; 47 call sites converted to `YNavigator.pushNamed`,
       `pushPage` intercepts its 36 for free. Verified working on screen.
+- [c] Media viewers open in the pane too: `PictureView`, `VerticalVideoView`,
+      `HorizontalVideoView` added to `kDetailPanePages`, so a tap on a media-grid or
+      profile-media tile lands in the 520pt pane instead of full screen. The full-screen
+      `openGallery` swipe viewer (long-press) is unchanged. Not seen on screen.
 - [c] Pane: pushed content no longer blends with the empty state. `_DetailPaneEmpty` returns
       `SizedBox.shrink()` when `ModalRoute.of(context)?.isCurrent` is false — the route stays
       seeded (an unseeded pane would quit the app, `navigator.dart:41-45`) and no opaque scaffold

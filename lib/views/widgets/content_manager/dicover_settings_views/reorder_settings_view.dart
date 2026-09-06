@@ -155,6 +155,7 @@ class ReorderSettingsView extends HookWidget {
         final options = [
           feed.recent,
           feed.recentWithReplies,
+          feed.trending,
           feed.global,
           feed.paid,
           feed.widgets,

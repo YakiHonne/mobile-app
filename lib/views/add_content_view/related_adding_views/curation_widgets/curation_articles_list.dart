@@ -9,6 +9,7 @@ import '../../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../../utils/utils.dart';
 import '../../../profile_view/widgets/profile_connections_view.dart';
+import '../../../widgets/adaptive_smart_refresher.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/dotted_container.dart';
 import '../../../widgets/empty_list.dart';
@@ -111,7 +112,7 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
           height: kDefaultPadding / 2,
         ),
         Expanded(
-          child: SmartRefresher(
+          child: AdaptiveSmartRefresher(
             controller: refreshController,
             enablePullUp: true,
             scrollController: scrollController,

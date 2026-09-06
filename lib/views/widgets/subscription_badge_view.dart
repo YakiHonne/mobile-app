@@ -38,6 +38,7 @@ class _SubscriptionBadgeViewState extends State<SubscriptionBadgeView> {
               current.badgeImages[widget.pubkey],
       builder: (context, state) {
         final plan = state.plans[widget.pubkey] ?? '';
+
         if (plan.isEmpty) {
           return const SizedBox.shrink();
         }

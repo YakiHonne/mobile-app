@@ -3,6 +3,7 @@
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../utils/utils.dart';
+import 'subscription_models.dart';
 
 class PointStandard {
   final String id;
@@ -103,10 +104,11 @@ class PointSystemTier {
 
 class PointAction {
   final String actionId;
-  final int currentPoints;
-  final int count;
-  final int allTimePoints;
+  final num currentPoints;
+  final num count;
+  final num allTimePoints;
   final DateTime lastUpdated;
+  final Map<String, dynamic>? extra;
 
   PointAction({
     required this.actionId,
@@ -114,30 +116,33 @@ class PointAction {
     required this.count,
     required this.allTimePoints,
     required this.lastUpdated,
+    this.extra,
   });
 
   factory PointAction.fromMap(Map<String, dynamic> map) {
     return PointAction(
       actionId: map['action'] as String,
-      currentPoints: map['current_points'] as int,
-      count: map['count'] as int,
-      allTimePoints: map['all_time_points'] as int,
+      currentPoints: map['current_points'] as num,
+      count: map['count'] as num,
+      allTimePoints: map['all_time_points'] as num,
       lastUpdated:
           DateTime.fromMillisecondsSinceEpoch(map['last_updated'] * 1000),
+      extra: map['extra'] as Map<String, dynamic>?,
     );
   }
 }
 
 class UserGlobalStats {
   final String pubkey;
-  final int xp;
+  final num xp;
   final DateTime lastUpdated;
   final Map<String, PointAction> actions;
   final Map<String, PointStandard> onetimePointStandards;
   final Map<String, PointStandard> repeatedPointStandards;
   final Map<String, PointSystemTier> pointSystemTiers;
-  final int currentPoints;
+  final num currentPoints;
   final DateTime currentPointsLastUpdated;
+  final SubscriptionStatus subscriptionStatus;
 
   UserGlobalStats({
     required this.pubkey,
@@ -149,30 +154,30 @@ class UserGlobalStats {
     required this.pointSystemTiers,
     required this.currentPoints,
     required this.currentPointsLastUpdated,
+    required this.subscriptionStatus,
   });
 
   factory UserGlobalStats.fromMap(Map<String, dynamic> map) {
-    final userStat = map['user_stats'];
+    final userStat = map['user_stats'] ?? map;
     final Map<String, PointAction> actions = {};
     final Map<String, PointSystemTier> tiers = {};
     final List<PointStandard> pointStandards = List<PointStandard>.from(
-      map['platform_standards'].entries.map(
+      ((map['platform_standards'] as Map<String, dynamic>?) ?? {}).entries.map(
         (e) {
           return PointStandard.fromMap(mapEntry: e);
         },
       ),
     );
 
-    for (final e in userStat['actions']) {
+    for (final e in (userStat['actions'] as List? ?? [])) {
       final pointAction = PointAction.fromMap(e as Map<String, dynamic>);
       actions[pointAction.actionId] = pointAction;
     }
 
-    for (final e in map['tiers']) {
-      lg.i(map['tiers']);
+    for (final e in (map['tiers'] as List? ?? [])) {
       final tier = PointSystemTier.fromMap(
         e as Map<String, dynamic>,
-        getCurrentLevel(userStat['xp'] as int? ?? 0),
+        getCurrentLevel(userStat['xp'] as num? ?? 0),
       );
 
       tiers[tier.displayName] = tier;
@@ -189,18 +194,22 @@ class UserGlobalStats {
       }
     }
 
+    final currentPoints = userStat['current_points'] as Map<String, dynamic>? ??
+        const <String, dynamic>{};
+
     return UserGlobalStats(
       pubkey: userStat['pubkey'] as String? ?? '',
-      xp: userStat['xp'] as int? ?? 0,
+      xp: userStat['xp'] as num? ?? 0,
       lastUpdated:
           DateTime.fromMillisecondsSinceEpoch(userStat['last_updated'] * 1000),
       actions: actions,
       onetimePointStandards: oPS,
       repeatedPointStandards: rPS,
       pointSystemTiers: tiers,
-      currentPoints: userStat['current_points']['points'],
+      currentPoints: currentPoints['points'],
       currentPointsLastUpdated: DateTime.fromMillisecondsSinceEpoch(
-          userStat['current_points']['last_updated'] * 1000),
+          currentPoints['last_updated'] * 1000),
+      subscriptionStatus: SubscriptionStatus.fromJson(userStat),
     );
   }
 

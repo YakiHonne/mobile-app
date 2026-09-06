@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repositories/http_functions_repository.dart';
 import '../../utils/utils.dart';
+import '../subscription_cubit/usage_limit.dart';
 
 part 'energy_mapper_state.dart';
 
@@ -21,6 +22,13 @@ class EnergyMapperCubit extends Cubit<EnergyMapperState> {
       return;
     }
 
+    // Gate before spending: a blocked user never burns a call to find out.
+    final limit = usageLimitFor(kUsageKeyEnergyMapper);
+    if (limit != null) {
+      emit(state.copyWith(isLoading: false, error: () => limit.message));
+      return;
+    }
+
     emit(state.copyWith(isLoading: true, error: () => null));
 
     try {
@@ -28,7 +36,13 @@ class EnergyMapperCubit extends Cubit<EnergyMapperState> {
           await HttpFunctionsRepository.energyMapper(content.trim());
 
       if (data == null) {
-        emit(state.copyWith(isLoading: false, error: () => 'Failed'));
+        // The cached snapshot can be stale — a fresh fetch decides whether
+        // this was the quota or a generic failure.
+        final fresh = await checkUsageLimit(kUsageKeyEnergyMapper);
+        emit(state.copyWith(
+          isLoading: false,
+          error: () => fresh?.message ?? 'Failed',
+        ));
         return;
       }
 
@@ -46,6 +60,8 @@ class EnergyMapperCubit extends Cubit<EnergyMapperState> {
           ],
         );
       }).toList();
+
+      refreshUsageAfterCall();
 
       emit(
         EnergyMapperState(

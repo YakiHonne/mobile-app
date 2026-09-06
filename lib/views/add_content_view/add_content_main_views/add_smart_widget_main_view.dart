@@ -50,8 +50,9 @@ class AddSmartWidgetMainView extends HookWidget {
                   ? null
                   : _toggleFrame(toggleFrameSpecifications, context),
               onActionClicked: () {
-                showModalBottomSheet(
-                  context: context,
+                showAdaptiveModal(
+                  context,
+                  dialogHeight: 640,
                   builder: (_) {
                     return BlocProvider<WriteSmartWidgetCubit>.value(
                       value: context.read<WriteSmartWidgetCubit>(),
@@ -60,10 +61,6 @@ class AddSmartWidgetMainView extends HookWidget {
                       ),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

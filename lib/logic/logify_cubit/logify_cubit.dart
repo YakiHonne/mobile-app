@@ -13,6 +13,7 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/remote_event_signer.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/nostr_core.dart';
+import 'package:nostr_core_enhanced/pomegranate/pomegranate.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/media_handler/media_handler.dart';
@@ -94,6 +95,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required bool isExternalSigner,
     required BuildContext context,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
+    PomSetup? pomegranateSetup,
   }) async {
     try {
       String hex = '';
@@ -160,6 +162,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         fetchData: true,
         externalKeyType: externalKeyType,
         remoteSigner: remoteSigner,
+        pomegranateSetup: pomegranateSetup,
       );
 
       await initRelayManager(!isPrivKey ? key : getPublicKey(hex), newKey);
@@ -780,6 +783,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required Function() onSuccess,
     required BuildContext context,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
+    PomSetup? pomegranateSetup,
   }) async {
     final bunkerPointer = RemoteEventSigner.parseBunkerInput(bunkerUrl);
 
@@ -806,6 +810,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         onSuccess: onSuccess,
         context: context,
         externalKeyType: externalKeyType,
+        pomegranateSetup: pomegranateSetup,
       );
     }
   }
@@ -815,6 +820,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required BuildContext context,
     required Function() onSuccess,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
+    PomSetup? pomegranateSetup,
   }) async {
     final pubkey = remoteSigner.publicKey;
     remoteSigner.close();
@@ -838,6 +844,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         onSuccess: () {},
         isExternalSigner: true,
         externalKeyType: externalKeyType,
+        pomegranateSetup: pomegranateSetup,
       );
 
       BotToastUtils.showSuccess(
@@ -853,6 +860,7 @@ class LogifyCubit extends Cubit<LogifyState> {
     required Function() onSuccess,
     required String bunkerUrl,
     required String pubkey,
+    PomSetup? pomegranateSetup,
   }) async {
     try {
       await initRemoteSignerFromBunkerUrl(
@@ -860,6 +868,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         context: context,
         onSuccess: onSuccess,
         externalKeyType: ExternalKeyType.Google,
+        pomegranateSetup: pomegranateSetup,
       );
     } catch (e) {
       lg.i(e);

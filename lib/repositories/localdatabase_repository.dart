@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../logic/theme_cubit/theme_cubit.dart';
@@ -38,6 +39,7 @@ class LocalDatabaseRepository {
   static const String _isPrivateMap = 'keys_is_private_map';
   static const String _isExternalSignerMap = 'keys_is_external_map';
   static const String _externalKeysType = 'external_keys_map';
+  static const String _pomegranateSetups = 'pomegranate_setups_map';
   static const String _remoteSigners = 'remote_signers_map';
   static const String _appWallets = 'global_app_wallets';
   static const String _selectedWalletId = 'selected_wallet_id';
@@ -50,11 +52,13 @@ class LocalDatabaseRepository {
   static const String _settings = 'settings';
   static const String _appCustomization = 'keys_is_external_map';
   static const String _appLanguage = 'app_language';
+  static const String _contentLanguage = 'content_language';
   static const String _appTheme = 'app_theme';
   static const String _appMainColor = 'app_main_color';
   static const String _textScaleFactor = 'text_scale_factor';
   static const String _fluidMode = 'fluid_mode';
   static const String _fluidCards = 'fluid_cards';
+  static const String _glassQuality = 'glass_quality';
   static const String _crashlyticsData = 'collect_data';
 
   // User Interface & Experience
@@ -79,6 +83,7 @@ class LocalDatabaseRepository {
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
   static const String _unsentEvents = 'unsent_events';
   static const String _unsentEventsPubkeys = 'unsent_events_pubkeys';
+  static const String _previousNotes = 'previous_notes';
   static const String _unpaidNotes = 'unpaid_notes';
   static const String _appViewConfig = 'app_view_config';
 
@@ -89,11 +94,13 @@ class LocalDatabaseRepository {
   static const String _filterStatus = 'filter_status';
   static const String _defaultZapAmounts = 'default_zap_amounts';
   static const String _paidNoteAdsSeenCounts = 'paid_note_ads_seen_counts';
+  static const String _paidNoteAdsLastFetchedAt = 'paid_note_ads_last_fetched_at';
   static const String _defaultReaction = 'default_reaction';
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
   static const String _automaticCachePurge = 'automatic_cache_purge';
   static const String _autoTranslation = 'auto_translation';
+  static const String _upgradeBannerDismissed = 'upgrade_banner_dismissed';
   static const String _nestedReplies = 'nested_replies';
 
   // Notifications & Flash News
@@ -226,6 +233,17 @@ class LocalDatabaseRepository {
     await _setSecureData(_externalKeysType, keysExternalMap);
   }
 
+  /// Per-key-index Pomegranate setups, as `{index: setupJson}`. Stored beside
+  /// the key rather than as one blob: applying account A's operator set to
+  /// account B would send recovery to servers that never held its shards.
+  Future<String?> getPomegranateSetups() async {
+    return _getSecureData<String>(_pomegranateSetups);
+  }
+
+  Future<void> setPomegranateSetups(String setups) async {
+    await _setSecureData(_pomegranateSetups, setups);
+  }
+
   Future<String?> getRemoteSigners() async {
     return _getSecureData<String>(_remoteSigners);
   }
@@ -340,6 +358,15 @@ class LocalDatabaseRepository {
     return _getPrefsData<String>(_appLanguage);
   }
 
+  /// Content translation target language ('' = follow the app language)
+  Future<void> setContentLanguage({required String language}) async {
+    await _setPrefsData(_contentLanguage, language);
+  }
+
+  String getContentLanguage() {
+    return _getPrefsData<String>(_contentLanguage) ?? '';
+  }
+
   /// Text Scale Factor
   AppThemeMode getAppThemeMode() {
     final theme = _getPrefsData<String>(_appTheme);
@@ -392,6 +419,19 @@ class LocalDatabaseRepository {
 
   void setFluidMode(bool isFluidMode) {
     _setPrefsData(_fluidMode, isFluidMode);
+  }
+
+  GlassQuality getGlassQuality() {
+    final name = _getPrefsData<String>(_glassQuality);
+
+    return GlassQuality.values.firstWhere(
+      (q) => q.name == name,
+      orElse: () => GlassQuality.minimal,
+    );
+  }
+
+  void setGlassQuality(GlassQuality quality) {
+    _setPrefsData(_glassQuality, quality.name);
   }
 
   bool getFluidCards() => _getPrefsData<bool>(_fluidCards) ?? true;
@@ -591,6 +631,25 @@ class LocalDatabaseRepository {
     await _setPrefsData(_unsentEventsPubkeys, jsonEncode(unsentEventsPubkeys));
   }
 
+  /// Resolved ancestor chains (root-first event ids) for thread views. Lets
+  /// repeat opens reconstruct the thread from the event cache without another
+  /// network walk.
+  Future<void> setPreviousNoteChain(String noteId, List<String> chain) async {
+    await _setPrefsData('$_previousNotes-$noteId', chain);
+  }
+
+  List<String>? getPreviousNoteChain(String noteId) {
+    final chain = _getPrefsData<List<String>>('$_previousNotes-$noteId');
+    if (chain == null || chain.isEmpty) {
+      return null;
+    }
+    return chain;
+  }
+
+  Future<void> removePreviousNoteChain(String noteId) async {
+    await prefs.remove('$_previousNotes-$noteId');
+  }
+
   Future<void> removeUnsentEventsPubkeys() async {
     await prefs.remove(_unsentEventsPubkeys);
   }
@@ -747,6 +806,15 @@ class LocalDatabaseRepository {
     return _getPrefsData<bool>('$_autoTranslation-$pubkey') ?? false;
   }
 
+  /// Upgrade banner (leading view dismissal, per user)
+  Future<void> setUpgradeBannerDismissed(String pubkey) async {
+    await _setPrefsData('$_upgradeBannerDismissed-$pubkey', true);
+  }
+
+  bool getUpgradeBannerDismissed(String pubkey) {
+    return _getPrefsData<bool>('$_upgradeBannerDismissed-$pubkey') ?? false;
+  }
+
   /// Nested Replies
   Future<void> setNestedRepliesStatus(String pubkey, bool enable) async {
     await _setPrefsData('$_nestedReplies-$pubkey', enable);
@@ -820,7 +888,8 @@ class LocalDatabaseRepository {
   }
 
   /// Paid Note Ads Configuration
-  Future<void> setPaidNoteAdsSeenCounts({required Map<String, int> counts}) async {
+  Future<void> setPaidNoteAdsSeenCounts(
+      {required Map<String, int> counts}) async {
     await _setPrefsData(_paidNoteAdsSeenCounts, jsonEncode(counts));
   }
 
@@ -835,6 +904,14 @@ class LocalDatabaseRepository {
       lg.i('Error parsing paid note ads seen counts: $e');
       return {};
     }
+  }
+
+  Future<void> setPaidNoteAdsLastFetchedAt(int timestampMs) async {
+    await _setPrefsData(_paidNoteAdsLastFetchedAt, timestampMs);
+  }
+
+  Future<int> getPaidNoteAdsLastFetchedAt() async {
+    return _getPrefsData<int>(_paidNoteAdsLastFetchedAt, defaultValue: 0) ?? 0;
   }
 
   /// Messaging Configuration

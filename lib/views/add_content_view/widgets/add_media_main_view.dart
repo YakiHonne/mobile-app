@@ -157,15 +157,11 @@ class PictureWidget extends HookWidget {
               right: kDefaultPadding / 2,
               child: GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    elevation: 0,
+                  showAdaptiveModal(
+                    context,
                     builder: (_) {
                       return MediaDescription(description: description);
                     },
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    useSafeArea: true,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
                 },

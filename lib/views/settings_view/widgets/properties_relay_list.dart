@@ -27,7 +27,7 @@ class RelaysList extends HookWidget {
     return BlocBuilder<UpdateRelaysCubit, UpdateRelaysState>(
       builder: (context, state) {
         return ModalSheetContainer(
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.9,
             minChildSize: 0.60,
             maxChildSize: 0.9,

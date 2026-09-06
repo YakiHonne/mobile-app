@@ -27,6 +27,7 @@ import '../../widgets/data_providers.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/picture_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
+import '../../widgets/note_stats.dart';
 import '../../write_note_view/write_note_view.dart';
 import 'notification_event_quote.dart';
 import 'notification_image_container.dart';
@@ -64,7 +65,10 @@ class _NotificationGlobalContainerState
 
     return Slidable(
       key: ValueKey(widget.mainEvent.id),
-      enabled: ev.kind == EventKind.TEXT_NOTE && ev.isUserTagged() && canSign(),
+      enabled:
+          (ev.kind == EventKind.TEXT_NOTE || ev.kind == EventKind.COMMENT) &&
+              ev.isUserTagged() &&
+              canSign(),
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         children: [
@@ -78,6 +82,8 @@ class _NotificationGlobalContainerState
   }
 
   Padding _notificationContent(BuildContext context) {
+    final isPremium = getPremiumStatus(widget.mainEvent);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       child: GestureDetector(
@@ -92,6 +98,7 @@ class _NotificationGlobalContainerState
                 NotificationImageContainer(
                   metadata: metadata,
                   event: _eventRelation,
+                  isPremium: isPremium,
                 ),
                 const SizedBox(
                   width: kDefaultPadding / 2,
@@ -115,6 +122,12 @@ class _NotificationGlobalContainerState
                                   color: Theme.of(context).highlightColor,
                                 ),
                           ),
+                          if (isPremium) ...[
+                            const SizedBox(
+                              width: kDefaultPadding / 4,
+                            ),
+                            const PremiumBadge(),
+                          ],
                         ],
                       ),
                       const SizedBox(
@@ -166,7 +179,7 @@ class _NotificationGlobalContainerState
           showAdaptiveModal(
             context,
             builder: (_) {
-              final isComment = isReplaceable(note.rootKind);
+              final isComment = shouldReplyAsComment(note);
 
               return AddReply(
                 attachedEvent: note,
@@ -289,6 +302,7 @@ class _NotificationGlobalContainerState
       case EventKind.LEGACY_VIDEO_VERTICAL:
         page = VerticalVideoView(video: VideoModel.fromEvent(event));
       case EventKind.TEXT_NOTE:
+      case EventKind.COMMENT:
         page = NoteView(note: DetailedNoteModel.fromEvent(event));
       case EventKind.PICTURE:
         page = PictureView(picture: PictureModel.fromEvent(event));

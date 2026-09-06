@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../common/functions/functions_set.dart';
 import '../views/main_view/widgets/detail_pane.dart';
 import 'pages_router.dart';
 
@@ -264,10 +265,8 @@ class YNavigator extends Navigator {
         ),
       );
     } else {
-      return showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        enableDrag: !allowPageScroll,
+      return showAdaptiveModal(
+        context,
         backgroundColor: Colors.transparent,
         builder: (BuildContext context) => builder(context),
       );

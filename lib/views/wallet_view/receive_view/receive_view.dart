@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_using_invoice.dart';
 import 'lightning_address_qr_code.dart';
@@ -22,15 +22,14 @@ class ReceiveMainView extends HookWidget {
         final wallet = state.wallets[state.selectedWalletId];
         final walletId = wallet?.lud16 ?? 'wallet';
 
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: context.t.receive.capitalizeFirst(),
-          ),
+        return FluidScaffold(
+          title: context.t.receive.capitalizeFirst(),
           body: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
             child: Column(
               children: [
+                SizedBox(height: fluidScaffoldTopInset(context)),
                 Expanded(
                   child: LightningtAddressQrCode(
                     lightningAddress: walletId,

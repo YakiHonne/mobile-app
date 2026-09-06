@@ -101,9 +101,9 @@ class CurationContent extends HookWidget {
       onClicked: () {
         context.read<WriteCurationCubit>().getItems(false);
 
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
+          dialogHeight: 620,
           builder: (_) {
             return BlocProvider.value(
               value: context.read<AddContentCubit>(),
@@ -116,9 +116,6 @@ class CurationContent extends HookWidget {
               ),
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },

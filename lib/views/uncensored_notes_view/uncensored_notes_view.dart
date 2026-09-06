@@ -15,6 +15,7 @@ import '../../utils/utils.dart';
 import '../logify_view/logify_view.dart';
 import '../rewards_view/rewards_view.dart';
 import '../search_view/search_view.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
@@ -287,7 +288,7 @@ class _UnListState extends State<UnList> {
             child = _itemsGrid(state);
           }
 
-          return SmartRefresher(
+          return AdaptiveSmartRefresher(
             controller: refreshController,
             enablePullDown: false,
             enablePullUp: true,

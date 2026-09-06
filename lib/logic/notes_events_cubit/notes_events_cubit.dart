@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_foreach
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +42,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   final statesMaxCacheSize = 50;
   final previousMaxCacheSize = 20;
   final alreadySearchedContentIds = <String>{};
+  final _requestedStatIds = <String>{};
   final _notesIds = <String>[];
   final _aTags = <String>[];
   final _pendingNotesEvents = <String, Event>{};
@@ -61,6 +63,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         updateState: (pruned) => state.copyWith(eventsStats: pruned),
       );
     } else {
+      final removedKeys = state.previousNotes.keys.toSet();
       _pruneCacheInternal(
         cache: state.previousNotes,
         accessTimes: _previousNotesAccessTime,
@@ -68,6 +71,11 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         name: 'previousNotes',
         updateState: (pruned) => state.copyWith(previousNotes: pruned),
       );
+      removedKeys.removeAll(state.previousNotes.keys);
+
+      for (final key in removedKeys) {
+        localDatabaseRepository.removePreviousNoteChain(key);
+      }
     }
   }
 
@@ -92,6 +100,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     // Bulk remove from alreadySearchedContentIds
     alreadySearchedContentIds.removeAll(keysToRemove);
+    _requestedStatIds.removeAll(keysToRemove);
 
     // Rebuild cache with kept entries only
     final prunedCache = Map<K, V>.fromEntries(
@@ -136,6 +145,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     bool r = false,
     bool includeComments = false,
   }) async {
+    _requestedStatIds.add(id);
     EventStats? eventStats = state.eventsStats[id];
     eventStats ??= await nc.db.loadEventStats(id);
 
@@ -470,7 +480,25 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
     final Map<String, List<Event>> eventsByParent = {};
     for (final ev in events) {
-      String? id = ev.getEventParent();
+      String? id;
+
+      if (ev.kind == EventKind.COMMENT) {
+        String? rootId;
+        for (final tag in ev.tags) {
+          if (tag.length > 1) {
+            if (tag.first == 'e' || tag.first == 'a') {
+              id = tag[1];
+              break;
+            } else if ((tag.first == 'E' || tag.first == 'A') &&
+                rootId == null) {
+              rootId = tag[1];
+            }
+          }
+        }
+        id ??= rootId;
+      }
+
+      id ??= ev.getEventParent();
 
       // Fallback for Kind 1111 or articles/videos where getEventParent might fail
       if (id == null || id.isEmpty) {
@@ -531,7 +559,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     List<Event> events,
     Map<String, EventStats> currentEventStats,
   ) {
-    alreadySearchedContentIds.add(id);
+    if (_requestedStatIds.contains(id)) {
+      alreadySearchedContentIds.add(id);
+    }
 
     final nStats = currentEventStats[id] ??
         EventStats(
@@ -575,8 +605,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
 
   Future<List<DetailedNoteModel>> getNotePrevious(
     DetailedNoteModel note,
-    Function(bool) setLoading,
-  ) async {
+    Function(bool) setLoading, {
+    bool Function()? isActive,
+  }) async {
     if (note.isRoot) {
       return [];
     }
@@ -587,13 +618,51 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       // Check if we already have the previous notes cached
       final List<DetailedNoteModel>? cachedNotes = state.previousNotes[note.id];
 
-      if (cachedNotes != null) {
+      if (cachedNotes != null &&
+          (cachedNotes.isEmpty || cachedNotes.first.isRoot)) {
         setLoading(false);
         _previousNotesAccessTime[note.id] = Helpers.now;
         return cachedNotes;
       }
 
-      final availablePreviousNotes = await searchPreviousNotes(note);
+      // Reconstruct from the persisted chain (root-first event ids) so repeat
+      // opens skip the network walk entirely.
+      final persistedNotes = await _reconstructPreviousNotes(note.id);
+      if (persistedNotes != null) {
+        setLoading(false);
+        _previousNotesAccessTime[note.id] = Helpers.now;
+        if (!isClosed) {
+          final map =
+              Map<String, List<DetailedNoteModel>>.from(state.previousNotes);
+          map[note.id] = persistedNotes;
+          updatePreviousNotes(map);
+        }
+        return persistedNotes;
+      }
+
+      if (isActive?.call() == false) {
+        setLoading(false);
+        return [];
+      }
+
+      final availablePreviousNotes = await searchPreviousNotes(
+        note,
+        isActive: isActive,
+      );
+
+      if (isActive?.call() == false) {
+        setLoading(false);
+        return [];
+      }
+
+      // Persist the resolved chain so later opens of this thread are instant.
+      if (availablePreviousNotes.isNotEmpty &&
+          availablePreviousNotes.first.isRoot) {
+        await localDatabaseRepository.setPreviousNoteChain(
+          note.id,
+          availablePreviousNotes.map((e) => e.id).toList(),
+        );
+      }
 
       // Get content stats for all found notes
       for (final e in availablePreviousNotes) {
@@ -619,9 +688,35 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
   }
 
-  Future<List<DetailedNoteModel>> searchPreviousNotes(
-    DetailedNoteModel note,
+  Future<List<DetailedNoteModel>?> _reconstructPreviousNotes(
+    String noteId,
   ) async {
+    final chain = localDatabaseRepository.getPreviousNoteChain(noteId);
+    if (chain == null || chain.isEmpty) {
+      return null;
+    }
+
+    final notes = <DetailedNoteModel>[];
+    for (final id in chain) {
+      final e = await nc.db.loadEventById(id, false);
+      if (e == null ||
+          (e.kind != EventKind.TEXT_NOTE && e.kind != EventKind.COMMENT)) {
+        return null;
+      }
+      notes.add(DetailedNoteModel.fromEvent(e));
+    }
+
+    if (notes.isEmpty || !notes.first.isRoot) {
+      return null;
+    }
+
+    return notes;
+  }
+
+  Future<List<DetailedNoteModel>> searchPreviousNotes(
+    DetailedNoteModel note, {
+    bool Function()? isActive,
+  }) async {
     List<DetailedNoteModel> notes = await getCachedPreviousNotes(note);
 
     if (notes.isNotEmpty && notes.first.isRoot) {
@@ -634,37 +729,262 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       return notes;
     }
 
-    final events = <String, Event>{};
+    final kinds = <int>[EventKind.TEXT_NOTE, EventKind.COMMENT];
+    final collected = <String, Event>{};
+    final hintRelays = <String>{};
+    final originEvent = _originEvent(note);
 
-    await nc.doQuery(
-      <Filter>[
-        Filter(
-          e: <String>[previousEventId],
-          kinds: <int>[EventKind.TEXT_NOTE, EventKind.COMMENT],
-        ),
-        Filter(
-          ids: <String>[previousEventId],
-          kinds: <int>[EventKind.TEXT_NOTE, EventKind.COMMENT],
-        ),
-      ],
-      <String>[],
-      source: EventsSource.all,
-      eventCallBack: (Event ev, String r) {
-        final e = events[ev.id];
+    if (originEvent != null) {
+      hintRelays.addAll(eventRelayHints(originEvent));
+    }
 
-        if (e == null || e.createdAt < ev.createdAt) {
-          events[ev.id] = ev;
-        }
-      },
-      timeOut: 1,
+    lg.i(
+      '[thread-walk] start note=${note.id} replyTo=${note.replyTo} origin=${note.originId} rootKind=${note.rootKind}',
     );
 
-    if (events.isNotEmpty) {
-      nc.db.saveEvents(events.values.toList());
-      notes = await getCachedPreviousNotes(note);
+    // Fast path: recover the whole ancestor chain from the note's own e-tags
+    // in a single batched query (general + hint relays concurrently), instead
+    // of walking one missing event at a time.
+    if (originEvent != null) {
+      final uniqueETagIds =
+          _eTagIds(originEvent).where((id) => id != note.id).toSet().toList();
+
+      final dbEvents = await Future.wait(
+        uniqueETagIds.map((id) => nc.db.loadEventById(id, false)),
+      );
+
+      final wantedIds = <String>[];
+      for (var i = 0; i < uniqueETagIds.length; i++) {
+        final existing = dbEvents[i];
+        if (existing == null ||
+            (existing.kind != EventKind.TEXT_NOTE &&
+                existing.kind != EventKind.COMMENT)) {
+          wantedIds.add(uniqueETagIds[i]);
+        }
+      }
+
+      final batchIds = wantedIds.take(_maxThreadBatchSize).toList();
+      if (batchIds.isNotEmpty) {
+        final batchResults = await Future.wait([
+          NostrFunctionsRepository.getEventsAsync(
+            ids: batchIds,
+            kinds: kinds,
+          ),
+          if (hintRelays.isNotEmpty)
+            NostrFunctionsRepository.getEventsAsync(
+              ids: batchIds,
+              kinds: kinds,
+              relays: hintRelays.toList(),
+              source: EventsSource.all,
+              timeout: 3,
+            ),
+        ]);
+
+        for (final list in batchResults) {
+          for (final ev in list) {
+            if (ev.kind == EventKind.TEXT_NOTE ||
+                ev.kind == EventKind.COMMENT) {
+              collected[ev.id] = ev;
+            }
+          }
+        }
+
+        if (collected.isNotEmpty) {
+          await nc.db.saveEvents(collected.values.toList());
+          notes = await getCachedPreviousNotes(note);
+        }
+
+        lg.i(
+          '[thread-walk] batch ids=${batchIds.length} got=${collected.length} rooted=${notes.isNotEmpty && notes.first.isRoot}',
+        );
+      }
+    }
+
+    if (notes.isEmpty || !notes.first.isRoot) {
+      if (isActive?.call() == false) {
+        return notes;
+      }
+
+      var frontier = <String>[previousEventId];
+      const maxRounds = 10;
+      const maxFrontierSize = 100;
+
+      for (var round = 0; round < maxRounds && frontier.isNotEmpty; round++) {
+        if (isActive?.call() == false) {
+          return notes;
+        }
+
+        final events = <String, Event>{};
+
+        await NostrFunctionsRepository.queryEvents(
+          <Filter>[
+            Filter(ids: frontier, kinds: kinds),
+            Filter(e: frontier, kinds: kinds),
+            Filter(capitalE: frontier, kinds: kinds),
+          ],
+          <String>[],
+          source: EventsSource.all,
+          eventCallBack: (Event ev, String r) {
+            final e = events[ev.id];
+
+            if (e == null || e.createdAt < ev.createdAt) {
+              events[ev.id] = ev;
+            }
+          },
+          timeOut: 1,
+        );
+
+        final fresh =
+            events.values.where((ev) => !collected.containsKey(ev.id)).toList();
+
+        lg.i(
+          '[thread-walk] round=$round frontier=${frontier.length} got=${events.length} fresh=${fresh.length}',
+        );
+
+        if (fresh.isEmpty) {
+          break;
+        }
+
+        for (final ev in fresh) {
+          collected[ev.id] = ev;
+        }
+
+        frontier = fresh
+            .where((ev) =>
+                ev.kind == EventKind.TEXT_NOTE || ev.kind == EventKind.COMMENT)
+            .take(maxFrontierSize)
+            .map((ev) => ev.id)
+            .toList();
+      }
+
+      if (collected.isNotEmpty) {
+        await nc.db.saveEvents(collected.values.toList());
+        notes = await getCachedPreviousNotes(note);
+      }
+    }
+
+    if (isActive?.call() == false) {
+      return notes;
+    }
+
+    if (notes.isEmpty || !notes.first.isRoot) {
+      final chain = <DetailedNoteModel>[];
+      String? nextId = note.replyTo.isNotEmpty ? note.replyTo : note.originId;
+      var depth = 0;
+      // Kept open across hops and closed once below: reconnecting to the
+      // same growing hint-relay set on every hop was the main cost of this
+      // walk (TLS/WS handshake + NIP-42 auth per hop, up to 100 hops).
+      final walkedRelays = <String>{};
+
+      lg.i('[thread-walk] fallback start nextId=$nextId hints=$hintRelays');
+
+      try {
+        while (nextId != null && nextId.isNotEmpty && depth < _maxFallbackWalkDepth) {
+          if (isActive?.call() == false) {
+            break;
+          }
+
+          depth++;
+
+          var ev = await nc.db.loadEventById(nextId, false);
+
+          if (ev == null ||
+              (ev.kind != EventKind.TEXT_NOTE && ev.kind != EventKind.COMMENT)) {
+            ev = null;
+
+            if (hintRelays.isNotEmpty) {
+              walkedRelays.addAll(hintRelays);
+            }
+
+            final fetchedLists = await Future.wait([
+              NostrFunctionsRepository.getEventsAsync(
+                ids: [nextId],
+                kinds: kinds,
+              ),
+              if (hintRelays.isNotEmpty)
+                NostrFunctionsRepository.getEventsAsync(
+                  ids: [nextId],
+                  kinds: kinds,
+                  relays: hintRelays.toList(),
+                  source: EventsSource.all,
+                  timeout: 3,
+                  closeRelaysOnFinish: false,
+                ),
+            ]);
+
+            for (final list in fetchedLists) {
+              for (final e in list) {
+                if ((e.kind == EventKind.TEXT_NOTE ||
+                        e.kind == EventKind.COMMENT) &&
+                    ev == null) {
+                  ev = e;
+                }
+              }
+            }
+
+            if (ev != null) {
+              lg.i('[thread-walk] fetched missing $nextId');
+              await nc.db.saveEvents([ev]);
+            }
+          }
+
+          if (ev == null) {
+            break;
+          }
+
+          hintRelays.addAll(_relayHints(ev));
+
+          final n = DetailedNoteModel.fromEvent(ev);
+
+          chain.insert(0, n);
+
+          if (n.isRoot) {
+            break;
+          }
+
+          nextId = n.replyTo.isNotEmpty ? n.replyTo : n.originId;
+        }
+      } finally {
+        if (walkedRelays.isNotEmpty) {
+          unawaited(nc.closeConnect(walkedRelays.toList()));
+        }
+      }
+
+      if (chain.length > notes.length) {
+        notes = chain;
+      }
     }
 
     return notes;
+  }
+
+  Event? _originEvent(DetailedNoteModel note) {
+    if (note.stringifiedEvent.isEmpty) {
+      return null;
+    }
+
+    try {
+      return Event.fromJson(
+        jsonDecode(note.stringifiedEvent) as Map<String, dynamic>,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  List<String> _eTagIds(Event event) {
+    return event.tags
+        .where((t) =>
+            t.isNotEmpty && t.first == 'e' && t.length > 1 && t[1].isNotEmpty)
+        .map((t) => t[1])
+        .toList();
+  }
+
+  static const int _maxThreadBatchSize = 100;
+  static const int _maxFallbackWalkDepth = 8;
+
+  Set<String> _relayHints(Event event) {
+    return eventRelayHints(event);
   }
 
   Future<List<DetailedNoteModel>> getCachedPreviousNotes(
@@ -705,6 +1025,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     if (_notesIds.isEmpty && _aTags.isEmpty) {
       return;
     }
+
+    _requestedStatIds.addAll(_notesIds);
+    _requestedStatIds.addAll(_aTags);
 
     NostrFunctionsRepository.getContentStats(
       noteIds: List.from(_notesIds),

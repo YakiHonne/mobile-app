@@ -30,7 +30,7 @@ class SmartWidgetsDrafts extends HookWidget {
     });
 
     return ModalSheetContainer(
-      child: DraggableScrollableSheet(
+      child: AdaptiveDraggableSheet(
         initialChildSize: 0.85,
         minChildSize: 0.40,
         maxChildSize: 0.85,

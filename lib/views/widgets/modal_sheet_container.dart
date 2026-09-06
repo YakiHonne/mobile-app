@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../utils/utils.dart';
-import 'fluid_blur_container.dart';
 
 /// Drop-in replacement for the [DraggableScrollableSheet] at the root of a modal
 /// sheet body — same parameters, so migrating a body is a one-word rename.
@@ -21,6 +20,8 @@ class AdaptiveDraggableSheet extends HookWidget {
     // Same default as DraggableScrollableSheet, so this stays a rename-only
     // substitution at the call sites.
     this.expand = true,
+    this.snap = false,
+    this.snapSizes,
   });
 
   final ScrollableWidgetBuilder builder;
@@ -28,6 +29,8 @@ class AdaptiveDraggableSheet extends HookWidget {
   final double minChildSize;
   final double maxChildSize;
   final bool expand;
+  final bool snap;
+  final List<double>? snapSizes;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +45,8 @@ class AdaptiveDraggableSheet extends HookWidget {
       minChildSize: minChildSize,
       maxChildSize: maxChildSize,
       expand: expand,
+      snap: snap,
+      snapSizes: snapSizes,
       builder: builder,
     );
   }
@@ -70,23 +75,20 @@ class ModalSheetContainer extends StatelessWidget {
     this.borderRadius = kDefaultPadding,
     this.padding,
     this.height,
+    this.color,
   });
 
   final Widget child;
-
-  /// Corner radius for the top-left and top-right corners. Defaults to
-  /// [kDefaultPadding] (20) — the standard throughout the app.
   final double borderRadius;
-
-  /// Optional inner padding, forwarded to [FluidBlurContainer].
   final EdgeInsetsGeometry? padding;
-
-  /// Optional fixed height, forwarded to [FluidBlurContainer].
   final double? height;
+
+  /// Defaults to the scaffold background so the sheet is opaque even when the
+  /// host sheet is transparent (floating panels pass their own color).
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    final fluid = isFluid();
     final topRadius = Radius.circular(borderRadius);
     final br = BorderRadius.only(topLeft: topRadius, topRight: topRadius);
     final bSide = BorderSide(
@@ -94,12 +96,12 @@ class ModalSheetContainer extends StatelessWidget {
       width: 0.5,
     );
 
-    return FluidBlurContainer(
-      blur: fluid,
-      sigma: 20,
-      backgroundAlpha: fluid ? 0.55 : 1.0,
-      customBorderRadius: br,
-      customBorder: Border(top: bSide, left: bSide, right: bSide),
+    return Container(
+      decoration: BoxDecoration(
+        color: color ?? Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: br,
+        border: Border(top: bSide, left: bSide, right: bSide),
+      ),
       width: double.infinity,
       height: height,
       padding: padding,

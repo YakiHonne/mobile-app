@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/curation_widgets/curation_specifications.dart';
 
 class AddCurationSpecificationView extends StatelessWidget {
@@ -19,7 +19,7 @@ class AddCurationSpecificationView extends StatelessWidget {
         return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.95,
             minChildSize: 0.60,
             maxChildSize: 0.95,
@@ -66,19 +66,10 @@ class AddCurationSpecificationView extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pop(context);
 
-              showModalBottomSheet(
-                context: context,
-                elevation: 0,
-                builder: (_) {
-                  return PublishContentFinalStep(
-                    appContentType: AppContentType.curation,
-                    event: curation,
-                  );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              showContentPublishedModalSheet(
+                context,
+                event: curation,
+                contentType: AppContentType.curation,
               );
             },
           );

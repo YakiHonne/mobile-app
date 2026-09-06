@@ -11,10 +11,10 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../search_view/search_view.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import 'send_using_lightning_address.dart';
@@ -167,23 +167,27 @@ class SendByUserSearch extends HookWidget {
 
             final contactList = contactListCubit.contacts;
 
-            return ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              shrinkWrap: true,
-              primary: false,
-              itemBuilder: (context, index) {
-                final metadata = state.authors[index];
+            return MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  final metadata = state.authors[index];
 
-                return SearchAuthorContainer(
-                  key: ValueKey(metadata.pubkey),
-                  metadata: metadata,
-                  youFollow: contactList.contains(metadata.pubkey),
-                  onClick: () => onUserSelected.call(metadata, context),
-                );
-              },
-              itemCount: state.authors.length,
+                  return SearchAuthorContainer(
+                    key: ValueKey(metadata.pubkey),
+                    metadata: metadata,
+                    youFollow: contactList.contains(metadata.pubkey),
+                    onClick: () => onUserSelected.call(metadata, context),
+                  );
+                },
+                itemCount: state.authors.length,
+              ),
             );
           },
         ),
@@ -201,7 +205,15 @@ class SendByUserSearch extends HookWidget {
         horizontal: kDefaultPadding / 2,
       ),
       child: CustomScrollView(
-        slivers: children,
+        slivers: [
+          // Modal path renders in a sheet, not a FluidScaffold — no bar to
+          // clear there.
+          if (!isModal)
+            SliverPadding(
+              padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
+            ),
+          ...children,
+        ],
       ),
     );
 
@@ -228,10 +240,8 @@ class SendByUserSearch extends HookWidget {
 
     return BlocProvider(
       create: (context) => SearchUserCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.contacts,
-        ),
+      child: FluidScaffold(
+        title: context.t.contacts,
         body: view,
       ),
     );

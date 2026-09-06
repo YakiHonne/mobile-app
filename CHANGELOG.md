@@ -1,5 +1,52 @@
 # Changelog
 
+## [2.0.7] - 2026-08-31
+
+### Added
+
+- Kind 1111 (NIP-22) comment support in notes and replies.
+- Free plan card and a side-by-side plan comparison in pricing.
+- Premium badge and a "Seen on" relay indicator.
+- Landscape support for video playback.
+
+### Changed
+
+- Rewritten paid-note payment flow with live tracking, auto-publish, and a new published-confirmation screen.
+- Username now always shown in edit profile, with connect and upgrade prompts when needed.
+- Second Reader AI actions now match each paragraph's feedback, and the AI assistant stays open after processing.
+
+### Fixed
+
+- SSE stream now re-logs in on an expired session and retries.
+- Payment sheet no longer leaves stale invoices behind when closed.
+- Removed the 800 sats payment preset from zaps.
+- General bug fixes and performance enhancements.
+
+## [2.0.6] - 2026-08-20
+
+### Added
+
+- Added Ask AI to improve, rewrite, retone, or expand any part of an article without leaving the editor.
+- Added Second Reader to pick a reader persona and see how they would react to your draft, paragraph by paragraph.
+- Added Energy Mapper, a per-sentence emotion graph of your note, to spot flat or overheated passages before publishing.
+- Added Yakihonne plans in-app, with a usage dashboard and subscription badges.
+- Added direct creator subscriptions from their profile.
+- Added Fluid mode, a glass look across the app with blurred surfaces and translucent sheets.
+- Added Google sign-in for new accounts.
+- Added encrypted key backup and recovery from settings.
+- Added gift code redemption straight from a DM.
+- Added a guided tour on first launch and a what's new screen after major updates.
+- Added flip to share on notes.
+
+### Changed
+
+- Redesigned bottom navigation.
+- Reworked search, discover, profile, and note stats.
+
+### Fixed
+
+- General bug fixes and performance enhancements.
+
 ## [2.0.5] - 2026-05-14
 
 ### Changed

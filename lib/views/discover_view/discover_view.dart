@@ -16,6 +16,7 @@ import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../utils/utils.dart';
 import '../leading_view/leading_view.dart';
+import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/classic_footer.dart';
 import '../widgets/common_thumbnail.dart';
@@ -97,7 +98,7 @@ class _DiscoverViewState extends State<DiscoverView> {
             previous.showFollowingListMessage !=
                 current.showFollowingListMessage,
         builder: (context, state) {
-          final refresher = SmartRefresher(
+          final refresher = AdaptiveSmartRefresher(
             controller: refreshController,
             enablePullUp: true,
             header: const RefresherClassicHeader(),
@@ -292,6 +293,7 @@ class SourceButton extends HookWidget {
               builder: (_) {
                 return AppSourcesList(viewType: viewType);
               },
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           behavior: HitTestBehavior.translucent,
@@ -570,6 +572,7 @@ class FilterButton extends StatelessWidget {
               builder: (_) {
                 return view;
               },
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,
@@ -819,13 +822,6 @@ class NewContentContainer extends HookWidget {
                 horizontal: kDefaultPadding / 1.5,
                 vertical: kDefaultPadding / 2.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  color: kBlack.withValues(alpha: 0.2),
-                ),
-              ],
               child: BlocBuilder<MetadataCubit, MetadataState>(
                 builder: (context, state) => Row(
                   mainAxisSize: MainAxisSize.min,

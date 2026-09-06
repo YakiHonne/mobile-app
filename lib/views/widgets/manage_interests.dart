@@ -9,11 +9,11 @@ import '../../logic/interests_management_cubit/interests_management_cubit.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../dashboard_view/widgets/interests/interests_dashboard.dart';
-import 'custom_app_bar.dart';
 import 'custom_icon_buttons.dart';
+import 'fluid_scaffold.dart';
 
-class ManagaeInterests extends HookWidget {
-  ManagaeInterests({
+class ManageInterests extends HookWidget {
+  ManageInterests({
     super.key,
   }) {
     umamiAnalytics.trackEvent(screenName: 'Interests view');
@@ -43,14 +43,13 @@ class ManagaeInterests extends HookWidget {
 
     return BlocProvider(
       create: (context) => InterestsManagementCubit(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.t.interests.capitalizeFirst(),
-        ),
+      child: FluidScaffold(
+        title: context.t.interests.capitalizeFirst(),
         body: Builder(
           builder: (context) {
             return Column(
               children: [
+                SizedBox(height: fluidScaffoldTopInset(context)),
                 _content(spacer, context, mention, controller, enableInterest,
                     topics),
                 if (enableInterest) ...[

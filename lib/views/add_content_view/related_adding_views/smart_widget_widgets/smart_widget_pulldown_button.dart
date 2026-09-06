@@ -9,6 +9,7 @@ import '../../../../models/smart_widgets_components.dart';
 import '../../../../utils/bot_toast_util.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/app_icon.dart';
+import '../../../widgets/fluid_pull_down_button.dart';
 import 'smart_widget_component_customization.dart';
 
 class SmartWidgetButtonPulldownButton extends StatelessWidget {
@@ -27,7 +28,7 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
       shadowColor: Theme.of(context).primaryColorLight.withValues(
             alpha: 1,
           ),
-      child: PullDownButton(
+      child: FluidPullDownButton(
         animationBuilder: (context, state, child) {
           return child;
         },
@@ -40,8 +41,9 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
           return [
             PullDownMenuItem(
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
+                showAdaptiveModal(
+                  context,
+                  dialogHeight: 620,
                   builder: (_) {
                     return BlocProvider.value(
                       value: context.read<WriteSmartWidgetCubit>(),
@@ -51,10 +53,6 @@ class SmartWidgetButtonPulldownButton extends StatelessWidget {
                       ),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

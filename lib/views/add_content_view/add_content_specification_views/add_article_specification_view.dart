@@ -5,9 +5,9 @@ import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 
 import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/content_published_modal.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
-import '../../widgets/publish_content_final_step.dart';
 import '../related_adding_views/article_widgets/article_details.dart';
 
 class AddArticleSpecificationView extends HookWidget {
@@ -22,7 +22,7 @@ class AddArticleSpecificationView extends HookWidget {
         return ModalSheetContainer(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.95,
             minChildSize: 0.60,
             maxChildSize: 0.95,
@@ -74,20 +74,10 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.article,
-                          event: article,
-                        );
-                      },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: article,
+                      contentType: AppContentType.article,
                     );
                   }
                 },
@@ -112,35 +102,17 @@ class AddArticleSpecificationView extends HookWidget {
                   Navigator.pop(context);
 
                   if (article != null) {
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
-                      builder: (_) {
-                        return PublishContentFinalStep(
-                          appContentType: AppContentType.article,
-                          event: article,
-                        );
-                      },
-                      isScrollControlled: true,
-                      useRootNavigator: true,
-                      useSafeArea: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                    showContentPublishedModalSheet(
+                      context,
+                      event: article,
+                      contentType: AppContentType.article,
                     );
                   }
                 },
               );
         },
-        style: TextButton.styleFrom(
-          backgroundBuilder: (_, __, child) => child!,
-          backgroundColor: Theme.of(context).cardColor,
-          visualDensity: VisualDensity.standard,
-        ),
         child: Text(
           context.t.saveDraft.capitalize(),
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).primaryColorDark,
-              ),
         ),
       ),
     );

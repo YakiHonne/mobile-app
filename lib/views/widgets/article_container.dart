@@ -7,6 +7,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../utils/utils.dart';
 import 'content_container.dart';
+import 'note_stats.dart';
 
 class ArticleContainer extends HookWidget {
   const ArticleContainer({
@@ -30,7 +31,7 @@ class ArticleContainer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContentContainer(
+    final container = ContentContainer(
       id: article.identifier,
       isSensitive: article.isSensitive,
       isFollowing: isFollowing,
@@ -45,6 +46,7 @@ class ArticleContainer extends HookWidget {
       contentType: ContentType.article,
       onClicked: onClicked,
       reduceImageSize: reduceImageSize,
+      isPremium: article.isPremium,
       attachedText:
           context.t.readTime(time: estimateReadingTime(article.content)),
       onProfileClicked: () {
@@ -52,6 +54,8 @@ class ArticleContainer extends HookWidget {
       },
       isMuted: isMuted,
     );
+
+    return article.isPremium ? PremiumContainer(child: container) : container;
   }
 }
 

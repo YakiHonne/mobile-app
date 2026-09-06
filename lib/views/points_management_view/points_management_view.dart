@@ -5,7 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../utils/utils.dart';
-import '../widgets/fluid_blur_container.dart';
+import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/profile_picture.dart';
 import 'widgets/points_stats_containers.dart';
 
@@ -41,49 +41,23 @@ class PointsStatisticsView extends StatelessWidget {
                   leading: FadeInRight(
                     duration: const Duration(milliseconds: 500),
                     from: 30,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Center(
-                        child: isFluid()
-                            ? const FluidCardContainer(
-                                padding: EdgeInsets.all(10),
-                                child: Icon(
-                                  LucideIcons.chevronLeft,
-                                  size: 20,
-                                ),
-                              )
-                            : CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Theme.of(context).cardColor,
-                                child: const Icon(
-                                  LucideIcons.chevronLeft,
-                                  size: 20,
-                                ),
-                              ),
+                    child: Center(
+                      child: AppIconButton(
+                        icon: LucideIcons.chevronLeft,
+                        onClicked: () => Navigator.pop(context),
+                        iconSize: 20,
+                        size: 40,
                       ),
                     ),
                   ),
                   actions: [
-                    GestureDetector(
-                      onTap: () {
+                    AppIconButton(
+                      icon: LucideIcons.info,
+                      onClicked: () {
                         openWebPage(url: pointsSystemUrl);
                       },
-                      child: isFluid()
-                          ? const FluidCardContainer(
-                              padding: EdgeInsets.all(10),
-                              child: Icon(
-                                LucideIcons.info,
-                                size: 20,
-                              ),
-                            )
-                          : CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Theme.of(context).cardColor,
-                              child: const Icon(
-                                LucideIcons.info,
-                                size: 20,
-                              ),
-                            ),
+                      iconSize: 20,
+                      size: 40,
                     ),
                     const SizedBox(
                       width: kDefaultPadding / 2,

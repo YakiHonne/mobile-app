@@ -7,6 +7,7 @@ import '../../../logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
 import '../app_icon.dart';
+import '../fluid_pull_down_button.dart';
 import 'donations.dart';
 import 'interests.dart';
 import 'related_content.dart';
@@ -69,8 +70,8 @@ class MultiSuggestionBox extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

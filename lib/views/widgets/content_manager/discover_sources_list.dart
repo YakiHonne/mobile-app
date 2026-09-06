@@ -510,19 +510,15 @@ class RelaysDiscoverList extends StatelessWidget {
       isSelected: selectedKey == r,
       useIsFluid: true,
       onShareRelay: () {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
+          dialogHeight: 620,
           builder: (_) {
             return ShareRelayFeed(
               relay: r,
               viewType: viewType,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
       onClick: () {

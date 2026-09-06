@@ -17,13 +17,14 @@ import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
 import '../../media_view/media_view.dart';
+import '../../widgets/adaptive_smart_refresher.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/classic_footer.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/data_providers.dart';
-import '../../widgets/dotted_container.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/media_components/horizontal_video_view.dart';
 import '../../widgets/media_components/vertical_video_view.dart';
 import '../../widgets/note_stats.dart';
@@ -43,16 +44,8 @@ class PackFeedView extends StatelessWidget {
         packsModel: pack,
       ),
       lazy: false,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: SafeArea(
-            child: ModalBottomSheetAppbar(
-              title: pack.title,
-              isBack: false,
-            ),
-          ),
-        ),
+      child: FluidScaffold(
+        title: pack.title,
         body: PackContentFeed(
           pack: pack,
         ),
@@ -125,7 +118,7 @@ class _PackContentFeedState extends State<PackContentFeed> {
           buildWhen: (previous, current) =>
               previous.onLoading != current.onLoading,
           builder: (context, state) {
-            return SmartRefresher(
+            return AdaptiveSmartRefresher(
               controller: refreshController,
               scrollController: scrollController,
               enablePullUp: true,
@@ -135,6 +128,12 @@ class _PackContentFeedState extends State<PackContentFeed> {
               onRefresh: () => buildPackFeed.call(context, false),
               child: CustomScrollView(
                 slivers: [
+                  if (isFluid())
+                    SliverPadding(
+                      padding: EdgeInsets.only(
+                        top: fluidScaffoldTopInset(context),
+                      ),
+                    ),
                   _packBox(context),
                   if (widget.pack.isStarterPack()) _appbar(context),
                   const SliverToBoxAdapter(
@@ -174,7 +173,7 @@ class _PackContentFeedState extends State<PackContentFeed> {
       automaticallyImplyLeading: false,
       leadingWidth: 0,
       titleSpacing: 0,
-      floating: true,
+      primary: false,
       title: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(8.0),

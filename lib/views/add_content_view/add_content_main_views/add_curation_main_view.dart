@@ -29,18 +29,15 @@ class AddCurationMainView extends StatelessWidget {
               actionButtonText: context.t.next.capitalize(),
               isActionButtonEnabled: enabled,
               onActionClicked: () {
-                showModalBottomSheet(
-                  context: context,
+                showAdaptiveModal(
+                  context,
+                  dialogHeight: 640,
                   builder: (_) {
                     return BlocProvider<WriteCurationCubit>.value(
                       value: context.read<WriteCurationCubit>(),
                       child: const AddCurationSpecificationView(),
                     );
                   },
-                  isScrollControlled: true,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 );
               },

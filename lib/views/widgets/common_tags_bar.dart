@@ -8,8 +8,9 @@ import 'package:pull_down_button/pull_down_button.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import './fluid_pull_down_button.dart';
 import 'app_icon.dart';
-import 'managae_interests.dart';
+import 'manage_interests.dart';
 import 'tag_container.dart';
 
 class CommonTagsBar extends HookWidget {
@@ -97,7 +98,7 @@ class CommonTagsBar extends HookWidget {
       onTap: () {
         YNavigator.pushPage(
           context,
-          (context) => ManagaeInterests(),
+          (context) => ManageInterests(),
         );
       },
       child: Container(
@@ -129,12 +130,12 @@ class CommonTagsBar extends HookWidget {
     );
   }
 
-  PullDownButton _pulldownButton(
+  FluidPullDownButton _pulldownButton(
       BuildContext context,
       ValueNotifier<String> selectedMainType,
       ValueNotifier<CommonFeedTypes> selectedTypeEnum,
       ValueNotifier<bool> isMainSelected) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

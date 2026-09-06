@@ -30,6 +30,9 @@ import '../../widgets/common_thumbnail.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/empty_list.dart';
+import '../../widgets/fluid_blur_container.dart';
+import '../../widgets/fluid_pull_down_button.dart';
+import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/pull_down_global_button.dart';
 import '../../widgets/response_snackbar.dart';
@@ -101,37 +104,44 @@ class DmDetails extends HookWidget {
       return () => nostrRepository.usersMessageNotifications.remove(pubkey);
     }, []);
 
-    return Scaffold(
-      // In the pane this Scaffold sits *inside* MainView's glass panel, and
-      // desktop is always fluid — an opaque scaffoldBackgroundColor would punch
-      // a solid rectangle through the blur. Routes keep their own background.
+    final appBar = DmAppBar(
+      pubkey: pubkey,
+      onClose: onClose,
+      isSelectionMode: isSelectionMode,
+      selectedEvents: selectedEvents,
+      onDelete: () {
+        showCupertinoDeletionDialogue(
+          context: context,
+          title: context.t.deleteMessage.capitalizeFirst(),
+          description: context.t.deleteMessageDesc.capitalizeFirst(),
+          buttonText: context.t.delete.capitalizeFirst(),
+          onDelete: () async {
+            await dmsCubit.deleteMessages(
+              pubkey,
+              selectedEvents.value.toList(),
+            );
+            isSelectionMode.value = false;
+            selectedEvents.value = {};
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+          },
+        );
+      },
+    );
+
+    return FluidScaffold(
+      // In the pane this sits inside MainView's glass panel — an opaque
+      // background would punch a solid rectangle through the blur. Routes keep
+      // their own background.
       backgroundColor: onClose != null ? kTransparent : null,
-      appBar: DmAppBar(
-        pubkey: pubkey,
-        onClose: onClose,
-        isSelectionMode: isSelectionMode,
-        selectedEvents: selectedEvents,
-        onDelete: () {
-          showCupertinoDeletionDialogue(
-            context: context,
-            title: context.t.deleteMessage.capitalizeFirst(),
-            description: context.t.deleteMessageDesc.capitalizeFirst(),
-            buttonText: context.t.delete.capitalizeFirst(),
-            onDelete: () async {
-              await dmsCubit.deleteMessages(
-                pubkey,
-                selectedEvents.value.toList(),
-              );
-              isSelectionMode.value = false;
-              selectedEvents.value = {};
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-            },
-          );
-        },
-      ),
+      leading: appBar.leading(context),
+      titleWidget: appBar.title(context),
+      actions: appBar.actions(context),
       body: SafeArea(
+        // top: false — fluidScaffoldTopInset already includes the status bar,
+        // so leaving SafeArea's top on would count it twice.
+        top: false,
         child: Column(
           children: [
             Expanded(
@@ -222,9 +232,13 @@ class DmDetails extends HookWidget {
           child: ListView.custom(
             reverse: true,
             controller: scrollController,
-            padding: const EdgeInsets.symmetric(
-              vertical: kDefaultPadding,
-              horizontal: kDefaultPadding / 2,
+            // top padding clears the GlassAppBar; the list is reverse:true so
+            // top maps to the trailing edge, where old messages scroll under it.
+            padding: EdgeInsets.only(
+              top: kDefaultPadding + fluidScaffoldTopInset(context),
+              bottom: kDefaultPadding,
+              left: kDefaultPadding / 2,
+              right: kDefaultPadding / 2,
             ),
             childrenDelegate: SliverChildBuilderDelegate(
               (context, index) => _buildMessageItem(
@@ -376,7 +390,8 @@ class DmDetails extends HookWidget {
     ValueNotifier<bool> showNip44Message,
   ) {
     return Positioned(
-      top: kDefaultPadding / 2,
+      // Below the GlassAppBar, same inset the message list clears by.
+      top: kDefaultPadding / 2 + fluidScaffoldTopInset(context),
       left: kDefaultPadding / 2,
       right: kDefaultPadding / 2,
       child: Material(
@@ -736,8 +751,9 @@ class DmTextfieldBox extends StatelessWidget {
   // MARK: - Actions
 
   void _showGiphyView(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
+    showAdaptiveModal(
+      context,
+      dialogHeight: 620,
       builder: (_) => GiphyView(
         onGifSelected: (link) => context.read<DmsCubit>().sendEvent(
               pubkey,
@@ -746,18 +762,13 @@ class DmTextfieldBox extends StatelessWidget {
               () {},
             ),
       ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 
   void _showCameraOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    showAdaptiveModal(
+      context,
       builder: (_) => CameraOptions(
         pubkey: pubkey,
         replyId: replyId.value,
@@ -768,20 +779,14 @@ class DmTextfieldBox extends StatelessWidget {
         },
       ),
       backgroundColor: kTransparent,
-      useRootNavigator: true,
-      elevation: 0,
-      useSafeArea: true,
     );
   }
 
   void _showGiftView(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
+    showAdaptiveModal(
+      context,
+      dialogHeight: 620,
       builder: (_) => SendGiftView(receiverPubkey: pubkey),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      useSafeArea: true,
-      elevation: 0,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
@@ -1002,9 +1007,11 @@ class DmImageContainer extends StatelessWidget {
 }
 
 /// Custom app bar for DM screen
-class DmAppBar extends HookWidget implements PreferredSizeWidget {
+/// The DM header's three [FluidScaffold] slots. Was a `PreferredSizeWidget`
+/// wrapping its own `AppBar`; now it hands the pieces to the shared scaffold so
+/// the fluid path gets a real `GlassAppBar` instead of a flat Material one.
+class DmAppBar {
   const DmAppBar({
-    super.key,
     required this.pubkey,
     required this.isSelectionMode,
     required this.selectedEvents,
@@ -1020,80 +1027,64 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
   /// See [DmDetails.onClose] — non-null means "pane, not route".
   final VoidCallback? onClose;
 
-  @override
-  Widget build(BuildContext context) {
-    // The app bar theme is opaque in every variant, glass included, so the pane
-    // has to opt out explicitly or it paints a bar across the blur.
-    final paneBackground = onClose != null ? kTransparent : null;
-    final paneScrolledElevation = onClose != null ? 0.0 : null;
-
+  /// Null on the normal path, so FluidScaffold supplies its own back chevron.
+  /// In the pane there is nothing to pop, so it shows an X that closes the pane.
+  Widget? leading(BuildContext context) {
     if (isSelectionMode.value) {
-      return AppBar(
-        backgroundColor: paneBackground,
-        scrolledUnderElevation: paneScrolledElevation,
-        leading: IconButton(
-          onPressed: () {
-            isSelectionMode.value = false;
-            selectedEvents.value = {};
-          },
-          icon: const Icon(LucideIcons.x),
-        ),
-        title: Text(
-          '${selectedEvents.value.length} ${context.t.selected.capitalizeFirst()}',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        actions: [
-          IconButton(
-            onPressed: selectedEvents.value.isEmpty ? null : onDelete,
-            icon: AppIcon(
-              FeatureIcons.trash,
-              size: 20,
-              color: selectedEvents.value.isEmpty ? kDimGrey : kRed,
-            ),
-          ),
-          const SizedBox(width: kDefaultPadding / 2),
-        ],
+      return IconButton(
+        onPressed: () {
+          isSelectionMode.value = false;
+          selectedEvents.value = {};
+        },
+        icon: const Icon(LucideIcons.x),
       );
     }
 
-    return MetadataProvider(
-      pubkey: pubkey,
-      child: (metadata, isNip05Valid) {
-        return AppBar(
-          backgroundColor: paneBackground,
-          scrolledUnderElevation: paneScrolledElevation,
-          leading: _buildBackButton(context),
-          actions: [
-            _buildMoreOptionsButton(context, metadata),
-            const SizedBox(width: kDefaultPadding / 2),
-          ],
-          leadingWidth: 45,
-          titleSpacing: 0,
-          centerTitle: false,
-          title: _buildTitle(context, metadata, isNip05Valid),
-        );
-      },
-    );
+    if (onClose != null) {
+      return IconButton(
+        onPressed: onClose,
+        icon: const Icon(LucideIcons.x),
+      );
+    }
+
+    return null;
   }
 
-  Widget _buildBackButton(BuildContext context) {
-    // In the desktop detail pane there is nothing to pop — this thread is not a
-    // route, it is the pane's content. Popping would tear down MainView.
-    return FadeInRight(
-      duration: const Duration(milliseconds: 500),
-      from: 30,
-      child: SizedBox(
-        height: 45,
-        width: 45,
-        child: IconButton(
-          onPressed: onClose ?? () => Navigator.pop(context),
-          iconSize: 20,
-          icon: Icon(
-            onClose != null ? LucideIcons.x : LucideIcons.chevronLeft,
+  Widget title(BuildContext context) {
+    if (isSelectionMode.value) {
+      return Text(
+        '${selectedEvents.value.length} ${context.t.selected.capitalizeFirst()}',
+        style: Theme.of(context).textTheme.titleMedium,
+      );
+    }
+
+    return _buildTitle(context);
+  }
+
+  List<Widget> actions(BuildContext context) {
+    if (isSelectionMode.value) {
+      return [
+        IconButton(
+          onPressed: selectedEvents.value.isEmpty ? null : onDelete,
+          icon: AppIcon(
+            FeatureIcons.trash,
+            size: 20,
+            color: selectedEvents.value.isEmpty ? kDimGrey : kRed,
           ),
         ),
+        const SizedBox(width: kDefaultPadding / 2),
+      ];
+    }
+
+    return [
+      // _buildTitle brings its own MetadataProvider, so the options button
+      // needs one too now that they're separate slots.
+      MetadataProvider(
+        pubkey: pubkey,
+        child: (metadata, isNip05Valid) =>
+            _buildMoreOptionsButton(context, metadata),
       ),
-    );
+    ];
   }
 
   Widget _buildMoreOptionsButton(BuildContext context, dynamic metadata) {
@@ -1111,13 +1102,13 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
           enableZap: true,
           enableMute: true,
           muteStatus: state.mutes.contains(metadata.pubkey),
+          useFluidMode: true,
         );
       },
     );
   }
 
-  Widget _buildTitle(
-      BuildContext context, dynamic metadata, bool isNip05Valid) {
+  Widget _buildTitle(BuildContext context) {
     return MetadataProvider(
       pubkey: pubkey,
       child: (metadata, isNip05Valid) {
@@ -1128,39 +1119,52 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
             ProfileView.routeName,
             arguments: [pubkey],
           ),
-          child: Row(
-            children: [
-              ProfilePicture3(
-                size: DmDetails._profilePictureSize,
-                image: metadata.picture,
-                pubkey: metadata.pubkey,
-                padding: 0,
-                strokeWidth: 0,
-                reduceSize: true,
-                strokeColor: kTransparent,
-                onClicked: () => openProfileFastAccess(
-                  context: context,
-                  pubkey: metadata.pubkey,
-                ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+            child: FluidBlurContainer(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding / 2,
+                vertical: kDefaultPadding / 6,
               ),
-              const SizedBox(width: kDefaultPadding / 3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      metadata.getName(),
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+              child: Row(
+                children: [
+                  ProfilePicture2(
+                    size: DmDetails._profilePictureSize,
+                    image: metadata.picture,
+                    pubkey: metadata.pubkey,
+                    padding: 0,
+                    strokeWidth: 0,
+                    reduceSize: true,
+                    strokeColor: kTransparent,
+                    onClicked: () => openProfileFastAccess(
+                      context: context,
+                      pubkey: metadata.pubkey,
                     ),
-                    if (isNip05Valid) _buildVerifiedBadge(context, metadata),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: kDefaultPadding / 3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          metadata.getName(),
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        if (isNip05Valid)
+                          _buildVerifiedBadge(context, metadata),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },
@@ -1188,9 +1192,6 @@ class DmAppBar extends HookWidget implements PreferredSizeWidget {
       ],
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 /// Individual chat message container
@@ -1536,7 +1537,7 @@ class ChatContainerPullDownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,

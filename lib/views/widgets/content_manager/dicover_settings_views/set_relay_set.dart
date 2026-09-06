@@ -9,8 +9,8 @@ import '../../../settings_view/widgets/properties_relay_list.dart';
 import '../../../settings_view/widgets/relays_update.dart';
 import '../../app_icon.dart';
 import '../../common_thumbnail.dart';
-import '../../custom_app_bar.dart';
 import '../../custom_icon_buttons.dart';
+import '../../fluid_scaffold.dart';
 import '../../single_image_selector.dart';
 import '../add_discover_filter.dart';
 import 'relay_settings_view.dart';
@@ -47,8 +47,7 @@ class SetRelaySet extends HookWidget {
       addRelayController.clear();
     });
 
-    final bottomAppBar = BottomAppBar(
-      color: Theme.of(context).scaffoldBackgroundColor,
+    final bottomAppBar = FluidBottomBar(
       child: Row(
         children: [
           Expanded(
@@ -78,21 +77,21 @@ class SetRelaySet extends HookWidget {
       ),
     );
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title:
-            relaySet != null ? context.t.updateRelaySet : context.t.addRelaySet,
-      ),
-      bottomNavigationBar: bottomAppBar,
+    return FluidScaffold(
+      title:
+          relaySet != null ? context.t.updateRelaySet : context.t.addRelaySet,
+      bottomBar: bottomAppBar,
+      // M3 BottomAppBar's default height, since this one sets none.
+      bottomBarHeight: 80,
       body: ListView(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+            top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
         children: [
           Builder(
             builder: (context) {
               void addImage() {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
+                showAdaptiveModal(
+                  context,
                   builder: (_) {
                     return SingleImageSelector(
                       onUrlProvided: (url, {imeta}) {
@@ -102,9 +101,6 @@ class SetRelaySet extends HookWidget {
                     );
                   },
                   backgroundColor: kTransparent,
-                  useRootNavigator: true,
-                  elevation: 0,
-                  useSafeArea: true,
                 );
               }
 

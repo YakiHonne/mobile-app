@@ -21,6 +21,7 @@ import '../../widgets/buttons_containers_widgets.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
 import '../../widgets/content_manager/discover_filter_list.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 
 class SelectedWalletContainer extends StatelessWidget {
   const SelectedWalletContainer({super.key});
@@ -208,7 +209,7 @@ class DmOptionsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) => child,
       routeTheme: PullDownMenuRouteTheme(
         backgroundColor: Theme.of(context).cardColor,
@@ -296,7 +297,7 @@ class InboxTypes extends HookWidget {
           builder: (context, snapshot) {
             final counts = snapshot.data!;
 
-            return PullDownButton(
+            return FluidPullDownButton(
               animationBuilder: (context, state, child) => child,
               routeTheme: PullDownMenuRouteTheme(
                 backgroundColor: Theme.of(context).cardColor,
@@ -430,7 +431,7 @@ class NotificationTypes extends HookWidget {
 
     return BlocBuilder<NotificationsCubit, NotificationsState>(
       builder: (context, state) {
-        return PullDownButton(
+        return FluidPullDownButton(
           animationBuilder: (context, state, child) => child,
           routeTheme: PullDownMenuRouteTheme(
             backgroundColor: Theme.of(context).cardColor,
@@ -508,6 +509,7 @@ class NotificationTypes extends HookWidget {
       context.t.zaps,
       context.t.replies,
       context.t.followings,
+      context.t.premium,
     ];
   }
 }
@@ -554,8 +556,8 @@ class FilterGlobalButton extends StatelessWidget {
             _customIconButton(state, context),
             if (filter != null)
               Positioned(
-                right: 1,
-                top: 3,
+                left: 3,
+                top: 7,
                 child: DotContainer(
                   color: Theme.of(context).primaryColor,
                   size: 8,
@@ -617,6 +619,7 @@ class FilterGlobalButton extends StatelessWidget {
               builder: (_) {
                 return view;
               },
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           context: context,

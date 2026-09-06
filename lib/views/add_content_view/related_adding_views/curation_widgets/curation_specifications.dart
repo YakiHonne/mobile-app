@@ -8,9 +8,14 @@ import '../../../widgets/content_zap_splits.dart';
 import '../../widgets/publish_preview_container.dart';
 
 class CurationSpecifications extends StatelessWidget {
-  const CurationSpecifications({super.key, required this.scrollController});
+  const CurationSpecifications({
+    super.key,
+    required this.scrollController,
+    this.physics,
+  });
 
   final ScrollController scrollController;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +84,7 @@ class CurationSpecifications extends StatelessWidget {
         return ListView(
           padding: EdgeInsets.all(isTablet ? 10.w : kDefaultPadding / 2),
           controller: scrollController,
+          physics: physics,
           children: components,
         );
       },

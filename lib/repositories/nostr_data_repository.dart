@@ -39,7 +39,10 @@ import 'nostr_functions_repository.dart';
 
 class NostrDataRepository {
   // Core dependencies
-  late MainCubit mainCubit;
+  MainCubit? _mainCubit;
+  MainCubit get mainCubit => _mainCubit!;
+  set mainCubit(MainCubit value) => _mainCubit = value;
+  bool get isMainCubitReady => _mainCubit != null;
   late FilterStatus filterStatus;
 
   // Data collections
@@ -100,6 +103,7 @@ class NostrDataRepository {
 
   // Wallet and pricing configuration
   String yakihonneWallet = 'yakihonne_funds@getalby.com';
+  String paidNoteWallet = 'paid_notes@getalby.com';
   num initNotePrice = 21;
   num initRatingPrice = 10;
   num sealedNotePrice = 100;
@@ -410,8 +414,8 @@ class NostrDataRepository {
     getTopics();
     loadDmsDrafts();
 
-    pointsManagementCubit.getRecentStats();
-    subscriptionCubit.refreshStatus();
+    pointsManagementCubit.getCurrenUserStats();
+    subscriptionCubit.refreshUsage();
 
     final localData = await Future.wait(
       [
@@ -500,6 +504,8 @@ class NostrDataRepository {
           Metadata.empty().copyWith(pubkey: currentSigner!.getPublicKey());
 
       await loadCachedMutedList(currentSigner!.getPublicKey());
+
+      await contactListCubit.syncContacts();
 
       if (checkAccountStatus) {
         final index = settingsCubit.privateKeyIndex;
@@ -1216,8 +1222,9 @@ class NostrDataRepository {
     );
     localDatabaseRepository.removeTopicsStatus();
     localDatabaseRepository.clearPendingFlashNews();
-    pointsManagementCubit.logout();
+    await pointsManagementCubit.logout();
     subscriptionCubit.reset();
+    creatorSubscriptionsCubit.clear();
     isUsingExternalSigner = false;
     pendingFlashNews.clear();
     userTopics.clear();

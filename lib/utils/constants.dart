@@ -8,26 +8,29 @@ import 'package:logger/logger.dart';
 
 import 'utils.dart';
 
-// APK/sideload builds pass --dart-define=IAP_ENABLED=false to fall back to
-// Stripe + Lightning; defaults to true (IAP) so the toggle lives in the
-// build command instead of a source edit someone has to remember to revert.
 const kIapEnabled = bool.fromEnvironment('IAP_ENABLED', defaultValue: true);
 
+bool get deviceIsTablet {
+  final view = WidgetsBinding.instance.platformDispatcher.views.first;
+  return view.physicalSize.shortestSide / view.devicePixelRatio >= 600;
+}
+
 // ** App version
-const String appVersion = 'v2.0.6+196';
+const String appVersion = 'v2.0.7+205';
 
 //** network
+const yakiProBlossomServer = 'https://blossom.yakihonne.com';
 const uploadUrl = 'api/v1/file-upload';
 const baseUrl = 'https://yakihonne.com/';
+const termsUrl = 'https://yakihonne.com/terms-app';
+const privacyUrl = 'https://yakihonne.com/privacy';
 const baseUrl2 = 'www.yakihonne.com';
 const baseUrl3 = 'yakihonne.com';
 const cacheUrl = 'https://cache-v2.yakihonne.com/api/v1/';
 const apiBaseUrl = 'https://api.yakihonne.com/';
-const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
-const compressImageUrl = '${apiBaseUrl}api/img';
-//TODO: [REVERT TO LIVE]
-// const apiUrl = '${apiBaseUrl}api/v1/';
-
+const apiUrl = 'https://api.yakihonne.com/api/v1/';
+// const apiUrl = 'https://apitest.yakihonne.com/api/v1/';
+const compressImageUrl = 'https://api.yakihonne.com/api/img';
 const nostrBandURl = 'https://api.nostr.band/v0/';
 const relaysUrl = 'https://api.nostr.watch/v1/online';
 const searchRelaysUrl = 'https://api.nostr.watch/v2/relays/by/nip';
@@ -54,7 +57,8 @@ const kBlack = Colors.black;
 const kWhite = Colors.white;
 const kScaffoldDark = Color(0xff171718);
 const kTransparent = Colors.transparent;
-const kCardDark = Color(0xff222525);
+const kBlackThemeCard = Color(0xff0b0b0c);
+const kDarkThemeCard = Color(0xff1B1B1D);
 const kOutlineDark = Color(0xff393b3b);
 const kOutlineLight = Color(0xffe5e5e5);
 
@@ -146,6 +150,8 @@ const noGreen = Color(0xff03AC13);
 
 //**  paddings
 const kDefaultPadding = 20.0;
+
+const kMaxContentWidth = 640.0;
 
 const defaultZapamount = 21;
 
@@ -245,6 +251,137 @@ const availableLocales = {
     'name': 'Русский',
     'icon': FeatureIcons.flagRu,
   },
+};
+
+//** content translation target languages
+// ponytail: static list, flag + native name in one string, sorted by English
+// name. Superset of what LibreTranslate/DeepL/Wine accept — a service that does
+// not support a target simply returns an error for it.
+const Map<String, String> translationLanguages = {
+  'af': '🇿🇦 Afrikaans',
+  'sq': '🇦🇱 Shqip',
+  'am': '🇪🇹 አማርኛ',
+  'ar': '🇸🇦 العربية',
+  'hy': '🇦🇲 Հայերեն',
+  'as': '🇮🇳 অসমীয়া',
+  'ay': '🇧🇴 Aymar aru',
+  'az': '🇦🇿 Azərbaycan',
+  'bm': '🇲🇱 Bamanankan',
+  'eu': '🇪🇸 Euskara',
+  'be': '🇧🇾 Беларуская',
+  'bn': '🇧🇩 বাংলা',
+  'bs': '🇧🇦 Bosanski',
+  'bg': '🇧🇬 Български',
+  'ca': '🇪🇸 Català',
+  'ceb': '🇵🇭 Cebuano',
+  'ny': '🇲🇼 Chichewa',
+  'zh': '🇨🇳 中文',
+  'co': '🇫🇷 Corsu',
+  'hr': '🇭🇷 Hrvatski',
+  'cs': '🇨🇿 Čeština',
+  'da': '🇩🇰 Dansk',
+  'dv': '🇲🇻 ދިވެހި',
+  'nl': '🇳🇱 Nederlands',
+  'en': '🇺🇸 English',
+  'eo': '🌐 Esperanto',
+  'et': '🇪🇪 Eesti',
+  'ee': '🇬🇭 Eʋegbe',
+  'tl': '🇵🇭 Tagalog',
+  'fi': '🇫🇮 Suomi',
+  'fr': '🇫🇷 Français',
+  'fy': '🇳🇱 Frysk',
+  'gl': '🇪🇸 Galego',
+  'ka': '🇬🇪 ქართული',
+  'de': '🇩🇪 Deutsch',
+  'el': '🇬🇷 Ελληνικά',
+  'gn': '🇵🇾 Avañeʼẽ',
+  'gu': '🇮🇳 ગુજરાતી',
+  'ht': '🇭🇹 Kreyòl ayisyen',
+  'ha': '🇳🇬 Hausa',
+  'haw': '🇺🇸 ʻŌlelo Hawaiʻi',
+  'he': '🇮🇱 עברית',
+  'hi': '🇮🇳 हिन्दी',
+  'hmn': '🌐 Hmoob',
+  'hu': '🇭🇺 Magyar',
+  'is': '🇮🇸 Íslenska',
+  'ig': '🇳🇬 Igbo',
+  'ilo': '🇵🇭 Ilocano',
+  'id': '🇮🇩 Bahasa Indonesia',
+  'ga': '🇮🇪 Gaeilge',
+  'it': '🇮🇹 Italiano',
+  'ja': '🇯🇵 日本語',
+  'jv': '🇮🇩 Basa Jawa',
+  'kn': '🇮🇳 ಕನ್ನಡ',
+  'kk': '🇰🇿 Қазақ тілі',
+  'km': '🇰🇭 ខ្មែរ',
+  'rw': '🇷🇼 Kinyarwanda',
+  'ko': '🇰🇷 한국어',
+  'ku': '🌐 Kurdî',
+  'ky': '🇰🇬 Кыргызча',
+  'lo': '🇱🇦 ລາວ',
+  'la': '🇻🇦 Latina',
+  'lv': '🇱🇻 Latviešu',
+  'ln': '🇨🇩 Lingála',
+  'lt': '🇱🇹 Lietuvių',
+  'lg': '🇺🇬 Luganda',
+  'lb': '🇱🇺 Lëtzebuergesch',
+  'mk': '🇲🇰 Македонски',
+  'mai': '🇮🇳 मैथिली',
+  'mg': '🇲🇬 Malagasy',
+  'ms': '🇲🇾 Bahasa Melayu',
+  'ml': '🇮🇳 മലയാളം',
+  'mt': '🇲🇹 Malti',
+  'mi': '🇳🇿 Māori',
+  'mr': '🇮🇳 मराठी',
+  'mn': '🇲🇳 Монгол',
+  'my': '🇲🇲 မြန်မာ',
+  'ne': '🇳🇵 नेपाली',
+  'nb': '🇳🇴 Norsk bokmål',
+  'or': '🇮🇳 ଓଡ଼ିଆ',
+  'om': '🇪🇹 Afaan Oromoo',
+  'ps': '🇦🇫 پښتو',
+  'fa': '🇮🇷 فارسی',
+  'pl': '🇵🇱 Polski',
+  'pt': '🇵🇹 Português',
+  'pa': '🇮🇳 ਪੰਜਾਬੀ',
+  'qu': '🇵🇪 Runa Simi',
+  'ro': '🇷🇴 Română',
+  'ru': '🇷🇺 Русский',
+  'sm': '🇼🇸 Gagana Samoa',
+  'sa': '🇮🇳 संस्कृतम्',
+  'gd': '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Gàidhlig',
+  'nso': '🇿🇦 Sesotho sa Leboa',
+  'sr': '🇷🇸 Српски',
+  'st': '🇱🇸 Sesotho',
+  'sn': '🇿🇼 ChiShona',
+  'sd': '🇵🇰 سنڌي',
+  'si': '🇱🇰 සිංහල',
+  'sk': '🇸🇰 Slovenčina',
+  'sl': '🇸🇮 Slovenščina',
+  'so': '🇸🇴 Soomaali',
+  'es': '🇪🇸 Español',
+  'su': '🇮🇩 Basa Sunda',
+  'sw': '🇰🇪 Kiswahili',
+  'sv': '🇸🇪 Svenska',
+  'tg': '🇹🇯 Тоҷикӣ',
+  'ta': '🇮🇳 தமிழ்',
+  'tt': '🇷🇺 Татарча',
+  'te': '🇮🇳 తెలుగు',
+  'th': '🇹🇭 ไทย',
+  'ti': '🇪🇷 ትግርኛ',
+  'ts': '🇿🇦 Xitsonga',
+  'tr': '🇹🇷 Türkçe',
+  'tk': '🇹🇲 Türkmençe',
+  'uk': '🇺🇦 Українська',
+  'ur': '🇵🇰 اردو',
+  'ug': '🇨🇳 ئۇيغۇرچە',
+  'uz': '🇺🇿 Oʻzbek',
+  'vi': '🇻🇳 Tiếng Việt',
+  'cy': '🏴󠁧󠁢󠁷󠁬󠁳󠁿 Cymraeg',
+  'xh': '🇿🇦 isiXhosa',
+  'yi': '🌐 ייִדיש',
+  'yo': '🇳🇬 Yorùbá',
+  'zu': '🇿🇦 isiZulu',
 };
 
 //** date format
@@ -369,7 +506,6 @@ const bookmarksTypes = [
 const mandatoryRelays = [
   'wss://nostr-01.yakihonne.com',
   'wss://nostr-02.yakihonne.com',
-  'wss://nostr-03.dorafactory.org',
 ];
 
 const constantRelays = [

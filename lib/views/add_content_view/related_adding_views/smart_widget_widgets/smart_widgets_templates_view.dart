@@ -30,7 +30,7 @@ class SmartWidgetTemplatesView extends StatelessWidget {
         child:
             BlocBuilder<SmartWidgetTemplatesCubit, SmartWidgetTemplatesState>(
           builder: (context, state) {
-            return DraggableScrollableSheet(
+            return AdaptiveDraggableSheet(
               initialChildSize: 0.85,
               minChildSize: 0.40,
               maxChildSize: 0.85,

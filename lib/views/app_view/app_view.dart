@@ -13,6 +13,7 @@ import '../../models/smart_widgets_components.dart';
 import '../../utils/utils.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/buttons_containers_widgets.dart';
+import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import 'widgets/signer_view.dart';
@@ -43,9 +44,9 @@ class SmartWidgetAppView extends StatelessWidget {
         onSignEvent: (isSignPublish, content) async {
           bool onSign = false;
 
-          await showModalBottomSheet(
-            context: context,
-            elevation: 0,
+          await showAdaptiveModal(
+            context,
+            dialogHeight: 620,
             builder: (_) {
               return SignerView(
                 isSignPublish: isSignPublish,
@@ -60,9 +61,6 @@ class SmartWidgetAppView extends StatelessWidget {
                 },
               );
             },
-            isScrollControlled: true,
-            useRootNavigator: true,
-            useSafeArea: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           );
 
@@ -182,8 +180,8 @@ class SmartWidgetAppView extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

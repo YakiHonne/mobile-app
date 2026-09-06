@@ -7,6 +7,7 @@ import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/modal_sheet_container.dart';
 
 class CameraOptions extends StatelessWidget {
   const CameraOptions({
@@ -24,32 +25,19 @@ class CameraOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
-      child: Container(
-        width: 100.w,
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding * 2),
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
+    return Material(
+      child: ModalSheetContainer(
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: kDefaultPadding,
+                vertical: kDefaultPadding / 2,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(
-                    height: kDefaultPadding / 2,
-                  ),
                   Text(
                     context.t.pickYourMedia.capitalizeFirst(),
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -58,7 +46,7 @@ class CameraOptions extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(
-                    height: kDefaultPadding,
+                    height: kDefaultPadding / 2,
                   ),
                   Text(
                     context.t.uploadSendMedia.capitalizeFirst(),
@@ -71,16 +59,10 @@ class CameraOptions extends StatelessWidget {
                     height: kDefaultPadding,
                   ),
                   _options(context),
-                  const SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  const SizedBox(
-                    height: kDefaultPadding / 2,
-                  ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

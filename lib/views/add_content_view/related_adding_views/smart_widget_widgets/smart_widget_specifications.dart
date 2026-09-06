@@ -34,8 +34,9 @@ class FrameSpecifications extends HookWidget {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     void browseTemplates() {
-      showModalBottomSheet(
-        context: context,
+      showAdaptiveModal(
+        context,
+        dialogHeight: 620,
         builder: (_) {
           return BlocProvider.value(
             value: context.read<WriteSmartWidgetCubit>(),
@@ -48,18 +49,14 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
     void drafts() {
-      showModalBottomSheet(
-        context: context,
+      showAdaptiveModal(
+        context,
+        dialogHeight: 620,
         builder: (_) {
           return BlocProvider.value(
             value: context.read<WriteSmartWidgetCubit>(),
@@ -80,12 +77,7 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },
-        isScrollControlled: true,
-        useRootNavigator: true,
-        useSafeArea: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -277,19 +269,15 @@ class SWappSmartWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (!toggleView) {
-              showModalBottomSheet(
-                context: context,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return BlocProvider.value(
                     value: context.read<WriteSmartWidgetCubit>(),
                     child: const SmartWidgetAppSpecification(),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             } else if (state.appSmartWidget.isValid()) {}
           },
@@ -444,8 +432,9 @@ class ImageEditableContainer extends StatelessWidget {
         final child = GestureDetector(
           onTap: () {
             if (!toggleView) {
-              showModalBottomSheet(
-                context: context,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return BlocProvider.value(
                     value: context.read<WriteSmartWidgetCubit>(),
@@ -453,12 +442,7 @@ class ImageEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.image,
                     ),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -609,8 +593,9 @@ class InputFieldEditableContainer extends StatelessWidget {
             icon: FeatureIcons.editArticle,
             backGroundColor: Theme.of(context).cardColor,
             onTap: () {
-              showModalBottomSheet(
-                context: context,
+              showAdaptiveModal(
+                context,
+                dialogHeight: 620,
                 builder: (_) {
                   return BlocProvider.value(
                     value: context.read<WriteSmartWidgetCubit>(),
@@ -618,12 +603,7 @@ class InputFieldEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.inputField!,
                     ),
                   );
-                },
-                isScrollControlled: true,
-                useRootNavigator: true,
-                useSafeArea: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
             isSmall: true,
@@ -674,8 +654,9 @@ class InputFieldEditableContainer extends StatelessWidget {
         child: GestureDetector(
           key: const ValueKey('inputField'),
           onTap: () {
-            showModalBottomSheet(
-              context: context,
+            showAdaptiveModal(
+              context,
+              dialogHeight: 620,
               builder: (_) {
                 return BlocProvider.value(
                   value: context.read<WriteSmartWidgetCubit>(),
@@ -683,12 +664,7 @@ class InputFieldEditableContainer extends StatelessWidget {
                     boxComponent: smartWidgetBox.inputField!,
                   ),
                 );
-              },
-              isScrollControlled: true,
-              useRootNavigator: true,
-              useSafeArea: true,
-              elevation: 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              },              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           child: AbsorbPointer(

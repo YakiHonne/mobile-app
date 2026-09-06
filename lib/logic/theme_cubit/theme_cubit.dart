@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../utils/theme/theme.dart';
 import '../../utils/utils.dart';
@@ -18,6 +19,7 @@ class ThemeCubit extends Cubit<ThemeState> {
             mode: AppThemeMode.graphite,
             isFluid: localDatabaseRepository.getFluidMode(),
             fluidCards: localDatabaseRepository.getFluidCards(),
+            glassQuality: localDatabaseRepository.getGlassQuality(),
             theme: AppPreferredThemes.dark(),
             primaryColor: kMainColor,
           ),
@@ -46,6 +48,13 @@ class ThemeCubit extends Cubit<ThemeState> {
         primaryColor: state.primaryColor,
         saveLocally: false,
       );
+    }
+  }
+
+  void setGlassQuality(GlassQuality quality) {
+    localDatabaseRepository.setGlassQuality(quality);
+    if (!isClosed) {
+      emit(state.copyWith(glassQuality: quality));
     }
   }
 

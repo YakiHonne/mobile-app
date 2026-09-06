@@ -17,7 +17,6 @@ import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -409,9 +408,9 @@ Future<void> openApp({
   AppSmartWidget? app,
   String? title,
 }) async {
-  showModalBottomSheet(
-    context: context,
-    elevation: 0,
+  showAdaptiveModal(
+    context,
+    dialogHeight: 620,
     builder: (_) {
       return SmartWidgetAppView(
         url: url.trim(),
@@ -421,10 +420,6 @@ Future<void> openApp({
         title: title,
       );
     },
-    isScrollControlled: true,
-    useRootNavigator: true,
-    useSafeArea: true,
-    enableDrag: false,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
   );
 }
@@ -645,6 +640,17 @@ bool isReplaceable(int? kind) {
       kind == EventKind.STARTER_PACKS;
 }
 
+bool shouldReplyAsComment(DetailedNoteModel m) {
+  return m.kind == EventKind.COMMENT || isReplaceable(m.rootKind);
+}
+
+Set<String> eventRelayHints(Event event) {
+  return event.tags
+      .where((tag) => tag.length > 2 && tag[2].isNotEmpty)
+      .map((tag) => tag[2])
+      .toSet();
+}
+
 bool isSupportedEvent(int? kind) {
   return kind == EventKind.LONG_FORM ||
       kind == EventKind.CURATION_ARTICLES ||
@@ -742,6 +748,23 @@ List<dynamic> getVotes({
   ];
 }
 
+bool getPremiumStatus(Event event) {
+  bool hasNip63 = false;
+  bool hasUniqueDash = false;
+
+  for (final a in event.tags) {
+    if (a.isNotEmpty && a.first == 'nip63') {
+      hasNip63 = true;
+    }
+
+    if (a.isNotEmpty && a.first == '-') {
+      hasUniqueDash = true;
+    }
+  }
+
+  return hasNip63 && hasUniqueDash;
+}
+
 Future<String> createShareableLink(
   int kind,
   String pubkey,
@@ -820,6 +843,7 @@ class ParsedText extends HookWidget {
     this.minLines,
     this.maxWords,
     this.useDetailedNote = false,
+    this.emojis,
   });
 
   final String text;
@@ -838,6 +862,7 @@ class ParsedText extends HookWidget {
   final int? maxLines;
   final int? minLines;
   final bool? useDetailedNote;
+  final Map<String, String>? emojis;
   final ScrollPhysics? scrollPhysics;
   final bool isDm;
   final bool enableTruncation;
@@ -910,6 +935,7 @@ class ParsedText extends HookWidget {
         children: [
           ContentRenderer(
             text: content.value,
+            emojis: emojis,
             onClicked: onClicked,
             maxLines: maxLines,
             minLines: minLines,
@@ -1187,7 +1213,7 @@ int getRemainingXp(int nextLevel) {
   }
 }
 
-int getCurrentLevel(int xp) {
+int getCurrentLevel(num xp) {
   return ((1 + sqrt(1 + (100 * xp) / 50)) / 2).floor();
 }
 
@@ -1283,15 +1309,13 @@ void openProfileFastAccess({
         view: ProfileFastAccessFluid(pubkey: pubkey),
       );
     } else {
-      showCupertinoModalBottomSheet(
-        context: context,
-        elevation: 0,
-        builder: (context) => ProfileFastAccess(
-          pubkey: pubkey,
-        ),
-        useRootNavigator: true,
-        backgroundColor: kTransparent,
-      );
+      showAdaptiveModal(
+          context,
+          dialogHeight: 620,
+          builder: (context) => ProfileFastAccess(
+                pubkey: pubkey,
+              ),
+          backgroundColor: kTransparent);
     }
   } else {
     YNavigator.pushPage(
@@ -1481,6 +1505,8 @@ void showReactionPopup(
 }
 
 String getProperRelayUrl(String url) {
+  url = url.trim().replaceAll(RegExp(r'^\s*wss?:/*\s*|^\s*https?://\s*', caseSensitive: false), '');
+
   if (relayRegExp.hasMatch(url)) {
     return url;
   } else if (urlRegExp.hasMatch(url)) {
@@ -1535,6 +1561,13 @@ String cleanUrl(String url) {
     port: uri.hasPort ? uri.port : null,
     path: uri.path,
   ).toString();
+}
+
+String normalizeMediaUrl(String url) {
+  if (url.startsWith('http://blossom.yakihonne.com/')) {
+    return url.replaceFirst('http://', 'https://');
+  }
+  return url;
 }
 
 Future<List<String>> getEventSeenOnRelays({
@@ -1637,14 +1670,15 @@ void showScheduledNoteDatePicker({
 }
 
 void showScheduledNotesSheet(BuildContext context) {
-  showCupertinoModalPopup(
-    context: context,
+  showAdaptiveModal(
+    context,
+    dialogHeight: 620,
     builder: (_) => BlocProvider(
       create: (_) => DashboardScheduledCubit(),
       child: ModalSheetContainer(
-        height: 70.h,
         padding: EdgeInsets.zero,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const ModalBottomSheetHandle(),
             Text(
@@ -1653,8 +1687,10 @@ void showScheduledNotesSheet(BuildContext context) {
                     fontWeight: FontWeight.w600,
                   ),
             ),
-            const Expanded(
-              child: ScheduledDashboard(),
+            const Flexible(
+              child: ScheduledDashboard(
+                isModal: true,
+              ),
             ),
           ],
         ),

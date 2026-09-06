@@ -60,8 +60,9 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
         emit(state.copyWith(isSystemLoggedIn: true));
       }
 
-      getRecentStats();
+      getCurrenUserStats();
       subscriptionCubit.refreshStatus();
+      creatorSubscriptionsCubit.fetch(force: true);
 
       final isNew = (res['isNew'] as bool?) ?? false;
       final actions = (res['actions'] as List?) ?? <PointAction>[];
@@ -146,7 +147,12 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
   }
 
   Future<void> logout() async {
-    await HttpFunctionsRepository.logoutAppSystem();
+    try {
+      await HttpFunctionsRepository.logoutAppSystem().timeout(
+        const Duration(seconds: 3),
+      );
+    } catch (_) {}
+
     _appLifeCycle?.cancel();
     zapsToPointsList.clear();
 
@@ -155,13 +161,17 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
     }
     if (!isClosed) {
       emit(
-        state.copyWith(
-          isUpdated: !state.isUpdated,
+        const PointsManagementState(
+          isUpdated: true,
           isNew: false,
           currentXp: 0,
           standards: [],
+          additionalXp: 0,
           currentLevel: 0,
+          currentLevelXp: 0,
+          nextLevelXp: 0,
           percentage: 0,
+          consumablePoints: 0,
         ),
       );
     }
@@ -175,18 +185,19 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
       final additionalXp = currentXp - currentLevelXp;
       final nextLevelXp = getRemainingXp(currentLevel + 1);
       final points = userStats.currentPoints;
+
       if (!isClosed) {
         emit(
           state.copyWith(
             isUpdated: !state.isUpdated,
             userGlobalStats: userStats,
-            currentXp: currentXp,
+            currentXp: currentXp.toInt(),
             currentLevel: currentLevel,
-            additionalXp: additionalXp,
+            additionalXp: additionalXp.toInt(),
             currentLevelXp: currentLevelXp,
             nextLevelXp: nextLevelXp,
             percentage: additionalXp / (nextLevelXp - currentLevelXp),
-            consumablePoints: points,
+            consumablePoints: points.toInt(),
             isSystemLoggedIn: true,
           ),
         );
@@ -203,20 +214,14 @@ class PointsManagementCubit extends Cubit<PointsManagementState> {
     }
   }
 
-  Future<void> getRecentStats() async {
+  Future<void> getCurrenUserStats() async {
     try {
-      final online = await HttpFunctionsRepository.getUserOnlineStats();
-      if (online != null) {
-        subscriptionCubit.emitOnlineStats(online);
-        if (!isClosed) {
-          emit(state.copyWith(
-            consumablePoints: online.consumablePoints,
-            currentXp: online.xp,
-          ));
-        }
-      }
       final userStats = await HttpFunctionsRepository.getUserStats();
-      setUserStats(userStats);
+
+      if (userStats != null) {
+        subscriptionCubit.emitOnlineStats(userStats.subscriptionStatus);
+        setUserStats(userStats);
+      }
     } catch (_) {}
   }
 

@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 
 import '../../utils/bot_toast_util.dart';
+import '../../utils/theme/custom/buttons_theme.dart';
+import '../../utils/theme/glass_settings.dart';
 import '../../utils/utils.dart';
 import 'app_icon.dart';
 import 'fluid_blur_container.dart';
@@ -106,40 +109,112 @@ class AppIconButton extends StatelessWidget {
 
     final iconWidget = AppIcon(icon, size: icnSize, color: ic);
 
-    final localStyle = fluid
-        ? TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          )
-        : TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            backgroundBuilder: (context, states, child) => child!,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(buttonRadius ?? 12),
-            ),
-            backgroundColor: backgroundColor,
-            side: borderColor != null || borderWidth != null
-                ? BorderSide(
-                    color: borderColor ?? Theme.of(context).dividerColor,
-                    width: borderWidth ?? 0.5,
+    if (fluid) {
+      if (ModalRoute.of(context) is ModalBottomSheetRoute) {
+        final button = SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: TextButton(
+            onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+            style: backgroundColor != null
+                ? TbuttonsTheme.solidTextButtonStyle(
+                    backgroundColor!,
+                    foregroundColor: ic,
+                    borderColor: borderColor,
+                  ).copyWith(
+                    padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+                    minimumSize: const WidgetStatePropertyAll(Size.zero),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(buttonRadius ?? 300),
+                      ),
+                    ),
+                    side: borderColor != null || borderWidth != null
+                        ? WidgetStatePropertyAll(
+                            BorderSide(
+                              color:
+                                  borderColor ?? Theme.of(context).dividerColor,
+                              width: borderWidth ?? 0.5,
+                            ),
+                          )
+                        : null,
                   )
-                : null,
-          );
+                : TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(buttonRadius ?? 12),
+                    ),
+                    side: borderColor != null || borderWidth != null
+                        ? BorderSide(
+                            color:
+                                borderColor ?? Theme.of(context).dividerColor,
+                            width: borderWidth ?? 0.5,
+                          )
+                        : null,
+                  ),
+            child: iconWidget,
+          ),
+        );
+
+        return Opacity(
+          opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1.0,
+          child: backgroundColor != null
+              ? button
+              : FluidCardContainer(
+                  borderRadius: buttonRadius ?? 300,
+                  padding: EdgeInsets.zero,
+                  child: button,
+                ),
+        );
+      }
+
+      return GlassIconButton(
+        icon: iconWidget,
+        iconSize: iconSize,
+        useOwnLayer: true,
+        // Standalone icon buttons use the shared icon-button recipe; buttons
+        // inside a GlassAppBar keep inheriting its `buttonSettings` plate.
+        settings: DefaultButtonSettings.of(context) == null
+            ? GlassSettings.iconButton(context)
+            : null,
+        onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+      );
+    }
+
+    final localStyle = TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: Size.zero,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      backgroundBuilder: (context, states, child) => child!,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(buttonRadius ?? 12),
+      ),
+      backgroundColor: backgroundColor ?? Colors.transparent,
+      side: borderColor != null || borderWidth != null
+          ? BorderSide(
+              color: borderColor ?? Theme.of(context).dividerColor,
+              width: borderWidth ?? 0.5,
+            )
+          : null,
+    );
+
+    final button = SizedBox(
+      width: buttonSize,
+      height: buttonSize,
+      child: TextButton(
+        onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
+        style: localStyle,
+        child: iconWidget,
+      ),
+    );
 
     return Opacity(
       opacity: buttonStatus == ButtonStatus.disabled ? 0.4 : 1.0,
-      child: SizedBox(
-        width: buttonSize,
-        height: buttonSize,
-        child: TextButton(
-          onPressed: buttonStatus == ButtonStatus.disabled ? null : onClicked,
-          style: localStyle,
-          child: iconWidget,
-        ),
-      ),
+      child: button,
     );
   }
 }

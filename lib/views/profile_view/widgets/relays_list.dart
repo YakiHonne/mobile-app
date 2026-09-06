@@ -21,7 +21,7 @@ class ProfileRelays extends StatelessWidget {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return ModalSheetContainer(
-          child: DraggableScrollableSheet(
+          child: AdaptiveDraggableSheet(
             initialChildSize: 0.7,
             minChildSize: 0.60,
             maxChildSize: 0.7,

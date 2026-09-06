@@ -1,3 +1,5 @@
+import 'dart:io' show HandshakeException, SocketException;
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -34,6 +38,7 @@ class AppConstants {
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
+    FlutterQuillLocalizations.delegate,
   ];
 
   // Navigator observers list
@@ -47,13 +52,24 @@ class AppConstants {
 void main() async {
   await AppInitializer.initApp();
 
+  await LiquidGlassWidgets.initialize();
+
+  FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
+
   if (nostrRepository.isCrashlyticsEnabled) {
     await SentryFlutter.init(
       (options) => options
         ..dsn = dotenv.env['GLITCH_TIP_DSN']
         ..tracesSampleRate = 0.01
         ..enableAppHangTracking = false
-        ..enableAutoSessionTracking = false,
+        ..enableAutoSessionTracking = false
+        ..beforeSend = (event, hint) {
+          final ex = event.throwable;
+          if (ex is SocketException || ex is HandshakeException) {
+            return null;
+          }
+          return event;
+        },
       appRunner: () async {
         runnerApp();
       },
@@ -65,8 +81,20 @@ void main() async {
 
 void runnerApp() {
   runApp(
-    TranslationProvider(
-      child: const MyApp(),
+    BlocBuilder<ThemeCubit, ThemeState>(
+      bloc: themeCubit,
+      buildWhen: (p, c) => p.glassQuality != c.glassQuality,
+      builder: (context, state) => LiquidGlassWidgets.wrap(
+        respectSystemAccessibility: false,
+        theme: GlassThemeData.simple(
+          blur: 10,
+          thickness: 30,
+          quality: state.glassQuality,
+        ),
+        child: TranslationProvider(
+          child: const MyApp(),
+        ),
+      ),
     ),
   );
 }

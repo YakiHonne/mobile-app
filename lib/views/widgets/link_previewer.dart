@@ -631,18 +631,13 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
         _usedUrl = url;
       },
       onDownloadVideo: (url) {
-        showModalBottomSheet(
-          context: context,
-          elevation: 0,
+        showAdaptiveModal(
+          context,
           builder: (_) {
             return VideoDownload(
               url: _usedUrl,
             );
           },
-          isScrollControlled: true,
-          useRootNavigator: true,
-          useSafeArea: true,
-          enableDrag: false,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
@@ -740,9 +735,7 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
               opacity: _showIcon ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 300),
               child: Icon(
-                _isPlaying
-                    ? LucideIcons.circlePause
-                    : LucideIcons.circlePlay,
+                _isPlaying ? LucideIcons.circlePause : LucideIcons.circlePlay,
                 color: Colors.white.withValues(alpha: 0.8),
                 size: 65,
               ),

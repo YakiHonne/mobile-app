@@ -54,7 +54,6 @@ class PacksSettingsView extends HookWidget {
                       ),
                     )
                   : ListView.separated(
-                      controller: controller,
                       padding: const EdgeInsets.all(kDefaultPadding / 2),
                       separatorBuilder: (context, index) => const SizedBox(
                         height: kDefaultPadding / 2,

@@ -15,6 +15,7 @@ import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
 import '../../widgets/flash_tags_row.dart';
+import '../../widgets/fluid_pull_down_button.dart';
 import '../../widgets/profile_picture.dart';
 import '../../widgets/response_snackbar.dart';
 import 'un_flashnews_add_rating.dart';
@@ -271,8 +272,8 @@ class UnFlashNewsContainer extends StatelessWidget {
     );
   }
 
-  PullDownButton _pulldownButton(BuildContext context) {
-    return PullDownButton(
+  FluidPullDownButton _pulldownButton(BuildContext context) {
+    return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;
       },

@@ -10,6 +10,12 @@ import 'custom/text_theme.dart';
 class AppPreferredThemes {
   AppPreferredThemes._();
 
+  // ponytail: kills the tab ripple app-wide; per-TabBar overrides if one ever needs it back
+  static const _noRippleTabBarTheme = TabBarThemeData(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+  );
+
   static ThemeData light({Color primaryColor = kMainColor}) {
     return ThemeData(
       brightness: Brightness.light,
@@ -38,6 +44,7 @@ class AppPreferredThemes {
           TbuttonsTheme.lightTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.lightOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kOutlineLight,
       ),
@@ -51,7 +58,7 @@ class AppPreferredThemes {
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kScaffoldDark,
-      cardColor: kCardDark,
+      cardColor: kDarkThemeCard,
       primaryColor: primaryColor,
       highlightColor: kDimGrey,
       primaryColorDark: kWhite,
@@ -72,6 +79,7 @@ class AppPreferredThemes {
           TbuttonsTheme.darkTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.darkOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kOutlineDark,
       ),
@@ -85,7 +93,7 @@ class AppPreferredThemes {
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
       scaffoldBackgroundColor: kBlackTheme,
-      cardColor: kScaffoldDark,
+      cardColor: kBlackThemeCard,
       primaryColor: primaryColor,
       highlightColor: kDimGrey,
       primaryColorDark: kWhite,
@@ -106,6 +114,7 @@ class AppPreferredThemes {
           TbuttonsTheme.blackTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.blackOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kBlackOutline,
       ),
@@ -141,6 +150,7 @@ class AppPreferredThemes {
           TbuttonsTheme.creamTextButtonTheme(primaryColor: primaryColor),
       outlinedButtonTheme:
           TbuttonsTheme.creamOutlinedButtonTheme(primaryColor: primaryColor),
+      tabBarTheme: _noRippleTabBarTheme,
       dividerTheme: const DividerThemeData(
         color: kCreamOutline,
       ),
@@ -151,7 +161,7 @@ class AppPreferredThemes {
   static ThemeData fluidGraphite({Color primaryColor = kMainColor}) =>
       dark(primaryColor: primaryColor).copyWith(
         textButtonTheme: TbuttonsTheme.fluidTextButtonTheme(
-          backgroundColor: kCardDark,
+          backgroundColor: kDarkThemeCard,
           borderColor: kOutlineDark,
           foregroundColor: kWhite,
         ),
