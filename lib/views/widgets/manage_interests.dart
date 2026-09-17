@@ -161,12 +161,10 @@ class ManageInterests extends HookWidget {
             key: _listViewKey,
             shrinkWrap: true,
             primary: false,
-            onReorder: (oldIndex, newIndex) {
-              final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
-
+            onReorderItem: (oldIndex, newIndex) {
               context
                   .read<InterestsManagementCubit>()
-                  .setFeedTypesNewOrder(oldIndex, index);
+                  .setFeedTypesNewOrder(oldIndex, newIndex);
             },
             itemBuilder: (context, index) {
               final i = state.interests.toList()[index];

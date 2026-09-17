@@ -144,6 +144,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     String id, {
     bool r = false,
     bool includeComments = false,
+    String? authorPubkey,
   }) async {
     _requestedStatIds.add(id);
     EventStats? eventStats = state.eventsStats[id];
@@ -162,16 +163,39 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       updateEventStats(stats);
     }
 
+    var received = false;
+
+    // A single note viewed on its own screen, not part of a feed-scroll
+    // burst — nothing to coalesce with, so apply each event as soon as it
+    // arrives instead of waiting for the whole relay round-trip.
     NostrFunctionsRepository.getContentStats(
       noteIds: r ? [] : [id],
       aTags: r ? [id] : [],
       since: eventStats != null ? eventStats.newestCreatedAt + 1 : null,
       includeComments: includeComments,
+      authorPubkey: authorPubkey,
     ).listen(
       (event) {
-        // _handleContentStats batches internally (300ms buffer), so events
-        // can be handed over one by one.
-        _handleContentStats([event]);
+        received = true;
+        if (!isClosed) {
+          _applyEventsBatch([event]);
+        }
+      },
+      onDone: () {
+        if (isClosed) {
+          return;
+        }
+
+        if (!received && state.eventsStats[id] == null) {
+          // Genuinely zero matching events means _applyEventsBatch never
+          // runs, so eventsStats[id] would otherwise stay absent forever —
+          // indistinguishable from "still loading" to a UI watching for it.
+          // Seed an empty entry so watchers can tell "fetched, nothing
+          // there" from "haven't fetched yet".
+          final stats = Map<String, EventStats>.from(state.eventsStats)
+            ..[id] = EventStats.empty(id);
+          updateEventStats(stats);
+        }
       },
     );
   }
@@ -478,6 +502,14 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     final events = _pendingEventsBuffer!.values.toList();
     _pendingEventsBuffer = null;
 
+    _applyEventsBatch(events);
+  }
+
+  void _applyEventsBatch(List<Event> events) {
+    if (events.isEmpty) {
+      return;
+    }
+
     final Map<String, List<Event>> eventsByParent = {};
     for (final ev in events) {
       String? id;
@@ -540,17 +572,6 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       nc.db.saveEvents(events);
       nc.db.saveEventStatsList(statsBatch);
     });
-  }
-
-  void _onContentEvent(Event event) {
-    if (_pendingEventsBuffer != null) {
-      _pendingEventsBuffer![event.id] = event;
-    } else {
-      _pendingEventsBuffer = {event.id: event};
-      _pendingEventsTimer?.cancel();
-      _pendingEventsTimer =
-          Timer(const Duration(milliseconds: 300), _processBufferedEvents);
-    }
   }
 
   // Returns the computed EventStats so the caller can batch-write all stats at once.
@@ -879,7 +900,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       lg.i('[thread-walk] fallback start nextId=$nextId hints=$hintRelays');
 
       try {
-        while (nextId != null && nextId.isNotEmpty && depth < _maxFallbackWalkDepth) {
+        while (nextId != null &&
+            nextId.isNotEmpty &&
+            depth < _maxFallbackWalkDepth) {
           if (isActive?.call() == false) {
             break;
           }
@@ -889,7 +912,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
           var ev = await nc.db.loadEventById(nextId, false);
 
           if (ev == null ||
-              (ev.kind != EventKind.TEXT_NOTE && ev.kind != EventKind.COMMENT)) {
+              (ev.kind != EventKind.TEXT_NOTE &&
+                  ev.kind != EventKind.COMMENT)) {
             ev = null;
 
             if (hintRelays.isNotEmpty) {
@@ -1021,7 +1045,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     return thread;
   }
 
-  Future<void> _laterContentSearch() async {
+  void _laterContentSearch() {
     if (_notesIds.isEmpty && _aTags.isEmpty) {
       return;
     }
@@ -1033,7 +1057,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       noteIds: List.from(_notesIds),
       aTags: List.from(_aTags),
       includeComments: _includeCommentsInLaterSearch,
-    ).listen(_onContentEvent);
+    ).listen((event) => _handleContentStats([event]));
 
     _notesIds.clear();
     _aTags.clear();

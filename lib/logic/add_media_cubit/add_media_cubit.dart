@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/nostr/event.dart';
 import 'package:nostr_core_enhanced/nostr/event_signer/event_signer.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
+import 'package:pro_video_editor/pro_video_editor.dart' as pve;
 
 import '../../common/common_regex.dart';
 import '../../common/media_handler/media_handler.dart';
@@ -21,6 +22,14 @@ class AddMediaCubit extends Cubit<AddMediaState> {
   AddMediaCubit() : super(const AddMediaState());
 
   bool isPublishing = false;
+
+  // ponytail: this method awaits uploads/signing/publishing, so the cubit
+  // can be closed (screen popped) before any given emit runs.
+  void _safeEmit(AddMediaState newState) {
+    if (!isClosed) {
+      emit(newState);
+    }
+  }
 
   Future<void> addMedia({
     required File media,
@@ -39,16 +48,33 @@ class AddMediaCubit extends Cubit<AddMediaState> {
     emit(state.copyWith(status: PublishMediaStatus.uploading));
 
     try {
+      final uploadFile = media;
+      var uploadDimensions = dimensions;
+      String? uploadDuration;
+
+      if (isVideo) {
+        try {
+          final meta = await pve.ProVideoEditor.instance
+              .getMetadata(pve.EditorVideo.file(uploadFile.path));
+          uploadDimensions =
+              '${meta.resolution.width.toInt()}x${meta.resolution.height.toInt()}';
+          if (meta.duration > Duration.zero) {
+            uploadDuration =
+                (meta.duration.inMilliseconds / 1000).round().toString();
+          }
+        } catch (_) {}
+      }
+
       final data = await MediaHandler.uploadMediaWithData(
-        media,
+        uploadFile,
         message: isVideo ? gc.t.uploadingVideo : gc.t.uploadingImage,
         onSendProgress: (int sent, int total) {
-          emit(state.copyWith(progress: sent / total));
+          _safeEmit(state.copyWith(progress: sent / total));
         },
       );
 
       if (data.isEmpty || data['url'] == null) {
-        emit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
+        _safeEmit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
         BotToastUtils.showError(gc.t.errorUploadingMedia);
         return;
       }
@@ -66,7 +92,7 @@ class AddMediaCubit extends Cubit<AddMediaState> {
       }
 
       mimeType ??=
-          '${isVideo ? 'video' : 'image'}/${media.path.split('.').last}';
+          '${isVideo ? 'video' : 'image'}/${uploadFile.path.split('.').last}';
 
       if (data['blurhash'] != null) {
         blurhash = data['blurhash'];
@@ -76,11 +102,13 @@ class AddMediaCubit extends Cubit<AddMediaState> {
         dim = data['dim'];
       }
 
-      dim ??= dimensions;
+      dim ??= uploadDimensions;
 
       if (data['duration'] != null) {
         duration = data['duration'];
       }
+
+      duration ??= uploadDuration;
 
       if (data['size'] != null) {
         size = data['size'];
@@ -122,10 +150,10 @@ class AddMediaCubit extends Cubit<AddMediaState> {
       );
 
       if (event == null) {
-        emit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
+        _safeEmit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
         return;
       } else {
-        emit(state.copyWith(status: PublishMediaStatus.publishing));
+        _safeEmit(state.copyWith(status: PublishMediaStatus.publishing));
       }
 
       final isSuccessful = await NostrFunctionsRepository.sendEvent(
@@ -139,10 +167,10 @@ class AddMediaCubit extends Cubit<AddMediaState> {
       } else {
         BotToastUtils.showUnreachableRelaysError();
       }
-      emit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
+      _safeEmit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
     } catch (e, stack) {
       lg.i(stack);
-      emit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
+      _safeEmit(state.copyWith(status: PublishMediaStatus.idle, progress: 0));
       BotToastUtils.showError(
         gc.t.errorUploadingMedia.capitalizeFirst(),
       );

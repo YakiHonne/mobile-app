@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/mixins/later_function.dart';
+import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/detailed_note_model.dart';
@@ -105,12 +106,13 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     return newEv;
   }
 
-  Event? getProviderEvent(String id, r) {
+  Event? getProviderEvent(String id, r,
+      {List<String>? relays, String? author}) {
     if (state.events[id] != null) {
       return state.events[id]!;
     }
 
-    getEvent(id, r);
+    getEvent(id, r, relays: relays, author: author);
 
     return null;
   }
@@ -123,7 +125,12 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     }
   }
 
-  Future<Event?> getEvent(String id, bool r) async {
+  Future<Event?> getEvent(
+    String id,
+    bool r, {
+    List<String>? relays,
+    String? author,
+  }) async {
     final ev = state.events[id];
 
     if (ev != null) {
@@ -137,6 +144,48 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
       return event;
     }
 
+    if (id.isNotEmpty &&
+        ((relays != null && relays.isNotEmpty) || author != null)) {
+      _fetchWithRelayHints(
+          id: id, isIdentifier: r, relays: relays, author: author);
+
+      return null;
+    }
+
+    return _queueForBatchSearch(id, r);
+  }
+
+  Future<void> _fetchWithRelayHints({
+    required String id,
+    required bool isIdentifier,
+    List<String>? relays,
+    String? author,
+  }) async {
+    var targetRelays = relays ?? [];
+
+    if (targetRelays.isEmpty && author != null) {
+      targetRelays = await getOutboxRelays(author, showMessage: false);
+    }
+
+    if (targetRelays.isEmpty) {
+      _queueForBatchSearch(id, isIdentifier);
+      return;
+    }
+
+    final fetched = await NostrFunctionsRepository.getEventById(
+      eventId: id,
+      isIdentifier: isIdentifier,
+      relays: [...targetRelays, ...nc.activeRelays()],
+    );
+
+    if (fetched != null) {
+      updateEventsList([fetched]);
+    } else {
+      _queueForBatchSearch(id, isIdentifier);
+    }
+  }
+
+  Event? _queueForBatchSearch(String id, bool r) {
     if (!_needUpdateIds.contains(id) && !r && id.isNotEmpty) {
       _needUpdateIds.add(id);
     }
@@ -269,10 +318,16 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
     final context = nostrRepository.currentContext();
     BotToastUtils.showInformation(context.t.fetchingNotificationEvent);
 
-    await Future.delayed(const Duration(seconds: 1));
-
     if (id.isEmpty) {
       return;
+    }
+
+    for (var i = 0; i < 10 && nc.activeRelays().isEmpty; i++) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (nc.activeRelays().isNotEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
     }
 
     final event = await NostrFunctionsRepository.getEventById(

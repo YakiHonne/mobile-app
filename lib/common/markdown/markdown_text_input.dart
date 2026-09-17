@@ -110,8 +110,12 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     final noTextSelected =
         (textSelection.baseOffset - textSelection.extentOffset) == 0;
 
-    final fromIndex = textSelection.baseOffset.clamp(0, textLength);
-    final toIndex = textSelection.extentOffset.clamp(0, textLength);
+    final selectionStart = textSelection.baseOffset.clamp(0, textLength);
+    final selectionEnd = textSelection.extentOffset.clamp(0, textLength);
+    final fromIndex =
+        selectionStart < selectionEnd ? selectionStart : selectionEnd;
+    final toIndex =
+        selectionStart < selectionEnd ? selectionEnd : selectionStart;
 
     final result = FormatMarkdown.convertToMarkdown(
       type,

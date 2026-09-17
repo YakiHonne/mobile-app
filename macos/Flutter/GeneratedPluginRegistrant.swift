@@ -21,6 +21,8 @@ import just_audio
 import package_info_plus
 import pasteboard
 import path_provider_foundation
+import pro_image_editor
+import pro_video_editor
 import quill_native_bridge_macos
 import sentry_flutter
 import share_plus
@@ -48,6 +50,8 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   PasteboardPlugin.register(with: registry.registrar(forPlugin: "PasteboardPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  ProImageEditorPlugin.register(with: registry.registrar(forPlugin: "ProImageEditorPlugin"))
+  ProVideoEditorPlugin.register(with: registry.registrar(forPlugin: "ProVideoEditorPlugin"))
   QuillNativeBridgePlugin.register(with: registry.registrar(forPlugin: "QuillNativeBridgePlugin"))
   SentryFlutterPlugin.register(with: registry.registrar(forPlugin: "SentryFlutterPlugin"))
   SharePlusMacosPlugin.register(with: registry.registrar(forPlugin: "SharePlusMacosPlugin"))

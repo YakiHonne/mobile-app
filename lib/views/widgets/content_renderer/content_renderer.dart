@@ -565,12 +565,18 @@ class ContentRenderer extends HookWidget {
       return _buildDefaultTextSpan(element, context);
     }
 
+    final entity = Nip19.decodeShareableEntity(element.text);
+    final relays = (entity['relays'] as List?)?.cast<String>();
+    final author = entity['author'] as String?;
+
     return WidgetSpan(
       child: OverrideTextScaleFactor(
         child: SingleEventProvider(
           key: ValueKey('artcur_${element.url}'),
           id: element.url,
           isReplaceable: true,
+          relays: relays,
+          author: author,
           child: (event) => getBaseEventWidget(
             event: event,
             text: element.text,
@@ -1175,12 +1181,17 @@ class _OptimizedNeventWidget extends HookWidget {
       () => Nip19.decodeShareableEntity(element.text),
       [element.text],
     );
+
     final id = entity['special'];
     final kind = entity['kind'];
+    final relays = (entity['relays'] as List?)?.cast<String>();
+    final author = entity['author'] as String?;
 
     return SingleEventProvider(
       id: id,
       isReplaceable: isReplaceable(kind),
+      relays: relays,
+      author: author,
       child: (event) => contentRenderer.getBaseEventWidget(
         event: event,
         text: element.text,

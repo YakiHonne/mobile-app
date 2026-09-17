@@ -160,7 +160,14 @@ class AppInitializer {
   }
 
   static Future<void> initCameras() async {
-    cameras = await availableCameras();
+    try {
+      cameras = await availableCameras();
+    } catch (e) {
+      cameras = [];
+      if (kDebugMode) {
+        print('Camera initialization failed: $e');
+      }
+    }
   }
 
   /// Initialize repositories
@@ -409,30 +416,28 @@ class AppInitializer {
       );
 
       if (contactList != null) {
-        if (settingsCubit.gossip ?? false) {
-          feedRelaySet = await nc.getRelaySet(
-            'feed',
-            currentSigner!.getPublicKey(),
+        feedRelaySet = await nc.getRelaySet(
+          'feed',
+          currentSigner!.getPublicKey(),
+        );
+
+        if (feedRelaySet == null) {
+          feedRelaySet = await nc.calculateRelaySet(
+            name: 'feed',
+            ownerPubKey: currentSigner!.getPublicKey(),
+            pubKeys: contactList.contacts,
+            direction: RelayDirection.outbox,
+            relayMinCountPerPubKey: 2,
           );
 
-          if (feedRelaySet == null) {
-            feedRelaySet = await nc.calculateRelaySet(
-              name: 'feed',
-              ownerPubKey: currentSigner!.getPublicKey(),
-              pubKeys: contactList.contacts,
-              direction: RelayDirection.outbox,
-              relayMinCountPerPubKey: 2,
-            );
+          await nc.saveRelaySet(feedRelaySet!);
+        }
 
-            await nc.saveRelaySet(feedRelaySet!);
-          }
-
+        // Gossip mode also eagerly pre-connects these relays; without it,
+        // feed queries connect to them lazily on demand (see queryEvents).
+        if (settingsCubit.gossip ?? false) {
           await nc
               .connectNonConnectedRelays(feedRelaySet!.relaysMap.keys.toSet());
-        } else {
-          if (contactList.contacts.isNotEmpty) {
-            nc.loadMissingRelayListsFromNip65OrNip02(contactList.contacts);
-          }
         }
       }
     } catch (e, stack) {

@@ -662,10 +662,14 @@ class MainCubit extends Cubit<MainState> {
 
     if (nostrUri.startsWith('nprofile')) {
       final decode = Nip19.decodeShareableEntity(nostrUri);
-      pubkey = decode['special'];
-      relays = List<String>.from(decode['relays']);
+      pubkey = decode['special'] ?? '';
+      relays = List<String>.from(decode['relays'] ?? const []);
     } else {
       pubkey = Nip19.decodePubkey(nostrUri);
+    }
+
+    if (pubkey.isEmpty) {
+      return;
     }
 
     await _openProfile(pubkey, relays);

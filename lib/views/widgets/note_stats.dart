@@ -55,6 +55,7 @@ import 'fluid_sheet.dart';
 import 'loading_indicators.dart';
 import 'modal_sheet_container.dart';
 import 'no_content_widgets.dart';
+import 'note_stats_chart.dart';
 import 'note_stats_view.dart';
 import 'parsed_media_container.dart';
 import 'profile_picture.dart';
@@ -102,6 +103,7 @@ class NoteStats extends HookWidget {
               notesEventsCubit.getSpecificContentStats(
                 model.id,
                 includeComments: true,
+                authorPubkey: model.pubkey,
               );
             } else {
               notesEventsCubit.getContentStatsOptimized(
@@ -127,6 +129,7 @@ class NoteStats extends HookWidget {
               notesEventsCubit.getSpecificContentStats(
                 model.id,
                 includeComments: true,
+                authorPubkey: model.pubkey,
               );
             } else {
               notesEventsCubit.getContentStats(
@@ -1942,6 +1945,9 @@ class DetailedNoteContainer extends HookWidget {
         (isMain
             ? () {}
             : () {
+                if (!context.mounted) {
+                  return;
+                }
                 YNavigator.pushPage(
                   context,
                   (context) => NoteView(note: note),
@@ -3018,10 +3024,10 @@ class PremiumBadge extends StatelessWidget {
                     ? Theme.of(context).textTheme.labelMedium
                     : Theme.of(context).textTheme.labelSmall)
                 ?.copyWith(
-                  color: Theme.of(context).textTheme.bodyMedium?.color,
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontWeight: FontWeight.w700,
+              height: 1,
+            ),
           ),
         ],
       ),
@@ -3106,7 +3112,14 @@ class _NoteStatsModal extends HookWidget {
                       left: kDefaultPadding,
                       right: kDefaultPadding,
                       bottom: kDefaultPadding,
-                      child: _SeenOnBar(id: id),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          NoteStatsChart(id: id),
+                          const SizedBox(height: kDefaultPadding / 2),
+                          _SeenOnBar(id: id),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -3178,49 +3191,47 @@ class _SeenOnBar extends HookWidget {
       return const SizedBox.shrink();
     }
 
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: FluidBlurContainer(
-        borderRadius: kDefaultPadding,
-        padding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 2,
-          vertical: kDefaultPadding / 2,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppIcon(
-                  FeatureIcons.relays,
-                  size: 14,
-                  color: Theme.of(context).highlightColor,
-                ),
-                const SizedBox(width: kDefaultPadding / 3),
-                Text(
+    return FluidBlurContainer(
+      borderRadius: kDefaultPadding,
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding / 2,
+        vertical: kDefaultPadding / 2,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              AppIcon(
+                FeatureIcons.relays,
+                size: 14,
+                color: Theme.of(context).highlightColor,
+              ),
+              const SizedBox(width: kDefaultPadding / 3),
+              Expanded(
+                child: Text(
                   '${context.t.seenOn} · ${relays.value.length}',
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: Theme.of(context).highlightColor,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
-              ],
-            ),
-            const SizedBox(height: kDefaultPadding / 3),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: kDefaultPadding / 3,
-                children: relays.value
-                    .map((relay) => _RelayChip(relay: relay))
-                    .toList(),
               ),
+            ],
+          ),
+          const SizedBox(height: kDefaultPadding / 3),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: kDefaultPadding / 3,
+              children: relays.value
+                  .map((relay) => _RelayChip(relay: relay))
+                  .toList(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

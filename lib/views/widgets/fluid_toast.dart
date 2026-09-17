@@ -25,7 +25,11 @@ class FluidToast {
     }
 
     if (_entry?.mounted ?? false) {
-      _entry!.remove();
+      try {
+        _entry!.remove();
+      } catch (_) {
+        // ponytail: see catch in _dismiss below.
+      }
     }
     _entry = null;
 
@@ -42,7 +46,13 @@ class FluidToast {
           }
           if (!removed && entry.mounted) {
             removed = true;
-            entry.remove();
+            try {
+              entry.remove();
+            } catch (_) {
+              // ponytail: OverlayEntry.remove() null-checks its overlay
+              // internally in release mode; a race between the timer
+              // dismiss and swipe-to-dismiss can call it after teardown.
+            }
           }
         },
       ),

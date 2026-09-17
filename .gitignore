@@ -67,4 +67,4 @@ firebase.json
 CLAUDE.md
 AGENTS.md
 opencode.json
-.tokensave/
+.token-savior-cache.json

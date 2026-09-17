@@ -618,7 +618,7 @@ class PaidNoteProcess extends HookWidget {
         walletsCubit.handleWalletZap(
           sats: _effectiveSats,
           user: Metadata.empty().copyWith(
-            lud16: nostrRepository.yakihonneWallet,
+            lud16: nostrRepository.paidNoteWallet,
             pubkey: yakihonneHex,
           ),
           comment: _invoiceComment(event),
@@ -662,6 +662,7 @@ class PaidNoteProcess extends HookWidget {
               sats: _effectiveSats,
               user: Metadata.empty().copyWith(
                 lud16: nostrRepository.paidNoteWallet,
+                pubkey: yakihonneHex,
               ),
               comment: _invoiceComment(event),
               eventId: event.id,

@@ -52,25 +52,22 @@ class ExtendedEvent extends Event {
 
   @override
   String? getEventParent() {
-    String? selectedTag;
+    String? replyTag;
+    String? quoteTag;
 
     for (final tag in tags) {
-      if (isQuote()) {
-        if (tag.first == 'q' && tag.length > 1) {
-          selectedTag = tag[1];
-        }
-      } else {
-        if ((tag.first == 'e' ||
-                tag.first == 'a' ||
-                tag.first == 'E' ||
-                tag.first == 'A') &&
-            tag.length > 1) {
-          selectedTag = tag[1];
-        }
+      if ((tag.first == 'e' ||
+              tag.first == 'a' ||
+              tag.first == 'E' ||
+              tag.first == 'A') &&
+          tag.length > 1) {
+        replyTag = tag[1];
+      } else if (tag.first == 'q' && tag.length > 1) {
+        quoteTag = tag[1];
       }
     }
 
-    return selectedTag;
+    return replyTag ?? quoteTag;
   }
 
   @override

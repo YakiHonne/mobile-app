@@ -613,12 +613,10 @@ class LeadingCustomization extends HookWidget {
         return _actionContainer(action, context, index, name);
       },
       itemCount: defaultActionsArrangement.length,
-      onReorder: (oldIndex, newIndex) {
-        final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
-
+      onReorderItem: (oldIndex, newIndex) {
         context
             .read<CustomizeLeadingCubit>()
-            .setActionsNewOrder(oldIndex, index);
+            .setActionsNewOrder(oldIndex, newIndex);
       },
     );
   }
