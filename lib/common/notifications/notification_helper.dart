@@ -141,11 +141,15 @@ class NotificationHelper {
       );
 
       if (event != null) {
-        NostrFunctionsRepository.sendEvent(
+        final isSuccessful = await NostrFunctionsRepository.sendEvent(
           event: event,
           setProgress: false,
           relyOnUnsentEvents: false,
         );
+
+        lg.i(isSuccessful
+            ? 'Notification event sent successfully'
+            : 'Failed to send notification event');
       }
     }
   }
@@ -174,18 +178,18 @@ class NotificationHelper {
     return false;
   }
 
-  Future<bool> setNotification(
+  Future<void> setNotification(
     String deviceId,
     List<int> kinds,
   ) async {
     if (!isPushNotificationEnabled()) {
       lg.i('message');
-      return false;
+      return;
     }
 
     if (serverPubkey.isEmpty || forwardedToAmber) {
       forwardedToAmber = false;
-      return false;
+      return;
     }
 
     final c = nostrRepository.currentAppCustomization;
@@ -204,13 +208,17 @@ class NotificationHelper {
     unSendNotification = event;
 
     if (event != null) {
-      NostrFunctionsRepository.sendEvent(
+      final isSuccessful = await NostrFunctionsRepository.sendEvent(
         event: event,
         setProgress: false,
         relyOnUnsentEvents: false,
       );
+
+      lg.i(isSuccessful
+          ? 'Notification event sent successfully'
+          : 'Failed to send notification event');
     }
 
-    return false;
+    return;
   }
 }

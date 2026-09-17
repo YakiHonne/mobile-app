@@ -427,9 +427,12 @@ class _LiquidGlassBottomNavigationBarState
               _setMini(false);
             },
             collapsedLogoBuilder: (context) => Center(
-              child: hasSelection
-                  ? tabs[index].icon
-                  : const AppIcon(FeatureIcons.home),
+              child: IconTheme.merge(
+                data: IconThemeData(color: Theme.of(context).primaryColorDark),
+                child: hasSelection
+                    ? tabs[index].icon!
+                    : const AppIcon(FeatureIcons.home),
+              ),
             ),
           ),
           tabs: tabs,

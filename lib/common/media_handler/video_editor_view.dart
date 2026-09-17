@@ -3,10 +3,13 @@ import 'dart:io';
 import 'dart:ui' show ImageByteFormat;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pro_video_editor/pro_video_editor.dart' as pve;
 import 'package:video_player/video_player.dart';
+
+import '../../utils/constants.dart';
 
 class VideoEditorView extends StatefulWidget {
   const VideoEditorView({super.key, required this.source});
@@ -33,8 +36,8 @@ class _VideoEditorViewState extends State<VideoEditorView> {
 
   static const _thumbnailCount = 7;
 
-  final _configs = const ProImageEditorConfigs(
-    mainEditor: MainEditorConfigs(
+  late final _configs = ProImageEditorConfigs(
+    mainEditor: const MainEditorConfigs(
       tools: [
         SubEditorMode.cropRotate,
         SubEditorMode.filter,
@@ -43,11 +46,49 @@ class _VideoEditorViewState extends State<VideoEditorView> {
         SubEditorMode.paint,
       ],
     ),
-    videoEditor: VideoEditorConfigs(
+    videoEditor: const VideoEditorConfigs(
       minTrimDuration: Duration(seconds: 1),
     ),
-    imageGeneration: ImageGenerationConfigs(
+    imageGeneration: const ImageGenerationConfigs(
       captureImageByteFormat: ImageByteFormat.rawStraightRgba,
+    ),
+    dialogConfigs: DialogConfigs(
+      widgets: DialogWidgets(
+        loadingDialog: (message, configs) => Builder(
+          builder: (context) => Center(
+            child: Container(
+              margin: const EdgeInsets.all(kDefaultPadding),
+              padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding,
+                vertical: kDefaultPadding,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(kDefaultPadding),
+                border: Border.all(
+                  width: 0.5,
+                  color: Theme.of(context).dividerColor,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SpinKitCircle(
+                    color: Theme.of(context).primaryColor,
+                    size: 30,
+                  ),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     ),
   );
 

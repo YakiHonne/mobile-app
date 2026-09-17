@@ -1498,10 +1498,8 @@ class NostrFunctionsRepository {
     int? since,
     int? until,
     bool includeComments = false,
+    String? authorPubkey,
   }) {
-    final controller = StreamController<Event>();
-    List<String> currentUncompletedRelays = nc.activeRelays();
-
     final filters = <Filter>[];
     final nds = List<String>.from(noteIds);
     final atgs = List<String>.from(aTags);
@@ -1598,39 +1596,45 @@ class NostrFunctionsRepository {
       }
     }
 
+    return _getContentStatsStream(
+      filters: filters,
+      nds: nds,
+      atgs: atgs,
+      authorPubkey: authorPubkey,
+    );
+  }
+
+  static Stream<Event> _getContentStatsStream({
+    required List<Filter> filters,
+    required List<String> nds,
+    required List<String> atgs,
+    String? authorPubkey,
+  }) async* {
+    final relaySet = nc.activeRelays().toSet();
+
+    if (authorPubkey != null && authorPubkey.isNotEmpty) {
+      try {
+        final authorRelayList = await nc.getSingleUserRelayList(authorPubkey);
+        relaySet.addAll(authorRelayList?.writes ?? const {});
+      } catch (e) {
+        lg.i(e);
+      }
+    }
+
     final seenIds = <String>{};
 
-    nc.addSubscription(
+    yield* queryEventsStream(
       filters,
-      [],
-      eventCallBack: (event, relay) {
-        if (!controller.isClosed && seenIds.add(event.id)) {
-          if (cleanEvent(event: event, noteIds: nds, aTags: atgs)) {
-            if ((event.kind == EventKind.TEXT_NOTE &&
-                    !event.isUncensoredNote()) ||
-                event.kind != EventKind.TEXT_NOTE) {
-              controller.add(event);
-            }
-          }
-        }
-      },
-      eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
-        currentUncompletedRelays = unCompletedRelays;
-        nc.closeSubscription(curationRequestId, relay);
-      },
+      relaySet.toList(),
+      timeOut: 4,
+      connectTimeout: const Duration(seconds: 2),
+    ).where(
+      (event) =>
+          seenIds.add(event.id) &&
+          cleanEvent(event: event, noteIds: nds, aTags: atgs) &&
+          ((event.kind == EventKind.TEXT_NOTE && !event.isUncensoredNote()) ||
+              event.kind != EventKind.TEXT_NOTE),
     );
-
-    Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) {
-        if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
-          controller.close();
-          timer.cancel();
-        }
-      },
-    );
-
-    return controller.stream;
   }
 
   static bool cleanEvent({
@@ -4916,6 +4920,7 @@ class NostrFunctionsRepository {
       int? startingTimeout,
       bool includeExpired = true,
       bool closeRelaysOnFinish = true,
+      Duration? connectTimeout,
       EventsSource source = EventsSource.cacheFirst,
       NostrCore? core,
       void Function(Event, String)? eventCallBack,
@@ -4926,7 +4931,11 @@ class NostrFunctionsRepository {
     final missingRelays = client.missingRelays(targetRelays);
 
     if (missingRelays.isNotEmpty) {
-      await client.connectRelays(missingRelays, waitForAuth: true);
+      await client.connectRelays(
+        missingRelays,
+        waitForAuth: true,
+        connectTimeout: connectTimeout,
+      );
     }
 
     try {
@@ -4938,14 +4947,55 @@ class NostrFunctionsRepository {
         includeExpired: includeExpired,
         source: source,
         eventCallBack: eventCallBack,
+        connectTimeout: connectTimeout,
       );
     } catch (e) {
       lg.e('Error querying events: $e');
     } finally {
+      // The caller already has its events; closing sockets is cleanup, not
+      // something it needs to wait on. closeConnect also closes relays one
+      // at a time under the hood, so awaiting it here serialized that too.
       if (closeRelaysOnFinish && missingRelays.isNotEmpty) {
-        await client.closeConnect(missingRelays);
+        unawaited(client.closeConnect(missingRelays));
       }
     }
+  }
+
+  /// Same as [queryEvents], but emits each matching event on a stream as it
+  /// arrives instead of collecting them until the whole query finishes.
+  static Stream<Event> queryEventsStream(
+    List<Filter> filters,
+    List<String> relays, {
+    int timeOut = 5,
+    int? startingTimeout,
+    bool includeExpired = true,
+    bool closeRelaysOnFinish = true,
+    Duration? connectTimeout,
+    EventsSource source = EventsSource.cacheFirst,
+    NostrCore? core,
+    void Function(String, OKEvent, String, List<String>)? eoseCallBack,
+  }) {
+    final controller = StreamController<Event>();
+
+    queryEvents(
+      filters,
+      relays,
+      timeOut: timeOut,
+      startingTimeout: startingTimeout,
+      includeExpired: includeExpired,
+      closeRelaysOnFinish: closeRelaysOnFinish,
+      connectTimeout: connectTimeout,
+      source: source,
+      core: core,
+      eventCallBack: (event, relay) {
+        if (!controller.isClosed) {
+          controller.add(event);
+        }
+      },
+      eoseCallBack: eoseCallBack,
+    ).whenComplete(() => controller.close());
+
+    return controller.stream;
   }
 
   /// Helper method to handle event operations with timer-based completion

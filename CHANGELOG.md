@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.8] - 2026-09-17
+
+### Added
+
+- Video editor and video compressor before publishing.
+
+### Changed
+
+- Engagement chart enhancements.
+
+### Fixed
+
+- GrapheneOS feed issue where notes failed to load.
+- Note preview before publishing is now scrollable.
+- Paid notes payment issue.
+- Notification tap no longer shows "notification not found" when the note isn't in the local DB yet.
+- Replies not showing under some notes.
+
 ## [2.0.7] - 2026-08-31
 
 ### Added

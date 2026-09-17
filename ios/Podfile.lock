@@ -73,6 +73,12 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
+  - pro_image_editor (12.0.8):
+    - Flutter
+    - FlutterMacOS
+  - pro_video_editor (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
@@ -140,6 +146,8 @@ DEPENDENCIES:
   - pasteboard (from `.symlinks/plugins/pasteboard/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - pro_image_editor (from `.symlinks/plugins/pro_image_editor/darwin`)
+  - pro_video_editor (from `.symlinks/plugins/pro_video_editor/darwin`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - quill_native_bridge_ios (from `.symlinks/plugins/quill_native_bridge_ios/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
@@ -212,6 +220,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  pro_image_editor:
+    :path: ".symlinks/plugins/pro_image_editor/darwin"
+  pro_video_editor:
+    :path: ".symlinks/plugins/pro_video_editor/darwin"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
   quill_native_bridge_ios:
@@ -270,6 +282,8 @@ SPEC CHECKSUMS:
   pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  pro_image_editor: e57a76b305fd8c2e06d57f92aec82b9c6a6e8d9f
+  pro_video_editor: 71c273c0a82a72996526e2bfc5c2fbd2bb35aaaa
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   quill_native_bridge_ios: f47af4b14e7757968486641656c5d23250cee521
   sensors_plus: 1c5f0a01ce21c609a4df404c4e6879d62bce287f
@@ -288,4 +302,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 74f843aa2a1513a6e2c04eb065ef54cdf435c2e3
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.17.0

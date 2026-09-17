@@ -101,7 +101,6 @@ class NostrDataRepository {
   Timer? draftTimer;
 
   // Wallet and pricing configuration
-  String yakihonneWallet = 'yakihonne_funds@getalby.com';
   String paidNoteWallet = 'paid_notes@getalby.com';
   num initNotePrice = 21;
   num initRatingPrice = 10;

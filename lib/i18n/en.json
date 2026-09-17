@@ -1482,6 +1482,8 @@
   "uploadingVideo": "Uploading video...",
   "uploadThumbnail": "Upload thumbnail",
   "chooseThumbnailVideo": "Choose a proper thumbnail for your video",
+  "videoQuality": "Video quality",
+  "originalMedia": "original:",
   "publishing": "Publishing...",
   "giveMeCatchyTitle": "Give me a catchy title",
   "autoPlay": "Enable video auto play",

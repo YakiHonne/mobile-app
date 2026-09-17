@@ -231,9 +231,10 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
       return secret is String ? secret : null;
     } on DioException catch (e) {
-      lg.i(e.response?.data['message']);
-      BotToastUtils.showError(
-          e.response?.data['message'] ?? t.errorCreatingWallet);
+      final data = e.response?.data;
+      final message = data is Map ? data['message'] : null;
+      lg.i(message);
+      BotToastUtils.showError(message ?? t.errorCreatingWallet);
       return null;
     } catch (e) {
       lg.i(e);

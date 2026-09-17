@@ -4490,6 +4490,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Choose a proper thumbnail for your video'
 	String get chooseThumbnailVideo => 'Choose a proper thumbnail for your video';
 
+	/// en: 'Video quality'
+	String get videoQuality => 'Video quality';
+
+	/// en: 'original:'
+	String get originalMedia => 'original:';
+
 	/// en: 'Publishing...'
 	String get publishing => 'Publishing...';
 
@@ -8120,6 +8126,8 @@ extension on Translations {
 			'uploadingVideo' => 'Uploading video...',
 			'uploadThumbnail' => 'Upload thumbnail',
 			'chooseThumbnailVideo' => 'Choose a proper thumbnail for your video',
+			'videoQuality' => 'Video quality',
+			'originalMedia' => 'original:',
 			'publishing' => 'Publishing...',
 			'giveMeCatchyTitle' => 'Give me a catchy title',
 			'autoPlay' => 'Enable video auto play',
@@ -8171,14 +8179,14 @@ extension on Translations {
 			'addCashuWallet' => 'Add Cashu Wallet & start sending and receiving Ecash over nostr.',
 			'mintUrl' => 'Mint URL',
 			'mintUnavailable' => 'Mint you are trying to add is not available',
-			'inactiveMints' => 'Inactive mints',
-			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'inactiveMints' => 'Inactive mints',
+			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
 			'errorAddingMint' => 'Error occured while adding mint',
 			'restoreWallet' => 'Restore wallet',
 			'restoreWalletDesc' => 'Restore proofs of your wallet in this mint to save them on NOSTR',
@@ -8689,14 +8697,14 @@ extension on Translations {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} shards collected',
 			'pomRecoverSuccess' => 'Private key recovered',
 			'pomDownloadKey' => 'Download key',
-			'pomUnlinkTitle' => 'Unlink account',
-			'pomUnlinkIntro' => 'First recover your private key and copy it — you\'ll need it to sign back in after unlinking.',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomUnlinkTitle' => 'Unlink account',
+			'pomUnlinkIntro' => 'First recover your private key and copy it — you\'ll need it to sign back in after unlinking.',
 			'pomUnlinkContinue' => 'I\'ve saved my key — continue',
 			'pomUnlinkConfirmTitle' => 'Unlink this account?',
 			'pomUnlinkConfirmDesc' => ({required Object host}) => 'Your account will be removed from ${host}. You\'ll be signed out and must sign back in with your private key.',

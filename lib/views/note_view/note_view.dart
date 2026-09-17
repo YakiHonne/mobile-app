@@ -12,6 +12,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
+import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/fluid_scaffold.dart';
@@ -151,7 +152,17 @@ class NoteView extends HookWidget {
         if (!context.mounted) {
           return;
         }
-        isRepliesLoading.value = true;
+
+        // loadNoteRelatedEvents only reads what's already cached locally —
+        // it doesn't wait on the network fetch. Until that fetch has landed
+        // at least once (eventsStats[id] goes from absent to set, including
+        // an explicitly-empty result for a note with zero replies), keep
+        // showing the skeleton instead of flashing an empty state.
+        final hasFetched =
+            notesEventsCubit.state.eventsStats[currentNote.value.id] != null;
+        if (!hasFetched) {
+          isRepliesLoading.value = true;
+        }
 
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
           id: currentNote.value.id,
@@ -162,7 +173,9 @@ class NoteView extends HookWidget {
           return;
         }
         replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
-        isRepliesLoading.value = false;
+        if (hasFetched) {
+          isRepliesLoading.value = false;
+        }
       },
       [currentNote.value.id],
     );
@@ -460,6 +473,7 @@ class _HeaderContent extends HookWidget {
     return SingleEventProvider(
       id: rootEvent ?? '',
       isReplaceable: true,
+      author: note.rootPubkey,
       child: (event) {
         final baseEventModel = getBaseEventModel(event);
 
@@ -537,7 +551,7 @@ List<Widget> _buildReplySlivers(
   if (isLoading) {
     return [
       const SliverToBoxAdapter(
-        child: SizedBox(height: kDefaultPadding * 2),
+        child: NotesPlaceholder(),
       ),
     ];
   }

@@ -366,7 +366,6 @@ class LightMetadata implements BaseEventModel {
     required this.id,
   });
 
-  @override
   factory LightMetadata.fromMetadata(Metadata metadata) {
     return LightMetadata(
       createdAt: DateTime.fromMillisecondsSinceEpoch(metadata.createdAt * 1000),

@@ -122,6 +122,8 @@ class NostrNode extends SpanNode {
         nostrDecode['prefix'] == 'nevent') {
       return ArticleNote(
         noteId: nostrDecode['special'],
+        relays: (nostrDecode['relays'] as List?)?.cast<String>(),
+        author: nostrDecode['author'] as String?,
       );
     } else if (nostrDecode['prefix'] == 'naddr' &&
         nostrDecode['kind'] == EventKind.LONG_FORM) {
@@ -131,6 +133,7 @@ class NostrNode extends SpanNode {
       return NaddrArticleContainer(
         eventId: id,
         pubkey: nostrDecode['author'],
+        relays: (nostrDecode['relays'] as List?)?.cast<String>(),
         naddrType: ArticleNaddrTypes.article,
       );
     } else if (nostrDecode['prefix'] == 'naddr' &&
@@ -141,6 +144,7 @@ class NostrNode extends SpanNode {
       return NaddrArticleContainer(
         eventId: id,
         pubkey: nostrDecode['author'],
+        relays: (nostrDecode['relays'] as List?)?.cast<String>(),
         naddrType: ArticleNaddrTypes.curation,
       );
     } else if (nostrDecode['prefix'] == 'naddr' &&
@@ -151,6 +155,7 @@ class NostrNode extends SpanNode {
       return NaddrArticleContainer(
         eventId: id,
         pubkey: nostrDecode['author'],
+        relays: (nostrDecode['relays'] as List?)?.cast<String>(),
         naddrType: ArticleNaddrTypes.smart,
       );
     } else {
@@ -299,11 +304,13 @@ class NaddrArticleContainer extends HookWidget {
     required this.pubkey,
     required this.eventId,
     required this.naddrType,
+    this.relays,
   });
 
   final String pubkey;
   final String eventId;
   final ArticleNaddrTypes naddrType;
+  final List<String>? relays;
 
   @override
   Widget build(BuildContext context) {
@@ -319,6 +326,8 @@ class NaddrArticleContainer extends HookWidget {
         return SingleEventProvider(
           id: eventId,
           isReplaceable: true,
+          relays: relays,
+          author: pubkey,
           child: (event) {
             final component = event != null
                 ? naddrType == ArticleNaddrTypes.article
@@ -611,15 +620,21 @@ class ArticleNote extends StatelessWidget {
   const ArticleNote({
     super.key,
     required this.noteId,
+    this.relays,
+    this.author,
   });
 
   final String noteId;
+  final List<String>? relays;
+  final String? author;
 
   @override
   Widget build(BuildContext context) {
     return SingleEventProvider(
       id: noteId,
       isReplaceable: false,
+      relays: relays,
+      author: author,
       child: (event) {
         final note = event != null ? DetailedNoteModel.fromEvent(event) : null;
 

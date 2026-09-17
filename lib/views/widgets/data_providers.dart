@@ -55,16 +55,25 @@ class SingleEventProvider extends HookWidget {
     required this.id,
     required this.isReplaceable,
     required this.child,
+    this.relays,
+    this.author,
   });
 
   final String id;
   final bool isReplaceable;
   final Widget Function(Event? event) child;
+  final List<String>? relays;
+  final String? author;
 
   @override
   Widget build(BuildContext context) {
     useMemoized(() {
-      singleEventCubit.getProviderEvent(id, isReplaceable);
+      singleEventCubit.getProviderEvent(
+        id,
+        isReplaceable,
+        relays: relays,
+        author: author,
+      );
       return null;
     }, []);
 

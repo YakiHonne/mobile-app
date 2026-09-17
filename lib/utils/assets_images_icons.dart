@@ -4,7 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 class LogosIcons {
   LogosIcons._();
 
-  static const String logoMarkBlack = ' assets/icons/logos/logo-mark-black.svg';
+  static const String logoMarkBlack = 'assets/icons/logos/logo-mark-black.svg';
   static const String logoMarkPurple =
       'assets/icons/logos/logo-mark-purple.svg';
   static const String logoMarkWhite = 'assets/icons/logos/logo-mark-white.svg';

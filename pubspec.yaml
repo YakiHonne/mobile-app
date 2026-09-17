@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.7+205
+version: 2.0.8+207
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -60,7 +60,7 @@ dependencies:
       url: https://github.com/YakiHonne/flutter_math.git
       ref: main
   flutter_native_splash: ^2.4.1
-  flutter_quill: ^11.5.0
+  flutter_quill: ^11.5.1
   flutter_rating_bar: ^4.0.1
   flutter_reorderable_grid_view: ^5.2.0
   flutter_scroll_shadow: ^1.2.3
@@ -77,7 +77,6 @@ dependencies:
   glassmorphism: ^3.0.0
   html: ^0.15.4
   htmltopdfwidgets: ^2.1.1
-  image_editor_plus: ^1.0.8
   image_gallery_saver_plus: ^4.0.1
   image_picker: ^1.2.1
   in_app_purchase: ^3.2.0
@@ -86,20 +85,23 @@ dependencies:
   interactiveviewer_gallery_plus: ^0.1.0
   intl: ^0.20.2
   just_audio: ^0.10.5
-  liquid_glass_widgets: ^0.27.0
+  liquid_glass_widgets: ^1.2.3
   logger: ^2.4.0
   lottie: ^3.1.2
   lucide_icons_flutter: ^3.1.15
   markdown: ^7.3.0
   markdown_quill: ^4.3.0
   markdown_widget: ^2.3.2+6
+  material_ui: ^1.2.0
   mention_tag_text_field: ^0.0.8
   modal_bottom_sheet: ^3.0.0
   nested_scroll_view_plus: ^2.0.0
+  nostr_core_enhanced:
+    git:
+      url: https://github.com/YakiHonne/nostr_core_enhanced.git
+      ref: main
   # nostr_core_enhanced:
   #   path: ../nostr_core_enhanced/
-  nostr_core_enhanced:
-    path: ../nostr_core_enhanced/
   numeral: ^3.0.0
   open_filex: ^4.7.0
   override_text_scale_factor: ^1.0.2
@@ -110,8 +112,8 @@ dependencies:
   permission_handler: ^12.0.1
   pointycastle: ^4.0.0
   pretty_qr_code: ^3.4.0
-  pro_image_editor: ^13.0.0
-  pro_video_editor: ^2.2.4
+  pro_image_editor: ^14.2.0
+  pro_video_editor: ^2.13.0
   pull_down_button: ^0.10.2
   pull_to_refresh: ^2.0.0
   qr_code_scanner:

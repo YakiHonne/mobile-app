@@ -38,6 +38,7 @@ class NewFeaturesIntro extends StatelessWidget {
           FluidBlurContainer(
             sigma: 20,
             borderRadius: kDefaultPadding,
+            backgroundAlpha: 1,
             padding: const EdgeInsets.all(kDefaultPadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,

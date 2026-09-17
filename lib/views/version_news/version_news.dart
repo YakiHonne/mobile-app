@@ -47,8 +47,8 @@ class _VersionNewsState extends State<VersionNews> {
       body: ScrollShadow(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: ListView(
-          padding: const EdgeInsets.all(kDefaultPadding / 2)
-              .copyWith(top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
+          padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(
+              top: kDefaultPadding / 2 + fluidScaffoldTopInset(context)),
           children: [
             const SizedBox(
               height: kDefaultPadding / 2,
@@ -242,16 +242,13 @@ class _VersionNewsState extends State<VersionNews> {
 /// Shown under [appVersion], so this list must be rewritten every release —
 /// it shipped once already holding the previous version's notes.
 final List<String> releaseNotes = [
-  'Leading notes and replies now support kind 1111 comments, both reading and posting.',
-  'Rewritten paid-note publishing with live payment tracking and automatic publishing once paid, plus a new published-confirmation screen.',
-  'Redesigned pricing with a Free plan card and a full plan comparison.',
-  'Your username now always shows in edit profile; claim it for free or subscribe if needed.',
-  'Second Reader now matches the AI action to each paragraph, and the AI assistant stays open after processing.',
-  'The editor warns before discarding article, AI discussion, and Second Reader data.',
-  'Article view now shows a premium badge, the relay an event was seen on, word count, and read time.',
-  'Videos support landscape and have smoother controls.',
-  'Removed the 800 sats zap preset.',
-  'General bug fixes and performance enhancements.',
+  'Added a video editor and compressor before publishing.',
+  'Engagement chart enhancements.',
+  'The note preview before publishing is now scrollable.',
+  'Fixed a GrapheneOS feed issue where notes failed to load.',
+  'Fixed a paid notes payment issue.',
+  'Fixed notifications showing "not found" when tapped.',
+  'Fixed replies not showing under some notes.',
 ];
 
 const content = [

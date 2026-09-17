@@ -72,6 +72,7 @@ class LocalNotificationManager {
   /// Called by UnifiedPush (Android)
   Future<void> onNewEndpoint(String endpoint, String instance) async {
     final token = endpoint.split('token=').last;
+    lg.i(token);
     final state = WidgetsBinding.instance.lifecycleState;
     if (token.isNotEmpty && state == AppLifecycleState.resumed) {
       notificationsCubit.setPushNotifications(token);

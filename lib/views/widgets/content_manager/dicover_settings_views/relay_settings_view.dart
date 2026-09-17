@@ -74,10 +74,6 @@ class RelaySettingsView extends HookWidget {
     });
 
     void setFavoriteOrder(int oldIndex, int newIndex) {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-
       final options = List<String>.from(favoriteRelays.value);
       final r = options.removeAt(oldIndex);
       options.insert(newIndex, r);
@@ -85,10 +81,6 @@ class RelaySettingsView extends HookWidget {
     }
 
     void setRelaySetOrder(int oldIndex, int newIndex) {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-
       final options = List<EventCoordinates>.from(favoriteRelaySets.value);
       final r = options.removeAt(oldIndex);
       options.insert(newIndex, r);
@@ -445,7 +437,7 @@ class RelaySettingsView extends HookWidget {
         );
       },
       itemCount: favoriteRelays.value.length,
-      onReorder: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
+      onReorderItem: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
     );
   }
 
@@ -474,7 +466,7 @@ class RelaySettingsView extends HookWidget {
         );
       },
       itemCount: favoriteRelaySets.value.length,
-      onReorder: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
+      onReorderItem: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
     );
   }
 

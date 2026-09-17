@@ -4,13 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:image_editor_plus/image_editor_plus.dart';
-import 'package:image_editor_plus/options.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mention_tag_text_field/mention_tag_text_field.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 import 'package:nostr_core_enhanced/utils/string_utils.dart';
+import 'package:pro_image_editor/pro_image_editor.dart';
 
 import '../../../common/media_handler/media_handler.dart';
 import '../../../common/media_handler/video_editor_view.dart';
@@ -25,6 +24,7 @@ import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/single_image_selector.dart';
 import '../../write_note_view/widgets/mention_text_field.dart';
 import '../../write_note_view/widgets/publish_media_container.dart';
+import 'video_quality_sheet.dart';
 
 class AddMediaBottomNavigationBar extends HookWidget {
   const AddMediaBottomNavigationBar({
@@ -205,21 +205,55 @@ class MediaOptionsRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: kDefaultPadding / 4),
+          GestureDetector(
+            onTap: () => showVideoQualitySheet(
+              context,
+              source: media.value!,
+              onCompressed: (file) => onMediaSelected(file, true),
+            ),
+            child: Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context)
+                    .scaffoldBackgroundColor
+                    .withValues(alpha: 0.5),
+                border: Border.all(
+                  color: Theme.of(context).primaryColorDark,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                LucideIcons.shrink,
+                size: 22,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
         ],
         GestureDetector(
           onTap: () async {
             if (!isVideo.value) {
-              final editedImage = await Navigator.push(
+              Uint8List? editedBytes;
+              final editedImage = await Navigator.push<Uint8List>(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ImageEditor(
-                    image: media.value!.readAsBytesSync(),
-                    outputFormat: OutputFormat.png,
+                  builder: (context) => ProImageEditor.memory(
+                    media.value!.readAsBytesSync(),
+                    callbacks: ProImageEditorCallbacks(
+                      onImageEditingComplete: (bytes) async {
+                        editedBytes = bytes;
+                      },
+                      onCloseEditor: (mode) =>
+                          Navigator.pop(context, editedBytes),
+                    ),
                   ),
                 ),
               );
 
-              if (editedImage != null && editedImage is Uint8List) {
+              if (editedImage != null) {
                 final file = await saveUint8ListToTempFile(
                   editedImage,
                   '${uuid.v4()}.png',
@@ -274,6 +308,7 @@ class MediaOptionsRow extends StatelessWidget {
                   ),
           ),
         ),
+        const SizedBox(width: kDefaultPadding / 4),
         // Builder(
         //   builder: (context) {
         //     final hasText = description.value.isNotEmpty;
