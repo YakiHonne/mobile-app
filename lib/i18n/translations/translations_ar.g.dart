@@ -2142,7 +2142,7 @@ class TranslationsAr extends Translations {
 	@override String get googleManageUnlinkDesc => 'احذف هذا الحساب من الخادم المركزي. سجّل الدخول مرة أخرى بمفتاحك الخاص.';
 	@override String get pricing_restore_purchases => 'استعادة المشتريات';
 	@override String get pricing_manage_on_store => 'إدارة الاشتراك';
-	@override String get pricing_web_managed => 'لديك اشتراك نشط تتم إدارته على yakihonne.pro. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.';
+	@override String get pricing_web_managed => 'لديك اشتراك نشط تتم إدارته على yakihonne.com. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.';
 	@override String get sub_managed_via_web => 'اشتراكك نشط.';
 	@override String get pricing_toggle_store => '🛍️ المتجر';
 	@override String get pricing_toggle_points => '🏆 النقاط';
@@ -4365,7 +4365,7 @@ extension on TranslationsAr {
 			'googleManageUnlinkDesc' => 'احذف هذا الحساب من الخادم المركزي. سجّل الدخول مرة أخرى بمفتاحك الخاص.',
 			'pricing_restore_purchases' => 'استعادة المشتريات',
 			'pricing_manage_on_store' => 'إدارة الاشتراك',
-			'pricing_web_managed' => 'لديك اشتراك نشط تتم إدارته على yakihonne.pro. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.',
+			'pricing_web_managed' => 'لديك اشتراك نشط تتم إدارته على yakihonne.com. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.',
 			'sub_managed_via_web' => 'اشتراكك نشط.',
 			'pricing_toggle_store' => '🛍️ المتجر',
 			'pricing_toggle_points' => '🏆 النقاط',

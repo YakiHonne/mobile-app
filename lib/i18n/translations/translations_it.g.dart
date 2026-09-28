@@ -2142,7 +2142,7 @@ class TranslationsIt extends Translations {
 	@override String get googleManageUnlinkDesc => 'Rimuovi questo account dal server centrale. Accedi di nuovo con la tua chiave privata.';
 	@override String get pricing_restore_purchases => 'Ripristina acquisti';
 	@override String get pricing_manage_on_store => 'Gestisci abbonamento';
-	@override String get pricing_web_managed => 'Hai un abbonamento attivo gestito su yakihonne.pro. Visita il sito per modificare o annullare il tuo piano.';
+	@override String get pricing_web_managed => 'Hai un abbonamento attivo gestito su yakihonne.com. Visita il sito per modificare o annullare il tuo piano.';
 	@override String get sub_managed_via_web => 'Il tuo abbonamento è attivo.';
 	@override String get pricing_toggle_store => '🛍️ Store';
 	@override String get pricing_toggle_points => '🏆 Punti';
@@ -4365,7 +4365,7 @@ extension on TranslationsIt {
 			'googleManageUnlinkDesc' => 'Rimuovi questo account dal server centrale. Accedi di nuovo con la tua chiave privata.',
 			'pricing_restore_purchases' => 'Ripristina acquisti',
 			'pricing_manage_on_store' => 'Gestisci abbonamento',
-			'pricing_web_managed' => 'Hai un abbonamento attivo gestito su yakihonne.pro. Visita il sito per modificare o annullare il tuo piano.',
+			'pricing_web_managed' => 'Hai un abbonamento attivo gestito su yakihonne.com. Visita il sito per modificare o annullare il tuo piano.',
 			'sub_managed_via_web' => 'Il tuo abbonamento è attivo.',
 			'pricing_toggle_store' => '🛍️ Store',
 			'pricing_toggle_points' => '🏆 Punti',

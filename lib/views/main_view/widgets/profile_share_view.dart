@@ -7,7 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -381,16 +381,15 @@ class _ConnectedUserProfileShareViewState
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCameraSafely();
+      controller!.pauseCamera();
     } else if (state == AppLifecycleState.resumed && !isQRcodeShown) {
-      controller!.resumeCameraSafely();
+      controller!.resumeCamera();
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    controller?.dispose();
     super.dispose();
   }
 
@@ -448,9 +447,9 @@ class _ConnectedUserProfileShareViewState
               child: TextButton(
                 onPressed: () {
                   if (isQRcodeShown) {
-                    controller?.resumeCameraSafely();
+                    controller?.resumeCamera();
                   } else {
-                    controller?.pauseCameraSafely();
+                    controller?.pauseCamera();
                   }
                   setState(() {
                     isQRcodeShown = !isQRcodeShown;

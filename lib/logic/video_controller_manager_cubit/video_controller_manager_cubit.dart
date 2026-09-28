@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../common/media_handler/media_handler.dart';
 import '../../utils/utils.dart';
@@ -187,6 +188,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       _videoControllers[usedUrl] = videoController;
       _chewieControllers[usedUrl] = chewieController;
+      WakelockPlus.enable();
 
       // Update owner registration to the resolved URL (may differ via fallback)
       if (usedUrl != url) {
@@ -246,6 +248,10 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     // Notify before closing so the widget can show the loading placeholder
     _notifyUrl(resolvedUrl);
     _urlStreams.remove(resolvedUrl)?.close();
+
+    if (_videoControllers.isEmpty) {
+      WakelockPlus.disable();
+    }
   }
 
   void enterFullScreen(String url) {
@@ -313,6 +319,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     for (final sc in _urlStreams.values) {
       sc.close();
     }
+    WakelockPlus.disable();
     return super.close();
   }
 }

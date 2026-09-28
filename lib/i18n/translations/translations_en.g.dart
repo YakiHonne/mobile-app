@@ -6380,8 +6380,8 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Manage subscription'
 	String get pricing_manage_on_store => 'Manage subscription';
 
-	/// en: 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.'
-	String get pricing_web_managed => 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.';
+	/// en: 'You have an active subscription managed at yakihonne.com. Visit there to change or cancel your plan.'
+	String get pricing_web_managed => 'You have an active subscription managed at yakihonne.com. Visit there to change or cancel your plan.';
 
 	/// en: 'Your subscription is active.'
 	String get sub_managed_via_web => 'Your subscription is active.';
@@ -8768,7 +8768,7 @@ extension on Translations {
 			'googleManageUnlinkDesc' => 'Remove this account from the central. Sign back in with your private key.',
 			'pricing_restore_purchases' => 'Restore purchases',
 			'pricing_manage_on_store' => 'Manage subscription',
-			'pricing_web_managed' => 'You have an active subscription managed at yakihonne.pro. Visit there to change or cancel your plan.',
+			'pricing_web_managed' => 'You have an active subscription managed at yakihonne.com. Visit there to change or cancel your plan.',
 			'sub_managed_via_web' => 'Your subscription is active.',
 			'pricing_toggle_store' => '🛍️ Store',
 			'pricing_toggle_points' => '🏆 Points',

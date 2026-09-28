@@ -2142,7 +2142,7 @@ class TranslationsFr extends Translations {
 	@override String get googleManageUnlinkDesc => 'Supprimez ce compte du serveur central. Reconnectez-vous avec votre clé privée.';
 	@override String get pricing_restore_purchases => 'Restaurer les achats';
 	@override String get pricing_manage_on_store => 'Gérer l\'abonnement';
-	@override String get pricing_web_managed => 'Vous avez un abonnement actif géré sur yakihonne.pro. Rendez-vous sur ce site pour changer ou résilier votre forfait.';
+	@override String get pricing_web_managed => 'Vous avez un abonnement actif géré sur yakihonne.com. Rendez-vous sur ce site pour changer ou résilier votre forfait.';
 	@override String get sub_managed_via_web => 'Votre abonnement est actif.';
 	@override String get pricing_toggle_store => '🛍️ Boutique';
 	@override String get pricing_toggle_points => '🏆 Points';
@@ -4365,7 +4365,7 @@ extension on TranslationsFr {
 			'googleManageUnlinkDesc' => 'Supprimez ce compte du serveur central. Reconnectez-vous avec votre clé privée.',
 			'pricing_restore_purchases' => 'Restaurer les achats',
 			'pricing_manage_on_store' => 'Gérer l\'abonnement',
-			'pricing_web_managed' => 'Vous avez un abonnement actif géré sur yakihonne.pro. Rendez-vous sur ce site pour changer ou résilier votre forfait.',
+			'pricing_web_managed' => 'Vous avez un abonnement actif géré sur yakihonne.com. Rendez-vous sur ce site pour changer ou résilier votre forfait.',
 			'sub_managed_via_web' => 'Votre abonnement est actif.',
 			'pricing_toggle_store' => '🛍️ Boutique',
 			'pricing_toggle_points' => '🏆 Points',

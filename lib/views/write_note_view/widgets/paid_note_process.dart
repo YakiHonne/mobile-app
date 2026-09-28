@@ -621,6 +621,7 @@ class PaidNoteProcess extends HookWidget {
             lud16: nostrRepository.paidNoteWallet,
             pubkey: yakihonneHex,
           ),
+          removeNostrEvent: true,
           comment: _invoiceComment(event),
           eventId: event.id,
           onFinished: (_) {},
@@ -666,6 +667,7 @@ class PaidNoteProcess extends HookWidget {
               ),
               comment: _invoiceComment(event),
               eventId: event.id,
+              removeNostrEvent: true,
               onFailure: (message) {
                 BotToastUtils.showError(message);
                 _goBack(context, view);

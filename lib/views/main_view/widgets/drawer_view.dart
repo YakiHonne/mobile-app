@@ -128,13 +128,7 @@ class MainViewDrawer extends HookWidget {
             height: kToolbarHeight / 1.2,
           ),
         if (currentSigner == null)
-          SvgPicture.asset(
-            LogosIcons.logoBlack,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).primaryColorDark,
-              BlendMode.srcIn,
-            ),
-          )
+          _guestRow(context)
         else
           _userRow(state, context),
         const SizedBox(
@@ -668,7 +662,27 @@ class MainViewDrawer extends HookWidget {
     return Row(
       children: [
         _profileRow(state),
-        if (canSign()) _settingsButton(context),
+        _settingsButton(context),
+      ],
+    );
+  }
+
+  Row _guestRow(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: SvgPicture.asset(
+              LogosIcons.logoBlack,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColorDark,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+        ),
+        _settingsButton(context),
       ],
     );
   }

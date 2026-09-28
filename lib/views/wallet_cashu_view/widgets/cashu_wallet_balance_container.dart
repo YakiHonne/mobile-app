@@ -121,10 +121,10 @@ class CashuWallatBalanceContainer extends StatelessWidget {
                         );
                       } else {
                         final val = value.toLowerCase();
-
-                        if (val.startsWith('lnbc') ||
+                        final lnbc = extractLnbc(val);
+                        if (lnbc != null ||
                             val.startsWith('lnurl') ||
-                            emailRegExp.hasMatch(val)) {
+                            emailRegExp.hasMatch(lnbc ?? val)) {
                           YNavigator.presentPage(
                             context,
                             (context) => CashuPayView(
@@ -395,7 +395,6 @@ class CashuWallatBalanceContainer extends StatelessWidget {
                 builder: (_) => CashuRestoreProofs(
                   mintUrl: state.activeMint,
                 ),
-      
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
@@ -409,7 +408,6 @@ class CashuWallatBalanceContainer extends StatelessWidget {
               func: () => showAppModalSheet(
                 context: context,
                 builder: (_) => const CashuHistory(),
-       
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
               context: context,

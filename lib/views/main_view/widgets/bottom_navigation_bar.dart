@@ -8,6 +8,7 @@ import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
+import '../../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/theme/glass_settings.dart';
@@ -72,18 +73,39 @@ class MainViewBottomNavigationBar extends StatelessWidget {
 
   Expanded _notificationsButton(MainState state, BuildContext context) {
     return Expanded(
-      child: BottomNavBarItem(
-        key: TourKeys.notifications,
-        icon: FeatureIcons.notification,
-        selectedIcon: FeatureIcons.notificationsFilled,
-        isSelected: state.mainView == MainViews.notifications,
-        onClicked: () {
-          if (state.mainView == MainViews.notifications) {
-            onClicked.call();
-          }
-          context.read<MainCubit>().updateIndex(MainViews.notifications);
-          notificationsCubit.markRead();
-          HapticFeedback.mediumImpact();
+      child: BlocBuilder<NotificationsCubit, NotificationsState>(
+        builder: (context, notiState) {
+          return Stack(
+            children: [
+              BottomNavBarItem(
+                key: TourKeys.notifications,
+                icon: FeatureIcons.notification,
+                selectedIcon: FeatureIcons.notificationsFilled,
+                isSelected: state.mainView == MainViews.notifications,
+                onClicked: () {
+                  if (state.mainView == MainViews.notifications) {
+                    onClicked.call();
+                  }
+                  context
+                      .read<MainCubit>()
+                      .updateIndex(MainViews.notifications);
+                  notificationsCubit.markRead();
+                  HapticFeedback.mediumImpact();
+                },
+              ),
+              if (!notiState.isRead && canSign())
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15, bottom: 10),
+                    child: DotContainer(
+                      color: Colors.redAccent,
+                      isNotMarging: true,
+                      size: 8,
+                    ),
+                  ),
+                ),
+            ],
+          );
         },
       ),
     );

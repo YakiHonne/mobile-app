@@ -309,6 +309,10 @@ class MainViewContent extends HookWidget {
               bottomEdgeFade: true,
               topEdgeFade: true,
               contentAwareBrightness: true,
+              // The main tabs do not host text inputs. Keeping the shell at
+              // its full height prevents an IME inset from leaving a blank
+              // keyboard-sized area on Android builds that report it late.
+              resizeToAvoidBottomInset: false,
               bottomBarHeight: kBottomNavigationBarHeight + kDefaultPadding / 2,
               appBar: FluidMainViewAppBar(
                 isConnected: state.isConnected,
@@ -439,7 +443,9 @@ class MainViewContent extends HookWidget {
               )
             : Scaffold(
                 key: mainScaffoldKey,
-                resizeToAvoidBottomInset: true,
+                // Text entry lives in pushed pages and sheets, which handle
+                // their own insets. Do not resize the persistent main shell.
+                resizeToAvoidBottomInset: false,
                 bottomNavigationBar:
                     MainViewBottomNavigationBar(onClicked: onScrollTop),
                 floatingActionButton: showFab

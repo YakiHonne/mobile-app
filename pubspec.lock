@@ -2097,15 +2097,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  qr_code_scanner:
+  qr_code_scanner_plus:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "193079ea2d37dab81cd94b3fc427ac41440e28ac"
-      url: "https://github.com/YakiHonne/qr_code_scanner.git"
-    source: git
-    version: "1.0.0"
+      name: qr_code_scanner_plus
+      sha256: "166b128820cb6592eacd579a1d6c538aa6d9e8804636b787b694c4e96e6f9812"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   qr_flutter:
     dependency: "direct main"
     description:
@@ -2800,7 +2799,7 @@ packages:
     source: hosted
     version: "14.3.0"
   wakelock_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: wakelock_plus
       sha256: "7253bca0fcf40d8413ddfcf4d2a1fa0a82475e79be25a4f2c564b695c9351486"

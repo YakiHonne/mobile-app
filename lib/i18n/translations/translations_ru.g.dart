@@ -2142,7 +2142,7 @@ class TranslationsRu extends Translations {
 	@override String get googleManageUnlinkDesc => 'Удалите этот аккаунт с центрального сервера. Входите снова по приватному ключу.';
 	@override String get pricing_restore_purchases => 'Восстановить покупки';
 	@override String get pricing_manage_on_store => 'Управление подпиской';
-	@override String get pricing_web_managed => 'У вас есть активная подписка, управляемая на yakihonne.pro. Перейдите туда, чтобы изменить или отменить тариф.';
+	@override String get pricing_web_managed => 'У вас есть активная подписка, управляемая на yakihonne.com. Перейдите туда, чтобы изменить или отменить тариф.';
 	@override String get sub_managed_via_web => 'Ваша подписка активна.';
 	@override String get pricing_toggle_store => '🛍️ Магазин';
 	@override String get pricing_toggle_points => '🏆 Баллы';
@@ -4365,7 +4365,7 @@ extension on TranslationsRu {
 			'googleManageUnlinkDesc' => 'Удалите этот аккаунт с центрального сервера. Входите снова по приватному ключу.',
 			'pricing_restore_purchases' => 'Восстановить покупки',
 			'pricing_manage_on_store' => 'Управление подпиской',
-			'pricing_web_managed' => 'У вас есть активная подписка, управляемая на yakihonne.pro. Перейдите туда, чтобы изменить или отменить тариф.',
+			'pricing_web_managed' => 'У вас есть активная подписка, управляемая на yakihonne.com. Перейдите туда, чтобы изменить или отменить тариф.',
 			'sub_managed_via_web' => 'Ваша подписка активна.',
 			'pricing_toggle_store' => '🛍️ Магазин',
 			'pricing_toggle_points' => '🏆 Баллы',

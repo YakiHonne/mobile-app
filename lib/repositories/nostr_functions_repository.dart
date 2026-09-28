@@ -1499,10 +1499,12 @@ class NostrFunctionsRepository {
     int? until,
     bool includeComments = false,
     String? authorPubkey,
-  }) {
+  }) async* {
     final filters = <Filter>[];
     final nds = List<String>.from(noteIds);
     final atgs = List<String>.from(aTags);
+    final controller = StreamController<Event>();
+    List<String> currentUncompletedRelays = nc.activeRelays();
 
     if (nds.isNotEmpty) {
       final f1 = Filter(
@@ -1596,45 +1598,60 @@ class NostrFunctionsRepository {
       }
     }
 
-    return _getContentStatsStream(
-      filters: filters,
-      nds: nds,
-      atgs: atgs,
-      authorPubkey: authorPubkey,
-    );
-  }
-
-  static Stream<Event> _getContentStatsStream({
-    required List<Filter> filters,
-    required List<String> nds,
-    required List<String> atgs,
-    String? authorPubkey,
-  }) async* {
-    final relaySet = nc.activeRelays().toSet();
+    final seenIds = <String>{};
+    List<String> missingRelays = [];
 
     if (authorPubkey != null && authorPubkey.isNotEmpty) {
       try {
-        final authorRelayList = await nc.getSingleUserRelayList(authorPubkey);
-        relaySet.addAll(authorRelayList?.writes ?? const {});
+        final authorRelayList =
+            (await nc.getSingleUserRelayList(authorPubkey))?.writes;
+        if (authorRelayList != null && authorRelayList.isNotEmpty) {
+          missingRelays = nc.missingRelays(authorRelayList);
+
+          if (missingRelays.isNotEmpty) {
+            await nc.connectRelays(
+              missingRelays,
+              waitForAuth: true,
+            );
+          }
+
+          await nc.connectNonConnectedRelays(authorRelayList.toSet());
+        }
       } catch (e) {
         lg.i(e);
       }
     }
 
-    final seenIds = <String>{};
-
-    yield* queryEventsStream(
+    nc.addSubscription(
       filters,
-      relaySet.toList(),
-      timeOut: 4,
-      connectTimeout: const Duration(seconds: 2),
-    ).where(
-      (event) =>
-          seenIds.add(event.id) &&
-          cleanEvent(event: event, noteIds: nds, aTags: atgs) &&
-          ((event.kind == EventKind.TEXT_NOTE && !event.isUncensoredNote()) ||
-              event.kind != EventKind.TEXT_NOTE),
+      [],
+      eventCallBack: (event, relay) {
+        if (!controller.isClosed && seenIds.add(event.id)) {
+          if (cleanEvent(event: event, noteIds: nds, aTags: atgs)) {
+            controller.add(event);
+          }
+        }
+      },
+      eoseCallBack: (curationRequestId, ok, relay, unCompletedRelays) {
+        currentUncompletedRelays = unCompletedRelays;
+        nc.closeSubscription(curationRequestId, relay);
+      },
     );
+
+    Timer.periodic(
+      const Duration(milliseconds: 500),
+      (timer) {
+        if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
+          controller.close();
+          timer.cancel();
+          if (missingRelays.isNotEmpty) {
+            unawaited(nc.closeConnect(missingRelays));
+          }
+        }
+      },
+    );
+
+    yield* controller.stream;
   }
 
   static bool cleanEvent({
@@ -4959,43 +4976,6 @@ class NostrFunctionsRepository {
         unawaited(client.closeConnect(missingRelays));
       }
     }
-  }
-
-  /// Same as [queryEvents], but emits each matching event on a stream as it
-  /// arrives instead of collecting them until the whole query finishes.
-  static Stream<Event> queryEventsStream(
-    List<Filter> filters,
-    List<String> relays, {
-    int timeOut = 5,
-    int? startingTimeout,
-    bool includeExpired = true,
-    bool closeRelaysOnFinish = true,
-    Duration? connectTimeout,
-    EventsSource source = EventsSource.cacheFirst,
-    NostrCore? core,
-    void Function(String, OKEvent, String, List<String>)? eoseCallBack,
-  }) {
-    final controller = StreamController<Event>();
-
-    queryEvents(
-      filters,
-      relays,
-      timeOut: timeOut,
-      startingTimeout: startingTimeout,
-      includeExpired: includeExpired,
-      closeRelaysOnFinish: closeRelaysOnFinish,
-      connectTimeout: connectTimeout,
-      source: source,
-      core: core,
-      eventCallBack: (event, relay) {
-        if (!controller.isClosed) {
-          controller.add(event);
-        }
-      },
-      eoseCallBack: eoseCallBack,
-    ).whenComplete(() => controller.close());
-
-    return controller.stream;
   }
 
   /// Helper method to handle event operations with timer-based completion

@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.8+207
+version: 2.0.9+208
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -116,10 +116,11 @@ dependencies:
   pro_video_editor: ^2.13.0
   pull_down_button: ^0.10.2
   pull_to_refresh: ^2.0.0
-  qr_code_scanner:
-    git:
-      url: https://github.com/YakiHonne/qr_code_scanner.git
-      ref: master
+  qr_code_scanner_plus: ^2.3.0
+  # qr_code_scanner:
+  #   git:
+  #     url: https://github.com/YakiHonne/qr_code_scanner.git
+  #     ref: master
   qr_flutter: ^4.1.0
   responsive_framework: ^1.1.0
   screenshot: ^3.0.0
@@ -143,6 +144,7 @@ dependencies:
   video_thumbnail: ^0.5.6
   video_url_validator: ^1.0.3
   visibility_detector: ^0.4.0+2
+  wakelock_plus: ^1.2.8
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.3
 

@@ -1069,7 +1069,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     Function(bool)? onFinished,
     bool useDefaultWallet = false,
   }) async {
-    if (invoice.key.isEmpty || !invoice.key.toLowerCase().startsWith('lnbc')) {
+    if (invoice.key.isEmpty || extractLnbc(invoice.key.toLowerCase()) == null) {
       final message = mainContext.t.submitValidInvoice.capitalizeFirst();
       _handlePaymentFailure(onFailure, message);
       return;
@@ -1205,7 +1205,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     Function(String)? onFailure,
     bool useDefaultWallet = false,
   }) async {
-    if (invoice.isEmpty || !invoice.toLowerCase().startsWith('lnbc')) {
+    if (invoice.isEmpty || extractLnbc(invoice) == null) {
       final message = mainContext.t.submitValidInvoice.capitalizeFirst();
       _handlePaymentFailure(onFailure, message);
       return;
@@ -1814,6 +1814,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? invoice,
     bool useExternalWallet = false,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) {
     if (state.selectedWalletId.isNotEmpty && !useExternalWallet) {
       final selectedWallet = state.wallets[state.selectedWalletId];
@@ -1833,6 +1834,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
           walletModel: selectedWallet,
           pollOption: pollOption,
           extraTags: extraTags,
+          removeNostrEvent: removeNostrEvent,
         );
       } else {
         onFailure.call(mainContext.t.errorUsingWallet.capitalizeFirst());
@@ -1848,6 +1850,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         onFinished: onFinished,
         pollOption: pollOption,
         extraTags: extraTags,
+        removeNostrEvent: removeNostrEvent,
       );
     }
   }
@@ -1878,6 +1881,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? pollOption,
     String? externalInvoice,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) async {
     _setZapLoadingState();
 
@@ -1898,6 +1902,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
               comment: comment.isEmpty ? null : comment,
               eventId: eventId,
               aTag: aTag,
+              removeNostrEvent: removeNostrEvent,
               pollOption: pollOption,
               extraTags: extraTags,
             );
@@ -2000,6 +2005,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? pollOption,
     String? externalInvoice,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) async {
     if (state.defaultExternalWallet.isEmpty) {
       onFailure.call(mainContext.t.selectDefaultWallet.capitalizeFirst());
@@ -2016,6 +2022,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       aTag: aTag,
       pollOption: pollOption,
       extraTags: extraTags,
+      removeNostrEvent: removeNostrEvent,
       currentSigner!,
       {...currentUserRelayList.reads, ...mandatoryRelays}.toList(),
       specifiedWallet: wallets[state.defaultExternalWallet]!['deeplink'],

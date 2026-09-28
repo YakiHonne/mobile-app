@@ -12,7 +12,6 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
-import '../widgets/content_placeholder.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/data_providers.dart';
 import '../widgets/fluid_scaffold.dart';
@@ -143,7 +142,6 @@ class NoteView extends HookWidget {
     // Replies for the current main note (lifted out of the old NoteRepliesList
     // so they can live in the same CustomScrollView as the center anchor).
     final replies = useState(<DetailedNoteModel>[]);
-    final isRepliesLoading = useState(true);
     final cachedReplies =
         useMemoized(() => <String, List<DetailedNoteModel>>{});
 
@@ -151,17 +149,6 @@ class NoteView extends HookWidget {
       () async {
         if (!context.mounted) {
           return;
-        }
-
-        // loadNoteRelatedEvents only reads what's already cached locally —
-        // it doesn't wait on the network fetch. Until that fetch has landed
-        // at least once (eventsStats[id] goes from absent to set, including
-        // an explicitly-empty result for a note with zero replies), keep
-        // showing the skeleton instead of flashing an empty state.
-        final hasFetched =
-            notesEventsCubit.state.eventsStats[currentNote.value.id] != null;
-        if (!hasFetched) {
-          isRepliesLoading.value = true;
         }
 
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
@@ -173,9 +160,6 @@ class NoteView extends HookWidget {
           return;
         }
         replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
-        if (hasFetched) {
-          isRepliesLoading.value = false;
-        }
       },
       [currentNote.value.id],
     );
@@ -203,6 +187,8 @@ class NoteView extends HookWidget {
               curr.mutesEvents.contains(currentNote.value.id),
       builder: (context, state) {
         final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
+        final hasMissingPreviousNote =
+            _hasMissingPreviousNote(previousNotes, currentNote.value);
         final mutedThread = state.mutesEvents.contains(currentNote.value.id);
         final mediaQuery = MediaQuery.of(context);
         final viewportHeight =
@@ -259,6 +245,11 @@ class NoteView extends HookWidget {
                         isTransitioning: isTransitioning.value,
                       ),
 
+                    if (hasMissingPreviousNote)
+                      const SliverToBoxAdapter(
+                        child: _MissingPreviousNoteBridge(),
+                      ),
+
                     // Main note - the center anchor (always present).
                     SliverToBoxAdapter(
                       key: targetKey,
@@ -282,7 +273,6 @@ class NoteView extends HookWidget {
                       ..._buildReplySlivers(
                         context,
                         replies: replies.value,
-                        isLoading: isRepliesLoading.value,
                         cachedReplies: cachedReplies,
                         setNote: updateNote,
                         isTransitioning: isTransitioning.value,
@@ -536,10 +526,63 @@ class _PreviousNotesSliver extends StatelessWidget {
   }
 }
 
+bool _hasMissingPreviousNote(
+  List<DetailedNoteModel> previousNotes,
+  DetailedNoteModel note,
+) {
+  if (previousNotes.isEmpty) {
+    return false;
+  }
+
+  final closestPreviousNote = previousNotes.last;
+  return note.replyTo != closestPreviousNote.id &&
+      !(note.replyTo.isEmpty && note.originId == closestPreviousNote.id);
+}
+
+class _MissingPreviousNoteBridge extends StatelessWidget {
+  const _MissingPreviousNoteBridge();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding / 2,
+          vertical: kDefaultPadding / 4,
+        ),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          border: Border.all(color: theme.dividerColor, width: 0.5),
+          borderRadius: BorderRadius.circular(kDefaultPadding / 1.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.link_off_rounded,
+              color: theme.hintColor,
+              size: kDefaultPadding,
+            ),
+            const SizedBox(width: kDefaultPadding / 4),
+            Text(
+              context.t.noContentCanBeFound(type: context.t.reply),
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.hintColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 List<Widget> _buildReplySlivers(
   BuildContext context, {
   required List<DetailedNoteModel> replies,
-  required bool isLoading,
   required Map<String, List<DetailedNoteModel>> cachedReplies,
   required Function(DetailedNoteModel note, {bool isRemoving}) setNote,
   required bool isTransitioning,
@@ -547,14 +590,6 @@ List<Widget> _buildReplySlivers(
   final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
   final useSingleColumn =
       nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
-
-  if (isLoading) {
-    return [
-      const SliverToBoxAdapter(
-        child: NotesPlaceholder(),
-      ),
-    ];
-  }
 
   if (replies.isEmpty) {
     return _buildEmptyReplies(context);

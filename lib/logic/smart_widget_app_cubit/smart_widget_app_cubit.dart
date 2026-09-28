@@ -199,7 +199,9 @@ class SmartWidgetAppCubit extends Cubit<SmartWidgetAppState> {
         zapSplits: const [],
         eventId: paymentData['eventId'],
         aTag: paymentData['aTag'],
-        lnbc: paymentData['address'].startsWith('lnbc')
+        lnbc: extractLnbc(
+                    paymentData['address']?.toString().toLowerCase() ?? '') !=
+                null
             ? paymentData['address']
             : null,
       ),
