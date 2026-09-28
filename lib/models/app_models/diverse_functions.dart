@@ -811,7 +811,7 @@ Future<SmartWidget?> getSmartWidgetFromNaddr(String naddr) async {
 bool? isLightningAddress(String val) {
   if (val.toLowerCase().startsWith('lnurl') || emailRegExp.hasMatch(val)) {
     return true;
-  } else if (val.toLowerCase().startsWith('lnbc')) {
+  } else if (extractLnbc(val.toLowerCase()) != null) {
     return false;
   }
 

@@ -2142,7 +2142,7 @@ class TranslationsTh extends Translations {
 	@override String get googleManageUnlinkDesc => 'ลบบัญชีนี้ออกจากเซิร์ฟเวอร์กลาง แล้วลงชื่อเข้าใช้ใหม่ด้วยคีย์ส่วนตัว';
 	@override String get pricing_restore_purchases => 'กู้คืนการซื้อ';
 	@override String get pricing_manage_on_store => 'จัดการการสมัครสมาชิก';
-	@override String get pricing_web_managed => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.pro กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ';
+	@override String get pricing_web_managed => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.com กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ';
 	@override String get sub_managed_via_web => 'การสมัครสมาชิกของคุณใช้งานอยู่';
 	@override String get pricing_toggle_store => '🛍️ สโตร์';
 	@override String get pricing_toggle_points => '🏆 แต้ม';
@@ -4365,7 +4365,7 @@ extension on TranslationsTh {
 			'googleManageUnlinkDesc' => 'ลบบัญชีนี้ออกจากเซิร์ฟเวอร์กลาง แล้วลงชื่อเข้าใช้ใหม่ด้วยคีย์ส่วนตัว',
 			'pricing_restore_purchases' => 'กู้คืนการซื้อ',
 			'pricing_manage_on_store' => 'จัดการการสมัครสมาชิก',
-			'pricing_web_managed' => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.pro กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ',
+			'pricing_web_managed' => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.com กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ',
 			'sub_managed_via_web' => 'การสมัครสมาชิกของคุณใช้งานอยู่',
 			'pricing_toggle_store' => '🛍️ สโตร์',
 			'pricing_toggle_points' => '🏆 แต้ม',

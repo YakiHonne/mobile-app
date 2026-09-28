@@ -2142,7 +2142,7 @@ class TranslationsZh extends Translations {
 	@override String get googleManageUnlinkDesc => '将此账户从中心服务器删除。请使用私钥重新登录。';
 	@override String get pricing_restore_purchases => '恢复购买';
 	@override String get pricing_manage_on_store => '管理订阅';
-	@override String get pricing_web_managed => '你有一个在 yakihonne.pro 上管理的有效订阅。请前往该网站更改或取消你的方案。';
+	@override String get pricing_web_managed => '你有一个在 yakihonne.com 上管理的有效订阅。请前往该网站更改或取消你的方案。';
 	@override String get sub_managed_via_web => '你的订阅正在生效。';
 	@override String get pricing_toggle_store => '🛍️ 商店';
 	@override String get pricing_toggle_points => '🏆 积分';
@@ -4365,7 +4365,7 @@ extension on TranslationsZh {
 			'googleManageUnlinkDesc' => '将此账户从中心服务器删除。请使用私钥重新登录。',
 			'pricing_restore_purchases' => '恢复购买',
 			'pricing_manage_on_store' => '管理订阅',
-			'pricing_web_managed' => '你有一个在 yakihonne.pro 上管理的有效订阅。请前往该网站更改或取消你的方案。',
+			'pricing_web_managed' => '你有一个在 yakihonne.com 上管理的有效订阅。请前往该网站更改或取消你的方案。',
 			'sub_managed_via_web' => '你的订阅正在生效。',
 			'pricing_toggle_store' => '🛍️ 商店',
 			'pricing_toggle_points' => '🏆 积分',

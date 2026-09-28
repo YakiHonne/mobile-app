@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.9] - 2026-09-28
+
+### Changed
+
+- Updated QR code scanning for more reliable camera lifecycle handling.
+- Video playback now keeps the device awake while a video is open.
+
+### Fixed
+
+- Lightning invoices prefixed with `lightning:` are now accepted across payments and QR scans.
+- Reply threads retain available root-note context when an intermediate reply is unavailable.
+- Paid-note payment events are removed after processing.
+- General bug fixes and performance enhancements.
+
 ## [2.0.8] - 2026-09-17
 
 ### Added

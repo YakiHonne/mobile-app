@@ -2142,7 +2142,7 @@ class TranslationsHi extends Translations {
 	@override String get googleManageUnlinkDesc => 'इस खाते को केंद्रीय सर्वर से हटाएँ। अपनी निजी कुंजी से दोबारा साइन इन करें।';
 	@override String get pricing_restore_purchases => 'खरीदारी पुनर्स्थापित करें';
 	@override String get pricing_manage_on_store => 'सदस्यता प्रबंधित करें';
-	@override String get pricing_web_managed => 'आपके पास yakihonne.pro पर प्रबंधित एक सक्रिय सदस्यता है। योजना बदलने या रद्द करने के लिए वहाँ जाएँ।';
+	@override String get pricing_web_managed => 'आपके पास yakihonne.com पर प्रबंधित एक सक्रिय सदस्यता है। योजना बदलने या रद्द करने के लिए वहाँ जाएँ।';
 	@override String get sub_managed_via_web => 'आपकी सदस्यता सक्रिय है।';
 	@override String get pricing_toggle_store => '🛍️ स्टोर';
 	@override String get pricing_toggle_points => '🏆 पॉइंट';
@@ -4365,7 +4365,7 @@ extension on TranslationsHi {
 			'googleManageUnlinkDesc' => 'इस खाते को केंद्रीय सर्वर से हटाएँ। अपनी निजी कुंजी से दोबारा साइन इन करें।',
 			'pricing_restore_purchases' => 'खरीदारी पुनर्स्थापित करें',
 			'pricing_manage_on_store' => 'सदस्यता प्रबंधित करें',
-			'pricing_web_managed' => 'आपके पास yakihonne.pro पर प्रबंधित एक सक्रिय सदस्यता है। योजना बदलने या रद्द करने के लिए वहाँ जाएँ।',
+			'pricing_web_managed' => 'आपके पास yakihonne.com पर प्रबंधित एक सक्रिय सदस्यता है। योजना बदलने या रद्द करने के लिए वहाँ जाएँ।',
 			'sub_managed_via_web' => 'आपकी सदस्यता सक्रिय है।',
 			'pricing_toggle_store' => '🛍️ स्टोर',
 			'pricing_toggle_points' => '🏆 पॉइंट',

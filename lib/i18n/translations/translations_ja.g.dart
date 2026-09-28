@@ -2142,7 +2142,7 @@ class TranslationsJa extends Translations {
 	@override String get googleManageUnlinkDesc => 'このアカウントをセントラルから削除します。秘密鍵で再度サインインしてください。';
 	@override String get pricing_restore_purchases => '購入を復元';
 	@override String get pricing_manage_on_store => 'サブスクリプションを管理';
-	@override String get pricing_web_managed => 'yakihonne.proで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。';
+	@override String get pricing_web_managed => 'yakihonne.comで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。';
 	@override String get sub_managed_via_web => 'サブスクリプションは有効です。';
 	@override String get pricing_toggle_store => '🛍️ ストア';
 	@override String get pricing_toggle_points => '🏆 ポイント';
@@ -4365,7 +4365,7 @@ extension on TranslationsJa {
 			'googleManageUnlinkDesc' => 'このアカウントをセントラルから削除します。秘密鍵で再度サインインしてください。',
 			'pricing_restore_purchases' => '購入を復元',
 			'pricing_manage_on_store' => 'サブスクリプションを管理',
-			'pricing_web_managed' => 'yakihonne.proで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。',
+			'pricing_web_managed' => 'yakihonne.comで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。',
 			'sub_managed_via_web' => 'サブスクリプションは有効です。',
 			'pricing_toggle_store' => '🛍️ ストア',
 			'pricing_toggle_points' => '🏆 ポイント',

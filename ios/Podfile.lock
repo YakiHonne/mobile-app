@@ -60,7 +60,6 @@ PODS:
   - libwebp/sharpyuv (1.5.0)
   - libwebp/webp (1.5.0):
     - libwebp/sharpyuv
-  - MTBBarcodeScanner (5.0.11)
   - open_filex (0.0.2):
     - Flutter
   - OrderedSet (6.0.3)
@@ -79,9 +78,8 @@ PODS:
   - pro_video_editor (0.0.1):
     - Flutter
     - FlutterMacOS
-  - qr_code_scanner (0.2.0):
+  - qr_code_scanner_plus (0.2.6):
     - Flutter
-    - MTBBarcodeScanner
   - quill_native_bridge_ios (0.0.1):
     - Flutter
   - sensors_plus (0.0.1):
@@ -148,7 +146,7 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - pro_image_editor (from `.symlinks/plugins/pro_image_editor/darwin`)
   - pro_video_editor (from `.symlinks/plugins/pro_video_editor/darwin`)
-  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
+  - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
   - quill_native_bridge_ios (from `.symlinks/plugins/quill_native_bridge_ios/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
@@ -167,7 +165,6 @@ SPEC REPOS:
   trunk:
     - IosAwnCore
     - libwebp
-    - MTBBarcodeScanner
     - OrderedSet
     - Sentry
 
@@ -224,8 +221,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/pro_image_editor/darwin"
   pro_video_editor:
     :path: ".symlinks/plugins/pro_video_editor/darwin"
-  qr_code_scanner:
-    :path: ".symlinks/plugins/qr_code_scanner/ios"
+  qr_code_scanner_plus:
+    :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
   quill_native_bridge_ios:
     :path: ".symlinks/plugins/quill_native_bridge_ios/ios"
   sensors_plus:
@@ -275,7 +272,6 @@ SPEC CHECKSUMS:
   is_ios_simulator: 1125d89fceb232f353d3ec3602c9a67da6e6aada
   just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
-  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
@@ -284,7 +280,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   pro_image_editor: e57a76b305fd8c2e06d57f92aec82b9c6a6e8d9f
   pro_video_editor: 71c273c0a82a72996526e2bfc5c2fbd2bb35aaaa
-  qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
+  qr_code_scanner_plus: c6e79405d5fc87c45349daed2da322bcb2728961
   quill_native_bridge_ios: f47af4b14e7757968486641656c5d23250cee521
   sensors_plus: 1c5f0a01ce21c609a4df404c4e6879d62bce287f
   Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e

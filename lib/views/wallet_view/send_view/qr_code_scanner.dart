@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
@@ -46,7 +46,6 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
-    controller?.dispose();
     super.dispose();
   }
 
@@ -56,15 +55,15 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCameraSafely();
+      controller!.pauseCamera();
     } else if (state == AppLifecycleState.resumed && isVisible) {
-      controller!.resumeCameraSafely();
+      controller!.resumeCamera();
     }
   }
 
   @override
   void didPushNext() {
-    controller?.pauseCameraSafely();
+    controller?.pauseCamera();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -73,7 +72,7 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
 
   @override
   void didPopNext() {
-    controller?.resumeCameraSafely();
+    controller?.resumeCamera();
     setState(() {
       isVisible = true;
     });
@@ -264,13 +263,14 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
 
         if (res != null && res.isNotEmpty) {
           if (context.mounted) {
-            if (res.toLowerCase().startsWith('lnbc')) {
+            final lnbc = extractLnbc(res);
+            if (lnbc != null) {
               if (invoice.isEmpty) {
-                invoice = res;
+                invoice = lnbc;
 
                 YNavigator.pushPage(
                   context,
-                  (context) => SendUsingInvoice(invoice: res),
+                  (context) => SendUsingInvoice(invoice: lnbc),
                 );
               }
             } else if (res.toLowerCase().startsWith('lnurl') ||

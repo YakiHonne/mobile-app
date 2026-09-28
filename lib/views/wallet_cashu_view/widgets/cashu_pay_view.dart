@@ -28,7 +28,7 @@ class CashuPayView extends HookWidget {
     final memoController = useTextEditingController();
 
     useListenable(toInputController);
-    final isInvoice = toInputController.text.toLowerCase().startsWith('lnbc');
+    final isInvoice = extractLnbc(toInputController.text.toLowerCase()) != null;
 
     final amountInSatsPay = useState(0);
 
@@ -60,7 +60,8 @@ class CashuPayView extends HookWidget {
         return;
       }
 
-      if (input.toLowerCase().startsWith('lnbc')) {
+      final lnbc = extractLnbc(input.toLowerCase());
+      if (lnbc != null) {
         final invoiceAmount = getlnbcValue(input).toInt();
         final success =
             await context.read<CashuWalletManagerCubit>().payInvoice(
@@ -264,10 +265,10 @@ class CashuPayView extends HookWidget {
                     (context) => QrScannerModal(
                       onValue: (value) {
                         final val = value.toLowerCase();
-
-                        if (val.startsWith('lnbc') ||
+                        final lnbc = extractLnbc(val);
+                        if (lnbc != null ||
                             val.startsWith('lnurl') ||
-                            emailRegExp.hasMatch(val)) {
+                            emailRegExp.hasMatch(lnbc ?? val)) {
                           toInputController.text = val;
                         }
                       },

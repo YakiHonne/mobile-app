@@ -163,41 +163,33 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       updateEventStats(stats);
     }
 
-    var received = false;
-
-    // A single note viewed on its own screen, not part of a feed-scroll
-    // burst — nothing to coalesce with, so apply each event as soon as it
-    // arrives instead of waiting for the whole relay round-trip.
     NostrFunctionsRepository.getContentStats(
       noteIds: r ? [] : [id],
       aTags: r ? [id] : [],
       since: eventStats != null ? eventStats.newestCreatedAt + 1 : null,
       includeComments: includeComments,
       authorPubkey: authorPubkey,
-    ).listen(
-      (event) {
-        received = true;
-        if (!isClosed) {
-          _applyEventsBatch([event]);
-        }
-      },
-      onDone: () {
-        if (isClosed) {
-          return;
-        }
+    ).listen((event) => _handleContentStats([event]));
 
-        if (!received && state.eventsStats[id] == null) {
-          // Genuinely zero matching events means _applyEventsBatch never
-          // runs, so eventsStats[id] would otherwise stay absent forever —
-          // indistinguishable from "still loading" to a UI watching for it.
-          // Seed an empty entry so watchers can tell "fetched, nothing
-          // there" from "haven't fetched yet".
-          final stats = Map<String, EventStats>.from(state.eventsStats)
-            ..[id] = EventStats.empty(id);
-          updateEventStats(stats);
-        }
-      },
-    );
+    // .listen(
+    //   (event) {
+    //     received = true;
+    //     if (!isClosed) {
+    //       _applyEventsBatch([event]);
+    //     }
+    //   },
+    //   onDone: () {
+    //     if (isClosed) {
+    //       return;
+    //     }
+
+    //     if (!received && state.eventsStats[id] == null) {
+    //       final stats = Map<String, EventStats>.from(state.eventsStats)
+    //         ..[id] = EventStats.empty(id);
+    //       updateEventStats(stats);
+    //     }
+    //   },
+    // );
   }
 
   Map<String, dynamic> getDirectStats(String id) {
@@ -640,7 +632,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       final List<DetailedNoteModel>? cachedNotes = state.previousNotes[note.id];
 
       if (cachedNotes != null &&
-          (cachedNotes.isEmpty || cachedNotes.first.isRoot)) {
+          (cachedNotes.isEmpty ||
+              _isCompletePreviousChain(note, cachedNotes))) {
         setLoading(false);
         _previousNotesAccessTime[note.id] = Helpers.now;
         return cachedNotes;
@@ -666,9 +659,17 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         return [];
       }
 
-      final availablePreviousNotes = await searchPreviousNotes(
+      final searchedPreviousNotes = await searchPreviousNotes(
         note,
         isActive: isActive,
+      );
+
+      // A reply can name a valid root while its immediate parent has been
+      // deleted or is unavailable on the queried relays. Keep that root as
+      // useful context instead of discarding the whole thread.
+      final availablePreviousNotes = await _addRootFallback(
+        note,
+        searchedPreviousNotes,
       );
 
       if (isActive?.call() == false) {
@@ -677,8 +678,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       }
 
       // Persist the resolved chain so later opens of this thread are instant.
-      if (availablePreviousNotes.isNotEmpty &&
-          availablePreviousNotes.first.isRoot) {
+      if (_isCompletePreviousChain(note, availablePreviousNotes)) {
         await localDatabaseRepository.setPreviousNoteChain(
           note.id,
           availablePreviousNotes.map((e) => e.id).toList(),
@@ -707,6 +707,54 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       setLoading(false);
       return [];
     }
+  }
+
+  Future<List<DetailedNoteModel>> _addRootFallback(
+    DetailedNoteModel note,
+    List<DetailedNoteModel> notes,
+  ) async {
+    if ((notes.isNotEmpty && notes.first.isRoot) ||
+        note.isOriginEtag != true ||
+        note.originId == null ||
+        note.originId!.isEmpty) {
+      return notes;
+    }
+
+    final event = await nc.db.loadEventById(note.originId!, false);
+    if (event == null ||
+        (event.kind != EventKind.TEXT_NOTE &&
+            event.kind != EventKind.COMMENT)) {
+      return notes;
+    }
+
+    final root = DetailedNoteModel.fromEvent(event);
+    if (!root.isRoot || notes.any((n) => n.id == root.id)) {
+      return notes;
+    }
+
+    return [root, ...notes];
+  }
+
+  bool _isCompletePreviousChain(
+    DetailedNoteModel note,
+    List<DetailedNoteModel> notes,
+  ) {
+    if (notes.isEmpty || !notes.first.isRoot) {
+      return false;
+    }
+
+    for (var index = 1; index < notes.length; index++) {
+      if (!_isDirectChildOf(notes[index], notes[index - 1])) {
+        return false;
+      }
+    }
+
+    return _isDirectChildOf(note, notes.last);
+  }
+
+  bool _isDirectChildOf(DetailedNoteModel child, DetailedNoteModel parent) {
+    return child.replyTo == parent.id ||
+        (child.replyTo.isEmpty && child.originId == parent.id);
   }
 
   Future<List<DetailedNoteModel>?> _reconstructPreviousNotes(

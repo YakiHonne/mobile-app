@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
@@ -23,7 +23,6 @@ class _QrScannerModalState extends State<QrScannerModal> {
 
   @override
   void dispose() {
-    controller?.dispose();
     super.dispose();
   }
 
@@ -55,7 +54,7 @@ class _QrScannerModalState extends State<QrScannerModal> {
                               scanData.code!.isNotEmpty &&
                               qrValue == null) {
                             qrValue = scanData.code;
-                            controller.pauseCameraSafely();
+                            controller.pauseCamera();
                             YNavigator.pop(context);
                             widget.onValue(scanData.code!);
                           }

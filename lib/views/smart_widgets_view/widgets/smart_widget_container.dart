@@ -275,7 +275,8 @@ class SmartWidgetComponentData extends HookWidget {
     final usedUrl = button.url.trim();
 
     if (button.type == SWBType.Zap && usedUrl.isNotEmpty) {
-      if (usedUrl.toLowerCase().startsWith('lnbc')) {
+      final lnbc = extractLnbc(usedUrl.toLowerCase());
+      if (lnbc != null) {
         showAppModalSheet(
           context: context,
           builder: (_) => SendZapsView(
@@ -283,7 +284,7 @@ class SmartWidgetComponentData extends HookWidget {
               lud06: usedUrl,
               lud16: usedUrl,
             ),
-            lnbc: usedUrl.trim(),
+            lnbc: lnbc,
             zapSplits: const [],
             isZapSplit: false,
           ),

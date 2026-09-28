@@ -242,13 +242,12 @@ class _VersionNewsState extends State<VersionNews> {
 /// Shown under [appVersion], so this list must be rewritten every release —
 /// it shipped once already holding the previous version's notes.
 final List<String> releaseNotes = [
-  'Added a video editor and compressor before publishing.',
-  'Engagement chart enhancements.',
-  'The note preview before publishing is now scrollable.',
-  'Fixed a GrapheneOS feed issue where notes failed to load.',
-  'Fixed a paid notes payment issue.',
-  'Fixed notifications showing "not found" when tapped.',
-  'Fixed replies not showing under some notes.',
+  'Updated QR code scanning for more reliable camera handling.',
+  'Video playback now keeps your device awake while a video is open.',
+  'Lightning invoices prefixed with "lightning:" are now accepted.',
+  'Reply threads retain available context when a reply is unavailable.',
+  'Paid-note payment events are now removed after processing.',
+  'General bug fixes and performance enhancements.',
 ];
 
 const content = [
