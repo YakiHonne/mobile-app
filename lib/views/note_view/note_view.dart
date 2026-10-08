@@ -186,7 +186,9 @@ class NoteView extends HookWidget {
           prev.mutesEvents.contains(currentNote.value.id) !=
               curr.mutesEvents.contains(currentNote.value.id),
       builder: (context, state) {
-        final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
+        final previousNotes = currentNote.value.isNip84Highlight
+            ? const <DetailedNoteModel>[]
+            : state.previousNotes[currentNote.value.id] ?? [];
         final hasMissingPreviousNote =
             _hasMissingPreviousNote(previousNotes, currentNote.value);
         final mutedThread = state.mutesEvents.contains(currentNote.value.id);
@@ -498,6 +500,17 @@ class _PreviousNotesSliver extends StatelessWidget {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[notes.length - 1 - index];
+        final noteItem = DetailedNoteContainer(
+          note: note,
+          isMain: false,
+          // A previous highlight keeps the thread connector at left while
+          // rendering its full NIP-84 composition in the content column.
+          isExtended: note.isNip84Highlight,
+          isPreviousNote: note.isNip84Highlight,
+          addLine: true,
+          extendLine: index == 0,
+          onClicked: isTransitioning ? null : () => onNoteSelected(note),
+        );
         return TweenAnimationBuilder<double>(
           key: ValueKey(note.id),
           tween: Tween(begin: 0.0, end: 1.0),
@@ -512,13 +525,7 @@ class _PreviousNotesSliver extends StatelessWidget {
               ),
             );
           },
-          child: DetailedNoteContainer(
-            note: note,
-            isMain: false,
-            addLine: true,
-            extendLine: index == 0,
-            onClicked: isTransitioning ? null : () => onNoteSelected(note),
-          ),
+          child: noteItem,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: kDefaultPadding / 2),

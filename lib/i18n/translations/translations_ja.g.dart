@@ -297,6 +297,12 @@ class TranslationsJa extends Translations {
 	@override String get following => 'フォロー中';
 	@override String get trending => 'トレンド';
 	@override String get highlights => 'ハイライト';
+	@override String get highlight => 'ハイライト';
+	@override String get highlighted => 'ハイライト済み';
+	@override String get highlightedFrom => 'ハイライト元';
+	@override String get untitledArticle => '無題の記事';
+	@override String get untitledNote => '無題のノート';
+	@override String get loadingSource => 'ソースを読み込み中…';
 	@override String get paid => '有料';
 	@override String get others => 'その他';
 	@override String get suggestionsBox => '提案ボックス';
@@ -885,6 +891,10 @@ class TranslationsJa extends Translations {
 	@override String get fetchingUserInboxRelays => 'ユーザー受信箱リレー取得中';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} が ${number} sats zapしました';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応';
+	@override String get highlightsDesc => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました';
+	@override String userHighlightedYourContent({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました';
 	@override String userRepostedYou({required Object name}) => '${name} があなたのコンテンツをリポスト';
 	@override String userMentionedYouInComment({required Object name}) => '${name} がコメントであなたをメンション';
 	@override String userMentionedYouInNote({required Object name}) => '${name} がノートであなたをメンション';
@@ -2496,6 +2506,12 @@ extension on TranslationsJa {
 			'following' => 'フォロー中',
 			'trending' => 'トレンド',
 			'highlights' => 'ハイライト',
+			'highlight' => 'ハイライト',
+			'highlighted' => 'ハイライト済み',
+			'highlightedFrom' => 'ハイライト元',
+			'untitledArticle' => '無題の記事',
+			'untitledNote' => '無題のノート',
+			'loadingSource' => 'ソースを読み込み中…',
 			'paid' => '有料',
 			'others' => 'その他',
 			'suggestionsBox' => '提案ボックス',
@@ -2744,18 +2760,18 @@ extension on TranslationsJa {
 			'post' => '投稿',
 			'seeAnything' => '改善できるものが見えますか？',
 			'writeNote' => 'ノートを書く',
-			'whatThinkThis' => 'これについてどう思いますか？',
-			'sourceRecommended' => 'ソース (推奨)',
-			'findPaidNoteCorrect' => 'この有料ノートを正しいと思います。',
-			'findPaidNoteMisleading' => 'この有料ノートを誤解を招くと思います。',
-			'selectOneReason' => '少なくとも1つの理由を選択',
-			'rateHelpful' => '役立つと評価',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'これについてどう思いますか？',
+			'sourceRecommended' => 'ソース (推奨)',
+			'findPaidNoteCorrect' => 'この有料ノートを正しいと思います。',
+			'findPaidNoteMisleading' => 'この有料ノートを誤解を招くと思います。',
+			'selectOneReason' => '少なくとも1つの理由を選択',
+			'rateHelpful' => '役立つと評価',
 			'rateNotHelpful' => '役に立たないと評価',
 			'ratedHelpful' => '役立つと評価',
 			'ratedNotHelpful' => '役に立たないと評価',
@@ -3090,6 +3106,10 @@ extension on TranslationsJa {
 			'fetchingUserInboxRelays' => 'ユーザー受信箱リレー取得中',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} が ${number} sats zapしました',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応',
+			'highlightsDesc' => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました',
+			'userHighlightedYourContent' => ({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました',
 			'userRepostedYou' => ({required Object name}) => '${name} があなたのコンテンツをリポスト',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} がコメントであなたをメンション',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} がノートであなたをメンション',
@@ -3258,6 +3278,12 @@ extension on TranslationsJa {
 			'blockHeight' => 'ブロック高さ',
 			'atContractCreation' => ({required Object number}) => '${number} (コントラクト作成時)',
 			'zkProofs' => 'ZK証明',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => '証明ダウンロード',
 			'walletConnectionString' => 'ウォレット接続文字列',
 			'walletConnectionStringDesc' => 'ウォレット接続文字列を安全にコピーまたはエクスポートしてください。私たちはこの情報を保存せず、失われた場合回復できません。',
@@ -3268,12 +3294,6 @@ extension on TranslationsJa {
 			'manageWallets' => 'ウォレット管理',
 			'roundDuration' => 'ラウンド期間',
 			'startAt' => ({required Object date}) => '開始: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'ログイン',
 			'addPicture' => '画像追加',
 			'editPicture' => '画像編集',
@@ -3776,6 +3796,12 @@ extension on TranslationsJa {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'Mintリストの更新中にエラーが発生しました',
 			'active' => 'アクティブ',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactive' => '非アクティブ',
 			'addCashuWallet' => 'Cashuウォレットを追加して、nostr経由でEcashの送受信を開始します。',
 			'mintUrl' => 'Mint URL',
@@ -3786,12 +3812,6 @@ extension on TranslationsJa {
 			'restoreWallet' => 'ウォレットを復元',
 			'restoreWalletDesc' => 'このMintでウォレットの証明を復元し、NOSTRに保存します',
 			'seedPhraseLocallyOnly' => 'シードフレーズは、ウォレットキーを導出するためにローカルでのみ使用されます。',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => '証明が復元されました',
 			'noProofsFound' => '証明が見つかりませんでした',
 			'errorRestoringProofs' => '証明の復元中にエラーが発生しました',
@@ -4294,6 +4314,12 @@ extension on TranslationsJa {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} 個のシャードを取得',
 			'pomRecoverSuccess' => '秘密鍵を復元しました',
 			'pomDownloadKey' => '鍵をダウンロード',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => 'アカウントの連携解除',
 			'pomUnlinkIntro' => 'まず秘密鍵を復元してコピーしてください。連携解除後に再度サインインするために必要です。',
 			'pomUnlinkContinue' => '鍵を保存しました — 続行',
@@ -4304,12 +4330,6 @@ extension on TranslationsJa {
 			'pomUnlinkSuccess' => 'アカウントの連携を解除しました。サインアウトしました。',
 			'pomUnlinkFailed' => 'アカウントの連携を解除できませんでした。もう一度お試しください。',
 			'pomKeyCopied' => '秘密鍵をコピーしました',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'アイデンティティサーバー',
 			'pomServerDesc' => 'アカウントはこのセントラルサーバー上にあります。当社のもの、他のプロバイダー、またはご自身のものを利用できます。',
 			'pomServerDefault' => 'デフォルト',

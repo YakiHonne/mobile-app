@@ -4,6 +4,7 @@ part of 'customize_notifications_cubit.dart';
 class CustomizeNotificationsState extends Equatable {
   final bool enablePushNotification;
   final bool notifMentionsReplies;
+  final bool notifHighlights;
   final bool notifReactions;
   final bool notifReposts;
   final bool notifZaps;
@@ -15,6 +16,7 @@ class CustomizeNotificationsState extends Equatable {
   const CustomizeNotificationsState({
     required this.enablePushNotification,
     required this.notifMentionsReplies,
+    this.notifHighlights = true,
     required this.notifReactions,
     required this.notifReposts,
     required this.notifZaps,
@@ -28,6 +30,7 @@ class CustomizeNotificationsState extends Equatable {
   List<Object?> get props => [
         enablePushNotification,
         notifMentionsReplies,
+        notifHighlights,
         notifReactions,
         notifReposts,
         notifZaps,
@@ -40,6 +43,7 @@ class CustomizeNotificationsState extends Equatable {
   CustomizeNotificationsState copyWith({
     bool? enablePushNotification,
     bool? notifMentionsReplies,
+    bool? notifHighlights,
     bool? notifReactions,
     bool? notifReposts,
     bool? notifZaps,
@@ -52,6 +56,7 @@ class CustomizeNotificationsState extends Equatable {
       enablePushNotification:
           enablePushNotification ?? this.enablePushNotification,
       notifMentionsReplies: notifMentionsReplies ?? this.notifMentionsReplies,
+      notifHighlights: notifHighlights ?? this.notifHighlights,
       notifReactions: notifReactions ?? this.notifReactions,
       notifReposts: notifReposts ?? this.notifReposts,
       notifZaps: notifZaps ?? this.notifZaps,

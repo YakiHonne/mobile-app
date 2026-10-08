@@ -91,6 +91,8 @@ class NotificationImageContainer extends StatelessWidget {
     String icon = _NIcons.mentions;
 
     switch (event.kind) {
+      case EventKind.HIGHLIGHT:
+        icon = _NIcons.quotes;
       case EventKind.REPOST:
         icon = _NIcons.reposts;
       case EventKind.REACTION:

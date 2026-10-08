@@ -297,6 +297,12 @@ class TranslationsAr extends Translations {
 	@override String get following => 'المتابعة';
 	@override String get trending => 'شائع';
 	@override String get highlights => 'البارزات';
+	@override String get highlight => 'تمييز';
+	@override String get highlighted => 'مُميّز';
+	@override String get highlightedFrom => 'مُميّز من';
+	@override String get untitledArticle => 'مقالة بلا عنوان';
+	@override String get untitledNote => 'ملاحظة بلا عنوان';
+	@override String get loadingSource => 'جارٍ تحميل المصدر…';
 	@override String get paid => 'مدفوع';
 	@override String get others => 'آخرون';
 	@override String get suggestionsBox => 'صندوق الاقتراحات';
@@ -885,6 +891,10 @@ class TranslationsAr extends Translations {
 	@override String get fetchingUserInboxRelays => 'جلب ترحيلات الصندوق الوارد للمستخدم';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك';
+	@override String get highlightsDesc => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ميّز نصًا من مقالك';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} ميّز نصًا من ملاحظتك';
+	@override String userHighlightedYourContent({required Object name}) => '${name} ميّز محتواك';
 	@override String userRepostedYou({required Object name}) => 'قام ${name} بإعادة نشر محتواك';
 	@override String userMentionedYouInComment({required Object name}) => '${name} ذكرك في تعليق';
 	@override String userMentionedYouInNote({required Object name}) => '${name} ذكرك في ملاحظة';
@@ -2496,6 +2506,12 @@ extension on TranslationsAr {
 			'following' => 'المتابعة',
 			'trending' => 'شائع',
 			'highlights' => 'البارزات',
+			'highlight' => 'تمييز',
+			'highlighted' => 'مُميّز',
+			'highlightedFrom' => 'مُميّز من',
+			'untitledArticle' => 'مقالة بلا عنوان',
+			'untitledNote' => 'ملاحظة بلا عنوان',
+			'loadingSource' => 'جارٍ تحميل المصدر…',
 			'paid' => 'مدفوع',
 			'others' => 'آخرون',
 			'suggestionsBox' => 'صندوق الاقتراحات',
@@ -2744,18 +2760,18 @@ extension on TranslationsAr {
 			'post' => 'نشر',
 			'seeAnything' => 'ترى أي شيء تريد تحسينه؟',
 			'writeNote' => 'اكتب ملاحظة',
-			'whatThinkThis' => 'ما رأيك في هذا؟',
-			'sourceRecommended' => 'المصدر (موصى به)',
-			'findPaidNoteCorrect' => 'ترى هذه الملاحظة المدفوعة صحيحة.',
-			'findPaidNoteMisleading' => 'ترى هذه الملاحظة المدفوعة مضللة.',
-			'selectOneReason' => 'اختر سببًا واحدًا على الأقل',
-			'rateHelpful' => 'تقييم مفيد',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'ما رأيك في هذا؟',
+			'sourceRecommended' => 'المصدر (موصى به)',
+			'findPaidNoteCorrect' => 'ترى هذه الملاحظة المدفوعة صحيحة.',
+			'findPaidNoteMisleading' => 'ترى هذه الملاحظة المدفوعة مضللة.',
+			'selectOneReason' => 'اختر سببًا واحدًا على الأقل',
+			'rateHelpful' => 'تقييم مفيد',
 			'rateNotHelpful' => 'تقييم غير مفيد',
 			'ratedHelpful' => 'تم التقييم مفيد',
 			'ratedNotHelpful' => 'تم التقييم غير مفيد',
@@ -3090,6 +3106,10 @@ extension on TranslationsAr {
 			'fetchingUserInboxRelays' => 'جلب ترحيلات الصندوق الوارد للمستخدم',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك',
+			'highlightsDesc' => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ميّز نصًا من مقالك',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ميّز نصًا من ملاحظتك',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} ميّز محتواك',
 			'userRepostedYou' => ({required Object name}) => 'قام ${name} بإعادة نشر محتواك',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} ذكرك في تعليق',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} ذكرك في ملاحظة',
@@ -3258,6 +3278,12 @@ extension on TranslationsAr {
 			'blockHeight' => 'ارتفاع الكتلة',
 			'atContractCreation' => ({required Object number}) => '${number} (عند إنشاء العقد)',
 			'zkProofs' => 'إثباتات ZK',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => 'تنزيل الإثباتات',
 			'walletConnectionString' => 'سلسلة اتصال المحفظة',
 			'walletConnectionStringDesc' => 'تأكد من نسخ أو تصدير سلسلة اتصال المحفظة بشكل آمن. نحن لا نخزن هذه المعلومات، وإذا فقدت، لا يمكن استرجاعها.',
@@ -3268,12 +3294,6 @@ extension on TranslationsAr {
 			'manageWallets' => 'إدارة المحافظ',
 			'roundDuration' => 'مدة الجولة',
 			'startAt' => ({required Object date}) => 'البدء في: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'تسجيل الدخول',
 			'addPicture' => 'إضافة صورة',
 			'editPicture' => 'تحرير الصورة',
@@ -3776,6 +3796,12 @@ extension on TranslationsAr {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'حدث خطأ أثناء تحديث قائمة Mints',
 			'active' => 'نشط',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactive' => 'غير نشط',
 			'addCashuWallet' => 'أضف محفظة Cashu وابدأ في إرسال واستلام Ecash عبر nostr.',
 			'mintUrl' => 'رابط Mint',
@@ -3786,12 +3812,6 @@ extension on TranslationsAr {
 			'restoreWallet' => 'استعادة المحفظة',
 			'restoreWalletDesc' => 'استعادة إثباتات محفظتك في هذا Mint لحفظها على NOSTR',
 			'seedPhraseLocallyOnly' => 'يتم استخدام عبارة الاسترداد الخاصة بك محليًا فقط لاشتقاق مفاتيح محفظتك.',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => 'تم استعادة الإثباتات',
 			'noProofsFound' => 'لم يتم العثور على إثباتات',
 			'errorRestoringProofs' => 'حدث خطأ أثناء استعادة الإثباتات',
@@ -4294,6 +4314,12 @@ extension on TranslationsAr {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} أجزاء تم جمعها',
 			'pomRecoverSuccess' => 'تمت استعادة المفتاح الخاص',
 			'pomDownloadKey' => 'تنزيل المفتاح',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => 'إلغاء ربط الحساب',
 			'pomUnlinkIntro' => 'استعد مفتاحك الخاص وانسخه أولاً — ستحتاج إليه لتسجيل الدخول مرة أخرى بعد إلغاء الربط.',
 			'pomUnlinkContinue' => 'لقد حفظت مفتاحي — متابعة',
@@ -4304,12 +4330,6 @@ extension on TranslationsAr {
 			'pomUnlinkSuccess' => 'تم إلغاء ربط الحساب. تم تسجيل خروجك.',
 			'pomUnlinkFailed' => 'تعذّر إلغاء ربط حسابك. يرجى المحاولة مرة أخرى.',
 			'pomKeyCopied' => 'تم نسخ المفتاح الخاص',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'خادم الهوية',
 			'pomServerDesc' => 'حسابك موجود على هذا الخادم المركزي. يمكنك استخدام خادمنا أو مزوّد آخر أو خادمك الخاص.',
 			'pomServerDefault' => 'افتراضي',

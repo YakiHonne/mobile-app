@@ -297,6 +297,12 @@ class TranslationsZh extends Translations {
 	@override String get following => '关注中';
 	@override String get trending => '趋势';
 	@override String get highlights => '亮点';
+	@override String get highlight => '高亮';
+	@override String get highlighted => '已高亮';
+	@override String get highlightedFrom => '高亮自';
+	@override String get untitledArticle => '无标题文章';
+	@override String get untitledNote => '无标题笔记';
+	@override String get loadingSource => '正在加载来源…';
 	@override String get paid => '付费';
 	@override String get others => '其他';
 	@override String get suggestionsBox => '建议盒';
@@ -885,6 +891,10 @@ class TranslationsZh extends Translations {
 	@override String get fetchingUserInboxRelays => '获取用户收件箱中继';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} zap您${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} 对您反应${reaction}';
+	@override String get highlightsDesc => '当有人高亮你的内容时收到通知。';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name}高亮了你的文章片段';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name}高亮了你的笔记片段';
+	@override String userHighlightedYourContent({required Object name}) => '${name}高亮了你的内容';
 	@override String userRepostedYou({required Object name}) => '${name} repost您的内容';
 	@override String userMentionedYouInComment({required Object name}) => '${name} 在评论中提及您';
 	@override String userMentionedYouInNote({required Object name}) => '${name} 在笔记中提及您';
@@ -2496,6 +2506,12 @@ extension on TranslationsZh {
 			'following' => '关注中',
 			'trending' => '趋势',
 			'highlights' => '亮点',
+			'highlight' => '高亮',
+			'highlighted' => '已高亮',
+			'highlightedFrom' => '高亮自',
+			'untitledArticle' => '无标题文章',
+			'untitledNote' => '无标题笔记',
+			'loadingSource' => '正在加载来源…',
 			'paid' => '付费',
 			'others' => '其他',
 			'suggestionsBox' => '建议盒',
@@ -2744,18 +2760,18 @@ extension on TranslationsZh {
 			'post' => '发布',
 			'seeAnything' => '看到可以改进的东西吗？',
 			'writeNote' => '写笔记',
-			'whatThinkThis' => '您对此怎么想？',
-			'sourceRecommended' => '来源（推荐）',
-			'findPaidNoteCorrect' => '您认为此付费笔记正确。',
-			'findPaidNoteMisleading' => '您认为此付费笔记误导。',
-			'selectOneReason' => '至少选择一个原因',
-			'rateHelpful' => '评为有用',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => '您对此怎么想？',
+			'sourceRecommended' => '来源（推荐）',
+			'findPaidNoteCorrect' => '您认为此付费笔记正确。',
+			'findPaidNoteMisleading' => '您认为此付费笔记误导。',
+			'selectOneReason' => '至少选择一个原因',
+			'rateHelpful' => '评为有用',
 			'rateNotHelpful' => '评为无用',
 			'ratedHelpful' => '评为有用',
 			'ratedNotHelpful' => '评为无用',
@@ -3090,6 +3106,10 @@ extension on TranslationsZh {
 			'fetchingUserInboxRelays' => '获取用户收件箱中继',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} zap您${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} 对您反应${reaction}',
+			'highlightsDesc' => '当有人高亮你的内容时收到通知。',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name}高亮了你的文章片段',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name}高亮了你的笔记片段',
+			'userHighlightedYourContent' => ({required Object name}) => '${name}高亮了你的内容',
 			'userRepostedYou' => ({required Object name}) => '${name} repost您的内容',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} 在评论中提及您',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} 在笔记中提及您',
@@ -3258,6 +3278,12 @@ extension on TranslationsZh {
 			'blockHeight' => '块高度',
 			'atContractCreation' => ({required Object number}) => '${number} （合同创建时）',
 			'zkProofs' => 'ZK证明',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => '下载证明',
 			'walletConnectionString' => '钱包连接字符串',
 			'walletConnectionStringDesc' => '确保安全复制或导出钱包连接字符串。我们不存储此信息，如果丢失，无法恢复。',
@@ -3268,12 +3294,6 @@ extension on TranslationsZh {
 			'manageWallets' => '管理钱包',
 			'roundDuration' => '回合持续时间',
 			'startAt' => ({required Object date}) => '开始于: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => '登录',
 			'addPicture' => '添加图片',
 			'editPicture' => '编辑图片',
@@ -3776,6 +3796,12 @@ extension on TranslationsZh {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => '更新 Mints 列表时出错',
 			'active' => '活跃',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactive' => '非活跃',
 			'addCashuWallet' => '添加 Cashu 钱包并开始通过 nostr 发送和接收 Ecash。',
 			'mintUrl' => 'Mint URL',
@@ -3786,12 +3812,6 @@ extension on TranslationsZh {
 			'restoreWallet' => '恢复钱包',
 			'restoreWalletDesc' => '恢复您在此 Mint 中的钱包证明以将其保存到 NOSTR',
 			'seedPhraseLocallyOnly' => '您的助记词仅在本地用于派生您的钱包密钥。',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => '证明已恢复',
 			'noProofsFound' => '未找到证明',
 			'errorRestoringProofs' => '恢复证明时出错',
@@ -4294,6 +4314,12 @@ extension on TranslationsZh {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '已获取 ${collected}/${threshold} 个分片',
 			'pomRecoverSuccess' => '私钥已恢复',
 			'pomDownloadKey' => '下载密钥',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => '解除账户关联',
 			'pomUnlinkIntro' => '请先恢复并复制你的私钥——解除关联后需要用它重新登录。',
 			'pomUnlinkContinue' => '我已保存密钥——继续',
@@ -4304,12 +4330,6 @@ extension on TranslationsZh {
 			'pomUnlinkSuccess' => '账户已解除关联，你已被登出。',
 			'pomUnlinkFailed' => '无法解除账户关联，请重试。',
 			'pomKeyCopied' => '已复制私钥',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => '身份中心服务器',
 			'pomServerDesc' => '你的账户位于此中心服务器上。可以使用我们的、其他提供方的，或你自己的服务器。',
 			'pomServerDefault' => '默认',

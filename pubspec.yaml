@@ -23,7 +23,7 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   camera: ^0.11.3
   chat_gpt_sdk: ^3.1.4
-  chewie: ^1.15.0
+  chewie: ^1.17.2
   connectivity_plus: ^6.0.5
   convert: ^3.1.1
   cookie_jar: ^4.0.8
@@ -97,11 +97,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0
   nested_scroll_view_plus: ^2.0.0
   nostr_core_enhanced:
-    git:
-      url: https://github.com/YakiHonne/nostr_core_enhanced.git
-      ref: main
-  # nostr_core_enhanced:
-  #   path: ../nostr_core_enhanced/
+    path: ../nostr_core_enhanced/
   numeral: ^3.0.0
   open_filex: ^4.7.0
   override_text_scale_factor: ^1.0.2
@@ -117,10 +113,6 @@ dependencies:
   pull_down_button: ^0.10.2
   pull_to_refresh: ^2.0.0
   qr_code_scanner_plus: ^2.3.0
-  # qr_code_scanner:
-  #   git:
-  #     url: https://github.com/YakiHonne/qr_code_scanner.git
-  #     ref: master
   qr_flutter: ^4.1.0
   responsive_framework: ^1.1.0
   screenshot: ^3.0.0
@@ -158,6 +150,8 @@ sentry:
 dependency_overrides:
   quill_native_bridge_windows: ^0.1.0
   pointycastle: ^4.0.0
+  share_handler_ios:
+    path: packages/share_handler_ios
 
 flutter_launcher_icons:
   android: true

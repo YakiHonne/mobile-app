@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unnecessary_null_comparison
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -30,6 +32,11 @@ class InternalWalletsView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      unawaited(walletManagerCubit.ensureBtcInFiat());
+      return null;
+    }, const []);
+
     final iwto = useState(InternalWalletTransactionOption.none);
 
     final isRefreshing = useState(false);

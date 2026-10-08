@@ -14,6 +14,7 @@ import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
+import '../feed_extra_refresh_controller.dart';
 import 'paid_notes_ad_cache.dart';
 
 part 'leading_state.dart';
@@ -46,6 +47,9 @@ class LeadingCubit extends Cubit<LeadingState> {
     initView();
   }
 
+  static const _initialFeedLimit = 25;
+  static const _loadMoreLimit = 50;
+
   // =============================================================================
   // PROPERTIES
   // =============================================================================
@@ -54,10 +58,13 @@ class LeadingCubit extends Cubit<LeadingState> {
   late StreamSubscription noteDeletionStream;
   bool delayLeading = true;
   final extraIds = <String>{};
+  int _extraRefreshGeneration = 0;
   int? score;
-  Timer? currentExtraTimer;
+  late final FeedExtraRefreshController _extraRefreshController =
+      FeedExtraRefreshController(onRefresh: _fetchExtraContent);
 
   final _adCache = PaidNotesAdCache();
+  bool _paidNoteAdsRequested = false;
   static const int _adFreshnessMs = 24 * 60 * 60 * 1000;
 
   // =============================================================================
@@ -134,13 +141,37 @@ class LeadingCubit extends Cubit<LeadingState> {
     }
 
     fetchMedia();
-    fetchPaidNoteAds();
 
     buildLeadingFeed(
       isAdding: false,
     );
+  }
 
-    suggestionsBoxCubit.initLeading();
+  void setFeedActive(bool active) {
+    if (!active) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setFeedActive(active);
+  }
+
+  void setAppResumed(bool resumed) {
+    if (!resumed) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setAppResumed(resumed);
+  }
+
+  Future<void> ensurePaidNoteAdsLoaded() async {
+    if (_paidNoteAdsRequested || subscriptionCubit.isPremium) {
+      return;
+    }
+
+    _paidNoteAdsRequested = true;
+    try {
+      await fetchPaidNoteAds();
+    } catch (_) {
+      _paidNoteAdsRequested = false;
+    }
   }
 
   Future<void> fetchPaidNoteAds() async {
@@ -181,7 +212,9 @@ class LeadingCubit extends Cubit<LeadingState> {
       );
       _adCache.setPool(events, seenCounts);
       _emitAdGate();
-    } catch (_) {}
+    } catch (_) {
+      _paidNoteAdsRequested = false;
+    }
   }
 
   void _emitAdGate() {
@@ -252,8 +285,9 @@ class LeadingCubit extends Cubit<LeadingState> {
   /// Clear the current data and reset state for the given source
   /// Clear all content and reset state for a given source
   void clearData(AppContentSource source) {
+    _extraRefreshGeneration++;
     extraIds.clear();
-    currentExtraTimer?.cancel();
+    _extraRefreshController.setHasContent(false);
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -287,69 +321,65 @@ class LeadingCubit extends Cubit<LeadingState> {
   }
 
   /// Manage extra content
-  Future<void> getExtra() async {
-    currentExtraTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) async {
-        if (state.content.isNotEmpty) {
-          final first = state.extraContent.isNotEmpty
-              ? state.extraContent.first
-              : state.content.first;
+  void getExtra() {
+    _extraRefreshController.setHasContent(state.content.isNotEmpty);
+  }
 
-          final currentSelectedSource =
-              appSettingsManagerCubit.getNotesSelectedSource();
+  Future<void> _fetchExtraContent() async {
+    if (isClosed || state.content.isEmpty) {
+      return;
+    }
+    final generation = _extraRefreshGeneration;
 
-          final f = appSettingsManagerCubit.getSelectedNotesFilter();
+    final first = state.extraContent.isNotEmpty
+        ? state.extraContent.first
+        : state.content.first;
+    final currentSelectedSource =
+        appSettingsManagerCubit.getNotesSelectedSource();
+    final f = appSettingsManagerCubit.getSelectedNotesFilter();
+    final since = first.createdAt + 1;
 
-          List<Event> content = [];
+    List<Event> content = [];
+    if (currentSelectedSource.key == AppContentSource.community) {
+      content = await getLeadingFeedCommunityEvents(
+        since: since,
+        limit: 20,
+        f: f,
+        isExtra: true,
+      );
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      content = await getLeadingFeedPacksEvents(
+        since: since,
+        limit: 20,
+      );
+    } else {
+      content = await getLeadingFeedRelayEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
+    }
 
-          final since = first.createdAt + 1;
+    if (isClosed || generation != _extraRefreshGeneration) {
+      return;
+    }
 
-          if (currentSelectedSource.key == AppContentSource.community) {
-            content = await getLeadingFeedCommunityEvents(
-              since: since,
-              limit: 20,
-              f: f,
-              isExtra: true,
-            );
-          } else if (currentSelectedSource.key == AppContentSource.packs) {
-            content = await getLeadingFeedPacksEvents(
-              since: since,
-              limit: 20,
-            );
-          } else {
-            content = await getLeadingFeedRelayEvents(
-              since: since,
-              limit: 20,
-              f: f,
-            );
-          }
+    content.removeWhere((event) {
+      final exists = extraIds.contains(event.id);
+      if (!exists) {
+        extraIds.add(event.id);
+      }
+      return exists;
+    });
 
-          content.removeWhere((e) {
-            final exists = extraIds.contains(e.id);
-
-            if (!exists) {
-              extraIds.add(e.id);
-            }
-
-            return exists;
-          });
-
-          if (content.isNotEmpty) {
-            if (!isClosed) {
-              emit(
-                state.copyWith(
-                  extraContent: [...content, ...state.extraContent],
-                  onAddingData: content.isEmpty
-                      ? UpdatingState.idle
-                      : UpdatingState.success,
-                ),
-              );
-            }
-          }
-        }
-      },
-    );
+    if (content.isNotEmpty && !isClosed) {
+      emit(
+        state.copyWith(
+          extraContent: [...content, ...state.extraContent],
+          onAddingData: UpdatingState.success,
+        ),
+      );
+    }
   }
 
   Future<void> appendExtra(Function scrollToPosition) async {
@@ -379,8 +409,7 @@ class LeadingCubit extends Cubit<LeadingState> {
   }
 
   void resetExtra() {
-    currentExtraTimer?.cancel();
-    getExtra();
+    _extraRefreshController.reset();
   }
 
   // =============================================================================
@@ -437,7 +466,7 @@ class LeadingCubit extends Cubit<LeadingState> {
               : null;
       final events = await getLeadingFeedPacksEvents(
         until: until,
-        limit: 50,
+        limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
       );
 
       if (!isClosed) {
@@ -470,7 +499,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     final events = await getLeadingFeedCommunityEvents(
       f: f,
       until: until,
-      limit: 50,
+      limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
     );
 
     if (!isClosed) {
@@ -506,7 +535,9 @@ class LeadingCubit extends Cubit<LeadingState> {
                     ? CommonFeedTypes.trending
                     : source.value == SOURCE_PAID
                         ? CommonFeedTypes.paid
-                        : CommonFeedTypes.widgets;
+                        : source.value == 'nip84_highlights'
+                            ? CommonFeedTypes.nip84Highlights
+                            : CommonFeedTypes.widgets;
 
     final usePubkeys = type == CommonFeedTypes.recent ||
         type == CommonFeedTypes.recentWithReplies ||
@@ -574,7 +605,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     final filtered = await getLeadingFeedRelayEvents(
       f: f,
       until: until,
-      limit: 50,
+      limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
     );
 
     if (!isClosed) {
@@ -710,9 +741,11 @@ class LeadingCubit extends Cubit<LeadingState> {
   /// Clean up resources when the cubit is closed
   @override
   Future<void> close() {
+    _extraRefreshGeneration++;
     feedStream.cancel();
     mutesStream.cancel();
     noteDeletionStream.cancel();
+    _extraRefreshController.dispose();
     // Note: score is an int, not a StreamSubscription
     return super.close();
   }

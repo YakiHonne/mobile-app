@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "YakiHonne Highlights",
+  "version": "0.1.0",
+  "description": "Select webpage text and open a highlight draft in YakiHonne.",
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

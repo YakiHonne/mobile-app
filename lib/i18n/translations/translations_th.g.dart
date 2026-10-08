@@ -297,6 +297,12 @@ class TranslationsTh extends Translations {
 	@override String get following => 'กำลังติดตาม';
 	@override String get trending => 'เทรนด์';
 	@override String get highlights => 'ไฮไลท์';
+	@override String get highlight => 'ไฮไลท์';
+	@override String get highlighted => 'ไฮไลท์แล้ว';
+	@override String get highlightedFrom => 'ไฮไลท์จาก';
+	@override String get untitledArticle => 'บทความไม่มีชื่อ';
+	@override String get untitledNote => 'โน้ตไม่มีชื่อ';
+	@override String get loadingSource => 'กำลังโหลดแหล่งที่มา…';
 	@override String get paid => 'จ่ายเงิน';
 	@override String get others => 'อื่นๆ';
 	@override String get suggestionsBox => 'กล่องคำแนะนำ';
@@ -885,6 +891,10 @@ class TranslationsTh extends Translations {
 	@override String get fetchingUserInboxRelays => 'กำลังดึงรีเลย์กล่องขาเข้าของผู้ใช้';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} Zap คุณ ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} 反应 ${reaction} บนคุณ';
+	@override String get highlightsDesc => 'รับการแจ้งเตือนเมื่อมีคนไฮไลท์เนื้อหาของคุณ';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ไฮไลท์ข้อความจากบทความของคุณ';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} ไฮไลท์ข้อความจากโน้ตของคุณ';
+	@override String userHighlightedYourContent({required Object name}) => '${name} ไฮไลท์เนื้อหาของคุณ';
 	@override String userRepostedYou({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ';
 	@override String userMentionedYouInComment({required Object name}) => '${name} กล่าวถึงคุณในความคิดเห็น';
 	@override String userMentionedYouInNote({required Object name}) => '${name} กล่าวถึงคุณในโน้ต';
@@ -2496,6 +2506,12 @@ extension on TranslationsTh {
 			'following' => 'กำลังติดตาม',
 			'trending' => 'เทรนด์',
 			'highlights' => 'ไฮไลท์',
+			'highlight' => 'ไฮไลท์',
+			'highlighted' => 'ไฮไลท์แล้ว',
+			'highlightedFrom' => 'ไฮไลท์จาก',
+			'untitledArticle' => 'บทความไม่มีชื่อ',
+			'untitledNote' => 'โน้ตไม่มีชื่อ',
+			'loadingSource' => 'กำลังโหลดแหล่งที่มา…',
 			'paid' => 'จ่ายเงิน',
 			'others' => 'อื่นๆ',
 			'suggestionsBox' => 'กล่องคำแนะนำ',
@@ -2744,18 +2760,18 @@ extension on TranslationsTh {
 			'post' => 'โพสต์',
 			'seeAnything' => 'เห็นอะไรที่สามารถปรับปรุงได้ไหม?',
 			'writeNote' => 'เขียนโน้ต',
-			'whatThinkThis' => 'คุณคิดอย่างไรเกี่ยวกับเรื่องนี้?',
-			'sourceRecommended' => 'แหล่งที่มา (แนะนำ)',
-			'findPaidNoteCorrect' => 'คุณคิดว่าโน้ตที่ชำระเงินนี้ถูกต้อง',
-			'findPaidNoteMisleading' => 'คุณคิดว่าโน้ตที่ชำระเงินนี้ทำให้เข้าใจผิด',
-			'selectOneReason' => 'เลือกอย่างน้อยหนึ่งเหตุผล',
-			'rateHelpful' => 'ให้คะแนนเป็นประโยชน์',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'คุณคิดอย่างไรเกี่ยวกับเรื่องนี้?',
+			'sourceRecommended' => 'แหล่งที่มา (แนะนำ)',
+			'findPaidNoteCorrect' => 'คุณคิดว่าโน้ตที่ชำระเงินนี้ถูกต้อง',
+			'findPaidNoteMisleading' => 'คุณคิดว่าโน้ตที่ชำระเงินนี้ทำให้เข้าใจผิด',
+			'selectOneReason' => 'เลือกอย่างน้อยหนึ่งเหตุผล',
+			'rateHelpful' => 'ให้คะแนนเป็นประโยชน์',
 			'rateNotHelpful' => 'ให้คะแนนไม่เป็นประโยชน์',
 			'ratedHelpful' => 'ให้คะแนนเป็นประโยชน์',
 			'ratedNotHelpful' => 'ให้คะแนนไม่เป็นประโยชน์',
@@ -3090,6 +3106,10 @@ extension on TranslationsTh {
 			'fetchingUserInboxRelays' => 'กำลังดึงรีเลย์กล่องขาเข้าของผู้ใช้',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} Zap คุณ ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} 反应 ${reaction} บนคุณ',
+			'highlightsDesc' => 'รับการแจ้งเตือนเมื่อมีคนไฮไลท์เนื้อหาของคุณ',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ไฮไลท์ข้อความจากบทความของคุณ',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ไฮไลท์ข้อความจากโน้ตของคุณ',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} ไฮไลท์เนื้อหาของคุณ',
 			'userRepostedYou' => ({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} กล่าวถึงคุณในความคิดเห็น',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} กล่าวถึงคุณในโน้ต',
@@ -3258,6 +3278,12 @@ extension on TranslationsTh {
 			'blockHeight' => 'ความสูงบล็อก',
 			'atContractCreation' => ({required Object number}) => '${number} (ที่การสร้างสัญญา)',
 			'zkProofs' => 'หลักฐาน ZK',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => 'ดาวน์โหลดหลักฐาน',
 			'walletConnectionString' => 'สตริงการเชื่อมต่อกระเป๋าเงิน',
 			'walletConnectionStringDesc' => 'ตรวจสอบให้แน่ใจว่าคัดลอกหรือส่งออกสตริงการเชื่อมต่อกระเป๋าเงินอย่างปลอดภัย เราไม่เก็บข้อมูลนี้ และหากสูญหายจะไม่สามารถกู้คืนได้',
@@ -3268,12 +3294,6 @@ extension on TranslationsTh {
 			'manageWallets' => 'จัดการกระเป๋าเงิน',
 			'roundDuration' => 'ระยะเวลารอบ',
 			'startAt' => ({required Object date}) => 'เริ่มที่: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'เข้าสู่ระบบ',
 			'addPicture' => 'เพิ่มภาพ',
 			'editPicture' => 'แก้ไขภาพ',
@@ -3776,6 +3796,12 @@ extension on TranslationsTh {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'เกิดข้อผิดพลาดขณะอัปเดตรายการ Mints',
 			'active' => 'ใช้งานอยู่',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactive' => 'ไม่ใช้งาน',
 			'addCashuWallet' => 'เพิ่มกระเป๋าเงิน Cashu และเริ่มส่งและรับ Ecash ผ่าน nostr',
 			'mintUrl' => 'URL ของ Mint',
@@ -3786,12 +3812,6 @@ extension on TranslationsTh {
 			'restoreWallet' => 'กู้คืนกระเป๋าเงิน',
 			'restoreWalletDesc' => 'กู้คืนหลักฐานของกระเป๋าเงินของคุณใน Mint นี้เพื่อบันทึกไว้ใน NOSTR',
 			'seedPhraseLocallyOnly' => 'วลีเริ่มต้นของคุณจะถูกใช้เฉพาะในเครื่องเพื่อรับคีย์กระเป๋าเงินของคุณ',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => 'กู้คืนหลักฐานแล้ว',
 			'noProofsFound' => 'ไม่พบหลักฐาน',
 			'errorRestoringProofs' => 'เกิดข้อผิดพลาดขณะกู้คืนหลักฐาน',
@@ -4294,6 +4314,12 @@ extension on TranslationsTh {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => 'เก็บชิ้นส่วนแล้ว ${collected}/${threshold}',
 			'pomRecoverSuccess' => 'กู้คืนคีย์ส่วนตัวแล้ว',
 			'pomDownloadKey' => 'ดาวน์โหลดคีย์',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => 'ยกเลิกการเชื่อมโยงบัญชี',
 			'pomUnlinkIntro' => 'กู้คืนและคัดลอกคีย์ส่วนตัวของคุณก่อน — คุณจะต้องใช้คีย์นี้เพื่อลงชื่อเข้าใช้อีกครั้งหลังยกเลิกการเชื่อมโยง',
 			'pomUnlinkContinue' => 'ฉันบันทึกคีย์แล้ว — ดำเนินการต่อ',
@@ -4304,12 +4330,6 @@ extension on TranslationsTh {
 			'pomUnlinkSuccess' => 'ยกเลิกการเชื่อมโยงบัญชีแล้ว คุณได้ออกจากระบบ',
 			'pomUnlinkFailed' => 'ไม่สามารถยกเลิกการเชื่อมโยงบัญชีได้ โปรดลองอีกครั้ง',
 			'pomKeyCopied' => 'คัดลอกคีย์ส่วนตัวแล้ว',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'เซิร์ฟเวอร์ตัวตน',
 			'pomServerDesc' => 'บัญชีของคุณอยู่บนเซิร์ฟเวอร์กลางนี้ คุณสามารถใช้ของเรา ผู้ให้บริการรายอื่น หรือของคุณเอง',
 			'pomServerDefault' => 'ค่าเริ่มต้น',

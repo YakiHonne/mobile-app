@@ -14,6 +14,7 @@ import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
+import '../feed_extra_refresh_controller.dart';
 
 part 'media_state.dart';
 
@@ -29,19 +30,24 @@ class MediaCubit extends Cubit<MediaState> {
             selectedSource:
                 appSettingsManagerCubit.getMediaSelectedSource().key,
           ),
-        ) {
-    _initializeStreams();
-    initView();
-  }
+        );
 
   late StreamSubscription feedStream;
   late StreamSubscription mutesStream;
-  Timer? currentExtraTimer;
-  bool delayLeading = true;
+  late final FeedExtraRefreshController _extraRefreshController =
+      FeedExtraRefreshController(onRefresh: _fetchExtraContent);
+  int _extraRefreshGeneration = 0;
+  bool _streamsInitialized = false;
+  Future<void>? _initialization;
   // =============================================================================
   // STREAMS & LISTENERS
   // =============================================================================
   void _initializeStreams() {
+    if (_streamsInitialized) {
+      return;
+    }
+    _streamsInitialized = true;
+
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
       (appCustom) async {
@@ -82,18 +88,30 @@ class MediaCubit extends Cubit<MediaState> {
   // =============================================================================
   // PUBLIC METHODS
   // =============================================================================
-  /// Initialize the view with data and suggestions
-  Future<void> initView() async {
-    if (delayLeading) {
-      await Future.delayed(const Duration(seconds: 1));
-      delayLeading = false;
+  /// Start the Media feed the first time its tab is selected.
+  Future<void> ensureInitialized() => _initialization ??= _initialize();
+
+  void setFeedActive(bool active) {
+    if (!active) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setFeedActive(active);
+  }
+
+  void setAppResumed(bool resumed) {
+    if (!resumed) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setAppResumed(resumed);
+  }
+
+  Future<void> _initialize() async {
+    if (isClosed) {
+      return;
     }
 
-    buildMediaFeed(
-      isAdding: false,
-    );
-
-    suggestionsBoxCubit.initLeading();
+    _initializeStreams();
+    await buildMediaFeed(isAdding: false);
   }
 
   // =============================================================================
@@ -116,6 +134,8 @@ class MediaCubit extends Cubit<MediaState> {
 
   /// Clear all content data and reset state for the given source
   void clearData(AppContentSource source) {
+    _extraRefreshGeneration++;
+    _extraRefreshController.setHasContent(false);
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -130,68 +150,67 @@ class MediaCubit extends Cubit<MediaState> {
   }
 
   /// Manage extra content
-  Future<void> getExtra() async {
-    if (currentExtraTimer != null) {
-      currentExtraTimer?.cancel();
+  void getExtra() {
+    _extraRefreshController.setHasContent(state.content.isNotEmpty);
+  }
+
+  Future<void> _fetchExtraContent() async {
+    if (isClosed || state.content.isEmpty) {
+      return;
+    }
+    final generation = _extraRefreshGeneration;
+
+    final first = state.extraContent.isNotEmpty
+        ? state.extraContent.first
+        : state.content.first;
+    final currentSelectedSource =
+        appSettingsManagerCubit.getMediaSelectedSource();
+    final f = appSettingsManagerCubit.getSelectedMediaFilter();
+    final since = first.createdAt.toSecondsSinceEpoch() + 1;
+
+    List<BaseEventModel> content = [];
+    if (currentSelectedSource.key == AppContentSource.community) {
+      content = await getMediaFeedCommunityEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
+
+      if (isClosed || generation != _extraRefreshGeneration) {
+        return;
+      }
+
+      final source = appSettingsManagerCubit.state.selectedDiscoverSource;
+      if (source.value == SOURCE_RECENT) {
+        final globalIds = state.content.map((event) => event.id).toSet();
+        content.removeWhere((event) => globalIds.contains(event.id));
+      }
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      content = await getMediaFeedPacksEvents(
+        since: since,
+        limit: 20,
+      );
+    } else if (currentSelectedSource.key == AppContentSource.relay) {
+      content = await getMediaFeedRelayEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
     }
 
-    currentExtraTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) async {
-        if (state.content.isNotEmpty) {
-          final first = state.extraContent.isNotEmpty
-              ? state.extraContent.first
-              : state.content.first;
+    if (isClosed || generation != _extraRefreshGeneration) {
+      return;
+    }
 
-          final currentSelectedSource =
-              appSettingsManagerCubit.getMediaSelectedSource();
-
-          final f = appSettingsManagerCubit.getSelectedMediaFilter();
-
-          List<BaseEventModel> content = [];
-
-          if (currentSelectedSource.key == AppContentSource.community) {
-            content = await getMediaFeedCommunityEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-              f: f,
-            );
-
-            final source = appSettingsManagerCubit.state.selectedDiscoverSource;
-
-            if (source.value == SOURCE_RECENT) {
-              final globalIds = state.content.map((e) => e.id).toSet();
-              content.removeWhere((e) => globalIds.contains(e.id));
-            }
-          } else if (currentSelectedSource.key == AppContentSource.packs) {
-            content = await getMediaFeedPacksEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-            );
-          } else if (currentSelectedSource.key == AppContentSource.relay) {
-            content = await getMediaFeedRelayEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-              f: f,
-            );
-          }
-
-          if (content.isNotEmpty) {
-            if (!isClosed) {
-              emit(
-                state.copyWith(
-                  extraContent: [...content, ...state.extraContent],
-                  onLoading: false,
-                  onAddingData: content.isEmpty
-                      ? UpdatingState.idle
-                      : UpdatingState.success,
-                ),
-              );
-            }
-          }
-        }
-      },
-    );
+    if (content.isNotEmpty && !isClosed) {
+      emit(
+        state.copyWith(
+          extraContent: [...content, ...state.extraContent],
+          onLoading: false,
+          onAddingData: UpdatingState.success,
+        ),
+      );
+    }
   }
 
   Future<void> buildMediaFeed({
@@ -500,9 +519,17 @@ class MediaCubit extends Cubit<MediaState> {
   }
 
   void resetExtra() {
-    currentExtraTimer?.cancel();
-    feedStream.cancel();
-    mutesStream.cancel();
-    getExtra();
+    _extraRefreshController.reset();
+  }
+
+  @override
+  Future<void> close() async {
+    _extraRefreshGeneration++;
+    _extraRefreshController.dispose();
+    if (_streamsInitialized) {
+      await feedStream.cancel();
+      await mutesStream.cancel();
+    }
+    return super.close();
   }
 }

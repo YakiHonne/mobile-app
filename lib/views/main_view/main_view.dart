@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
@@ -140,6 +142,9 @@ class MainViewContent extends HookWidget {
     // Read current view index at hook level (outside BlocBuilder)
     final mainState = context.watch<MainCubit>().state;
     final currentIndex = indexMap[mainState.mainView] ?? 0;
+    final lifecycleState = useAppLifecycleState();
+    final appIsResumed =
+        lifecycleState == null || lifecycleState == AppLifecycleState.resumed;
 
     final visitedTabs = useState<Set<int>>({currentIndex});
     final isFirstVisit = !visitedTabs.value.contains(currentIndex);
@@ -147,6 +152,21 @@ class MainViewContent extends HookWidget {
         isFirstVisit ? {...visitedTabs.value, currentIndex} : visitedTabs.value;
 
     final settledGlassIndex = useState(currentIndex);
+
+    useEffect(() {
+      leadingCubit.setAppResumed(appIsResumed);
+      mediaCubit.setAppResumed(appIsResumed);
+      discoverCubit.setAppResumed(appIsResumed);
+      return null;
+    }, [appIsResumed]);
+
+    useEffect(() {
+      return () {
+        leadingCubit.setFeedActive(false);
+        mediaCubit.setFeedActive(false);
+        discoverCubit.setFeedActive(false);
+      };
+    }, const []);
 
     useEffect(() {
       if (isFirstVisit) {
@@ -157,6 +177,17 @@ class MainViewContent extends HookWidget {
       } else {
         settledGlassIndex.value = currentIndex;
       }
+
+      leadingCubit.setFeedActive(currentIndex == indexMap[MainViews.leading]);
+      mediaCubit.setFeedActive(currentIndex == indexMap[MainViews.media]);
+      discoverCubit.setFeedActive(currentIndex == indexMap[MainViews.articles]);
+
+      if (currentIndex == indexMap[MainViews.media]) {
+        unawaited(mediaCubit.ensureInitialized());
+      } else if (currentIndex == indexMap[MainViews.articles]) {
+        unawaited(discoverCubit.ensureInitialized());
+      }
+
       return null;
     }, [currentIndex]);
 
@@ -457,6 +488,14 @@ class MainViewContent extends HookWidget {
                   onClicked: onScrollTop,
                 ),
                 drawer: const MainViewDrawer(),
+                onDrawerChanged: (isOpened) {
+                  if (isOpened && canSign()) {
+                    unawaited(walletManagerCubit.ensureBtcInFiat());
+                    if (state.isCashuWallet) {
+                      unawaited(cashuWalletManagerCubit.ensureInitialized());
+                    }
+                  }
+                },
                 body: body,
               );
       },

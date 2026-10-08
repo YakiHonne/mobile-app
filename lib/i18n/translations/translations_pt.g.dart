@@ -297,6 +297,12 @@ class TranslationsPt extends Translations {
 	@override String get following => 'seguindo';
 	@override String get trending => 'tendências';
 	@override String get highlights => 'destaques';
+	@override String get highlight => 'destaque';
+	@override String get highlighted => 'Destacado';
+	@override String get highlightedFrom => 'Destacado de';
+	@override String get untitledArticle => 'Artigo sem título';
+	@override String get untitledNote => 'Nota sem título';
+	@override String get loadingSource => 'A carregar fonte…';
 	@override String get paid => 'pago';
 	@override String get others => 'outros';
 	@override String get suggestionsBox => 'Caixa de sugestões';
@@ -885,6 +891,10 @@ class TranslationsPt extends Translations {
 	@override String get fetchingUserInboxRelays => 'Buscando relays de inbox do usuário';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} zappou você ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} reagiu ${reaction} em você';
+	@override String get highlightsDesc => 'Receba uma notificação quando alguém destacar seu conteúdo.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} destacou um trecho do seu artigo';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} destacou um trecho da sua nota';
+	@override String userHighlightedYourContent({required Object name}) => '${name} destacou seu conteúdo';
 	@override String userRepostedYou({required Object name}) => '${name} repostou seu conteúdo';
 	@override String userMentionedYouInComment({required Object name}) => '${name} mencionou você em um comentário';
 	@override String userMentionedYouInNote({required Object name}) => '${name} mencionou você em uma nota';
@@ -2496,6 +2506,12 @@ extension on TranslationsPt {
 			'following' => 'seguindo',
 			'trending' => 'tendências',
 			'highlights' => 'destaques',
+			'highlight' => 'destaque',
+			'highlighted' => 'Destacado',
+			'highlightedFrom' => 'Destacado de',
+			'untitledArticle' => 'Artigo sem título',
+			'untitledNote' => 'Nota sem título',
+			'loadingSource' => 'A carregar fonte…',
 			'paid' => 'pago',
 			'others' => 'outros',
 			'suggestionsBox' => 'Caixa de sugestões',
@@ -2744,18 +2760,18 @@ extension on TranslationsPt {
 			'post' => 'Publicar',
 			'seeAnything' => 'Vê algo que pode ser melhorado?',
 			'writeNote' => 'Escreva uma nota',
-			'whatThinkThis' => 'O que acha disso?',
-			'sourceRecommended' => 'Fonte (recomendada)',
-			'findPaidNoteCorrect' => 'Você considera esta nota pagada correta.',
-			'findPaidNoteMisleading' => 'Você considera esta nota pagada enganosa.',
-			'selectOneReason' => 'Selecione pelo menos uma razão',
-			'rateHelpful' => 'Avaliar como útil',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'O que acha disso?',
+			'sourceRecommended' => 'Fonte (recomendada)',
+			'findPaidNoteCorrect' => 'Você considera esta nota pagada correta.',
+			'findPaidNoteMisleading' => 'Você considera esta nota pagada enganosa.',
+			'selectOneReason' => 'Selecione pelo menos uma razão',
+			'rateHelpful' => 'Avaliar como útil',
 			'rateNotHelpful' => 'Avaliar como não útil',
 			'ratedHelpful' => 'Avaliado como útil',
 			'ratedNotHelpful' => 'Avaliado como não útil',
@@ -3090,6 +3106,10 @@ extension on TranslationsPt {
 			'fetchingUserInboxRelays' => 'Buscando relays de inbox do usuário',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} zappou você ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} reagiu ${reaction} em você',
+			'highlightsDesc' => 'Receba uma notificação quando alguém destacar seu conteúdo.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} destacou um trecho do seu artigo',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} destacou um trecho da sua nota',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} destacou seu conteúdo',
 			'userRepostedYou' => ({required Object name}) => '${name} repostou seu conteúdo',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} mencionou você em um comentário',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} mencionou você em uma nota',
@@ -3258,6 +3278,12 @@ extension on TranslationsPt {
 			'blockHeight' => 'Altura do bloco',
 			'atContractCreation' => ({required Object number}) => '${number} (na criação do contrato)',
 			'zkProofs' => 'Provas ZK',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => 'Baixar provas',
 			'walletConnectionString' => 'String de conexão da carteira',
 			'walletConnectionStringDesc' => 'Certifique-se de copiar ou exportar com segurança a string de conexão da carteira. Não armazenamos esta informação, e se perdida, não pode ser recuperada.',
@@ -3268,12 +3294,6 @@ extension on TranslationsPt {
 			'manageWallets' => 'Gerenciar carteiras',
 			'roundDuration' => 'Duração da rodada',
 			'startAt' => ({required Object date}) => 'Início em: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'Login',
 			'addPicture' => 'Adicionar imagem',
 			'editPicture' => 'Editar imagem',
@@ -3776,6 +3796,12 @@ extension on TranslationsPt {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'Erro ao atualizar a lista de mints',
 			'active' => 'Ativo',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactive' => 'Inativo',
 			'addCashuWallet' => 'Adicionar Carteira Cashu e começar a enviar e receber Ecash via nostr.',
 			'mintUrl' => 'URL do Mint',
@@ -3786,12 +3812,6 @@ extension on TranslationsPt {
 			'restoreWallet' => 'Restaurar carteira',
 			'restoreWalletDesc' => 'Restaurar provas da sua carteira neste mint para salvá-las no NOSTR',
 			'seedPhraseLocallyOnly' => 'Sua frase semente é usada apenas localmente para derivar as chaves da sua carteira.',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => 'Provas restauradas',
 			'noProofsFound' => 'Nenhuma prova encontrada',
 			'errorRestoringProofs' => 'Erro ao restaurar provas',
@@ -4294,6 +4314,12 @@ extension on TranslationsPt {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} fragmentos recuperados',
 			'pomRecoverSuccess' => 'Chave privada recuperada',
 			'pomDownloadKey' => 'Baixar chave',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => 'Desvincular conta',
 			'pomUnlinkIntro' => 'Primeiro recupere a sua chave privada e copie-a — você precisará dela para entrar novamente após desvincular.',
 			'pomUnlinkContinue' => 'Salvei minha chave — continuar',
@@ -4304,12 +4330,6 @@ extension on TranslationsPt {
 			'pomUnlinkSuccess' => 'Conta desvinculada. Você foi desconectado.',
 			'pomUnlinkFailed' => 'Não foi possível desvincular sua conta. Tente novamente.',
 			'pomKeyCopied' => 'Chave privada copiada',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'Servidor de identidade',
 			'pomServerDesc' => 'Sua conta fica neste servidor central. Você pode usar o nosso, outro provedor ou o seu próprio.',
 			'pomServerDefault' => 'Padrão',

@@ -14,6 +14,7 @@ import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
+import '../feed_extra_refresh_controller.dart';
 
 part 'discover_state.dart';
 
@@ -39,37 +40,49 @@ class DiscoverCubit extends Cubit<DiscoverState> {
             selectedSource:
                 appSettingsManagerCubit.getDiscoverSelectedSource().key,
           ),
-        ) {
-    init();
-  }
+        );
   // =============================================================================
   // PROPERTIES
   // =============================================================================
   StreamSubscription? feedStream;
   StreamSubscription? mutesStream;
-  Timer? currentExtraTimer;
+  late final FeedExtraRefreshController _extraRefreshController =
+      FeedExtraRefreshController(onRefresh: _fetchExtraContent);
   ExploreType exploreType = ExploreType.articles;
   final extraIds = <String>{};
+  int _extraRefreshGeneration = 0;
+  Future<void>? _initialization;
 
   // =============================================================================
   // PUBLIC METHODS
   // =============================================================================
-  /// Initialize the cubit with data and set up streams
-  Future<void> init() async {
-    Future.delayed(const Duration(seconds: 1)).then(
-      (_) {
-        // Initialize suggestions
-        suggestionsBoxCubit.initDiscover();
+  /// Start the Discover feed the first time its tab is selected.
+  Future<void> ensureInitialized() => _initialization ??= _initialize();
 
-        // Build initial feed
-        buildDiscoverFeed(
-          exploreType: ExploreType.articles,
-          isAdding: false,
-        );
+  void setFeedActive(bool active) {
+    if (!active) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setFeedActive(active);
+  }
 
-        // Set up streams
-        _setupStreams();
-      },
+  void setAppResumed(bool resumed) {
+    if (!resumed) {
+      _extraRefreshGeneration++;
+    }
+    _extraRefreshController.setAppResumed(resumed);
+  }
+
+  Future<void> _initialize() async {
+    if (isClosed) {
+      return;
+    }
+
+    _setupStreams();
+    suggestionsBoxCubit.initDiscover();
+    await buildDiscoverFeed(
+      exploreType: ExploreType.articles,
+      isAdding: false,
     );
   }
 
@@ -130,6 +143,8 @@ class DiscoverCubit extends Cubit<DiscoverState> {
 
   /// Clear all content data and reset state for the given source
   void clearData(AppContentSource source) {
+    _extraRefreshGeneration++;
+    _extraRefreshController.setHasContent(false);
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -145,74 +160,72 @@ class DiscoverCubit extends Cubit<DiscoverState> {
   }
 
   /// Manage extra content
-  Future<void> getExtra() async {
-    if (currentExtraTimer != null) {
-      currentExtraTimer?.cancel();
+  void getExtra() {
+    _extraRefreshController.setHasContent(state.content.isNotEmpty);
+  }
+
+  Future<void> _fetchExtraContent() async {
+    if (isClosed || state.content.isEmpty) {
+      return;
+    }
+    final generation = _extraRefreshGeneration;
+
+    final first = state.extraContent.isNotEmpty
+        ? state.extraContent.first
+        : state.content.first;
+    final currentSelectedSource =
+        appSettingsManagerCubit.getDiscoverSelectedSource();
+    final f = appSettingsManagerCubit.getSelectedDiscoverFilter();
+    final since = first.createdAt.toSecondsSinceEpoch() + 1;
+
+    List<BaseEventModel> content = [];
+    if (currentSelectedSource.key == AppContentSource.community) {
+      content = await getExploreFeedCommunityEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
+
+      if (isClosed || generation != _extraRefreshGeneration) {
+        return;
+      }
+
+      final source = appSettingsManagerCubit.state.selectedDiscoverSource;
+      if (source.value == SOURCE_TOP) {
+        final globalIds = state.content.map((event) => event.id).toSet();
+        content.removeWhere((event) => globalIds.contains(event.id));
+      }
+    } else if (currentSelectedSource.key == AppContentSource.packs) {
+      content = await getExploreFeedPacksEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
+    } else if (currentSelectedSource.key == AppContentSource.relay) {
+      content = await getExploreFeedRelayEvents(
+        since: since,
+        limit: 20,
+        f: f,
+      );
     }
 
-    currentExtraTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) async {
-        if (state.content.isNotEmpty) {
-          final first = state.extraContent.isNotEmpty
-              ? state.extraContent.first
-              : state.content.first;
+    if (isClosed || generation != _extraRefreshGeneration) {
+      return;
+    }
 
-          final currentSelectedSource =
-              appSettingsManagerCubit.getDiscoverSelectedSource();
-
-          final f = appSettingsManagerCubit.getSelectedDiscoverFilter();
-
-          List<BaseEventModel> content = [];
-
-          if (currentSelectedSource.key == AppContentSource.community) {
-            content = await getExploreFeedCommunityEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-              f: f,
-            );
-
-            final source = appSettingsManagerCubit.state.selectedDiscoverSource;
-
-            if (source.value == SOURCE_TOP) {
-              final globalIds = state.content.map((e) => e.id).toSet();
-              content.removeWhere((e) => globalIds.contains(e.id));
-            }
-          } else if (currentSelectedSource.key == AppContentSource.packs) {
-            content = await getExploreFeedPacksEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-              f: f,
-            );
-          } else if (currentSelectedSource.key == AppContentSource.relay) {
-            content = await getExploreFeedRelayEvents(
-              since: first.createdAt.toSecondsSinceEpoch() + 1,
-              limit: 20,
-              f: f,
-            );
-          }
-
-          if (content.isNotEmpty) {
-            if (!isClosed) {
-              emit(
-                state.copyWith(
-                  extraContent: [...content, ...state.extraContent],
-                  onLoading: false,
-                  onAddingData: content.isEmpty
-                      ? UpdatingState.idle
-                      : UpdatingState.success,
-                ),
-              );
-            }
-          }
-        }
-      },
-    );
+    if (content.isNotEmpty && !isClosed) {
+      emit(
+        state.copyWith(
+          extraContent: [...content, ...state.extraContent],
+          onLoading: false,
+          onAddingData: UpdatingState.success,
+        ),
+      );
+    }
   }
 
   void resetExtra() {
-    currentExtraTimer?.cancel();
-    getExtra();
+    _extraRefreshController.reset();
   }
 
   // =============================================================================
@@ -492,8 +505,10 @@ class DiscoverCubit extends Cubit<DiscoverState> {
   /// Clean up resources when the cubit is closed
   @override
   Future<void> close() {
+    _extraRefreshGeneration++;
     feedStream?.cancel();
     mutesStream?.cancel();
+    _extraRefreshController.dispose();
     return super.close();
   }
 

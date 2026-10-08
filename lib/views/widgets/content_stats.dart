@@ -1,12 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/static_properties.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
@@ -15,6 +18,7 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../models/curation_model.dart';
 import '../../models/flash_news_model.dart';
+import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_data_repository.dart';
 import '../../utils/bot_toast_util.dart';
@@ -26,6 +30,7 @@ import 'app_icon.dart';
 import 'custom_icon_buttons.dart';
 import 'dotted_container.dart';
 import 'fluid_blur_container.dart';
+import 'fluid_pull_down_button.dart';
 import 'fluid_sheet.dart';
 import 'loading_indicators.dart';
 import 'note_stats.dart';
@@ -116,12 +121,14 @@ class ContentStats extends HookWidget {
 
           final replies = stats['replies'];
           final quotes = stats['quotes'];
+          final reposts = stats['reposts'];
           final reactions = stats['reactions'];
           final zappers = stats['zappers'];
           final zapsData = stats['zapsData'];
           final selfZaps = stats['selfZaps'];
           final selfReaction = stats['selfReaction'];
           final selfQuote = stats['selfQuote'];
+          final selfRepost = stats['selfRepost'];
           final selfReply = stats['selfReply'];
 
           final widgets = buildActionButtons(
@@ -132,6 +139,8 @@ class ContentStats extends HookWidget {
             selfReply: selfReply,
             quotes: quotes,
             selfQuote: selfQuote,
+            reposts: reposts,
+            selfRepost: selfRepost,
             zappers: zappers,
             zapsData: zapsData,
             selfZaps: selfZaps,
@@ -256,6 +265,8 @@ class ContentStats extends HookWidget {
     required dynamic selfReply,
     required dynamic quotes,
     required dynamic selfQuote,
+    required dynamic reposts,
+    required dynamic selfRepost,
     required dynamic zappers,
     required dynamic zapsData,
     required dynamic selfZaps,
@@ -265,33 +276,191 @@ class ContentStats extends HookWidget {
     required String aTag,
   }) {
     final actions = Map<String, bool>.from(
-        nostrRepository.currentAppCustomization?.actionsArrangement ??
-            defaultActionsArrangement)
-      ..remove('reposts');
+      nostrRepository.currentAppCustomization?.actionsArrangement ??
+          defaultActionsArrangement,
+    );
 
     return actions.entries
         .where(
-      (action) => action.value,
-    )
-        .map((action) {
-      switch (action.key) {
-        case 'reactions':
-          return action.value
-              ? _reactButton(reactions, selfReaction, aTag, isVideo, iconSize)
-              : const SizedBox.shrink();
-        case 'replies':
-          return _replyButton(
-              context, aTag, isVideo, selfReply, replies, iconSize, fontSize);
-        case 'quotes':
-          return _quoteButton(
-              context, aTag, quotes, selfQuote, iconSize, fontSize);
-        case 'zaps':
-          return _zapButton(
-              aTag, zappers, zapsData, selfZaps, iconSize, fontSize, isVideo);
-        default:
-          return const SizedBox.shrink();
-      }
-    }).toList();
+          (action) => action.value,
+        )
+        .map<Widget?>((action) {
+          switch (action.key) {
+            case 'reactions':
+              return action.value
+                  ? _reactButton(
+                      reactions, selfReaction, aTag, isVideo, iconSize)
+                  : const SizedBox.shrink();
+            case 'replies':
+              return _replyButton(context, aTag, isVideo, selfReply, replies,
+                  iconSize, fontSize);
+            case 'reposts':
+              if (isFluid()) {
+                return _fluidRepostPulldown(
+                  context,
+                  aTag,
+                  reposts,
+                  quotes,
+                  selfRepost,
+                  selfQuote,
+                  iconSize,
+                  fontSize,
+                );
+              }
+              return _repostButton(
+                context,
+                aTag,
+                reposts,
+                selfRepost,
+                iconSize,
+                fontSize,
+              );
+            case 'quotes':
+              if (isFluid()) {
+                return null;
+              }
+              return _quoteButton(
+                  context, aTag, quotes, selfQuote, iconSize, fontSize);
+            case 'zaps':
+              return _zapButton(aTag, zappers, zapsData, selfZaps, iconSize,
+                  fontSize, isVideo);
+            default:
+              return const SizedBox.shrink();
+          }
+        })
+        .whereType<Widget>()
+        .toList();
+  }
+
+  Widget _fluidRepostPulldown(
+    BuildContext context,
+    String aTag,
+    dynamic reposts,
+    dynamic quotes,
+    dynamic selfRepost,
+    dynamic selfQuote,
+    double iconSize,
+    double? fontSize,
+  ) {
+    final count = (reposts as Map).length + (quotes as Map).length;
+    return FluidPullDownButton(
+      animationBuilder: (context, state, child) => child,
+      routeTheme: PullDownMenuRouteTheme(
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      itemBuilder: (context) => [
+        PullDownMenuItem(
+          title: context.t.repost.capitalizeFirst(),
+          onTap: () => doIfCanSign(
+            context: context,
+            func: () => _repostContent(context, aTag),
+          ),
+          iconWidget: AppIcon(
+            FeatureIcons.repost,
+            size: 20,
+            color: selfRepost == true
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).primaryColorDark,
+          ),
+        ),
+        PullDownMenuItem(
+          title: context.t.quote.capitalizeFirst(),
+          onTap: () => doIfCanSign(
+            context: context,
+            func: () => _openQuoteSheet(context, aTag),
+          ),
+          iconWidget: AppIcon(
+            FeatureIcons.quote,
+            size: 20,
+            color: selfQuote == true
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).primaryColorDark,
+          ),
+        ),
+      ],
+      buttonBuilder: (context, showMenu) => CustomIconButton(
+        backgroundColor: kTransparent,
+        icon: FeatureIcons.repost,
+        onClicked: showMenu,
+        value: count > 0 ? count.toString() : '0',
+        iconColor: (selfRepost == true || selfQuote == true)
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        textColor: (selfRepost == true || selfQuote == true)
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).highlightColor,
+        size: iconSize,
+        fontSize: fontSize,
+      ),
+    );
+  }
+
+  CustomIconButton _repostButton(
+    BuildContext context,
+    String aTag,
+    dynamic reposts,
+    dynamic selfRepost,
+    double iconSize,
+    double? fontSize,
+  ) {
+    return CustomIconButton(
+      backgroundColor: kTransparent,
+      icon: FeatureIcons.repost,
+      onLongPress: () => showAppModalSheet(
+        context: context,
+        builder: (_) => NetStatsView(
+          id: aTag,
+          type: NoteRelatedEventsType.reposts,
+        ),
+      ),
+      onClicked: () => doIfCanSign(
+        context: context,
+        func: () => _repostContent(context, aTag),
+      ),
+      value: reposts.length.toString(),
+      iconColor: selfRepost
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      textColor: selfRepost
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).highlightColor,
+      size: iconSize,
+      fontSize: fontSize,
+    );
+  }
+
+  void _repostContent(BuildContext context, String aTag) {
+    final original = _originalEvent();
+    if (original == null) {
+      BotToastUtils.showError(t.errorGeneratingEvent.capitalizeFirst());
+      return;
+    }
+    final isReplaceable = original.tags.any(
+      (tag) => tag.isNotEmpty && tag.first == 'd',
+    );
+    notesEventsCubit.repostContent(
+      original,
+      statsId: aTag,
+      address: isReplaceable ? aTag : null,
+    );
+  }
+
+  Event? _originalEvent() {
+    final raw = switch (attachedEvent) {
+      final Article article => article.stringifiedEvent,
+      final VideoModel video => video.stringifiedEvent,
+      final PictureModel picture => picture.stringifiedEvent,
+      final Curation curation => curation.stringifiedEvent,
+      _ => null,
+    };
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    try {
+      return Event.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
   }
 
   ContentZapButton _zapButton(
@@ -340,25 +509,7 @@ class ContentStats extends HookWidget {
       },
       onClicked: () {
         doIfCanSign(
-          func: () {
-            showAppModalSheet(
-              context: context,
-              builder: (_) {
-                return AddReply(
-                  attachedEvent: attachedEvent,
-                  isMention: false,
-                  isComment: false,
-                  isQuote: true,
-                  onSuccess: (ev) {
-                    notesEventsCubit.addEventRelatedData(
-                      event: ev,
-                      replyNoteId: aTag,
-                    );
-                  },
-                );
-              },
-            );
-          },
+          func: () => _openQuoteSheet(context, aTag),
           context: context,
         );
       },
@@ -371,6 +522,24 @@ class ContentStats extends HookWidget {
           : Theme.of(context).highlightColor,
       size: iconSize,
       fontSize: fontSize,
+    );
+  }
+
+  void _openQuoteSheet(BuildContext context, String aTag) {
+    showAppModalSheet(
+      context: context,
+      builder: (_) => AddReply(
+        attachedEvent: attachedEvent,
+        isMention: false,
+        isComment: false,
+        isQuote: true,
+        onSuccess: (ev) {
+          notesEventsCubit.addEventRelatedData(
+            event: ev,
+            replyNoteId: aTag,
+          );
+        },
+      ),
     );
   }
 

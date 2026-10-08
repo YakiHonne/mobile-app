@@ -65,7 +65,11 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   NostrCore wnc = NostrCore(db: nc.db, loadRemoteCache: false);
   Map<String, int> btcInFiat = {};
+  DateTime? _btcRatesFetchedAt;
+  Future<void>? _btcRatesRequest;
   int index = -1;
+
+  static const Duration _btcRatesFreshness = Duration(minutes: 30);
 
   final AppLifecycleNotifier _appLifecycleNotifier = AppLifecycleNotifier();
 
@@ -97,7 +101,6 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       );
 
       _requestBalanceForSelectedWallet(wallets[selectedWalletId]);
-      getBtcInFiat();
     } catch (e) {
       _logError('Failed to initialize wallet cubit', e);
     }
@@ -802,7 +805,49 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     }
   }
 
+  Future<void> ensureBtcInFiat() async {
+    final fetchedAt = _btcRatesFetchedAt;
+    if (btcInFiat.isNotEmpty &&
+        fetchedAt != null &&
+        DateTime.now().difference(fetchedAt) < _btcRatesFreshness) {
+      return;
+    }
+
+    await _fetchBtcInFiat();
+  }
+
   Future<void> getBtcInFiat() async {
+    await _fetchBtcInFiat(forceRefresh: true);
+  }
+
+  Future<void> _fetchBtcInFiat({bool forceRefresh = false}) async {
+    if (!forceRefresh) {
+      final fetchedAt = _btcRatesFetchedAt;
+      if (btcInFiat.isNotEmpty &&
+          fetchedAt != null &&
+          DateTime.now().difference(fetchedAt) < _btcRatesFreshness) {
+        return;
+      }
+    }
+
+    final inFlightRequest = _btcRatesRequest;
+    if (inFlightRequest != null) {
+      await inFlightRequest;
+      return;
+    }
+
+    final request = _loadBtcInFiat();
+    _btcRatesRequest = request;
+    try {
+      await request;
+    } finally {
+      if (identical(_btcRatesRequest, request)) {
+        _btcRatesRequest = null;
+      }
+    }
+  }
+
+  Future<void> _loadBtcInFiat() async {
     try {
       final res = await HttpFunctionsRepository.get(
         'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currencies.keys.join(',')}',
@@ -810,10 +855,22 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
       if (res != null) {
         final data = res['bitcoin'];
+        final updatedRates = Map<String, int>.from(btcInFiat);
         for (final f in currencies.keys) {
-          btcInFiat[f] =
-              data[f] != null ? num.parse(data[f].toString()).toInt() : -1;
+          final rate = data[f];
+          if (rate != null) {
+            updatedRates[f] = num.parse(rate.toString()).toInt();
+          } else {
+            updatedRates.putIfAbsent(f, () => -1);
+          }
         }
+
+        btcInFiat = updatedRates;
+        _btcRatesFetchedAt = DateTime.now();
+        if (!isClosed) {
+          _emitRefresh();
+        }
+        await getSatsToFiat();
       }
     } catch (e) {
       _logError('Failed to get BTC price', e);
@@ -822,7 +879,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   double getBtcInFiatFromAmount(int amount) {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (current == null || current <= 0) {
       return -1;
     } else {
       final availableBTC = amount / 100000000;
@@ -832,7 +889,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   double getFiatInBtcFromAmount(int amount) {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (current == null || current <= 0) {
       return -1;
     } else {
       final availableBTC = amount * 100000000;
@@ -842,7 +899,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   Future<void> getSatsToFiat() async {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (state.balance < 0 || current == null || current <= 0) {
       _updateFiatBalance(-1);
     } else {
       final availableBTC = state.balance / 100000000;
