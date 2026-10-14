@@ -1129,6 +1129,8 @@ class TranslationsRu extends Translations {
 	@override String get shareWidgetImage => 'Поделиться изображением виджета';
 	@override String get inputField => 'Поле ввода';
 	@override String get noReplies => 'Нет ответов';
+	@override String get noVisibleReplies => 'Нет видимых ответов';
+	@override String get spamRepliesHiddenHint => 'Потенциально нежелательные ответы скрыты ниже.';
 	@override String get message => 'Сообщение';
 	@override String get chat => 'Чат';
 	@override String get onlyLettersNumber => 'Разрешены только буквы и цифры';
@@ -2230,6 +2232,13 @@ class TranslationsRu extends Translations {
 	@override String get pastDue => 'Просрочена';
 	@override String get unpaid => 'Не оплачена';
 	@override String get incomplete => 'Не завершена';
+	@override String get spamFilter => 'Фильтр потенциального спама';
+	@override String get spamFilterDesc => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.';
+	@override String seePotentialSpams({required Object count}) => 'Посмотреть потенциальный спам: ${count}';
+	@override String get showSpamReplies => 'Показать потенциально нежелательные ответы';
+	@override String get hideSpamReplies => 'Скрыть потенциально нежелательные ответы';
+	@override String get markAsSpam => 'Пометить как спам';
+	@override String get notSpam => 'Не спам';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -3350,6 +3359,8 @@ extension on TranslationsRu {
 			'shareWidgetImage' => 'Поделиться изображением виджета',
 			'inputField' => 'Поле ввода',
 			'noReplies' => 'Нет ответов',
+			'noVisibleReplies' => 'Нет видимых ответов',
+			'spamRepliesHiddenHint' => 'Потенциально нежелательные ответы скрыты ниже.',
 			'message' => 'Сообщение',
 			'chat' => 'Чат',
 			'onlyLettersNumber' => 'Разрешены только буквы и цифры',
@@ -3794,14 +3805,14 @@ extension on TranslationsRu {
 			'noMintsAvailable' => 'Нет доступных mints',
 			'currencies' => 'Валюты',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'Ошибка при обновлении списка mints',
-			'active' => 'Активный',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'Ошибка при обновлении списка mints',
+			'active' => 'Активный',
 			'inactive' => 'Неактивный',
 			'addCashuWallet' => 'Добавьте кошелек Cashu и начните отправлять и получать Ecash через nostr.',
 			'mintUrl' => 'URL Mint',
@@ -4312,14 +4323,14 @@ extension on TranslationsRu {
 			'pomRecoverShard' => 'Восстановить фрагмент',
 			'pomShardCollected' => 'Фрагмент получен',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => 'Получено фрагментов: ${collected}/${threshold}',
-			'pomRecoverSuccess' => 'Приватный ключ восстановлен',
-			'pomDownloadKey' => 'Скачать ключ',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => 'Приватный ключ восстановлен',
+			'pomDownloadKey' => 'Скачать ключ',
 			'pomUnlinkTitle' => 'Отвязать аккаунт',
 			'pomUnlinkIntro' => 'Сначала восстановите приватный ключ и скопируйте его — он понадобится для входа после отвязки.',
 			'pomUnlinkContinue' => 'Я сохранил ключ — продолжить',
@@ -4463,6 +4474,13 @@ extension on TranslationsRu {
 			'pastDue' => 'Просрочена',
 			'unpaid' => 'Не оплачена',
 			'incomplete' => 'Не завершена',
+			'spamFilter' => 'Фильтр потенциального спама',
+			'spamFilterDesc' => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.',
+			'seePotentialSpams' => ({required Object count}) => 'Посмотреть потенциальный спам: ${count}',
+			'showSpamReplies' => 'Показать потенциально нежелательные ответы',
+			'hideSpamReplies' => 'Скрыть потенциально нежелательные ответы',
+			'markAsSpam' => 'Пометить как спам',
+			'notSpam' => 'Не спам',
 			_ => null,
 		};
 	}

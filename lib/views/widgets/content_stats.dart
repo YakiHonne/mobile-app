@@ -228,6 +228,16 @@ class ContentStats extends HookWidget {
               child: ZappersRow(
                 zapData: zapsData,
                 zappers: zappers,
+                onFluidTap: () {
+                  showAppModalSheet(
+                    context: context,
+                    builder: (_) => _ContentStatsModal(
+                      aTag: aTag,
+                      zappers: zappers,
+                      initialIndex: 3,
+                    ),
+                  );
+                },
               ),
             ),
             secondChild: const SizedBox(width: double.infinity),
@@ -851,14 +861,19 @@ class _ContentStatsModal extends HookWidget {
   const _ContentStatsModal({
     required this.aTag,
     required this.zappers,
+    this.initialIndex = 0,
   });
 
   final String aTag;
   final Map<String, MapEntry<String, int>> zappers;
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 4);
+    final tabController = useTabController(
+      initialLength: 4,
+      initialIndex: initialIndex,
+    );
 
     return Padding(
       padding:

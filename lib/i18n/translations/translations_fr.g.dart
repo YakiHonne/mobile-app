@@ -1129,6 +1129,8 @@ class TranslationsFr extends Translations {
 	@override String get shareWidgetImage => 'Partager l\'image du widget';
 	@override String get inputField => 'Champ d\'entrée';
 	@override String get noReplies => 'Pas de réponses';
+	@override String get noVisibleReplies => 'Aucune réponse visible';
+	@override String get spamRepliesHiddenHint => 'Les réponses potentiellement indésirables sont masquées ci-dessous.';
 	@override String get message => 'Message';
 	@override String get chat => 'Chat';
 	@override String get onlyLettersNumber => 'Seules les lettres et les chiffres sont autorisés';
@@ -2230,6 +2232,13 @@ class TranslationsFr extends Translations {
 	@override String get pastDue => 'En retard';
 	@override String get unpaid => 'Impayé';
 	@override String get incomplete => 'Incomplet';
+	@override String get spamFilter => 'Filtre de spam potentiel';
+	@override String get spamFilterDesc => 'Réduire les réponses des auteurs qui semblent faire du spam. Vous pouvez toujours les développer.';
+	@override String seePotentialSpams({required Object count}) => 'Voir ${count} spams potentiels';
+	@override String get showSpamReplies => 'Afficher les réponses potentiellement indésirables';
+	@override String get hideSpamReplies => 'Masquer les réponses potentiellement indésirables';
+	@override String get markAsSpam => 'Signaler comme indésirable';
+	@override String get notSpam => 'Pas indésirable';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -3350,6 +3359,8 @@ extension on TranslationsFr {
 			'shareWidgetImage' => 'Partager l\'image du widget',
 			'inputField' => 'Champ d\'entrée',
 			'noReplies' => 'Pas de réponses',
+			'noVisibleReplies' => 'Aucune réponse visible',
+			'spamRepliesHiddenHint' => 'Les réponses potentiellement indésirables sont masquées ci-dessous.',
 			'message' => 'Message',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Seules les lettres et les chiffres sont autorisés',
@@ -3794,14 +3805,14 @@ extension on TranslationsFr {
 			'noMintsAvailable' => 'Aucun mint disponible',
 			'currencies' => 'Devises',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'Erreur lors de la mise à jour de la liste des mints',
-			'active' => 'Actif',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'Erreur lors de la mise à jour de la liste des mints',
+			'active' => 'Actif',
 			'inactive' => 'Inactif',
 			'addCashuWallet' => 'Ajouter un Portefeuille Cashu et commencer à envoyer et recevoir de l\'Ecash via nostr.',
 			'mintUrl' => 'URL du Mint',
@@ -4312,14 +4323,14 @@ extension on TranslationsFr {
 			'pomRecoverShard' => 'Récupérer le fragment',
 			'pomShardCollected' => 'Fragment collecté',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} fragments collectés',
-			'pomRecoverSuccess' => 'Clé privée récupérée',
-			'pomDownloadKey' => 'Télécharger la clé',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => 'Clé privée récupérée',
+			'pomDownloadKey' => 'Télécharger la clé',
 			'pomUnlinkTitle' => 'Dissocier le compte',
 			'pomUnlinkIntro' => 'Récupérez d\'abord votre clé privée et copiez-la — vous en aurez besoin pour vous reconnecter après la dissociation.',
 			'pomUnlinkContinue' => 'J\'ai enregistré ma clé — continuer',
@@ -4463,6 +4474,13 @@ extension on TranslationsFr {
 			'pastDue' => 'En retard',
 			'unpaid' => 'Impayé',
 			'incomplete' => 'Incomplet',
+			'spamFilter' => 'Filtre de spam potentiel',
+			'spamFilterDesc' => 'Réduire les réponses des auteurs qui semblent faire du spam. Vous pouvez toujours les développer.',
+			'seePotentialSpams' => ({required Object count}) => 'Voir ${count} spams potentiels',
+			'showSpamReplies' => 'Afficher les réponses potentiellement indésirables',
+			'hideSpamReplies' => 'Masquer les réponses potentiellement indésirables',
+			'markAsSpam' => 'Signaler comme indésirable',
+			'notSpam' => 'Pas indésirable',
 			_ => null,
 		};
 	}

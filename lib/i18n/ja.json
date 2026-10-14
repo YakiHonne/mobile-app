@@ -1089,6 +1089,8 @@
   "shareWidgetImage": "ウィジェット画像共有",
   "inputField": "入力フィールド",
   "noReplies": "返信なし",
+  "noVisibleReplies": "表示できる返信はありません",
+  "spamRepliesHiddenHint": "スパムの可能性がある返信は下に非表示です。",
   "message": "メッセージ",
   "chat": "チャット",
   "onlyLettersNumber": "文字と数字のみ許可",
@@ -2189,5 +2191,12 @@
   "canceled": "キャンセル済み",
   "pastDue": "支払い延滞",
   "unpaid": "未払い",
-  "incomplete": "未完了"
+  "incomplete": "未完了",
+  "spamFilter": "スパムの可能性がある返信のフィルター",
+  "spamFilterDesc": "スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。",
+  "seePotentialSpams": "スパムの可能性がある投稿を{{count}}件表示",
+  "showSpamReplies": "スパムの可能性がある返信を表示",
+  "hideSpamReplies": "スパムの可能性がある返信を非表示",
+  "markAsSpam": "スパムとしてマーク",
+  "notSpam": "スパムではない"
 }

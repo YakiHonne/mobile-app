@@ -1089,6 +1089,8 @@
   "shareWidgetImage": "विजेट छवि शेयर करें",
   "inputField": "इनपुट फील्ड",
   "noReplies": "कोई उत्तर नहीं",
+  "noVisibleReplies": "कोई दिखाई देने वाला उत्तर नहीं",
+  "spamRepliesHiddenHint": "संभावित स्पैम उत्तर नीचे छिपे हैं।",
   "message": "संदेश",
   "chat": "चैट",
   "onlyLettersNumber": "केवल अक्षर और संख्या अनुमत",
@@ -2189,5 +2191,12 @@
   "canceled": "रद्द",
   "pastDue": "बकाया",
   "unpaid": "अवैतनिक",
-  "incomplete": "अपूर्ण"
+  "incomplete": "अपूर्ण",
+  "spamFilter": "संभावित स्पैम फ़िल्टर",
+  "spamFilterDesc": "उन लेखकों की प्रतिक्रियाएँ समेटें जो स्पैम जैसे लगते हैं। आप उन्हें कभी भी खोल सकते हैं।",
+  "seePotentialSpams": "{{count}} संभावित स्पैम देखें",
+  "showSpamReplies": "संभावित स्पैम प्रतिक्रियाएँ दिखाएँ",
+  "hideSpamReplies": "संभावित स्पैम प्रतिक्रियाएँ छिपाएँ",
+  "markAsSpam": "स्पैम के रूप में चिह्नित करें",
+  "notSpam": "स्पैम नहीं"
 }

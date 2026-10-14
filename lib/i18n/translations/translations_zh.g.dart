@@ -1129,6 +1129,8 @@ class TranslationsZh extends Translations {
 	@override String get shareWidgetImage => '分享部件图像';
 	@override String get inputField => '输入字段';
 	@override String get noReplies => '无回复';
+	@override String get noVisibleReplies => '没有可见回复';
+	@override String get spamRepliesHiddenHint => '疑似垃圾信息回复已在下方隐藏。';
 	@override String get message => '消息';
 	@override String get chat => '聊天';
 	@override String get onlyLettersNumber => '仅允许字母和数字';
@@ -2230,6 +2232,13 @@ class TranslationsZh extends Translations {
 	@override String get pastDue => '已逾期';
 	@override String get unpaid => '未支付';
 	@override String get incomplete => '未完成';
+	@override String get spamFilter => '潜在垃圾信息过滤器';
+	@override String get spamFilterDesc => '折叠看起来像垃圾信息发布者的回复。你随时可以展开查看。';
+	@override String seePotentialSpams({required Object count}) => '查看 ${count} 条潜在垃圾信息';
+	@override String get showSpamReplies => '显示疑似垃圾信息回复';
+	@override String get hideSpamReplies => '隐藏疑似垃圾信息回复';
+	@override String get markAsSpam => '标记为垃圾信息';
+	@override String get notSpam => '不是垃圾信息';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -3350,6 +3359,8 @@ extension on TranslationsZh {
 			'shareWidgetImage' => '分享部件图像',
 			'inputField' => '输入字段',
 			'noReplies' => '无回复',
+			'noVisibleReplies' => '没有可见回复',
+			'spamRepliesHiddenHint' => '疑似垃圾信息回复已在下方隐藏。',
 			'message' => '消息',
 			'chat' => '聊天',
 			'onlyLettersNumber' => '仅允许字母和数字',
@@ -3794,14 +3805,14 @@ extension on TranslationsZh {
 			'noMintsAvailable' => '没有可用的 Mints',
 			'currencies' => '货币',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => '更新 Mints 列表时出错',
-			'active' => '活跃',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => '更新 Mints 列表时出错',
+			'active' => '活跃',
 			'inactive' => '非活跃',
 			'addCashuWallet' => '添加 Cashu 钱包并开始通过 nostr 发送和接收 Ecash。',
 			'mintUrl' => 'Mint URL',
@@ -4312,14 +4323,14 @@ extension on TranslationsZh {
 			'pomRecoverShard' => '恢复分片',
 			'pomShardCollected' => '已获取分片',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '已获取 ${collected}/${threshold} 个分片',
-			'pomRecoverSuccess' => '私钥已恢复',
-			'pomDownloadKey' => '下载密钥',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => '私钥已恢复',
+			'pomDownloadKey' => '下载密钥',
 			'pomUnlinkTitle' => '解除账户关联',
 			'pomUnlinkIntro' => '请先恢复并复制你的私钥——解除关联后需要用它重新登录。',
 			'pomUnlinkContinue' => '我已保存密钥——继续',
@@ -4463,6 +4474,13 @@ extension on TranslationsZh {
 			'pastDue' => '已逾期',
 			'unpaid' => '未支付',
 			'incomplete' => '未完成',
+			'spamFilter' => '潜在垃圾信息过滤器',
+			'spamFilterDesc' => '折叠看起来像垃圾信息发布者的回复。你随时可以展开查看。',
+			'seePotentialSpams' => ({required Object count}) => '查看 ${count} 条潜在垃圾信息',
+			'showSpamReplies' => '显示疑似垃圾信息回复',
+			'hideSpamReplies' => '隐藏疑似垃圾信息回复',
+			'markAsSpam' => '标记为垃圾信息',
+			'notSpam' => '不是垃圾信息',
 			_ => null,
 		};
 	}

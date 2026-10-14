@@ -1089,6 +1089,8 @@
   "shareWidgetImage": "分享部件图像",
   "inputField": "输入字段",
   "noReplies": "无回复",
+  "noVisibleReplies": "没有可见回复",
+  "spamRepliesHiddenHint": "疑似垃圾信息回复已在下方隐藏。",
   "message": "消息",
   "chat": "聊天",
   "onlyLettersNumber": "仅允许字母和数字",
@@ -2189,5 +2191,12 @@
   "canceled": "已取消",
   "pastDue": "已逾期",
   "unpaid": "未支付",
-  "incomplete": "未完成"
+  "incomplete": "未完成",
+  "spamFilter": "潜在垃圾信息过滤器",
+  "spamFilterDesc": "折叠看起来像垃圾信息发布者的回复。你随时可以展开查看。",
+  "seePotentialSpams": "查看 {{count}} 条潜在垃圾信息",
+  "showSpamReplies": "显示疑似垃圾信息回复",
+  "hideSpamReplies": "隐藏疑似垃圾信息回复",
+  "markAsSpam": "标记为垃圾信息",
+  "notSpam": "不是垃圾信息"
 }

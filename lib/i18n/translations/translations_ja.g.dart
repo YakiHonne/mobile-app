@@ -1129,6 +1129,8 @@ class TranslationsJa extends Translations {
 	@override String get shareWidgetImage => 'ウィジェット画像共有';
 	@override String get inputField => '入力フィールド';
 	@override String get noReplies => '返信なし';
+	@override String get noVisibleReplies => '表示できる返信はありません';
+	@override String get spamRepliesHiddenHint => 'スパムの可能性がある返信は下に非表示です。';
 	@override String get message => 'メッセージ';
 	@override String get chat => 'チャット';
 	@override String get onlyLettersNumber => '文字と数字のみ許可';
@@ -2230,6 +2232,13 @@ class TranslationsJa extends Translations {
 	@override String get pastDue => '支払い延滞';
 	@override String get unpaid => '未払い';
 	@override String get incomplete => '未完了';
+	@override String get spamFilter => 'スパムの可能性がある返信のフィルター';
+	@override String get spamFilterDesc => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。';
+	@override String seePotentialSpams({required Object count}) => 'スパムの可能性がある投稿を${count}件表示';
+	@override String get showSpamReplies => 'スパムの可能性がある返信を表示';
+	@override String get hideSpamReplies => 'スパムの可能性がある返信を非表示';
+	@override String get markAsSpam => 'スパムとしてマーク';
+	@override String get notSpam => 'スパムではない';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -3350,6 +3359,8 @@ extension on TranslationsJa {
 			'shareWidgetImage' => 'ウィジェット画像共有',
 			'inputField' => '入力フィールド',
 			'noReplies' => '返信なし',
+			'noVisibleReplies' => '表示できる返信はありません',
+			'spamRepliesHiddenHint' => 'スパムの可能性がある返信は下に非表示です。',
 			'message' => 'メッセージ',
 			'chat' => 'チャット',
 			'onlyLettersNumber' => '文字と数字のみ許可',
@@ -3794,14 +3805,14 @@ extension on TranslationsJa {
 			'noMintsAvailable' => '利用可能なMintがありません',
 			'currencies' => '通貨',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'Mintリストの更新中にエラーが発生しました',
-			'active' => 'アクティブ',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'Mintリストの更新中にエラーが発生しました',
+			'active' => 'アクティブ',
 			'inactive' => '非アクティブ',
 			'addCashuWallet' => 'Cashuウォレットを追加して、nostr経由でEcashの送受信を開始します。',
 			'mintUrl' => 'Mint URL',
@@ -4312,14 +4323,14 @@ extension on TranslationsJa {
 			'pomRecoverShard' => 'シャードを復元',
 			'pomShardCollected' => 'シャードを取得しました',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} 個のシャードを取得',
-			'pomRecoverSuccess' => '秘密鍵を復元しました',
-			'pomDownloadKey' => '鍵をダウンロード',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => '秘密鍵を復元しました',
+			'pomDownloadKey' => '鍵をダウンロード',
 			'pomUnlinkTitle' => 'アカウントの連携解除',
 			'pomUnlinkIntro' => 'まず秘密鍵を復元してコピーしてください。連携解除後に再度サインインするために必要です。',
 			'pomUnlinkContinue' => '鍵を保存しました — 続行',
@@ -4463,6 +4474,13 @@ extension on TranslationsJa {
 			'pastDue' => '支払い延滞',
 			'unpaid' => '未払い',
 			'incomplete' => '未完了',
+			'spamFilter' => 'スパムの可能性がある返信のフィルター',
+			'spamFilterDesc' => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。',
+			'seePotentialSpams' => ({required Object count}) => 'スパムの可能性がある投稿を${count}件表示',
+			'showSpamReplies' => 'スパムの可能性がある返信を表示',
+			'hideSpamReplies' => 'スパムの可能性がある返信を非表示',
+			'markAsSpam' => 'スパムとしてマーク',
+			'notSpam' => 'スパムではない',
 			_ => null,
 		};
 	}

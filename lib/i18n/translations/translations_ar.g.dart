@@ -1129,6 +1129,8 @@ class TranslationsAr extends Translations {
 	@override String get shareWidgetImage => 'مشاركة صورة الودجيت';
 	@override String get inputField => 'حقل إدخال';
 	@override String get noReplies => 'لا ردود';
+	@override String get noVisibleReplies => 'لا توجد ردود ظاهرة';
+	@override String get spamRepliesHiddenHint => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.';
 	@override String get message => 'رسالة';
 	@override String get chat => 'دردشة';
 	@override String get onlyLettersNumber => 'مسموح بالحروف والأرقام فقط';
@@ -2230,6 +2232,13 @@ class TranslationsAr extends Translations {
 	@override String get pastDue => 'متأخر';
 	@override String get unpaid => 'غير مدفوع';
 	@override String get incomplete => 'غير مكتمل';
+	@override String get spamFilter => 'مرشح الرسائل المزعجة المحتملة';
+	@override String get spamFilterDesc => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.';
+	@override String seePotentialSpams({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة';
+	@override String get showSpamReplies => 'إظهار الردود المشتبه بأنها مزعجة';
+	@override String get hideSpamReplies => 'إخفاء الردود المشتبه بأنها مزعجة';
+	@override String get markAsSpam => 'وضع علامة كرسالة مزعجة';
+	@override String get notSpam => 'ليست مزعجة';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -3350,6 +3359,8 @@ extension on TranslationsAr {
 			'shareWidgetImage' => 'مشاركة صورة الودجيت',
 			'inputField' => 'حقل إدخال',
 			'noReplies' => 'لا ردود',
+			'noVisibleReplies' => 'لا توجد ردود ظاهرة',
+			'spamRepliesHiddenHint' => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.',
 			'message' => 'رسالة',
 			'chat' => 'دردشة',
 			'onlyLettersNumber' => 'مسموح بالحروف والأرقام فقط',
@@ -3794,14 +3805,14 @@ extension on TranslationsAr {
 			'noMintsAvailable' => 'لا توجد Mints متاحة',
 			'currencies' => 'عملات',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'حدث خطأ أثناء تحديث قائمة Mints',
-			'active' => 'نشط',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'حدث خطأ أثناء تحديث قائمة Mints',
+			'active' => 'نشط',
 			'inactive' => 'غير نشط',
 			'addCashuWallet' => 'أضف محفظة Cashu وابدأ في إرسال واستلام Ecash عبر nostr.',
 			'mintUrl' => 'رابط Mint',
@@ -4312,14 +4323,14 @@ extension on TranslationsAr {
 			'pomRecoverShard' => 'استعادة الجزء',
 			'pomShardCollected' => 'تم جمع الجزء',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} أجزاء تم جمعها',
-			'pomRecoverSuccess' => 'تمت استعادة المفتاح الخاص',
-			'pomDownloadKey' => 'تنزيل المفتاح',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => 'تمت استعادة المفتاح الخاص',
+			'pomDownloadKey' => 'تنزيل المفتاح',
 			'pomUnlinkTitle' => 'إلغاء ربط الحساب',
 			'pomUnlinkIntro' => 'استعد مفتاحك الخاص وانسخه أولاً — ستحتاج إليه لتسجيل الدخول مرة أخرى بعد إلغاء الربط.',
 			'pomUnlinkContinue' => 'لقد حفظت مفتاحي — متابعة',
@@ -4463,6 +4474,13 @@ extension on TranslationsAr {
 			'pastDue' => 'متأخر',
 			'unpaid' => 'غير مدفوع',
 			'incomplete' => 'غير مكتمل',
+			'spamFilter' => 'مرشح الرسائل المزعجة المحتملة',
+			'spamFilterDesc' => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.',
+			'seePotentialSpams' => ({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة',
+			'showSpamReplies' => 'إظهار الردود المشتبه بأنها مزعجة',
+			'hideSpamReplies' => 'إخفاء الردود المشتبه بأنها مزعجة',
+			'markAsSpam' => 'وضع علامة كرسالة مزعجة',
+			'notSpam' => 'ليست مزعجة',
 			_ => null,
 		};
 	}

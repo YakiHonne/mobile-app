@@ -3323,6 +3323,12 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'No replies'
 	String get noReplies => 'No replies';
 
+	/// en: 'No visible replies'
+	String get noVisibleReplies => 'No visible replies';
+
+	/// en: 'Potential spam replies are hidden below.'
+	String get spamRepliesHiddenHint => 'Potential spam replies are hidden below.';
+
 	/// en: 'Message'
 	String get message => 'Message';
 
@@ -6643,6 +6649,27 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Incomplete'
 	String get incomplete => 'Incomplete';
+
+	/// en: 'Potential spam filter'
+	String get spamFilter => 'Potential spam filter';
+
+	/// en: 'Collapse replies from authors that look like spam. You can always expand them.'
+	String get spamFilterDesc => 'Collapse replies from authors that look like spam. You can always expand them.';
+
+	/// en: 'See {{count}} potential spams'
+	String seePotentialSpams({required Object count}) => 'See ${count} potential spams';
+
+	/// en: 'Show potentially spam replies'
+	String get showSpamReplies => 'Show potentially spam replies';
+
+	/// en: 'Hide potentially spam replies'
+	String get hideSpamReplies => 'Hide potentially spam replies';
+
+	/// en: 'Mark as spam'
+	String get markAsSpam => 'Mark as spam';
+
+	/// en: 'Not spam'
+	String get notSpam => 'Not spam';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -7767,6 +7794,8 @@ extension on Translations {
 			'shareWidgetImage' => 'Share widget image',
 			'inputField' => 'Input field',
 			'noReplies' => 'No replies',
+			'noVisibleReplies' => 'No visible replies',
+			'spamRepliesHiddenHint' => 'Potential spam replies are hidden below.',
 			'message' => 'Message',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Only letters & numbers allowed',
@@ -8207,14 +8236,14 @@ extension on Translations {
 			'tokenDetails' => 'Token Details',
 			'issuingMint' => 'Issuing Mint',
 			'proofs' => 'Proofs',
-			'redeemToken' => 'Redeem Token',
-			'invalidToken' => 'Invalid token',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'redeemToken' => 'Redeem Token',
+			'invalidToken' => 'Invalid token',
 			'tokenRedeemed' => 'Token redeemed successfully',
 			'noMintsAvailable' => 'No mints available',
 			'currencies' => 'Currencies',
@@ -8725,14 +8754,14 @@ extension on Translations {
 			'pomAuthenticating' => 'Authenticating with Google…',
 			'pomCheckingAccount' => 'Checking account…',
 			'pomCreatingAccount' => 'Creating account…',
-			'pomNewAccountTitle' => 'Save your private key',
-			'pomSaveKeyDesc' => 'Your private key has been generated. Save it securely before creating your account.',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomNewAccountTitle' => 'Save your private key',
+			'pomSaveKeyDesc' => 'Your private key has been generated. Save it securely before creating your account.',
 			'pomCreateAccount' => 'Create Account',
 			'pomTokenExpired' => 'Google session expired. Please try again.',
 			'pomAccountTimeout' => 'Account confirmation timed out. Please try again.',
@@ -8886,6 +8915,13 @@ extension on Translations {
 			'pastDue' => 'Past due',
 			'unpaid' => 'Unpaid',
 			'incomplete' => 'Incomplete',
+			'spamFilter' => 'Potential spam filter',
+			'spamFilterDesc' => 'Collapse replies from authors that look like spam. You can always expand them.',
+			'seePotentialSpams' => ({required Object count}) => 'See ${count} potential spams',
+			'showSpamReplies' => 'Show potentially spam replies',
+			'hideSpamReplies' => 'Hide potentially spam replies',
+			'markAsSpam' => 'Mark as spam',
+			'notSpam' => 'Not spam',
 			_ => null,
 		};
 	}

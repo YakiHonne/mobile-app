@@ -987,7 +987,7 @@ class NostrDataRepository {
 
   Future<void> resetRelaysConnection() async {
     await nc.closeConnect(nc.relays());
-    await nc.connectRelays(currentUserRelayList.urls.toList());
+    unawaited(nc.connectRelays(currentUserRelayList.urls.toList()));
   }
 
   // =============================================================================

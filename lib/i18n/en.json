@@ -1093,6 +1093,8 @@
   "shareWidgetImage": "Share widget image",
   "inputField": "Input field",
   "noReplies": "No replies",
+  "noVisibleReplies": "No visible replies",
+  "spamRepliesHiddenHint": "Potential spam replies are hidden below.",
   "message": "Message",
   "chat": "Chat",
   "onlyLettersNumber": "Only letters & numbers allowed",
@@ -2199,5 +2201,12 @@
   "canceled": "Canceled",
   "pastDue": "Past due",
   "unpaid": "Unpaid",
-  "incomplete": "Incomplete"
+  "incomplete": "Incomplete",
+  "spamFilter": "Potential spam filter",
+  "spamFilterDesc": "Collapse replies from authors that look like spam. You can always expand them.",
+  "seePotentialSpams": "See {{count}} potential spams",
+  "showSpamReplies": "Show potentially spam replies",
+  "hideSpamReplies": "Hide potentially spam replies",
+  "markAsSpam": "Mark as spam",
+  "notSpam": "Not spam"
 }

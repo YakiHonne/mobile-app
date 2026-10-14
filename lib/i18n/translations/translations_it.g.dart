@@ -1129,6 +1129,8 @@ class TranslationsIt extends Translations {
 	@override String get shareWidgetImage => 'Condividi immagine widget';
 	@override String get inputField => 'Campo input';
 	@override String get noReplies => 'Nessuna risposta';
+	@override String get noVisibleReplies => 'Nessuna risposta visibile';
+	@override String get spamRepliesHiddenHint => 'Le risposte potenzialmente spam sono nascoste qui sotto.';
 	@override String get message => 'Messaggio';
 	@override String get chat => 'Chat';
 	@override String get onlyLettersNumber => 'Solo lettere e numeri consentiti';
@@ -2230,6 +2232,13 @@ class TranslationsIt extends Translations {
 	@override String get pastDue => 'Scaduto';
 	@override String get unpaid => 'Non pagato';
 	@override String get incomplete => 'Incompleto';
+	@override String get spamFilter => 'Filtro per spam potenziale';
+	@override String get spamFilterDesc => 'Comprimi le risposte degli autori che sembrano fare spam. Puoi sempre espanderle.';
+	@override String seePotentialSpams({required Object count}) => 'Vedi ${count} spam potenziali';
+	@override String get showSpamReplies => 'Mostra le risposte potenzialmente spam';
+	@override String get hideSpamReplies => 'Nascondi le risposte potenzialmente spam';
+	@override String get markAsSpam => 'Segnala come spam';
+	@override String get notSpam => 'Non è spam';
 }
 
 /// The flat map containing all translations for locale <it>.
@@ -3350,6 +3359,8 @@ extension on TranslationsIt {
 			'shareWidgetImage' => 'Condividi immagine widget',
 			'inputField' => 'Campo input',
 			'noReplies' => 'Nessuna risposta',
+			'noVisibleReplies' => 'Nessuna risposta visibile',
+			'spamRepliesHiddenHint' => 'Le risposte potenzialmente spam sono nascoste qui sotto.',
 			'message' => 'Messaggio',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Solo lettere e numeri consentiti',
@@ -3794,14 +3805,14 @@ extension on TranslationsIt {
 			'noMintsAvailable' => 'Nessun mint disponibile',
 			'currencies' => 'Valute',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'Errore durante l\'aggiornamento dell\'elenco dei mint',
-			'active' => 'Attivo',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'Errore durante l\'aggiornamento dell\'elenco dei mint',
+			'active' => 'Attivo',
 			'inactive' => 'Inattivo',
 			'addCashuWallet' => 'Aggiungi Portafoglio Cashu e inizia a inviare e ricevere Ecash tramite nostr.',
 			'mintUrl' => 'URL Mint',
@@ -4312,14 +4323,14 @@ extension on TranslationsIt {
 			'pomRecoverShard' => 'Recupera frammento',
 			'pomShardCollected' => 'Frammento recuperato',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} frammenti recuperati',
-			'pomRecoverSuccess' => 'Chiave privata recuperata',
-			'pomDownloadKey' => 'Scarica la chiave',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => 'Chiave privata recuperata',
+			'pomDownloadKey' => 'Scarica la chiave',
 			'pomUnlinkTitle' => 'Scollega account',
 			'pomUnlinkIntro' => 'Recupera prima la tua chiave privata e copiala: ti servirà per accedere di nuovo dopo lo scollegamento.',
 			'pomUnlinkContinue' => 'Ho salvato la chiave — continua',
@@ -4463,6 +4474,13 @@ extension on TranslationsIt {
 			'pastDue' => 'Scaduto',
 			'unpaid' => 'Non pagato',
 			'incomplete' => 'Incompleto',
+			'spamFilter' => 'Filtro per spam potenziale',
+			'spamFilterDesc' => 'Comprimi le risposte degli autori che sembrano fare spam. Puoi sempre espanderle.',
+			'seePotentialSpams' => ({required Object count}) => 'Vedi ${count} spam potenziali',
+			'showSpamReplies' => 'Mostra le risposte potenzialmente spam',
+			'hideSpamReplies' => 'Nascondi le risposte potenzialmente spam',
+			'markAsSpam' => 'Segnala come spam',
+			'notSpam' => 'Non è spam',
 			_ => null,
 		};
 	}

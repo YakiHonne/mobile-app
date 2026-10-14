@@ -1089,6 +1089,8 @@
   "shareWidgetImage": "مشاركة صورة الودجيت",
   "inputField": "حقل إدخال",
   "noReplies": "لا ردود",
+  "noVisibleReplies": "لا توجد ردود ظاهرة",
+  "spamRepliesHiddenHint": "تم إخفاء الردود التي قد تكون مزعجة أدناه.",
   "message": "رسالة",
   "chat": "دردشة",
   "onlyLettersNumber": "مسموح بالحروف والأرقام فقط",
@@ -2189,5 +2191,12 @@
   "canceled": "ملغى",
   "pastDue": "متأخر",
   "unpaid": "غير مدفوع",
-  "incomplete": "غير مكتمل"
+  "incomplete": "غير مكتمل",
+  "spamFilter": "مرشح الرسائل المزعجة المحتملة",
+  "spamFilterDesc": "طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.",
+  "seePotentialSpams": "رؤية {{count}} من الرسائل المزعجة المحتملة",
+  "showSpamReplies": "إظهار الردود المشتبه بأنها مزعجة",
+  "hideSpamReplies": "إخفاء الردود المشتبه بأنها مزعجة",
+  "markAsSpam": "وضع علامة كرسالة مزعجة",
+  "notSpam": "ليست مزعجة"
 }

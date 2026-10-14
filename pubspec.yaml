@@ -130,6 +130,7 @@ dependencies:
   tutorial_coach_mark: ^1.2.13
   unifiedpush: ^5.0.2
   unifiedpush_android: ^2.0.0
+  unorm_dart: ^0.3.2
   url_launcher: ^6.1.14
   uuid: ^4.3.3
   video_player: ^2.9.2
@@ -178,6 +179,7 @@ flutter:
     - assets/icons/toasts/
     - assets/images/
     - assets/lottie/
+    - assets/nspam/
     - .env
     - shorebird.yaml
 

@@ -1089,6 +1089,8 @@
   "shareWidgetImage": "Partager l'image du widget",
   "inputField": "Champ d'entrée",
   "noReplies": "Pas de réponses",
+  "noVisibleReplies": "Aucune réponse visible",
+  "spamRepliesHiddenHint": "Les réponses potentiellement indésirables sont masquées ci-dessous.",
   "message": "Message",
   "chat": "Chat",
   "onlyLettersNumber": "Seules les lettres et les chiffres sont autorisés",
@@ -2189,5 +2191,12 @@
   "canceled": "Annulé",
   "pastDue": "En retard",
   "unpaid": "Impayé",
-  "incomplete": "Incomplet"
+  "incomplete": "Incomplet",
+  "spamFilter": "Filtre de spam potentiel",
+  "spamFilterDesc": "Réduire les réponses des auteurs qui semblent faire du spam. Vous pouvez toujours les développer.",
+  "seePotentialSpams": "Voir {{count}} spams potentiels",
+  "showSpamReplies": "Afficher les réponses potentiellement indésirables",
+  "hideSpamReplies": "Masquer les réponses potentiellement indésirables",
+  "markAsSpam": "Signaler comme indésirable",
+  "notSpam": "Pas indésirable"
 }

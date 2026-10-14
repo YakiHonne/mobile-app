@@ -22,6 +22,7 @@ import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
 import '../../logic/relay_info_cubit/relay_info_cubit.dart';
+import '../../logic/spam_filter/nspam_safety_service.dart';
 import '../../logic/users_info_list_cubit/users_info_list_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
@@ -66,6 +67,32 @@ import 'response_snackbar.dart';
 import 'subscription_badge_view.dart';
 import 'zappers_view.dart';
 
+List<PullDownMenuEntry>? _spamModerationMenuItems({
+  required BuildContext context,
+  required BaseEventModel model,
+  required NSpamSafetyService spamFilter,
+  required bool isPotentialSpam,
+}) {
+  final isSafelisted = spamFilter.isAuthorSafelisted(model.pubkey);
+  if (!isPotentialSpam && !isSafelisted) {
+    return null;
+  }
+
+  return [
+    PullDownMenuItem(
+      title: isSafelisted ? context.t.markAsSpam : context.t.notSpam,
+      onTap: () => unawaited(
+        isSafelisted
+            ? spamFilter.markAuthorSpam(model.pubkey)
+            : spamFilter.markAuthorNotSpam(model.pubkey),
+      ),
+      iconWidget: Icon(
+        isSafelisted ? Icons.flag_outlined : Icons.check_circle_outline,
+      ),
+    ),
+  ];
+}
+
 class NoteStats extends HookWidget {
   const NoteStats({
     super.key,
@@ -74,6 +101,7 @@ class NoteStats extends HookWidget {
     required this.isMain,
     this.autoTranslate = false,
     this.isHomeFeed = false,
+    this.isPotentialSpam = false,
     this.onEventAdded,
     this.onTextTranslated,
     this.onMuteActionSuccess,
@@ -83,6 +111,7 @@ class NoteStats extends HookWidget {
   final BaseEventModel model;
   final bool isMain;
   final bool isHomeFeed;
+  final bool isPotentialSpam;
   final bool autoTranslate;
   final Function(String)? onTextTranslated;
   final Function()? onEventAdded;
@@ -90,6 +119,9 @@ class NoteStats extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spamFilter = NSpamSafetyService.instance;
+    useListenable(spamFilter);
+
     // ✅ REPLACE the problematic useMemoized with this optimized version:
     final hasRequestedStats = useState(false);
     final isInViewport = useState(false);
@@ -180,6 +212,16 @@ class NoteStats extends HookWidget {
                       child: ZappersRow(
                         zapData: zapsData,
                         zappers: zappers,
+                        onFluidTap: () {
+                          showAppModalSheet(
+                            context: context,
+                            builder: (_) => _NoteStatsModal(
+                              id: model.id,
+                              zappers: zappers,
+                              initialIndex: 4,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     secondChild: const SizedBox(
@@ -252,6 +294,12 @@ class NoteStats extends HookWidget {
                           builder: (context, state) {
                             return PullDownGlobalButton(
                               model: model,
+                              customItems: _spamModerationMenuItems(
+                                context: context,
+                                model: model,
+                                spamFilter: spamFilter,
+                                isPotentialSpam: isPotentialSpam,
+                              ),
                               size: 18,
                               iconSize: 18,
                               enableCopyNpub: true,
@@ -739,15 +787,22 @@ class ZappersRow extends StatelessWidget {
     super.key,
     required this.zapData,
     required this.zappers,
+    this.onFluidTap,
   });
 
   final Map<String, dynamic> zapData;
   final Map<String, MapEntry<String, int>> zappers;
+  final VoidCallback? onFluidTap;
 
   @override
   Widget build(BuildContext context) {
     final commonPubkeys = zapData['nextBestPubkeys'] as List;
     void openZappersList() {
+      if (isFluid() && onFluidTap != null) {
+        onFluidTap!();
+        return;
+      }
+
       showAppModalSheet(
         context: context,
         builder: (_) {
@@ -1878,6 +1933,7 @@ class DetailedNoteContainer extends HookWidget {
     this.autoTranslate = false,
     this.isReply = false,
     this.isFilterHidden = false,
+    this.isPotentialSpam = false,
     this.shouldConsiderHiddenReply = false,
     this.noRender = false,
     this.highlightOnly = false,
@@ -1898,6 +1954,7 @@ class DetailedNoteContainer extends HookWidget {
   final bool autoTranslate;
   final bool isReply;
   final bool isFilterHidden;
+  final bool isPotentialSpam;
   final bool shouldConsiderHiddenReply;
   final bool noRender;
   final bool highlightOnly;
@@ -1908,6 +1965,9 @@ class DetailedNoteContainer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spamFilter = NSpamSafetyService.instance;
+    useListenable(spamFilter);
+
     final replyEvent = useState<MapEntry<String, bool>?>(null);
     final noteContent = useState(note.content);
 
@@ -2026,6 +2086,7 @@ class DetailedNoteContainer extends HookWidget {
             id: note.id,
             model: note,
             isMain: isMain,
+            isPotentialSpam: isPotentialSpam,
             onEventAdded: onEventAdded,
             autoTranslate: autoTranslate,
             isHomeFeed: isExtended,
@@ -2074,6 +2135,7 @@ class DetailedNoteContainer extends HookWidget {
             id: note.id,
             model: note,
             isMain: isMain,
+            isPotentialSpam: isPotentialSpam,
             onEventAdded: onEventAdded,
             autoTranslate: autoTranslate,
             isHomeFeed: isExtended,
@@ -2548,6 +2610,7 @@ class DetailedNoteContainer extends HookWidget {
               id: note.id,
               model: note,
               isMain: isMain,
+              isPotentialSpam: isPotentialSpam,
               onEventAdded: onEventAdded,
               autoTranslate: autoTranslate,
               isHomeFeed: isExtended,
@@ -2576,6 +2639,7 @@ class DetailedNoteContainer extends HookWidget {
               id: note.id,
               model: note,
               isMain: isMain,
+              isPotentialSpam: isPotentialSpam,
               onEventAdded: onEventAdded,
               autoTranslate: autoTranslate,
               onTextTranslated: (text) {
@@ -2612,6 +2676,7 @@ class DetailedNoteContainer extends HookWidget {
   }
 
   Row _generalInfoRow(BuildContext context, ValueNotifier<String> noteContent) {
+    final spamFilter = NSpamSafetyService.instance;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2631,6 +2696,12 @@ class DetailedNoteContainer extends HookWidget {
             buildWhen: (previous, current) => previous.mutes != current.mutes,
             builder: (context, state) => PullDownGlobalButton(
               model: note,
+              customItems: _spamModerationMenuItems(
+                context: context,
+                model: note,
+                spamFilter: spamFilter,
+                isPotentialSpam: isPotentialSpam,
+              ),
               enableCopyNpub: true,
               enableCopyId: true,
               enableBookmark: true,
@@ -3666,14 +3737,19 @@ class _NoteStatsModal extends HookWidget {
   const _NoteStatsModal({
     required this.id,
     required this.zappers,
+    this.initialIndex = 0,
   });
 
   final String id;
   final Map<String, MapEntry<String, int>> zappers;
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 5);
+    final tabController = useTabController(
+      initialLength: 5,
+      initialIndex: initialIndex,
+    );
 
     return Padding(
       padding:

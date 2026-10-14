@@ -1129,6 +1129,8 @@ class TranslationsHi extends Translations {
 	@override String get shareWidgetImage => 'विजेट छवि शेयर करें';
 	@override String get inputField => 'इनपुट फील्ड';
 	@override String get noReplies => 'कोई उत्तर नहीं';
+	@override String get noVisibleReplies => 'कोई दिखाई देने वाला उत्तर नहीं';
+	@override String get spamRepliesHiddenHint => 'संभावित स्पैम उत्तर नीचे छिपे हैं।';
 	@override String get message => 'संदेश';
 	@override String get chat => 'चैट';
 	@override String get onlyLettersNumber => 'केवल अक्षर और संख्या अनुमत';
@@ -2230,6 +2232,13 @@ class TranslationsHi extends Translations {
 	@override String get pastDue => 'बकाया';
 	@override String get unpaid => 'अवैतनिक';
 	@override String get incomplete => 'अपूर्ण';
+	@override String get spamFilter => 'संभावित स्पैम फ़िल्टर';
+	@override String get spamFilterDesc => 'उन लेखकों की प्रतिक्रियाएँ समेटें जो स्पैम जैसे लगते हैं। आप उन्हें कभी भी खोल सकते हैं।';
+	@override String seePotentialSpams({required Object count}) => '${count} संभावित स्पैम देखें';
+	@override String get showSpamReplies => 'संभावित स्पैम प्रतिक्रियाएँ दिखाएँ';
+	@override String get hideSpamReplies => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ';
+	@override String get markAsSpam => 'स्पैम के रूप में चिह्नित करें';
+	@override String get notSpam => 'स्पैम नहीं';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -3350,6 +3359,8 @@ extension on TranslationsHi {
 			'shareWidgetImage' => 'विजेट छवि शेयर करें',
 			'inputField' => 'इनपुट फील्ड',
 			'noReplies' => 'कोई उत्तर नहीं',
+			'noVisibleReplies' => 'कोई दिखाई देने वाला उत्तर नहीं',
+			'spamRepliesHiddenHint' => 'संभावित स्पैम उत्तर नीचे छिपे हैं।',
 			'message' => 'संदेश',
 			'chat' => 'चैट',
 			'onlyLettersNumber' => 'केवल अक्षर और संख्या अनुमत',
@@ -3794,14 +3805,14 @@ extension on TranslationsHi {
 			'noMintsAvailable' => 'कोई मिंट उपलब्ध नहीं है',
 			'currencies' => 'मुद्राएं',
 			'nuts' => 'NUTs',
-			'errorUpdatingMint' => 'मिंट सूची अपडेट करते समय त्रुटि हुई',
-			'active' => 'सक्रिय',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$3(String path) {
 		return switch (path) {
+			'errorUpdatingMint' => 'मिंट सूची अपडेट करते समय त्रुटि हुई',
+			'active' => 'सक्रिय',
 			'inactive' => 'निष्क्रिय',
 			'addCashuWallet' => 'कैशू वॉलेट जोड़ें और nostr पर ई-कैश भेजना और प्राप्त करना शुरू करें।',
 			'mintUrl' => 'मिंट URL',
@@ -4312,14 +4323,14 @@ extension on TranslationsHi {
 			'pomRecoverShard' => 'शार्ड पुनर्प्राप्त करें',
 			'pomShardCollected' => 'शार्ड प्राप्त हुआ',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} शार्ड प्राप्त हुए',
-			'pomRecoverSuccess' => 'निजी कुंजी पुनर्प्राप्त हो गई',
-			'pomDownloadKey' => 'कुंजी डाउनलोड करें',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$4(String path) {
 		return switch (path) {
+			'pomRecoverSuccess' => 'निजी कुंजी पुनर्प्राप्त हो गई',
+			'pomDownloadKey' => 'कुंजी डाउनलोड करें',
 			'pomUnlinkTitle' => 'खाता अनलिंक करें',
 			'pomUnlinkIntro' => 'पहले अपनी निजी कुंजी पुनर्प्राप्त करके कॉपी करें — अनलिंक करने के बाद साइन इन करने के लिए यही चाहिए होगी।',
 			'pomUnlinkContinue' => 'मैंने कुंजी सहेज ली — जारी रखें',
@@ -4463,6 +4474,13 @@ extension on TranslationsHi {
 			'pastDue' => 'बकाया',
 			'unpaid' => 'अवैतनिक',
 			'incomplete' => 'अपूर्ण',
+			'spamFilter' => 'संभावित स्पैम फ़िल्टर',
+			'spamFilterDesc' => 'उन लेखकों की प्रतिक्रियाएँ समेटें जो स्पैम जैसे लगते हैं। आप उन्हें कभी भी खोल सकते हैं।',
+			'seePotentialSpams' => ({required Object count}) => '${count} संभावित स्पैम देखें',
+			'showSpamReplies' => 'संभावित स्पैम प्रतिक्रियाएँ दिखाएँ',
+			'hideSpamReplies' => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ',
+			'markAsSpam' => 'स्पैम के रूप में चिह्नित करें',
+			'notSpam' => 'स्पैम नहीं',
 			_ => null,
 		};
 	}
