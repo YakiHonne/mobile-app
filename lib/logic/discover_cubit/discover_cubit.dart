@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
+import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../models/app_models/diverse_functions.dart';
@@ -52,14 +53,20 @@ class DiscoverCubit extends Cubit<DiscoverState> {
   final extraIds = <String>{};
   int _extraRefreshGeneration = 0;
   Future<void>? _initialization;
+  bool _isFeedActive = false;
+  bool _isAppResumed = true;
+  bool _isRestoringSnapshot = false;
+  Future<void> _feedSnapshotPersistence = Future<void>.value();
 
   // =============================================================================
   // PUBLIC METHODS
   // =============================================================================
   /// Start the Discover feed the first time its tab is selected.
-  Future<void> ensureInitialized() => _initialization ??= _initialize();
+  Future<void> ensureInitialized({bool restoreSnapshot = false}) =>
+      _initialization ??= _initialize(restoreSnapshot: restoreSnapshot);
 
   void setFeedActive(bool active) {
+    _isFeedActive = active;
     if (!active) {
       _extraRefreshGeneration++;
     }
@@ -67,23 +74,114 @@ class DiscoverCubit extends Cubit<DiscoverState> {
   }
 
   void setAppResumed(bool resumed) {
+    _isAppResumed = resumed;
     if (!resumed) {
       _extraRefreshGeneration++;
     }
     _extraRefreshController.setAppResumed(resumed);
   }
 
-  Future<void> _initialize() async {
+  Future<void> _initialize({required bool restoreSnapshot}) async {
     if (isClosed) {
       return;
     }
 
     _setupStreams();
     suggestionsBoxCubit.initDiscover();
-    await buildDiscoverFeed(
-      exploreType: ExploreType.articles,
-      isAdding: false,
+    final restored = restoreSnapshot && await _restoreCachedFeed();
+    if (!restored) {
+      await buildDiscoverFeed(
+        exploreType: ExploreType.articles,
+        isAdding: false,
+      );
+    }
+  }
+
+  Future<bool> _restoreCachedFeed() async {
+    final owner = currentSigner?.getPublicKey() ?? '';
+    final savedIds = localDatabaseRepository.getMainViewFeedSnapshot(
+      owner,
+      'articles',
     );
+    if (savedIds.isEmpty) {
+      return false;
+    }
+
+    try {
+      final cachedEvents = await NostrFunctionsRepository.getCachedEventsByIds(
+        savedIds,
+      );
+      if (cachedEvents.isEmpty || isClosed) {
+        return false;
+      }
+
+      final eventsById = {for (final event in cachedEvents) event.id: event};
+      final orderedEvents =
+          savedIds.map((id) => eventsById[id]).whereType<Event>().toList();
+      final models = <BaseEventModel>[];
+      for (final event in orderedEvents) {
+        if (event.kind == EventKind.LONG_FORM) {
+          models.add(Article.fromEvent(event));
+        } else if (event.kind == EventKind.CURATION_ARTICLES ||
+            event.kind == EventKind.CURATION_VIDEOS) {
+          models.add(Curation.fromEvent(event, ''));
+        } else if (event.kind == EventKind.VIDEO_HORIZONTAL ||
+            event.kind == EventKind.VIDEO_VERTICAL) {
+          models.add(VideoModel.fromEvent(event));
+        }
+      }
+
+      final content = applyDiscoverFilter(models);
+      if (content.isEmpty) {
+        return false;
+      }
+
+      _isRestoringSnapshot = true;
+      emit(
+        state.copyWith(
+          content: content,
+          onLoading: false,
+          onAddingData: UpdatingState.success,
+        ),
+      );
+      _isRestoringSnapshot = false;
+      getExtra();
+      if (_isFeedActive && _isAppResumed) {
+        unawaited(_fetchExtraContent());
+      }
+      return true;
+    } catch (error) {
+      _isRestoringSnapshot = false;
+      lg.i('Unable to restore the cached articles feed: $error');
+      return false;
+    }
+  }
+
+  @override
+  void onChange(Change<DiscoverState> change) {
+    super.onChange(change);
+    if (_isRestoringSnapshot || change.nextState.content.isEmpty) {
+      return;
+    }
+
+    final currentIds =
+        change.currentState.content.map((event) => event.id).toList();
+    final nextIds = change.nextState.content.map((event) => event.id).toList();
+    if (currentIds.length == nextIds.length &&
+        currentIds.asMap().entries.every(
+              (entry) => nextIds[entry.key] == entry.value,
+            )) {
+      return;
+    }
+
+    final owner = currentSigner?.getPublicKey() ?? '';
+    _feedSnapshotPersistence = _feedSnapshotPersistence.then((_) async {
+      await localDatabaseRepository.setMainViewFeedSnapshot(
+        owner,
+        'articles',
+        nextIds,
+      );
+    });
   }
 
   /// Set up streams for app customization and mutes

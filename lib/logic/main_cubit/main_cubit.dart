@@ -55,12 +55,32 @@ import '../../views/workshop_view/workshop_registration_view.dart';
 
 part 'main_state.dart';
 
+const _mainNavigationViews = <MainViews>{
+  MainViews.leading,
+  MainViews.media,
+  MainViews.wallet,
+  MainViews.dms,
+  MainViews.notifications,
+  MainViews.smartWidgets,
+  MainViews.articles,
+};
+
+MainViews _initialMainView(String pubkey) {
+  final savedView = localDatabaseRepository.getLastMainView(pubkey);
+  for (final view in _mainNavigationViews) {
+    if (view.name == savedView) {
+      return view;
+    }
+  }
+  return MainViews.leading;
+}
+
 class MainCubit extends Cubit<MainState> {
   MainCubit({
     required this.context,
   }) : super(
           MainState(
-            mainView: MainViews.leading,
+            mainView: _initialMainView(nostrRepository.currentMetadata.pubkey),
             refresh: false,
             image: nostrRepository.currentMetadata.picture,
             random: '',
@@ -79,6 +99,7 @@ class MainCubit extends Cubit<MainState> {
     checkCurrentVersionNews();
     _loadUserPreferences();
     _setupSubscriptions();
+    _activateMainView(state.mainView, restoreCachedContent: true);
     walletManagerCubit.init();
   }
   // Dependencies
@@ -96,11 +117,7 @@ class MainCubit extends Cubit<MainState> {
   void _setupSubscriptions() {
     homeViewSubcription = nostrRepository.homeViewStream.listen(
       (bool hasConnection) {
-        if (!isClosed) {
-          emit(state.copyWith(
-            mainView: MainViews.leading,
-          ));
-        }
+        updateIndex(MainViews.leading);
       },
     );
 
@@ -1073,15 +1090,66 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void updateIndex(MainViews mainView) {
+    if (_mainNavigationViews.contains(mainView)) {
+      unawaited(
+        localDatabaseRepository.setLastMainView(
+          state.pubKey,
+          mainView.name,
+        ),
+      );
+    }
+
+    _activateMainView(mainView);
+
+    if (!isClosed) {
+      emit(state.copyWith(mainView: mainView));
+    }
+  }
+
+  void _activateMainView(
+    MainViews mainView, {
+    bool restoreCachedContent = false,
+  }) {
+    final isLeading = mainView == MainViews.leading;
+    final isMedia = mainView == MainViews.media;
+    final isArticles = mainView == MainViews.articles;
+
+    leadingCubit.setFeedActive(isLeading);
+    mediaCubit.setFeedActive(isMedia);
+    discoverCubit.setFeedActive(isArticles);
+
+    if (isLeading) {
+      unawaited(
+        leadingCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    } else if (isMedia) {
+      unawaited(
+        mediaCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    } else if (isArticles) {
+      unawaited(
+        discoverCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    }
+
     notificationsCubit.setNotificationView(mainView == MainViews.notifications);
     dmsCubit.isDmsView = mainView == MainViews.dms;
 
     if (mainView == MainViews.notifications) {
-      unawaited(notificationsCubit.loadHistory());
-    }
-
-    if (!isClosed) {
-      emit(state.copyWith(mainView: mainView));
+      unawaited(
+        notificationsCubit.loadHistory(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+      if (notificationsCubit.state.index == 5) {
+        unawaited(notificationsCubit.fetchPremiumContent());
+      }
     }
   }
 
@@ -1097,9 +1165,16 @@ class MainCubit extends Cubit<MainState> {
 
   void setDefault() {
     if (!isClosed) {
+      final pubkey = currentSigner?.getPublicKey() ?? '';
+      unawaited(
+        localDatabaseRepository.setLastMainView(
+          pubkey,
+          MainViews.leading.name,
+        ),
+      );
       emit(state.copyWith(
         mainView: MainViews.leading,
-        pubKey: currentSigner?.getPublicKey() ?? '',
+        pubKey: pubkey,
       ));
     }
   }

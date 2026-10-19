@@ -21,9 +21,14 @@ part 'notifications_state.dart';
 class NotificationsCubit extends Cubit<NotificationsState> {
   NotificationsCubit()
       : super(
-          const NotificationsState(
-            events: <Event>[],
-            index: 0,
+          NotificationsState(
+            events: const <Event>[],
+            index: localDatabaseRepository
+                .getMainViewSubTab(
+                  currentSigner?.getPublicKey() ?? '',
+                  'notifications',
+                )
+                .clamp(0, 5),
             isRead: true,
             refresh: false,
             isLoading: true,
@@ -53,6 +58,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   Future<void>? _historyLoadInFlight;
   String? _livePubkey;
   String? _historyLoadedPubkey;
+  String? _historySnapshotPubkey;
+  final Map<String, Future<void>> _historySnapshotRestores = {};
+  Future<void> _historySnapshotPersistence = Future<void>.value();
   bool _liveInitialized = false;
   int _syncGeneration = 0;
   int _historyGeneration = 0;
@@ -168,6 +176,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     _livePubkey = null;
     _handledAccountPubkey = null;
     _historyLoadedPubkey = null;
+    _historySnapshotPubkey = null;
     _historyGeneration++;
     isNotificationView = false;
 
@@ -304,7 +313,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     await _ensureLiveNotifications(force: isRefresh);
   }
 
-  Future<void> loadHistory({bool force = false}) async {
+  Future<void> loadHistory({
+    bool force = false,
+    bool restoreSnapshot = false,
+  }) async {
     if (!canSign()) {
       if (!isClosed) {
         emit(state.copyWith(isLoading: false));
@@ -313,6 +325,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
 
     final pubkey = currentSigner!.getPublicKey();
+    if (restoreSnapshot) {
+      await _restoreCachedHistory(pubkey);
+      if (!_isCurrentAccount(pubkey)) {
+        return;
+      }
+    }
+
     if (!force && _historyLoadedPubkey == pubkey) {
       return;
     }
@@ -345,7 +364,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   Future<void> _loadHistory(String pubkey, int generation) async {
     if (!isClosed) {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isLoading: state.events.isEmpty));
     }
 
     try {
@@ -365,6 +384,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       }
 
       final eventsById = <String, Event>{
+        for (final event in state.events) event.id: event,
         for (final event in result.events) event.id: event,
         ..._recentLiveEvents,
         ..._unemittedEvents,
@@ -383,12 +403,114 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       if (result.isComplete) {
         _historyLoadedPubkey = pubkey;
       }
+      _historySnapshotPubkey = pubkey;
     } catch (e) {
       lg.e('Error loading notification history: $e');
       if (!isClosed && _isCurrentAccount(pubkey)) {
         emit(state.copyWith(isLoading: false));
       }
     }
+  }
+
+  Future<void> _restoreCachedHistory(String pubkey) async {
+    if (_historySnapshotPubkey == pubkey) {
+      return;
+    }
+
+    final task = _historySnapshotRestores.putIfAbsent(
+      pubkey,
+      () => _loadCachedHistory(pubkey),
+    );
+    try {
+      await task;
+    } finally {
+      if (identical(_historySnapshotRestores[pubkey], task)) {
+        _historySnapshotRestores.remove(pubkey);
+      }
+    }
+  }
+
+  Future<void> _loadCachedHistory(String pubkey) async {
+    final savedIds = localDatabaseRepository.getMainViewFeedSnapshot(
+      pubkey,
+      'notifications',
+    );
+    if (savedIds.isEmpty) {
+      if (_isCurrentAccount(pubkey)) {
+        _historySnapshotPubkey = pubkey;
+        if (!isClosed && state.events.isNotEmpty) {
+          emit(state.copyWith(events: <Event>[], isLoading: true));
+        }
+      }
+      return;
+    }
+
+    try {
+      final cachedEvents = await NostrFunctionsRepository.getCachedEventsByIds(
+        savedIds,
+      );
+      if (!_isCurrentAccount(pubkey) || isClosed) {
+        return;
+      }
+
+      final eventsById = <String, Event>{};
+      for (final event in cachedEvents) {
+        if (NostrFunctionsRepository.canNotificationBeAdded(
+          event,
+          eventsById,
+          pubkey,
+          nostrRepository.currentAppCustomization,
+        )) {
+          eventsById[event.id] = event;
+        }
+      }
+      final orderedEvents =
+          savedIds.map((id) => eventsById[id]).whereType<Event>().toList();
+      final events = await filteredWotEvents(orderedEvents);
+      if (!_isCurrentAccount(pubkey) || isClosed) {
+        return;
+      }
+
+      _historySnapshotPubkey = pubkey;
+      events.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            events: events,
+            isLoading: false,
+          ),
+        );
+      }
+    } catch (error) {
+      lg.i('Unable to restore cached notifications: $error');
+      if (_isCurrentAccount(pubkey)) {
+        _historySnapshotPubkey = pubkey;
+      }
+    }
+  }
+
+  @override
+  void onChange(Change<NotificationsState> change) {
+    super.onChange(change);
+    final currentIds =
+        change.currentState.events.map((event) => event.id).toList();
+    final nextEvents = change.nextState.events;
+    final nextIds = nextEvents.map((event) => event.id).toList();
+    if (currentIds.length == nextIds.length &&
+        currentIds.asMap().entries.every(
+              (entry) => nextIds[entry.key] == entry.value,
+            )) {
+      return;
+    }
+
+    final owner = currentSigner?.getPublicKey() ?? '';
+    _historySnapshotPersistence = _historySnapshotPersistence.then((_) async {
+      await localDatabaseRepository.setMainViewFeedSnapshot(
+        owner,
+        'notifications',
+        nextIds,
+      );
+    });
   }
 
   Future<void> _ensureLiveNotifications({bool force = false}) async {
@@ -877,6 +999,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   void setIndex(int index) {
+    unawaited(
+      localDatabaseRepository.setMainViewSubTab(
+        currentSigner?.getPublicKey() ?? '',
+        'notifications',
+        index,
+      ),
+    );
     emit(
       state.copyWith(
         index: index,

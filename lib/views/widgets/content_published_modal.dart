@@ -147,6 +147,7 @@ class ContentPublishedModalSheet extends StatelessWidget {
                 attachedEvent: event,
                 contentType: AppContentType.note,
                 isMention: true,
+                isQuote: true,
               ),
             );
           },

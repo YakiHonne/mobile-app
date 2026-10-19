@@ -1498,6 +1498,21 @@ class NostrFunctionsRepository {
     return evs;
   }
 
+  /// Load saved feed events from the local cache without querying relays.
+  static Future<List<Event>> getCachedEventsByIds(List<String> ids) async {
+    if (ids.isEmpty) {
+      return [];
+    }
+
+    return getEventsAsync(
+      ids: ids,
+      // Snapshot ids are authoritative; don't drop cached events because
+      // their seen-on relay isn't in the user's current relay list.
+      relays: const [],
+      source: EventsSource.cache,
+    );
+  }
+
   static Stream<Event> getCurrentUserRelatedData() {
     final controller = StreamController<Event>();
     List<String> currentUncompletedRelays = nc.activeRelays();

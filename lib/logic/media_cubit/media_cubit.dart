@@ -39,6 +39,12 @@ class MediaCubit extends Cubit<MediaState> {
   int _extraRefreshGeneration = 0;
   bool _streamsInitialized = false;
   Future<void>? _initialization;
+  bool _isFeedActive = false;
+  bool _isAppResumed = true;
+  bool _isRestoringSnapshot = false;
+  bool _hasInitialized = false;
+  bool _pendingCustomizationRefresh = false;
+  Future<void> _feedSnapshotPersistence = Future<void>.value();
   // =============================================================================
   // STREAMS & LISTENERS
   // =============================================================================
@@ -51,19 +57,19 @@ class MediaCubit extends Cubit<MediaState> {
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
       (appCustom) async {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              refresh: !state.refresh,
-            ),
-          );
+        if (!_canRefreshForCustomization) {
+          _pendingCustomizationRefresh = true;
+          return;
         }
 
         await Future.delayed(const Duration(seconds: 1));
 
-        buildMediaFeed(
-          isAdding: false,
-        );
+        if (!_canRefreshForCustomization) {
+          _pendingCustomizationRefresh = true;
+          return;
+        }
+
+        _refreshAfterCustomization();
       },
     );
 
@@ -89,29 +95,132 @@ class MediaCubit extends Cubit<MediaState> {
   // PUBLIC METHODS
   // =============================================================================
   /// Start the Media feed the first time its tab is selected.
-  Future<void> ensureInitialized() => _initialization ??= _initialize();
+  Future<void> ensureInitialized({bool restoreSnapshot = false}) =>
+      _initialization ??= _initialize(restoreSnapshot: restoreSnapshot);
 
   void setFeedActive(bool active) {
+    _isFeedActive = active;
     if (!active) {
       _extraRefreshGeneration++;
+    } else {
+      _refreshAfterPendingCustomization();
     }
     _extraRefreshController.setFeedActive(active);
   }
 
   void setAppResumed(bool resumed) {
+    _isAppResumed = resumed;
     if (!resumed) {
       _extraRefreshGeneration++;
+    } else {
+      _refreshAfterPendingCustomization();
     }
     _extraRefreshController.setAppResumed(resumed);
   }
 
-  Future<void> _initialize() async {
+  Future<void> _initialize({required bool restoreSnapshot}) async {
     if (isClosed) {
       return;
     }
 
     _initializeStreams();
-    await buildMediaFeed(isAdding: false);
+    final restored = restoreSnapshot && await _restoreCachedFeed();
+    if (!restored) {
+      await buildMediaFeed(isAdding: false);
+    }
+    _hasInitialized = true;
+    _pendingCustomizationRefresh = false;
+  }
+
+  bool get _canRefreshForCustomization =>
+      _hasInitialized && _isFeedActive && _isAppResumed && !isClosed;
+
+  void _refreshAfterPendingCustomization() {
+    if (!_pendingCustomizationRefresh || !_canRefreshForCustomization) {
+      return;
+    }
+
+    _refreshAfterCustomization();
+  }
+
+  void _refreshAfterCustomization() {
+    _pendingCustomizationRefresh = false;
+    emit(state.copyWith(refresh: !state.refresh));
+    unawaited(buildMediaFeed(isAdding: false));
+  }
+
+  Future<bool> _restoreCachedFeed() async {
+    final owner = currentSigner?.getPublicKey() ?? '';
+    final savedIds = localDatabaseRepository.getMainViewFeedSnapshot(
+      owner,
+      'media',
+    );
+    if (savedIds.isEmpty) {
+      return false;
+    }
+
+    try {
+      final cachedEvents = await NostrFunctionsRepository.getCachedEventsByIds(
+        savedIds,
+      );
+      if (cachedEvents.isEmpty || isClosed) {
+        return false;
+      }
+
+      final eventsById = {for (final event in cachedEvents) event.id: event};
+      final orderedEvents =
+          savedIds.map((id) => eventsById[id]).whereType<Event>().toList();
+      final content = applyMediaFilter(orderedEvents, removeMuted: true);
+      if (content.isEmpty) {
+        return false;
+      }
+
+      _isRestoringSnapshot = true;
+      emit(
+        state.copyWith(
+          content: content,
+          onLoading: false,
+          onAddingData: UpdatingState.success,
+        ),
+      );
+      _isRestoringSnapshot = false;
+      getExtra();
+      if (_isFeedActive && _isAppResumed) {
+        unawaited(_fetchExtraContent());
+      }
+      return true;
+    } catch (error) {
+      _isRestoringSnapshot = false;
+      lg.i('Unable to restore the cached media feed: $error');
+      return false;
+    }
+  }
+
+  @override
+  void onChange(Change<MediaState> change) {
+    super.onChange(change);
+    if (_isRestoringSnapshot || change.nextState.content.isEmpty) {
+      return;
+    }
+
+    final currentIds =
+        change.currentState.content.map((event) => event.id).toList();
+    final nextIds = change.nextState.content.map((event) => event.id).toList();
+    if (currentIds.length == nextIds.length &&
+        currentIds.asMap().entries.every(
+              (entry) => nextIds[entry.key] == entry.value,
+            )) {
+      return;
+    }
+
+    final owner = currentSigner?.getPublicKey() ?? '';
+    _feedSnapshotPersistence = _feedSnapshotPersistence.then((_) async {
+      await localDatabaseRepository.setMainViewFeedSnapshot(
+        owner,
+        'media',
+        nextIds,
+      );
+    });
   }
 
   // =============================================================================

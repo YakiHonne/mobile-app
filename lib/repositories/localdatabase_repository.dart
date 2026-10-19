@@ -105,6 +105,11 @@ class LocalDatabaseRepository {
   static const String _autoTranslation = 'auto_translation';
   static const String _upgradeBannerDismissed = 'upgrade_banner_dismissed';
   static const String _nestedReplies = 'nested_replies';
+  static const String _mainViewSession = 'main_view_session';
+  static const String _mainViewScrollPosition = 'main_view_scroll_position';
+  static const String _mainViewScrollPositionView =
+      'main_view_scroll_position_view';
+  static const String _mainViewFeedSnapshot = 'main_view_feed_snapshot';
 
   // Notifications & Flash News
   static const String _pendingFlashNews = 'pending_flash_news';
@@ -566,6 +571,83 @@ class LocalDatabaseRepository {
   Future<void> deleteAppViewConfig(String pubkey) async {
     await prefs.remove('$pubkey-$_appViewConfig');
   }
+
+  String? getLastMainView(String pubkey) {
+    return _getPrefsData<String>(_mainViewSessionKey(pubkey, 'view'));
+  }
+
+  Future<void> setLastMainView(String pubkey, String view) async {
+    await _setPrefsData(_mainViewSessionKey(pubkey, 'view'), view);
+  }
+
+  double getMainViewScrollPosition(String pubkey, String view) {
+    if (getLastMainView(pubkey) != view ||
+        _getPrefsData<String>(
+              _mainViewSessionKey(pubkey, _mainViewScrollPositionView),
+            ) !=
+            view) {
+      return 0;
+    }
+
+    return _getPrefsData<double>(
+          _mainViewSessionKey(pubkey, _mainViewScrollPosition),
+          defaultValue: 0,
+        ) ??
+        0;
+  }
+
+  Future<void> setMainViewScrollPosition(
+    String pubkey,
+    String view,
+    double offset,
+  ) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, _mainViewScrollPosition),
+      offset,
+    );
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, _mainViewScrollPositionView),
+      view,
+    );
+  }
+
+  List<String> getMainViewFeedSnapshot(String pubkey, String feed) {
+    return _getPrefsData<List<String>>(
+          _mainViewSessionKey(pubkey, '$_mainViewFeedSnapshot-$feed'),
+        ) ??
+        <String>[];
+  }
+
+  Future<void> setMainViewFeedSnapshot(
+    String pubkey,
+    String feed,
+    List<String> eventIds,
+  ) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, '$_mainViewFeedSnapshot-$feed'),
+      eventIds.take(500).toList(),
+    );
+  }
+
+  int getMainViewSubTab(String pubkey, String view, {int defaultValue = 0}) {
+    return _getPrefsData<int>(
+          _mainViewSessionKey(pubkey, '$_mainViewSubTab-$view'),
+          defaultValue: defaultValue,
+        ) ??
+        defaultValue;
+  }
+
+  Future<void> setMainViewSubTab(String pubkey, String view, int index) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, '$_mainViewSubTab-$view'),
+      index,
+    );
+  }
+
+  static const String _mainViewSubTab = 'main_view_sub_tab';
+
+  String _mainViewSessionKey(String pubkey, String key) =>
+      '${pubkey.isEmpty ? 'guest' : pubkey}-$_mainViewSession-$key';
 
   /// Topics Management
   Future<String> getTopics() async {
