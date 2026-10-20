@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:numeral/numeral.dart';
 
-import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../wallet_view/send_zaps_view/send_multi_wallet_selector.dart';
@@ -27,13 +23,6 @@ class SendGiftView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<WalletsManagerCubit>().state;
-
-    useEffect(() {
-      unawaited(walletManagerCubit.ensureBtcInFiat());
-      return null;
-    }, const []);
-
     final currentStep = useState(GiftStep.selection);
     final selectedCover = useState(giftCovers.first);
     final amountController = useTextEditingController(text: '21');

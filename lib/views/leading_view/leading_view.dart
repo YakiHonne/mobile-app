@@ -82,9 +82,7 @@ class _LeadingViewState extends State<LeadingView> {
               return SmartRefresher(
                 controller: refreshController,
                 enablePullUp: true,
-                header: const RefresherClassicHeader(
-                  additionalOffset: kDefaultPadding * 3,
-                ),
+                header: const RefresherClassicHeader(),
                 footer: const RefresherClassicFooter(),
                 onLoading: () => buildExploreFeed.call(
                   context,

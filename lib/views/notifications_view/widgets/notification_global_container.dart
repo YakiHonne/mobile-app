@@ -298,7 +298,6 @@ class _NotificationGlobalContainerState
       case EventKind.LEGACY_VIDEO_VERTICAL:
         page = VerticalVideoView(video: VideoModel.fromEvent(event));
       case EventKind.TEXT_NOTE:
-      case EventKind.HIGHLIGHT:
       case EventKind.COMMENT:
         page = NoteView(note: DetailedNoteModel.fromEvent(event));
       case EventKind.PICTURE:

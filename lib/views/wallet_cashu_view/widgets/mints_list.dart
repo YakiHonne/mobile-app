@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,12 +25,6 @@ class MintsList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final tabController = useTabController(initialLength: 3);
-
-    useEffect(() {
-      unawaited(cashuWalletManagerCubit.ensureInitialized());
-      unawaited(cashuWalletManagerCubit.loadRecommendedMints());
-      return null;
-    }, const []);
 
     return ModalSheetContainer(
       child: DraggableScrollableSheet(
@@ -120,10 +112,6 @@ class MintsList extends HookWidget {
   Widget _recommendedList({required ScrollController scrollController}) {
     return BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
       builder: (context, state) {
-        if (state.isLoadingRecommendedMints && state.recommendedMints.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
         return ListView.separated(
           controller: scrollController,
           itemCount: state.recommendedMints.length,

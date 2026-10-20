@@ -13,7 +13,6 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../common/notifications/notification_helper.dart';
-import '../common/notifications/push_core.dart';
 import '../logic/main_cubit/main_cubit.dart';
 import '../models/app_models/app_customization.dart';
 import '../models/app_models/diverse_functions.dart';
@@ -672,7 +671,6 @@ class NostrDataRepository {
         CommonFeedTypes.trending,
         CommonFeedTypes.highlights,
         CommonFeedTypes.paid,
-        CommonFeedTypes.nip84Highlights,
         CommonFeedTypes.widgets,
       ];
     }
@@ -987,7 +985,7 @@ class NostrDataRepository {
 
   Future<void> resetRelaysConnection() async {
     await nc.closeConnect(nc.relays());
-    unawaited(nc.connectRelays(currentUserRelayList.urls.toList()));
+    await nc.connectRelays(currentUserRelayList.urls.toList());
   }
 
   // =============================================================================
@@ -1204,7 +1202,6 @@ class NostrDataRepository {
     } else {
       await NotificationHelper.sharedInstance.logout();
     }
-    await PushCore.sharedInstance.disable();
 
     bookmarksLists.clear();
     pinnedNotes.clear();

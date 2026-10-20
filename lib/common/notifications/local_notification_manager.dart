@@ -1,56 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
-import '../../models/app_models/diverse_functions.dart';
 import '../../utils/utils.dart';
 
 NotificationChannel? notificationChannel;
 
 typedef NotificationTapCallback = void Function(Map<String, dynamic> data);
 
-class LocalNotificationManager with WidgetsBindingObserver {
+class LocalNotificationManager {
   LocalNotificationManager._internal();
 
   static final LocalNotificationManager _instance =
       LocalNotificationManager._internal();
   static LocalNotificationManager get instance => _instance;
-  bool _isInitialized = false;
-  bool _observingLifecycle = false;
-  Future<void>? _initialization;
 
   /// Initialize Awesome Notifications and permissions
   Future<void> initNotifications() async {
-    if (!_observingLifecycle) {
-      WidgetsBinding.instance.addObserver(this);
-      _observingLifecycle = true;
-    }
+    final isEnabled = await AwesomeNotifications().isNotificationAllowed();
 
-    if (!_isInitialized) {
-      final runningInitialization = _initialization;
-      if (runningInitialization != null) {
-        await runningInitialization;
-      } else {
-        final initialization = _initializeNotifications();
-        _initialization = initialization;
-        try {
-          await initialization;
-        } finally {
-          if (identical(_initialization, initialization)) {
-            _initialization = null;
-          }
-        }
-      }
-    }
-
-    await _requestPermissionIfNeeded();
-  }
-
-  Future<void> _initializeNotifications() async {
     notificationChannel = NotificationChannel(
       channelGroupKey: 'yaki_group',
       channelKey: 'yaki_channel',
@@ -66,28 +37,8 @@ class LocalNotificationManager with WidgetsBindingObserver {
       'resource://drawable/ic_notification',
       [notificationChannel!],
     );
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: onActionReceivedMethod,
-      onNotificationCreatedMethod: onNotificationCreatedMethod,
-      onNotificationDisplayedMethod: onNotificationDisplayedMethod,
-      onDismissActionReceivedMethod: onDismissActionReceivedMethod,
-    );
-    _isInitialized = true;
-  }
 
-  Future<void> _requestPermissionIfNeeded() async {
-    final isEnabled =
-        nostrRepository.currentAppCustomization?.enablePushNotification ??
-            false;
-    if (!isEnabled ||
-        !canSign() ||
-        !Platform.isAndroid ||
-        WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
-      return;
-    }
-
-    final isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed &&
+    if (!isEnabled &&
         localDatabaseRepository.getNotificationPrompter() == null) {
       try {
         await AwesomeNotifications().requestPermissionToSendNotifications(
@@ -106,37 +57,30 @@ class LocalNotificationManager with WidgetsBindingObserver {
         if (kDebugMode) {
           print('Failed to request notification permission: $e');
         }
-        await localDatabaseRepository.removeNotificationPrompter();
       }
     }
-  }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      unawaited(_requestPermissionIfNeeded());
-    }
+    // Attach global listeners
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: onActionReceivedMethod,
+      onNotificationCreatedMethod: onNotificationCreatedMethod,
+      onNotificationDisplayedMethod: onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod: onDismissActionReceivedMethod,
+    );
   }
 
   /// Called by UnifiedPush (Android)
   Future<void> onNewEndpoint(String endpoint, String instance) async {
     final token = endpoint.split('token=').last;
-    final isEnabled =
-        nostrRepository.currentAppCustomization?.enablePushNotification ??
-            false;
-    if (token.isNotEmpty && isEnabled && canSign()) {
+    lg.i(token);
+    final state = WidgetsBinding.instance.lifecycleState;
+    if (token.isNotEmpty && state == AppLifecycleState.resumed) {
       notificationsCubit.setPushNotifications(token);
     }
   }
 
   /// Called by UnifiedPush (Android)
   Future<void> onMessage(Uint8List message, String instance) async {
-    if (!canSign() ||
-        !(nostrRepository.currentAppCustomization?.enablePushNotification ??
-            false)) {
-      return;
-    }
-
     int notificationID = message.hashCode;
     String showTitle = '';
     String showContent = '';

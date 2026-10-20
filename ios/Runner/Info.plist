@@ -44,16 +44,6 @@
 				<key>CFBundleTypeRole</key>
 				<string>Viewer</string>
 				<key>CFBundleURLName</key>
-				<string>com.yakihonne.highlight</string>
-				<key>CFBundleURLSchemes</key>
-				<array>
-					<string>yakihonne</string>
-				</array>
-			</dict>
-			<dict>
-				<key>CFBundleTypeRole</key>
-				<string>Viewer</string>
-				<key>CFBundleURLName</key>
 				<string>com.yakihonne.nwc</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
