@@ -8,6 +8,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
+import '../../logic/spam_filter/nspam_safety_service.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/detailed_note_model.dart';
 import '../../routes/navigator.dart';
@@ -19,6 +20,7 @@ import '../widgets/note_stats.dart';
 import '../widgets/parsed_media_container.dart';
 import '../widgets/response_snackbar.dart';
 import 'widgets/nested_reply_item.dart';
+import 'widgets/show_potential_spam_replies_button.dart';
 
 // Constants
 const _kFadeDuration = Duration(milliseconds: 300);
@@ -48,6 +50,9 @@ class NoteView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spamFilter = NSpamSafetyService.instance;
+    useListenable(spamFilter);
+
     final currentNote = useState(note);
     final isTransitioning = useState(false);
     final rootEvent = useState<String?>(null);
@@ -142,8 +147,19 @@ class NoteView extends HookWidget {
     // Replies for the current main note (lifted out of the old NoteRepliesList
     // so they can live in the same CustomScrollView as the center anchor).
     final replies = useState(<DetailedNoteModel>[]);
+    final potentialSpamReplies = useState(<DetailedNoteModel>[]);
+    final showPotentialSpamReplies = useState(false);
+    final isProcessingSpam = useState(false);
     final cachedReplies =
         useMemoized(() => <String, List<DetailedNoteModel>>{});
+
+    useEffect(
+      () {
+        showPotentialSpamReplies.value = false;
+        return null;
+      },
+      [currentNote.value.id],
+    );
 
     final updateReplies = useCallback(
       () async {
@@ -159,7 +175,24 @@ class NoteView extends HookWidget {
         if (!context.mounted) {
           return;
         }
-        replies.value = evs.map(DetailedNoteModel.fromEvent).toList();
+        isProcessingSpam.value = true;
+        try {
+          final partition = await spamFilter.partitionReplies(
+            evs.map(DetailedNoteModel.fromEvent).toList(),
+          );
+          if (!context.mounted) {
+            return;
+          }
+          replies.value = partition.visibleReplies;
+          potentialSpamReplies.value = partition.potentialSpamReplies;
+          if (partition.potentialSpamReplies.isEmpty) {
+            showPotentialSpamReplies.value = false;
+          }
+        } finally {
+          if (context.mounted) {
+            isProcessingSpam.value = false;
+          }
+        }
       },
       [currentNote.value.id],
     );
@@ -169,7 +202,7 @@ class NoteView extends HookWidget {
         updateReplies();
         return null;
       },
-      [currentNote.value.id],
+      [currentNote.value.id, spamFilter.revision],
     );
 
     return BlocConsumer<NotesEventsCubit, NotesEventsState>(
@@ -186,7 +219,9 @@ class NoteView extends HookWidget {
           prev.mutesEvents.contains(currentNote.value.id) !=
               curr.mutesEvents.contains(currentNote.value.id),
       builder: (context, state) {
-        final previousNotes = state.previousNotes[currentNote.value.id] ?? [];
+        final previousNotes = currentNote.value.isNip84Highlight
+            ? const <DetailedNoteModel>[]
+            : state.previousNotes[currentNote.value.id] ?? [];
         final hasMissingPreviousNote =
             _hasMissingPreviousNote(previousNotes, currentNote.value);
         final mutedThread = state.mutesEvents.contains(currentNote.value.id);
@@ -273,6 +308,14 @@ class NoteView extends HookWidget {
                       ..._buildReplySlivers(
                         context,
                         replies: replies.value,
+                        potentialSpamReplies: potentialSpamReplies.value,
+                        showPotentialSpamReplies:
+                            showPotentialSpamReplies.value,
+                        isProcessingSpam: isProcessingSpam.value,
+                        onTogglePotentialSpamReplies: () {
+                          showPotentialSpamReplies.value =
+                              !showPotentialSpamReplies.value;
+                        },
                         cachedReplies: cachedReplies,
                         setNote: updateNote,
                         isTransitioning: isTransitioning.value,
@@ -498,6 +541,17 @@ class _PreviousNotesSliver extends StatelessWidget {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[notes.length - 1 - index];
+        final noteItem = DetailedNoteContainer(
+          note: note,
+          isMain: false,
+          // A previous highlight keeps the thread connector at left while
+          // rendering its full NIP-84 composition in the content column.
+          isExtended: note.isNip84Highlight,
+          isPreviousNote: note.isNip84Highlight,
+          addLine: true,
+          extendLine: index == 0,
+          onClicked: isTransitioning ? null : () => onNoteSelected(note),
+        );
         return TweenAnimationBuilder<double>(
           key: ValueKey(note.id),
           tween: Tween(begin: 0.0, end: 1.0),
@@ -512,13 +566,7 @@ class _PreviousNotesSliver extends StatelessWidget {
               ),
             );
           },
-          child: DetailedNoteContainer(
-            note: note,
-            isMain: false,
-            addLine: true,
-            extendLine: index == 0,
-            onClicked: isTransitioning ? null : () => onNoteSelected(note),
-          ),
+          child: noteItem,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: kDefaultPadding / 2),
@@ -583,6 +631,10 @@ class _MissingPreviousNoteBridge extends StatelessWidget {
 List<Widget> _buildReplySlivers(
   BuildContext context, {
   required List<DetailedNoteModel> replies,
+  required List<DetailedNoteModel> potentialSpamReplies,
+  required bool showPotentialSpamReplies,
+  required bool isProcessingSpam,
+  required VoidCallback onTogglePotentialSpamReplies,
   required Map<String, List<DetailedNoteModel>> cachedReplies,
   required Function(DetailedNoteModel note, {bool isRemoving}) setNote,
   required bool isTransitioning,
@@ -591,46 +643,75 @@ List<Widget> _buildReplySlivers(
   final useSingleColumn =
       nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
 
-  if (replies.isEmpty) {
+  if (replies.isEmpty && potentialSpamReplies.isEmpty && !isProcessingSpam) {
     return _buildEmptyReplies(context);
   }
 
-  return _buildRepliesList(context, replies, isTablet, useSingleColumn,
-      cachedReplies, setNote, isTransitioning);
+  return _buildRepliesList(
+      context,
+      replies,
+      isTablet,
+      useSingleColumn,
+      potentialSpamReplies,
+      showPotentialSpamReplies,
+      isProcessingSpam,
+      onTogglePotentialSpamReplies,
+      cachedReplies,
+      setNote,
+      isTransitioning);
 }
 
 List<Widget> _buildEmptyReplies(BuildContext context) {
   return [
-    SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding * 2),
-        child: Center(
-          child: Column(
-            children: [
-              SvgPicture.asset(
-                LogosIcons.logoMarkWhite,
-                height: 50,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorDark,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(height: kDefaultPadding),
-              Text(
-                context.t.noReplies,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Theme.of(context).disabledColor,
-                    ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
+    _buildEmptyRepliesContent(context),
     const SliverToBoxAdapter(
       child: SizedBox(height: kBottomNavigationBarHeight),
     ),
   ];
+}
+
+SliverToBoxAdapter _buildEmptyRepliesContent(
+  BuildContext context, {
+  bool hasHiddenSpam = false,
+}) {
+  return SliverToBoxAdapter(
+      child: Padding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: kDefaultPadding / 2,
+      vertical: kDefaultPadding / 1.5,
+    ),
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            hasHiddenSpam
+                ? Icons.visibility_off_outlined
+                : Icons.chat_bubble_outline,
+            size: kDefaultPadding,
+            color: Theme.of(context).hintColor,
+          ),
+          const SizedBox(height: kDefaultPadding / 4),
+          Text(
+            hasHiddenSpam ? context.t.noVisibleReplies : context.t.noReplies,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).hintColor,
+                ),
+          ),
+          if (hasHiddenSpam) ...[
+            const SizedBox(height: kDefaultPadding / 4),
+            Text(
+              context.t.spamRepliesHiddenHint,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).hintColor,
+                  ),
+            ),
+          ],
+        ],
+      ),
+    ),
+  ));
 }
 
 List<Widget> _buildRepliesList(
@@ -638,29 +719,45 @@ List<Widget> _buildRepliesList(
   List<DetailedNoteModel> replyList,
   bool isTablet,
   bool useSingleColumn,
+  List<DetailedNoteModel> potentialSpamReplies,
+  bool showPotentialSpamReplies,
+  bool isProcessingSpam,
+  VoidCallback onTogglePotentialSpamReplies,
   Map<String, List<DetailedNoteModel>> cachedReplies,
   Function(DetailedNoteModel note, {bool isRemoving}) setNote,
   bool isTransitioning,
 ) {
   final isNested = nostrRepository.getNestedRepliesStatus();
-
   return [
-    SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: kDefaultPadding / 2,
-          bottom: kDefaultPadding,
-          right: kDefaultPadding,
-        ),
-        child: Text(
-          context.t.replies.capitalizeFirst(),
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+    if (isProcessingSpam)
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+          child: Center(
+            child: SpinKitCircle(
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
         ),
       ),
-    ),
-    if (isTablet && !useSingleColumn)
+    if (replyList.isNotEmpty || potentialSpamReplies.isNotEmpty)
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: kDefaultPadding / 2,
+            bottom: kDefaultPadding,
+            right: kDefaultPadding,
+          ),
+          child: Text(
+            context.t.replies.capitalizeFirst(),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+        ),
+      ),
+    if (replyList.isNotEmpty && isTablet && !useSingleColumn)
       SliverMasonryGrid.count(
         crossAxisCount: 2,
         crossAxisSpacing: kDefaultPadding,
@@ -687,7 +784,7 @@ List<Widget> _buildRepliesList(
         },
         childCount: replyList.length,
       )
-    else
+    else if (replyList.isNotEmpty)
       SliverList.separated(
         itemCount: replyList.length,
         itemBuilder: (context, index) {
@@ -708,6 +805,70 @@ List<Widget> _buildRepliesList(
                     addLine: false,
                     onClicked: isTransitioning ? null : () => setNote(reply),
                   ),
+          );
+        },
+        separatorBuilder: (_, __) => const Divider(
+          height: kDefaultPadding * 1.5,
+          thickness: 0.3,
+          indent: 45,
+        ),
+      ),
+    if (replyList.isEmpty &&
+        potentialSpamReplies.isNotEmpty &&
+        !showPotentialSpamReplies)
+      _buildEmptyRepliesContent(context, hasHiddenSpam: true),
+    if (potentialSpamReplies.isNotEmpty &&
+        (replyList.isNotEmpty || !showPotentialSpamReplies))
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: kDefaultPadding,
+            bottom: showPotentialSpamReplies
+                ? kDefaultPadding
+                : kDefaultPadding / 4,
+          ),
+          child: const Divider(
+            height: 1,
+            thickness: 0.3,
+          ),
+        ),
+      ),
+    if (potentialSpamReplies.isNotEmpty && !showPotentialSpamReplies)
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
+          child: ShowPotentialSpamRepliesButton(
+            count: potentialSpamReplies.length,
+            onPressed: onTogglePotentialSpamReplies,
+          ),
+        ),
+      ),
+    if (showPotentialSpamReplies)
+      SliverList.separated(
+        itemCount: potentialSpamReplies.length,
+        itemBuilder: (context, index) {
+          final reply = potentialSpamReplies[index];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (isNested)
+                NestedReplyItem(
+                  key: ValueKey(reply.id),
+                  note: reply,
+                  isPotentialSpam: true,
+                  setNote: setNote,
+                  isTransitioning: isTransitioning,
+                  cachedReplies: cachedReplies,
+                )
+              else
+                DetailedNoteContainer(
+                  note: reply,
+                  isMain: false,
+                  addLine: false,
+                  isPotentialSpam: true,
+                  onClicked: isTransitioning ? null : () => setNote(reply),
+                ),
+            ],
           );
         },
         separatorBuilder: (_, __) => const Divider(

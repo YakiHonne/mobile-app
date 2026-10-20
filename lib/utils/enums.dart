@@ -160,6 +160,7 @@ enum CommonFeedTypes {
   highlights,
   widgets,
   paid,
+  nip84Highlights,
   others
 }
 
@@ -262,6 +263,7 @@ enum ProfileData {
   pinned,
   replies,
   mentions,
+  highlights,
   articles,
   curations,
   smartWidgets,
@@ -280,6 +282,8 @@ enum ProfileData {
         return context.t.replies.capitalizeFirst();
       case ProfileData.mentions:
         return context.t.mentions.capitalizeFirst();
+      case ProfileData.highlights:
+        return context.t.highlights.capitalizeFirst();
       case ProfileData.articles:
         return context.t.articles.capitalizeFirst();
       case ProfileData.curations:
@@ -306,6 +310,8 @@ enum ProfileData {
       case ProfileData.replies:
         return 'notes';
       case ProfileData.mentions:
+        return 'notes';
+      case ProfileData.highlights:
         return 'notes';
       case ProfileData.articles:
         return 'articles';

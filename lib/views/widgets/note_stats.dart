@@ -17,10 +17,12 @@ import 'package:pull_down_button/pull_down_button.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../common/animations/heartbeat_fade.dart';
+import '../../common/nip84_highlight.dart';
 import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../logic/notes_events_cubit/notes_events_cubit.dart';
 import '../../logic/relay_info_cubit/relay_info_cubit.dart';
+import '../../logic/spam_filter/nspam_safety_service.dart';
 import '../../logic/users_info_list_cubit/users_info_list_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
@@ -35,6 +37,7 @@ import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/theme/custom/buttons_theme.dart';
 import '../../utils/utils.dart';
+import '../article_view/article_view.dart';
 import '../dm_view/widgets/dm_details.dart';
 import '../note_view/note_view.dart';
 import '../profile_view/profile_view.dart';
@@ -64,6 +67,32 @@ import 'response_snackbar.dart';
 import 'subscription_badge_view.dart';
 import 'zappers_view.dart';
 
+List<PullDownMenuEntry>? _spamModerationMenuItems({
+  required BuildContext context,
+  required BaseEventModel model,
+  required NSpamSafetyService spamFilter,
+  required bool isPotentialSpam,
+}) {
+  final isSafelisted = spamFilter.isAuthorSafelisted(model.pubkey);
+  if (!isPotentialSpam && !isSafelisted) {
+    return null;
+  }
+
+  return [
+    PullDownMenuItem(
+      title: isSafelisted ? context.t.markAsSpam : context.t.notSpam,
+      onTap: () => unawaited(
+        isSafelisted
+            ? spamFilter.markAuthorSpam(model.pubkey)
+            : spamFilter.markAuthorNotSpam(model.pubkey),
+      ),
+      iconWidget: Icon(
+        isSafelisted ? Icons.flag_outlined : Icons.check_circle_outline,
+      ),
+    ),
+  ];
+}
+
 class NoteStats extends HookWidget {
   const NoteStats({
     super.key,
@@ -72,6 +101,7 @@ class NoteStats extends HookWidget {
     required this.isMain,
     this.autoTranslate = false,
     this.isHomeFeed = false,
+    this.isPotentialSpam = false,
     this.onEventAdded,
     this.onTextTranslated,
     this.onMuteActionSuccess,
@@ -81,6 +111,7 @@ class NoteStats extends HookWidget {
   final BaseEventModel model;
   final bool isMain;
   final bool isHomeFeed;
+  final bool isPotentialSpam;
   final bool autoTranslate;
   final Function(String)? onTextTranslated;
   final Function()? onEventAdded;
@@ -88,6 +119,9 @@ class NoteStats extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spamFilter = NSpamSafetyService.instance;
+    useListenable(spamFilter);
+
     // ✅ REPLACE the problematic useMemoized with this optimized version:
     final hasRequestedStats = useState(false);
     final isInViewport = useState(false);
@@ -178,6 +212,16 @@ class NoteStats extends HookWidget {
                       child: ZappersRow(
                         zapData: zapsData,
                         zappers: zappers,
+                        onFluidTap: () {
+                          showAppModalSheet(
+                            context: context,
+                            builder: (_) => _NoteStatsModal(
+                              id: model.id,
+                              zappers: zappers,
+                              initialIndex: 4,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     secondChild: const SizedBox(
@@ -250,6 +294,12 @@ class NoteStats extends HookWidget {
                           builder: (context, state) {
                             return PullDownGlobalButton(
                               model: model,
+                              customItems: _spamModerationMenuItems(
+                                context: context,
+                                model: model,
+                                spamFilter: spamFilter,
+                                isPotentialSpam: isPotentialSpam,
+                              ),
                               size: 18,
                               iconSize: 18,
                               enableCopyNpub: true,
@@ -737,15 +787,22 @@ class ZappersRow extends StatelessWidget {
     super.key,
     required this.zapData,
     required this.zappers,
+    this.onFluidTap,
   });
 
   final Map<String, dynamic> zapData;
   final Map<String, MapEntry<String, int>> zappers;
+  final VoidCallback? onFluidTap;
 
   @override
   Widget build(BuildContext context) {
     final commonPubkeys = zapData['nextBestPubkeys'] as List;
     void openZappersList() {
+      if (isFluid() && onFluidTap != null) {
+        onFluidTap!();
+        return;
+      }
+
       showAppModalSheet(
         context: context,
         builder: (_) {
@@ -1869,14 +1926,17 @@ class DetailedNoteContainer extends HookWidget {
     required this.isMain,
     required this.addLine,
     this.isExtended = false,
+    this.isPreviousNote = false,
     this.loadPreviousNote = false,
     this.enableReply = false,
     this.extendLine = false,
     this.autoTranslate = false,
     this.isReply = false,
     this.isFilterHidden = false,
+    this.isPotentialSpam = false,
     this.shouldConsiderHiddenReply = false,
     this.noRender = false,
+    this.highlightOnly = false,
     this.showFollowButton = false,
     this.onClicked,
     this.onEventAdded,
@@ -1886,6 +1946,7 @@ class DetailedNoteContainer extends HookWidget {
   final DetailedNoteModel note;
   final bool isMain;
   final bool isExtended;
+  final bool isPreviousNote;
   final bool addLine;
   final bool loadPreviousNote;
   final bool extendLine;
@@ -1893,8 +1954,10 @@ class DetailedNoteContainer extends HookWidget {
   final bool autoTranslate;
   final bool isReply;
   final bool isFilterHidden;
+  final bool isPotentialSpam;
   final bool shouldConsiderHiddenReply;
   final bool noRender;
+  final bool highlightOnly;
   final bool showFollowButton;
   final Function()? onClicked;
   final Function()? onEventAdded;
@@ -1902,11 +1965,17 @@ class DetailedNoteContainer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spamFilter = NSpamSafetyService.instance;
+    useListenable(spamFilter);
+
     final replyEvent = useState<MapEntry<String, bool>?>(null);
     final noteContent = useState(note.content);
 
     useMemoized(
       () async {
+        if (highlightOnly) {
+          return;
+        }
         if (context.mounted) {
           if (enableReply) {
             if (note.replyTo.isNotEmpty) {
@@ -1940,6 +2009,10 @@ class DetailedNoteContainer extends HookWidget {
         }
       },
     );
+
+    if (highlightOnly) {
+      return _highlightBody(context, () {}, noteContent);
+    }
 
     final click = onClicked ??
         (isMain
@@ -2004,7 +2077,24 @@ class DetailedNoteContainer extends HookWidget {
             ],
           ),
         ),
-        if (isExtended || isMain || isReply) ...[
+        // Highlights outside the previous-note list remain full-width.
+        if (note.isNip84Highlight && !isPreviousNote) ...[
+          const SizedBox(height: kDefaultPadding / 2),
+          _highlightBody(context, click, noteContent),
+          const SizedBox(height: kDefaultPadding / 4),
+          NoteStats(
+            id: note.id,
+            model: note,
+            isMain: isMain,
+            isPotentialSpam: isPotentialSpam,
+            onEventAdded: onEventAdded,
+            autoTranslate: autoTranslate,
+            isHomeFeed: isExtended,
+            onTextTranslated: (text) => noteContent.value = text,
+            onMuteActionSuccess: onMuteActionSuccess,
+          ),
+        ] else if ((isExtended || isMain || isReply) &&
+            !note.isNip84Highlight) ...[
           if (enableReply &&
               replyEvent.value != null &&
               settingsCubit.useCompactReplies) ...[
@@ -2033,6 +2123,10 @@ class DetailedNoteContainer extends HookWidget {
             disableNoteParsing: noRender ? noRender : null,
             disableUrlParsing: noRender ? noRender : null,
             maxLines: noRender ? 5 : null,
+            onHighlight: (selectedText) => _publishHighlight(
+              context,
+              selectedText,
+            ),
           ),
           const SizedBox(
             height: kDefaultPadding / 4,
@@ -2041,6 +2135,7 @@ class DetailedNoteContainer extends HookWidget {
             id: note.id,
             model: note,
             isMain: isMain,
+            isPotentialSpam: isPotentialSpam,
             onEventAdded: onEventAdded,
             autoTranslate: autoTranslate,
             isHomeFeed: isExtended,
@@ -2052,6 +2147,409 @@ class DetailedNoteContainer extends HookWidget {
         ],
       ],
     );
+  }
+
+  Widget _highlightBody(
+    BuildContext context,
+    Function() click,
+    ValueNotifier<String> noteContent, {
+    Event? sourceEvent,
+    bool sourceRequested = false,
+  }) {
+    final theme = Theme.of(context);
+    final sourceUrl = note.highlightSource;
+    final sourceTag = note.highlightSourceTag;
+    final nostrSource =
+        sourceUrl == null ? null : _nostrSourceReference(sourceTag);
+    final comment = note.highlightComment;
+    final surroundingText = note.highlightSurroundingText;
+
+    if (nostrSource != null && !sourceRequested) {
+      return SingleEventProvider(
+        id: nostrSource.id,
+        isReplaceable: nostrSource.isReplaceable,
+        relays: nostrSource.relays,
+        author: nostrSource.author,
+        child: (event) => _highlightBody(
+          context,
+          click,
+          noteContent,
+          sourceEvent: event,
+          sourceRequested: true,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (comment != null) ...[
+          ParsedText(
+            key: ValueKey('${note.id}_comment'),
+            onClicked: click,
+            pubkey: note.pubkey,
+            text: comment,
+            emojis: note.emojis,
+            enableHidingMedia: true,
+            style: theme.textTheme.bodyMedium,
+            isMainNote: isMain,
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+        ],
+        HighlightContainer(
+          header: _highlightHeader(context, sourceUrl, sourceEvent),
+          content: surroundingText == null
+              ? ParsedText(
+                  key: ValueKey(note.id),
+                  onClicked: click,
+                  pubkey: note.pubkey,
+                  text: noteContent.value.trim(),
+                  emojis: note.emojis,
+                  enableHidingMedia: true,
+                  style: noRender
+                      ? theme.textTheme.labelLarge
+                      : theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  isMainNote: isMain,
+                  disableNoteParsing: noRender ? noRender : null,
+                  disableUrlParsing: noRender ? noRender : null,
+                  maxLines: noRender ? 5 : null,
+                  onHighlight: (selectedText) =>
+                      _publishHighlight(context, selectedText),
+                )
+              : _selectorHighlightText(
+                  context,
+                  surroundingText,
+                  noteContent.value.trim(),
+                ),
+          footer: sourceUrl == null
+              ? null
+              : _highlightSourceFooter(
+                  context,
+                  sourceUrl,
+                  nostrSource,
+                  sourceEvent,
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _selectorHighlightText(
+    BuildContext context,
+    List<String> surroundingText,
+    String selectedText,
+  ) {
+    final theme = Theme.of(context);
+    final textStyle = noRender
+        ? theme.textTheme.labelLarge
+        : theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600);
+    final before = surroundingText.first;
+    final after = surroundingText.last;
+
+    return Text.rich(
+      TextSpan(
+        style: textStyle,
+        children: [
+          if (before.isNotEmpty)
+            TextSpan(
+              text: before,
+              style: textStyle?.copyWith(color: theme.highlightColor),
+            ),
+          TextSpan(
+            text: selectedText,
+            style: textStyle?.copyWith(
+              backgroundColor: theme.primaryColor.withValues(alpha: 0.22),
+            ),
+          ),
+          if (after.isNotEmpty)
+            TextSpan(
+              text: after,
+              style: textStyle?.copyWith(color: theme.highlightColor),
+            ),
+        ],
+      ),
+      maxLines: noRender ? 5 : null,
+      overflow: noRender ? TextOverflow.ellipsis : TextOverflow.clip,
+    );
+  }
+
+  void _publishHighlight(BuildContext context, String selectedText) {
+    publishNip84Highlight(
+      context: context,
+      selectedText: selectedText,
+      sourceContent: note.content,
+      source: Nip84HighlightSource.note(id: note.id, pubkey: note.pubkey),
+    );
+  }
+
+  Widget _highlightHeader(
+    BuildContext context,
+    String? sourceUrl,
+    Event? sourceEvent,
+  ) {
+    return _highlightHeaderRow(
+      context,
+      label: sourceUrl == null
+          ? context.t.highlighted
+          : sourceEvent == null
+              ? '${context.t.highlightedFrom} ${_highlightSourceLabel(sourceUrl)}'
+              : context.t.highlightedFrom,
+      sourceEvent: sourceEvent,
+    );
+  }
+
+  Widget _highlightHeaderRow(
+    BuildContext context, {
+    required String label,
+    Event? sourceEvent,
+  }) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Icon(
+          LucideIcons.highlighter,
+          size: kDefaultPadding + 2,
+          color: theme.primaryColor,
+        ),
+        const SizedBox(width: kDefaultPadding / 2),
+        if (sourceEvent == null)
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          )
+        else ...[
+          Expanded(
+            child: Column(
+              spacing: kDefaultPadding / 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      label,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: kDefaultPadding / 2),
+                    MetadataProvider(
+                      pubkey: sourceEvent.pubkey,
+                      child: (metadata, _) => ProfilePicture3(
+                        image: metadata.picture,
+                        pubkey: metadata.pubkey,
+                        size: kDefaultPadding,
+                        padding: 0,
+                        strokeWidth: 0,
+                        strokeColor: kTransparent,
+                        onClicked: () => openProfileFastAccess(
+                          context: context,
+                          pubkey: metadata.pubkey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                _nostrSourceLabel(context, sourceEvent),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _highlightSourceFooter(
+    BuildContext context,
+    String sourceUrl,
+    _NostrHighlightSource? nostrSource,
+    Event? sourceEvent,
+  ) {
+    if (nostrSource == null) {
+      return _highlightSourceFooterRow(
+        context,
+        label: sourceUrl,
+        onTap: () => launchInstantUrl(sourceUrl),
+        showExternalLink: true,
+      );
+    }
+
+    final encoded = sourceEvent == null
+        ? nostrSource.encoded
+        : _encodeNostrHighlightSource(nostrSource, sourceEvent);
+    final url = '$baseUrl$encoded';
+
+    return _highlightSourceFooterRow(
+      context,
+      label: url,
+      onTap: sourceEvent == null
+          ? null
+          : () => _openNostrHighlightSource(context, sourceEvent),
+      showExternalLink: true,
+    );
+  }
+
+  void _openNostrHighlightSource(BuildContext context, Event event) {
+    final page = event.kind == EventKind.LONG_FORM
+        ? ArticleView(article: Article.fromEvent(event))
+        : NoteView(note: DetailedNoteModel.fromEvent(event));
+    YNavigator.pushPage(context, (_) => page);
+  }
+
+  String _encodeNostrHighlightSource(
+    _NostrHighlightSource source,
+    Event event,
+  ) {
+    final relays =
+        (source.relays?.isNotEmpty ?? false) ? source.relays! : event.seenOn;
+
+    if (source.isReplaceable && event.dTag != null && event.dTag!.isNotEmpty) {
+      final identifier =
+          event.dTag!.runes.map((code) => code.toRadixString(16)).join();
+      return Nip19.encodeShareableEntity(
+        'naddr',
+        identifier,
+        relays,
+        event.pubkey,
+        event.kind,
+      );
+    }
+
+    return Nip19.encodeShareableEntity(
+      'nevent',
+      event.id,
+      relays,
+      event.pubkey,
+      event.kind,
+    );
+  }
+
+  Widget _highlightSourceFooterRow(
+    BuildContext context, {
+    required String label,
+    Function()? onTap,
+    bool showExternalLink = false,
+  }) {
+    return HighlightSourceFooter(
+      label: label,
+      onTap: onTap,
+      showExternalLink: showExternalLink,
+    );
+  }
+
+  _NostrHighlightSource? _nostrSourceReference(List<String>? sourceTag) {
+    if (sourceTag?.first == 'e' && sourceTag!.length > 1) {
+      final relays = sourceTag.length > 2 && sourceTag[2].startsWith('ws')
+          ? [sourceTag[2]]
+          : <String>[];
+      return _NostrHighlightSource(
+        id: sourceTag[1],
+        isReplaceable: false,
+        encoded: Nip19.encodeShareableEntity(
+          'nevent',
+          sourceTag[1],
+          relays,
+          null,
+          null,
+        ),
+        relays: relays,
+      );
+    }
+
+    if (sourceTag?.first == 'a' && sourceTag!.length > 1) {
+      final coordinate = sourceTag[1].split(':');
+      if (coordinate.length >= 3) {
+        return _NostrHighlightSource(
+          id: coordinate.last,
+          isReplaceable: true,
+          encoded: '',
+          author: coordinate[1],
+        );
+      }
+    }
+    return null;
+  }
+
+  Widget _nostrSourceLabel(BuildContext context, Event? event) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.labelMedium?.copyWith(
+      fontWeight: FontWeight.w700,
+    );
+
+    if (event == null) {
+      return Text(
+        '[Nostr] ${context.t.loadingSource}',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: style?.copyWith(color: theme.primaryColorDark),
+      );
+    }
+
+    if (event.kind == EventKind.LONG_FORM) {
+      final title = Article.fromEvent(event).title.trim();
+      return _sourceLabelText(
+        context,
+        context.t.article.capitalizeFirst(),
+        title.isEmpty ? context.t.untitledArticle : title,
+        style,
+      );
+    }
+
+    final text = event.content.replaceAll(RegExp(r'\s+'), ' ').trim();
+    final excerpt = text.length > 100 ? '${text.substring(0, 100)}…' : text;
+    return _sourceLabelText(
+      context,
+      context.t.note.capitalizeFirst(),
+      excerpt.isEmpty ? context.t.untitledNote : excerpt,
+      style,
+    );
+  }
+
+  Widget _sourceLabelText(
+    BuildContext context,
+    String type,
+    String label,
+    TextStyle? style,
+  ) {
+    final theme = Theme.of(context);
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: '[$type] ',
+            style: style?.copyWith(color: theme.highlightColor),
+          ),
+          TextSpan(
+            text: label,
+            style: style?.copyWith(color: theme.primaryColorDark),
+          ),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  String? _highlightSourceLabel(String? source) {
+    if (source == null || source.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(source);
+    if (uri != null && uri.host.isNotEmpty) {
+      return uri.host;
+    }
+    return source;
   }
 
   MetadataProvider _mainMetadataRow(BuildContext context) {
@@ -2104,7 +2602,23 @@ class DetailedNoteContainer extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _generalInfoRow(context, noteContent),
-          if (!isMain && !isReply && !isExtended) ...[
+          if (note.isNip84Highlight && isPreviousNote) ...[
+            const SizedBox(height: kDefaultPadding / 2),
+            _highlightBody(context, click, noteContent),
+            const SizedBox(height: kDefaultPadding / 4),
+            NoteStats(
+              id: note.id,
+              model: note,
+              isMain: isMain,
+              isPotentialSpam: isPotentialSpam,
+              onEventAdded: onEventAdded,
+              autoTranslate: autoTranslate,
+              isHomeFeed: isExtended,
+              onTextTranslated: (text) => noteContent.value = text,
+              onMuteActionSuccess: onMuteActionSuccess,
+            ),
+            if (extendLine) const SizedBox(height: kDefaultPadding / 2),
+          ] else if (!isMain && !isReply && !isExtended) ...[
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
@@ -2125,6 +2639,7 @@ class DetailedNoteContainer extends HookWidget {
               id: note.id,
               model: note,
               isMain: isMain,
+              isPotentialSpam: isPotentialSpam,
               onEventAdded: onEventAdded,
               autoTranslate: autoTranslate,
               onTextTranslated: (text) {
@@ -2161,10 +2676,15 @@ class DetailedNoteContainer extends HookWidget {
   }
 
   Row _generalInfoRow(BuildContext context, ValueNotifier<String> noteContent) {
+    final spamFilter = NSpamSafetyService.instance;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _noteInfo(),
+        if (note.isNip84Highlight) ...[
+          _highlightPill(context),
+          const SizedBox(width: kDefaultPadding / 2),
+        ],
         if (isFluid()) ...[
           TranslationButton(
             autoTranslate: autoTranslate,
@@ -2176,6 +2696,12 @@ class DetailedNoteContainer extends HookWidget {
             buildWhen: (previous, current) => previous.mutes != current.mutes,
             builder: (context, state) => PullDownGlobalButton(
               model: note,
+              customItems: _spamModerationMenuItems(
+                context: context,
+                model: note,
+                spamFilter: spamFilter,
+                isPotentialSpam: isPotentialSpam,
+              ),
               enableCopyNpub: true,
               enableCopyId: true,
               enableBookmark: true,
@@ -2223,6 +2749,41 @@ class DetailedNoteContainer extends HookWidget {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _highlightPill(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Semantics(
+      label: context.t.highlight,
+      child: Container(
+        height: 24,
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: theme.primaryColor.withValues(alpha: 0.14),
+          borderRadius: BorderRadius.circular(kDefaultPadding),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              LucideIcons.highlighter,
+              size: 14,
+              color: theme.primaryColor,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              context.t.highlight,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -2575,6 +3136,142 @@ class _ReplyContainerState extends State<ReplyContainer> {
   }
 }
 
+class HighlightContainer extends StatelessWidget {
+  const HighlightContainer({
+    super.key,
+    required this.header,
+    required this.content,
+    this.footer,
+  });
+
+  final Widget header;
+  final Widget content;
+  final Widget? footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        border: Border.all(color: theme.dividerColor),
+        borderRadius: BorderRadius.circular(kDefaultPadding),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              kDefaultPadding / 1.25,
+              kDefaultPadding / 1.25,
+              kDefaultPadding / 1.25,
+              0,
+            ),
+            child: header,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(kDefaultPadding / 1.25),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(width: 4, color: theme.primaryColor),
+                  const SizedBox(width: kDefaultPadding / 2),
+                  Expanded(child: content),
+                ],
+              ),
+            ),
+          ),
+          if (footer != null) footer!,
+        ],
+      ),
+    );
+  }
+}
+
+class HighlightSourceFooter extends StatelessWidget {
+  const HighlightSourceFooter({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.showExternalLink = false,
+  });
+
+  final String label;
+  final Function()? onTap;
+  final bool showExternalLink;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      children: [
+        Divider(color: theme.dividerColor, height: 1, thickness: 0.5),
+        InkWell(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(kDefaultPadding),
+            bottomRight: Radius.circular(kDefaultPadding),
+          ),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding / 1.25,
+              vertical: kDefaultPadding / 1.25,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  FeatureIcons.globe,
+                  size: kDefaultPadding,
+                  color: theme.hintColor,
+                ),
+                const SizedBox(width: kDefaultPadding / 2),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.hintColor,
+                    ),
+                  ),
+                ),
+                if (showExternalLink) ...[
+                  const SizedBox(width: kDefaultPadding / 2),
+                  Icon(
+                    LucideIcons.externalLink,
+                    size: kDefaultPadding,
+                    color: theme.hintColor,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NostrHighlightSource {
+  const _NostrHighlightSource({
+    required this.id,
+    required this.isReplaceable,
+    required this.encoded,
+    this.relays,
+    this.author,
+  });
+
+  final String id;
+  final bool isReplaceable;
+  final String encoded;
+  final List<String>? relays;
+  final String? author;
+}
+
 class NoteReplyBox extends HookWidget {
   const NoteReplyBox({
     super.key,
@@ -2724,6 +3421,7 @@ class NoteReplyBox extends HookWidget {
     switch (event.kind) {
       case EventKind.TEXT_NOTE:
       case EventKind.COMMENT:
+      case EventKind.HIGHLIGHT:
         widget = DetailedNoteContainer(
           note: DetailedNoteModel.fromEvent(event),
           isMain: false,
@@ -3039,14 +3737,19 @@ class _NoteStatsModal extends HookWidget {
   const _NoteStatsModal({
     required this.id,
     required this.zappers,
+    this.initialIndex = 0,
   });
 
   final String id;
   final Map<String, MapEntry<String, int>> zappers;
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 5);
+    final tabController = useTabController(
+      initialLength: 5,
+      initialIndex: initialIndex,
+    );
 
     return Padding(
       padding:

@@ -297,6 +297,12 @@ class TranslationsHi extends Translations {
 	@override String get following => 'फॉलोइंग';
 	@override String get trending => 'ट्रेंडिंग';
 	@override String get highlights => 'हाइलाइट्स';
+	@override String get highlight => 'हाइलाइट';
+	@override String get highlighted => 'हाइलाइट किया गया';
+	@override String get highlightedFrom => 'यहाँ से हाइलाइट किया गया';
+	@override String get untitledArticle => 'शीर्षकहीन लेख';
+	@override String get untitledNote => 'शीर्षकहीन नोट';
+	@override String get loadingSource => 'स्रोत लोड हो रहा है…';
 	@override String get paid => 'पेड';
 	@override String get others => 'अन्य';
 	@override String get suggestionsBox => 'सुझाव बॉक्स';
@@ -885,6 +891,10 @@ class TranslationsHi extends Translations {
 	@override String get fetchingUserInboxRelays => 'उपयोगकर्ता इनबॉक्स रिले प्राप्त कर रहा है';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} ने आपको ${number} सैट्स Zap किया';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} ने आप पर ${reaction} प्रतिक्रिया दी';
+	@override String get highlightsDesc => 'जब कोई आपके कंटेंट को हाइलाइट करे तो सूचना पाएँ।';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ने आपके लेख का अंश हाइलाइट किया';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} ने आपके नोट का अंश हाइलाइट किया';
+	@override String userHighlightedYourContent({required Object name}) => '${name} ने आपके कंटेंट को हाइलाइट किया';
 	@override String userRepostedYou({required Object name}) => '${name} ने आपका सामग्री रिपोस्ट किया';
 	@override String userMentionedYouInComment({required Object name}) => '${name} ने आपको एक कमेंट में मेंशन किया';
 	@override String userMentionedYouInNote({required Object name}) => '${name} ने आपको एक नोट में मेंशन किया';
@@ -1119,6 +1129,8 @@ class TranslationsHi extends Translations {
 	@override String get shareWidgetImage => 'विजेट छवि शेयर करें';
 	@override String get inputField => 'इनपुट फील्ड';
 	@override String get noReplies => 'कोई उत्तर नहीं';
+	@override String get noVisibleReplies => 'कोई दिखाई देने वाला उत्तर नहीं';
+	@override String get spamRepliesHiddenHint => 'संभावित स्पैम उत्तर नीचे छिपे हैं।';
 	@override String get message => 'संदेश';
 	@override String get chat => 'चैट';
 	@override String get onlyLettersNumber => 'केवल अक्षर और संख्या अनुमत';
@@ -2220,6 +2232,13 @@ class TranslationsHi extends Translations {
 	@override String get pastDue => 'बकाया';
 	@override String get unpaid => 'अवैतनिक';
 	@override String get incomplete => 'अपूर्ण';
+	@override String get spamFilter => 'संभावित स्पैम फ़िल्टर';
+	@override String get spamFilterDesc => 'उन लेखकों की प्रतिक्रियाएँ समेटें जो स्पैम जैसे लगते हैं। आप उन्हें कभी भी खोल सकते हैं।';
+	@override String seePotentialSpams({required Object count}) => '${count} संभावित स्पैम देखें';
+	@override String get showSpamReplies => 'संभावित स्पैम प्रतिक्रियाएँ दिखाएँ';
+	@override String get hideSpamReplies => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ';
+	@override String get markAsSpam => 'स्पैम के रूप में चिह्नित करें';
+	@override String get notSpam => 'स्पैम नहीं';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -2496,6 +2515,12 @@ extension on TranslationsHi {
 			'following' => 'फॉलोइंग',
 			'trending' => 'ट्रेंडिंग',
 			'highlights' => 'हाइलाइट्स',
+			'highlight' => 'हाइलाइट',
+			'highlighted' => 'हाइलाइट किया गया',
+			'highlightedFrom' => 'यहाँ से हाइलाइट किया गया',
+			'untitledArticle' => 'शीर्षकहीन लेख',
+			'untitledNote' => 'शीर्षकहीन नोट',
+			'loadingSource' => 'स्रोत लोड हो रहा है…',
 			'paid' => 'पेड',
 			'others' => 'अन्य',
 			'suggestionsBox' => 'सुझाव बॉक्स',
@@ -2744,18 +2769,18 @@ extension on TranslationsHi {
 			'post' => 'पोस्ट',
 			'seeAnything' => 'कुछ ऐसा देखते हैं जो बेहतर किया जा सकता है?',
 			'writeNote' => 'एक नोट लिखें',
-			'whatThinkThis' => 'इसके बारे में क्या सोचते हैं?',
-			'sourceRecommended' => 'स्रोत (सिफारिश की गई)',
-			'findPaidNoteCorrect' => 'आप इस पेड नोट को सही मानते हैं.',
-			'findPaidNoteMisleading' => 'आप इस पेड नोट को भ्रामक मानते हैं.',
-			'selectOneReason' => 'कम से कम एक कारण चुनें',
-			'rateHelpful' => 'हेल्पफुल के रूप में रेट करें',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'इसके बारे में क्या सोचते हैं?',
+			'sourceRecommended' => 'स्रोत (सिफारिश की गई)',
+			'findPaidNoteCorrect' => 'आप इस पेड नोट को सही मानते हैं.',
+			'findPaidNoteMisleading' => 'आप इस पेड नोट को भ्रामक मानते हैं.',
+			'selectOneReason' => 'कम से कम एक कारण चुनें',
+			'rateHelpful' => 'हेल्पफुल के रूप में रेट करें',
 			'rateNotHelpful' => 'नॉट हेल्पफुल के रूप में रेट करें',
 			'ratedHelpful' => 'हेल्पफुल रेट किया गया',
 			'ratedNotHelpful' => 'नॉट हेल्पफुल रेट किया गया',
@@ -3090,6 +3115,10 @@ extension on TranslationsHi {
 			'fetchingUserInboxRelays' => 'उपयोगकर्ता इनबॉक्स रिले प्राप्त कर रहा है',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} ने आपको ${number} सैट्स Zap किया',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} ने आप पर ${reaction} प्रतिक्रिया दी',
+			'highlightsDesc' => 'जब कोई आपके कंटेंट को हाइलाइट करे तो सूचना पाएँ।',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ने आपके लेख का अंश हाइलाइट किया',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ने आपके नोट का अंश हाइलाइट किया',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} ने आपके कंटेंट को हाइलाइट किया',
 			'userRepostedYou' => ({required Object name}) => '${name} ने आपका सामग्री रिपोस्ट किया',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} ने आपको एक कमेंट में मेंशन किया',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} ने आपको एक नोट में मेंशन किया',
@@ -3258,6 +3287,12 @@ extension on TranslationsHi {
 			'blockHeight' => 'ब्लॉक हाइट',
 			'atContractCreation' => ({required Object number}) => '${number} (कॉन्ट्रैक्ट क्रिएशन पर)',
 			'zkProofs' => 'ZK प्रूफ्स',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => 'प्रूफ्स डाउनलोड करें',
 			'walletConnectionString' => 'वॉलेट कनेक्शन स्ट्रिंग',
 			'walletConnectionStringDesc' => 'सुनिश्चित करें कि वॉलेट कनेक्शन स्ट्रिंग को सुरक्षित रूप से कॉपी या एक्सपोर्ट करें. हम इस जानकारी को स्टोर नहीं करते, और अगर खो गई तो इसे रिकवर नहीं किया जा सकता.',
@@ -3268,12 +3303,6 @@ extension on TranslationsHi {
 			'manageWallets' => 'वॉलेट्स प्रबंधित करें',
 			'roundDuration' => 'राउंड अवधि',
 			'startAt' => ({required Object date}) => 'शुरू: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'लॉगिन',
 			'addPicture' => 'पिक्चर जोड़ें',
 			'editPicture' => 'पिक्चर संपादित करें',
@@ -3330,6 +3359,8 @@ extension on TranslationsHi {
 			'shareWidgetImage' => 'विजेट छवि शेयर करें',
 			'inputField' => 'इनपुट फील्ड',
 			'noReplies' => 'कोई उत्तर नहीं',
+			'noVisibleReplies' => 'कोई दिखाई देने वाला उत्तर नहीं',
+			'spamRepliesHiddenHint' => 'संभावित स्पैम उत्तर नीचे छिपे हैं।',
 			'message' => 'संदेश',
 			'chat' => 'चैट',
 			'onlyLettersNumber' => 'केवल अक्षर और संख्या अनुमत',
@@ -3774,6 +3805,12 @@ extension on TranslationsHi {
 			'noMintsAvailable' => 'कोई मिंट उपलब्ध नहीं है',
 			'currencies' => 'मुद्राएं',
 			'nuts' => 'NUTs',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'errorUpdatingMint' => 'मिंट सूची अपडेट करते समय त्रुटि हुई',
 			'active' => 'सक्रिय',
 			'inactive' => 'निष्क्रिय',
@@ -3786,12 +3823,6 @@ extension on TranslationsHi {
 			'restoreWallet' => 'वॉलेट पुनर्स्थापित करें',
 			'restoreWalletDesc' => 'NOSTR पर सहेजने के लिए इस मिंट में अपने वॉलेट के प्रमाण पुनर्स्थापित करें',
 			'seedPhraseLocallyOnly' => 'आपका सीड फ्रेज़ केवल आपके वॉलेट कीज़ प्राप्त करने के लिए स्थानीय रूप से उपयोग किया जाता है।',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => 'प्रमाण पुनर्स्थापित',
 			'noProofsFound' => 'कोई प्रमाण नहीं मिला',
 			'errorRestoringProofs' => 'प्रमाण पुनर्स्थापित करते समय त्रुटि हुई',
@@ -4292,6 +4323,12 @@ extension on TranslationsHi {
 			'pomRecoverShard' => 'शार्ड पुनर्प्राप्त करें',
 			'pomShardCollected' => 'शार्ड प्राप्त हुआ',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} शार्ड प्राप्त हुए',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomRecoverSuccess' => 'निजी कुंजी पुनर्प्राप्त हो गई',
 			'pomDownloadKey' => 'कुंजी डाउनलोड करें',
 			'pomUnlinkTitle' => 'खाता अनलिंक करें',
@@ -4304,12 +4341,6 @@ extension on TranslationsHi {
 			'pomUnlinkSuccess' => 'खाता अनलिंक हो गया। आप साइन आउट कर दिए गए हैं।',
 			'pomUnlinkFailed' => 'आपका खाता अनलिंक नहीं हो सका। कृपया पुनः प्रयास करें।',
 			'pomKeyCopied' => 'निजी कुंजी कॉपी हो गई',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'पहचान सर्वर',
 			'pomServerDesc' => 'आपका खाता इस केंद्रीय सर्वर पर रहता है। आप हमारा, कोई अन्य प्रदाता, या अपना सर्वर चुन सकते हैं।',
 			'pomServerDefault' => 'डिफ़ॉल्ट',
@@ -4443,6 +4474,13 @@ extension on TranslationsHi {
 			'pastDue' => 'बकाया',
 			'unpaid' => 'अवैतनिक',
 			'incomplete' => 'अपूर्ण',
+			'spamFilter' => 'संभावित स्पैम फ़िल्टर',
+			'spamFilterDesc' => 'उन लेखकों की प्रतिक्रियाएँ समेटें जो स्पैम जैसे लगते हैं। आप उन्हें कभी भी खोल सकते हैं।',
+			'seePotentialSpams' => ({required Object count}) => '${count} संभावित स्पैम देखें',
+			'showSpamReplies' => 'संभावित स्पैम प्रतिक्रियाएँ दिखाएँ',
+			'hideSpamReplies' => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ',
+			'markAsSpam' => 'स्पैम के रूप में चिह्नित करें',
+			'notSpam' => 'स्पैम नहीं',
 			_ => null,
 		};
 	}

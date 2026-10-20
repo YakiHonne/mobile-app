@@ -297,6 +297,12 @@ class TranslationsFr extends Translations {
 	@override String get following => 'suivi';
 	@override String get trending => 'tendances';
 	@override String get highlights => 'faits saillants';
+	@override String get highlight => 'surlignage';
+	@override String get highlighted => 'Mis en évidence';
+	@override String get highlightedFrom => 'Mis en évidence depuis';
+	@override String get untitledArticle => 'Article sans titre';
+	@override String get untitledNote => 'Note sans titre';
+	@override String get loadingSource => 'Chargement de la source…';
 	@override String get paid => 'payant';
 	@override String get others => 'autres';
 	@override String get suggestionsBox => 'Boîte de suggestions';
@@ -885,6 +891,10 @@ class TranslationsFr extends Translations {
 	@override String get fetchingUserInboxRelays => 'Récupération des relais de boîte de réception de l\'utilisateur';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} vous a zappé ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} a réagi ${reaction} sur vous';
+	@override String get highlightsDesc => 'Recevez une notification lorsque quelqu’un surligne votre contenu.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} a surligné un extrait de votre article';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} a surligné un extrait de votre note';
+	@override String userHighlightedYourContent({required Object name}) => '${name} a surligné votre contenu';
 	@override String userRepostedYou({required Object name}) => '${name} a reposté votre contenu';
 	@override String userMentionedYouInComment({required Object name}) => '${name} vous a mentionné dans un commentaire';
 	@override String userMentionedYouInNote({required Object name}) => '${name} vous a mentionné dans une note';
@@ -1119,6 +1129,8 @@ class TranslationsFr extends Translations {
 	@override String get shareWidgetImage => 'Partager l\'image du widget';
 	@override String get inputField => 'Champ d\'entrée';
 	@override String get noReplies => 'Pas de réponses';
+	@override String get noVisibleReplies => 'Aucune réponse visible';
+	@override String get spamRepliesHiddenHint => 'Les réponses potentiellement indésirables sont masquées ci-dessous.';
 	@override String get message => 'Message';
 	@override String get chat => 'Chat';
 	@override String get onlyLettersNumber => 'Seules les lettres et les chiffres sont autorisés';
@@ -2220,6 +2232,13 @@ class TranslationsFr extends Translations {
 	@override String get pastDue => 'En retard';
 	@override String get unpaid => 'Impayé';
 	@override String get incomplete => 'Incomplet';
+	@override String get spamFilter => 'Filtre de spam potentiel';
+	@override String get spamFilterDesc => 'Réduire les réponses des auteurs qui semblent faire du spam. Vous pouvez toujours les développer.';
+	@override String seePotentialSpams({required Object count}) => 'Voir ${count} spams potentiels';
+	@override String get showSpamReplies => 'Afficher les réponses potentiellement indésirables';
+	@override String get hideSpamReplies => 'Masquer les réponses potentiellement indésirables';
+	@override String get markAsSpam => 'Signaler comme indésirable';
+	@override String get notSpam => 'Pas indésirable';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -2496,6 +2515,12 @@ extension on TranslationsFr {
 			'following' => 'suivi',
 			'trending' => 'tendances',
 			'highlights' => 'faits saillants',
+			'highlight' => 'surlignage',
+			'highlighted' => 'Mis en évidence',
+			'highlightedFrom' => 'Mis en évidence depuis',
+			'untitledArticle' => 'Article sans titre',
+			'untitledNote' => 'Note sans titre',
+			'loadingSource' => 'Chargement de la source…',
 			'paid' => 'payant',
 			'others' => 'autres',
 			'suggestionsBox' => 'Boîte de suggestions',
@@ -2744,18 +2769,18 @@ extension on TranslationsFr {
 			'post' => 'Publier',
 			'seeAnything' => 'Voyez-vous quelque chose qui peut être amélioré ?',
 			'writeNote' => 'Écrivez une note',
-			'whatThinkThis' => 'Que pensez-vous de cela ?',
-			'sourceRecommended' => 'Source (recommandée)',
-			'findPaidNoteCorrect' => 'Vous considérez cette note payante correcte.',
-			'findPaidNoteMisleading' => 'Vous considérez cette note payante trompeuse.',
-			'selectOneReason' => 'Sélectionnez au moins une raison',
-			'rateHelpful' => 'Évaluer comme utile',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'whatThinkThis' => 'Que pensez-vous de cela ?',
+			'sourceRecommended' => 'Source (recommandée)',
+			'findPaidNoteCorrect' => 'Vous considérez cette note payante correcte.',
+			'findPaidNoteMisleading' => 'Vous considérez cette note payante trompeuse.',
+			'selectOneReason' => 'Sélectionnez au moins une raison',
+			'rateHelpful' => 'Évaluer comme utile',
 			'rateNotHelpful' => 'Évaluer comme non utile',
 			'ratedHelpful' => 'Évalué comme utile',
 			'ratedNotHelpful' => 'Évalué comme non utile',
@@ -3090,6 +3115,10 @@ extension on TranslationsFr {
 			'fetchingUserInboxRelays' => 'Récupération des relais de boîte de réception de l\'utilisateur',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} vous a zappé ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} a réagi ${reaction} sur vous',
+			'highlightsDesc' => 'Recevez une notification lorsque quelqu’un surligne votre contenu.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} a surligné un extrait de votre article',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} a surligné un extrait de votre note',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} a surligné votre contenu',
 			'userRepostedYou' => ({required Object name}) => '${name} a reposté votre contenu',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} vous a mentionné dans un commentaire',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} vous a mentionné dans une note',
@@ -3258,6 +3287,12 @@ extension on TranslationsFr {
 			'blockHeight' => 'Hauteur de bloc',
 			'atContractCreation' => ({required Object number}) => '${number} (à la création du contrat)',
 			'zkProofs' => 'Preuves ZK',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'downloadZkProofs' => 'Télécharger les preuves',
 			'walletConnectionString' => 'Chaîne de connexion de portefeuille',
 			'walletConnectionStringDesc' => 'Assurez-vous de copier ou exporter en toute sécurité la chaîne de connexion de portefeuille. Nous ne stockons pas cette information, et si elle est perdue, elle ne peut pas être récupérée.',
@@ -3268,12 +3303,6 @@ extension on TranslationsFr {
 			'manageWallets' => 'Gérer les portefeuilles',
 			'roundDuration' => 'Durée du tour',
 			'startAt' => ({required Object date}) => 'Début à : ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'loginAction' => 'Connexion',
 			'addPicture' => 'Ajouter une image',
 			'editPicture' => 'Modifier l\'image',
@@ -3330,6 +3359,8 @@ extension on TranslationsFr {
 			'shareWidgetImage' => 'Partager l\'image du widget',
 			'inputField' => 'Champ d\'entrée',
 			'noReplies' => 'Pas de réponses',
+			'noVisibleReplies' => 'Aucune réponse visible',
+			'spamRepliesHiddenHint' => 'Les réponses potentiellement indésirables sont masquées ci-dessous.',
 			'message' => 'Message',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Seules les lettres et les chiffres sont autorisés',
@@ -3774,6 +3805,12 @@ extension on TranslationsFr {
 			'noMintsAvailable' => 'Aucun mint disponible',
 			'currencies' => 'Devises',
 			'nuts' => 'NUTs',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'errorUpdatingMint' => 'Erreur lors de la mise à jour de la liste des mints',
 			'active' => 'Actif',
 			'inactive' => 'Inactif',
@@ -3786,12 +3823,6 @@ extension on TranslationsFr {
 			'restoreWallet' => 'Restaurer le portefeuille',
 			'restoreWalletDesc' => 'Restaurer les preuves de votre portefeuille dans ce mint pour les sauvegarder sur NOSTR',
 			'seedPhraseLocallyOnly' => 'Votre phrase secrète est utilisée uniquement localement pour dériver vos clés de portefeuille.',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'proofsRestored' => 'Preuves restaurées',
 			'noProofsFound' => 'Aucune preuve trouvée',
 			'errorRestoringProofs' => 'Erreur lors de la restauration des preuves',
@@ -4292,6 +4323,12 @@ extension on TranslationsFr {
 			'pomRecoverShard' => 'Récupérer le fragment',
 			'pomShardCollected' => 'Fragment collecté',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} fragments collectés',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomRecoverSuccess' => 'Clé privée récupérée',
 			'pomDownloadKey' => 'Télécharger la clé',
 			'pomUnlinkTitle' => 'Dissocier le compte',
@@ -4304,12 +4341,6 @@ extension on TranslationsFr {
 			'pomUnlinkSuccess' => 'Compte dissocié. Vous avez été déconnecté.',
 			'pomUnlinkFailed' => 'Impossible de dissocier votre compte. Veuillez réessayer.',
 			'pomKeyCopied' => 'Clé privée copiée',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomServerTitle' => 'Serveur d\'identité',
 			'pomServerDesc' => 'Votre compte réside sur ce serveur central. Vous pouvez utiliser le nôtre, un autre fournisseur ou le vôtre.',
 			'pomServerDefault' => 'Par défaut',
@@ -4443,6 +4474,13 @@ extension on TranslationsFr {
 			'pastDue' => 'En retard',
 			'unpaid' => 'Impayé',
 			'incomplete' => 'Incomplet',
+			'spamFilter' => 'Filtre de spam potentiel',
+			'spamFilterDesc' => 'Réduire les réponses des auteurs qui semblent faire du spam. Vous pouvez toujours les développer.',
+			'seePotentialSpams' => ({required Object count}) => 'Voir ${count} spams potentiels',
+			'showSpamReplies' => 'Afficher les réponses potentiellement indésirables',
+			'hideSpamReplies' => 'Masquer les réponses potentiellement indésirables',
+			'markAsSpam' => 'Signaler comme indésirable',
+			'notSpam' => 'Pas indésirable',
 			_ => null,
 		};
 	}

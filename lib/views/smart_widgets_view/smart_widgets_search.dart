@@ -22,9 +22,16 @@ import 'widgets/smart_widget_search_suggestion.dart';
 import 'widgets/smart_widgets_list.dart';
 
 class SmartWidgetsSearch extends HookWidget {
-  SmartWidgetsSearch({super.key}) {
+  SmartWidgetsSearch({
+    super.key,
+    required this.scrollController,
+    required this.onReadyChanged,
+  }) {
     umamiAnalytics.trackEvent(screenName: 'Smart widgets');
   }
+
+  final ScrollController scrollController;
+  final ValueChanged<bool> onReadyChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -33,40 +40,45 @@ class SmartWidgetsSearch extends HookWidget {
 
     return BlocProvider(
       create: (context) => SmartWidgetSearchCubit(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Stack(
-            children: [
-              Positioned.fill(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeInOut,
-                  child: isSearchEnabled.value
-                      ? const WidgetSearch()
-                      : const GetInspired(),
+      child: BlocListener<SmartWidgetSearchCubit, SmartWidgetSearchState>(
+        listener: (context, state) {
+          onReadyChanged(!state.isSmartWidgetLoading);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Stack(
+              children: [
+                Positioned.fill(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInOut,
+                    child: isSearchEnabled.value
+                        ? WidgetSearch(scrollController: scrollController)
+                        : GetInspired(scrollController: scrollController),
+                  ),
                 ),
-              ),
-              Positioned(
-                top: isSearchEnabled.value
-                    ? isFluid()
-                        ? MediaQuery.of(context).padding.top + kToolbarHeight
-                        : 0
-                    : null,
-                bottom: !isSearchEnabled.value
-                    ? isFluid()
-                        ? MediaQuery.of(context).padding.bottom +
-                            kBottomNavigationBarHeight
-                        : 0
-                    : null,
-                left: 0,
-                right: 0,
-                child: SmartWidgetSearchContainer(
-                  isSearchEnabled: isSearchEnabled,
-                  searchController: searchController,
+                Positioned(
+                  top: isSearchEnabled.value
+                      ? isFluid()
+                          ? MediaQuery.of(context).padding.top + kToolbarHeight
+                          : 0
+                      : null,
+                  bottom: !isSearchEnabled.value
+                      ? isFluid()
+                          ? MediaQuery.of(context).padding.bottom +
+                              kBottomNavigationBarHeight
+                          : 0
+                      : null,
+                  left: 0,
+                  right: 0,
+                  child: SmartWidgetSearchContainer(
+                    isSearchEnabled: isSearchEnabled,
+                    searchController: searchController,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -77,7 +89,10 @@ class SmartWidgetsSearch extends HookWidget {
 class WidgetSearch extends HookWidget {
   const WidgetSearch({
     super.key,
+    required this.scrollController,
   });
+
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +112,7 @@ class WidgetSearch extends HookWidget {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: CustomScrollView(
                 key: const ValueKey('get_inspired'),
+                controller: scrollController,
                 slivers: [
                   const SliverToBoxAdapter(
                     child: SizedBox(
@@ -272,24 +288,21 @@ class WidgetSearch extends HookWidget {
 }
 
 class GetInspired extends StatefulWidget {
-  // Changed to StatefulWidget
-  const GetInspired({super.key});
+  const GetInspired({
+    super.key,
+    required this.scrollController,
+  });
+
+  final ScrollController scrollController;
 
   @override
   GetInspiredState createState() => GetInspiredState();
 }
 
 class GetInspiredState extends State<GetInspired> {
-  final ScrollController _scrollController = ScrollController();
   Set<String> animatedMessage = {};
   Set<String> currentlyAnimating = {};
   String? _lastMessageId;
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -333,8 +346,9 @@ class GetInspiredState extends State<GetInspired> {
 
           WidgetsBinding.instance.addPostFrameCallback(
             (_) {
-              if (_scrollController.hasClients && state.messages.isNotEmpty) {
-                _scrollController.animateTo(
+              if (widget.scrollController.hasClients &&
+                  state.messages.isNotEmpty) {
+                widget.scrollController.animateTo(
                   0.0,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut,
@@ -448,7 +462,7 @@ class GetInspiredState extends State<GetInspired> {
     return ScrollShadow(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: ListView.custom(
-        controller: _scrollController,
+        controller: widget.scrollController,
         reverse: true,
         padding: const EdgeInsets.symmetric(
           vertical: kDefaultPadding,

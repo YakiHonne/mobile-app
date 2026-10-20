@@ -22,10 +22,12 @@ class MarkDownWidget extends StatelessWidget {
     super.key,
     required this.content,
     required this.onLinkClicked,
+    this.onHighlight,
   });
 
   final String content;
   final Function(String) onLinkClicked;
+  final void Function(String selectedText)? onHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +39,12 @@ class MarkDownWidget extends StatelessWidget {
 
     final isDark = themeCubit.isDark;
 
-    return MediaQuery.removePadding(
-      context: context,
-      removeBottom: true,
-      removeTop: true,
-      child: MarkdownWidget(
+    String selectedText = '';
+    final markdown = MarkdownWidget(
         data: content,
+        // The surrounding SelectionArea owns the highlight action. Keeping
+        // markdown_widget's nested SelectionArea would replace that toolbar.
+        selectable: false,
         shrinkWrap: true,
         markdownGenerator: MarkdownGenerator(
           generators: [
@@ -84,7 +86,35 @@ class MarkDownWidget extends StatelessWidget {
         physics: const ScrollPhysics(
           parent: NeverScrollableScrollPhysics(),
         ),
-      ),
+      );
+
+    return MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      removeTop: true,
+      child: onHighlight == null
+          ? markdown
+          : SelectionArea(
+              onSelectionChanged: (selection) {
+                selectedText = selection?.plainText ?? '';
+              },
+              contextMenuBuilder: (context, selectableRegionState) =>
+                  AdaptiveTextSelectionToolbar.buttonItems(
+                anchors: selectableRegionState.contextMenuAnchors,
+                buttonItems: [
+                  ...selectableRegionState.contextMenuButtonItems,
+                  ContextMenuButtonItem(
+                    label: context.t.highlights.capitalizeFirst(),
+                    onPressed: () {
+                      if (selectedText.trim().isNotEmpty) {
+                        onHighlight!(selectedText);
+                      }
+                    },
+                  ),
+                ],
+              ),
+              child: markdown,
+            ),
     );
   }
 

@@ -101,7 +101,9 @@ class _DiscoverViewState extends State<DiscoverView> {
           final refresher = SmartRefresher(
             controller: refreshController,
             enablePullUp: true,
-            header: const RefresherClassicHeader(),
+            header: const RefresherClassicHeader(
+              additionalOffset: kDefaultPadding * 3,
+            ),
             footer: const RefresherClassicFooter(),
             onLoading: () => buildExploreFeed.call(context, true),
             onRefresh: () => reset(context),

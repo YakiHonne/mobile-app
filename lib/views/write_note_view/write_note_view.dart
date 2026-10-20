@@ -244,6 +244,9 @@ class NoteWritingComponent extends HookWidget {
     required this.scheduled,
     this.isPaid,
     this.useSourceRelay,
+    this.attachment,
+    this.enableMedia = true,
+    this.enableEnergyMapper = true,
     required this.controller,
     required this.signer,
     required this.onSignerChanged,
@@ -260,6 +263,9 @@ class NoteWritingComponent extends HookWidget {
   final ValueNotifier<bool>? isPaid;
   final ValueNotifier<DateTime?> scheduled;
   final ValueNotifier<bool>? useSourceRelay;
+  final Widget? attachment;
+  final bool enableMedia;
+  final bool enableEnergyMapper;
   final ValueNotifier<EventSigner> signer;
   final Function(EventSigner) onSignerChanged;
 
@@ -321,14 +327,15 @@ class NoteWritingComponent extends HookWidget {
                   onTextChanged: onTextChangedDebounced,
                   signer: signer,
                 ),
-                _MediaPreviewSection(controller: controller),
+                if (enableMedia) _MediaPreviewSection(controller: controller),
                 if (attachedEvent != null)
                   AttachedEventBox(attachedEvent: attachedEvent!),
+                if (attachment != null) attachment!,
               ],
             ),
           ),
         ),
-        if (subscriptionCubit.isPaid) ...[
+        if (enableEnergyMapper && subscriptionCubit.isPaid) ...[
           NoteEnergyMapperBanner(
             onTap: () => showEnergyMapper(context, controller.getText),
           ),

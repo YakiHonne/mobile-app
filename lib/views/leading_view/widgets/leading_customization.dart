@@ -741,6 +741,8 @@ String getCommenFeedTypeName(CommonFeedTypes type, BuildContext context) {
       name = context.t.widgets.capitalizeFirst();
     case CommonFeedTypes.paid:
       name = context.t.paid.capitalizeFirst();
+    case CommonFeedTypes.nip84Highlights:
+      name = context.t.highlights.capitalizeFirst();
     case CommonFeedTypes.others:
       name = context.t.others.capitalizeFirst();
     case CommonFeedTypes.global:
