@@ -297,12 +297,6 @@ class TranslationsJa extends Translations {
 	@override String get following => 'フォロー中';
 	@override String get trending => 'トレンド';
 	@override String get highlights => 'ハイライト';
-	@override String get highlight => 'ハイライト';
-	@override String get highlighted => 'ハイライト済み';
-	@override String get highlightedFrom => 'ハイライト元';
-	@override String get untitledArticle => '無題の記事';
-	@override String get untitledNote => '無題のノート';
-	@override String get loadingSource => 'ソースを読み込み中…';
 	@override String get paid => '有料';
 	@override String get others => 'その他';
 	@override String get suggestionsBox => '提案ボックス';
@@ -891,10 +885,6 @@ class TranslationsJa extends Translations {
 	@override String get fetchingUserInboxRelays => 'ユーザー受信箱リレー取得中';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} が ${number} sats zapしました';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応';
-	@override String get highlightsDesc => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。';
-	@override String userHighlightedFromYourArticle({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました';
-	@override String userHighlightedFromYourNote({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました';
-	@override String userHighlightedYourContent({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました';
 	@override String userRepostedYou({required Object name}) => '${name} があなたのコンテンツをリポスト';
 	@override String userMentionedYouInComment({required Object name}) => '${name} がコメントであなたをメンション';
 	@override String userMentionedYouInNote({required Object name}) => '${name} がノートであなたをメンション';
@@ -1129,8 +1119,6 @@ class TranslationsJa extends Translations {
 	@override String get shareWidgetImage => 'ウィジェット画像共有';
 	@override String get inputField => '入力フィールド';
 	@override String get noReplies => '返信なし';
-	@override String get noVisibleReplies => '表示できる返信はありません';
-	@override String get spamRepliesHiddenHint => 'スパムの可能性がある返信は下に非表示です。';
 	@override String get message => 'メッセージ';
 	@override String get chat => 'チャット';
 	@override String get onlyLettersNumber => '文字と数字のみ許可';
@@ -2232,13 +2220,6 @@ class TranslationsJa extends Translations {
 	@override String get pastDue => '支払い延滞';
 	@override String get unpaid => '未払い';
 	@override String get incomplete => '未完了';
-	@override String get spamFilter => 'スパムの可能性がある返信のフィルター';
-	@override String get spamFilterDesc => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。';
-	@override String seePotentialSpams({required Object count}) => 'スパムの可能性がある投稿を${count}件表示';
-	@override String get showSpamReplies => 'スパムの可能性がある返信を表示';
-	@override String get hideSpamReplies => 'スパムの可能性がある返信を非表示';
-	@override String get markAsSpam => 'スパムとしてマーク';
-	@override String get notSpam => 'スパムではない';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -2515,12 +2496,6 @@ extension on TranslationsJa {
 			'following' => 'フォロー中',
 			'trending' => 'トレンド',
 			'highlights' => 'ハイライト',
-			'highlight' => 'ハイライト',
-			'highlighted' => 'ハイライト済み',
-			'highlightedFrom' => 'ハイライト元',
-			'untitledArticle' => '無題の記事',
-			'untitledNote' => '無題のノート',
-			'loadingSource' => 'ソースを読み込み中…',
 			'paid' => '有料',
 			'others' => 'その他',
 			'suggestionsBox' => '提案ボックス',
@@ -2769,18 +2744,18 @@ extension on TranslationsJa {
 			'post' => '投稿',
 			'seeAnything' => '改善できるものが見えますか？',
 			'writeNote' => 'ノートを書く',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'whatThinkThis' => 'これについてどう思いますか？',
 			'sourceRecommended' => 'ソース (推奨)',
 			'findPaidNoteCorrect' => 'この有料ノートを正しいと思います。',
 			'findPaidNoteMisleading' => 'この有料ノートを誤解を招くと思います。',
 			'selectOneReason' => '少なくとも1つの理由を選択',
 			'rateHelpful' => '役立つと評価',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'rateNotHelpful' => '役に立たないと評価',
 			'ratedHelpful' => '役立つと評価',
 			'ratedNotHelpful' => '役に立たないと評価',
@@ -3115,10 +3090,6 @@ extension on TranslationsJa {
 			'fetchingUserInboxRelays' => 'ユーザー受信箱リレー取得中',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} が ${number} sats zapしました',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応',
-			'highlightsDesc' => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。',
-			'userHighlightedFromYourArticle' => ({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました',
-			'userHighlightedFromYourNote' => ({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました',
-			'userHighlightedYourContent' => ({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました',
 			'userRepostedYou' => ({required Object name}) => '${name} があなたのコンテンツをリポスト',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} がコメントであなたをメンション',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} がノートであなたをメンション',
@@ -3287,12 +3258,6 @@ extension on TranslationsJa {
 			'blockHeight' => 'ブロック高さ',
 			'atContractCreation' => ({required Object number}) => '${number} (コントラクト作成時)',
 			'zkProofs' => 'ZK証明',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => '証明ダウンロード',
 			'walletConnectionString' => 'ウォレット接続文字列',
 			'walletConnectionStringDesc' => 'ウォレット接続文字列を安全にコピーまたはエクスポートしてください。私たちはこの情報を保存せず、失われた場合回復できません。',
@@ -3303,6 +3268,12 @@ extension on TranslationsJa {
 			'manageWallets' => 'ウォレット管理',
 			'roundDuration' => 'ラウンド期間',
 			'startAt' => ({required Object date}) => '開始: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'ログイン',
 			'addPicture' => '画像追加',
 			'editPicture' => '画像編集',
@@ -3359,8 +3330,6 @@ extension on TranslationsJa {
 			'shareWidgetImage' => 'ウィジェット画像共有',
 			'inputField' => '入力フィールド',
 			'noReplies' => '返信なし',
-			'noVisibleReplies' => '表示できる返信はありません',
-			'spamRepliesHiddenHint' => 'スパムの可能性がある返信は下に非表示です。',
 			'message' => 'メッセージ',
 			'chat' => 'チャット',
 			'onlyLettersNumber' => '文字と数字のみ許可',
@@ -3805,12 +3774,6 @@ extension on TranslationsJa {
 			'noMintsAvailable' => '利用可能なMintがありません',
 			'currencies' => '通貨',
 			'nuts' => 'NUTs',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'errorUpdatingMint' => 'Mintリストの更新中にエラーが発生しました',
 			'active' => 'アクティブ',
 			'inactive' => '非アクティブ',
@@ -3823,6 +3786,12 @@ extension on TranslationsJa {
 			'restoreWallet' => 'ウォレットを復元',
 			'restoreWalletDesc' => 'このMintでウォレットの証明を復元し、NOSTRに保存します',
 			'seedPhraseLocallyOnly' => 'シードフレーズは、ウォレットキーを導出するためにローカルでのみ使用されます。',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => '証明が復元されました',
 			'noProofsFound' => '証明が見つかりませんでした',
 			'errorRestoringProofs' => '証明の復元中にエラーが発生しました',
@@ -4323,12 +4292,6 @@ extension on TranslationsJa {
 			'pomRecoverShard' => 'シャードを復元',
 			'pomShardCollected' => 'シャードを取得しました',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} 個のシャードを取得',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomRecoverSuccess' => '秘密鍵を復元しました',
 			'pomDownloadKey' => '鍵をダウンロード',
 			'pomUnlinkTitle' => 'アカウントの連携解除',
@@ -4341,6 +4304,12 @@ extension on TranslationsJa {
 			'pomUnlinkSuccess' => 'アカウントの連携を解除しました。サインアウトしました。',
 			'pomUnlinkFailed' => 'アカウントの連携を解除できませんでした。もう一度お試しください。',
 			'pomKeyCopied' => '秘密鍵をコピーしました',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'アイデンティティサーバー',
 			'pomServerDesc' => 'アカウントはこのセントラルサーバー上にあります。当社のもの、他のプロバイダー、またはご自身のものを利用できます。',
 			'pomServerDefault' => 'デフォルト',
@@ -4474,13 +4443,6 @@ extension on TranslationsJa {
 			'pastDue' => '支払い延滞',
 			'unpaid' => '未払い',
 			'incomplete' => '未完了',
-			'spamFilter' => 'スパムの可能性がある返信のフィルター',
-			'spamFilterDesc' => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。',
-			'seePotentialSpams' => ({required Object count}) => 'スパムの可能性がある投稿を${count}件表示',
-			'showSpamReplies' => 'スパムの可能性がある返信を表示',
-			'hideSpamReplies' => 'スパムの可能性がある返信を非表示',
-			'markAsSpam' => 'スパムとしてマーク',
-			'notSpam' => 'スパムではない',
 			_ => null,
 		};
 	}

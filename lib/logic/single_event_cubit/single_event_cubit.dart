@@ -340,8 +340,7 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
       return;
     }
 
-    if (event.kind == EventKind.TEXT_NOTE ||
-        event.kind == EventKind.HIGHLIGHT) {
+    if (event.kind == EventKind.TEXT_NOTE) {
       _handleNotificationEventView(event: event, context: context);
     } else {
       _handleNonNoteActions(event, context);
@@ -391,7 +390,6 @@ class SingleEventCubit extends Cubit<SingleEventState> with LaterFunction {
       {required Event event, required BuildContext context}) {
     switch (event.kind) {
       case EventKind.TEXT_NOTE:
-      case EventKind.HIGHLIGHT:
         YNavigator.pushPage(
           context,
           (_) => NoteView(

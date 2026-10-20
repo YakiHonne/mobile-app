@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -29,27 +27,19 @@ class LeadingFeed extends StatelessWidget {
         if (isTablet && !useSingleColumn) {
           return _gridItems(context, state);
         } else {
-          return _listItems(context, state);
+          return _listItems(state);
         }
       },
     );
   }
 
-  SliverPadding _listItems(BuildContext context, LeadingState state) {
+  SliverPadding _listItems(LeadingState state) {
     final adGap = subscriptionCubit.isBasic ? 15 : 7;
     return SliverPadding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       sliver: SliverList.separated(
         itemCount: state.content.length,
         separatorBuilder: (context, index) {
-          if (index >= suggestionLeadingSeparatorCount - 3 &&
-              index < suggestionLeadingSeparatorCount * 6) {
-            _scheduleLeadingSuggestions(context);
-          }
-          if (!subscriptionCubit.isPremium && index >= adGap - 4) {
-            _schedulePaidNoteAds(context);
-          }
-
           if (index > 0 &&
               index % suggestionLeadingSeparatorCount == 0 &&
               index < suggestionLeadingSeparatorCount * 6) {
@@ -151,10 +141,6 @@ class LeadingFeed extends StatelessWidget {
       sliver: SliverMasonryGrid.count(
         crossAxisCount: 2,
         itemBuilder: (context, index) {
-          if (!subscriptionCubit.isPremium && index >= adGap - 4) {
-            _schedulePaidNoteAds(context);
-          }
-
           final cell = cells[index];
           final event = cell.event;
 
@@ -185,22 +171,6 @@ class LeadingFeed extends StatelessWidget {
         mainAxisSpacing: kDefaultPadding,
       ),
     );
-  }
-
-  void _scheduleLeadingSuggestions(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        suggestionsBoxCubit.initLeading();
-      }
-    });
-  }
-
-  void _schedulePaidNoteAds(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        unawaited(context.read<LeadingCubit>().ensurePaidNoteAdsLoaded());
-      }
-    });
   }
 }
 

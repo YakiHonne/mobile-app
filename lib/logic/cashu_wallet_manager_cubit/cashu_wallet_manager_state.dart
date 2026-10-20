@@ -9,7 +9,6 @@ class CashuWalletManagerState extends Equatable {
     required this.activeMintBalance,
     required this.recommendedMints,
     this.isInitializing = false,
-    this.isLoadingRecommendedMints = false,
   });
 
   final String activeMint;
@@ -19,7 +18,6 @@ class CashuWalletManagerState extends Equatable {
   final Map<String, IMint> mints;
   final List<MintInfo> recommendedMints;
   final bool isInitializing;
-  final bool isLoadingRecommendedMints;
 
   @override
   List<Object> get props => [
@@ -30,7 +28,6 @@ class CashuWalletManagerState extends Equatable {
         recommendedMints,
         walletMints,
         isInitializing,
-        isLoadingRecommendedMints,
       ];
 
   CashuWalletManagerState copyWith({
@@ -41,7 +38,6 @@ class CashuWalletManagerState extends Equatable {
     int? activeMintBalance,
     List<MintInfo>? recommendedMints,
     bool? isInitializing,
-    bool? isLoadingRecommendedMints,
   }) {
     return CashuWalletManagerState(
       activeMint: activeMint ?? this.activeMint,
@@ -51,8 +47,6 @@ class CashuWalletManagerState extends Equatable {
       activeMintBalance: activeMintBalance ?? this.activeMintBalance,
       recommendedMints: recommendedMints ?? this.recommendedMints,
       isInitializing: isInitializing ?? this.isInitializing,
-      isLoadingRecommendedMints:
-          isLoadingRecommendedMints ?? this.isLoadingRecommendedMints,
     );
   }
 }

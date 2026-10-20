@@ -297,12 +297,6 @@ class TranslationsAr extends Translations {
 	@override String get following => 'المتابعة';
 	@override String get trending => 'شائع';
 	@override String get highlights => 'البارزات';
-	@override String get highlight => 'تمييز';
-	@override String get highlighted => 'مُميّز';
-	@override String get highlightedFrom => 'مُميّز من';
-	@override String get untitledArticle => 'مقالة بلا عنوان';
-	@override String get untitledNote => 'ملاحظة بلا عنوان';
-	@override String get loadingSource => 'جارٍ تحميل المصدر…';
 	@override String get paid => 'مدفوع';
 	@override String get others => 'آخرون';
 	@override String get suggestionsBox => 'صندوق الاقتراحات';
@@ -891,10 +885,6 @@ class TranslationsAr extends Translations {
 	@override String get fetchingUserInboxRelays => 'جلب ترحيلات الصندوق الوارد للمستخدم';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك';
-	@override String get highlightsDesc => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.';
-	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ميّز نصًا من مقالك';
-	@override String userHighlightedFromYourNote({required Object name}) => '${name} ميّز نصًا من ملاحظتك';
-	@override String userHighlightedYourContent({required Object name}) => '${name} ميّز محتواك';
 	@override String userRepostedYou({required Object name}) => 'قام ${name} بإعادة نشر محتواك';
 	@override String userMentionedYouInComment({required Object name}) => '${name} ذكرك في تعليق';
 	@override String userMentionedYouInNote({required Object name}) => '${name} ذكرك في ملاحظة';
@@ -1129,8 +1119,6 @@ class TranslationsAr extends Translations {
 	@override String get shareWidgetImage => 'مشاركة صورة الودجيت';
 	@override String get inputField => 'حقل إدخال';
 	@override String get noReplies => 'لا ردود';
-	@override String get noVisibleReplies => 'لا توجد ردود ظاهرة';
-	@override String get spamRepliesHiddenHint => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.';
 	@override String get message => 'رسالة';
 	@override String get chat => 'دردشة';
 	@override String get onlyLettersNumber => 'مسموح بالحروف والأرقام فقط';
@@ -2232,13 +2220,6 @@ class TranslationsAr extends Translations {
 	@override String get pastDue => 'متأخر';
 	@override String get unpaid => 'غير مدفوع';
 	@override String get incomplete => 'غير مكتمل';
-	@override String get spamFilter => 'مرشح الرسائل المزعجة المحتملة';
-	@override String get spamFilterDesc => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.';
-	@override String seePotentialSpams({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة';
-	@override String get showSpamReplies => 'إظهار الردود المشتبه بأنها مزعجة';
-	@override String get hideSpamReplies => 'إخفاء الردود المشتبه بأنها مزعجة';
-	@override String get markAsSpam => 'وضع علامة كرسالة مزعجة';
-	@override String get notSpam => 'ليست مزعجة';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -2515,12 +2496,6 @@ extension on TranslationsAr {
 			'following' => 'المتابعة',
 			'trending' => 'شائع',
 			'highlights' => 'البارزات',
-			'highlight' => 'تمييز',
-			'highlighted' => 'مُميّز',
-			'highlightedFrom' => 'مُميّز من',
-			'untitledArticle' => 'مقالة بلا عنوان',
-			'untitledNote' => 'ملاحظة بلا عنوان',
-			'loadingSource' => 'جارٍ تحميل المصدر…',
 			'paid' => 'مدفوع',
 			'others' => 'آخرون',
 			'suggestionsBox' => 'صندوق الاقتراحات',
@@ -2769,18 +2744,18 @@ extension on TranslationsAr {
 			'post' => 'نشر',
 			'seeAnything' => 'ترى أي شيء تريد تحسينه؟',
 			'writeNote' => 'اكتب ملاحظة',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'whatThinkThis' => 'ما رأيك في هذا؟',
 			'sourceRecommended' => 'المصدر (موصى به)',
 			'findPaidNoteCorrect' => 'ترى هذه الملاحظة المدفوعة صحيحة.',
 			'findPaidNoteMisleading' => 'ترى هذه الملاحظة المدفوعة مضللة.',
 			'selectOneReason' => 'اختر سببًا واحدًا على الأقل',
 			'rateHelpful' => 'تقييم مفيد',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'rateNotHelpful' => 'تقييم غير مفيد',
 			'ratedHelpful' => 'تم التقييم مفيد',
 			'ratedNotHelpful' => 'تم التقييم غير مفيد',
@@ -3115,10 +3090,6 @@ extension on TranslationsAr {
 			'fetchingUserInboxRelays' => 'جلب ترحيلات الصندوق الوارد للمستخدم',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك',
-			'highlightsDesc' => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.',
-			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ميّز نصًا من مقالك',
-			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ميّز نصًا من ملاحظتك',
-			'userHighlightedYourContent' => ({required Object name}) => '${name} ميّز محتواك',
 			'userRepostedYou' => ({required Object name}) => 'قام ${name} بإعادة نشر محتواك',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} ذكرك في تعليق',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} ذكرك في ملاحظة',
@@ -3287,12 +3258,6 @@ extension on TranslationsAr {
 			'blockHeight' => 'ارتفاع الكتلة',
 			'atContractCreation' => ({required Object number}) => '${number} (عند إنشاء العقد)',
 			'zkProofs' => 'إثباتات ZK',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'تنزيل الإثباتات',
 			'walletConnectionString' => 'سلسلة اتصال المحفظة',
 			'walletConnectionStringDesc' => 'تأكد من نسخ أو تصدير سلسلة اتصال المحفظة بشكل آمن. نحن لا نخزن هذه المعلومات، وإذا فقدت، لا يمكن استرجاعها.',
@@ -3303,6 +3268,12 @@ extension on TranslationsAr {
 			'manageWallets' => 'إدارة المحافظ',
 			'roundDuration' => 'مدة الجولة',
 			'startAt' => ({required Object date}) => 'البدء في: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'تسجيل الدخول',
 			'addPicture' => 'إضافة صورة',
 			'editPicture' => 'تحرير الصورة',
@@ -3359,8 +3330,6 @@ extension on TranslationsAr {
 			'shareWidgetImage' => 'مشاركة صورة الودجيت',
 			'inputField' => 'حقل إدخال',
 			'noReplies' => 'لا ردود',
-			'noVisibleReplies' => 'لا توجد ردود ظاهرة',
-			'spamRepliesHiddenHint' => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.',
 			'message' => 'رسالة',
 			'chat' => 'دردشة',
 			'onlyLettersNumber' => 'مسموح بالحروف والأرقام فقط',
@@ -3805,12 +3774,6 @@ extension on TranslationsAr {
 			'noMintsAvailable' => 'لا توجد Mints متاحة',
 			'currencies' => 'عملات',
 			'nuts' => 'NUTs',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'errorUpdatingMint' => 'حدث خطأ أثناء تحديث قائمة Mints',
 			'active' => 'نشط',
 			'inactive' => 'غير نشط',
@@ -3823,6 +3786,12 @@ extension on TranslationsAr {
 			'restoreWallet' => 'استعادة المحفظة',
 			'restoreWalletDesc' => 'استعادة إثباتات محفظتك في هذا Mint لحفظها على NOSTR',
 			'seedPhraseLocallyOnly' => 'يتم استخدام عبارة الاسترداد الخاصة بك محليًا فقط لاشتقاق مفاتيح محفظتك.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'تم استعادة الإثباتات',
 			'noProofsFound' => 'لم يتم العثور على إثباتات',
 			'errorRestoringProofs' => 'حدث خطأ أثناء استعادة الإثباتات',
@@ -4323,12 +4292,6 @@ extension on TranslationsAr {
 			'pomRecoverShard' => 'استعادة الجزء',
 			'pomShardCollected' => 'تم جمع الجزء',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} أجزاء تم جمعها',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomRecoverSuccess' => 'تمت استعادة المفتاح الخاص',
 			'pomDownloadKey' => 'تنزيل المفتاح',
 			'pomUnlinkTitle' => 'إلغاء ربط الحساب',
@@ -4341,6 +4304,12 @@ extension on TranslationsAr {
 			'pomUnlinkSuccess' => 'تم إلغاء ربط الحساب. تم تسجيل خروجك.',
 			'pomUnlinkFailed' => 'تعذّر إلغاء ربط حسابك. يرجى المحاولة مرة أخرى.',
 			'pomKeyCopied' => 'تم نسخ المفتاح الخاص',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'خادم الهوية',
 			'pomServerDesc' => 'حسابك موجود على هذا الخادم المركزي. يمكنك استخدام خادمنا أو مزوّد آخر أو خادمك الخاص.',
 			'pomServerDefault' => 'افتراضي',
@@ -4474,13 +4443,6 @@ extension on TranslationsAr {
 			'pastDue' => 'متأخر',
 			'unpaid' => 'غير مدفوع',
 			'incomplete' => 'غير مكتمل',
-			'spamFilter' => 'مرشح الرسائل المزعجة المحتملة',
-			'spamFilterDesc' => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.',
-			'seePotentialSpams' => ({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة',
-			'showSpamReplies' => 'إظهار الردود المشتبه بأنها مزعجة',
-			'hideSpamReplies' => 'إخفاء الردود المشتبه بأنها مزعجة',
-			'markAsSpam' => 'وضع علامة كرسالة مزعجة',
-			'notSpam' => 'ليست مزعجة',
 			_ => null,
 		};
 	}

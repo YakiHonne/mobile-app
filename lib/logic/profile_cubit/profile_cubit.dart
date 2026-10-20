@@ -416,7 +416,6 @@ class ProfileCubit extends Cubit<ProfileState> {
                 profileData == ProfileData.mentions) ...[
               EventKind.TEXT_NOTE,
             ],
-            if (profileData == ProfileData.highlights) EventKind.HIGHLIGHT,
             if (profileData == ProfileData.curations) ...[
               EventKind.CURATION_ARTICLES,
               EventKind.CURATION_VIDEOS,
@@ -531,9 +530,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         }
 
       case ProfileData.pinned:
-        selectedEvents = events;
-
-      case ProfileData.highlights:
         selectedEvents = events;
 
       case ProfileData.articles:

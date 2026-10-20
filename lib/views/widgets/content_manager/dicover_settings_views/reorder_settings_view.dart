@@ -165,7 +165,6 @@ class ReorderSettingsView extends HookWidget {
           feed.trending,
           feed.global,
           feed.paid,
-          feed.highlights,
           feed.widgets,
         ]..sort(
             (a, b) => a.index.compareTo(b.index),
@@ -213,10 +212,6 @@ class ReorderSettingsView extends HookWidget {
                 paid: options.firstWhere(
                   (option) => option.name == SOURCE_PAID,
                   orElse: () => feed.paid,
-                ),
-                highlights: options.firstWhere(
-                  (option) => option.name == SOURCE_NIP84_HIGHLIGHTS,
-                  orElse: () => feed.highlights,
                 ),
                 widgets: options.firstWhere(
                   (option) => option.name == SOURCE_WIDGETS,
@@ -326,7 +321,6 @@ class ReorderSettingsView extends HookWidget {
           feed.recentWithReplies,
           feed.global,
           feed.paid,
-          feed.highlights,
           feed.widgets
         ]..sort(
             (a, b) => a.index.compareTo(b.index),
@@ -395,15 +389,6 @@ class ReorderSettingsView extends HookWidget {
             (option) => option.name == SOURCE_PAID,
             orElse: () => CommunityFeedOption(
               name: SOURCE_PAID,
-              enabled: false,
-              index: 0,
-              id: '',
-            ),
-          ),
-          highlights: options.firstWhere(
-            (option) => option.name == SOURCE_NIP84_HIGHLIGHTS,
-            orElse: () => CommunityFeedOption(
-              name: SOURCE_NIP84_HIGHLIGHTS,
               enabled: false,
               index: 0,
               id: '',

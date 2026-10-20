@@ -188,7 +188,6 @@ class GlobalSmartWidgetHeader extends StatelessWidget {
                   attachedEvent: sw,
                   contentType: AppContentType.note,
                   isMention: true,
-                  isQuote: true,
                 ),
               );
             },

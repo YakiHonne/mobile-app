@@ -88,15 +88,6 @@ class NotificationsCustomization extends StatelessWidget {
                   height: kDefaultPadding,
                 ),
                 SwitchRow(
-                  title: context.t.highlights.capitalizeFirst(),
-                  desc: context.t.highlightsDesc,
-                  val: state.notifHighlights,
-                  onSwitched: (isToggled) {
-                    context.read<CustomizeNotificationsCubit>().setHighlights();
-                  },
-                ),
-                const SizedBox(height: kDefaultPadding),
-                SwitchRow(
                   title: context.t.reactions.capitalizeFirst(),
                   desc: context.t.reactionsDesc,
                   val: state.notifReactions,

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../logic/properties_cubit/properties_cubit.dart';
-import '../../../logic/spam_filter/nspam_safety_service.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/fluid_scaffold.dart';
@@ -13,7 +11,7 @@ import 'mute_list_view.dart';
 import 'settings_text.dart';
 import 'wot_configuration_view.dart';
 
-class PropertyContentModeration extends HookWidget {
+class PropertyContentModeration extends StatelessWidget {
   PropertyContentModeration({
     super.key,
   }) {
@@ -22,16 +20,6 @@ class PropertyContentModeration extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spamFilter = NSpamSafetyService.instance;
-    useEffect(
-      () {
-        spamFilter.initializeForCurrentAccount();
-        return null;
-      },
-      const [],
-    );
-    useListenable(spamFilter);
-
     return BlocBuilder<PropertiesCubit, PropertiesState>(
       builder: (context, state) {
         return FluidScaffold(
@@ -57,10 +45,6 @@ class PropertyContentModeration extends HookWidget {
                   thickness: 0.5,
                 ),
                 _muteList(context),
-                const SizedBox(
-                  height: kDefaultPadding / 1.5,
-                ),
-                _spamFilter(context, spamFilter),
                 const SizedBox(
                   height: kDefaultPadding / 1.5,
                 ),
@@ -93,28 +77,6 @@ class PropertyContentModeration extends HookWidget {
           ),
         );
       },
-    );
-  }
-
-  Row _spamFilter(BuildContext context, NSpamSafetyService spamFilter) {
-    return Row(
-      spacing: kDefaultPadding / 4,
-      children: [
-        Expanded(
-          child: TitleDescriptionComponent(
-            title: context.t.spamFilter.capitalizeFirst(),
-            description: context.t.spamFilterDesc,
-          ),
-        ),
-        Transform.scale(
-          scale: 0.8,
-          child: FluidSwitch(
-            value: spamFilter.isEnabled,
-            activeTrackColor: Theme.of(context).primaryColor,
-            onChanged: spamFilter.setEnabled,
-          ),
-        ),
-      ],
     );
   }
 

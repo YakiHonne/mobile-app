@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 // Actually utils.dart is already imported line 7. Checks for kWhite/kBlack logic.
-import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart'; // Ensure kWhite is available or import it
@@ -29,8 +27,6 @@ class CashuOperationSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<WalletsManagerCubit>().state;
-
     final closeButton = TextButton(
       onPressed: () async {
         YNavigator.popToRoot(context);

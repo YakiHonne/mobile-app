@@ -297,12 +297,6 @@ class TranslationsEs extends Translations {
 	@override String get following => 'siguiendo';
 	@override String get trending => 'tendencia';
 	@override String get highlights => 'destacados';
-	@override String get highlight => 'resaltado';
-	@override String get highlighted => 'Resaltado';
-	@override String get highlightedFrom => 'Resaltado de';
-	@override String get untitledArticle => 'Artículo sin título';
-	@override String get untitledNote => 'Nota sin título';
-	@override String get loadingSource => 'Cargando fuente…';
 	@override String get paid => 'pagado';
 	@override String get others => 'otros';
 	@override String get suggestionsBox => 'Caja de sugerencias';
@@ -891,10 +885,6 @@ class TranslationsEs extends Translations {
 	@override String get fetchingUserInboxRelays => 'Obteniendo relays de bandeja de entrada del usuario';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} te zapeó ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} reaccionó ${reaction} en ti';
-	@override String get highlightsDesc => 'Recibe una notificación cuando alguien resalte tu contenido.';
-	@override String userHighlightedFromYourArticle({required Object name}) => '${name} resaltó un fragmento de tu artículo';
-	@override String userHighlightedFromYourNote({required Object name}) => '${name} resaltó un fragmento de tu nota';
-	@override String userHighlightedYourContent({required Object name}) => '${name} resaltó tu contenido';
 	@override String userRepostedYou({required Object name}) => '${name} republicó tu contenido';
 	@override String userMentionedYouInComment({required Object name}) => '${name} te mencionó en un comentario';
 	@override String userMentionedYouInNote({required Object name}) => '${name} te mencionó en una nota';
@@ -1129,8 +1119,6 @@ class TranslationsEs extends Translations {
 	@override String get shareWidgetImage => 'Compartir imagen de widget';
 	@override String get inputField => 'Campo de entrada';
 	@override String get noReplies => 'Sin respuestas';
-	@override String get noVisibleReplies => 'No hay respuestas visibles';
-	@override String get spamRepliesHiddenHint => 'Las respuestas que podrían ser spam están ocultas abajo.';
 	@override String get message => 'Mensaje';
 	@override String get chat => 'Chat';
 	@override String get onlyLettersNumber => 'Solo letras y números permitidos';
@@ -2232,13 +2220,6 @@ class TranslationsEs extends Translations {
 	@override String get pastDue => 'Vencido';
 	@override String get unpaid => 'Sin pagar';
 	@override String get incomplete => 'Incompleto';
-	@override String get spamFilter => 'Filtro de posible spam';
-	@override String get spamFilterDesc => 'Contrae las respuestas de autores que parecen hacer spam. Siempre puedes expandirlas.';
-	@override String seePotentialSpams({required Object count}) => 'Ver ${count} posibles spam';
-	@override String get showSpamReplies => 'Mostrar respuestas posiblemente spam';
-	@override String get hideSpamReplies => 'Ocultar respuestas posiblemente spam';
-	@override String get markAsSpam => 'Marcar como spam';
-	@override String get notSpam => 'No es spam';
 }
 
 /// The flat map containing all translations for locale <es>.
@@ -2515,12 +2496,6 @@ extension on TranslationsEs {
 			'following' => 'siguiendo',
 			'trending' => 'tendencia',
 			'highlights' => 'destacados',
-			'highlight' => 'resaltado',
-			'highlighted' => 'Resaltado',
-			'highlightedFrom' => 'Resaltado de',
-			'untitledArticle' => 'Artículo sin título',
-			'untitledNote' => 'Nota sin título',
-			'loadingSource' => 'Cargando fuente…',
 			'paid' => 'pagado',
 			'others' => 'otros',
 			'suggestionsBox' => 'Caja de sugerencias',
@@ -2769,18 +2744,18 @@ extension on TranslationsEs {
 			'post' => 'Publicar',
 			'seeAnything' => '¿Ves algo que se pueda mejorar?',
 			'writeNote' => 'Escribe una nota',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'whatThinkThis' => '¿Qué piensas de esto?',
 			'sourceRecommended' => 'Fuente (recomendada)',
 			'findPaidNoteCorrect' => 'Consideras esta nota pagada correcta.',
 			'findPaidNoteMisleading' => 'Consideras esta nota pagada engañosa.',
 			'selectOneReason' => 'Selecciona al menos una razón',
 			'rateHelpful' => 'Calificar como útil',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'rateNotHelpful' => 'Calificar como no útil',
 			'ratedHelpful' => 'Calificado como útil',
 			'ratedNotHelpful' => 'Calificado como no útil',
@@ -3115,10 +3090,6 @@ extension on TranslationsEs {
 			'fetchingUserInboxRelays' => 'Obteniendo relays de bandeja de entrada del usuario',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} te zapeó ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} reaccionó ${reaction} en ti',
-			'highlightsDesc' => 'Recibe una notificación cuando alguien resalte tu contenido.',
-			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} resaltó un fragmento de tu artículo',
-			'userHighlightedFromYourNote' => ({required Object name}) => '${name} resaltó un fragmento de tu nota',
-			'userHighlightedYourContent' => ({required Object name}) => '${name} resaltó tu contenido',
 			'userRepostedYou' => ({required Object name}) => '${name} republicó tu contenido',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} te mencionó en un comentario',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} te mencionó en una nota',
@@ -3287,12 +3258,6 @@ extension on TranslationsEs {
 			'blockHeight' => 'Altura de bloque',
 			'atContractCreation' => ({required Object number}) => '${number} (al crear contrato)',
 			'zkProofs' => 'Pruebas ZK',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'Descargar pruebas',
 			'walletConnectionString' => 'Cadena de conexión de billetera',
 			'walletConnectionStringDesc' => 'Asegúrate de copiar o exportar de forma segura la cadena de conexión de billetera. No almacenamos esta información, y si se pierde, no se puede recuperar.',
@@ -3303,6 +3268,12 @@ extension on TranslationsEs {
 			'manageWallets' => 'Gestionar billeteras',
 			'roundDuration' => 'Duración de ronda',
 			'startAt' => ({required Object date}) => 'Inicio en: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'Iniciar sesión',
 			'addPicture' => 'Agregar imagen',
 			'editPicture' => 'Editar imagen',
@@ -3359,8 +3330,6 @@ extension on TranslationsEs {
 			'shareWidgetImage' => 'Compartir imagen de widget',
 			'inputField' => 'Campo de entrada',
 			'noReplies' => 'Sin respuestas',
-			'noVisibleReplies' => 'No hay respuestas visibles',
-			'spamRepliesHiddenHint' => 'Las respuestas que podrían ser spam están ocultas abajo.',
 			'message' => 'Mensaje',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Solo letras y números permitidos',
@@ -3805,12 +3774,6 @@ extension on TranslationsEs {
 			'noMintsAvailable' => 'No hay mints disponibles',
 			'currencies' => 'Monedas',
 			'nuts' => 'NUTs',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'errorUpdatingMint' => 'Error al actualizar la lista de mints',
 			'active' => 'Activo',
 			'inactive' => 'Inactivo',
@@ -3823,6 +3786,12 @@ extension on TranslationsEs {
 			'restoreWallet' => 'Restaurar billetera',
 			'restoreWalletDesc' => 'Restaurar pruebas de tu billetera en este mint para guardarlas en NOSTR',
 			'seedPhraseLocallyOnly' => 'Tu frase semilla solo se usa localmente para derivar las claves de tu billetera.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'Pruebas restauradas',
 			'noProofsFound' => 'No se encontraron pruebas',
 			'errorRestoringProofs' => 'Error al restaurar pruebas',
@@ -4323,12 +4292,6 @@ extension on TranslationsEs {
 			'pomRecoverShard' => 'Recuperar fragmento',
 			'pomShardCollected' => 'Fragmento recuperado',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} fragmentos recuperados',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomRecoverSuccess' => 'Clave privada recuperada',
 			'pomDownloadKey' => 'Descargar clave',
 			'pomUnlinkTitle' => 'Desvincular cuenta',
@@ -4341,6 +4304,12 @@ extension on TranslationsEs {
 			'pomUnlinkSuccess' => 'Cuenta desvinculada. Se ha cerrado tu sesión.',
 			'pomUnlinkFailed' => 'No se pudo desvincular tu cuenta. Inténtalo de nuevo.',
 			'pomKeyCopied' => 'Clave privada copiada',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'Servidor de identidad',
 			'pomServerDesc' => 'Tu cuenta reside en este servidor central. Puedes usar el nuestro, otro proveedor o el tuyo propio.',
 			'pomServerDefault' => 'Predeterminado',
@@ -4474,13 +4443,6 @@ extension on TranslationsEs {
 			'pastDue' => 'Vencido',
 			'unpaid' => 'Sin pagar',
 			'incomplete' => 'Incompleto',
-			'spamFilter' => 'Filtro de posible spam',
-			'spamFilterDesc' => 'Contrae las respuestas de autores que parecen hacer spam. Siempre puedes expandirlas.',
-			'seePotentialSpams' => ({required Object count}) => 'Ver ${count} posibles spam',
-			'showSpamReplies' => 'Mostrar respuestas posiblemente spam',
-			'hideSpamReplies' => 'Ocultar respuestas posiblemente spam',
-			'markAsSpam' => 'Marcar como spam',
-			'notSpam' => 'No es spam',
 			_ => null,
 		};
 	}

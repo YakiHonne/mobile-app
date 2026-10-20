@@ -16,27 +16,27 @@
             <array>
                 <string>INSendMessageIntent</string>
             </array>
-            <key>NSExtensionJavaScriptPreprocessingFile</key>
-            <string>ExtensionPreprocessing</string>
             <!-- Add supported message intent if you support sharing to a specific conversation (registered via the recordSentMessage api call) - end -->
             <key>NSExtensionActivationRule</key>
             <!-- Comment or delete the TRUEPREDICATE NSExtensionActivationRule that only works in development mode -->
             <!-- <string>TRUEPREDICATE</string> -->
             <!-- Add a new NSExtensionActivationRule. The rule below will allow sharing one or more file of any type, url, or text content, You can modify these rules to your liking for which types of share content, as well as how many your app can handle -->
-	        <dict>
-	            <key>NSExtensionActivationSupportsText</key>
-	            <true/>
-	            <key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
-	            <integer>1</integer>
-	            <key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
-	            <integer>1</integer>
-	            <key>NSExtensionActivationSupportsImageWithMaxCount</key>
-	            <integer>100</integer>
-	            <key>NSExtensionActivationSupportsMovieWithMaxCount</key>
-	            <integer>100</integer>
-	            <key>NSExtensionActivationSupportsFileWithMaxCount</key>
-	            <integer>100</integer>
-	        </dict>
+            <string>SUBQUERY (
+                extensionItems,
+                $extensionItem,
+                SUBQUERY (
+                    $extensionItem.attachments,
+                    $attachment,
+                    (
+                        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.file-url"
+                        || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image"
+                        || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text"
+                        || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie"
+                        || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url"
+                    )
+                ).@count > 0
+            ).@count > 0
+	    </string>
 	    <key>PHSupportedMediaTypes</key>
 	    <array>
 	        <string>Video</string>

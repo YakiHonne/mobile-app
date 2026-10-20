@@ -14,7 +14,6 @@ import '../../models/packs_model.dart';
 import '../../models/relays_feed.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
-import '../feed_extra_refresh_controller.dart';
 import 'paid_notes_ad_cache.dart';
 
 part 'leading_state.dart';
@@ -44,10 +43,8 @@ class LeadingCubit extends Cubit<LeadingState> {
           ),
         ) {
     _initializeStreams();
+    initView();
   }
-
-  static const _initialFeedLimit = 25;
-  static const _loadMoreLimit = 50;
 
   // =============================================================================
   // PROPERTIES
@@ -56,21 +53,11 @@ class LeadingCubit extends Cubit<LeadingState> {
   late StreamSubscription mutesStream;
   late StreamSubscription noteDeletionStream;
   bool delayLeading = true;
-  bool _isFeedActive = false;
-  bool _isAppResumed = true;
-  bool _isRestoringSnapshot = false;
-  bool _hasInitialized = false;
-  bool _pendingCustomizationRefresh = false;
-  Future<void>? _initialization;
-  Future<void> _feedSnapshotPersistence = Future<void>.value();
   final extraIds = <String>{};
-  int _extraRefreshGeneration = 0;
   int? score;
-  late final FeedExtraRefreshController _extraRefreshController =
-      FeedExtraRefreshController(onRefresh: _fetchExtraContent);
+  Timer? currentExtraTimer;
 
   final _adCache = PaidNotesAdCache();
-  bool _paidNoteAdsRequested = false;
   static const int _adFreshnessMs = 24 * 60 * 60 * 1000;
 
   // =============================================================================
@@ -80,31 +67,22 @@ class LeadingCubit extends Cubit<LeadingState> {
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
       (appCustom) async {
-        final shouldRefresh = _canRefreshForCustomization;
         if (!isClosed) {
           emit(
             state.copyWith(
               commonFeedTypes: nostrRepository.getLeadingFeedTypes(),
               showSuggestions: nostrRepository.getLeadingShowSuggestions(),
-              refresh: shouldRefresh ? !state.refresh : state.refresh,
-              onContentLoading: shouldRefresh ? true : null,
+              refresh: !state.refresh,
+              onContentLoading: true,
             ),
           );
         }
 
-        if (!shouldRefresh) {
-          _pendingCustomizationRefresh = true;
-          return;
-        }
-
         await Future.delayed(const Duration(seconds: 1));
 
-        if (!_canRefreshForCustomization) {
-          _pendingCustomizationRefresh = true;
-          return;
-        }
-
-        _refreshAfterCustomization();
+        buildLeadingFeed(
+          isAdding: false,
+        );
       },
     );
 
@@ -149,79 +127,20 @@ class LeadingCubit extends Cubit<LeadingState> {
   // PUBLIC METHODS
   // =============================================================================
   /// Initialize the view with data and suggestions
-  Future<void> ensureInitialized({bool restoreSnapshot = false}) =>
-      _initialization ??= _initialize(restoreSnapshot: restoreSnapshot);
-
-  Future<void> _initialize({required bool restoreSnapshot}) async {
-    final restored = restoreSnapshot && await _restoreCachedFeed();
-
-    if (!restored && delayLeading) {
+  Future<void> initView() async {
+    if (delayLeading) {
       await Future.delayed(const Duration(seconds: 1));
+      delayLeading = false;
     }
-    delayLeading = false;
 
     fetchMedia();
+    fetchPaidNoteAds();
 
-    if (!restored) {
-      await buildLeadingFeed(isAdding: false);
-    }
-    _hasInitialized = true;
-    _pendingCustomizationRefresh = false;
-  }
-
-  bool get _canRefreshForCustomization =>
-      _hasInitialized && _isFeedActive && _isAppResumed && !isClosed;
-
-  void _refreshAfterPendingCustomization() {
-    if (!_pendingCustomizationRefresh || !_canRefreshForCustomization) {
-      return;
-    }
-
-    _refreshAfterCustomization();
-  }
-
-  void _refreshAfterCustomization() {
-    _pendingCustomizationRefresh = false;
-    emit(
-      state.copyWith(
-        onContentLoading: true,
-        refresh: !state.refresh,
-      ),
+    buildLeadingFeed(
+      isAdding: false,
     );
-    unawaited(buildLeadingFeed(isAdding: false));
-  }
 
-  void setFeedActive(bool active) {
-    _isFeedActive = active;
-    if (!active) {
-      _extraRefreshGeneration++;
-    } else {
-      _refreshAfterPendingCustomization();
-    }
-    _extraRefreshController.setFeedActive(active);
-  }
-
-  void setAppResumed(bool resumed) {
-    _isAppResumed = resumed;
-    if (!resumed) {
-      _extraRefreshGeneration++;
-    } else {
-      _refreshAfterPendingCustomization();
-    }
-    _extraRefreshController.setAppResumed(resumed);
-  }
-
-  Future<void> ensurePaidNoteAdsLoaded() async {
-    if (_paidNoteAdsRequested || subscriptionCubit.isPremium) {
-      return;
-    }
-
-    _paidNoteAdsRequested = true;
-    try {
-      await fetchPaidNoteAds();
-    } catch (_) {
-      _paidNoteAdsRequested = false;
-    }
+    suggestionsBoxCubit.initLeading();
   }
 
   Future<void> fetchPaidNoteAds() async {
@@ -262,9 +181,7 @@ class LeadingCubit extends Cubit<LeadingState> {
       );
       _adCache.setPool(events, seenCounts);
       _emitAdGate();
-    } catch (_) {
-      _paidNoteAdsRequested = false;
-    }
+    } catch (_) {}
   }
 
   void _emitAdGate() {
@@ -335,9 +252,8 @@ class LeadingCubit extends Cubit<LeadingState> {
   /// Clear the current data and reset state for the given source
   /// Clear all content and reset state for a given source
   void clearData(AppContentSource source) {
-    _extraRefreshGeneration++;
     extraIds.clear();
-    _extraRefreshController.setHasContent(false);
+    currentExtraTimer?.cancel();
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -371,141 +287,69 @@ class LeadingCubit extends Cubit<LeadingState> {
   }
 
   /// Manage extra content
-  void getExtra() {
-    _extraRefreshController.setHasContent(state.content.isNotEmpty);
-    if (state.content.isNotEmpty && _isFeedActive && _isAppResumed) {
-      unawaited(_fetchExtraContent());
-    }
-  }
+  Future<void> getExtra() async {
+    currentExtraTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (timer) async {
+        if (state.content.isNotEmpty) {
+          final first = state.extraContent.isNotEmpty
+              ? state.extraContent.first
+              : state.content.first;
 
-  Future<bool> _restoreCachedFeed() async {
-    final owner = currentSigner?.getPublicKey() ?? '';
-    final savedIds = localDatabaseRepository.getMainViewFeedSnapshot(
-      owner,
-      'leading',
+          final currentSelectedSource =
+              appSettingsManagerCubit.getNotesSelectedSource();
+
+          final f = appSettingsManagerCubit.getSelectedNotesFilter();
+
+          List<Event> content = [];
+
+          final since = first.createdAt + 1;
+
+          if (currentSelectedSource.key == AppContentSource.community) {
+            content = await getLeadingFeedCommunityEvents(
+              since: since,
+              limit: 20,
+              f: f,
+              isExtra: true,
+            );
+          } else if (currentSelectedSource.key == AppContentSource.packs) {
+            content = await getLeadingFeedPacksEvents(
+              since: since,
+              limit: 20,
+            );
+          } else {
+            content = await getLeadingFeedRelayEvents(
+              since: since,
+              limit: 20,
+              f: f,
+            );
+          }
+
+          content.removeWhere((e) {
+            final exists = extraIds.contains(e.id);
+
+            if (!exists) {
+              extraIds.add(e.id);
+            }
+
+            return exists;
+          });
+
+          if (content.isNotEmpty) {
+            if (!isClosed) {
+              emit(
+                state.copyWith(
+                  extraContent: [...content, ...state.extraContent],
+                  onAddingData: content.isEmpty
+                      ? UpdatingState.idle
+                      : UpdatingState.success,
+                ),
+              );
+            }
+          }
+        }
+      },
     );
-    if (savedIds.isEmpty) {
-      return false;
-    }
-
-    try {
-      final cachedEvents = await NostrFunctionsRepository.getCachedEventsByIds(
-        savedIds,
-      );
-      if (cachedEvents.isEmpty || isClosed) {
-        return false;
-      }
-
-      final eventsById = {for (final event in cachedEvents) event.id: event};
-      final orderedEvents =
-          savedIds.map((id) => eventsById[id]).whereType<Event>().toList();
-      final content = applyNotesFilter(orderedEvents, removeMuted: true);
-      if (content.isEmpty) {
-        return false;
-      }
-
-      _isRestoringSnapshot = true;
-      emit(
-        state.copyWith(
-          content: content,
-          onContentLoading: false,
-          onAddingData: UpdatingState.success,
-        ),
-      );
-      _isRestoringSnapshot = false;
-
-      getExtra();
-      return true;
-    } catch (error) {
-      _isRestoringSnapshot = false;
-      lg.i('Unable to restore the cached leading feed: $error');
-      return false;
-    }
-  }
-
-  @override
-  void onChange(Change<LeadingState> change) {
-    super.onChange(change);
-    if (_isRestoringSnapshot || change.nextState.content.isEmpty) {
-      return;
-    }
-
-    final currentIds =
-        change.currentState.content.map((event) => event.id).toList();
-    final nextIds = change.nextState.content.map((event) => event.id).toList();
-    if (currentIds.length == nextIds.length &&
-        currentIds.asMap().entries.every(
-              (entry) => nextIds[entry.key] == entry.value,
-            )) {
-      return;
-    }
-
-    final owner = currentSigner?.getPublicKey() ?? '';
-    final ids = change.nextState.content.map((event) => event.id).toList();
-    _feedSnapshotPersistence = _feedSnapshotPersistence.then((_) async {
-      await localDatabaseRepository.setMainViewFeedSnapshot(
-        owner,
-        'leading',
-        ids,
-      );
-    });
-  }
-
-  Future<void> _fetchExtraContent() async {
-    if (isClosed || state.content.isEmpty) {
-      return;
-    }
-    final generation = _extraRefreshGeneration;
-
-    final first = state.extraContent.isNotEmpty
-        ? state.extraContent.first
-        : state.content.first;
-    final currentSelectedSource =
-        appSettingsManagerCubit.getNotesSelectedSource();
-    final f = appSettingsManagerCubit.getSelectedNotesFilter();
-    final since = first.createdAt + 1;
-
-    List<Event> content = [];
-    if (currentSelectedSource.key == AppContentSource.community) {
-      content = await getLeadingFeedCommunityEvents(
-        since: since,
-        limit: 20,
-        f: f,
-        isExtra: true,
-      );
-    } else if (currentSelectedSource.key == AppContentSource.packs) {
-      content = await getLeadingFeedPacksEvents(
-        since: since,
-        limit: 20,
-      );
-    } else {
-      content = await getLeadingFeedRelayEvents(
-        since: since,
-        limit: 20,
-        f: f,
-      );
-    }
-
-    if (isClosed || generation != _extraRefreshGeneration) {
-      return;
-    }
-
-    content.removeWhere((event) {
-      final exists = extraIds.contains(event.id);
-      if (!exists) {
-        extraIds.add(event.id);
-      }
-      return exists;
-    });
-
-    if (content.isNotEmpty && !isClosed) {
-      emit(
-        state.copyWith(
-          extraContent: [...content, ...state.extraContent],
-          onAddingData: UpdatingState.success,
-        ),
-      );
-    }
   }
 
   Future<void> appendExtra(Function scrollToPosition) async {
@@ -535,7 +379,8 @@ class LeadingCubit extends Cubit<LeadingState> {
   }
 
   void resetExtra() {
-    _extraRefreshController.reset();
+    currentExtraTimer?.cancel();
+    getExtra();
   }
 
   // =============================================================================
@@ -592,7 +437,7 @@ class LeadingCubit extends Cubit<LeadingState> {
               : null;
       final events = await getLeadingFeedPacksEvents(
         until: until,
-        limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
+        limit: 50,
       );
 
       if (!isClosed) {
@@ -625,7 +470,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     final events = await getLeadingFeedCommunityEvents(
       f: f,
       until: until,
-      limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
+      limit: 50,
     );
 
     if (!isClosed) {
@@ -661,9 +506,7 @@ class LeadingCubit extends Cubit<LeadingState> {
                     ? CommonFeedTypes.trending
                     : source.value == SOURCE_PAID
                         ? CommonFeedTypes.paid
-                        : source.value == 'nip84_highlights'
-                            ? CommonFeedTypes.nip84Highlights
-                            : CommonFeedTypes.widgets;
+                        : CommonFeedTypes.widgets;
 
     final usePubkeys = type == CommonFeedTypes.recent ||
         type == CommonFeedTypes.recentWithReplies ||
@@ -731,7 +574,7 @@ class LeadingCubit extends Cubit<LeadingState> {
     final filtered = await getLeadingFeedRelayEvents(
       f: f,
       until: until,
-      limit: isAdding ? _loadMoreLimit : _initialFeedLimit,
+      limit: 50,
     );
 
     if (!isClosed) {
@@ -867,11 +710,9 @@ class LeadingCubit extends Cubit<LeadingState> {
   /// Clean up resources when the cubit is closed
   @override
   Future<void> close() {
-    _extraRefreshGeneration++;
     feedStream.cancel();
     mutesStream.cancel();
     noteDeletionStream.cancel();
-    _extraRefreshController.dispose();
     // Note: score is an int, not a StreamSubscription
     return super.close();
   }

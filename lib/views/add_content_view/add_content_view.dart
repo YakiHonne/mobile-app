@@ -25,7 +25,6 @@ class AddContentView extends StatelessWidget {
     this.contentType,
     this.attachedEvent,
     this.isMention,
-    this.isQuote,
     this.onSuccess,
     this.selectedExternalRelay,
     this.isCloning,
@@ -42,7 +41,6 @@ class AddContentView extends StatelessWidget {
   final AppContentType? contentType;
   final BaseEventModel? attachedEvent;
   final bool? isMention;
-  final bool? isQuote;
   final String? selectedExternalRelay;
   final Function(Event)? onSuccess;
   final bool? isCloning;
@@ -70,7 +68,6 @@ class AddContentView extends StatelessWidget {
                   article: article,
                   attachedEvent: attachedEvent,
                   isMention: isMention,
-                  isQuote: isQuote,
                   onSuccess: onSuccess,
                   isCloning: isCloning,
                   smartWidgetModel: smartWidgetModel,
