@@ -5,8 +5,8 @@ import Intents
 import share_handler_ios_models
 
 public class SwiftShareHandlerIosPlatform: NSObject, FlutterPlugin, FlutterStreamHandler, ShareHandlerApi {
-    
-    
+
+
     //     public static func register(with registrar: FlutterPluginRegistrar) {
     //       let channel = FlutterMethodChannel(name: "share_handler_ios", binaryMessenger: registrar.messenger())
     //       let instance = SwiftShareHandlerPlugin()
@@ -117,7 +117,7 @@ public class SwiftShareHandlerIosPlatform: NSObject, FlutterPlugin, FlutterStrea
             //            let appDomain = Bundle.main.bundleIdentifier!
             let appGroupId = (Bundle.main.object(forInfoDictionaryKey: "AppGroupId") as? String) ?? "group.\(Bundle.main.bundleIdentifier!)"
             let userDefaults = UserDefaults(suiteName: appGroupId)
-            
+
             var sharedMedia: SharedMedia?
 
             let params = url.queryDictionary
@@ -128,7 +128,7 @@ public class SwiftShareHandlerIosPlatform: NSObject, FlutterPlugin, FlutterStrea
             } else if url.absoluteString.hasPrefix("file://") {
                 sharedMedia = SharedMedia.init(attachments: [SharedAttachment.init(path: url.absoluteString, type: SharedAttachmentType.file)], conversationIdentifier: nil, content: nil, speakableGroupName: nil, serviceName: nil, senderIdentifier: nil, imageFilePath: nil)
             }
-            
+
             if let media = sharedMedia {
                 media.attachments?.forEach {$0.path = getAbsolutePath(for: $0.path) ?? $0.path}
                 latestMedia = media
@@ -137,7 +137,7 @@ public class SwiftShareHandlerIosPlatform: NSObject, FlutterPlugin, FlutterStrea
                 }
                 let map = media.toDictionary()
                 eventSink?(map)
-                
+
                 return true
             }
             //            if url.fragment == "media" {

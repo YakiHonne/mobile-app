@@ -28,5 +28,5 @@ This package is the endorsed implementation of the `share_handler` plugin, so it
 
 ```yaml
 dependencies:
-  share_handler: 
+  share_handler:
 ```

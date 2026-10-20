@@ -57,7 +57,7 @@ class ShareHandlerApiCodecReaderWriter: FlutterStandardReaderWriter {
     override func writer(with data: NSMutableData) -> FlutterStandardWriter {
         return ShareHandlerApiCodecWriter.init(data: data)
     }
-    
+
     override func reader(with data: Data) -> FlutterStandardReader {
         ShareHandlerApiCodecReader.init(data: data)
     }
@@ -86,11 +86,11 @@ func ShareHandlerApiSetup(_ binaryMessenger: FlutterBinaryMessenger, _ api: (NSO
             binaryMessenger: binaryMessenger,
             codec: ShareHandlerApiGetCodec())
 //        assert(api.responds(to: Selector(("getInitialSharedMedia:"))))
-        
+
         channel.setMessageHandler() { (message, callback) -> () in
             var error: FlutterError?
             let output = api.getInitialSharedMedia(&error)
-            
+
             callback(wrapResult(output?.toDictionary(), error))
         }
     }
@@ -100,16 +100,16 @@ func ShareHandlerApiSetup(_ binaryMessenger: FlutterBinaryMessenger, _ api: (NSO
             binaryMessenger: binaryMessenger,
             codec: ShareHandlerApiGetCodec())
 //        assert(api.responds(to: Selector(("recordSentMessage:error:"))))
-        
+
         channel.setMessageHandler() { (message, callback) -> () in
             var media: SharedMedia?
             if let args = message as? NSArray {
                 media = args[0] as? SharedMedia
             }
             var error: FlutterError?
-            
+
             api.recordSentMessage(media, error: &error)
-            
+
             callback(wrapResult(nil, error))
         }
     }
@@ -119,11 +119,11 @@ func ShareHandlerApiSetup(_ binaryMessenger: FlutterBinaryMessenger, _ api: (NSO
             binaryMessenger: binaryMessenger,
             codec: ShareHandlerApiGetCodec())
 //        assert(api.responds(to: Selector(("resetInitialSharedMedia:"))))
-        
+
         channel.setMessageHandler() { (message, callback) -> () in
             var error: FlutterError?
             api.resetInitialSharedMedia(&error)
-            
+
             callback(wrapResult(nil, error))
         }
     }

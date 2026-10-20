@@ -7,7 +7,7 @@ Fix for iOS 14 compile error when recording a sent message with INOutgoingMessag
 # 0.0.13
 Fix for iOS 14 deprecation when recording a sent message with INSendMessageIntent
 # 0.0.12
-Don't show default share modal and go straight to redirect to flutter app 
+Don't show default share modal and go straight to redirect to flutter app
 # 0.0.11
 Support handling a shared contact card (vcf)
 # 0.0.10

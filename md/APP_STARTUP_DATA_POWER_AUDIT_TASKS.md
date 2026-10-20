@@ -1,7 +1,8 @@
 # App startup, data use, and power optimization tasks
 
-**Status:** Investigation complete; P0 tasks complete; wallet/Cashu and Notifications P1 tasks complete; remaining P1/P2 tasks not started  
-**Prepared:** 2026-10-07  
+**Status:** Investigation complete; P0 tasks complete; wallet/Cashu and Notifications P1 tasks complete; remaining P1/P2 tasks not started
+
+**Prepared:** 2026-10-07
 **Scope:** Flutter client startup, Nostr/API loading, retained feed data, background refresh, media playback, and cache work.
 
 ## Goal
