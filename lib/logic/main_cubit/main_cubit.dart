@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:convert/convert.dart';
@@ -14,6 +16,9 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Local imports
+import '../../common/browser_highlight_share.dart';
+import '../../common/external_highlight_link.dart';
+import '../../common/nip84_highlight.dart';
 import '../../initializers.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../models/app_models/extended_model.dart';
@@ -50,12 +55,32 @@ import '../../views/workshop_view/workshop_registration_view.dart';
 
 part 'main_state.dart';
 
+const _mainNavigationViews = <MainViews>{
+  MainViews.leading,
+  MainViews.media,
+  MainViews.wallet,
+  MainViews.dms,
+  MainViews.notifications,
+  MainViews.smartWidgets,
+  MainViews.articles,
+};
+
+MainViews _initialMainView(String pubkey) {
+  final savedView = localDatabaseRepository.getLastMainView(pubkey);
+  for (final view in _mainNavigationViews) {
+    if (view.name == savedView) {
+      return view;
+    }
+  }
+  return MainViews.leading;
+}
+
 class MainCubit extends Cubit<MainState> {
   MainCubit({
     required this.context,
   }) : super(
           MainState(
-            mainView: MainViews.leading,
+            mainView: _initialMainView(nostrRepository.currentMetadata.pubkey),
             refresh: false,
             image: nostrRepository.currentMetadata.picture,
             random: '',
@@ -74,10 +99,12 @@ class MainCubit extends Cubit<MainState> {
     checkCurrentVersionNews();
     _loadUserPreferences();
     _setupSubscriptions();
+    _activateMainView(state.mainView, restoreCachedContent: true);
     walletManagerCubit.init();
   }
   // Dependencies
   final BuildContext context;
+  bool _externalHighlightOpen = false;
 
   // Stream subscriptions
   late StreamSubscription currentSignerStream;
@@ -90,11 +117,7 @@ class MainCubit extends Cubit<MainState> {
   void _setupSubscriptions() {
     homeViewSubcription = nostrRepository.homeViewStream.listen(
       (bool hasConnection) {
-        if (!isClosed) {
-          emit(state.copyWith(
-            mainView: MainViews.leading,
-          ));
-        }
+        updateIndex(MainViews.leading);
       },
     );
 
@@ -206,6 +229,48 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void openReceivedShareIntent(SharedMedia media) {
+    final sharedContent = media.content;
+    if (Platform.isAndroid &&
+        sharedContent != null &&
+        (media.attachments?.isEmpty ?? true)) {
+      final highlight = BrowserHighlightShare.tryParse(sharedContent);
+      if (highlight != null && highlight.hasTextFragment) {
+        if (context.mounted && !_externalHighlightOpen) {
+          _openExternalHighlightLink(
+            ExternalHighlightLink(
+              selectedText: highlight.selectedText,
+              sourceUrl: highlight.sourceUrl,
+              context: null,
+            ),
+            textSelector: highlight.selector,
+          );
+        }
+        return;
+      }
+    }
+    if (sharedContent != null &&
+        sharedContent.startsWith('YAKI_NIP84_HIGHLIGHT:')) {
+      try {
+        final payload = jsonDecode(
+          sharedContent.substring('YAKI_NIP84_HIGHLIGHT:'.length),
+        ) as Map<String, dynamic>;
+        final selectedText = payload['selectedText'] as String?;
+        if (selectedText != null && selectedText.trim().isNotEmpty) {
+          publishExternalNip84Highlight(
+            context: context,
+            selectedText: selectedText,
+            sourceUrl: payload['sourceUrl'] as String?,
+            sourceContent: payload['context'] as String?,
+          );
+          return;
+        }
+      } on FormatException {
+        // Fall back to the regular share flow if Safari returned bad metadata.
+      } on TypeError {
+        // Fall back to the regular share flow if Safari returned bad metadata.
+      }
+    }
+
     showAppModalSheet(
       context: context,
       builder: (_) {
@@ -221,7 +286,9 @@ class MainCubit extends Cubit<MainState> {
     final initial = await appLinks.getLatestLinkString();
 
     if (_deepLinksSub == null && initial != null) {
-      if (!initial.startsWith('nostr+walletconnect') &&
+      if (_handleExternalHighlightLink(Uri.parse(initial))) {
+        // The Safari extension link opens a draft, not a Nostr entity.
+      } else if (!initial.startsWith('nostr+walletconnect') &&
           !initial.contains('yakihonne.com/lightning-wallet/alby')) {
         final entity = _extractNostrEntity(initial);
 
@@ -247,6 +314,9 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void _handleUriLink(Uri uri) {
+    if (_handleExternalHighlightLink(uri)) {
+      return;
+    }
     final uriString = uri.toString();
 
     if (uriString.isNotEmpty) {
@@ -274,6 +344,39 @@ class MainCubit extends Cubit<MainState> {
           );
         }
       }
+    }
+  }
+
+  bool _handleExternalHighlightLink(Uri uri) {
+    if (!ExternalHighlightLink.matches(uri)) {
+      return false;
+    }
+    final highlight = ExternalHighlightLink.tryParse(uri);
+    if (highlight != null && context.mounted && !_externalHighlightOpen) {
+      _openExternalHighlightLink(highlight);
+    }
+    // Consume invalid highlight links without sending them to Nostr routing.
+    return true;
+  }
+
+  Future<void> _openExternalHighlightLink(ExternalHighlightLink highlight,
+      {TextFragmentSelector? textSelector}) async {
+    _externalHighlightOpen = true;
+    try {
+      // Initial links can arrive while the main view is still being built.
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) {
+        return;
+      }
+      await publishExternalNip84Highlight(
+        context: context,
+        selectedText: highlight.selectedText,
+        sourceUrl: highlight.sourceUrl,
+        sourceContent: highlight.context,
+        textSelector: textSelector,
+      );
+    } finally {
+      _externalHighlightOpen = false;
     }
   }
 
@@ -987,11 +1090,66 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void updateIndex(MainViews mainView) {
-    notificationsCubit.setNotificationView(mainView == MainViews.notifications);
-    dmsCubit.isDmsView = mainView == MainViews.dms;
+    if (_mainNavigationViews.contains(mainView)) {
+      unawaited(
+        localDatabaseRepository.setLastMainView(
+          state.pubKey,
+          mainView.name,
+        ),
+      );
+    }
+
+    _activateMainView(mainView);
 
     if (!isClosed) {
       emit(state.copyWith(mainView: mainView));
+    }
+  }
+
+  void _activateMainView(
+    MainViews mainView, {
+    bool restoreCachedContent = false,
+  }) {
+    final isLeading = mainView == MainViews.leading;
+    final isMedia = mainView == MainViews.media;
+    final isArticles = mainView == MainViews.articles;
+
+    leadingCubit.setFeedActive(isLeading);
+    mediaCubit.setFeedActive(isMedia);
+    discoverCubit.setFeedActive(isArticles);
+
+    if (isLeading) {
+      unawaited(
+        leadingCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    } else if (isMedia) {
+      unawaited(
+        mediaCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    } else if (isArticles) {
+      unawaited(
+        discoverCubit.ensureInitialized(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+    }
+
+    notificationsCubit.setNotificationView(mainView == MainViews.notifications);
+    dmsCubit.isDmsView = mainView == MainViews.dms;
+
+    if (mainView == MainViews.notifications) {
+      unawaited(
+        notificationsCubit.loadHistory(
+          restoreSnapshot: restoreCachedContent,
+        ),
+      );
+      if (notificationsCubit.state.index == 5) {
+        unawaited(notificationsCubit.fetchPremiumContent());
+      }
     }
   }
 
@@ -1007,9 +1165,16 @@ class MainCubit extends Cubit<MainState> {
 
   void setDefault() {
     if (!isClosed) {
+      final pubkey = currentSigner?.getPublicKey() ?? '';
+      unawaited(
+        localDatabaseRepository.setLastMainView(
+          pubkey,
+          MainViews.leading.name,
+        ),
+      );
       emit(state.copyWith(
         mainView: MainViews.leading,
-        pubKey: currentSigner?.getPublicKey() ?? '',
+        pubKey: pubkey,
       ));
     }
   }

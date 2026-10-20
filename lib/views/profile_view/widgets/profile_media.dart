@@ -160,7 +160,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                   _usedUrl,
                   _ownerId,
                   removeControls: true,
-                  looping: true,
                   enableSound: false,
                   fallbackUrls: widget.fallbackUrls,
                   onFallbackUrlCalled: (url) {

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/app_shared_settings.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_033.dart';
 
@@ -709,6 +710,8 @@ IconData getSourceIcon(String name) {
     return FeatureIcons.trending;
   } else if (name == SOURCE_PAID) {
     return FeatureIcons.sats;
+  } else if (name == SOURCE_NIP84_HIGHLIGHTS) {
+    return LucideIcons.highlighter;
   } else if (name == SOURCE_WIDGETS) {
     return FeatureIcons.smartWidget;
   }
@@ -733,6 +736,8 @@ String getSourceName({required String name, BuildContext? context}) {
     return ctx.t.recentWithReplies;
   } else if (name == SOURCE_PAID) {
     return ctx.t.paid;
+  } else if (name == SOURCE_NIP84_HIGHLIGHTS) {
+    return ctx.t.highlights;
   } else if (name == SOURCE_WIDGETS) {
     return ctx.t.widgets;
   }

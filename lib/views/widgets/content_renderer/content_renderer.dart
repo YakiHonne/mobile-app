@@ -72,6 +72,7 @@ class ContentRenderer extends HookWidget {
     this.hideMedia,
     this.height,
     this.emojis,
+    this.onHighlight,
   });
 
   final String text;
@@ -102,6 +103,7 @@ class ContentRenderer extends HookWidget {
   final bool? useDetailedNote;
   final bool? hideMedia;
   final Map<String, String>? emojis;
+  final void Function(String selectedText)? onHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +190,7 @@ class ContentRenderer extends HookWidget {
       textHeightBehavior: textHeightBehavior,
       onTap: onClicked,
       scrollPhysics: scrollPhysics,
+      onHighlight: onHighlight,
     );
   }
 
@@ -1044,6 +1047,7 @@ class _OptimizedSelectableText extends StatefulWidget {
     this.textHeightBehavior,
     this.onTap,
     this.scrollPhysics,
+    this.onHighlight,
   });
 
   final TextSpan textSpan;
@@ -1056,6 +1060,7 @@ class _OptimizedSelectableText extends StatefulWidget {
   final TextHeightBehavior? textHeightBehavior;
   final VoidCallback? onTap;
   final ScrollPhysics? scrollPhysics;
+  final void Function(String selectedText)? onHighlight;
 
   @override
   State<_OptimizedSelectableText> createState() =>
@@ -1115,6 +1120,29 @@ class _OptimizedSelectableTextState extends State<_OptimizedSelectableText> {
       textHeightBehavior: widget.textHeightBehavior,
       onTap: widget.onTap,
       scrollPhysics: widget.scrollPhysics,
+      contextMenuBuilder: widget.onHighlight == null
+          ? null
+          : (context, editableTextState) {
+              final selection = editableTextState.textEditingValue.selection;
+              final text = editableTextState.textEditingValue.text;
+              final selectedText = selection.isValid && !selection.isCollapsed
+                  ? text.substring(selection.start, selection.end)
+                  : '';
+              return AdaptiveTextSelectionToolbar.buttonItems(
+                anchors: editableTextState.contextMenuAnchors,
+                buttonItems: [
+                  ...editableTextState.contextMenuButtonItems,
+                  ContextMenuButtonItem(
+                    label: context.t.highlights.capitalizeFirst(),
+                    onPressed: () {
+                      if (selectedText.isNotEmpty) {
+                        widget.onHighlight!(selectedText);
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
     );
   }
 }

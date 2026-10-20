@@ -136,7 +136,8 @@ class UnFlashNewsContainer extends StatelessWidget {
           flashNewsPubkey: unNewFlashNews.flashNews.pubkey,
           onLike: () {
             showAppModalSheet(
-              context: context,              builder: (_) {
+              context: context,
+              builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: true,
                   uncensoredNoteId: note.id,
@@ -145,11 +146,13 @@ class UnFlashNewsContainer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 );
-              },            );
+              },
+            );
           },
           onDislike: () {
             showAppModalSheet(
-              context: context,              builder: (_) {
+              context: context,
+              builder: (_) {
                 return UnFlashNewsAddRating(
                   isUpvote: false,
                   uncensoredNoteId: note.id,
@@ -158,7 +161,8 @@ class UnFlashNewsContainer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 );
-              },            );
+              },
+            );
           },
           onDelete: (ratingNoteId) {
             showCupertinoDeletionDialogue(
@@ -284,14 +288,16 @@ class UnFlashNewsContainer extends StatelessWidget {
               title: context.t.bookmark.capitalizeFirst(),
               onTap: () {
                 showAppModalSheet(
-                  context: context,                  builder: (_) {
+                  context: context,
+                  builder: (_) {
                     return AddBookmarkView(
                       kind: EventKind.TEXT_NOTE,
                       identifier: unNewFlashNews.flashNews.id,
                       eventPubkey: unNewFlashNews.flashNews.pubkey,
                       model: unNewFlashNews.flashNews,
                     );
-                  },                );
+                  },
+                );
               },
               itemTheme: PullDownMenuItemTheme(
                 textStyle: textStyle,

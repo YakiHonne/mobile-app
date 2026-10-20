@@ -26,7 +26,8 @@ final profileDataList = [
   ProfileData.pinned,
   ProfileData.notes,
   ProfileData.replies,
-  ProfileData.mentions
+  ProfileData.mentions,
+  ProfileData.highlights,
 ];
 
 class ProfileNotes extends HookWidget {

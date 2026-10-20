@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.1.0] - 2026-10-20
+
+### Added
+
+- Group likely spam replies behind a reveal control, with filter adjustment and spam/not-spam author controls.
+- Publish NIP-84 highlights from selected text in notes, articles, and shared browser content with source context, iOS Safari sharing, and highlight notifications.
+
+### Changed
+
+- Load Discover and Media feeds on demand, reduce the initial Home feed batch, and pause feed polling when tabs are inactive or the app is backgrounded.
+- Show cached DMs sooner while older history loads in the background, and receive live messages while the DMs tab is closed.
+- Restore the notification unread indicator at startup, load history when Notifications opens, and separate live updates from catch-up.
+- Load fiat rates and Cashu data when wallet or payment screens need them.
+- Resume the last main tab and notification subtab, restore scroll positions, and show cached feeds and notifications while refreshing.
+- Delay inactive feed refreshes after customization changes until the feed becomes active.
+- Use compact, one-line text previews in dashboard cards.
+
+### Fixed
+
+- Preserve quote intent when posting from content menus and related views so quote actions create quote posts.
+
 ## [2.0.9] - 2026-09-28
 
 ### Changed
