@@ -731,6 +731,7 @@ class ParsedText extends HookWidget {
     this.maxWords,
     this.useDetailedNote = false,
     this.emojis,
+    this.onHighlight,
   });
 
   final String text;
@@ -750,6 +751,7 @@ class ParsedText extends HookWidget {
   final int? minLines;
   final bool? useDetailedNote;
   final Map<String, String>? emojis;
+  final void Function(String selectedText)? onHighlight;
   final ScrollPhysics? scrollPhysics;
   final bool isDm;
   final bool enableTruncation;
@@ -861,6 +863,7 @@ class ParsedText extends HookWidget {
               Base64ImageLinkifier(),
             ],
             onOpen: (link) => _handleLinkOpen(link, context),
+            onHighlight: onHighlight,
           ),
           if (content.key)
             Text.rich(

@@ -272,10 +272,12 @@ class SelectedNotifications extends HookWidget {
       controller: controller,
       scrollController: usedEvents.isEmpty ? null : usedScrollController,
       enablePullUp: usedEvents.isNotEmpty,
-      header: const RefresherClassicHeader(),
+      header: const RefresherClassicHeader(
+        additionalOffset: kDefaultPadding * 3,
+      ),
       onRefresh: () => index == 5
           ? context.read<NotificationsCubit>().fetchPremiumContent(force: true)
-          : context.read<NotificationsCubit>().queryAndSubscribe(isRefresh: true),
+          : context.read<NotificationsCubit>().loadHistory(force: true),
       child: usedEvents.isEmpty
           ? Padding(
               padding: EdgeInsets.only(top: topInset),

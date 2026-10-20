@@ -46,6 +46,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				043591412E960EE6007C6F36 /* ShareExtension.appex in Embed Foundation Extensions */,
+				A18400000000000000000002 /* SafariHighlightExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,6 +116,14 @@
 			path = ShareExtension;
 			sourceTree = "<group>";
 		};
+		A18400000000000000000003 /* SafariHighlightExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (A18400000000000000000004, );
+			explicitFileTypes = {};
+			explicitFolders = ();
+			path = SafariHighlightExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +180,7 @@
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				043591382E960EE6007C6F36 /* ShareExtension */,
+				A18400000000000000000003 /* SafariHighlightExtension */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				EAC0A4FB7FB7243F3E0E23C5 /* Pods */,
@@ -184,6 +194,7 @@
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				043591372E960EE6007C6F36 /* ShareExtension.appex */,
+				A18400000000000000000001 /* SafariHighlightExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -288,6 +299,7 @@
 			);
 			dependencies = (
 				043591402E960EE6007C6F36 /* PBXTargetDependency */,
+				A18400000000000000000008 /* SafariHighlightExtension dependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -334,6 +346,7 @@
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 				043591362E960EE6007C6F36 /* ShareExtension */,
+				A18400000000000000000005 /* SafariHighlightExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1004,6 +1017,31 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Safari highlight prototype */
+		A18400000000000000000001 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SafariHighlightExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A18400000000000000000002 = {isa = PBXBuildFile; fileRef = A18400000000000000000001; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A18400000000000000000004 = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (Info.plist, SafariHighlightExtension.xcconfig, ); target = A18400000000000000000005; };
+		A18400000000000000000005 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A18400000000000000000009;
+			buildPhases = (A18400000000000000000006, A18400000000000000000007, );
+			buildRules = ();
+			dependencies = ();
+			fileSystemSynchronizedGroups = (A18400000000000000000003, );
+			name = SafariHighlightExtension;
+			productName = SafariHighlightExtension;
+			productReference = A18400000000000000000001;
+			productType = "com.apple.product-type.app-extension";
+		};
+		A18400000000000000000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A18400000000000000000007 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A18400000000000000000008 = {isa = PBXTargetDependency; target = A18400000000000000000005; };
+		A18400000000000000000009 = {isa = XCConfigurationList; buildConfigurations = (A1840000000000000000000A, A1840000000000000000000B, A1840000000000000000000C, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A1840000000000000000000A = {isa = XCBuildConfiguration; baseConfigurationReference = A1840000000000000000000D; buildSettings = {SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; }; name = Debug; };
+		A1840000000000000000000B = {isa = XCBuildConfiguration; baseConfigurationReference = A1840000000000000000000D; buildSettings = {}; name = Release; };
+		A1840000000000000000000C = {isa = XCBuildConfiguration; baseConfigurationReference = A1840000000000000000000D; buildSettings = {}; name = Profile; };
+		A1840000000000000000000D = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SafariHighlightExtension.xcconfig; path = SafariHighlightExtension/SafariHighlightExtension.xcconfig; sourceTree = SOURCE_ROOT; };
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

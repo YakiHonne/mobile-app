@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
@@ -14,11 +17,17 @@ import '../widgets/no_content_widgets.dart';
 import 'widgets/cashu_no_wallet.dart';
 import 'widgets/cashu_wallet_balance_container.dart';
 
-class CashuWalletView extends StatelessWidget {
+class CashuWalletView extends HookWidget {
   const CashuWalletView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      unawaited(cashuWalletManagerCubit.ensureInitialized());
+      unawaited(walletManagerCubit.ensureBtcInFiat());
+      return null;
+    }, const []);
+
     return FadeIn(
       child: PopScope(
         canPop: false,

@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
+import '../../common/nip84_highlight.dart';
 import '../../logic/article_cubit/article_cubit.dart';
 import '../../logic/settings_cubit/settings_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
@@ -204,6 +205,7 @@ class ArticleView extends HookWidget {
                 context.read<ArticleCubit>().emptyArticleState();
                 context.read<ArticleCubit>().initView();
               },
+              edgeOffset: fluidScaffoldTopInset(context),
               displacement: kDefaultPadding / 2,
               triggerMode: RefreshIndicatorTriggerMode.anywhere,
               notificationPredicate: (notification) {
@@ -436,11 +438,31 @@ class ArticleView extends HookWidget {
                 return MarkDownWidget(
                   content: articleContent.value,
                   onLinkClicked: (link) => openWebPage(url: link),
+                  onHighlight: (selectedText) => publishNip84Highlight(
+                    context: context,
+                    selectedText: selectedText,
+                    sourceContent: article.content,
+                    source: Nip84HighlightSource.article(
+                      id: article.id,
+                      pubkey: article.pubkey,
+                      identifier: article.identifier,
+                    ),
+                  ),
                 );
               } catch (e) {
                 return MarkDownWidget(
                   content: article.content,
                   onLinkClicked: (link) => openWebPage(url: link),
+                  onHighlight: (selectedText) => publishNip84Highlight(
+                    context: context,
+                    selectedText: selectedText,
+                    sourceContent: article.content,
+                    source: Nip84HighlightSource.article(
+                      id: article.id,
+                      pubkey: article.pubkey,
+                      identifier: article.identifier,
+                    ),
+                  ),
                 );
               }
             },
@@ -717,11 +739,33 @@ class ArticleView extends HookWidget {
                         return MarkDownWidget(
                           content: articleContent.value,
                           onLinkClicked: (link) => openWebPage(url: link),
+                          onHighlight: (selectedText) =>
+                              publishNip84Highlight(
+                            context: context,
+                            selectedText: selectedText,
+                            sourceContent: article.content,
+                            source: Nip84HighlightSource.article(
+                              id: article.id,
+                              pubkey: article.pubkey,
+                              identifier: article.identifier,
+                            ),
+                          ),
                         );
                       } catch (e) {
                         return MarkDownWidget(
                           content: article.content,
                           onLinkClicked: (link) => openWebPage(url: link),
+                          onHighlight: (selectedText) =>
+                              publishNip84Highlight(
+                            context: context,
+                            selectedText: selectedText,
+                            sourceContent: article.content,
+                            source: Nip84HighlightSource.article(
+                              id: article.id,
+                              pubkey: article.pubkey,
+                              identifier: article.identifier,
+                            ),
+                          ),
                         );
                       }
                     },

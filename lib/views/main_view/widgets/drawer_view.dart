@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -51,6 +53,13 @@ const kMainDrawerWidth = 304.0;
 final mainScaffoldKey = GlobalKey<ScaffoldState>();
 
 void openMainDrawer(BuildContext context) {
+  if (canSign()) {
+    unawaited(walletManagerCubit.ensureBtcInFiat());
+    if (context.read<MainCubit>().state.isCashuWallet) {
+      unawaited(cashuWalletManagerCubit.ensureInitialized());
+    }
+  }
+
   if (isFluid()) {
     mainDrawerOpen.value = true;
   } else {
