@@ -23,7 +23,6 @@ class AddContentMainView extends StatelessWidget {
     this.article,
     this.attachedEvent,
     this.isMention,
-    this.isQuote,
     this.smartWidgetModel,
     this.isCloning,
     this.onSuccess,
@@ -41,7 +40,6 @@ class AddContentMainView extends StatelessWidget {
   final bool? selectFirstSmartWidgetDraft;
   final BaseEventModel? attachedEvent;
   final bool? isMention;
-  final bool? isQuote;
   final bool? isCloning;
   final String? selectedExternalRelay;
   final Function(Event)? onSuccess;
@@ -67,7 +65,6 @@ class AddContentMainView extends StatelessWidget {
           ),
           attachedEvent: attachedEvent,
           isMention: isMention,
-          isQuote: isQuote,
           content: content,
           onSuccess: onSuccess,
           selectedExternalRelay: selectedExternalRelay,

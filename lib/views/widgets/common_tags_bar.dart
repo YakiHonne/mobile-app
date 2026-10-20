@@ -205,8 +205,6 @@ String getCommonFeedTypesText(CommonFeedTypes type, BuildContext context) {
       title = context.t.widgets.capitalizeFirst();
     case CommonFeedTypes.paid:
       title = context.t.paid.capitalizeFirst();
-    case CommonFeedTypes.nip84Highlights:
-      title = context.t.highlights.capitalizeFirst();
     case CommonFeedTypes.others:
       title = context.t.others.capitalizeFirst();
     case CommonFeedTypes.global:

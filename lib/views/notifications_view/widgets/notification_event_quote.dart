@@ -11,7 +11,6 @@ import '../../../models/app_models/extended_model.dart';
 import '../../../models/article_model.dart';
 import '../../../models/cashu/nutzap.dart';
 import '../../../models/curation_model.dart';
-import '../../../models/detailed_note_model.dart';
 import '../../../models/event_relation.dart';
 import '../../../models/picture_model.dart';
 import '../../../models/poll_model.dart';
@@ -45,12 +44,6 @@ class _NotificationEventQuoteState extends State<NotificationEventQuote> {
   @override
   void initState() {
     super.initState();
-
-    // The highlight view resolves its source; avoid treating source tags as
-    // reply ancestry or loading addressable sources by their d tag alone.
-    if (widget.eventRelation.kind == EventKind.HIGHLIGHT) {
-      return;
-    }
 
     if (widget.eventRelation.kind == EventKind.REACTION) {
       final entry = widget.eventRelation.getReactionId();
@@ -94,15 +87,6 @@ class _NotificationEventQuoteState extends State<NotificationEventQuote> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.eventRelation.kind == EventKind.HIGHLIGHT) {
-      return NotificationEventMain(
-        event: null,
-        mainEvent: widget.eventRelation,
-        metadata: widget.metadata,
-        onClick: widget.onClick,
-      );
-    }
-
     return SingleEventProvider(
       id: id,
       isReplaceable: isReplaceable,
@@ -173,40 +157,7 @@ class NotificationEventMain extends HookWidget {
       );
     }
 
-    if (mainEvent.kind == EventKind.HIGHLIGHT) {
-      final source =
-          DetailedNoteModel.fromEvent(mainEvent.origin).highlightSourceTag;
-      final name = metadata.getName().trim();
-      final sourceKind = source != null && source[0] == 'a'
-          ? int.tryParse(source[1].split(':').first)
-          : null;
-      final description = sourceKind == EventKind.LONG_FORM
-          ? context.t.userHighlightedFromYourArticle(name: name)
-          : source != null && source[0] == 'e'
-              ? context.t.userHighlightedFromYourNote(name: name)
-              : context.t.userHighlightedYourContent(name: name);
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: kDefaultPadding / 4,
-        children: [
-          Text(
-            description,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-          Text(
-            mainEvent.origin.content,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: Theme.of(context).highlightColor,
-                ),
-          ),
-        ],
-      );
-    } else if (mainEvent.kind == EventKind.ZAP) {
+    if (mainEvent.kind == EventKind.ZAP) {
       List<InlineSpan> spans = [metadataSpan];
 
       if (event != null) {

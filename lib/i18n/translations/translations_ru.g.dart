@@ -297,12 +297,6 @@ class TranslationsRu extends Translations {
 	@override String get following => 'подписки';
 	@override String get trending => 'в тренде';
 	@override String get highlights => 'избранное';
-	@override String get highlight => 'выделение';
-	@override String get highlighted => 'Выделено';
-	@override String get highlightedFrom => 'Выделено из';
-	@override String get untitledArticle => 'Статья без названия';
-	@override String get untitledNote => 'Заметка без названия';
-	@override String get loadingSource => 'Загрузка источника…';
 	@override String get paid => 'платные';
 	@override String get others => 'другие';
 	@override String get suggestionsBox => 'Блок рекомендаций';
@@ -891,10 +885,6 @@ class TranslationsRu extends Translations {
 	@override String get fetchingUserInboxRelays => 'Загрузка входящих релеев пользователя';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} запнул вас на ${number} сатоши';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на вас';
-	@override String get highlightsDesc => 'Получайте уведомления, когда кто-то выделяет ваш контент.';
-	@override String userHighlightedFromYourArticle({required Object name}) => '${name} выделил(а) фрагмент вашей статьи';
-	@override String userHighlightedFromYourNote({required Object name}) => '${name} выделил(а) фрагмент вашей заметки';
-	@override String userHighlightedYourContent({required Object name}) => '${name} выделил(а) ваш контент';
 	@override String userRepostedYou({required Object name}) => 'Ваш контент репостнул ${name}';
 	@override String userMentionedYouInComment({required Object name}) => '${name} упомянул вас в комментарии';
 	@override String userMentionedYouInNote({required Object name}) => '${name} упомянул вас в заметке';
@@ -1129,8 +1119,6 @@ class TranslationsRu extends Translations {
 	@override String get shareWidgetImage => 'Поделиться изображением виджета';
 	@override String get inputField => 'Поле ввода';
 	@override String get noReplies => 'Нет ответов';
-	@override String get noVisibleReplies => 'Нет видимых ответов';
-	@override String get spamRepliesHiddenHint => 'Потенциально нежелательные ответы скрыты ниже.';
 	@override String get message => 'Сообщение';
 	@override String get chat => 'Чат';
 	@override String get onlyLettersNumber => 'Разрешены только буквы и цифры';
@@ -2232,13 +2220,6 @@ class TranslationsRu extends Translations {
 	@override String get pastDue => 'Просрочена';
 	@override String get unpaid => 'Не оплачена';
 	@override String get incomplete => 'Не завершена';
-	@override String get spamFilter => 'Фильтр потенциального спама';
-	@override String get spamFilterDesc => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.';
-	@override String seePotentialSpams({required Object count}) => 'Посмотреть потенциальный спам: ${count}';
-	@override String get showSpamReplies => 'Показать потенциально нежелательные ответы';
-	@override String get hideSpamReplies => 'Скрыть потенциально нежелательные ответы';
-	@override String get markAsSpam => 'Пометить как спам';
-	@override String get notSpam => 'Не спам';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -2515,12 +2496,6 @@ extension on TranslationsRu {
 			'following' => 'подписки',
 			'trending' => 'в тренде',
 			'highlights' => 'избранное',
-			'highlight' => 'выделение',
-			'highlighted' => 'Выделено',
-			'highlightedFrom' => 'Выделено из',
-			'untitledArticle' => 'Статья без названия',
-			'untitledNote' => 'Заметка без названия',
-			'loadingSource' => 'Загрузка источника…',
 			'paid' => 'платные',
 			'others' => 'другие',
 			'suggestionsBox' => 'Блок рекомендаций',
@@ -2769,18 +2744,18 @@ extension on TranslationsRu {
 			'post' => 'Опубликовать',
 			'seeAnything' => 'Видите что-то, что можно улучшить?',
 			'writeNote' => 'Написать заметку',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'whatThinkThis' => 'Что думаете об этом?',
 			'sourceRecommended' => 'Источник (рекомендуется)',
 			'findPaidNoteCorrect' => 'Вы считаете эту платную заметку корректной.',
 			'findPaidNoteMisleading' => 'Вы считаете эту платную заметку вводящей в заблуждение.',
 			'selectOneReason' => 'Выберите хотя бы одну причину',
 			'rateHelpful' => 'Оценить как полезно',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'rateNotHelpful' => 'Оценить как не полезно',
 			'ratedHelpful' => 'Оценено как полезно',
 			'ratedNotHelpful' => 'Оценено как не полезно',
@@ -3115,10 +3090,6 @@ extension on TranslationsRu {
 			'fetchingUserInboxRelays' => 'Загрузка входящих релеев пользователя',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} запнул вас на ${number} сатоши',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на вас',
-			'highlightsDesc' => 'Получайте уведомления, когда кто-то выделяет ваш контент.',
-			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} выделил(а) фрагмент вашей статьи',
-			'userHighlightedFromYourNote' => ({required Object name}) => '${name} выделил(а) фрагмент вашей заметки',
-			'userHighlightedYourContent' => ({required Object name}) => '${name} выделил(а) ваш контент',
 			'userRepostedYou' => ({required Object name}) => 'Ваш контент репостнул ${name}',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} упомянул вас в комментарии',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} упомянул вас в заметке',
@@ -3287,12 +3258,6 @@ extension on TranslationsRu {
 			'blockHeight' => 'Высота блока',
 			'atContractCreation' => ({required Object number}) => '${number} (при создании контракта)',
 			'zkProofs' => 'ZK-доказательства',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'Скачать доказательства',
 			'walletConnectionString' => 'Строка подключения кошелька',
 			'walletConnectionStringDesc' => 'Обязательно безопасно скопируйте или экспортируйте строку подключения кошелька. Мы не храним эту информацию, и если она будет утеряна, её нельзя будет восстановить.',
@@ -3303,6 +3268,12 @@ extension on TranslationsRu {
 			'manageWallets' => 'Управление кошельками',
 			'roundDuration' => 'Продолжительность раунда',
 			'startAt' => ({required Object date}) => 'Начало: ${date}',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'loginAction' => 'Войти',
 			'addPicture' => 'Добавить изображение',
 			'editPicture' => 'Редактировать изображение',
@@ -3359,8 +3330,6 @@ extension on TranslationsRu {
 			'shareWidgetImage' => 'Поделиться изображением виджета',
 			'inputField' => 'Поле ввода',
 			'noReplies' => 'Нет ответов',
-			'noVisibleReplies' => 'Нет видимых ответов',
-			'spamRepliesHiddenHint' => 'Потенциально нежелательные ответы скрыты ниже.',
 			'message' => 'Сообщение',
 			'chat' => 'Чат',
 			'onlyLettersNumber' => 'Разрешены только буквы и цифры',
@@ -3805,12 +3774,6 @@ extension on TranslationsRu {
 			'noMintsAvailable' => 'Нет доступных mints',
 			'currencies' => 'Валюты',
 			'nuts' => 'NUTs',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'errorUpdatingMint' => 'Ошибка при обновлении списка mints',
 			'active' => 'Активный',
 			'inactive' => 'Неактивный',
@@ -3823,6 +3786,12 @@ extension on TranslationsRu {
 			'restoreWallet' => 'Восстановить кошелек',
 			'restoreWalletDesc' => 'Восстановить доказательства вашего кошелька в этом mint, чтобы сохранить их на NOSTR',
 			'seedPhraseLocallyOnly' => 'Ваша сид-фраза используется только локально для получения ключей вашего кошелька.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'proofsRestored' => 'Доказательства восстановлены',
 			'noProofsFound' => 'Доказательства не найдены',
 			'errorRestoringProofs' => 'Ошибка при восстановлении доказательств',
@@ -4323,12 +4292,6 @@ extension on TranslationsRu {
 			'pomRecoverShard' => 'Восстановить фрагмент',
 			'pomShardCollected' => 'Фрагмент получен',
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => 'Получено фрагментов: ${collected}/${threshold}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomRecoverSuccess' => 'Приватный ключ восстановлен',
 			'pomDownloadKey' => 'Скачать ключ',
 			'pomUnlinkTitle' => 'Отвязать аккаунт',
@@ -4341,6 +4304,12 @@ extension on TranslationsRu {
 			'pomUnlinkSuccess' => 'Аккаунт отвязан. Вы вышли из системы.',
 			'pomUnlinkFailed' => 'Не удалось отвязать аккаунт. Попробуйте ещё раз.',
 			'pomKeyCopied' => 'Приватный ключ скопирован',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomServerTitle' => 'Сервер идентичности',
 			'pomServerDesc' => 'Ваш аккаунт размещён на этом центральном сервере. Можно использовать наш, другого провайдера или собственный.',
 			'pomServerDefault' => 'По умолчанию',
@@ -4474,13 +4443,6 @@ extension on TranslationsRu {
 			'pastDue' => 'Просрочена',
 			'unpaid' => 'Не оплачена',
 			'incomplete' => 'Не завершена',
-			'spamFilter' => 'Фильтр потенциального спама',
-			'spamFilterDesc' => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.',
-			'seePotentialSpams' => ({required Object count}) => 'Посмотреть потенциальный спам: ${count}',
-			'showSpamReplies' => 'Показать потенциально нежелательные ответы',
-			'hideSpamReplies' => 'Скрыть потенциально нежелательные ответы',
-			'markAsSpam' => 'Пометить как спам',
-			'notSpam' => 'Не спам',
 			_ => null,
 		};
 	}

@@ -45,35 +45,8 @@ class SuggestionsBoxCubit extends Cubit<SuggestionsBoxState> {
   }
 
   late StreamSubscription contactList;
-  final Map<String, Future<void>> _inFlightRequests = {};
-  bool _leadingInitialized = false;
-  bool _trendingUsers24Loaded = false;
-
-  Future<void> _deduplicateRequest(
-    String key,
-    Future<void> Function() request,
-  ) {
-    final current = _inFlightRequests[key];
-    if (current != null) {
-      return current;
-    }
-
-    late final Future<void> pending;
-    pending = request().whenComplete(() {
-      if (identical(_inFlightRequests[key], pending)) {
-        _inFlightRequests.remove(key);
-      }
-    });
-    _inFlightRequests[key] = pending;
-    return pending;
-  }
 
   void initLeading({String? tag}) {
-    if (_leadingInitialized) {
-      return;
-    }
-    _leadingInitialized = true;
-
     getTrendingUser24();
     getSuggestions();
     getLatestArticles(tag: tag);
@@ -90,16 +63,8 @@ class SuggestionsBoxCubit extends Cubit<SuggestionsBoxState> {
     }
   }
 
-  Future<void> getTrendingUser24() {
-    if (_trendingUsers24Loaded) {
-      return Future<void>.value();
-    }
-    return _deduplicateRequest('trendingUsers24', _loadTrendingUser24);
-  }
-
-  Future<void> _loadTrendingUser24() async {
+  Future<void> getTrendingUser24() async {
     final users = await NostrFunctionsRepository.getRcTrendingUsers24();
-    _trendingUsers24Loaded = true;
     final currentContacts = contactListCubit.contacts;
     if (!isClosed) {
       emit(
@@ -189,12 +154,7 @@ class SuggestionsBoxCubit extends Cubit<SuggestionsBoxState> {
     }
   }
 
-  Future<void> getLatestArticles({String? tag}) => _deduplicateRequest(
-        tag == null ? 'latestArticles:default' : 'latestArticles:tag:$tag',
-        () => _loadLatestArticles(tag: tag),
-      );
-
-  Future<void> _loadLatestArticles({String? tag}) async {
+  Future<void> getLatestArticles({String? tag}) async {
     final selectedTopics = <String>[];
     if (tag == null) {
       final t = nostrRepository.topics;

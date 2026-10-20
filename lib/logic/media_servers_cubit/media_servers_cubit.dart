@@ -10,6 +10,7 @@ import 'package:dio/dio.dart' as dioinstance;
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pasteboard/pasteboard.dart';
@@ -1098,6 +1099,41 @@ class MediaServersCubit extends Cubit<MediaServersState> {
       path += '.$outExt';
     }
     return path;
+  }
+
+  /// Produce a full signed URL.
+  String makeSignedUrl({
+    required String sourceUrl, // The original image URL
+    String options = 'bl:50/q:50', // Processing options
+    String? outExt, // Optional output extension
+    bool useEncoded = false, // Whether to use encoded or plain URL
+  }) {
+    final current = blurredImages[sourceUrl];
+
+    if (current != null) {
+      return current;
+    }
+
+    final keyHex = dotenv.env['IMGPROXY_KEY']!;
+    final saltHex = dotenv.env['IMGPROXY_SALT']!;
+
+    // Build the path first
+    final path = useEncoded
+        ? buildEncodedPath(options, sourceUrl, outExt: outExt)
+        : buildPlainPath(options, sourceUrl, outExt: outExt);
+
+    // Generate signature for the path
+    final sig = generateImgProxySignature(
+      key: keyHex,
+      salt: saltHex,
+      path: path,
+    );
+
+    // Build final URL: baseUrl/signature/path
+    final url = '$imgProxy/$sig$path';
+    blurredImages[sourceUrl] = url;
+
+    return url;
   }
 
   /// Build a URL that serves [sourceUrl] through the compression proxy.

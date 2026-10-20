@@ -4,10 +4,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:share_handler/share_handler.dart';
 
-import '../../common/browser_highlight_share.dart';
 import '../../common/common_regex.dart';
 import '../../common/media_handler/media_handler.dart';
-import '../../common/nip84_highlight.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
@@ -42,8 +40,6 @@ class ReceivedShareIntent extends StatelessWidget {
   Widget _buildView(BuildContext context) {
     return Builder(builder: (context) {
       final content = media.content;
-      final sharedHighlight =
-          content == null ? null : BrowserHighlightShare.tryParse(content);
 
       final attachements = media.attachments;
       final selectedAttachement =
@@ -95,9 +91,7 @@ class ReceivedShareIntent extends StatelessWidget {
                 _media(selectedAttachement, type)
               else if (content != null)
                 urlRegExp.hasMatch(content)
-                    ? UrlPreviewContainer(
-                        url: sharedHighlight?.sourceUrl ?? content,
-                      )
+                    ? UrlPreviewContainer(url: content)
                     : Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
@@ -108,10 +102,6 @@ class ReceivedShareIntent extends StatelessWidget {
                 height: kDefaultPadding / 2,
               ),
               _addToNote(type, selectedAttachement, context, content),
-              if (type == null && content != null && !_isUrl(content)) ...[
-                const SizedBox(height: kDefaultPadding / 2),
-                _highlightExternalText(context, content, sharedHighlight),
-              ],
             ],
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
@@ -120,32 +110,6 @@ class ReceivedShareIntent extends StatelessWidget {
         ),
       );
     });
-  }
-
-  bool _isUrl(String value) {
-    final uri = Uri.tryParse(value.trim());
-    return uri != null &&
-        uri.hasAuthority &&
-        (uri.scheme == 'http' || uri.scheme == 'https');
-  }
-
-  SizedBox _highlightExternalText(
-      BuildContext context, String text, BrowserHighlightShare? highlight) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () {
-          YNavigator.pop(context);
-          publishExternalNip84Highlight(
-            context: context,
-            selectedText: highlight?.selectedText ?? text,
-            sourceUrl: highlight?.sourceUrl,
-            textSelector: highlight?.selector,
-          );
-        },
-        child: Text(context.t.highlight.capitalizeFirst()),
-      ),
-    );
   }
 
   SizedBox _addToNote(

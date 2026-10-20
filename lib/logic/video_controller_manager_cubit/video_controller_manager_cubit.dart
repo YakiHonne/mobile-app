@@ -70,7 +70,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     String id, {
     bool autoPlay = false,
     bool isNetwork = true,
-    bool looping = true,
+    bool looping = false,
     bool showControls = true,
     bool enableSound = true,
     double? aspectRatio,

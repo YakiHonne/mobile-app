@@ -419,7 +419,6 @@ class PdmCommonActions {
         contentType: AppContentType.note,
         attachedEvent: model,
         isMention: true,
-        isQuote: true,
       ),
     );
   }

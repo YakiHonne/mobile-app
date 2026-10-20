@@ -821,24 +821,6 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'highlights'
 	String get highlights => 'highlights';
 
-	/// en: 'highlight'
-	String get highlight => 'highlight';
-
-	/// en: 'Highlighted'
-	String get highlighted => 'Highlighted';
-
-	/// en: 'Highlighted from'
-	String get highlightedFrom => 'Highlighted from';
-
-	/// en: 'Untitled article'
-	String get untitledArticle => 'Untitled article';
-
-	/// en: 'Untitled note'
-	String get untitledNote => 'Untitled note';
-
-	/// en: 'Loading source…'
-	String get loadingSource => 'Loading source…';
-
 	/// en: 'paid'
 	String get paid => 'paid';
 
@@ -2609,18 +2591,6 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: '{{name}} reacted {{reaction}} to you'
 	String userReactedYou({required Object name, required Object reaction}) => '${name} reacted ${reaction} to you';
 
-	/// en: 'Get notified when someone highlights your content.'
-	String get highlightsDesc => 'Get notified when someone highlights your content.';
-
-	/// en: '{{name}} highlighted from your article'
-	String userHighlightedFromYourArticle({required Object name}) => '${name} highlighted from your article';
-
-	/// en: '{{name}} highlighted from your note'
-	String userHighlightedFromYourNote({required Object name}) => '${name} highlighted from your note';
-
-	/// en: '{{name}} highlighted your content'
-	String userHighlightedYourContent({required Object name}) => '${name} highlighted your content';
-
 	/// en: '{{name}} reposted your content'
 	String userRepostedYou({required Object name}) => '${name} reposted your content';
 
@@ -3322,12 +3292,6 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'No replies'
 	String get noReplies => 'No replies';
-
-	/// en: 'No visible replies'
-	String get noVisibleReplies => 'No visible replies';
-
-	/// en: 'Potential spam replies are hidden below.'
-	String get spamRepliesHiddenHint => 'Potential spam replies are hidden below.';
 
 	/// en: 'Message'
 	String get message => 'Message';
@@ -6649,27 +6613,6 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Incomplete'
 	String get incomplete => 'Incomplete';
-
-	/// en: 'Potential spam filter'
-	String get spamFilter => 'Potential spam filter';
-
-	/// en: 'Collapse replies from authors that look like spam. You can always expand them.'
-	String get spamFilterDesc => 'Collapse replies from authors that look like spam. You can always expand them.';
-
-	/// en: 'See {{count}} potential spams'
-	String seePotentialSpams({required Object count}) => 'See ${count} potential spams';
-
-	/// en: 'Show potentially spam replies'
-	String get showSpamReplies => 'Show potentially spam replies';
-
-	/// en: 'Hide potentially spam replies'
-	String get hideSpamReplies => 'Hide potentially spam replies';
-
-	/// en: 'Mark as spam'
-	String get markAsSpam => 'Mark as spam';
-
-	/// en: 'Not spam'
-	String get notSpam => 'Not spam';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -6948,12 +6891,6 @@ extension on Translations {
 			'following' => 'following',
 			'trending' => 'trending',
 			'highlights' => 'highlights',
-			'highlight' => 'highlight',
-			'highlighted' => 'Highlighted',
-			'highlightedFrom' => 'Highlighted from',
-			'untitledArticle' => 'Untitled article',
-			'untitledNote' => 'Untitled note',
-			'loadingSource' => 'Loading source…',
 			'paid' => 'paid',
 			'others' => 'others',
 			'suggestionsBox' => 'Suggestions box',
@@ -7200,18 +7137,18 @@ extension on Translations {
 			'pollClosesAt' => ({required Object date}) => 'Closes at: ${date}',
 			'pollClosedAt' => ({required Object date}) => 'Closed at: ${date}',
 			'checkSmartWidget' => 'Check a smart widget',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'emptyVerifiedNote' => 'Empty verified note content!',
 			'post' => 'Post',
 			'seeAnything' => 'See anything you want to improve?',
 			'writeNote' => 'Write a note',
 			'whatThinkThis' => 'What do you think about this ?',
 			'sourceRecommended' => 'Source (recommended)',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'findPaidNoteCorrect' => 'You find this paid note correct.',
 			'findPaidNoteMisleading' => 'You find this paid note misleading.',
 			'selectOneReason' => 'Select at least one reason',
@@ -7550,10 +7487,6 @@ extension on Translations {
 			'fetchingUserInboxRelays' => 'Fetching user inbox relays',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} zapped you ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} reacted ${reaction} to you',
-			'highlightsDesc' => 'Get notified when someone highlights your content.',
-			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} highlighted from your article',
-			'userHighlightedFromYourNote' => ({required Object name}) => '${name} highlighted from your note',
-			'userHighlightedYourContent' => ({required Object name}) => '${name} highlighted your content',
 			'userRepostedYou' => ({required Object name}) => '${name} reposted your content',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} mentioned you in a comment',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} mentioned you in a note',
@@ -7718,12 +7651,6 @@ extension on Translations {
 			'roundEnd' => 'Round end',
 			'operator' => 'Operator',
 			'contractCreator' => 'Contract creator',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'contractAddress' => 'Contract address',
 			'blockHeight' => 'Block height',
 			'atContractCreation' => ({required Object number}) => '${number} (at contract creation)',
@@ -7734,6 +7661,12 @@ extension on Translations {
 			'export' => 'Export',
 			'logout' => 'Log out',
 			'exportAndLogout' => 'Export & log out',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'exportWalletsDesc' => 'It looks like you have wallets linked to your account. Please download your wallet secrets before logging out.',
 			'manageWallets' => 'Manage wallets',
 			'roundDuration' => 'Round duration',
@@ -7794,8 +7727,6 @@ extension on Translations {
 			'shareWidgetImage' => 'Share widget image',
 			'inputField' => 'Input field',
 			'noReplies' => 'No replies',
-			'noVisibleReplies' => 'No visible replies',
-			'spamRepliesHiddenHint' => 'Potential spam replies are hidden below.',
 			'message' => 'Message',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Only letters & numbers allowed',
@@ -8236,12 +8167,6 @@ extension on Translations {
 			'tokenDetails' => 'Token Details',
 			'issuingMint' => 'Issuing Mint',
 			'proofs' => 'Proofs',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'redeemToken' => 'Redeem Token',
 			'invalidToken' => 'Invalid token',
 			'tokenRedeemed' => 'Token redeemed successfully',
@@ -8254,6 +8179,12 @@ extension on Translations {
 			'addCashuWallet' => 'Add Cashu Wallet & start sending and receiving Ecash over nostr.',
 			'mintUrl' => 'Mint URL',
 			'mintUnavailable' => 'Mint you are trying to add is not available',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'inactiveMints' => 'Inactive mints',
 			'inactiveMintsDesc' => 'Inactive mints are mints that are not included in your wallet but still hold ecash in them.',
 			'errorAddingMint' => 'Error occured while adding mint',
@@ -8754,12 +8685,6 @@ extension on Translations {
 			'pomAuthenticating' => 'Authenticating with Google…',
 			'pomCheckingAccount' => 'Checking account…',
 			'pomCreatingAccount' => 'Creating account…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'Save your private key',
 			'pomSaveKeyDesc' => 'Your private key has been generated. Save it securely before creating your account.',
 			'pomCreateAccount' => 'Create Account',
@@ -8772,6 +8697,12 @@ extension on Translations {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} shards collected',
 			'pomRecoverSuccess' => 'Private key recovered',
 			'pomDownloadKey' => 'Download key',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomUnlinkTitle' => 'Unlink account',
 			'pomUnlinkIntro' => 'First recover your private key and copy it — you\'ll need it to sign back in after unlinking.',
 			'pomUnlinkContinue' => 'I\'ve saved my key — continue',
@@ -8915,13 +8846,6 @@ extension on Translations {
 			'pastDue' => 'Past due',
 			'unpaid' => 'Unpaid',
 			'incomplete' => 'Incomplete',
-			'spamFilter' => 'Potential spam filter',
-			'spamFilterDesc' => 'Collapse replies from authors that look like spam. You can always expand them.',
-			'seePotentialSpams' => ({required Object count}) => 'See ${count} potential spams',
-			'showSpamReplies' => 'Show potentially spam replies',
-			'hideSpamReplies' => 'Hide potentially spam replies',
-			'markAsSpam' => 'Mark as spam',
-			'notSpam' => 'Not spam',
 			_ => null,
 		};
 	}

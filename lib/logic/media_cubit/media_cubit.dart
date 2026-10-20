@@ -14,7 +14,6 @@ import '../../models/relays_feed.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/utils.dart';
-import '../feed_extra_refresh_controller.dart';
 
 part 'media_state.dart';
 
@@ -30,46 +29,35 @@ class MediaCubit extends Cubit<MediaState> {
             selectedSource:
                 appSettingsManagerCubit.getMediaSelectedSource().key,
           ),
-        );
+        ) {
+    _initializeStreams();
+    initView();
+  }
 
   late StreamSubscription feedStream;
   late StreamSubscription mutesStream;
-  late final FeedExtraRefreshController _extraRefreshController =
-      FeedExtraRefreshController(onRefresh: _fetchExtraContent);
-  int _extraRefreshGeneration = 0;
-  bool _streamsInitialized = false;
-  Future<void>? _initialization;
-  bool _isFeedActive = false;
-  bool _isAppResumed = true;
-  bool _isRestoringSnapshot = false;
-  bool _hasInitialized = false;
-  bool _pendingCustomizationRefresh = false;
-  Future<void> _feedSnapshotPersistence = Future<void>.value();
+  Timer? currentExtraTimer;
+  bool delayLeading = true;
   // =============================================================================
   // STREAMS & LISTENERS
   // =============================================================================
   void _initializeStreams() {
-    if (_streamsInitialized) {
-      return;
-    }
-    _streamsInitialized = true;
-
     // Listen for app customization changes
     feedStream = nostrRepository.appCustomizationStream.listen(
       (appCustom) async {
-        if (!_canRefreshForCustomization) {
-          _pendingCustomizationRefresh = true;
-          return;
+        if (!isClosed) {
+          emit(
+            state.copyWith(
+              refresh: !state.refresh,
+            ),
+          );
         }
 
         await Future.delayed(const Duration(seconds: 1));
 
-        if (!_canRefreshForCustomization) {
-          _pendingCustomizationRefresh = true;
-          return;
-        }
-
-        _refreshAfterCustomization();
+        buildMediaFeed(
+          isAdding: false,
+        );
       },
     );
 
@@ -94,133 +82,18 @@ class MediaCubit extends Cubit<MediaState> {
   // =============================================================================
   // PUBLIC METHODS
   // =============================================================================
-  /// Start the Media feed the first time its tab is selected.
-  Future<void> ensureInitialized({bool restoreSnapshot = false}) =>
-      _initialization ??= _initialize(restoreSnapshot: restoreSnapshot);
-
-  void setFeedActive(bool active) {
-    _isFeedActive = active;
-    if (!active) {
-      _extraRefreshGeneration++;
-    } else {
-      _refreshAfterPendingCustomization();
-    }
-    _extraRefreshController.setFeedActive(active);
-  }
-
-  void setAppResumed(bool resumed) {
-    _isAppResumed = resumed;
-    if (!resumed) {
-      _extraRefreshGeneration++;
-    } else {
-      _refreshAfterPendingCustomization();
-    }
-    _extraRefreshController.setAppResumed(resumed);
-  }
-
-  Future<void> _initialize({required bool restoreSnapshot}) async {
-    if (isClosed) {
-      return;
+  /// Initialize the view with data and suggestions
+  Future<void> initView() async {
+    if (delayLeading) {
+      await Future.delayed(const Duration(seconds: 1));
+      delayLeading = false;
     }
 
-    _initializeStreams();
-    final restored = restoreSnapshot && await _restoreCachedFeed();
-    if (!restored) {
-      await buildMediaFeed(isAdding: false);
-    }
-    _hasInitialized = true;
-    _pendingCustomizationRefresh = false;
-  }
-
-  bool get _canRefreshForCustomization =>
-      _hasInitialized && _isFeedActive && _isAppResumed && !isClosed;
-
-  void _refreshAfterPendingCustomization() {
-    if (!_pendingCustomizationRefresh || !_canRefreshForCustomization) {
-      return;
-    }
-
-    _refreshAfterCustomization();
-  }
-
-  void _refreshAfterCustomization() {
-    _pendingCustomizationRefresh = false;
-    emit(state.copyWith(refresh: !state.refresh));
-    unawaited(buildMediaFeed(isAdding: false));
-  }
-
-  Future<bool> _restoreCachedFeed() async {
-    final owner = currentSigner?.getPublicKey() ?? '';
-    final savedIds = localDatabaseRepository.getMainViewFeedSnapshot(
-      owner,
-      'media',
+    buildMediaFeed(
+      isAdding: false,
     );
-    if (savedIds.isEmpty) {
-      return false;
-    }
 
-    try {
-      final cachedEvents = await NostrFunctionsRepository.getCachedEventsByIds(
-        savedIds,
-      );
-      if (cachedEvents.isEmpty || isClosed) {
-        return false;
-      }
-
-      final eventsById = {for (final event in cachedEvents) event.id: event};
-      final orderedEvents =
-          savedIds.map((id) => eventsById[id]).whereType<Event>().toList();
-      final content = applyMediaFilter(orderedEvents, removeMuted: true);
-      if (content.isEmpty) {
-        return false;
-      }
-
-      _isRestoringSnapshot = true;
-      emit(
-        state.copyWith(
-          content: content,
-          onLoading: false,
-          onAddingData: UpdatingState.success,
-        ),
-      );
-      _isRestoringSnapshot = false;
-      getExtra();
-      if (_isFeedActive && _isAppResumed) {
-        unawaited(_fetchExtraContent());
-      }
-      return true;
-    } catch (error) {
-      _isRestoringSnapshot = false;
-      lg.i('Unable to restore the cached media feed: $error');
-      return false;
-    }
-  }
-
-  @override
-  void onChange(Change<MediaState> change) {
-    super.onChange(change);
-    if (_isRestoringSnapshot || change.nextState.content.isEmpty) {
-      return;
-    }
-
-    final currentIds =
-        change.currentState.content.map((event) => event.id).toList();
-    final nextIds = change.nextState.content.map((event) => event.id).toList();
-    if (currentIds.length == nextIds.length &&
-        currentIds.asMap().entries.every(
-              (entry) => nextIds[entry.key] == entry.value,
-            )) {
-      return;
-    }
-
-    final owner = currentSigner?.getPublicKey() ?? '';
-    _feedSnapshotPersistence = _feedSnapshotPersistence.then((_) async {
-      await localDatabaseRepository.setMainViewFeedSnapshot(
-        owner,
-        'media',
-        nextIds,
-      );
-    });
+    suggestionsBoxCubit.initLeading();
   }
 
   // =============================================================================
@@ -243,8 +116,6 @@ class MediaCubit extends Cubit<MediaState> {
 
   /// Clear all content data and reset state for the given source
   void clearData(AppContentSource source) {
-    _extraRefreshGeneration++;
-    _extraRefreshController.setHasContent(false);
     if (!isClosed) {
       emit(
         state.copyWith(
@@ -259,67 +130,68 @@ class MediaCubit extends Cubit<MediaState> {
   }
 
   /// Manage extra content
-  void getExtra() {
-    _extraRefreshController.setHasContent(state.content.isNotEmpty);
-  }
-
-  Future<void> _fetchExtraContent() async {
-    if (isClosed || state.content.isEmpty) {
-      return;
-    }
-    final generation = _extraRefreshGeneration;
-
-    final first = state.extraContent.isNotEmpty
-        ? state.extraContent.first
-        : state.content.first;
-    final currentSelectedSource =
-        appSettingsManagerCubit.getMediaSelectedSource();
-    final f = appSettingsManagerCubit.getSelectedMediaFilter();
-    final since = first.createdAt.toSecondsSinceEpoch() + 1;
-
-    List<BaseEventModel> content = [];
-    if (currentSelectedSource.key == AppContentSource.community) {
-      content = await getMediaFeedCommunityEvents(
-        since: since,
-        limit: 20,
-        f: f,
-      );
-
-      if (isClosed || generation != _extraRefreshGeneration) {
-        return;
-      }
-
-      final source = appSettingsManagerCubit.state.selectedDiscoverSource;
-      if (source.value == SOURCE_RECENT) {
-        final globalIds = state.content.map((event) => event.id).toSet();
-        content.removeWhere((event) => globalIds.contains(event.id));
-      }
-    } else if (currentSelectedSource.key == AppContentSource.packs) {
-      content = await getMediaFeedPacksEvents(
-        since: since,
-        limit: 20,
-      );
-    } else if (currentSelectedSource.key == AppContentSource.relay) {
-      content = await getMediaFeedRelayEvents(
-        since: since,
-        limit: 20,
-        f: f,
-      );
+  Future<void> getExtra() async {
+    if (currentExtraTimer != null) {
+      currentExtraTimer?.cancel();
     }
 
-    if (isClosed || generation != _extraRefreshGeneration) {
-      return;
-    }
+    currentExtraTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (timer) async {
+        if (state.content.isNotEmpty) {
+          final first = state.extraContent.isNotEmpty
+              ? state.extraContent.first
+              : state.content.first;
 
-    if (content.isNotEmpty && !isClosed) {
-      emit(
-        state.copyWith(
-          extraContent: [...content, ...state.extraContent],
-          onLoading: false,
-          onAddingData: UpdatingState.success,
-        ),
-      );
-    }
+          final currentSelectedSource =
+              appSettingsManagerCubit.getMediaSelectedSource();
+
+          final f = appSettingsManagerCubit.getSelectedMediaFilter();
+
+          List<BaseEventModel> content = [];
+
+          if (currentSelectedSource.key == AppContentSource.community) {
+            content = await getMediaFeedCommunityEvents(
+              since: first.createdAt.toSecondsSinceEpoch() + 1,
+              limit: 20,
+              f: f,
+            );
+
+            final source = appSettingsManagerCubit.state.selectedDiscoverSource;
+
+            if (source.value == SOURCE_RECENT) {
+              final globalIds = state.content.map((e) => e.id).toSet();
+              content.removeWhere((e) => globalIds.contains(e.id));
+            }
+          } else if (currentSelectedSource.key == AppContentSource.packs) {
+            content = await getMediaFeedPacksEvents(
+              since: first.createdAt.toSecondsSinceEpoch() + 1,
+              limit: 20,
+            );
+          } else if (currentSelectedSource.key == AppContentSource.relay) {
+            content = await getMediaFeedRelayEvents(
+              since: first.createdAt.toSecondsSinceEpoch() + 1,
+              limit: 20,
+              f: f,
+            );
+          }
+
+          if (content.isNotEmpty) {
+            if (!isClosed) {
+              emit(
+                state.copyWith(
+                  extraContent: [...content, ...state.extraContent],
+                  onLoading: false,
+                  onAddingData: content.isEmpty
+                      ? UpdatingState.idle
+                      : UpdatingState.success,
+                ),
+              );
+            }
+          }
+        }
+      },
+    );
   }
 
   Future<void> buildMediaFeed({
@@ -628,17 +500,9 @@ class MediaCubit extends Cubit<MediaState> {
   }
 
   void resetExtra() {
-    _extraRefreshController.reset();
-  }
-
-  @override
-  Future<void> close() async {
-    _extraRefreshGeneration++;
-    _extraRefreshController.dispose();
-    if (_streamsInitialized) {
-      await feedStream.cancel();
-      await mutesStream.cancel();
-    }
-    return super.close();
+    currentExtraTimer?.cancel();
+    feedStream.cancel();
+    mutesStream.cancel();
+    getExtra();
   }
 }

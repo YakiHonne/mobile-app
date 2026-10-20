@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
-import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
@@ -24,7 +23,6 @@ class CashuSendECashView extends HookWidget {
     final amountInSats = useState(0);
 
     final cashuState = context.watch<CashuWalletManagerCubit>().state;
-    context.watch<WalletsManagerCubit>().state;
     final walletMints = cashuState.walletMints;
     final selectedMintUrl = useState(cashuState.activeMint);
 
