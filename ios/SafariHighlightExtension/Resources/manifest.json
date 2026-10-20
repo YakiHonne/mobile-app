@@ -3,6 +3,14 @@
   "name": "YakiHonne Highlights",
   "version": "0.1.0",
   "description": "Select webpage text and open a highlight draft in YakiHonne.",
+  "icons": {
+    "48": "images/icon-48.png",
+    "64": "images/icon-64.png",
+    "96": "images/icon-96.png",
+    "128": "images/icon-128.png",
+    "256": "images/icon-256.png",
+    "512": "images/icon-512.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
