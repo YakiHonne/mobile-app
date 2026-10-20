@@ -242,12 +242,16 @@ class _VersionNewsState extends State<VersionNews> {
 /// Shown under [appVersion], so this list must be rewritten every release —
 /// it shipped once already holding the previous version's notes.
 final List<String> releaseNotes = [
-  'Updated QR code scanning for more reliable camera handling.',
-  'Video playback now keeps your device awake while a video is open.',
-  'Lightning invoices prefixed with "lightning:" are now accepted.',
-  'Reply threads retain available context when a reply is unavailable.',
-  'Paid-note payment events are now removed after processing.',
-  'General bug fixes and performance enhancements.',
+  'Likely spam replies are grouped behind a reveal control. Tune the filter and mark authors as spam or not spam.',
+  'Publish NIP-84 highlights from selected text in notes, articles, or shared browser content, with the source attached, iOS Safari sharing, and highlight notifications.',
+  'Discover and Media load when opened. Home starts with fewer items, and inactive feeds pause polling while the app is backgrounded.',
+  'Cached DMs appear sooner while older history loads in the background, and live messages arrive even when the DMs tab is closed.',
+  'Notifications restore unread state at startup, load history on open, and separate live updates from catch-up.',
+  'Wallet and payment screens load fiat rates and Cashu data only when needed.',
+  'Resume your last main tab and notification subtab, restore scroll positions, and see cached feeds and notifications while they refresh.',
+  'Feed customization changes refresh inactive feeds once they become active.',
+  'Dashboard cards show compact, one-line text previews.',
+  'Posting from content menus and related views preserves quote intent so quote actions create quote posts.',
 ];
 
 const content = [
