@@ -14,7 +14,7 @@ on:
         required: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: mobile-release
@@ -58,15 +58,6 @@ jobs:
         env:
           RELEASE_NOTES_OVERRIDE: ${{ inputs.release_notes }}
         run: python3 .github/scripts/release_notes.py --platform "ios"
-      - name: Check existing release tag
-        if: inputs.track == 'production'
-        working-directory: mobile-app
-        env:
-          RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: |
-          if git rev-parse --verify --quiet "refs/tags/$RELEASE_TAG" >/dev/null; then
-            test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$GITHUB_SHA" || { echo 'Existing release tag points to a different commit.' >&2; exit 1; }
-          fi
       - name: Restore shared configuration
         working-directory: mobile-app
         env:
@@ -103,7 +94,7 @@ jobs:
         run: bash .github/scripts/ios_signing.sh
       - name: Build iOS
         working-directory: mobile-app
-        run: flutter build ipa --release --obfuscate --split-debug-info=build/symbols --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
+        run: flutter build ipa --release --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
       - name: Upload debug symbols to GlitchTip
         working-directory: mobile-app
         run: dart run sentry_dart_plugin "--sentry-define=org=$GLITCHTIP_ORG" "--sentry-define=project=$GLITCHTIP_PROJECT"
@@ -117,19 +108,3 @@ jobs:
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
           TESTFLIGHT_EXTERNAL_GROUPS: ${{ secrets.TESTFLIGHT_EXTERNAL_GROUPS }}
         run: bundle exec fastlane ios release
-      - name: Create GitHub release
-        if: inputs.track == 'production'
-        working-directory: mobile-app
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag }}
-          APP_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo "Release $RELEASE_TAG already exists; retaining its notes and assets."
-          else
-            gh release create "$RELEASE_TAG" --target "$GITHUB_SHA" --title "YakiHonne $APP_VERSION" --notes-file release-body.md --verify-tag || {
-              if git rev-parse --verify --quiet "refs/tags/$RELEASE_TAG" >/dev/null; then exit 1; fi
-              gh release create "$RELEASE_TAG" --target "$GITHUB_SHA" --title "YakiHonne $APP_VERSION" --notes-file release-body.md
-            }
-          fi
