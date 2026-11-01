@@ -94,9 +94,7 @@ flutter run -d linux
 
 **Build for production:**
 
-Mobile builds are obfuscated, so pass `--obfuscate --split-debug-info` and
-upload the resulting symbol map to Sentry afterwards — otherwise crash/ANR
-stack traces come back unreadable (`<unknown>` frames).
+Release builds are not obfuscated. Upload native debug symbols to the error tracking service for readable native crash reports.
 
 Payments default to in-app purchase, which is what the App Store and Play
 Store require. Builds distributed outside the stores (sideloaded APK) pass
@@ -106,16 +104,16 @@ headed for a store.
 
 ```bash
 # Android APK — sideload, non-store payments
-flutter build apk --release --obfuscate --split-debug-info=build/symbols \
+flutter build apk --release \
   --dart-define=IAP_ENABLED=false
 
 # Android App Bundle — Play Store
-flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+flutter build appbundle --release
 
 # iOS — App Store
-flutter build ios --release --obfuscate --split-debug-info=build/symbols
+flutter build ios --release
 
-# Upload the Dart debug symbols to Sentry (reads config from pubspec.yaml + sentry.properties)
+# Upload debug symbols (reads config from pubspec.yaml + sentry.properties)
 dart run sentry_dart_plugin
 
 # Web

@@ -108,7 +108,7 @@ jobs:
           printf '\nflutter.minSdkVersion=24\nflutter.targetSdkVersion=36\n' >> android/local.properties
       - name: Build Android
         working-directory: mobile-app
-        run: flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+        run: flutter build appbundle --release
       - name: Build APKs for GitHub release
         if: inputs.track == 'production'
         working-directory: mobile-app
@@ -116,7 +116,7 @@ jobs:
           APP_VERSION: ${{ steps.release.outputs.version }}
           APP_BUILD: ${{ steps.release.outputs.build }}
         run: |
-          flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/symbols-apk --dart-define=IAP_ENABLED=false
+          flutter build apk --release --split-per-abi --dart-define=IAP_ENABLED=false
           mkdir -p build/release-apks
           for abi in arm64-v8a armeabi-v7a x86_64; do
             matches=(build/app/outputs/flutter-apk/*"$abi"-release.apk)

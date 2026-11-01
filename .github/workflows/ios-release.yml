@@ -94,7 +94,7 @@ jobs:
         run: bash .github/scripts/ios_signing.sh
       - name: Build iOS
         working-directory: mobile-app
-        run: flutter build ipa --release --obfuscate --split-debug-info=build/symbols --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
+        run: flutter build ipa --release --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
       - name: Upload debug symbols to GlitchTip
         working-directory: mobile-app
         run: dart run sentry_dart_plugin "--sentry-define=org=$GLITCHTIP_ORG" "--sentry-define=project=$GLITCHTIP_PROJECT"
