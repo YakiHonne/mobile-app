@@ -31,28 +31,18 @@ platform :ios do
   lane :release do
     key = apple_key
     production = ENV.fetch('RELEASE_TRACK') == 'production'
-    reuse_build = ENV.fetch('REUSE_EXISTING_BUILD', 'false') == 'true'
-    skip_testflight = ENV.fetch('SKIP_TESTFLIGHT_DISTRIBUTION', 'false') == 'true'
-    UI.user_error!('Skipping TestFlight requires production and an existing build') if skip_testflight && (!production || !reuse_build)
-    groups = production && !skip_testflight ? ENV.fetch('TESTFLIGHT_EXTERNAL_GROUPS').split(',').map(&:strip).reject(&:empty?) : []
-    UI.user_error!('TESTFLIGHT_EXTERNAL_GROUPS must name at least one external group') if production && !skip_testflight && groups.empty?
-    testflight_options = {
+    groups = production ? ENV.fetch('TESTFLIGHT_EXTERNAL_GROUPS').split(',').map(&:strip).reject(&:empty?) : []
+    UI.user_error!('TESTFLIGHT_EXTERNAL_GROUPS must name at least one external group') if production && groups.empty?
+    upload_to_testflight(
       api_key: key,
       app_identifier: 'com.yakihonne.appyakihonne',
       app_platform: 'ios',
+      ipa: Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].fetch(0),
       changelog: notes,
       distribute_external: production,
       groups: groups,
       skip_waiting_for_build_processing: false
-    }
-    if reuse_build
-      testflight_options[:distribute_only] = true
-      testflight_options[:app_version] = ENV.fetch('APP_VERSION')
-      testflight_options[:build_number] = ENV.fetch('APP_BUILD')
-    else
-      testflight_options[:ipa] = Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].fetch(0)
-    end
-    upload_to_testflight(**testflight_options) unless skip_testflight
+    )
     if production
       app = Spaceship::ConnectAPI::App.find('com.yakihonne.appyakihonne')
       UI.user_error!('Could not find the app or its primary App Store locale') if app.nil? || app.primary_locale.to_s.empty?
