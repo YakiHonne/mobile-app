@@ -24,7 +24,7 @@ concurrency:
 jobs:
   release:
     runs-on: ${{ inputs.platform == 'ios' && 'macos-15' || 'ubuntu-latest' }}
-    environment: ${{ inputs.platform == 'ios' && 'app-store' || 'playstore' }}
+    environment: ${{ inputs.platform == 'ios' && 'app-store' || 'play-store' }}
     timeout-minutes: 120
     permissions:
       contents: write
