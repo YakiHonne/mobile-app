@@ -12,6 +12,10 @@ on:
         description: Optional store release notes (leave blank to use the changelog)
         type: string
         required: false
+      reuse_existing_build:
+        description: Distribute the uploaded pubspec version and build without uploading again
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -38,16 +42,19 @@ jobs:
           path: mobile-app
           fetch-depth: 0
       - uses: actions/checkout@v4
+        if: ${{ !inputs.reuse_existing_build }}
         with:
           repository: YakiHonne/nostr_core_enhanced
           ref: bd84e5fdd1a7c7da810ca209492beedc20cc340f
           path: nostr_core_enhanced
       - uses: subosito/flutter-action@v2
+        if: ${{ !inputs.reuse_existing_build }}
         with:
           flutter-version: '3.44.9'
           channel: stable
           cache: true
       - name: Verify Xcode version
+        if: ${{ !inputs.reuse_existing_build }}
         run: xcodebuild -version
       - uses: ruby/setup-ruby@v1
         with:
@@ -59,6 +66,7 @@ jobs:
           RELEASE_NOTES_OVERRIDE: ${{ inputs.release_notes }}
         run: python3 .github/scripts/release_notes.py --platform "ios"
       - name: Restore shared configuration
+        if: ${{ !inputs.reuse_existing_build }}
         working-directory: mobile-app
         env:
           APP_ENV: ${{ secrets.APP_ENV }}
@@ -71,18 +79,22 @@ jobs:
           done
           printf '%s' "$APP_ENV" > .env
       - name: Restore iOS Firebase configuration
+        if: ${{ !inputs.reuse_existing_build }}
         working-directory: mobile-app
         env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
         run: |
           test -n "$GOOGLE_SERVICE_INFO_PLIST"
           printf '%s' "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
-      - name: Install dependencies
+      - name: Install Fastlane
         working-directory: mobile-app
-        run: |
-          bundle install
-          flutter pub get --enforce-lockfile
+        run: bundle install
+      - name: Install Flutter dependencies
+        if: ${{ !inputs.reuse_existing_build }}
+        working-directory: mobile-app
+        run: flutter pub get --enforce-lockfile
       - name: Configure iOS signing
+        if: ${{ !inputs.reuse_existing_build }}
         working-directory: mobile-app
         env:
           IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
@@ -93,9 +105,11 @@ jobs:
           KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
         run: bash .github/scripts/ios_signing.sh
       - name: Build iOS
+        if: ${{ !inputs.reuse_existing_build }}
         working-directory: mobile-app
         run: flutter build ipa --release --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
       - name: Upload debug symbols to GlitchTip
+        if: ${{ !inputs.reuse_existing_build }}
         working-directory: mobile-app
         run: npx --yes @sentry/cli@2.41.1 debug-files upload --org "$GLITCHTIP_ORG" --project "$GLITCHTIP_PROJECT" build/ios/archive/Runner.xcarchive/dSYMs
       - name: Publish iOS
@@ -103,6 +117,7 @@ jobs:
         env:
           APP_VERSION: ${{ steps.release.outputs.version }}
           APP_BUILD: ${{ steps.release.outputs.build }}
+          REUSE_EXISTING_BUILD: ${{ inputs.reuse_existing_build }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}

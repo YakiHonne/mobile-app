@@ -31,17 +31,25 @@ platform :ios do
   lane :release do
     key = apple_key
     production = ENV.fetch('RELEASE_TRACK') == 'production'
+    reuse_build = ENV.fetch('REUSE_EXISTING_BUILD', 'false') == 'true'
     groups = production ? ENV.fetch('TESTFLIGHT_EXTERNAL_GROUPS').split(',').map(&:strip).reject(&:empty?) : []
     UI.user_error!('TESTFLIGHT_EXTERNAL_GROUPS must name at least one external group') if production && groups.empty?
-    upload_to_testflight(
+    testflight_options = {
       api_key: key,
       app_identifier: 'com.yakihonne.appyakihonne',
-      ipa: Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].fetch(0),
       changelog: notes,
       distribute_external: production,
       groups: groups,
       skip_waiting_for_build_processing: false
-    )
+    }
+    if reuse_build
+      testflight_options[:distribute_only] = true
+      testflight_options[:app_version] = ENV.fetch('APP_VERSION')
+      testflight_options[:build_number] = ENV.fetch('APP_BUILD')
+    else
+      testflight_options[:ipa] = Dir[File.expand_path('../build/ios/ipa/*.ipa', __dir__)].fetch(0)
+    end
+    upload_to_testflight(**testflight_options)
     if production
       upload_to_app_store(
         api_key: key,
