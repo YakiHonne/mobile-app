@@ -60,7 +60,6 @@ app.*.map.json
 /ios/firebase_app_id_file.json
 /lib/firebase_options.dart
 sentry.properties
-shorebird.yaml
 firebase.json
 .env
 # Added by code-review-graph
