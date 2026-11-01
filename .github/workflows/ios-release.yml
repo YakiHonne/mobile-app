@@ -16,6 +16,10 @@ on:
         description: Distribute the uploaded pubspec version and build without uploading again
         type: boolean
         default: false
+      skip_testflight_distribution:
+        description: Submit an already distributed build directly to App Store review
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -37,6 +41,11 @@ jobs:
       GLITCHTIP_PROJECT: ${{ secrets.GLITCHTIP_PROJECT }}
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
+      - name: Validate retry options
+        if: ${{ inputs.skip_testflight_distribution && (!inputs.reuse_existing_build || inputs.track != 'production') }}
+        run: |
+          echo 'Skipping TestFlight requires production and reuse existing build.' >&2
+          exit 1
       - uses: actions/checkout@v4
         with:
           path: mobile-app
@@ -118,6 +127,7 @@ jobs:
           APP_VERSION: ${{ steps.release.outputs.version }}
           APP_BUILD: ${{ steps.release.outputs.build }}
           REUSE_EXISTING_BUILD: ${{ inputs.reuse_existing_build }}
+          SKIP_TESTFLIGHT_DISTRIBUTION: ${{ inputs.skip_testflight_distribution }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
