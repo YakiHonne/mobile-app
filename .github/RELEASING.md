@@ -25,7 +25,7 @@ Create `app-store` in **Settings → Environments → New environment**, then ad
 - `IOS_KEYCHAIN_PASSWORD`: a new random password used for the temporary CI keychain.
 - `ASC_KEY_ID`, `ASC_ISSUER_ID`, and `ASC_KEY_CONTENT`: the App Store Connect API key ID, issuer ID, and complete `.p8` private key contents. Use a team API key with sufficient access to upload builds, manage TestFlight and submit the app.
 
-Add the environment secrets `GLITCHTIP_URL` (the base URL of your GlitchTip instance), `GLITCHTIP_ORG` (organization slug), and `GLITCHTIP_PROJECT` (project slug). The workflow passes these and the GlitchTip token to the Sentry-compatible Dart upload plugin. Confirm uploads work with your GlitchTip version.
+Add the environment secrets `GLITCHTIP_URL` (the base URL of your GlitchTip instance), `GLITCHTIP_ORG` (organization slug), and `GLITCHTIP_PROJECT` (project slug). The workflow passes these and the GlitchTip token to Sentry CLI to upload native debug files without creating a separate error-tracking release.
 
 All profiles must belong to Apple team `JU5BUTKJC2`, include the distribution certificate, and support the targets' enabled capabilities. Set up an internal TestFlight group to automatically receive new builds. For production, add an environment secret named `TESTFLIGHT_EXTERNAL_GROUPS` containing comma-separated names of existing external TestFlight groups. Production also requires completed App Store metadata, agreements and export-compliance information.
 

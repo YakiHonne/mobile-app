@@ -128,7 +128,7 @@ jobs:
           done
       - name: Upload debug symbols to GlitchTip
         working-directory: mobile-app
-        run: dart run sentry_dart_plugin "--sentry-define=org=$GLITCHTIP_ORG" "--sentry-define=project=$GLITCHTIP_PROJECT"
+        run: npx --yes @sentry/cli@2.41.1 debug-files upload --org "$GLITCHTIP_ORG" --project "$GLITCHTIP_PROJECT" build/app/outputs
       - name: Publish Android
         working-directory: mobile-app
         env:
