@@ -49,6 +49,9 @@ app.*.map.json
 /build/
 /functions/
 /md/
+!/md/
+/md/*
+!/md/FEATURES_IMPROVEMENTS_FIXES_2.1.1.md
 
 # Files
 /android/key.properties

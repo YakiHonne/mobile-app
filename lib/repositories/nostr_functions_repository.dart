@@ -2680,6 +2680,10 @@ class NostrFunctionsRepository {
       filters,
       [],
       eventCallBack: (ev, relay) {
+        if (controller.isClosed) {
+          return;
+        }
+
         bool canBeAdded = false;
 
         if (isEtag) {

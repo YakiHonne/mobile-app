@@ -188,9 +188,12 @@ Map<String, dynamic> getZapByPollStats(Event event) {
 double getZapValue(Event event) {
   final receipt = Nip57.getZapReceipt(event);
   if (receipt.bolt11.isNotEmpty) {
-    final req = Bolt11PaymentRequest(receipt.bolt11);
-
-    return (req.amount.toDouble() * 100000000).round().toDouble();
+    try {
+      final req = Bolt11PaymentRequest(receipt.bolt11);
+      return (req.amount.toDouble() * 100000000).round().toDouble();
+    } on Exception {
+      return 0;
+    }
   } else {
     return 0;
   }

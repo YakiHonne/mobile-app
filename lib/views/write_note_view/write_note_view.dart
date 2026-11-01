@@ -358,6 +358,9 @@ class NoteWritingComponent extends HookWidget {
         ),
         PublishingMediaContainer(
           onImageAdd: (imageLinks) {
+            if (!context.mounted) {
+              return;
+            }
             context.read<WriteNoteCubit>().addImage(imageLinks);
 
             appendTextToPosition(

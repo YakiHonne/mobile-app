@@ -3,13 +3,15 @@ import 'dart:io';
 import 'dart:ui' show ImageByteFormat;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pro_video_editor/pro_video_editor.dart' as pve;
 import 'package:video_player/video_player.dart';
 
-import '../../utils/constants.dart';
+import '../../utils/bot_toast_util.dart';
+import '../../utils/utils.dart';
 
 class VideoEditorView extends StatefulWidget {
   const VideoEditorView({super.key, required this.source});
@@ -227,6 +229,14 @@ class _VideoEditorViewState extends State<VideoEditorView> {
       _outputPath = await _proVideoEditor.renderVideoToFile(output, data);
     } on pve.RenderCanceledException {
       _outputPath = null;
+    } on PlatformException catch (error) {
+      if (error.code != 'RENDER_ERROR') {
+        rethrow;
+      }
+      _outputPath = null;
+      if (mounted) {
+        BotToastUtils.showError(context.t.errorLoadingVideo);
+      }
     }
   }
 

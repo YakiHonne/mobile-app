@@ -320,16 +320,20 @@ class CashuRedeemView extends HookWidget {
                                 tokenController.text.trim(),
                                 targetMintUrl: selectedMint.value,
                               );
-                          isProcessing.value = false;
                           if (context.mounted) {
+                            isProcessing.value = false;
                             if (success) {
+                              final title = context.t.tokenRedeemed;
+                              final amount = tokenData.value!['amount'];
+                              final mintUrl = selectedMint.value;
+                              final navigatorContext = Navigator.of(context).context;
                               YNavigator.pop(context);
                               YNavigator.presentPage(
-                                context,
+                                navigatorContext,
                                 (_) => CashuOperationSuccessView(
-                                  amount: tokenData.value!['amount'],
-                                  title: context.t.tokenRedeemed,
-                                  mintUrl: selectedMint.value,
+                                  amount: amount,
+                                  title: title,
+                                  mintUrl: mintUrl,
                                 ),
                               );
                             }

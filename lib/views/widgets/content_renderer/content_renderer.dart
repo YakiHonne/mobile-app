@@ -825,8 +825,15 @@ class ContentRenderer extends HookWidget {
           isReplaceable = false;
         } else if (last.startsWith('naddr')) {
           final decode = Nip19.decodeShareableEntity(last);
-          final hexCode = hex.decode(decode['special']);
-          id = String.fromCharCodes(hexCode);
+          final decodedId = decodeNaddrIdentifier(decode);
+          if (decodedId == null) {
+            return _buildOptimizedUrlLastWidget(
+              linkPreview: linkPreview,
+              url: url,
+              element: element,
+            );
+          }
+          id = decodedId;
           isReplaceable = true;
           supportedEvent = isSupportedEvent(decode['kind']);
         } else {
@@ -1031,6 +1038,22 @@ class ContentRenderer extends HookWidget {
       }
     }
     return true;
+  }
+}
+
+/// Returns null when a decoded naddr is malformed or incomplete.
+String? decodeNaddrIdentifier(Map<String, dynamic> decoded) {
+  final special = decoded['special'];
+  if (decoded['prefix'] != 'naddr' ||
+      special is! String ||
+      decoded['author'] is! String ||
+      decoded['kind'] is! int) {
+    return null;
+  }
+  try {
+    return String.fromCharCodes(hex.decode(special));
+  } on FormatException {
+    return null;
   }
 }
 

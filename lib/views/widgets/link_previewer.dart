@@ -633,6 +633,10 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
         _usedUrl = url;
       },
       onDownloadVideo: (url) {
+        if (!mounted) {
+          return;
+        }
+
         showAppModalSheet(
           context: context,
           builder: (_) {

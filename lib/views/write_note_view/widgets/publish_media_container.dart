@@ -207,6 +207,9 @@ class PublishingMediaContainer extends HookWidget {
           builder: (_) {
             return MediaSelector(
               onSuccess: (urls) {
+                if (!context.mounted) {
+                  return;
+                }
                 onImageAdd.call(urls);
                 Navigator.pop(context);
               },

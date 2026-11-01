@@ -1227,10 +1227,10 @@ class HttpFunctionsRepository {
         return null;
       }
 
-      final actions =
-          List<PointAction>.from((response['actions'] as List? ?? []).map(
-        (e) => PointAction.fromMap(e),
-      ));
+      final actions = PointAction.fromList(
+        response['actions'],
+        onMalformed: () => lg.i('Skipping malformed points action'),
+      );
 
       final xp = response['xp'];
 

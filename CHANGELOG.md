@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.1] - 2026-11-01
+
+### Changed
+
+- Added an All profile filter for notes, replies, mentions, highlights, and pins, without duplicates.
+
+### Fixed
+
+- Improved sensor, camera, notification, and callback stability.
+- Fixed video export, image editing, and missing thumbnails.
+- Fixed wallet timeouts, Cashu redemption, and malformed zap invoices.
+- Fixed message scrolling, repost IDs, scheduled notes, selections, autocomplete, and Nostr links.
+- Fixed account changes, contacts, points, dashboard pagination, statistics, and cache purges.
+
 ## [2.1.0] - 2026-10-20
 
 ### Added

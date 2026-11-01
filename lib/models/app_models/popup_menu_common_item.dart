@@ -337,20 +337,25 @@ class PdmCommonActions {
   }
 
   static void copyId(BaseEventModel model) {
-    final isNote = model is DetailedNoteModel;
-
-    final ev = Event.fromString(isNote
-        ? model.stringifiedEvent
-        : model is VideoModel
-            ? model.stringifiedEvent
-            : (model as PictureModel).stringifiedEvent);
+    final Event? ev;
+    if (model is RepostModel) {
+      ev = model.event;
+    } else if (model is DetailedNoteModel) {
+      ev = Event.fromString(model.stringifiedEvent);
+    } else if (model is VideoModel) {
+      ev = Event.fromString(model.stringifiedEvent);
+    } else if (model is PictureModel) {
+      ev = Event.fromString(model.stringifiedEvent);
+    } else {
+      ev = null;
+    }
 
     final id = Nip19.encodeShareableEntity(
       'nevent',
       model.id,
       ev?.seenOn ?? [],
       model.pubkey,
-      model is DetailedNoteModel ? EventKind.TEXT_NOTE : EventKind.PICTURE,
+      ev?.kind,
     );
 
     Clipboard.setData(ClipboardData(text: id));
