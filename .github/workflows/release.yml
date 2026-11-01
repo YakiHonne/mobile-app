@@ -24,16 +24,16 @@ concurrency:
 jobs:
   release:
     runs-on: ${{ inputs.platform == 'ios' && 'macos-15' || 'ubuntu-latest' }}
-    environment: ${{ inputs.platform == 'ios' && 'appstore' || 'playstore' }}
+    environment: ${{ inputs.platform == 'ios' && 'app-store' || 'playstore' }}
     timeout-minutes: 120
     permissions:
       contents: write
     env:
       RELEASE_TRACK: ${{ inputs.track }}
       SENTRY_AUTH_TOKEN: ${{ secrets.GLITCHTIP_AUTH_TOKEN }}
-      SENTRY_URL: ${{ vars.GLITCHTIP_URL }}
-      GLITCHTIP_ORG: ${{ vars.GLITCHTIP_ORG }}
-      GLITCHTIP_PROJECT: ${{ vars.GLITCHTIP_PROJECT }}
+      SENTRY_URL: ${{ secrets.GLITCHTIP_URL }}
+      GLITCHTIP_ORG: ${{ secrets.GLITCHTIP_ORG }}
+      GLITCHTIP_PROJECT: ${{ secrets.GLITCHTIP_PROJECT }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -77,7 +77,12 @@ jobs:
         env:
           APP_ENV: ${{ secrets.APP_ENV }}
         run: |
-          test -n "$APP_ENV" && test -n "$SENTRY_AUTH_TOKEN" && test -n "$SENTRY_URL" && test -n "$GLITCHTIP_ORG" && test -n "$GLITCHTIP_PROJECT"
+          for setting in APP_ENV SENTRY_AUTH_TOKEN SENTRY_URL GLITCHTIP_ORG GLITCHTIP_PROJECT; do
+            if [ -z "${!setting}" ]; then
+              echo "Missing required configuration: $setting" >&2
+              exit 1
+            fi
+          done
           printf '%s' "$APP_ENV" > .env
       - name: Restore iOS Firebase configuration
         if: inputs.platform == 'ios'
