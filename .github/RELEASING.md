@@ -8,7 +8,7 @@ After a successful production submission the workflow creates a GitHub release n
 
 ## GitHub environments
 
-Create two environments in **Settings → Environments** named exactly `app-store` and `playstore`. The iOS job selects `app-store`; the Android job selects `playstore`. Add credentials as environment secrets within the corresponding environment. Repository and organization secrets can also be inherited by a job, so remove same-named secrets from those scopes if strict separation is required. Add `APP_ENV` and the GlitchTip settings below to each environment that you configure. Neither environment separates internal and production releases; any protection rules apply to both tracks.
+Create two environments in **Settings → Environments** named exactly `app-store` and `play-store`. The iOS job selects `app-store`; the Android job selects `play-store`. Add credentials as environment secrets within the corresponding environment. Repository and organization secrets can also be inherited by a job, so remove same-named secrets from those scopes if strict separation is required. Add `APP_ENV` and the GlitchTip settings below to each environment that you configure. Neither environment separates internal and production releases; any protection rules apply to both tracks.
 
 ### App Store setup
 
@@ -31,6 +31,6 @@ All profiles must belong to Apple team `JU5BUTKJC2`, include the distribution ce
 
 ### Play Store setup
 
-When ready, create `playstore` and add its environment secrets: `APP_ENV`, `GLITCHTIP_AUTH_TOKEN`, `GOOGLE_SERVICES_JSON` (Firebase JSON), `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`, and `PLAY_SERVICE_ACCOUNT_JSON`. Add the same three `GLITCHTIP_URL`, `GLITCHTIP_ORG`, and `GLITCHTIP_PROJECT` environment secrets, and grant the Google service account Play Console access to the app and releases.
+When ready, create `play-store` and add its environment secrets: `APP_ENV`, `GLITCHTIP_AUTH_TOKEN`, `GOOGLE_SERVICES_JSON` (Firebase JSON), `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `ANDROID_STORE_PASSWORD`, and `PLAY_SERVICE_ACCOUNT_JSON`. Add the same three `GLITCHTIP_URL`, `GLITCHTIP_ORG`, and `GLITCHTIP_PROJECT` environment secrets, and grant the Google service account Play Console access to the app and releases.
 
 On macOS, `base64 -i path/to/file | tr -d '\n' | pbcopy` copies a binary file's base64 representation for pasting into a secret. For text secrets, paste the entire file or key, including line breaks. Keep signing materials and the `.env` out of git. Verify the workflow's pinned Flutter version and `nostr_core_enhanced` commit when updating dependencies. It uses Flutter 3.44.9 and the dependency commit observed in the local checkout. macOS runner Xcode compatibility may require updating the runner image or Flutter version. The workflow uploads obfuscation symbols to GlitchTip before submitting to a store.
