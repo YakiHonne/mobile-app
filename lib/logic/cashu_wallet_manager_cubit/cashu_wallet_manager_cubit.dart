@@ -36,45 +36,110 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
           mints: {},
           recommendedMints: [],
           walletMints: [],
-        )) {
-    loadRecommendedMints();
-  }
+          isInitializing: true,
+        ));
 
   final cm = CashuManager.shared;
   final cashuApi = CashuAPI();
+  Future<void>? _initializationRequest;
+  String? _initializingPubkey;
+  String? _initializedPubkey;
+  Future<void>? _recommendedMintsRequest;
+  DateTime? _recommendedMintsFetchedAt;
+
+  static const Duration _recommendedMintsFreshness = Duration(hours: 12);
+  static const Duration _emptyRecommendedMintsFreshness = Duration(minutes: 5);
 
   Future<void> init() async {
+    await _initializeCurrentSigner(force: true);
+  }
+
+  Future<void> ensureInitialized() async {
+    await _initializeCurrentSigner(force: false);
+  }
+
+  Future<void> _initializeCurrentSigner({required bool force}) async {
+    final pubkey = canSign() ? currentSigner!.getPublicKey() : null;
+    if (pubkey == null) {
+      _initializedPubkey = null;
+      clear();
+      _emit(state.copyWith(isInitializing: false));
+      return;
+    }
+
+    if (!force && _initializedPubkey == pubkey && !state.isInitializing) {
+      return;
+    }
+
+    while (_initializationRequest != null) {
+      final inFlightRequest = _initializationRequest!;
+      final inFlightPubkey = _initializingPubkey;
+      await inFlightRequest;
+
+      if (!canSign() || currentSigner!.getPublicKey() != pubkey) {
+        return;
+      }
+
+      if (inFlightPubkey == pubkey) {
+        return;
+      }
+    }
+
+    if (!force && _initializedPubkey == pubkey && !state.isInitializing) {
+      return;
+    }
+
+    final request = _initializeFor(pubkey);
+    _initializingPubkey = pubkey;
+    _initializationRequest = request;
+    try {
+      await request;
+    } finally {
+      if (identical(_initializationRequest, request)) {
+        _initializationRequest = null;
+        _initializingPubkey = null;
+      }
+    }
+  }
+
+  Future<void> _initializeFor(String pubkey) async {
+    _initializedPubkey = null;
     _emit(state.copyWith(isInitializing: true));
     clear();
 
-    if (canSign()) {
-      await cm.init(nc, currentSigner!.getPublicKey());
-
-      final mints = cm.mints;
-
-      final walletMints = cm.wallet?.mints ?? [];
-      final savedActiveMint =
-          localDatabaseRepository.getUserActiveMint(cm.pubkey);
-      String activeMint = '';
-
-      if (savedActiveMint.isNotEmpty && walletMints.contains(savedActiveMint)) {
-        activeMint = savedActiveMint;
-      } else {
-        activeMint = walletMints.isNotEmpty ? walletMints.first : '';
+    try {
+      await cm.init(nc, pubkey);
+      if (!canSign() || currentSigner!.getPublicKey() != pubkey) {
+        return;
       }
 
+      final mints = cm.mints;
+      final walletMints = cm.wallet?.mints ?? [];
+      final savedActiveMint = localDatabaseRepository.getUserActiveMint(pubkey);
+      final activeMint =
+          savedActiveMint.isNotEmpty && walletMints.contains(savedActiveMint)
+              ? savedActiveMint
+              : walletMints.isNotEmpty
+                  ? walletMints.first
+                  : '';
+
+      _initializedPubkey = pubkey;
       _emit(
         state.copyWith(
-          mints: cm.mints,
+          mints: mints,
           balance: cashuApi.totalBalance(),
           activeMintBalance: mints[activeMint]?.balance ?? 0,
           activeMint: activeMint,
-          walletMints: cm.wallet?.mints ?? [],
+          walletMints: walletMints,
           isInitializing: false,
         ),
       );
-    } else {
-      _emit(state.copyWith(isInitializing: false));
+    } catch (e) {
+      lg.e('Failed to initialize Cashu wallet: $e');
+    } finally {
+      if (canSign() && currentSigner!.getPublicKey() == pubkey) {
+        _emit(state.copyWith(isInitializing: false));
+      }
     }
   }
 
@@ -150,13 +215,48 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
     }
   }
 
-  Future<void> loadRecommendedMints() async {
-    final recommendedMints =
-        await HttpFunctionsRepository.getRecommendedMints();
+  Future<void> loadRecommendedMints({bool forceRefresh = false}) async {
+    final fetchedAt = _recommendedMintsFetchedAt;
+    final freshness = state.recommendedMints.isEmpty
+        ? _emptyRecommendedMintsFreshness
+        : _recommendedMintsFreshness;
+    if (!forceRefresh &&
+        fetchedAt != null &&
+        DateTime.now().difference(fetchedAt) < freshness) {
+      return;
+    }
 
-    _emit(state.copyWith(
-      recommendedMints: recommendedMints,
-    ));
+    final inFlightRequest = _recommendedMintsRequest;
+    if (inFlightRequest != null) {
+      await inFlightRequest;
+      return;
+    }
+
+    _emit(state.copyWith(isLoadingRecommendedMints: true));
+    final request = _loadRecommendedMints();
+    _recommendedMintsRequest = request;
+    try {
+      await request;
+    } finally {
+      if (identical(_recommendedMintsRequest, request)) {
+        _recommendedMintsRequest = null;
+      }
+    }
+  }
+
+  Future<void> _loadRecommendedMints() async {
+    try {
+      final recommendedMints =
+          await HttpFunctionsRepository.getRecommendedMints();
+      _recommendedMintsFetchedAt = DateTime.now();
+      _emit(state.copyWith(
+        recommendedMints: recommendedMints,
+        isLoadingRecommendedMints: false,
+      ));
+    } catch (e) {
+      lg.e('Failed to load recommended Cashu mints: $e');
+      _emit(state.copyWith(isLoadingRecommendedMints: false));
+    }
   }
 
   void setActiveMint(String mintUrl) {
@@ -177,7 +277,14 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
   }
 
   Future<bool> createWallet(List<String> mints) async {
+    await ensureInitialized();
+
     if (mints.isEmpty) {
+      BotToastUtils.showError(t.errorCreatingWallet);
+      return false;
+    }
+
+    if (!canSign() || _initializedPubkey != currentSigner!.getPublicKey()) {
       BotToastUtils.showError(t.errorCreatingWallet);
       return false;
     }
@@ -296,6 +403,7 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
   }
 
   void clear() {
+    _initializedPubkey = null;
     _emit(
       state.copyWith(
         mints: {},
@@ -938,6 +1046,14 @@ class CashuWalletManagerCubit extends Cubit<CashuWalletManagerState> {
     required Function(String) onFailure,
     required Function() onFinished,
   }) async {
+    await ensureInitialized();
+
+    if (!canSign() || _initializedPubkey != currentSigner!.getPublicKey()) {
+      onFailure.call('Cashu wallet is not initialized');
+      onFinished();
+      return;
+    }
+
     final activeMintUrl = state.activeMint;
     if (activeMintUrl.isEmpty) {
       onFailure.call('No active mint');

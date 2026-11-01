@@ -207,12 +207,10 @@ class CurationAddedArticleList extends StatelessWidget {
             key: _listViewKey,
             shrinkWrap: true,
             primary: false,
-            onReorder: (oldIndex, newIndex) {
-              final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
-
+            onReorderItem: (oldIndex, newIndex) {
               context
                   .read<WriteCurationCubit>()
-                  .setArticlesNewOrder(oldIndex, index);
+                  .setArticlesNewOrder(oldIndex, newIndex);
             },
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             itemBuilder: (context, index) {
@@ -248,12 +246,10 @@ class CurationAddedArticleList extends StatelessWidget {
             key: _listViewKey,
             shrinkWrap: true,
             primary: false,
-            onReorder: (oldIndex, newIndex) {
-              final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
-
+            onReorderItem: (oldIndex, newIndex) {
               context
                   .read<WriteCurationCubit>()
-                  .setVideossNewOrder(oldIndex, index);
+                  .setVideossNewOrder(oldIndex, newIndex);
             },
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             itemBuilder: (context, index) {

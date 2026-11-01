@@ -16,6 +16,7 @@ import '../../views/widgets/fluid_pull_down_button.dart';
 import '../../views/widgets/smart_widget_selection.dart';
 import '../common_regex.dart';
 import 'format_markdown.dart';
+import 'markdown_text_selection.dart';
 
 /// Widget with markdown buttons
 class MarkdownTextInput extends StatefulWidget {
@@ -109,8 +110,12 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
     final noTextSelected =
         (textSelection.baseOffset - textSelection.extentOffset) == 0;
 
-    final fromIndex = textSelection.baseOffset.clamp(0, textLength);
-    final toIndex = textSelection.extentOffset.clamp(0, textLength);
+    final selectionStart = textSelection.baseOffset.clamp(0, textLength);
+    final selectionEnd = textSelection.extentOffset.clamp(0, textLength);
+    final fromIndex =
+        selectionStart < selectionEnd ? selectionStart : selectionEnd;
+    final toIndex =
+        selectionStart < selectionEnd ? selectionEnd : selectionStart;
 
     final result = FormatMarkdown.convertToMarkdown(
       type,
@@ -587,8 +592,15 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Future<void> setLink(MarkdownType type) async {
-    final text = _controller.text
-        .substring(textSelection.baseOffset, textSelection.extentOffset);
+    final controllerText = _controller.text;
+    final selectionRange = normalizeMarkdownSelection(
+      textSelection,
+      controllerText.length,
+    );
+    final text = controllerText.substring(
+      selectionRange.start,
+      selectionRange.end,
+    );
 
     final textController = TextEditingController()..text = text;
     final linkController = TextEditingController();

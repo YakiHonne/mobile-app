@@ -15,7 +15,15 @@ class ContactListCubit extends Cubit<ContactListState> {
   List<String> contacts = [];
 
   Future<void> syncContacts() async {
-    final contactList = await getContactList(currentSigner!.getPublicKey());
+    final signer = currentSigner;
+    if (signer == null) {
+      return;
+    }
+    final pubkey = signer.getPublicKey();
+    final contactList = await getContactList(pubkey);
+    if (currentSigner?.getPublicKey() != pubkey) {
+      return;
+    }
 
     contacts = contactList?.contacts ?? [];
   }
@@ -56,10 +64,14 @@ class ContactListCubit extends Cubit<ContactListState> {
   }
 
   Future<ContactList?> setContacts(List<String> c) async {
+    final signer = currentSigner;
+    if (signer == null) {
+      return null;
+    }
     final contactList = await nc.publishUpdateContacts(
       c,
       currentUserRelayList.writes,
-      currentSigner!,
+      signer,
       nostrRepository.muteModel.usersMutes,
     );
 

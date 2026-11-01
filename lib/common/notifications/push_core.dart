@@ -17,13 +17,70 @@ class PushCore {
   static final PushCore sharedInstance = PushCore._internal();
 
   static const MethodChannel _channel = MethodChannel('apn_notifications');
+  Future<void>? _setupInFlight;
+  bool _isSetup = false;
+  int _generation = 0;
 
   /// Initializes push handling depending on the platform.
   Future<void> setup() async {
+    if (_isSetup) {
+      return;
+    }
+
+    final inFlight = _setupInFlight;
+    if (inFlight != null) {
+      try {
+        await inFlight;
+      } catch (e) {
+        lg.e('Error initializing push notifications: $e');
+      }
+      return;
+    }
+
+    final generation = _generation;
+    final task = _setupPlatform();
+    _setupInFlight = task;
+    try {
+      await task;
+      if (generation == _generation) {
+        _isSetup = true;
+      }
+    } catch (e) {
+      lg.e('Error initializing push notifications: $e');
+    } finally {
+      if (identical(_setupInFlight, task)) {
+        _setupInFlight = null;
+      }
+    }
+  }
+
+  Future<void> _setupPlatform() async {
     if (Platform.isIOS) {
       await _setupIOS();
     } else if (Platform.isAndroid) {
       await _setupAndroid();
+    }
+  }
+
+  /// Stops push endpoint registration when the user disables push.
+  Future<void> disable() async {
+    _generation++;
+    _isSetup = false;
+    final runningSetup = _setupInFlight;
+    if (runningSetup != null) {
+      try {
+        await runningSetup;
+      } catch (_) {
+        // Continue with platform unregistration after a failed setup attempt.
+      }
+    }
+
+    if (Platform.isAndroid) {
+      try {
+        await UPFunctions.unregister();
+      } catch (e) {
+        lg.e('Error unregistering UnifiedPush: $e');
+      }
     }
   }
 
@@ -47,7 +104,7 @@ class PushCore {
       onUnregistered: UPFunctions.onUnregistered,
     );
 
-    UPFunctions.initRegisterApp();
+    await UPFunctions.initRegisterApp();
   }
 
   /// Handles calls coming from the native platform (iOS side).

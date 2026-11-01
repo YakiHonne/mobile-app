@@ -22,7 +22,6 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -188,12 +187,24 @@ Map<String, dynamic> getZapByPollStats(Event event) {
 double getZapValue(Event event) {
   final receipt = Nip57.getZapReceipt(event);
   if (receipt.bolt11.isNotEmpty) {
-    final req = Bolt11PaymentRequest(receipt.bolt11);
-
-    return (req.amount.toDouble() * 100000000).round().toDouble();
+    try {
+      final req = Bolt11PaymentRequest(receipt.bolt11);
+      return (req.amount.toDouble() * 100000000).round().toDouble();
+    } on Exception {
+      return 0;
+    }
   } else {
     return 0;
   }
+}
+
+String? extractLnbc(String input) {
+  final trimmed = input.trim();
+  final lower = trimmed.toLowerCase();
+  final stripped =
+      lower.startsWith('lightning:') ? trimmed.substring(10) : trimmed;
+
+  return stripped.toLowerCase().startsWith('lnbc') ? stripped : null;
 }
 
 double getlnbcValue(String invoice) {
@@ -844,6 +855,7 @@ class ParsedText extends HookWidget {
     this.maxWords,
     this.useDetailedNote = false,
     this.emojis,
+    this.onHighlight,
   });
 
   final String text;
@@ -863,6 +875,7 @@ class ParsedText extends HookWidget {
   final int? minLines;
   final bool? useDetailedNote;
   final Map<String, String>? emojis;
+  final void Function(String selectedText)? onHighlight;
   final ScrollPhysics? scrollPhysics;
   final bool isDm;
   final bool enableTruncation;
@@ -974,6 +987,7 @@ class ParsedText extends HookWidget {
               Base64ImageLinkifier(),
             ],
             onOpen: (link) => _handleLinkOpen(link, context),
+            onHighlight: onHighlight,
           ),
           if (content.key)
             Text.rich(
@@ -1406,7 +1420,7 @@ PropertyStatus getPropertyStatus(SmartWidgetBoxComponent swComponent) {
     if (swComponent.type == SWBType.Zap) {
       if (swComponent.url.isNotEmpty &&
           (emailRegExp.hasMatch(swComponent.url) ||
-              swComponent.url.toLowerCase().startsWith('lnbc') ||
+              extractLnbc(swComponent.url.toLowerCase()) != null ||
               swComponent.url.toLowerCase().startsWith('lnurl'))) {
         return PropertyStatus.valid;
       } else {
@@ -1505,7 +1519,8 @@ void showReactionPopup(
 }
 
 String getProperRelayUrl(String url) {
-  url = url.trim().replaceAll(RegExp(r'^\s*wss?:/*\s*|^\s*https?://\s*', caseSensitive: false), '');
+  url = url.trim().replaceAll(
+      RegExp(r'^\s*wss?:/*\s*|^\s*https?://\s*', caseSensitive: false), '');
 
   if (relayRegExp.hasMatch(url)) {
     return url;
@@ -1765,23 +1780,5 @@ Future<String?> getClipboardTextSafely({
     return data?.text;
   } catch (_) {
     return null;
-  }
-}
-
-/// The native barcode view can be torn down (backgrounding, hot reload,
-/// route disposal) before an in-flight lifecycle callback fires; pause/resume
-/// then throws CameraException(404, "No barcode view found"). Harmless, so
-/// swallow it instead of crashing.
-extension SafeQrController on QRViewController {
-  Future<void> pauseCameraSafely() async {
-    try {
-      await pauseCamera();
-    } catch (_) {}
-  }
-
-  Future<void> resumeCameraSafely() async {
-    try {
-      await resumeCamera();
-    } catch (_) {}
   }
 }

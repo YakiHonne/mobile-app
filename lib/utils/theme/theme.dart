@@ -22,6 +22,11 @@ class AppPreferredThemes {
       fontFamily: 'DMSans',
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: primaryColor).copyWith(
+        primary: kBlack,
+        onSurface: kBlack,
+      ),
+      iconTheme: const IconThemeData(color: kBlack),
       scaffoldBackgroundColor: kWhite,
       primaryColor: primaryColor,
       primaryColorLight: kWhite,
@@ -57,6 +62,14 @@ class AppPreferredThemes {
       fontFamily: 'DMSans',
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.dark,
+      ).copyWith(
+        primary: kWhite,
+        onSurface: kWhite,
+      ),
+      iconTheme: const IconThemeData(color: kWhite),
       scaffoldBackgroundColor: kScaffoldDark,
       cardColor: kDarkThemeCard,
       primaryColor: primaryColor,
@@ -92,6 +105,14 @@ class AppPreferredThemes {
       fontFamily: 'DMSans',
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.dark,
+      ).copyWith(
+        primary: kWhite,
+        onSurface: kWhite,
+      ),
+      iconTheme: const IconThemeData(color: kWhite),
       scaffoldBackgroundColor: kBlackTheme,
       cardColor: kBlackThemeCard,
       primaryColor: primaryColor,
@@ -128,6 +149,11 @@ class AppPreferredThemes {
       fontFamily: 'DMSans',
       fontFamilyFallback: const ['NotoSans'],
       useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: primaryColor).copyWith(
+        primary: kBlack,
+        onSurface: kBlack,
+      ),
+      iconTheme: const IconThemeData(color: kBlack),
       scaffoldBackgroundColor: kCreamTheme,
       primaryColor: primaryColor,
       primaryColorLight: kCreamLight,

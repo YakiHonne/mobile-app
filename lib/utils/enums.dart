@@ -160,6 +160,7 @@ enum CommonFeedTypes {
   highlights,
   widgets,
   paid,
+  nip84Highlights,
   others
 }
 
@@ -258,10 +259,12 @@ enum DmDataState { disabled, enabled, canBeLoaded }
 enum ArticleWritingState { edit, preview, editPreview }
 
 enum ProfileData {
+  all,
   notes,
   pinned,
   replies,
   mentions,
+  highlights,
   articles,
   curations,
   smartWidgets,
@@ -272,6 +275,8 @@ enum ProfileData {
 
   String getDisplayName(BuildContext context) {
     switch (this) {
+      case ProfileData.all:
+        return context.t.all.capitalizeFirst();
       case ProfileData.notes:
         return context.t.notes.capitalizeFirst();
       case ProfileData.pinned:
@@ -280,6 +285,8 @@ enum ProfileData {
         return context.t.replies.capitalizeFirst();
       case ProfileData.mentions:
         return context.t.mentions.capitalizeFirst();
+      case ProfileData.highlights:
+        return context.t.highlights.capitalizeFirst();
       case ProfileData.articles:
         return context.t.articles.capitalizeFirst();
       case ProfileData.curations:
@@ -299,6 +306,8 @@ enum ProfileData {
 
   String getType() {
     switch (this) {
+      case ProfileData.all:
+        return 'notes';
       case ProfileData.notes:
         return 'notes';
       case ProfileData.pinned:
@@ -306,6 +315,8 @@ enum ProfileData {
       case ProfileData.replies:
         return 'notes';
       case ProfileData.mentions:
+        return 'notes';
+      case ProfileData.highlights:
         return 'notes';
       case ProfileData.articles:
         return 'articles';

@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../common/common_regex.dart';
 import '../../../logic/cashu_wallet_manager_cubit/cashu_wallet_manager_cubit.dart';
+import '../../../logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
@@ -28,12 +29,13 @@ class CashuPayView extends HookWidget {
     final memoController = useTextEditingController();
 
     useListenable(toInputController);
-    final isInvoice = toInputController.text.toLowerCase().startsWith('lnbc');
+    final isInvoice = extractLnbc(toInputController.text.toLowerCase()) != null;
 
     final amountInSatsPay = useState(0);
 
     // Common State
     final cashuState = context.watch<CashuWalletManagerCubit>().state;
+    context.watch<WalletsManagerCubit>().state;
     final walletMints = cashuState.walletMints;
 
     final selectedMintUrl = useState(cashuState.activeMint);
@@ -60,7 +62,8 @@ class CashuPayView extends HookWidget {
         return;
       }
 
-      if (input.toLowerCase().startsWith('lnbc')) {
+      final lnbc = extractLnbc(input.toLowerCase());
+      if (lnbc != null) {
         final invoiceAmount = getlnbcValue(input).toInt();
         final success =
             await context.read<CashuWalletManagerCubit>().payInvoice(
@@ -264,10 +267,10 @@ class CashuPayView extends HookWidget {
                     (context) => QrScannerModal(
                       onValue: (value) {
                         final val = value.toLowerCase();
-
-                        if (val.startsWith('lnbc') ||
+                        final lnbc = extractLnbc(val);
+                        if (lnbc != null ||
                             val.startsWith('lnurl') ||
-                            emailRegExp.hasMatch(val)) {
+                            emailRegExp.hasMatch(lnbc ?? val)) {
                           toInputController.text = val;
                         }
                       },

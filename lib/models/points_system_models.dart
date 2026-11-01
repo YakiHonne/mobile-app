@@ -130,6 +130,32 @@ class PointAction {
       extra: map['extra'] as Map<String, dynamic>?,
     );
   }
+
+  static List<PointAction> fromList(
+    Object? rawActions, {
+    void Function()? onMalformed,
+  }) {
+    if (rawActions is! List) {
+      return const [];
+    }
+
+    final actions = <PointAction>[];
+    for (final rawAction in rawActions) {
+      if (rawAction is! Map<String, dynamic> ||
+          rawAction['action'] is! String) {
+        onMalformed?.call();
+        continue;
+      }
+
+      try {
+        actions.add(PointAction.fromMap(rawAction));
+      } on TypeError {
+        onMalformed?.call();
+      }
+    }
+
+    return actions;
+  }
 }
 
 class UserGlobalStats {

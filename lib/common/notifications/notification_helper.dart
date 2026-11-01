@@ -28,43 +28,56 @@ class NotificationHelper {
 
   Event? unSendNotification;
   bool forwardedToAmber = false;
+  bool _connectListenerRegistered = false;
+  bool _heartBeatInFlight = false;
+  String deviceId = '';
+  String? configuredPubkey;
 
   Future<void> init() async {
     startHeartBeat();
-    nc.addConnectStatusListener(
-      (relay, status) async {
-        if (status == 1 && toRelays.contains(relay)) {
-          if (unSendNotification != null) {
-            final res = await NostrFunctionsRepository.sendEvent(
-              event: unSendNotification!,
-              setProgress: false,
-              relyOnUnsentEvents: false,
-            );
+    if (!_connectListenerRegistered) {
+      _connectListenerRegistered = true;
+      nc.addConnectStatusListener(
+        (relay, status) async {
+          if (status == 1 && toRelays.contains(relay)) {
+            final pendingEvent = unSendNotification;
+            if (pendingEvent != null) {
+              final res = await NostrFunctionsRepository.sendEvent(
+                event: pendingEvent,
+                setProgress: false,
+                relyOnUnsentEvents: false,
+              );
 
-            if (res) {
-              unSendNotification = null;
+              if (res && identical(unSendNotification, pendingEvent)) {
+                unSendNotification = null;
+              }
             }
           }
-        }
-      },
-    );
-  }
-
-  void startHeartBeat() {
-    if (timer == null || timer!.isActive) {
-      timer = Timer.periodic(
-        const Duration(minutes: 3),
-        (Timer t) {
-          _heartBeat();
         },
       );
     }
+  }
+
+  void startHeartBeat() {
+    if (timer?.isActive ?? false) {
+      return;
+    }
+
+    if (!isPushNotificationEnabled() || !canSign()) {
+      return;
+    }
+
+    timer = Timer.periodic(
+      const Duration(minutes: 3),
+      (Timer t) => unawaited(_heartBeat()),
+    );
   }
 
   void _stopHeartBeat() {
     if (timer != null && timer!.isActive) {
       timer!.cancel();
     }
+    timer = null;
   }
 
   bool isPushNotificationEnabled() {
@@ -112,80 +125,98 @@ class NotificationHelper {
 
   Future<void> _heartBeat() async {
     if (!isPushNotificationEnabled()) {
-      lg.i('message');
+      _stopHeartBeat();
+      return;
+    }
+    if (_heartBeatInFlight || !canSign()) {
       return;
     }
 
-    final map = {'online': 1};
-    final event = await _encode(serverPubkey, jsonEncode(map));
-    if (event != null) {
-      NostrFunctionsRepository.sendEvent(
-        event: event,
-        setProgress: false,
-        relyOnUnsentEvents: false,
-      );
+    _heartBeatInFlight = true;
+    try {
+      final map = {'online': 1};
+      final event = await _encode(serverPubkey, jsonEncode(map));
+      if (event != null && isPushNotificationEnabled()) {
+        await NostrFunctionsRepository.sendEvent(
+          event: event,
+          setProgress: false,
+          relyOnUnsentEvents: false,
+        );
+      }
+    } finally {
+      _heartBeatInFlight = false;
     }
   }
 
   Future<void> setOffline() async {
+    _stopHeartBeat();
     if (!isPushNotificationEnabled()) {
       return;
     }
 
     if (!forwardedToAmber) {
       final map = {'online': 0};
-      _stopHeartBeat();
       final event = await _encode(
         serverPubkey,
         jsonEncode(map),
       );
 
       if (event != null) {
-        NostrFunctionsRepository.sendEvent(
+        final isSuccessful = await NostrFunctionsRepository.sendEvent(
           event: event,
           setProgress: false,
           relyOnUnsentEvents: false,
         );
+
+        lg.i(isSuccessful
+            ? 'Notification event sent successfully'
+            : 'Failed to send notification event');
       }
     }
   }
 
   Future<bool> logout() async {
-    if (!isPushNotificationEnabled()) {
-      lg.i('message');
-      return false;
-    }
+    _stopHeartBeat();
+    deviceId = '';
+    configuredPubkey = null;
 
     if (canSign()) {
       final map = {'online': 0, 'deviceId': ''};
+      unSendNotification = null;
       final event = await _encode(serverPubkey, jsonEncode(map));
-      _stopHeartBeat();
 
       if (event != null) {
-        return NostrFunctionsRepository.sendEvent(
+        unSendNotification = event;
+        final isSuccessful = await NostrFunctionsRepository.sendEvent(
           event: event,
           setProgress: false,
           timeout: 4,
           relyOnUnsentEvents: false,
         );
+        if (isSuccessful && identical(unSendNotification, event)) {
+          unSendNotification = null;
+        }
+        return isSuccessful;
       }
     }
 
     return false;
   }
 
-  Future<bool> setNotification(
+  Future<void> setNotification(
     String deviceId,
     List<int> kinds,
   ) async {
     if (!isPushNotificationEnabled()) {
-      lg.i('message');
-      return false;
+      return;
     }
+
+    this.deviceId = deviceId;
+    configuredPubkey = currentSigner?.getPublicKey();
 
     if (serverPubkey.isEmpty || forwardedToAmber) {
       forwardedToAmber = false;
-      return false;
+      return;
     }
 
     final c = nostrRepository.currentAppCustomization;
@@ -202,15 +233,27 @@ class NotificationHelper {
     final event = await _encode(serverPubkey, jsonEncode(map));
 
     unSendNotification = event;
+    if (isPushNotificationEnabled()) {
+      await init();
+    } else if (identical(unSendNotification, event)) {
+      unSendNotification = null;
+    }
 
-    if (event != null) {
-      NostrFunctionsRepository.sendEvent(
+    if (event != null && isPushNotificationEnabled()) {
+      final isSuccessful = await NostrFunctionsRepository.sendEvent(
         event: event,
         setProgress: false,
         relyOnUnsentEvents: false,
       );
+      if (isSuccessful && identical(unSendNotification, event)) {
+        unSendNotification = null;
+      }
+
+      lg.i(isSuccessful
+          ? 'Notification event sent successfully'
+          : 'Failed to send notification event');
     }
 
-    return false;
+    return;
   }
 }

@@ -45,7 +45,15 @@ class _FlipToShareWrapperState extends State<FlipToShareWrapper>
     }
     _sub = accelerometerEventStream(
       samplingPeriod: SensorInterval.uiInterval,
-    ).listen(_onAccelerometer);
+    ).listen(
+      _onAccelerometer,
+      onError: (Object error, StackTrace stack) {
+        if (error is PlatformException && error.code == 'NO_SENSOR') {
+          return;
+        }
+        Zone.current.handleUncaughtError(error, stack);
+      },
+    );
   }
 
   void _onAccelerometer(AccelerometerEvent e) {

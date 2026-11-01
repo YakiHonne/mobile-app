@@ -307,6 +307,12 @@ class TranslationsEs extends Translations {
 	@override String get following => 'siguiendo';
 	@override String get trending => 'tendencia';
 	@override String get highlights => 'destacados';
+	@override String get highlight => 'resaltado';
+	@override String get highlighted => 'Resaltado';
+	@override String get highlightedFrom => 'Resaltado de';
+	@override String get untitledArticle => 'Artículo sin título';
+	@override String get untitledNote => 'Nota sin título';
+	@override String get loadingSource => 'Cargando fuente…';
 	@override String get paid => 'pagado';
 	@override String get others => 'otros';
 	@override String get suggestionsBox => 'Caja de sugerencias';
@@ -895,6 +901,10 @@ class TranslationsEs extends Translations {
 	@override String get fetchingUserInboxRelays => 'Obteniendo relays de bandeja de entrada del usuario';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} te zapeó ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} reaccionó ${reaction} en ti';
+	@override String get highlightsDesc => 'Recibe una notificación cuando alguien resalte tu contenido.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} resaltó un fragmento de tu artículo';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} resaltó un fragmento de tu nota';
+	@override String userHighlightedYourContent({required Object name}) => '${name} resaltó tu contenido';
 	@override String userRepostedYou({required Object name}) => '${name} republicó tu contenido';
 	@override String userMentionedYouInComment({required Object name}) => '${name} te mencionó en un comentario';
 	@override String userMentionedYouInNote({required Object name}) => '${name} te mencionó en una nota';
@@ -1129,6 +1139,8 @@ class TranslationsEs extends Translations {
 	@override String get shareWidgetImage => 'Compartir imagen de widget';
 	@override String get inputField => 'Campo de entrada';
 	@override String get noReplies => 'Sin respuestas';
+	@override String get noVisibleReplies => 'No hay respuestas visibles';
+	@override String get spamRepliesHiddenHint => 'Las respuestas que podrían ser spam están ocultas abajo.';
 	@override String get message => 'Mensaje';
 	@override String get chat => 'Chat';
 	@override String get onlyLettersNumber => 'Solo letras y números permitidos';
@@ -2152,7 +2164,7 @@ class TranslationsEs extends Translations {
 	@override String get googleManageUnlinkDesc => 'Elimina esta cuenta del servidor central. Vuelve a iniciar sesión con tu clave privada.';
 	@override String get pricing_restore_purchases => 'Restaurar compras';
 	@override String get pricing_manage_on_store => 'Gestionar suscripción';
-	@override String get pricing_web_managed => 'Tienes una suscripción activa gestionada en yakihonne.pro. Visítalo para cambiar o cancelar tu plan.';
+	@override String get pricing_web_managed => 'Tienes una suscripción activa gestionada en yakihonne.com. Visítalo para cambiar o cancelar tu plan.';
 	@override String get sub_managed_via_web => 'Tu suscripción está activa.';
 	@override String get pricing_toggle_store => '🛍️ Tienda';
 	@override String get pricing_toggle_points => '🏆 Puntos';
@@ -2230,6 +2242,13 @@ class TranslationsEs extends Translations {
 	@override String get pastDue => 'Vencido';
 	@override String get unpaid => 'Sin pagar';
 	@override String get incomplete => 'Incompleto';
+	@override String get spamFilter => 'Filtro de posible spam';
+	@override String get spamFilterDesc => 'Contrae las respuestas de autores que parecen hacer spam. Siempre puedes expandirlas.';
+	@override String seePotentialSpams({required Object count}) => 'Ver ${count} posibles spam';
+	@override String get showSpamReplies => 'Mostrar respuestas posiblemente spam';
+	@override String get hideSpamReplies => 'Ocultar respuestas posiblemente spam';
+	@override String get markAsSpam => 'Marcar como spam';
+	@override String get notSpam => 'No es spam';
 }
 
 /// The flat map containing all translations for locale <es>.
@@ -2516,6 +2535,12 @@ extension on TranslationsEs {
 			'following' => 'siguiendo',
 			'trending' => 'tendencia',
 			'highlights' => 'destacados',
+			'highlight' => 'resaltado',
+			'highlighted' => 'Resaltado',
+			'highlightedFrom' => 'Resaltado de',
+			'untitledArticle' => 'Artículo sin título',
+			'untitledNote' => 'Nota sin título',
+			'loadingSource' => 'Cargando fuente…',
 			'paid' => 'pagado',
 			'others' => 'otros',
 			'suggestionsBox' => 'Caja de sugerencias',
@@ -2754,18 +2779,18 @@ extension on TranslationsEs {
 			'votesByUsers' => 'Votos por usuarios',
 			'alreadyVoted' => 'Ya has votado en esta encuesta',
 			'userCannotBeFound' => 'No se encontró el usuario',
-			'votesNumber' => ({required Object number}) => 'Votos: ${number}',
-			'voteRequired' => 'Se requiere voto para mostrar estadísticas.',
-			'showStats' => 'Mostrar estadísticas',
-			'pollClosesAt' => ({required Object date}) => 'Cierra en: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'Cerrado en: ${date}',
-			'checkSmartWidget' => 'Verificar widget inteligente',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => 'Votos: ${number}',
+			'voteRequired' => 'Se requiere voto para mostrar estadísticas.',
+			'showStats' => 'Mostrar estadísticas',
+			'pollClosesAt' => ({required Object date}) => 'Cierra en: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'Cerrado en: ${date}',
+			'checkSmartWidget' => 'Verificar widget inteligente',
 			'emptyVerifiedNote' => '¡Contenido de nota verificada vacío!',
 			'post' => 'Publicar',
 			'seeAnything' => '¿Ves algo que se pueda mejorar?',
@@ -3110,6 +3135,10 @@ extension on TranslationsEs {
 			'fetchingUserInboxRelays' => 'Obteniendo relays de bandeja de entrada del usuario',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} te zapeó ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} reaccionó ${reaction} en ti',
+			'highlightsDesc' => 'Recibe una notificación cuando alguien resalte tu contenido.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} resaltó un fragmento de tu artículo',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} resaltó un fragmento de tu nota',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} resaltó tu contenido',
 			'userRepostedYou' => ({required Object name}) => '${name} republicó tu contenido',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} te mencionó en un comentario',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} te mencionó en una nota',
@@ -3268,6 +3297,12 @@ extension on TranslationsEs {
 			'circuit' => 'Circuito',
 			'votingSystem' => 'Sistema de votación',
 			'proofSystem' => 'Sistema de pruebas',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => 'Estación de gas',
 			'totalFund' => '(fondo total)',
 			'roundStart' => 'Inicio de ronda',
@@ -3278,12 +3313,6 @@ extension on TranslationsEs {
 			'blockHeight' => 'Altura de bloque',
 			'atContractCreation' => ({required Object number}) => '${number} (al crear contrato)',
 			'zkProofs' => 'Pruebas ZK',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'Descargar pruebas',
 			'walletConnectionString' => 'Cadena de conexión de billetera',
 			'walletConnectionStringDesc' => 'Asegúrate de copiar o exportar de forma segura la cadena de conexión de billetera. No almacenamos esta información, y si se pierde, no se puede recuperar.',
@@ -3350,6 +3379,8 @@ extension on TranslationsEs {
 			'shareWidgetImage' => 'Compartir imagen de widget',
 			'inputField' => 'Campo de entrada',
 			'noReplies' => 'Sin respuestas',
+			'noVisibleReplies' => 'No hay respuestas visibles',
+			'spamRepliesHiddenHint' => 'Las respuestas que podrían ser spam están ocultas abajo.',
 			'message' => 'Mensaje',
 			'chat' => 'Chat',
 			'onlyLettersNumber' => 'Solo letras y números permitidos',
@@ -3784,6 +3815,12 @@ extension on TranslationsEs {
 			'redeemEcashDesc' => 'Canjear tokens ecash a tu billetera',
 			'depositDesc' => 'Acuñar nuevos tokens ecash depositando sats',
 			'pasteToken' => 'Pegar token',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => 'Escanear',
 			'tokenDetails' => 'Detalles del Token',
 			'issuingMint' => 'Mint Emisor',
@@ -3796,12 +3833,6 @@ extension on TranslationsEs {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'Error al actualizar la lista de mints',
 			'active' => 'Activo',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => 'Inactivo',
 			'addCashuWallet' => 'Agregar Billetera Cashu y comenzar a enviar y recibir Ecash a través de nostr.',
 			'mintUrl' => 'URL del Mint',
@@ -4302,6 +4333,12 @@ extension on TranslationsEs {
 			'pomAuthenticating' => 'Autenticando con Google…',
 			'pomCheckingAccount' => 'Comprobando la cuenta…',
 			'pomCreatingAccount' => 'Creando la cuenta…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => 'Guarda tu clave privada',
 			'pomSaveKeyDesc' => 'Tu clave privada ha sido generada. Guárdala de forma segura antes de crear tu cuenta.',
 			'pomCreateAccount' => 'Crear cuenta',
@@ -4314,12 +4351,6 @@ extension on TranslationsEs {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} fragmentos recuperados',
 			'pomRecoverSuccess' => 'Clave privada recuperada',
 			'pomDownloadKey' => 'Descargar clave',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => 'Desvincular cuenta',
 			'pomUnlinkIntro' => 'Primero recupera tu clave privada y cópiala: la necesitarás para volver a iniciar sesión tras desvincular.',
 			'pomUnlinkContinue' => 'He guardado mi clave, continuar',
@@ -4385,7 +4416,7 @@ extension on TranslationsEs {
 			'googleManageUnlinkDesc' => 'Elimina esta cuenta del servidor central. Vuelve a iniciar sesión con tu clave privada.',
 			'pricing_restore_purchases' => 'Restaurar compras',
 			'pricing_manage_on_store' => 'Gestionar suscripción',
-			'pricing_web_managed' => 'Tienes una suscripción activa gestionada en yakihonne.pro. Visítalo para cambiar o cancelar tu plan.',
+			'pricing_web_managed' => 'Tienes una suscripción activa gestionada en yakihonne.com. Visítalo para cambiar o cancelar tu plan.',
 			'sub_managed_via_web' => 'Tu suscripción está activa.',
 			'pricing_toggle_store' => '🛍️ Tienda',
 			'pricing_toggle_points' => '🏆 Puntos',
@@ -4463,6 +4494,13 @@ extension on TranslationsEs {
 			'pastDue' => 'Vencido',
 			'unpaid' => 'Sin pagar',
 			'incomplete' => 'Incompleto',
+			'spamFilter' => 'Filtro de posible spam',
+			'spamFilterDesc' => 'Contrae las respuestas de autores que parecen hacer spam. Siempre puedes expandirlas.',
+			'seePotentialSpams' => ({required Object count}) => 'Ver ${count} posibles spam',
+			'showSpamReplies' => 'Mostrar respuestas posiblemente spam',
+			'hideSpamReplies' => 'Ocultar respuestas posiblemente spam',
+			'markAsSpam' => 'Marcar como spam',
+			'notSpam' => 'No es spam',
 			_ => null,
 		};
 	}

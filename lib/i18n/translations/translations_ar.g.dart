@@ -307,6 +307,12 @@ class TranslationsAr extends Translations {
 	@override String get following => 'المتابعة';
 	@override String get trending => 'شائع';
 	@override String get highlights => 'البارزات';
+	@override String get highlight => 'تمييز';
+	@override String get highlighted => 'مُميّز';
+	@override String get highlightedFrom => 'مُميّز من';
+	@override String get untitledArticle => 'مقالة بلا عنوان';
+	@override String get untitledNote => 'ملاحظة بلا عنوان';
+	@override String get loadingSource => 'جارٍ تحميل المصدر…';
 	@override String get paid => 'مدفوع';
 	@override String get others => 'آخرون';
 	@override String get suggestionsBox => 'صندوق الاقتراحات';
@@ -895,6 +901,10 @@ class TranslationsAr extends Translations {
 	@override String get fetchingUserInboxRelays => 'جلب ترحيلات الصندوق الوارد للمستخدم';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك';
+	@override String get highlightsDesc => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ميّز نصًا من مقالك';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} ميّز نصًا من ملاحظتك';
+	@override String userHighlightedYourContent({required Object name}) => '${name} ميّز محتواك';
 	@override String userRepostedYou({required Object name}) => 'قام ${name} بإعادة نشر محتواك';
 	@override String userMentionedYouInComment({required Object name}) => '${name} ذكرك في تعليق';
 	@override String userMentionedYouInNote({required Object name}) => '${name} ذكرك في ملاحظة';
@@ -1129,6 +1139,8 @@ class TranslationsAr extends Translations {
 	@override String get shareWidgetImage => 'مشاركة صورة الودجيت';
 	@override String get inputField => 'حقل إدخال';
 	@override String get noReplies => 'لا ردود';
+	@override String get noVisibleReplies => 'لا توجد ردود ظاهرة';
+	@override String get spamRepliesHiddenHint => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.';
 	@override String get message => 'رسالة';
 	@override String get chat => 'دردشة';
 	@override String get onlyLettersNumber => 'مسموح بالحروف والأرقام فقط';
@@ -2152,7 +2164,7 @@ class TranslationsAr extends Translations {
 	@override String get googleManageUnlinkDesc => 'احذف هذا الحساب من الخادم المركزي. سجّل الدخول مرة أخرى بمفتاحك الخاص.';
 	@override String get pricing_restore_purchases => 'استعادة المشتريات';
 	@override String get pricing_manage_on_store => 'إدارة الاشتراك';
-	@override String get pricing_web_managed => 'لديك اشتراك نشط تتم إدارته على yakihonne.pro. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.';
+	@override String get pricing_web_managed => 'لديك اشتراك نشط تتم إدارته على yakihonne.com. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.';
 	@override String get sub_managed_via_web => 'اشتراكك نشط.';
 	@override String get pricing_toggle_store => '🛍️ المتجر';
 	@override String get pricing_toggle_points => '🏆 النقاط';
@@ -2230,6 +2242,13 @@ class TranslationsAr extends Translations {
 	@override String get pastDue => 'متأخر';
 	@override String get unpaid => 'غير مدفوع';
 	@override String get incomplete => 'غير مكتمل';
+	@override String get spamFilter => 'مرشح الرسائل المزعجة المحتملة';
+	@override String get spamFilterDesc => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.';
+	@override String seePotentialSpams({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة';
+	@override String get showSpamReplies => 'إظهار الردود المشتبه بأنها مزعجة';
+	@override String get hideSpamReplies => 'إخفاء الردود المشتبه بأنها مزعجة';
+	@override String get markAsSpam => 'وضع علامة كرسالة مزعجة';
+	@override String get notSpam => 'ليست مزعجة';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -2516,6 +2535,12 @@ extension on TranslationsAr {
 			'following' => 'المتابعة',
 			'trending' => 'شائع',
 			'highlights' => 'البارزات',
+			'highlight' => 'تمييز',
+			'highlighted' => 'مُميّز',
+			'highlightedFrom' => 'مُميّز من',
+			'untitledArticle' => 'مقالة بلا عنوان',
+			'untitledNote' => 'ملاحظة بلا عنوان',
+			'loadingSource' => 'جارٍ تحميل المصدر…',
 			'paid' => 'مدفوع',
 			'others' => 'آخرون',
 			'suggestionsBox' => 'صندوق الاقتراحات',
@@ -2754,18 +2779,18 @@ extension on TranslationsAr {
 			'votesByUsers' => 'الأصوات من المستخدمين',
 			'alreadyVoted' => 'لقد صوتت بالفعل في هذا الاستطلاع',
 			'userCannotBeFound' => 'تعذر العثور على المستخدم',
-			'votesNumber' => ({required Object number}) => 'الأصوات: ${number}',
-			'voteRequired' => 'التصويت مطلوب لعرض الإحصائيات.',
-			'showStats' => 'عرض الإحصائيات',
-			'pollClosesAt' => ({required Object date}) => 'يغلق في: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'أغلق في: ${date}',
-			'checkSmartWidget' => 'التحقق من ودجيت ذكي',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => 'الأصوات: ${number}',
+			'voteRequired' => 'التصويت مطلوب لعرض الإحصائيات.',
+			'showStats' => 'عرض الإحصائيات',
+			'pollClosesAt' => ({required Object date}) => 'يغلق في: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'أغلق في: ${date}',
+			'checkSmartWidget' => 'التحقق من ودجيت ذكي',
 			'emptyVerifiedNote' => 'محتوى ملاحظة موثقة فارغ!',
 			'post' => 'نشر',
 			'seeAnything' => 'ترى أي شيء تريد تحسينه؟',
@@ -3110,6 +3135,10 @@ extension on TranslationsAr {
 			'fetchingUserInboxRelays' => 'جلب ترحيلات الصندوق الوارد للمستخدم',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} زابك ${number} ساتوشي',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} تفاعل ${reaction} عليك',
+			'highlightsDesc' => 'تلقَّ إشعارًا عندما يميّز شخص ما محتواك.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ميّز نصًا من مقالك',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ميّز نصًا من ملاحظتك',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} ميّز محتواك',
 			'userRepostedYou' => ({required Object name}) => 'قام ${name} بإعادة نشر محتواك',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} ذكرك في تعليق',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} ذكرك في ملاحظة',
@@ -3268,6 +3297,12 @@ extension on TranslationsAr {
 			'circuit' => 'الدائرة',
 			'votingSystem' => 'نظام التصويت',
 			'proofSystem' => 'نظام الإثبات',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => 'محطة الغاز',
 			'totalFund' => '(الصندوق الإجمالي)',
 			'roundStart' => 'بدء الجولة',
@@ -3278,12 +3313,6 @@ extension on TranslationsAr {
 			'blockHeight' => 'ارتفاع الكتلة',
 			'atContractCreation' => ({required Object number}) => '${number} (عند إنشاء العقد)',
 			'zkProofs' => 'إثباتات ZK',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'تنزيل الإثباتات',
 			'walletConnectionString' => 'سلسلة اتصال المحفظة',
 			'walletConnectionStringDesc' => 'تأكد من نسخ أو تصدير سلسلة اتصال المحفظة بشكل آمن. نحن لا نخزن هذه المعلومات، وإذا فقدت، لا يمكن استرجاعها.',
@@ -3350,6 +3379,8 @@ extension on TranslationsAr {
 			'shareWidgetImage' => 'مشاركة صورة الودجيت',
 			'inputField' => 'حقل إدخال',
 			'noReplies' => 'لا ردود',
+			'noVisibleReplies' => 'لا توجد ردود ظاهرة',
+			'spamRepliesHiddenHint' => 'تم إخفاء الردود التي قد تكون مزعجة أدناه.',
 			'message' => 'رسالة',
 			'chat' => 'دردشة',
 			'onlyLettersNumber' => 'مسموح بالحروف والأرقام فقط',
@@ -3784,6 +3815,12 @@ extension on TranslationsAr {
 			'redeemEcashDesc' => 'استرداد رموز ecash إلى محفظتك',
 			'depositDesc' => 'سك رموز ecash جديدة عن طريق إيداع sats',
 			'pasteToken' => 'لصق الرمز',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => 'مسح',
 			'tokenDetails' => 'تفاصيل الرمز',
 			'issuingMint' => 'Mint المُصدر',
@@ -3796,12 +3833,6 @@ extension on TranslationsAr {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'حدث خطأ أثناء تحديث قائمة Mints',
 			'active' => 'نشط',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => 'غير نشط',
 			'addCashuWallet' => 'أضف محفظة Cashu وابدأ في إرسال واستلام Ecash عبر nostr.',
 			'mintUrl' => 'رابط Mint',
@@ -4302,6 +4333,12 @@ extension on TranslationsAr {
 			'pomAuthenticating' => 'جارٍ المصادقة مع Google…',
 			'pomCheckingAccount' => 'جارٍ التحقق من الحساب…',
 			'pomCreatingAccount' => 'جارٍ إنشاء الحساب…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => 'احفظ مفتاحك الخاص',
 			'pomSaveKeyDesc' => 'تم إنشاء مفتاحك الخاص. احفظه في مكان آمن قبل إنشاء حسابك.',
 			'pomCreateAccount' => 'إنشاء حساب',
@@ -4314,12 +4351,6 @@ extension on TranslationsAr {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} أجزاء تم جمعها',
 			'pomRecoverSuccess' => 'تمت استعادة المفتاح الخاص',
 			'pomDownloadKey' => 'تنزيل المفتاح',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => 'إلغاء ربط الحساب',
 			'pomUnlinkIntro' => 'استعد مفتاحك الخاص وانسخه أولاً — ستحتاج إليه لتسجيل الدخول مرة أخرى بعد إلغاء الربط.',
 			'pomUnlinkContinue' => 'لقد حفظت مفتاحي — متابعة',
@@ -4385,7 +4416,7 @@ extension on TranslationsAr {
 			'googleManageUnlinkDesc' => 'احذف هذا الحساب من الخادم المركزي. سجّل الدخول مرة أخرى بمفتاحك الخاص.',
 			'pricing_restore_purchases' => 'استعادة المشتريات',
 			'pricing_manage_on_store' => 'إدارة الاشتراك',
-			'pricing_web_managed' => 'لديك اشتراك نشط تتم إدارته على yakihonne.pro. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.',
+			'pricing_web_managed' => 'لديك اشتراك نشط تتم إدارته على yakihonne.com. تفضّل بزيارة الموقع لتغيير خطتك أو إلغائها.',
 			'sub_managed_via_web' => 'اشتراكك نشط.',
 			'pricing_toggle_store' => '🛍️ المتجر',
 			'pricing_toggle_points' => '🏆 النقاط',
@@ -4463,6 +4494,13 @@ extension on TranslationsAr {
 			'pastDue' => 'متأخر',
 			'unpaid' => 'غير مدفوع',
 			'incomplete' => 'غير مكتمل',
+			'spamFilter' => 'مرشح الرسائل المزعجة المحتملة',
+			'spamFilterDesc' => 'طيّ الردود من المؤلفين الذين يبدون كأنهم يرسلون رسائل مزعجة. يمكنك دائمًا توسيعها.',
+			'seePotentialSpams' => ({required Object count}) => 'رؤية ${count} من الرسائل المزعجة المحتملة',
+			'showSpamReplies' => 'إظهار الردود المشتبه بأنها مزعجة',
+			'hideSpamReplies' => 'إخفاء الردود المشتبه بأنها مزعجة',
+			'markAsSpam' => 'وضع علامة كرسالة مزعجة',
+			'notSpam' => 'ليست مزعجة',
 			_ => null,
 		};
 	}

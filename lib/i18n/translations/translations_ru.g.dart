@@ -307,6 +307,12 @@ class TranslationsRu extends Translations {
 	@override String get following => 'подписки';
 	@override String get trending => 'в тренде';
 	@override String get highlights => 'избранное';
+	@override String get highlight => 'выделение';
+	@override String get highlighted => 'Выделено';
+	@override String get highlightedFrom => 'Выделено из';
+	@override String get untitledArticle => 'Статья без названия';
+	@override String get untitledNote => 'Заметка без названия';
+	@override String get loadingSource => 'Загрузка источника…';
 	@override String get paid => 'платные';
 	@override String get others => 'другие';
 	@override String get suggestionsBox => 'Блок рекомендаций';
@@ -895,6 +901,10 @@ class TranslationsRu extends Translations {
 	@override String get fetchingUserInboxRelays => 'Загрузка входящих релеев пользователя';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} запнул вас на ${number} сатоши';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на вас';
+	@override String get highlightsDesc => 'Получайте уведомления, когда кто-то выделяет ваш контент.';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} выделил(а) фрагмент вашей статьи';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} выделил(а) фрагмент вашей заметки';
+	@override String userHighlightedYourContent({required Object name}) => '${name} выделил(а) ваш контент';
 	@override String userRepostedYou({required Object name}) => 'Ваш контент репостнул ${name}';
 	@override String userMentionedYouInComment({required Object name}) => '${name} упомянул вас в комментарии';
 	@override String userMentionedYouInNote({required Object name}) => '${name} упомянул вас в заметке';
@@ -1129,6 +1139,8 @@ class TranslationsRu extends Translations {
 	@override String get shareWidgetImage => 'Поделиться изображением виджета';
 	@override String get inputField => 'Поле ввода';
 	@override String get noReplies => 'Нет ответов';
+	@override String get noVisibleReplies => 'Нет видимых ответов';
+	@override String get spamRepliesHiddenHint => 'Потенциально нежелательные ответы скрыты ниже.';
 	@override String get message => 'Сообщение';
 	@override String get chat => 'Чат';
 	@override String get onlyLettersNumber => 'Разрешены только буквы и цифры';
@@ -2152,7 +2164,7 @@ class TranslationsRu extends Translations {
 	@override String get googleManageUnlinkDesc => 'Удалите этот аккаунт с центрального сервера. Входите снова по приватному ключу.';
 	@override String get pricing_restore_purchases => 'Восстановить покупки';
 	@override String get pricing_manage_on_store => 'Управление подпиской';
-	@override String get pricing_web_managed => 'У вас есть активная подписка, управляемая на yakihonne.pro. Перейдите туда, чтобы изменить или отменить тариф.';
+	@override String get pricing_web_managed => 'У вас есть активная подписка, управляемая на yakihonne.com. Перейдите туда, чтобы изменить или отменить тариф.';
 	@override String get sub_managed_via_web => 'Ваша подписка активна.';
 	@override String get pricing_toggle_store => '🛍️ Магазин';
 	@override String get pricing_toggle_points => '🏆 Баллы';
@@ -2230,6 +2242,13 @@ class TranslationsRu extends Translations {
 	@override String get pastDue => 'Просрочена';
 	@override String get unpaid => 'Не оплачена';
 	@override String get incomplete => 'Не завершена';
+	@override String get spamFilter => 'Фильтр потенциального спама';
+	@override String get spamFilterDesc => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.';
+	@override String seePotentialSpams({required Object count}) => 'Посмотреть потенциальный спам: ${count}';
+	@override String get showSpamReplies => 'Показать потенциально нежелательные ответы';
+	@override String get hideSpamReplies => 'Скрыть потенциально нежелательные ответы';
+	@override String get markAsSpam => 'Пометить как спам';
+	@override String get notSpam => 'Не спам';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -2516,6 +2535,12 @@ extension on TranslationsRu {
 			'following' => 'подписки',
 			'trending' => 'в тренде',
 			'highlights' => 'избранное',
+			'highlight' => 'выделение',
+			'highlighted' => 'Выделено',
+			'highlightedFrom' => 'Выделено из',
+			'untitledArticle' => 'Статья без названия',
+			'untitledNote' => 'Заметка без названия',
+			'loadingSource' => 'Загрузка источника…',
 			'paid' => 'платные',
 			'others' => 'другие',
 			'suggestionsBox' => 'Блок рекомендаций',
@@ -2754,18 +2779,18 @@ extension on TranslationsRu {
 			'votesByUsers' => 'Голоса пользователей',
 			'alreadyVoted' => 'Вы уже проголосовали в этом опросе',
 			'userCannotBeFound' => 'Пользователь не найден',
-			'votesNumber' => ({required Object number}) => 'Голосов: ${number}',
-			'voteRequired' => 'Требуется голос для отображения статистики.',
-			'showStats' => 'Показать статистику',
-			'pollClosesAt' => ({required Object date}) => 'Закрывается: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'Закрыт: ${date}',
-			'checkSmartWidget' => 'Проверить смарт-виджет',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => 'Голосов: ${number}',
+			'voteRequired' => 'Требуется голос для отображения статистики.',
+			'showStats' => 'Показать статистику',
+			'pollClosesAt' => ({required Object date}) => 'Закрывается: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'Закрыт: ${date}',
+			'checkSmartWidget' => 'Проверить смарт-виджет',
 			'emptyVerifiedNote' => 'Пустой контент проверенной заметки!',
 			'post' => 'Опубликовать',
 			'seeAnything' => 'Видите что-то, что можно улучшить?',
@@ -3110,6 +3135,10 @@ extension on TranslationsRu {
 			'fetchingUserInboxRelays' => 'Загрузка входящих релеев пользователя',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} запнул вас на ${number} сатоши',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} отреагировал ${reaction} на вас',
+			'highlightsDesc' => 'Получайте уведомления, когда кто-то выделяет ваш контент.',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} выделил(а) фрагмент вашей статьи',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} выделил(а) фрагмент вашей заметки',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} выделил(а) ваш контент',
 			'userRepostedYou' => ({required Object name}) => 'Ваш контент репостнул ${name}',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} упомянул вас в комментарии',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} упомянул вас в заметке',
@@ -3268,6 +3297,12 @@ extension on TranslationsRu {
 			'circuit' => 'Цепь',
 			'votingSystem' => 'Система голосования',
 			'proofSystem' => 'Система доказательств',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => 'Газовая станция',
 			'totalFund' => '(общий фонд)',
 			'roundStart' => 'Начало раунда',
@@ -3278,12 +3313,6 @@ extension on TranslationsRu {
 			'blockHeight' => 'Высота блока',
 			'atContractCreation' => ({required Object number}) => '${number} (при создании контракта)',
 			'zkProofs' => 'ZK-доказательства',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'Скачать доказательства',
 			'walletConnectionString' => 'Строка подключения кошелька',
 			'walletConnectionStringDesc' => 'Обязательно безопасно скопируйте или экспортируйте строку подключения кошелька. Мы не храним эту информацию, и если она будет утеряна, её нельзя будет восстановить.',
@@ -3350,6 +3379,8 @@ extension on TranslationsRu {
 			'shareWidgetImage' => 'Поделиться изображением виджета',
 			'inputField' => 'Поле ввода',
 			'noReplies' => 'Нет ответов',
+			'noVisibleReplies' => 'Нет видимых ответов',
+			'spamRepliesHiddenHint' => 'Потенциально нежелательные ответы скрыты ниже.',
 			'message' => 'Сообщение',
 			'chat' => 'Чат',
 			'onlyLettersNumber' => 'Разрешены только буквы и цифры',
@@ -3784,6 +3815,12 @@ extension on TranslationsRu {
 			'redeemEcashDesc' => 'Погасить токены ecash на ваш кошелек',
 			'depositDesc' => 'Создать новые токены ecash, внеся sats',
 			'pasteToken' => 'Вставить токен',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => 'Сканировать',
 			'tokenDetails' => 'Детали токена',
 			'issuingMint' => 'Выпускающий Mint',
@@ -3796,12 +3833,6 @@ extension on TranslationsRu {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'Ошибка при обновлении списка mints',
 			'active' => 'Активный',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => 'Неактивный',
 			'addCashuWallet' => 'Добавьте кошелек Cashu и начните отправлять и получать Ecash через nostr.',
 			'mintUrl' => 'URL Mint',
@@ -4302,6 +4333,12 @@ extension on TranslationsRu {
 			'pomAuthenticating' => 'Аутентификация через Google…',
 			'pomCheckingAccount' => 'Проверка аккаунта…',
 			'pomCreatingAccount' => 'Создание аккаунта…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => 'Сохраните свой приватный ключ',
 			'pomSaveKeyDesc' => 'Ваш приватный ключ создан. Сохраните его в надёжном месте, прежде чем создавать аккаунт.',
 			'pomCreateAccount' => 'Создать аккаунт',
@@ -4314,12 +4351,6 @@ extension on TranslationsRu {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => 'Получено фрагментов: ${collected}/${threshold}',
 			'pomRecoverSuccess' => 'Приватный ключ восстановлен',
 			'pomDownloadKey' => 'Скачать ключ',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => 'Отвязать аккаунт',
 			'pomUnlinkIntro' => 'Сначала восстановите приватный ключ и скопируйте его — он понадобится для входа после отвязки.',
 			'pomUnlinkContinue' => 'Я сохранил ключ — продолжить',
@@ -4385,7 +4416,7 @@ extension on TranslationsRu {
 			'googleManageUnlinkDesc' => 'Удалите этот аккаунт с центрального сервера. Входите снова по приватному ключу.',
 			'pricing_restore_purchases' => 'Восстановить покупки',
 			'pricing_manage_on_store' => 'Управление подпиской',
-			'pricing_web_managed' => 'У вас есть активная подписка, управляемая на yakihonne.pro. Перейдите туда, чтобы изменить или отменить тариф.',
+			'pricing_web_managed' => 'У вас есть активная подписка, управляемая на yakihonne.com. Перейдите туда, чтобы изменить или отменить тариф.',
 			'sub_managed_via_web' => 'Ваша подписка активна.',
 			'pricing_toggle_store' => '🛍️ Магазин',
 			'pricing_toggle_points' => '🏆 Баллы',
@@ -4463,6 +4494,13 @@ extension on TranslationsRu {
 			'pastDue' => 'Просрочена',
 			'unpaid' => 'Не оплачена',
 			'incomplete' => 'Не завершена',
+			'spamFilter' => 'Фильтр потенциального спама',
+			'spamFilterDesc' => 'Сворачивать ответы авторов, которые похожи на спамеров. Их всегда можно развернуть.',
+			'seePotentialSpams' => ({required Object count}) => 'Посмотреть потенциальный спам: ${count}',
+			'showSpamReplies' => 'Показать потенциально нежелательные ответы',
+			'hideSpamReplies' => 'Скрыть потенциально нежелательные ответы',
+			'markAsSpam' => 'Пометить как спам',
+			'notSpam' => 'Не спам',
 			_ => null,
 		};
 	}

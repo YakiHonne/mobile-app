@@ -71,6 +71,7 @@ class ContentRenderer extends HookWidget {
     this.hideMedia,
     this.height,
     this.emojis,
+    this.onHighlight,
   });
 
   final String text;
@@ -101,6 +102,7 @@ class ContentRenderer extends HookWidget {
   final bool? useDetailedNote;
   final bool? hideMedia;
   final Map<String, String>? emojis;
+  final void Function(String selectedText)? onHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +189,7 @@ class ContentRenderer extends HookWidget {
       textHeightBehavior: textHeightBehavior,
       onTap: onClicked,
       scrollPhysics: scrollPhysics,
+      onHighlight: onHighlight,
     );
   }
 
@@ -564,12 +567,18 @@ class ContentRenderer extends HookWidget {
       return _buildDefaultTextSpan(element, context);
     }
 
+    final entity = Nip19.decodeShareableEntity(element.text);
+    final relays = (entity['relays'] as List?)?.cast<String>();
+    final author = entity['author'] as String?;
+
     return WidgetSpan(
       child: OverrideTextScaleFactor(
         child: SingleEventProvider(
           key: ValueKey('artcur_${element.url}'),
           id: element.url,
           isReplaceable: true,
+          relays: relays,
+          author: author,
           child: (event) => getBaseEventWidget(
             event: event,
             text: element.text,
@@ -815,8 +824,15 @@ class ContentRenderer extends HookWidget {
           isReplaceable = false;
         } else if (last.startsWith('naddr')) {
           final decode = Nip19.decodeShareableEntity(last);
-          final hexCode = hex.decode(decode['special']);
-          id = String.fromCharCodes(hexCode);
+          final decodedId = decodeNaddrIdentifier(decode);
+          if (decodedId == null) {
+            return _buildOptimizedUrlLastWidget(
+              linkPreview: linkPreview,
+              url: url,
+              element: element,
+            );
+          }
+          id = decodedId;
           isReplaceable = true;
           supportedEvent = isSupportedEvent(decode['kind']);
         } else {
@@ -1024,6 +1040,22 @@ class ContentRenderer extends HookWidget {
   }
 }
 
+/// Returns null when a decoded naddr is malformed or incomplete.
+String? decodeNaddrIdentifier(Map<String, dynamic> decoded) {
+  final special = decoded['special'];
+  if (decoded['prefix'] != 'naddr' ||
+      special is! String ||
+      decoded['author'] is! String ||
+      decoded['kind'] is! int) {
+    return null;
+  }
+  try {
+    return String.fromCharCodes(hex.decode(special));
+  } on FormatException {
+    return null;
+  }
+}
+
 /// Optimized SelectableText wrapper
 class _OptimizedSelectableText extends StatefulWidget {
   const _OptimizedSelectableText({
@@ -1037,6 +1069,7 @@ class _OptimizedSelectableText extends StatefulWidget {
     this.textHeightBehavior,
     this.onTap,
     this.scrollPhysics,
+    this.onHighlight,
   });
 
   final TextSpan textSpan;
@@ -1049,6 +1082,7 @@ class _OptimizedSelectableText extends StatefulWidget {
   final TextHeightBehavior? textHeightBehavior;
   final VoidCallback? onTap;
   final ScrollPhysics? scrollPhysics;
+  final void Function(String selectedText)? onHighlight;
 
   @override
   State<_OptimizedSelectableText> createState() =>
@@ -1108,6 +1142,29 @@ class _OptimizedSelectableTextState extends State<_OptimizedSelectableText> {
       textHeightBehavior: widget.textHeightBehavior,
       onTap: widget.onTap,
       scrollPhysics: widget.scrollPhysics,
+      contextMenuBuilder: widget.onHighlight == null
+          ? null
+          : (context, editableTextState) {
+              final selection = editableTextState.textEditingValue.selection;
+              final text = editableTextState.textEditingValue.text;
+              final selectedText = selection.isValid && !selection.isCollapsed
+                  ? text.substring(selection.start, selection.end)
+                  : '';
+              return AdaptiveTextSelectionToolbar.buttonItems(
+                anchors: editableTextState.contextMenuAnchors,
+                buttonItems: [
+                  ...editableTextState.contextMenuButtonItems,
+                  ContextMenuButtonItem(
+                    label: context.t.highlights.capitalizeFirst(),
+                    onPressed: () {
+                      if (selectedText.isNotEmpty) {
+                        widget.onHighlight!(selectedText);
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
     );
   }
 }
@@ -1174,12 +1231,17 @@ class _OptimizedNeventWidget extends HookWidget {
       () => Nip19.decodeShareableEntity(element.text),
       [element.text],
     );
+
     final id = entity['special'];
     final kind = entity['kind'];
+    final relays = (entity['relays'] as List?)?.cast<String>();
+    final author = entity['author'] as String?;
 
     return SingleEventProvider(
       id: id,
       isReplaceable: isReplaceable(kind),
+      relays: relays,
+      author: author,
       child: (event) => contentRenderer.getBaseEventWidget(
         event: event,
         text: element.text,

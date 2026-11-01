@@ -14,6 +14,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/mixins/later_function.dart';
 import '../../models/app_models/diverse_functions.dart';
+import '../../models/dm_history_cursor.dart';
 import '../../models/dm_models.dart';
 import '../../models/mute_model.dart';
 import '../../repositories/http_functions_repository.dart';
@@ -22,14 +23,6 @@ import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 
 part 'dms_state.dart';
-
-const List<Duration> _batchIntervals = [
-  Duration(days: 7),
-  Duration(days: 14),
-  Duration(days: 30),
-  Duration(days: 90),
-  Duration(days: 180),
-];
 
 class DmsCubit extends Cubit<DmsState>
     with PendingEventsLaterFunction, SimpleEventQueue {
@@ -69,14 +62,20 @@ class DmsCubit extends Cubit<DmsState>
   bool _hasPendingUpdates = false;
   Timer? _uiUpdateTimer;
   Timer? sendNotificationTimer;
+  Timer? _historyBackfillTimer;
   bool canShowNotification = true;
   Map<String, DMSessionInfo> infoMap = {};
 
   // Only ids are needed for dedupe — keeping the full gift-wrap events here
   // held every encrypted DM payload in memory for the whole session.
   Set<String> giftWrapIds = {};
-  int _currentBatchIndex = 0;
-  int _currentBatchUntil = Helpers.now;
+  final Set<String> _giftWrapsInFlight = {};
+  DmHistoryCursor? _historyCursor;
+  int _dmLoadGeneration = 0;
+  int? _historyRunGeneration;
+  int _historyRetryCount = 0;
+  String? _activeDmPubkey;
+  int? _liveSubscriptionSince;
   int _initSince = 0;
   String? dmsSubscriptionId;
   int? giftWrapNewestDateTime;
@@ -760,11 +759,32 @@ class DmsCubit extends Cubit<DmsState>
       }
     }
 
+    final currentPubkey = currentSigner!.getPublicKey();
+    final generation = ++_dmLoadGeneration;
+    _historyBackfillTimer?.cancel();
+    _historyBackfillTimer = null;
+    _historyRunGeneration = null;
+    _historyRetryCount = 0;
+    _historyCursor = null;
+    _activeDmPubkey = currentPubkey;
+
+    if (dmsSubscriptionId != null) {
+      nc.closeRequests([dmsSubscriptionId!]);
+      dmsSubscriptionId = null;
+    }
+
+    clearEventQueue();
+    _isStreamingMode = false;
+    _pendingSessionUpdates.clear();
+    _processedEventIds = {};
+    giftWrapIds = {};
+    _giftWrapsInFlight.clear();
+
     _initSince = 0;
     checkNotificationAllowed();
 
     giftWrapNewestDateTime = localDatabaseRepository.getNewestGiftWrap(
-      currentSigner!.getPublicKey(),
+      currentPubkey,
     );
 
     _emit(
@@ -782,120 +802,219 @@ class DmsCubit extends Cubit<DmsState>
       ),
     );
 
-    final currentPubkey = currentSigner!.getPublicKey();
+    // The cache seeds the live and history cursors and dedupe IDs. Keep it
+    // ahead of both network paths.
+    await _loadCachedEventsNormally(currentPubkey, generation: generation);
+    if (!_isCurrentDmLoad(generation, currentPubkey)) {
+      return;
+    }
 
-    // LOAD CACHED EVENTS NORMALLY (no queue)
-    await _loadCachedEventsNormally(currentPubkey);
-
-    // NOW switch to streaming mode for new events
+    // Start live reception after the cache baseline is known, before older
+    // history work can take an unbounded amount of time.
     _isStreamingMode = true;
+    final savedCursor =
+        localDatabaseRepository.getDmsHistoryProgress(currentPubkey);
+    final hasCachedHistory = _initSince != 0 || giftWrapNewestDateTime != null;
+    final needsHistoryBackfill =
+        (_initSince == 0 && giftWrapNewestDateTime == null) ||
+            (savedCursor != null && !savedCursor.isComplete);
 
-    final oldestUntil = localDatabaseRepository.getDmsHistoryOlderUntil(
-      currentSigner!.getPublicKey(),
-    );
+    if (needsHistoryBackfill) {
+      final now = Helpers.now;
+      _historyCursor = savedCursor != null && !savedCursor.isComplete
+          ? savedCursor
+          : DmHistoryCursor(
+              until: now,
+              intervalIndex: 0,
+              liveSince: now,
+            );
+    }
 
-    if ((_initSince == 0 && giftWrapNewestDateTime == null) ||
-        oldestUntil != null) {
-      _currentBatchUntil = oldestUntil ?? _currentBatchUntil;
+    _liveSubscriptionSince = _initSince != 0
+        ? _initSince
+        : (savedCursor?.liveSince ??
+            _historyCursor?.liveSince ??
+            (giftWrapNewestDateTime == null ? Helpers.now : null));
+    query();
 
-      final since = _currentBatchUntil -
-          _batchIntervals[_currentBatchIndex < _batchIntervals.length
-                  ? _currentBatchIndex
-                  : _batchIntervals.length - 1]
-              .inSeconds;
-
-      _emit(
-        state.copyWith(
-          isLoadingHistory: true,
-        ),
-      );
-
-      if (oldestUntil == null) {
-        localDatabaseRepository.setDmsHistoryOlderUntil(
-          currentSigner!.getPublicKey(),
-          _currentBatchUntil,
-        );
+    if (needsHistoryBackfill) {
+      if (!hasCachedHistory) {
+        _emit(state.copyWith(isLoadingHistory: true));
       }
-
-      queryAsync(
-        since: since,
-        until: _currentBatchUntil,
+      _scheduleHistoryBackfill(
+        pubkey: currentPubkey,
+        generation: generation,
+        delay: Duration.zero,
       );
-    } else {
-      query();
+    } else if (savedCursor?.isComplete ?? false) {
+      await localDatabaseRepository.deleteDmsHistoryOlderUntil(currentPubkey);
+      if (!_isCurrentDmLoad(generation, currentPubkey)) {
+        return;
+      }
+      _emit(state.copyWith(isLoadingHistory: false));
     }
   }
 
-  Future<void> queryAsync({
-    required int since,
-    required int until,
-  }) async {
-    if (!canSign()) {
+  bool _isCurrentDmLoad(int generation, String pubkey) {
+    return !isClosed &&
+        generation == _dmLoadGeneration &&
+        _activeDmPubkey == pubkey &&
+        currentSigner?.getPublicKey() == pubkey;
+  }
+
+  void _scheduleHistoryBackfill({
+    required String pubkey,
+    required int generation,
+    required Duration delay,
+  }) {
+    if (!_isCurrentDmLoad(generation, pubkey)) {
       return;
     }
 
-    final events = await NostrFunctionsRepository.getUserDmsAsync(
-      since: since,
-      until: until,
-    );
+    _historyBackfillTimer?.cancel();
+    _historyBackfillTimer = Timer(delay, () {
+      _historyBackfillTimer = null;
+      unawaited(_runHistoryBackfill(pubkey, generation));
+    });
+  }
 
-    final directMessages = events['directMessages']!;
-    final giftWraps = events['giftWraps']!;
+  Future<void> _runHistoryBackfill(String pubkey, int generation) async {
+    if (!_isCurrentDmLoad(generation, pubkey) ||
+        !canSign() ||
+        _historyRunGeneration == generation) {
+      return;
+    }
 
-    // Process events if we have any
-    if (directMessages.isNotEmpty || giftWraps.isNotEmpty) {
-      final processedGiftWraps = <Event>[];
+    _historyRunGeneration = generation;
+    try {
+      for (var page = 0; page < 5; page++) {
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
 
-      if (giftWraps.isNotEmpty) {
-        final decryptedChunk = await handleGiftWrapsAsync(giftWraps);
-        processedGiftWraps.addAll(decryptedChunk);
+        final cursor = _historyCursor;
+        if (cursor == null || cursor.isComplete) {
+          await localDatabaseRepository.deleteDmsHistoryOlderUntil(pubkey);
+          if (!_isCurrentDmLoad(generation, pubkey)) {
+            return;
+          }
+          _historyCursor = null;
+          _emit(state.copyWith(isLoadingHistory: false));
+          return;
+        }
+
+        final events = await NostrFunctionsRepository.getUserDmsAsync(
+          since: cursor.since,
+          until: cursor.until,
+        );
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
+
+        final decryptedGiftWraps = await handleGiftWrapsAsync(
+          events.giftWraps,
+          generation: generation,
+          pubkey: pubkey,
+        );
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
+
+        try {
+          await _processBackfilledEvents(
+            [...events.directMessages, ...decryptedGiftWraps.messages],
+            pubkey: pubkey,
+            generation: generation,
+          );
+        } catch (_) {
+          if (_isCurrentDmLoad(generation, pubkey)) {
+            _releaseHistoryGiftWraps(
+              decryptedGiftWraps.wrapIds,
+              generation: generation,
+              pubkey: pubkey,
+            );
+          }
+          rethrow;
+        }
+
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
+
+        for (final event in decryptedGiftWraps.messages) {
+          await setGiftWrapOldestDateTime(event, pubkey: pubkey);
+        }
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
+
+        if (!events.isComplete) {
+          _historyRetryCount++;
+          _scheduleHistoryBackfill(
+            pubkey: pubkey,
+            generation: generation,
+            delay: _historyRetryDelay,
+          );
+          return;
+        }
+
+        _historyRetryCount = 0;
+        final nextCursor = cursor.advance(
+          pageHasEvents:
+              events.directMessages.isNotEmpty || events.giftWraps.isNotEmpty,
+        );
+
+        if (nextCursor.isComplete) {
+          await localDatabaseRepository.deleteDmsHistoryOlderUntil(pubkey);
+          if (!_isCurrentDmLoad(generation, pubkey)) {
+            return;
+          }
+          _historyCursor = null;
+          _emit(state.copyWith(isLoadingHistory: false));
+          return;
+        }
+
+        final saved = await localDatabaseRepository.setDmsHistoryProgress(
+          pubkey,
+          nextCursor,
+        );
+        if (!_isCurrentDmLoad(generation, pubkey)) {
+          return;
+        }
+        if (!saved) {
+          throw StateError('Could not persist DM history cursor.');
+        }
+
+        _historyCursor = nextCursor;
+        await Future<void>.delayed(const Duration(milliseconds: 200));
       }
 
-      final allEvents = [...directMessages, ...processedGiftWraps];
-      eventLaterHandle(allEvents);
-    }
-
-    // Wait before next query
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Determine next batch index
-    if (directMessages.isEmpty && giftWraps.isEmpty) {
-      _currentBatchIndex++;
-    }
-
-    // Check if we've reached the end of all batches
-    if (_currentBatchIndex >= _batchIntervals.length) {
-      _emit(
-        state.copyWith(
-          isLoadingHistory: false,
-        ),
+      _scheduleHistoryBackfill(
+        pubkey: pubkey,
+        generation: generation,
+        delay: const Duration(seconds: 2),
       );
-      localDatabaseRepository.deleteDmsHistoryOlderUntil(
-        currentSigner!.getPublicKey(),
-      );
-      query();
-      return;
+    } catch (e) {
+      if (_isCurrentDmLoad(generation, pubkey)) {
+        lg.e('DM history backfill failed: $e');
+        _historyRetryCount++;
+        _scheduleHistoryBackfill(
+          pubkey: pubkey,
+          generation: generation,
+          delay: _historyRetryDelay,
+        );
+      }
+    } finally {
+      if (_historyRunGeneration == generation) {
+        _historyRunGeneration = null;
+      }
     }
+  }
 
-    // Calculate next time range
-    _currentBatchUntil = since - 1;
-    final newSince = _currentBatchUntil -
-        _batchIntervals[_currentBatchIndex < _batchIntervals.length
-                ? _currentBatchIndex
-                : _batchIntervals.length - 1]
-            .inSeconds;
-
-    // Update database with current progress
-    localDatabaseRepository.setDmsHistoryOlderUntil(
-      currentSigner!.getPublicKey(),
-      _currentBatchUntil,
-    );
-
-    // Recursively query next batch
-    queryAsync(
-      since: newSince,
-      until: _currentBatchUntil,
-    );
+  Duration get _historyRetryDelay {
+    final exponent = (_historyRetryCount - 1).clamp(0, 4);
+    final seconds = (1 << exponent).clamp(1, 15);
+    return Duration(seconds: seconds);
   }
 
   static Future<List<Event>> _handleGiftWrapsInIsolate(
@@ -962,6 +1081,126 @@ class DmsCubit extends Cubit<DmsState>
     };
   }
 
+  Future<({List<Event> messages, Set<String> wrapIds})> handleGiftWrapsAsync(
+    List<Event> events, {
+    required int generation,
+    required String pubkey,
+  }) async {
+    final toBeProcessedEvents = <Event>[];
+    final wrapIds = <String>{};
+
+    for (final giftWrap in events) {
+      if (_processedEventIds.contains(giftWrap.id) ||
+          _giftWrapsInFlight.contains(giftWrap.id) ||
+          !giftWrapIds.add(giftWrap.id)) {
+        continue;
+      }
+
+      _processedEventIds.add(giftWrap.id);
+      _giftWrapsInFlight.add(giftWrap.id);
+      wrapIds.add(giftWrap.id);
+      toBeProcessedEvents.add(giftWrap);
+    }
+
+    if (toBeProcessedEvents.isEmpty) {
+      return (messages: <Event>[], wrapIds: wrapIds);
+    }
+
+    try {
+      if (!_isCurrentDmLoad(generation, pubkey)) {
+        return (messages: <Event>[], wrapIds: <String>{});
+      }
+
+      final signer = currentSigner!;
+      final List<Event> messages;
+      if (signer is AmberEventSigner) {
+        // Amber decrypts through a platform channel, which cannot run inside
+        // compute()'s background isolate.
+        messages = <Event>[];
+        for (final giftWrap in toBeProcessedEvents) {
+          final message = await signer.decrypt44Event(giftWrap);
+          if (message?.kind == EventKind.PRIVATE_DIRECT_MESSAGE) {
+            messages.add(message!);
+          }
+        }
+      } else if (signer is Bip340EventSigner) {
+        messages = await compute(_handleGiftWrapsInIsolate, {
+          'giftWraps':
+              toBeProcessedEvents.map((event) => event.toJson()).toList(),
+          'signerData': _getCurrentSignerData(),
+        });
+      } else {
+        throw StateError('Unsupported signer for DM history decryption.');
+      }
+
+      if (!_isCurrentDmLoad(generation, pubkey)) {
+        return (messages: <Event>[], wrapIds: <String>{});
+      }
+
+      _giftWrapsInFlight.removeAll(wrapIds);
+      return (messages: messages, wrapIds: wrapIds);
+    } catch (_) {
+      if (_isCurrentDmLoad(generation, pubkey)) {
+        _releaseHistoryGiftWraps(
+          wrapIds,
+          generation: generation,
+          pubkey: pubkey,
+        );
+      }
+      rethrow;
+    }
+  }
+
+  void _releaseHistoryGiftWraps(
+    Iterable<String> wrapIds, {
+    required int generation,
+    required String pubkey,
+  }) {
+    if (!_isCurrentDmLoad(generation, pubkey)) {
+      return;
+    }
+
+    for (final wrapId in wrapIds) {
+      _giftWrapsInFlight.remove(wrapId);
+      giftWrapIds.remove(wrapId);
+      _processedEventIds.remove(wrapId);
+    }
+  }
+
+  Future<void> _processBackfilledEvents(
+    List<Event> events, {
+    required String pubkey,
+    required int generation,
+  }) async {
+    final newEvents = <Event>[];
+    for (final event in events) {
+      if (_processedEventIds.add(event.id)) {
+        event.currentUser = pubkey;
+        newEvents.add(event);
+      }
+    }
+
+    if (newEvents.isEmpty) {
+      return;
+    }
+
+    try {
+      await nc.db.saveEvents(newEvents);
+      if (!_isCurrentDmLoad(generation, pubkey)) {
+        return;
+      }
+
+      _handleEvents(newEvents, persistEvents: false);
+    } catch (_) {
+      if (_isCurrentDmLoad(generation, pubkey)) {
+        for (final event in newEvents) {
+          _processedEventIds.remove(event.id);
+        }
+      }
+      rethrow;
+    }
+  }
+
   void onEvent(Event event) {
     // Skip events we already processed from cache
     if (_processedEventIds.contains(event.id)) {
@@ -980,100 +1219,102 @@ class DmsCubit extends Cubit<DmsState>
     }
   }
 
-  // MODIFIED: Handle gift wraps - skip cached ones
-  Future<List<Event>> handleGiftWrapsAsync(List<Event> events) async {
-    final toBeProcessedEvents = <Event>[];
-    final processedEvents = <Event>[];
-
-    Event? newest;
-
-    for (final gwe in events) {
-      if (_processedEventIds.contains(gwe.id) || !giftWrapIds.add(gwe.id)) {
-        continue;
-      }
-
-      _processedEventIds.add(gwe.id);
-      toBeProcessedEvents.add(gwe);
-    }
-
-    if (toBeProcessedEvents.isNotEmpty) {
-      final data = await compute(_handleGiftWrapsInIsolate, {
-        'giftWraps': toBeProcessedEvents.map((e) => e.toJson()).toList(),
-        'signerData': _getCurrentSignerData(),
-      });
-
-      if (data.isNotEmpty) {
-        for (final e in data) {
-          if (newest == null || newest.createdAt < e.createdAt) {
-            newest = e;
-          }
-        }
-
-        setGiftWrapOldestDateTime(newest!);
-      }
-    }
-
-    return processedEvents;
-  }
-
-  Future<void> handleGiftWraps(Event gwe) async {
-    if (_processedEventIds.contains(gwe.id) || !giftWrapIds.add(gwe.id)) {
+  Future<void> handleGiftWraps(
+    Event gwe, {
+    int? generation,
+    String? pubkey,
+  }) async {
+    final currentPubkey = pubkey ?? currentSigner?.getPublicKey();
+    final currentGeneration = generation ?? _dmLoadGeneration;
+    if (currentPubkey == null ||
+        !_isCurrentDmLoad(currentGeneration, currentPubkey) ||
+        _processedEventIds.contains(gwe.id) ||
+        _giftWrapsInFlight.contains(gwe.id) ||
+        !giftWrapIds.add(gwe.id)) {
       return;
     }
 
-    _processedEventIds.add(gwe.id);
+    _giftWrapsInFlight.add(gwe.id);
+    Event? event;
+    try {
+      event = await currentSigner!.decrypt44Event(gwe);
+    } catch (e) {
+      if (_isCurrentDmLoad(currentGeneration, currentPubkey)) {
+        _giftWrapsInFlight.remove(gwe.id);
+        giftWrapIds.remove(gwe.id);
+      }
+      lg.i('Could not decrypt incoming DM gift wrap: $e');
+      return;
+    }
 
+    if (!_isCurrentDmLoad(currentGeneration, currentPubkey)) {
+      return;
+    }
+    _giftWrapsInFlight.remove(gwe.id);
+
+    _processedEventIds.add(gwe.id);
     if (_isStreamingMode) {
       queueEvent(gwe);
     } else {
-      onEvent(gwe);
+      eventLaterHandle([gwe]);
     }
 
-    final event = await currentSigner!.decrypt44Event(gwe);
-
     if (event != null && event.kind == EventKind.PRIVATE_DIRECT_MESSAGE) {
-      if (!_processedEventIds.contains(event.id)) {
-        _processedEventIds.add(event.id);
-
+      if (_processedEventIds.add(event.id)) {
         if (_isStreamingMode) {
           queueEvent(event);
         } else {
-          onEvent(event);
+          eventLaterHandle([event]);
         }
 
-        setGiftWrapOldestDateTime(event);
+        await setGiftWrapOldestDateTime(event, pubkey: currentPubkey);
       }
     }
   }
 
-  // MODIFIED: Query only processes truly new events
-  Future<void> query() async {
-    if (!canSign()) {
+  void query() {
+    final pubkey = _activeDmPubkey;
+    final generation = _dmLoadGeneration;
+    if (!canSign() ||
+        pubkey == null ||
+        dmsSubscriptionId != null ||
+        !_isCurrentDmLoad(generation, pubkey)) {
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (dmsSubscriptionId != null) {
-      nc.closeRequests([dmsSubscriptionId!]);
-    }
-
-    dmsSubscriptionId = NostrFunctionsRepository.getUserDms(
-      since: _initSince != 0 ? _initSince : null,
-      since1059: giftWrapNewestDateTime,
+    final subscriptionId = NostrFunctionsRepository.getUserDms(
+      since: _initSince != 0 ? _initSince : _liveSubscriptionSince,
+      since1059: giftWrapNewestDateTime ?? _liveSubscriptionSince,
       kind1059Events: (giftEvent) {
-        handleGiftWraps(giftEvent);
+        if (_isCurrentDmLoad(generation, pubkey)) {
+          unawaited(
+            handleGiftWraps(
+              giftEvent,
+              generation: generation,
+              pubkey: pubkey,
+            ),
+          );
+        }
       },
       kind4Events: (dmEvent) {
-        onEvent(dmEvent);
+        if (_isCurrentDmLoad(generation, pubkey)) {
+          onEvent(dmEvent);
+        }
       },
     );
+
+    if (_isCurrentDmLoad(generation, pubkey)) {
+      dmsSubscriptionId = subscriptionId;
+    } else {
+      nc.closeRequests([subscriptionId]);
+    }
   }
 
   // Load cached events using original logic (fast, no queue)
   Future<void> _loadCachedEventsNormally(
-    String currentPubkey,
-  ) async {
+    String currentPubkey, {
+    required int generation,
+  }) async {
     // Load all cached events
     final events = await nc.db.loadEvents(
       f: Filter(
@@ -1107,6 +1348,10 @@ class DmsCubit extends Cubit<DmsState>
       currentUser: currentPubkey,
     );
 
+    if (!_isCurrentDmLoad(generation, currentPubkey)) {
+      return;
+    }
+
     if (localGiftWraps.isNotEmpty) {
       giftWrapIds = {for (final v in localGiftWraps) v.id};
     }
@@ -1122,14 +1367,19 @@ class DmsCubit extends Cubit<DmsState>
     _processedEventIds.addAll(localGiftWraps.map((e) => e.id));
 
     // Process cached events using ORIGINAL logic (no queue overhead)
-    await _processCachedEvents(events, currentPubkey);
+    await _processCachedEvents(
+      events,
+      currentPubkey,
+      generation: generation,
+    );
   }
 
   // Process cached events with original logic - fast and efficient
   Future<void> _processCachedEvents(
     List<Event> events,
-    String currentPubkey,
-  ) async {
+    String currentPubkey, {
+    required int generation,
+  }) async {
     final Map<String, List<Event>> eventListMap = {};
 
     // Group events by pubkey
@@ -1147,6 +1397,9 @@ class DmsCubit extends Cubit<DmsState>
 
     // Load session info
     final dmSessions = await nc.db.loadDmSessionsInfo(currentPubkey);
+    if (!_isCurrentDmLoad(generation, currentPubkey)) {
+      return;
+    }
 
     infoMap = {};
 
@@ -1223,16 +1476,24 @@ class DmsCubit extends Cubit<DmsState>
     }
   }
 
-  void setGiftWrapOldestDateTime(Event event) {
+  Future<void> setGiftWrapOldestDateTime(
+    Event event, {
+    String? pubkey,
+  }) async {
+    final currentPubkey = pubkey ?? currentSigner?.getPublicKey();
+    if (currentPubkey == null ||
+        currentSigner?.getPublicKey() != currentPubkey ||
+        (_activeDmPubkey != null && _activeDmPubkey != currentPubkey)) {
+      return;
+    }
+
     if (giftWrapNewestDateTime == null ||
         event.createdAt > giftWrapNewestDateTime!) {
       giftWrapNewestDateTime = event.createdAt;
-      if (canSign()) {
-        localDatabaseRepository.setNewestGiftWrap(
-          currentSigner!.getPublicKey(),
-          event.createdAt,
-        );
-      }
+      await localDatabaseRepository.setNewestGiftWrap(
+        currentPubkey,
+        event.createdAt,
+      );
     }
   }
 
@@ -1258,6 +1519,13 @@ class DmsCubit extends Cubit<DmsState>
 
   @override
   void eventLaterHandle(List<Event> events, {bool updateUI = true}) {
+    _handleEvents(events, persistEvents: true);
+  }
+
+  void _handleEvents(
+    List<Event> events, {
+    required bool persistEvents,
+  }) {
     bool updated = false;
     final List<Event> toSave = [];
 
@@ -1272,7 +1540,9 @@ class DmsCubit extends Cubit<DmsState>
     }
 
     if (updated) {
-      nc.db.saveEvents(toSave);
+      if (persistEvents && toSave.isNotEmpty) {
+        unawaited(nc.db.saveEvents(toSave));
+      }
 
       // Mark that we have pending updates but don't emit yet
       _hasPendingUpdates = true;
@@ -1543,6 +1813,16 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   void clear() {
+    _dmLoadGeneration++;
+    _activeDmPubkey = null;
+    _historyBackfillTimer?.cancel();
+    _historyBackfillTimer = null;
+    _historyCursor = null;
+    _historyRetryCount = 0;
+    _historyRunGeneration = null;
+    _liveSubscriptionSince = null;
+    _isStreamingMode = false;
+
     if (dmsSubscriptionId != null) {
       nc.closeRequests([dmsSubscriptionId!]);
       dmsSubscriptionId = null;
@@ -1550,14 +1830,18 @@ class DmsCubit extends Cubit<DmsState>
 
     // Clear the event queue
     clearEventQueue();
+    disposeLater();
 
     infoMap = {};
     giftWrapIds = {};
+    _giftWrapsInFlight.clear();
+    _processedEventIds = {};
     _initSince = 0;
     giftWrapNewestDateTime = null;
     selectedDmSessionDetail = null;
-    _currentBatchIndex = 0;
-    _currentBatchUntil = Helpers.now;
+    _pendingSessionUpdates.clear();
+    _uiUpdateTimer?.cancel();
+    _uiUpdateTimer = null;
 
     sendNotificationTimer?.cancel();
     _emit(
@@ -1644,10 +1928,20 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    _dmLoadGeneration++;
+    _activeDmPubkey = null;
+    _historyBackfillTimer?.cancel();
+    _uiUpdateTimer?.cancel();
+    sendNotificationTimer?.cancel();
+    disposeLater();
     clearEventQueue();
-    followingsSubscription.cancel();
-    muteListSubscription.cancel();
-    return super.close();
+    if (dmsSubscriptionId != null) {
+      nc.closeRequests([dmsSubscriptionId!]);
+      dmsSubscriptionId = null;
+    }
+    await followingsSubscription.cancel();
+    await muteListSubscription.cancel();
+    await super.close();
   }
 }

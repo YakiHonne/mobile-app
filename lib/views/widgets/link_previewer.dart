@@ -623,6 +623,7 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
       _usedUrl,
       _ownerId,
       autoPlay: widget.autoPlay ?? false,
+      looping: widget.loop ?? true,
       removeControls: widget.removeControls,
       isNetwork: widget.isNetwork,
       fallbackUrls: widget.fallbackUrls,
@@ -631,6 +632,10 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
         _usedUrl = url;
       },
       onDownloadVideo: (url) {
+        if (!mounted) {
+          return;
+        }
+
         showAdaptiveModal(
           context,
           builder: (_) {

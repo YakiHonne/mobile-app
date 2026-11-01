@@ -65,7 +65,11 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   NostrCore wnc = NostrCore(db: nc.db, loadRemoteCache: false);
   Map<String, int> btcInFiat = {};
+  DateTime? _btcRatesFetchedAt;
+  Future<void>? _btcRatesRequest;
   int index = -1;
+
+  static const Duration _btcRatesFreshness = Duration(minutes: 30);
 
   final AppLifecycleNotifier _appLifecycleNotifier = AppLifecycleNotifier();
 
@@ -97,7 +101,6 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       );
 
       _requestBalanceForSelectedWallet(wallets[selectedWalletId]);
-      getBtcInFiat();
     } catch (e) {
       _logError('Failed to initialize wallet cubit', e);
     }
@@ -204,17 +207,21 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   }) async {
     final cancel = BotToastUtils.showLoading();
 
-    final wallet = await _createWalletOnServer(name);
-
-    if (wallet != null && context.mounted) {
-      addNwc(wallet);
-      _showWalletCreatedSuccess(context);
-      await _showExportWalletModal(context, wallet);
-    } else {
-      _showWalletCreationError(context);
+    try {
+      final wallet = await _createWalletOnServer(name);
+      if (!context.mounted) {
+        return;
+      }
+      if (wallet != null) {
+        addNwc(wallet);
+        _showWalletCreatedSuccess(context);
+        await _showExportWalletModal(context, wallet);
+      } else {
+        _showWalletCreationError(context);
+      }
+    } finally {
+      cancel();
     }
-
-    cancel();
   }
 
   Future<String?> _createWalletOnServer(String name) async {
@@ -231,9 +238,10 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
       return secret is String ? secret : null;
     } on DioException catch (e) {
-      lg.i(e.response?.data['message']);
-      BotToastUtils.showError(
-          e.response?.data['message'] ?? t.errorCreatingWallet);
+      final data = e.response?.data;
+      final message = data is Map ? data['message'] : null;
+      lg.i(message);
+      BotToastUtils.showError(message ?? t.errorCreatingWallet);
       return null;
     } catch (e) {
       lg.i(e);
@@ -249,6 +257,9 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   Future<void> _showExportWalletModal(
       BuildContext context, String wallet) async {
     await Future.delayed(const Duration(seconds: 1));
+    if (!context.mounted) {
+      return;
+    }
     final walletDetails = Uri.parse(wallet);
 
     showBlurredModal(
@@ -801,7 +812,49 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     }
   }
 
+  Future<void> ensureBtcInFiat() async {
+    final fetchedAt = _btcRatesFetchedAt;
+    if (btcInFiat.isNotEmpty &&
+        fetchedAt != null &&
+        DateTime.now().difference(fetchedAt) < _btcRatesFreshness) {
+      return;
+    }
+
+    await _fetchBtcInFiat();
+  }
+
   Future<void> getBtcInFiat() async {
+    await _fetchBtcInFiat(forceRefresh: true);
+  }
+
+  Future<void> _fetchBtcInFiat({bool forceRefresh = false}) async {
+    if (!forceRefresh) {
+      final fetchedAt = _btcRatesFetchedAt;
+      if (btcInFiat.isNotEmpty &&
+          fetchedAt != null &&
+          DateTime.now().difference(fetchedAt) < _btcRatesFreshness) {
+        return;
+      }
+    }
+
+    final inFlightRequest = _btcRatesRequest;
+    if (inFlightRequest != null) {
+      await inFlightRequest;
+      return;
+    }
+
+    final request = _loadBtcInFiat();
+    _btcRatesRequest = request;
+    try {
+      await request;
+    } finally {
+      if (identical(_btcRatesRequest, request)) {
+        _btcRatesRequest = null;
+      }
+    }
+  }
+
+  Future<void> _loadBtcInFiat() async {
     try {
       final res = await HttpFunctionsRepository.get(
         'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currencies.keys.join(',')}',
@@ -809,10 +862,22 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
       if (res != null) {
         final data = res['bitcoin'];
+        final updatedRates = Map<String, int>.from(btcInFiat);
         for (final f in currencies.keys) {
-          btcInFiat[f] =
-              data[f] != null ? num.parse(data[f].toString()).toInt() : -1;
+          final rate = data[f];
+          if (rate != null) {
+            updatedRates[f] = num.parse(rate.toString()).toInt();
+          } else {
+            updatedRates.putIfAbsent(f, () => -1);
+          }
         }
+
+        btcInFiat = updatedRates;
+        _btcRatesFetchedAt = DateTime.now();
+        if (!isClosed) {
+          _emitRefresh();
+        }
+        await getSatsToFiat();
       }
     } catch (e) {
       _logError('Failed to get BTC price', e);
@@ -821,7 +886,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   double getBtcInFiatFromAmount(int amount) {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (current == null || current <= 0) {
       return -1;
     } else {
       final availableBTC = amount / 100000000;
@@ -831,7 +896,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   double getFiatInBtcFromAmount(int amount) {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (current == null || current <= 0) {
       return -1;
     } else {
       final availableBTC = amount * 100000000;
@@ -841,7 +906,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
 
   Future<void> getSatsToFiat() async {
     final current = btcInFiat[state.activeCurrency];
-    if (current == null || current == 0) {
+    if (state.balance < 0 || current == null || current <= 0) {
       _updateFiatBalance(-1);
     } else {
       final availableBTC = state.balance / 100000000;
@@ -1068,7 +1133,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     Function(bool)? onFinished,
     bool useDefaultWallet = false,
   }) async {
-    if (invoice.key.isEmpty || !invoice.key.toLowerCase().startsWith('lnbc')) {
+    if (invoice.key.isEmpty || extractLnbc(invoice.key.toLowerCase()) == null) {
       final message = mainContext.t.submitValidInvoice.capitalizeFirst();
       _handlePaymentFailure(onFailure, message);
       return;
@@ -1204,7 +1269,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     Function(String)? onFailure,
     bool useDefaultWallet = false,
   }) async {
-    if (invoice.isEmpty || !invoice.toLowerCase().startsWith('lnbc')) {
+    if (invoice.isEmpty || extractLnbc(invoice) == null) {
       final message = mainContext.t.submitValidInvoice.capitalizeFirst();
       _handlePaymentFailure(onFailure, message);
       return;
@@ -1813,6 +1878,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? invoice,
     bool useExternalWallet = false,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) {
     if (state.selectedWalletId.isNotEmpty && !useExternalWallet) {
       final selectedWallet = state.wallets[state.selectedWalletId];
@@ -1832,6 +1898,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
           walletModel: selectedWallet,
           pollOption: pollOption,
           extraTags: extraTags,
+          removeNostrEvent: removeNostrEvent,
         );
       } else {
         onFailure.call(mainContext.t.errorUsingWallet.capitalizeFirst());
@@ -1847,6 +1914,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
         onFinished: onFinished,
         pollOption: pollOption,
         extraTags: extraTags,
+        removeNostrEvent: removeNostrEvent,
       );
     }
   }
@@ -1877,6 +1945,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? pollOption,
     String? externalInvoice,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) async {
     _setZapLoadingState();
 
@@ -1897,6 +1966,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
               comment: comment.isEmpty ? null : comment,
               eventId: eventId,
               aTag: aTag,
+              removeNostrEvent: removeNostrEvent,
               pollOption: pollOption,
               extraTags: extraTags,
             );
@@ -1999,6 +2069,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
     String? pollOption,
     String? externalInvoice,
     List<List<String>>? extraTags,
+    bool? removeNostrEvent,
   }) async {
     if (state.defaultExternalWallet.isEmpty) {
       onFailure.call(mainContext.t.selectDefaultWallet.capitalizeFirst());
@@ -2015,6 +2086,7 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
       aTag: aTag,
       pollOption: pollOption,
       extraTags: extraTags,
+      removeNostrEvent: removeNostrEvent,
       currentSigner!,
       {...currentUserRelayList.reads, ...mandatoryRelays}.toList(),
       specifiedWallet: wallets[state.defaultExternalWallet]!['deeplink'],

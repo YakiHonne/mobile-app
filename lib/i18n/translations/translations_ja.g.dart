@@ -307,6 +307,12 @@ class TranslationsJa extends Translations {
 	@override String get following => 'フォロー中';
 	@override String get trending => 'トレンド';
 	@override String get highlights => 'ハイライト';
+	@override String get highlight => 'ハイライト';
+	@override String get highlighted => 'ハイライト済み';
+	@override String get highlightedFrom => 'ハイライト元';
+	@override String get untitledArticle => '無題の記事';
+	@override String get untitledNote => '無題のノート';
+	@override String get loadingSource => 'ソースを読み込み中…';
 	@override String get paid => '有料';
 	@override String get others => 'その他';
 	@override String get suggestionsBox => '提案ボックス';
@@ -895,6 +901,10 @@ class TranslationsJa extends Translations {
 	@override String get fetchingUserInboxRelays => 'ユーザー受信箱リレー取得中';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} が ${number} sats zapしました';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応';
+	@override String get highlightsDesc => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました';
+	@override String userHighlightedYourContent({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました';
 	@override String userRepostedYou({required Object name}) => '${name} があなたのコンテンツをリポスト';
 	@override String userMentionedYouInComment({required Object name}) => '${name} がコメントであなたをメンション';
 	@override String userMentionedYouInNote({required Object name}) => '${name} がノートであなたをメンション';
@@ -1129,6 +1139,8 @@ class TranslationsJa extends Translations {
 	@override String get shareWidgetImage => 'ウィジェット画像共有';
 	@override String get inputField => '入力フィールド';
 	@override String get noReplies => '返信なし';
+	@override String get noVisibleReplies => '表示できる返信はありません';
+	@override String get spamRepliesHiddenHint => 'スパムの可能性がある返信は下に非表示です。';
 	@override String get message => 'メッセージ';
 	@override String get chat => 'チャット';
 	@override String get onlyLettersNumber => '文字と数字のみ許可';
@@ -2152,7 +2164,7 @@ class TranslationsJa extends Translations {
 	@override String get googleManageUnlinkDesc => 'このアカウントをセントラルから削除します。秘密鍵で再度サインインしてください。';
 	@override String get pricing_restore_purchases => '購入を復元';
 	@override String get pricing_manage_on_store => 'サブスクリプションを管理';
-	@override String get pricing_web_managed => 'yakihonne.proで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。';
+	@override String get pricing_web_managed => 'yakihonne.comで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。';
 	@override String get sub_managed_via_web => 'サブスクリプションは有効です。';
 	@override String get pricing_toggle_store => '🛍️ ストア';
 	@override String get pricing_toggle_points => '🏆 ポイント';
@@ -2230,6 +2242,13 @@ class TranslationsJa extends Translations {
 	@override String get pastDue => '支払い延滞';
 	@override String get unpaid => '未払い';
 	@override String get incomplete => '未完了';
+	@override String get spamFilter => 'スパムの可能性がある返信のフィルター';
+	@override String get spamFilterDesc => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。';
+	@override String seePotentialSpams({required Object count}) => 'スパムの可能性がある投稿を${count}件表示';
+	@override String get showSpamReplies => 'スパムの可能性がある返信を表示';
+	@override String get hideSpamReplies => 'スパムの可能性がある返信を非表示';
+	@override String get markAsSpam => 'スパムとしてマーク';
+	@override String get notSpam => 'スパムではない';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -2516,6 +2535,12 @@ extension on TranslationsJa {
 			'following' => 'フォロー中',
 			'trending' => 'トレンド',
 			'highlights' => 'ハイライト',
+			'highlight' => 'ハイライト',
+			'highlighted' => 'ハイライト済み',
+			'highlightedFrom' => 'ハイライト元',
+			'untitledArticle' => '無題の記事',
+			'untitledNote' => '無題のノート',
+			'loadingSource' => 'ソースを読み込み中…',
 			'paid' => '有料',
 			'others' => 'その他',
 			'suggestionsBox' => '提案ボックス',
@@ -2754,18 +2779,18 @@ extension on TranslationsJa {
 			'votesByUsers' => 'ユーザーによる投票',
 			'alreadyVoted' => 'このポールで既に投票済みです',
 			'userCannotBeFound' => 'ユーザーが見つかりません',
-			'votesNumber' => ({required Object number}) => '投票: ${number}',
-			'voteRequired' => '統計を表示するには投票が必要です。',
-			'showStats' => '統計を表示',
-			'pollClosesAt' => ({required Object date}) => '閉鎖: ${date}',
-			'pollClosedAt' => ({required Object date}) => '閉鎖: ${date}',
-			'checkSmartWidget' => 'スマートウィジェットをチェック',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => '投票: ${number}',
+			'voteRequired' => '統計を表示するには投票が必要です。',
+			'showStats' => '統計を表示',
+			'pollClosesAt' => ({required Object date}) => '閉鎖: ${date}',
+			'pollClosedAt' => ({required Object date}) => '閉鎖: ${date}',
+			'checkSmartWidget' => 'スマートウィジェットをチェック',
 			'emptyVerifiedNote' => '検証済みノートの内容が空です！',
 			'post' => '投稿',
 			'seeAnything' => '改善できるものが見えますか？',
@@ -3110,6 +3135,10 @@ extension on TranslationsJa {
 			'fetchingUserInboxRelays' => 'ユーザー受信箱リレー取得中',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} が ${number} sats zapしました',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} があなたに ${reaction} 反応',
+			'highlightsDesc' => '誰かがあなたのコンテンツをハイライトすると通知を受け取ります。',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name}さんがあなたの記事の一部をハイライトしました',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name}さんがあなたのノートの一部をハイライトしました',
+			'userHighlightedYourContent' => ({required Object name}) => '${name}さんがあなたのコンテンツをハイライトしました',
 			'userRepostedYou' => ({required Object name}) => '${name} があなたのコンテンツをリポスト',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} がコメントであなたをメンション',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} がノートであなたをメンション',
@@ -3268,6 +3297,12 @@ extension on TranslationsJa {
 			'circuit' => '回路',
 			'votingSystem' => '投票システム',
 			'proofSystem' => '証明システム',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => 'ガソリンスタンド',
 			'totalFund' => '(総資金)',
 			'roundStart' => 'ラウンド開始',
@@ -3278,12 +3313,6 @@ extension on TranslationsJa {
 			'blockHeight' => 'ブロック高さ',
 			'atContractCreation' => ({required Object number}) => '${number} (コントラクト作成時)',
 			'zkProofs' => 'ZK証明',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => '証明ダウンロード',
 			'walletConnectionString' => 'ウォレット接続文字列',
 			'walletConnectionStringDesc' => 'ウォレット接続文字列を安全にコピーまたはエクスポートしてください。私たちはこの情報を保存せず、失われた場合回復できません。',
@@ -3350,6 +3379,8 @@ extension on TranslationsJa {
 			'shareWidgetImage' => 'ウィジェット画像共有',
 			'inputField' => '入力フィールド',
 			'noReplies' => '返信なし',
+			'noVisibleReplies' => '表示できる返信はありません',
+			'spamRepliesHiddenHint' => 'スパムの可能性がある返信は下に非表示です。',
 			'message' => 'メッセージ',
 			'chat' => 'チャット',
 			'onlyLettersNumber' => '文字と数字のみ許可',
@@ -3784,6 +3815,12 @@ extension on TranslationsJa {
 			'redeemEcashDesc' => 'ecashトークンをウォレットに換金',
 			'depositDesc' => 'satsを入金して新しいecashトークンを発行',
 			'pasteToken' => 'トークンを貼り付け',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => 'スキャン',
 			'tokenDetails' => 'トークン詳細',
 			'issuingMint' => '発行Mint',
@@ -3796,12 +3833,6 @@ extension on TranslationsJa {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'Mintリストの更新中にエラーが発生しました',
 			'active' => 'アクティブ',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => '非アクティブ',
 			'addCashuWallet' => 'Cashuウォレットを追加して、nostr経由でEcashの送受信を開始します。',
 			'mintUrl' => 'Mint URL',
@@ -4302,6 +4333,12 @@ extension on TranslationsJa {
 			'pomAuthenticating' => 'Googleで認証しています…',
 			'pomCheckingAccount' => 'アカウントを確認しています…',
 			'pomCreatingAccount' => 'アカウントを作成しています…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => '秘密鍵を保存してください',
 			'pomSaveKeyDesc' => '秘密鍵が生成されました。アカウントを作成する前に安全に保存してください。',
 			'pomCreateAccount' => 'アカウントを作成',
@@ -4314,12 +4351,6 @@ extension on TranslationsJa {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '${collected}/${threshold} 個のシャードを取得',
 			'pomRecoverSuccess' => '秘密鍵を復元しました',
 			'pomDownloadKey' => '鍵をダウンロード',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => 'アカウントの連携解除',
 			'pomUnlinkIntro' => 'まず秘密鍵を復元してコピーしてください。連携解除後に再度サインインするために必要です。',
 			'pomUnlinkContinue' => '鍵を保存しました — 続行',
@@ -4385,7 +4416,7 @@ extension on TranslationsJa {
 			'googleManageUnlinkDesc' => 'このアカウントをセントラルから削除します。秘密鍵で再度サインインしてください。',
 			'pricing_restore_purchases' => '購入を復元',
 			'pricing_manage_on_store' => 'サブスクリプションを管理',
-			'pricing_web_managed' => 'yakihonne.proで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。',
+			'pricing_web_managed' => 'yakihonne.comで管理されている有効なサブスクリプションがあります。プランの変更や解約はそちらで行ってください。',
 			'sub_managed_via_web' => 'サブスクリプションは有効です。',
 			'pricing_toggle_store' => '🛍️ ストア',
 			'pricing_toggle_points' => '🏆 ポイント',
@@ -4463,6 +4494,13 @@ extension on TranslationsJa {
 			'pastDue' => '支払い延滞',
 			'unpaid' => '未払い',
 			'incomplete' => '未完了',
+			'spamFilter' => 'スパムの可能性がある返信のフィルター',
+			'spamFilterDesc' => 'スパムのように見える投稿者の返信を折りたたみます。いつでも展開できます。',
+			'seePotentialSpams' => ({required Object count}) => 'スパムの可能性がある投稿を${count}件表示',
+			'showSpamReplies' => 'スパムの可能性がある返信を表示',
+			'hideSpamReplies' => 'スパムの可能性がある返信を非表示',
+			'markAsSpam' => 'スパムとしてマーク',
+			'notSpam' => 'スパムではない',
 			_ => null,
 		};
 	}

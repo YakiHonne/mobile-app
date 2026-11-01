@@ -57,7 +57,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: LucideIcons.chevronLeft,
                 onClicked: onBackClicked ??
                     () {
-                      Navigator.pop(context);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     },
               ),
             ),

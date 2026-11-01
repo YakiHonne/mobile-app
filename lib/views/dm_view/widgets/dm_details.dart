@@ -774,6 +774,9 @@ class DmTextfieldBox extends StatelessWidget {
         replyId: replyId.value,
         onFailed: () {},
         onSuccess: () {
+          if (!context.mounted) {
+            return;
+          }
           _clearReplyAndScroll();
           Navigator.pop(context);
         },
@@ -815,6 +818,9 @@ class DmTextfieldBox extends StatelessWidget {
         finalText,
         replyId.value,
         () {
+          if (!context.mounted) {
+            return;
+          }
           _clearMessageInput();
           _clearReplyAndScroll();
         },
@@ -847,7 +853,8 @@ class DmTextfieldBox extends StatelessWidget {
     replyPubkey.value = null;
     replyText.value = null;
 
-    if ((dmsCubit.state.dmSessionDetails[pubkey]?.dmSession.length() ?? 0) >
+    if (scrollController.hasClients &&
+        (dmsCubit.state.dmSessionDetails[pubkey]?.dmSession.length() ?? 0) >
         0) {
       scrollController.animateTo(
         0.0,

@@ -144,6 +144,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     String id, {
     bool r = false,
     bool includeComments = false,
+    String? authorPubkey,
   }) async {
     _requestedStatIds.add(id);
     EventStats? eventStats = state.eventsStats[id];
@@ -167,13 +168,28 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       aTags: r ? [id] : [],
       since: eventStats != null ? eventStats.newestCreatedAt + 1 : null,
       includeComments: includeComments,
-    ).listen(
-      (event) {
-        // _handleContentStats batches internally (300ms buffer), so events
-        // can be handed over one by one.
-        _handleContentStats([event]);
-      },
-    );
+      authorPubkey: authorPubkey,
+    ).listen((event) => _handleContentStats([event]));
+
+    // .listen(
+    //   (event) {
+    //     received = true;
+    //     if (!isClosed) {
+    //       _applyEventsBatch([event]);
+    //     }
+    //   },
+    //   onDone: () {
+    //     if (isClosed) {
+    //       return;
+    //     }
+
+    //     if (!received && state.eventsStats[id] == null) {
+    //       final stats = Map<String, EventStats>.from(state.eventsStats)
+    //         ..[id] = EventStats.empty(id);
+    //       updateEventStats(stats);
+    //     }
+    //   },
+    // );
   }
 
   Map<String, dynamic> getDirectStats(String id) {
@@ -478,6 +494,14 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     final events = _pendingEventsBuffer!.values.toList();
     _pendingEventsBuffer = null;
 
+    _applyEventsBatch(events);
+  }
+
+  void _applyEventsBatch(List<Event> events) {
+    if (events.isEmpty) {
+      return;
+    }
+
     final Map<String, List<Event>> eventsByParent = {};
     for (final ev in events) {
       String? id;
@@ -542,17 +566,6 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     });
   }
 
-  void _onContentEvent(Event event) {
-    if (_pendingEventsBuffer != null) {
-      _pendingEventsBuffer![event.id] = event;
-    } else {
-      _pendingEventsBuffer = {event.id: event};
-      _pendingEventsTimer?.cancel();
-      _pendingEventsTimer =
-          Timer(const Duration(milliseconds: 300), _processBufferedEvents);
-    }
-  }
-
   // Returns the computed EventStats so the caller can batch-write all stats at once.
   EventStats processEvents(
     String id,
@@ -608,7 +621,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     Function(bool) setLoading, {
     bool Function()? isActive,
   }) async {
-    if (note.isRoot) {
+    // A NIP-84 source reference is attribution, not a thread parent.
+    if (note.isRoot || note.isNip84Highlight) {
       return [];
     }
 
@@ -619,7 +633,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       final List<DetailedNoteModel>? cachedNotes = state.previousNotes[note.id];
 
       if (cachedNotes != null &&
-          (cachedNotes.isEmpty || cachedNotes.first.isRoot)) {
+          (cachedNotes.isEmpty ||
+              _isCompletePreviousChain(note, cachedNotes))) {
         setLoading(false);
         _previousNotesAccessTime[note.id] = Helpers.now;
         return cachedNotes;
@@ -645,9 +660,17 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         return [];
       }
 
-      final availablePreviousNotes = await searchPreviousNotes(
+      final searchedPreviousNotes = await searchPreviousNotes(
         note,
         isActive: isActive,
+      );
+
+      // A reply can name a valid root while its immediate parent has been
+      // deleted or is unavailable on the queried relays. Keep that root as
+      // useful context instead of discarding the whole thread.
+      final availablePreviousNotes = await _addRootFallback(
+        note,
+        searchedPreviousNotes,
       );
 
       if (isActive?.call() == false) {
@@ -656,8 +679,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       }
 
       // Persist the resolved chain so later opens of this thread are instant.
-      if (availablePreviousNotes.isNotEmpty &&
-          availablePreviousNotes.first.isRoot) {
+      if (_isCompletePreviousChain(note, availablePreviousNotes)) {
         await localDatabaseRepository.setPreviousNoteChain(
           note.id,
           availablePreviousNotes.map((e) => e.id).toList(),
@@ -688,6 +710,55 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
   }
 
+  Future<List<DetailedNoteModel>> _addRootFallback(
+    DetailedNoteModel note,
+    List<DetailedNoteModel> notes,
+  ) async {
+    if ((notes.isNotEmpty && notes.first.isRoot) ||
+        note.isOriginEtag != true ||
+        note.originId == null ||
+        note.originId!.isEmpty) {
+      return notes;
+    }
+
+    final event = await nc.db.loadEventById(note.originId!, false);
+    if (event == null ||
+        (event.kind != EventKind.TEXT_NOTE &&
+            event.kind != EventKind.COMMENT &&
+            event.kind != EventKind.HIGHLIGHT)) {
+      return notes;
+    }
+
+    final root = DetailedNoteModel.fromEvent(event);
+    if (!root.isRoot || notes.any((n) => n.id == root.id)) {
+      return notes;
+    }
+
+    return [root, ...notes];
+  }
+
+  bool _isCompletePreviousChain(
+    DetailedNoteModel note,
+    List<DetailedNoteModel> notes,
+  ) {
+    if (notes.isEmpty || !notes.first.isRoot) {
+      return false;
+    }
+
+    for (var index = 1; index < notes.length; index++) {
+      if (!_isDirectChildOf(notes[index], notes[index - 1])) {
+        return false;
+      }
+    }
+
+    return _isDirectChildOf(note, notes.last);
+  }
+
+  bool _isDirectChildOf(DetailedNoteModel child, DetailedNoteModel parent) {
+    return child.replyTo == parent.id ||
+        (child.replyTo.isEmpty && child.originId == parent.id);
+  }
+
   Future<List<DetailedNoteModel>?> _reconstructPreviousNotes(
     String noteId,
   ) async {
@@ -700,7 +771,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     for (final id in chain) {
       final e = await nc.db.loadEventById(id, false);
       if (e == null ||
-          (e.kind != EventKind.TEXT_NOTE && e.kind != EventKind.COMMENT)) {
+          (e.kind != EventKind.TEXT_NOTE &&
+              e.kind != EventKind.COMMENT &&
+              e.kind != EventKind.HIGHLIGHT)) {
         return null;
       }
       notes.add(DetailedNoteModel.fromEvent(e));
@@ -729,7 +802,11 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       return notes;
     }
 
-    final kinds = <int>[EventKind.TEXT_NOTE, EventKind.COMMENT];
+    final kinds = <int>[
+      EventKind.TEXT_NOTE,
+      EventKind.COMMENT,
+      EventKind.HIGHLIGHT,
+    ];
     final collected = <String, Event>{};
     final hintRelays = <String>{};
     final originEvent = _originEvent(note);
@@ -742,62 +819,104 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       '[thread-walk] start note=${note.id} replyTo=${note.replyTo} origin=${note.originId} rootKind=${note.rootKind}',
     );
 
-    // Fast path: recover the whole ancestor chain from the note's own e-tags
-    // in a single batched query (general + hint relays concurrently), instead
-    // of walking one missing event at a time.
-    if (originEvent != null) {
-      final uniqueETagIds =
-          _eTagIds(originEvent).where((id) => id != note.id).toSet().toList();
+    Future<Map<String, Event>> loadThreadEventsByIds(
+      Iterable<String> eventIds,
+    ) async {
+      final uniqueIds = eventIds
+          .where((id) => id.isNotEmpty && id != note.id)
+          .toSet()
+          .toList();
+      if (uniqueIds.isEmpty) {
+        return {};
+      }
 
       final dbEvents = await Future.wait(
-        uniqueETagIds.map((id) => nc.db.loadEventById(id, false)),
+        uniqueIds.map((id) => nc.db.loadEventById(id, false)),
       );
-
+      final events = <String, Event>{};
       final wantedIds = <String>[];
-      for (var i = 0; i < uniqueETagIds.length; i++) {
-        final existing = dbEvents[i];
-        if (existing == null ||
-            (existing.kind != EventKind.TEXT_NOTE &&
-                existing.kind != EventKind.COMMENT)) {
-          wantedIds.add(uniqueETagIds[i]);
+      for (var index = 0; index < uniqueIds.length; index++) {
+        final event = dbEvents[index];
+        if (event != null && kinds.contains(event.kind)) {
+          events[event.id] = event;
+        } else {
+          wantedIds.add(uniqueIds[index]);
         }
       }
 
       final batchIds = wantedIds.take(_maxThreadBatchSize).toList();
-      if (batchIds.isNotEmpty) {
-        final batchResults = await Future.wait([
+      if (batchIds.isEmpty) {
+        return events;
+      }
+
+      final batchResults = await Future.wait([
+        NostrFunctionsRepository.getEventsAsync(
+          ids: batchIds,
+          kinds: kinds,
+        ),
+        if (hintRelays.isNotEmpty)
           NostrFunctionsRepository.getEventsAsync(
             ids: batchIds,
             kinds: kinds,
+            relays: hintRelays.toList(),
+            source: EventsSource.all,
+            timeout: 3,
           ),
-          if (hintRelays.isNotEmpty)
-            NostrFunctionsRepository.getEventsAsync(
-              ids: batchIds,
-              kinds: kinds,
-              relays: hintRelays.toList(),
-              source: EventsSource.all,
-              timeout: 3,
-            ),
-        ]);
+      ]);
 
-        for (final list in batchResults) {
-          for (final ev in list) {
-            if (ev.kind == EventKind.TEXT_NOTE ||
-                ev.kind == EventKind.COMMENT) {
-              collected[ev.id] = ev;
-            }
+      final fetchedEvents = <String, Event>{};
+      for (final list in batchResults) {
+        for (final event in list) {
+          if (kinds.contains(event.kind)) {
+            fetchedEvents[event.id] = event;
           }
         }
-
-        if (collected.isNotEmpty) {
-          await nc.db.saveEvents(collected.values.toList());
-          notes = await getCachedPreviousNotes(note);
-        }
-
-        lg.i(
-          '[thread-walk] batch ids=${batchIds.length} got=${collected.length} rooted=${notes.isNotEmpty && notes.first.isRoot}',
-        );
       }
+
+      if (fetchedEvents.isNotEmpty) {
+        collected.addAll(fetchedEvents);
+        await nc.db.saveEvents(fetchedEvents.values.toList());
+        events.addAll(fetchedEvents);
+      }
+
+      return events;
+    }
+
+    // Fetch the known immediate parent and root alongside the note's e-tag
+    // ancestors. The parent's own e-tags can reveal ancestors omitted by the
+    // child, so batch those missing IDs before using the broader relay walk.
+    final directParentId = note.replyTo.isNotEmpty
+        ? note.replyTo
+        : note.isOriginEtag ?? false
+            ? previousEventId
+            : '';
+    final firstWaveIds = <String>{
+      if (directParentId.isNotEmpty) directParentId,
+      if (note.isOriginEtag ?? false) previousEventId,
+      if (originEvent != null) ..._eTagIds(originEvent),
+    };
+    final firstWaveEvents = await loadThreadEventsByIds(firstWaveIds);
+    final parentEvent = firstWaveEvents[directParentId];
+    if (parentEvent != null) {
+      hintRelays.addAll(_relayHints(parentEvent));
+    }
+
+    final firstWaveIdSet = firstWaveIds.toSet();
+    final additionalAncestorIds = <String>{
+      if (originEvent != null) ..._eTagIds(originEvent),
+      if (parentEvent != null) ..._eTagIds(parentEvent),
+    }..removeAll(firstWaveIdSet);
+    if (additionalAncestorIds.isNotEmpty) {
+      await loadThreadEventsByIds(additionalAncestorIds);
+    }
+
+    notes = await getCachedPreviousNotes(note);
+    lg.i(
+      '[thread-walk] parent-first ids=${firstWaveIds.length + additionalAncestorIds.length} got=${collected.length} rooted=${notes.isNotEmpty && notes.first.isRoot}',
+    );
+
+    if (_isCompletePreviousChain(note, notes)) {
+      return notes;
     }
 
     if (notes.isEmpty || !notes.first.isRoot) {
@@ -849,16 +968,26 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
           collected[ev.id] = ev;
         }
 
+        await nc.db.saveEvents(fresh);
+        notes = await getCachedPreviousNotes(note);
+        if (_isCompletePreviousChain(note, notes)) {
+          lg.i(
+            '[thread-walk] complete after round=$round ancestors=${notes.length}',
+          );
+          return notes;
+        }
+
         frontier = fresh
             .where((ev) =>
-                ev.kind == EventKind.TEXT_NOTE || ev.kind == EventKind.COMMENT)
+                ev.kind == EventKind.TEXT_NOTE ||
+                ev.kind == EventKind.COMMENT ||
+                ev.kind == EventKind.HIGHLIGHT)
             .take(maxFrontierSize)
             .map((ev) => ev.id)
             .toList();
       }
 
       if (collected.isNotEmpty) {
-        await nc.db.saveEvents(collected.values.toList());
         notes = await getCachedPreviousNotes(note);
       }
     }
@@ -879,7 +1008,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       lg.i('[thread-walk] fallback start nextId=$nextId hints=$hintRelays');
 
       try {
-        while (nextId != null && nextId.isNotEmpty && depth < _maxFallbackWalkDepth) {
+        while (nextId != null &&
+            nextId.isNotEmpty &&
+            depth < _maxFallbackWalkDepth) {
           if (isActive?.call() == false) {
             break;
           }
@@ -889,7 +1020,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
           var ev = await nc.db.loadEventById(nextId, false);
 
           if (ev == null ||
-              (ev.kind != EventKind.TEXT_NOTE && ev.kind != EventKind.COMMENT)) {
+              (ev.kind != EventKind.TEXT_NOTE &&
+                  ev.kind != EventKind.COMMENT &&
+                  ev.kind != EventKind.HIGHLIGHT)) {
             ev = null;
 
             if (hintRelays.isNotEmpty) {
@@ -915,7 +1048,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
             for (final list in fetchedLists) {
               for (final e in list) {
                 if ((e.kind == EventKind.TEXT_NOTE ||
-                        e.kind == EventKind.COMMENT) &&
+                        e.kind == EventKind.COMMENT ||
+                        e.kind == EventKind.HIGHLIGHT) &&
                     ev == null) {
                   ev = e;
                 }
@@ -1006,7 +1140,9 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     final e = await nc.db.loadEventById(previousEventId, false);
 
     if (e == null ||
-        (e.kind != EventKind.TEXT_NOTE && e.kind != EventKind.COMMENT)) {
+        (e.kind != EventKind.TEXT_NOTE &&
+            e.kind != EventKind.COMMENT &&
+            e.kind != EventKind.HIGHLIGHT)) {
       return thread;
     }
 
@@ -1021,7 +1157,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     return thread;
   }
 
-  Future<void> _laterContentSearch() async {
+  void _laterContentSearch() {
     if (_notesIds.isEmpty && _aTags.isEmpty) {
       return;
     }
@@ -1033,7 +1169,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       noteIds: List.from(_notesIds),
       aTags: List.from(_aTags),
       includeComments: _includeCommentsInLaterSearch,
-    ).listen(_onContentEvent);
+    ).listen((event) => _handleContentStats([event]));
 
     _notesIds.clear();
     _aTags.clear();
@@ -1041,6 +1177,18 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   }
 
   Future<void> repostNote(DetailedNoteModel note) async {
+    if (note.kind != EventKind.TEXT_NOTE) {
+      try {
+        final original = Event.fromJson(
+          jsonDecode(note.stringifiedEvent) as Map<String, dynamic>,
+        );
+        await repostContent(original, statsId: note.id, address: null);
+      } catch (_) {
+        BotToastUtils.showError(t.errorGeneratingEvent.capitalizeFirst());
+      }
+      return;
+    }
+
     final stats = Map<String, EventStats>.from(state.eventsStats);
 
     final eventStats = stats[note.id] ??= EventStats.empty(note.id);
@@ -1059,6 +1207,63 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     }
 
     _statsAccessTimes[note.id] = Helpers.now;
+    updateEventStats(stats);
+  }
+
+  /// Repost non-note content using NIP-18's generic repost kind (16).
+  Future<void> repostContent(
+    Event original, {
+    required String statsId,
+    required String? address,
+  }) async {
+    final stats = Map<String, EventStats>.from(state.eventsStats);
+    final eventStats = stats[statsId] ??= EventStats.empty(statsId);
+    final repostId = eventStats.reposts.entries
+        .firstWhere(
+          (entry) => entry.value == currentSigner!.getPublicKey(),
+          orElse: () => const MapEntry('', ''),
+        )
+        .key;
+
+    if (repostId.isNotEmpty) {
+      await _deleteRepost(repostId, eventStats, stats);
+    } else {
+      final cancel = BotToastUtils.showLoading();
+      final repost = await Event.genEvent(
+        kind: EventKind.GENERIC_REPOST,
+        tags: <List<String>>[
+          <String>['k', original.kind.toString()],
+          <String>['p', original.pubkey],
+          if (address != null)
+            <String>['a', address]
+          else
+            <String>['e', original.id],
+        ],
+        content: original.toJsonString(),
+        signer: currentSigner,
+      );
+      cancel.call();
+
+      if (repost == null) {
+        BotToastUtils.showError(t.errorGeneratingEvent.capitalizeFirst());
+        return;
+      }
+
+      final isSuccessful = await NostrFunctionsRepository.sendEvent(
+        event: repost,
+        relays: await broadcastRelays(original.pubkey),
+        setProgress: true,
+        destinationPubkey: original.pubkey,
+      );
+      if (isSuccessful) {
+        final updatedStats = eventStats.addEvent(repost);
+        stats[statsId] = updatedStats;
+        nc.db.saveEvent(repost);
+        nc.db.saveEventStats(updatedStats);
+      }
+    }
+
+    _statsAccessTimes[statsId] = Helpers.now;
     updateEventStats(stats);
   }
 

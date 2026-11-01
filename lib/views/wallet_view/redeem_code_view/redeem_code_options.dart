@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import '../../../utils/utils.dart';
 import '../send_view/send_main_view.dart';
@@ -31,7 +31,7 @@ class RedeemCodeOptions extends HookWidget {
 
     useEffect(() {
       if (!isQrCode.value) {
-        controller.value?.pauseCameraSafely();
+        controller.value?.pauseCamera();
       }
       return null;
     }, [isQrCode.value]);
@@ -42,18 +42,16 @@ class RedeemCodeOptions extends HookWidget {
       }
 
       if (appState == AppLifecycleState.paused) {
-        controller.value!.pauseCameraSafely();
+        controller.value!.pauseCamera();
       } else if (appState == AppLifecycleState.resumed && isQrCode.value) {
-        controller.value!.resumeCameraSafely();
+        controller.value!.resumeCamera();
       }
 
       return null;
     }, [appState]);
 
     useEffect(() {
-      return () {
-        controller.value?.dispose();
-      };
+      return () {};
     }, const []);
 
     return Column(

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../common/notifications/local_notification_manager.dart';
 import '../../../common/notifications/notification_helper.dart';
 import '../../../common/notifications/push_core.dart';
 import '../../../utils/bot_toast_util.dart';
@@ -35,6 +36,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
         state.copyWith(
           notifFollowings: c.notifFollowings,
           notifMentionsReplies: c.notifMentionsReplies,
+          notifHighlights: c.notifHighlights,
           notifReactions: c.notifReactions,
           notifReposts: c.notifReposts,
           notifZaps: c.notifZaps,
@@ -131,6 +133,18 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
     }
   }
 
+  void setHighlights() {
+    if (state.notifHighlights && abort()) {
+      BotToastUtils.showError(t.oneNotifOptionAvailable.capitalizeFirst());
+      return;
+    }
+
+    isUpdated = true;
+    if (!isClosed) {
+      emit(state.copyWith(notifHighlights: !state.notifHighlights));
+    }
+  }
+
   void setReactions() {
     if (state.notifReactions && abort()) {
       BotToastUtils.showError(t.oneNotifOptionAvailable.capitalizeFirst());
@@ -173,6 +187,10 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
       count++;
     }
 
+    if (state.notifHighlights) {
+      count++;
+    }
+
     if (state.notifReactions) {
       count++;
     }
@@ -195,6 +213,7 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
 
       c!.notifFollowings = state.notifFollowings;
       c.notifMentionsReplies = state.notifMentionsReplies;
+      c.notifHighlights = state.notifHighlights;
       c.notifReactions = state.notifReactions;
       c.notifReposts = state.notifReposts;
       c.notifZaps = state.notifZaps;
@@ -205,9 +224,11 @@ class CustomizeNotificationsCubit extends Cubit<CustomizeNotificationsState> {
       nostrRepository.appCustomizations[c.pubkey] = c;
 
       if (state.enablePushNotification) {
-        PushCore.sharedInstance.setup();
+        await LocalNotificationManager.instance.initNotifications();
+        await notificationsCubit.refreshPushConfiguration();
       } else {
-        NotificationHelper.sharedInstance.logout();
+        await NotificationHelper.sharedInstance.logout();
+        await PushCore.sharedInstance.disable();
       }
 
       nostrRepository.broadcastCurrentAppCustomization();

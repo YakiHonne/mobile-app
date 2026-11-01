@@ -613,12 +613,10 @@ class LeadingCustomization extends HookWidget {
         return _actionContainer(action, context, index, name);
       },
       itemCount: defaultActionsArrangement.length,
-      onReorder: (oldIndex, newIndex) {
-        final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
-
+      onReorderItem: (oldIndex, newIndex) {
         context
             .read<CustomizeLeadingCubit>()
-            .setActionsNewOrder(oldIndex, index);
+            .setActionsNewOrder(oldIndex, newIndex);
       },
     );
   }
@@ -743,6 +741,8 @@ String getCommenFeedTypeName(CommonFeedTypes type, BuildContext context) {
       name = context.t.widgets.capitalizeFirst();
     case CommonFeedTypes.paid:
       name = context.t.paid.capitalizeFirst();
+    case CommonFeedTypes.nip84Highlights:
+      name = context.t.highlights.capitalizeFirst();
     case CommonFeedTypes.others:
       name = context.t.others.capitalizeFirst();
     case CommonFeedTypes.global:

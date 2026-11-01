@@ -80,7 +80,9 @@ class _MediaViewState extends State<MediaView> {
                 controller: refreshController,
                 scrollController: widget.scrollController,
                 enablePullUp: true,
-                header: const RefresherClassicHeader(),
+                header: const RefresherClassicHeader(
+                  additionalOffset: kDefaultPadding * 3,
+                ),
                 footer: const RefresherClassicFooter(),
                 onLoading: () => buildExploreFeed.call(context, true),
                 onRefresh: () => onRefresh(),

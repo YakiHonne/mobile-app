@@ -578,7 +578,7 @@ class DashboardContentContainer extends StatelessWidget {
                 Flexible(
                   child: Text(
                     content,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
@@ -678,6 +678,7 @@ class DashboardContentContainer extends StatelessWidget {
         contentType: AppContentType.note,
         attachedEvent: item,
         isMention: true,
+        isQuote: true,
       ),
     );
   }

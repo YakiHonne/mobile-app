@@ -163,7 +163,14 @@ class AppInitializer {
     if (!isMobilePlatform) {
       return;
     }
-    cameras = await availableCameras();
+    try {
+      cameras = await availableCameras();
+    } catch (e) {
+      cameras = [];
+      if (kDebugMode) {
+        print('Camera initialization failed: $e');
+      }
+    }
   }
 
   /// Initialize repositories
@@ -349,7 +356,6 @@ class AppInitializer {
     Future.delayed(const Duration(seconds: 2)).then((_) {
       nostrRepository.loadCurrentUserRelatedData();
       settingsCubit.getYakiHonneApp();
-      cashuWalletManagerCubit.init();
       creatorSubscriptionsCubit.fetch();
     });
   }

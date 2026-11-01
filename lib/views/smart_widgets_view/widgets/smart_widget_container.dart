@@ -274,21 +274,19 @@ class SmartWidgetComponentData extends HookWidget {
     final usedUrl = button.url.trim();
 
     if (button.type == SWBType.Zap && usedUrl.isNotEmpty) {
-      if (usedUrl.toLowerCase().startsWith('lnbc')) {
+      final lnbc = extractLnbc(usedUrl.toLowerCase());
+      if (lnbc != null) {
         showAdaptiveModal(
           context,
-          builder: (_) {
-            return SendZapsView(
-              metadata: Metadata.empty().copyWith(
-                lud06: usedUrl,
-                lud16: usedUrl,
-              ),
-              lnbc: usedUrl.trim(),
-              zapSplits: const [],
-              isZapSplit: false,
-            );
-          },
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          builder: (_) => SendZapsView(
+            metadata: Metadata.empty().copyWith(
+              lud06: usedUrl,
+              lud16: usedUrl,
+            ),
+            lnbc: lnbc,
+            zapSplits: const [],
+            isZapSplit: false,
+          ),
         );
       } else if (emailRegExp.hasMatch(usedUrl) ||
           usedUrl.toLowerCase().startsWith('lnurl')) {

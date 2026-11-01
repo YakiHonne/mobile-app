@@ -8,6 +8,7 @@ import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../logic/theme_cubit/theme_cubit.dart';
+import '../models/dm_history_cursor.dart';
 import '../models/filter_status.dart';
 import '../models/media_manager_data.dart';
 import '../models/relays_list.dart';
@@ -81,6 +82,7 @@ class LocalDatabaseRepository {
   static const String _loadLocalRemoteSignerDm = 'load_local_remote_signer_dm';
   static const String _giftWrapNewestDateTime = 'gift_wrap_newest_date_time';
   static const String _dmHistoryOldestUntil = 'dm_history_older_until';
+  static const String _dmHistoryProgress = 'dm_history_progress';
   static const String _unsentEvents = 'unsent_events';
   static const String _unsentEventsPubkeys = 'unsent_events_pubkeys';
   static const String _previousNotes = 'previous_notes';
@@ -94,7 +96,8 @@ class LocalDatabaseRepository {
   static const String _filterStatus = 'filter_status';
   static const String _defaultZapAmounts = 'default_zap_amounts';
   static const String _paidNoteAdsSeenCounts = 'paid_note_ads_seen_counts';
-  static const String _paidNoteAdsLastFetchedAt = 'paid_note_ads_last_fetched_at';
+  static const String _paidNoteAdsLastFetchedAt =
+      'paid_note_ads_last_fetched_at';
   static const String _defaultReaction = 'default_reaction';
   static const String _enableOneTapZap = 'enable_one_tap_zap';
   static const String _enableOneTapReaction = 'enable_one_tap_reaction';
@@ -102,11 +105,17 @@ class LocalDatabaseRepository {
   static const String _autoTranslation = 'auto_translation';
   static const String _upgradeBannerDismissed = 'upgrade_banner_dismissed';
   static const String _nestedReplies = 'nested_replies';
+  static const String _mainViewSession = 'main_view_session';
+  static const String _mainViewScrollPosition = 'main_view_scroll_position';
+  static const String _mainViewScrollPositionView =
+      'main_view_scroll_position_view';
+  static const String _mainViewFeedSnapshot = 'main_view_feed_snapshot';
 
   // Notifications & Flash News
   static const String _pendingFlashNews = 'pending_flash_news';
   static const String _newNotifications = 'new_notifications';
   static const String _registeredNotifications = 'registred_notifications';
+  static const String _notificationSyncSince = 'notification_sync_since';
   static const String _cashuTokens = 'cashu_tokens';
   static const String _userWalletType = 'user_wallet_type';
   static const String _userActiveMint = 'user_active_mint';
@@ -563,6 +572,83 @@ class LocalDatabaseRepository {
     await prefs.remove('$pubkey-$_appViewConfig');
   }
 
+  String? getLastMainView(String pubkey) {
+    return _getPrefsData<String>(_mainViewSessionKey(pubkey, 'view'));
+  }
+
+  Future<void> setLastMainView(String pubkey, String view) async {
+    await _setPrefsData(_mainViewSessionKey(pubkey, 'view'), view);
+  }
+
+  double getMainViewScrollPosition(String pubkey, String view) {
+    if (getLastMainView(pubkey) != view ||
+        _getPrefsData<String>(
+              _mainViewSessionKey(pubkey, _mainViewScrollPositionView),
+            ) !=
+            view) {
+      return 0;
+    }
+
+    return _getPrefsData<double>(
+          _mainViewSessionKey(pubkey, _mainViewScrollPosition),
+          defaultValue: 0,
+        ) ??
+        0;
+  }
+
+  Future<void> setMainViewScrollPosition(
+    String pubkey,
+    String view,
+    double offset,
+  ) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, _mainViewScrollPosition),
+      offset,
+    );
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, _mainViewScrollPositionView),
+      view,
+    );
+  }
+
+  List<String> getMainViewFeedSnapshot(String pubkey, String feed) {
+    return _getPrefsData<List<String>>(
+          _mainViewSessionKey(pubkey, '$_mainViewFeedSnapshot-$feed'),
+        ) ??
+        <String>[];
+  }
+
+  Future<void> setMainViewFeedSnapshot(
+    String pubkey,
+    String feed,
+    List<String> eventIds,
+  ) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, '$_mainViewFeedSnapshot-$feed'),
+      eventIds.take(500).toList(),
+    );
+  }
+
+  int getMainViewSubTab(String pubkey, String view, {int defaultValue = 0}) {
+    return _getPrefsData<int>(
+          _mainViewSessionKey(pubkey, '$_mainViewSubTab-$view'),
+          defaultValue: defaultValue,
+        ) ??
+        defaultValue;
+  }
+
+  Future<void> setMainViewSubTab(String pubkey, String view, int index) async {
+    await _setPrefsData(
+      _mainViewSessionKey(pubkey, '$_mainViewSubTab-$view'),
+      index,
+    );
+  }
+
+  static const String _mainViewSubTab = 'main_view_sub_tab';
+
+  String _mainViewSessionKey(String pubkey, String key) =>
+      '${pubkey.isEmpty ? 'guest' : pubkey}-$_mainViewSession-$key';
+
   /// Topics Management
   Future<String> getTopics() async {
     final topics = _getPrefsData<String>(_topics);
@@ -735,8 +821,49 @@ class LocalDatabaseRepository {
   }
 
   /// Gift Wrap Management
+  DmHistoryCursor? getDmsHistoryProgress(String pubkey) {
+    final progressJson = _getPrefsData<String>('$pubkey-$_dmHistoryProgress');
+    if (progressJson != null) {
+      try {
+        final progress = jsonDecode(progressJson) as Map<String, dynamic>;
+        return DmHistoryCursor(
+          until: progress['until'] as int,
+          intervalIndex: progress['intervalIndex'] as int,
+          liveSince: progress['liveSince'] as int? ?? progress['until'] as int,
+        );
+      } catch (e) {
+        lg.i('Error parsing DM history progress: $e');
+      }
+    }
+
+    final legacyUntil = _getPrefsData<int>('$pubkey-$_dmHistoryOldestUntil');
+    if (legacyUntil == null) {
+      return null;
+    }
+
+    return DmHistoryCursor(
+      until: legacyUntil,
+      intervalIndex: 0,
+      liveSince: legacyUntil,
+    );
+  }
+
+  Future<bool> setDmsHistoryProgress(
+    String pubkey,
+    DmHistoryCursor cursor,
+  ) async {
+    return _setPrefsData(
+      '$pubkey-$_dmHistoryProgress',
+      jsonEncode({
+        'until': cursor.until,
+        'intervalIndex': cursor.intervalIndex,
+        'liveSince': cursor.liveSince,
+      }),
+    );
+  }
+
   int? getDmsHistoryOlderUntil(String pubkey) {
-    return _getPrefsData<int>('$pubkey-$_dmHistoryOldestUntil');
+    return getDmsHistoryProgress(pubkey)?.until;
   }
 
   Future<void> setDmsHistoryOlderUntil(String pubkey, int dateTime) async {
@@ -744,6 +871,7 @@ class LocalDatabaseRepository {
   }
 
   Future<void> deleteDmsHistoryOlderUntil(String pubkey) async {
+    await prefs.remove('$pubkey-$_dmHistoryProgress');
     await prefs.remove('$pubkey-$_dmHistoryOldestUntil');
   }
 
@@ -1023,6 +1151,14 @@ class LocalDatabaseRepository {
 
   Future<void> clearNotifications() async {
     await prefs.remove(_registeredNotifications);
+  }
+
+  int? getNotificationSyncSince(String pubkey) {
+    return _getPrefsData<int>('$pubkey-$_notificationSyncSince');
+  }
+
+  Future<void> setNotificationSyncSince(String pubkey, int timestamp) async {
+    await _setPrefsData('$pubkey-$_notificationSyncSince', timestamp);
   }
 
   /// Flash News Management

@@ -157,7 +157,7 @@ class FrameComponentCustomization extends HookWidget {
       if (component.type == SWBType.Zap) {
         if (url.isNotEmpty &&
             (emailRegExp.hasMatch(url) ||
-                url.toLowerCase().startsWith('lnbc') ||
+                extractLnbc(url.toLowerCase()) != null ||
                 url.toLowerCase().startsWith('lnurl'))) {
           return true;
         } else {
@@ -987,7 +987,8 @@ class ButtonZapCustomization extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final toggleSatsMode = useState(url.value.startsWith('lnbc'));
+    final toggleSatsMode =
+        useState(extractLnbc(url.value.toLowerCase()) != null);
     final userToZap = useState<Metadata?>(null);
 
     final searchAuthorFunc = useCallback(

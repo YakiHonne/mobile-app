@@ -72,6 +72,7 @@ class _ExplorePacksViewState extends State<ExplorePacksView> {
               scrollController: scrollController,
               header: MaterialClassicHeader(
                 color: Theme.of(context).primaryColor,
+                offset: fluidScaffoldTopInset(context),
               ),
               footer: const RefresherClassicFooter(),
               onLoading: () => context

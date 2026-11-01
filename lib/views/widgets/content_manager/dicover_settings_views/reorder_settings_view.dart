@@ -140,11 +140,18 @@ class ReorderSettingsView extends HookWidget {
             discoverSources: c.contentSources.discoverSources.copyWith(
               communityFeed: DiscoverCommunityFeed(
                 index: feed.index,
-                network: options
-                    .firstWhere((option) => option.name == SOURCE_NETWORK),
-                top: options.firstWhere((option) => option.name == SOURCE_TOP),
-                global: options
-                    .firstWhere((option) => option.name == SOURCE_GLOBAL),
+                network: options.firstWhere(
+                  (option) => option.name == SOURCE_NETWORK,
+                  orElse: () => feed.network,
+                ),
+                top: options.firstWhere(
+                  (option) => option.name == SOURCE_TOP,
+                  orElse: () => feed.top,
+                ),
+                global: options.firstWhere(
+                  (option) => option.name == SOURCE_GLOBAL,
+                  orElse: () => feed.global,
+                ),
               ),
             ),
           ),
@@ -158,6 +165,7 @@ class ReorderSettingsView extends HookWidget {
           feed.trending,
           feed.global,
           feed.paid,
+          feed.highlights,
           feed.widgets,
         ]..sort(
             (a, b) => a.index.compareTo(b.index),
@@ -186,19 +194,34 @@ class ReorderSettingsView extends HookWidget {
             notesSources: c.contentSources.notesSources.copyWith(
               communityFeed: NotesCommunityFeed(
                 index: feed.index,
-                recent: options
-                    .firstWhere((option) => option.name == SOURCE_RECENT),
+                recent: options.firstWhere(
+                  (option) => option.name == SOURCE_RECENT,
+                  orElse: () => feed.recent,
+                ),
                 recentWithReplies: options.firstWhere(
                   (option) => option.name == SOURCE_RECENT_WITH_REPLIES,
+                  orElse: () => feed.recentWithReplies,
                 ),
-                trending: options
-                    .firstWhere((option) => option.name == SOURCE_TRENDING),
-                global: options
-                    .firstWhere((option) => option.name == SOURCE_GLOBAL),
-                paid:
-                    options.firstWhere((option) => option.name == SOURCE_PAID),
-                widgets: options
-                    .firstWhere((option) => option.name == SOURCE_WIDGETS),
+                trending: options.firstWhere(
+                  (option) => option.name == SOURCE_TRENDING,
+                  orElse: () => feed.trending,
+                ),
+                global: options.firstWhere(
+                  (option) => option.name == SOURCE_GLOBAL,
+                  orElse: () => feed.global,
+                ),
+                paid: options.firstWhere(
+                  (option) => option.name == SOURCE_PAID,
+                  orElse: () => feed.paid,
+                ),
+                highlights: options.firstWhere(
+                  (option) => option.name == SOURCE_NIP84_HIGHLIGHTS,
+                  orElse: () => feed.highlights,
+                ),
+                widgets: options.firstWhere(
+                  (option) => option.name == SOURCE_WIDGETS,
+                  orElse: () => feed.widgets,
+                ),
               ),
             ),
           ),
@@ -236,8 +259,14 @@ class ReorderSettingsView extends HookWidget {
             mediaSources: c.contentSources.mediaSources.copyWith(
               communityFeed: MediaCommunityFeed(
                 index: feed.index,
-                recent: options.firstWhere((option) => option.name == 'recent'),
-                global: options.firstWhere((option) => option.name == 'global'),
+                recent: options.firstWhere(
+                  (option) => option.name == 'recent',
+                  orElse: () => feed.recent,
+                ),
+                global: options.firstWhere(
+                  (option) => option.name == 'global',
+                  orElse: () => feed.global,
+                ),
               ),
             ),
           ),
@@ -248,10 +277,6 @@ class ReorderSettingsView extends HookWidget {
     }
 
     void setOrder(int oldIndex, int newIndex, BaseFeed feed) {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-
       if (feed is DiscoverCommunityFeed) {
         final options = [feed.network, feed.top, feed.global]..sort(
             (a, b) => a.index.compareTo(b.index),
@@ -301,6 +326,7 @@ class ReorderSettingsView extends HookWidget {
           feed.recentWithReplies,
           feed.global,
           feed.paid,
+          feed.highlights,
           feed.widgets
         ]..sort(
             (a, b) => a.index.compareTo(b.index),
@@ -369,6 +395,15 @@ class ReorderSettingsView extends HookWidget {
             (option) => option.name == SOURCE_PAID,
             orElse: () => CommunityFeedOption(
               name: SOURCE_PAID,
+              enabled: false,
+              index: 0,
+              id: '',
+            ),
+          ),
+          highlights: options.firstWhere(
+            (option) => option.name == SOURCE_NIP84_HIGHLIGHTS,
+            orElse: () => CommunityFeedOption(
+              name: SOURCE_NIP84_HIGHLIGHTS,
               enabled: false,
               index: 0,
               id: '',
@@ -649,7 +684,7 @@ class CommunityFeedList extends StatelessWidget {
         return _communityFeedItem(item, context, index);
       },
       itemCount: items.length,
-      onReorder: onReorder,
+      onReorderItem: onReorder,
     );
   }
 

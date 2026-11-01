@@ -142,14 +142,14 @@ class MediaChoice extends StatelessWidget {
       onTap: () async {
         if (mediaType == MediaType.gallery) {
           final medias = await MediaHandler.selectMultiMediaAndUploadWithData();
-          if (medias.isNotEmpty) {
+          if (context.mounted && medias.isNotEmpty) {
             onSuccess.call(medias);
           }
         } else {
           final media =
               await MediaHandler.selectMediaAndUploadWithData(mediaType);
 
-          if (media != null) {
+          if (context.mounted && media != null) {
             onSuccess.call([media]);
           }
         }

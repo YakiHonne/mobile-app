@@ -307,6 +307,12 @@ class TranslationsTh extends Translations {
 	@override String get following => 'กำลังติดตาม';
 	@override String get trending => 'เทรนด์';
 	@override String get highlights => 'ไฮไลท์';
+	@override String get highlight => 'ไฮไลท์';
+	@override String get highlighted => 'ไฮไลท์แล้ว';
+	@override String get highlightedFrom => 'ไฮไลท์จาก';
+	@override String get untitledArticle => 'บทความไม่มีชื่อ';
+	@override String get untitledNote => 'โน้ตไม่มีชื่อ';
+	@override String get loadingSource => 'กำลังโหลดแหล่งที่มา…';
 	@override String get paid => 'จ่ายเงิน';
 	@override String get others => 'อื่นๆ';
 	@override String get suggestionsBox => 'กล่องคำแนะนำ';
@@ -895,6 +901,10 @@ class TranslationsTh extends Translations {
 	@override String get fetchingUserInboxRelays => 'กำลังดึงรีเลย์กล่องขาเข้าของผู้ใช้';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} Zap คุณ ${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} 反应 ${reaction} บนคุณ';
+	@override String get highlightsDesc => 'รับการแจ้งเตือนเมื่อมีคนไฮไลท์เนื้อหาของคุณ';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name} ไฮไลท์ข้อความจากบทความของคุณ';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name} ไฮไลท์ข้อความจากโน้ตของคุณ';
+	@override String userHighlightedYourContent({required Object name}) => '${name} ไฮไลท์เนื้อหาของคุณ';
 	@override String userRepostedYou({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ';
 	@override String userMentionedYouInComment({required Object name}) => '${name} กล่าวถึงคุณในความคิดเห็น';
 	@override String userMentionedYouInNote({required Object name}) => '${name} กล่าวถึงคุณในโน้ต';
@@ -1129,6 +1139,8 @@ class TranslationsTh extends Translations {
 	@override String get shareWidgetImage => 'แชร์ภาพวิดเจ็ต';
 	@override String get inputField => 'ช่องป้อนข้อมูล';
 	@override String get noReplies => 'ไม่มีตอบกลับ';
+	@override String get noVisibleReplies => 'ไม่มีการตอบกลับที่แสดงอยู่';
+	@override String get spamRepliesHiddenHint => 'การตอบกลับที่อาจเป็นสแปมถูกซ่อนไว้ด้านล่าง';
 	@override String get message => 'ข้อความ';
 	@override String get chat => 'แชท';
 	@override String get onlyLettersNumber => 'อนุญาตเฉพาะตัวอักษรและตัวเลข';
@@ -2152,7 +2164,7 @@ class TranslationsTh extends Translations {
 	@override String get googleManageUnlinkDesc => 'ลบบัญชีนี้ออกจากเซิร์ฟเวอร์กลาง แล้วลงชื่อเข้าใช้ใหม่ด้วยคีย์ส่วนตัว';
 	@override String get pricing_restore_purchases => 'กู้คืนการซื้อ';
 	@override String get pricing_manage_on_store => 'จัดการการสมัครสมาชิก';
-	@override String get pricing_web_managed => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.pro กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ';
+	@override String get pricing_web_managed => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.com กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ';
 	@override String get sub_managed_via_web => 'การสมัครสมาชิกของคุณใช้งานอยู่';
 	@override String get pricing_toggle_store => '🛍️ สโตร์';
 	@override String get pricing_toggle_points => '🏆 แต้ม';
@@ -2230,6 +2242,13 @@ class TranslationsTh extends Translations {
 	@override String get pastDue => 'เกินกำหนดชำระ';
 	@override String get unpaid => 'ยังไม่ชำระ';
 	@override String get incomplete => 'ไม่สมบูรณ์';
+	@override String get spamFilter => 'ตัวกรองสแปมที่อาจเกิดขึ้น';
+	@override String get spamFilterDesc => 'ยุบการตอบกลับจากผู้เขียนที่ดูเหมือนเป็นสแปม คุณสามารถขยายได้ทุกเมื่อ';
+	@override String seePotentialSpams({required Object count}) => 'ดูสแปมที่อาจเกิดขึ้น ${count} รายการ';
+	@override String get showSpamReplies => 'แสดงการตอบกลับที่อาจเป็นสแปม';
+	@override String get hideSpamReplies => 'ซ่อนการตอบกลับที่อาจเป็นสแปม';
+	@override String get markAsSpam => 'ทำเครื่องหมายว่าเป็นสแปม';
+	@override String get notSpam => 'ไม่ใช่สแปม';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -2516,6 +2535,12 @@ extension on TranslationsTh {
 			'following' => 'กำลังติดตาม',
 			'trending' => 'เทรนด์',
 			'highlights' => 'ไฮไลท์',
+			'highlight' => 'ไฮไลท์',
+			'highlighted' => 'ไฮไลท์แล้ว',
+			'highlightedFrom' => 'ไฮไลท์จาก',
+			'untitledArticle' => 'บทความไม่มีชื่อ',
+			'untitledNote' => 'โน้ตไม่มีชื่อ',
+			'loadingSource' => 'กำลังโหลดแหล่งที่มา…',
 			'paid' => 'จ่ายเงิน',
 			'others' => 'อื่นๆ',
 			'suggestionsBox' => 'กล่องคำแนะนำ',
@@ -2754,18 +2779,18 @@ extension on TranslationsTh {
 			'votesByUsers' => 'โหวตโดยผู้ใช้',
 			'alreadyVoted' => 'คุณโหวตในโพลนี้แล้ว',
 			'userCannotBeFound' => 'ไม่พบผู้ใช้',
-			'votesNumber' => ({required Object number}) => 'โหวต: ${number}',
-			'voteRequired' => 'ต้องโหวตเพื่อแสดงสถิติ',
-			'showStats' => 'แสดงสถิติ',
-			'pollClosesAt' => ({required Object date}) => 'ปิด: ${date}',
-			'pollClosedAt' => ({required Object date}) => 'ปิด: ${date}',
-			'checkSmartWidget' => 'ตรวจวิดเจ็ตอัจฉริยะ',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => 'โหวต: ${number}',
+			'voteRequired' => 'ต้องโหวตเพื่อแสดงสถิติ',
+			'showStats' => 'แสดงสถิติ',
+			'pollClosesAt' => ({required Object date}) => 'ปิด: ${date}',
+			'pollClosedAt' => ({required Object date}) => 'ปิด: ${date}',
+			'checkSmartWidget' => 'ตรวจวิดเจ็ตอัจฉริยะ',
 			'emptyVerifiedNote' => 'เนื้อหาโน้ตที่ตรวจสอบแล้วว่างเปล่า!',
 			'post' => 'โพสต์',
 			'seeAnything' => 'เห็นอะไรที่สามารถปรับปรุงได้ไหม?',
@@ -3110,6 +3135,10 @@ extension on TranslationsTh {
 			'fetchingUserInboxRelays' => 'กำลังดึงรีเลย์กล่องขาเข้าของผู้ใช้',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} Zap คุณ ${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} 反应 ${reaction} บนคุณ',
+			'highlightsDesc' => 'รับการแจ้งเตือนเมื่อมีคนไฮไลท์เนื้อหาของคุณ',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name} ไฮไลท์ข้อความจากบทความของคุณ',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name} ไฮไลท์ข้อความจากโน้ตของคุณ',
+			'userHighlightedYourContent' => ({required Object name}) => '${name} ไฮไลท์เนื้อหาของคุณ',
 			'userRepostedYou' => ({required Object name}) => '${name} รีโพสต์เนื้อหาของคุณ',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} กล่าวถึงคุณในความคิดเห็น',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} กล่าวถึงคุณในโน้ต',
@@ -3268,6 +3297,12 @@ extension on TranslationsTh {
 			'circuit' => 'วงจร',
 			'votingSystem' => 'ระบบโหวต',
 			'proofSystem' => 'ระบบหลักฐาน',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => 'สถานีน้ำมัน',
 			'totalFund' => '(กองทุนรวม)',
 			'roundStart' => 'เริ่มรอบ',
@@ -3278,12 +3313,6 @@ extension on TranslationsTh {
 			'blockHeight' => 'ความสูงบล็อก',
 			'atContractCreation' => ({required Object number}) => '${number} (ที่การสร้างสัญญา)',
 			'zkProofs' => 'หลักฐาน ZK',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => 'ดาวน์โหลดหลักฐาน',
 			'walletConnectionString' => 'สตริงการเชื่อมต่อกระเป๋าเงิน',
 			'walletConnectionStringDesc' => 'ตรวจสอบให้แน่ใจว่าคัดลอกหรือส่งออกสตริงการเชื่อมต่อกระเป๋าเงินอย่างปลอดภัย เราไม่เก็บข้อมูลนี้ และหากสูญหายจะไม่สามารถกู้คืนได้',
@@ -3350,6 +3379,8 @@ extension on TranslationsTh {
 			'shareWidgetImage' => 'แชร์ภาพวิดเจ็ต',
 			'inputField' => 'ช่องป้อนข้อมูล',
 			'noReplies' => 'ไม่มีตอบกลับ',
+			'noVisibleReplies' => 'ไม่มีการตอบกลับที่แสดงอยู่',
+			'spamRepliesHiddenHint' => 'การตอบกลับที่อาจเป็นสแปมถูกซ่อนไว้ด้านล่าง',
 			'message' => 'ข้อความ',
 			'chat' => 'แชท',
 			'onlyLettersNumber' => 'อนุญาตเฉพาะตัวอักษรและตัวเลข',
@@ -3784,6 +3815,12 @@ extension on TranslationsTh {
 			'redeemEcashDesc' => 'แลกโทเค็น ecash เข้ากระเป๋าเงินของคุณ',
 			'depositDesc' => 'สร้างโทเค็น ecash ใหม่โดยการฝาก sats',
 			'pasteToken' => 'วางโทเค็น',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => 'สแกน',
 			'tokenDetails' => 'รายละเอียดโทเค็น',
 			'issuingMint' => 'Mint ที่ออก',
@@ -3796,12 +3833,6 @@ extension on TranslationsTh {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => 'เกิดข้อผิดพลาดขณะอัปเดตรายการ Mints',
 			'active' => 'ใช้งานอยู่',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => 'ไม่ใช้งาน',
 			'addCashuWallet' => 'เพิ่มกระเป๋าเงิน Cashu และเริ่มส่งและรับ Ecash ผ่าน nostr',
 			'mintUrl' => 'URL ของ Mint',
@@ -4302,6 +4333,12 @@ extension on TranslationsTh {
 			'pomAuthenticating' => 'กำลังยืนยันตัวตนกับ Google…',
 			'pomCheckingAccount' => 'กำลังตรวจสอบบัญชี…',
 			'pomCreatingAccount' => 'กำลังสร้างบัญชี…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => 'บันทึกคีย์ส่วนตัวของคุณ',
 			'pomSaveKeyDesc' => 'สร้างคีย์ส่วนตัวของคุณแล้ว กรุณาบันทึกไว้อย่างปลอดภัยก่อนสร้างบัญชี',
 			'pomCreateAccount' => 'สร้างบัญชี',
@@ -4314,12 +4351,6 @@ extension on TranslationsTh {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => 'เก็บชิ้นส่วนแล้ว ${collected}/${threshold}',
 			'pomRecoverSuccess' => 'กู้คืนคีย์ส่วนตัวแล้ว',
 			'pomDownloadKey' => 'ดาวน์โหลดคีย์',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => 'ยกเลิกการเชื่อมโยงบัญชี',
 			'pomUnlinkIntro' => 'กู้คืนและคัดลอกคีย์ส่วนตัวของคุณก่อน — คุณจะต้องใช้คีย์นี้เพื่อลงชื่อเข้าใช้อีกครั้งหลังยกเลิกการเชื่อมโยง',
 			'pomUnlinkContinue' => 'ฉันบันทึกคีย์แล้ว — ดำเนินการต่อ',
@@ -4385,7 +4416,7 @@ extension on TranslationsTh {
 			'googleManageUnlinkDesc' => 'ลบบัญชีนี้ออกจากเซิร์ฟเวอร์กลาง แล้วลงชื่อเข้าใช้ใหม่ด้วยคีย์ส่วนตัว',
 			'pricing_restore_purchases' => 'กู้คืนการซื้อ',
 			'pricing_manage_on_store' => 'จัดการการสมัครสมาชิก',
-			'pricing_web_managed' => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.pro กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ',
+			'pricing_web_managed' => 'คุณมีการสมัครสมาชิกที่ใช้งานอยู่ซึ่งจัดการผ่าน yakihonne.com กรุณาเข้าไปที่นั่นเพื่อเปลี่ยนหรือยกเลิกแพ็กเกจของคุณ',
 			'sub_managed_via_web' => 'การสมัครสมาชิกของคุณใช้งานอยู่',
 			'pricing_toggle_store' => '🛍️ สโตร์',
 			'pricing_toggle_points' => '🏆 แต้ม',
@@ -4463,6 +4494,13 @@ extension on TranslationsTh {
 			'pastDue' => 'เกินกำหนดชำระ',
 			'unpaid' => 'ยังไม่ชำระ',
 			'incomplete' => 'ไม่สมบูรณ์',
+			'spamFilter' => 'ตัวกรองสแปมที่อาจเกิดขึ้น',
+			'spamFilterDesc' => 'ยุบการตอบกลับจากผู้เขียนที่ดูเหมือนเป็นสแปม คุณสามารถขยายได้ทุกเมื่อ',
+			'seePotentialSpams' => ({required Object count}) => 'ดูสแปมที่อาจเกิดขึ้น ${count} รายการ',
+			'showSpamReplies' => 'แสดงการตอบกลับที่อาจเป็นสแปม',
+			'hideSpamReplies' => 'ซ่อนการตอบกลับที่อาจเป็นสแปม',
+			'markAsSpam' => 'ทำเครื่องหมายว่าเป็นสแปม',
+			'notSpam' => 'ไม่ใช่สแปม',
 			_ => null,
 		};
 	}

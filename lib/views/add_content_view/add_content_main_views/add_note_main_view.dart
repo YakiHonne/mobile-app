@@ -25,6 +25,7 @@ class AddNoteMainView extends HookWidget {
     super.key,
     this.attachedEvent,
     this.isMention,
+    this.isQuote,
     this.content,
     this.onSuccess,
     this.selectedExternalRelay,
@@ -33,6 +34,7 @@ class AddNoteMainView extends HookWidget {
   final BaseEventModel? attachedEvent;
   final String? content;
   final bool? isMention;
+  final bool? isQuote;
   final String? selectedExternalRelay;
   final Function(Event)? onSuccess;
 
@@ -222,7 +224,7 @@ class AddNoteMainView extends HookWidget {
       create: (context) => WriteNoteCubit(
         attachedEvent,
         isMention: isMention ?? false,
-        isQuote: false,
+        isQuote: isQuote ?? false,
       ),
       child: Column(
         children: components,

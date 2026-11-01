@@ -55,9 +55,16 @@ class DashboardScheduledCubit extends Cubit<DashboardScheduledState> {
   }
 
   Future<void> getScheduledNotes() async {
+    if (isClosed) {
+      return;
+    }
+
     emit(state.copyWith(isLoading: true));
 
     final scheduleState = await getScheduleState();
+    if (isClosed) {
+      return;
+    }
 
     if (scheduleState == null || scheduleState.pendingPages.isEmpty) {
       emit(state.copyWith(notes: [], isLoading: false));
@@ -78,6 +85,9 @@ class DashboardScheduledCubit extends Cubit<DashboardScheduledState> {
       compareById: false,
       includeIds: false,
     );
+    if (isClosed) {
+      return;
+    }
 
     final notes = <DvmPendingItem>[];
 

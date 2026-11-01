@@ -40,6 +40,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - pro_image_editor (12.0.8):
+    - Flutter
+    - FlutterMacOS
+  - pro_video_editor (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - quill_native_bridge_macos (0.0.1):
     - FlutterMacOS
   - Sentry/HybridSDK (8.52.1)
@@ -84,6 +90,8 @@ DEPENDENCIES:
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - pasteboard (from `Flutter/ephemeral/.symlinks/plugins/pasteboard/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - pro_image_editor (from `Flutter/ephemeral/.symlinks/plugins/pro_image_editor/darwin`)
+  - pro_video_editor (from `Flutter/ephemeral/.symlinks/plugins/pro_video_editor/darwin`)
   - quill_native_bridge_macos (from `Flutter/ephemeral/.symlinks/plugins/quill_native_bridge_macos/macos`)
   - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
@@ -134,6 +142,10 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/pasteboard/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  pro_image_editor:
+    :path: Flutter/ephemeral/.symlinks/plugins/pro_image_editor/darwin
+  pro_video_editor:
+    :path: Flutter/ephemeral/.symlinks/plugins/pro_video_editor/darwin
   quill_native_bridge_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/quill_native_bridge_macos/macos
   sentry_flutter:
@@ -172,6 +184,8 @@ SPEC CHECKSUMS:
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  pro_image_editor: e57a76b305fd8c2e06d57f92aec82b9c6a6e8d9f
+  pro_video_editor: 71c273c0a82a72996526e2bfc5c2fbd2bb35aaaa
   quill_native_bridge_macos: 2b005cb56902bb740e0cd9620aa399dfac6b4882
   Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
   sentry_flutter: 1802094c8f8dc5f0d733a77eeb91068b9abf9d76

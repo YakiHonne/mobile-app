@@ -20,6 +20,7 @@ class AppCustomization {
   bool enablePushNotification;
   bool enableAutoPlay;
   bool notifMentionsReplies;
+  bool notifHighlights;
   bool notifReactions;
   bool notifReposts;
   bool notifZaps;
@@ -46,6 +47,7 @@ class AppCustomization {
     this.enableAutoPlay = true,
     this.notifPrivateMessage = true,
     this.notifMentionsReplies = true,
+    this.notifHighlights = true,
     this.notifReactions = true,
     this.notifReposts = true,
     this.notifZaps = true,
@@ -81,6 +83,7 @@ class AppCustomization {
       'enablePushNotification': enablePushNotification,
       'notifPrivateMessage': notifPrivateMessage,
       'notifMentionsReplies': notifMentionsReplies,
+      'notifHighlights': notifHighlights,
       'notifReactions': notifReactions,
       'notifReposts': notifReposts,
       'notifZaps': notifZaps,
@@ -108,6 +111,7 @@ class AppCustomization {
       hideNonFollowingMedia: map['hideNonFollowingMedia'] as bool? ?? true,
       enableLinkPreview: map['enableLinkPreview'] as bool? ?? true,
       notifMentionsReplies: map['notifMentionsReplies'] as bool? ?? true,
+      notifHighlights: map['notifHighlights'] as bool? ?? true,
       notifReactions: map['notifReactions'] as bool? ?? true,
       notifReposts: map['notifReposts'] as bool? ?? true,
       notifZaps: map['notifZaps'] as bool? ?? true,
@@ -116,9 +120,12 @@ class AppCustomization {
       enablePushNotification: map['enablePushNotification'] as bool? ?? true,
       writingContentType:
           map['writingContentType'] as String? ?? AppContentType.note.name,
-      leadingFeedCustomization: Map<String, bool>.from(
-        map['leadingFeedCustomization'] as Map<String, dynamic>,
-      ),
+      leadingFeedCustomization: {
+        ...defaultLeadingFeedCustomization,
+        ...Map<String, bool>.from(
+          map['leadingFeedCustomization'] as Map<String, dynamic>,
+        ),
+      },
       actionsArrangement: map['actionsArrangement'] is List
           ? defaultActionsArrangement
           : Map<String, bool>.from(
@@ -142,6 +149,7 @@ const defaultLeadingFeedCustomization = {
   'trending': true,
   'highlights': true,
   'paid': true,
+  'nip84Highlights': true,
   'widgets': true,
 };
 
@@ -151,5 +159,6 @@ const defaultCommenLeadingType = [
   CommonFeedTypes.trending,
   CommonFeedTypes.highlights,
   CommonFeedTypes.paid,
+  CommonFeedTypes.nip84Highlights,
   CommonFeedTypes.widgets,
 ];

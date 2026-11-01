@@ -1,6 +1,7 @@
 import 'dart:io' show HandshakeException, SocketException;
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' as cupertino_ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:material_ui/material_ui.dart' as material_ui;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -39,6 +41,8 @@ class AppConstants {
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
     FlutterQuillLocalizations.delegate,
+    material_ui.GlobalMaterialLocalizations.delegate,
+    cupertino_ui.GlobalCupertinoLocalizations.delegate,
   ];
 
   // Navigator observers list
@@ -66,6 +70,11 @@ void main() async {
         ..beforeSend = (event, hint) {
           final ex = event.throwable;
           if (ex is SocketException || ex is HandshakeException) {
+            return null;
+          }
+          if (ex is StateError &&
+              (ex.message.contains('NetworkImage is an empty file') ||
+                  ex.message.contains('Failed to load'))) {
             return null;
           }
           return event;

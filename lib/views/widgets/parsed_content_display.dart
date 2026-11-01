@@ -38,10 +38,13 @@ class ParsedContentDisplay extends StatelessWidget {
               height: kDefaultPadding,
             ),
             Expanded(
-              child: Container(
+              child: SingleChildScrollView(
+                controller: scrollController,
                 padding: const EdgeInsets.all(kDefaultPadding / 2),
-                width: double.infinity,
-                child: ParsedText(text: _getParsedContent()),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ParsedText(text: _getParsedContent()),
+                ),
               ),
             ),
             const SizedBox(

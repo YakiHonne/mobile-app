@@ -23,10 +23,12 @@ import '../../widgets/note_stats.dart';
 import '../../widgets/tag_container.dart';
 
 final profileDataList = [
+  ProfileData.all,
   ProfileData.pinned,
   ProfileData.notes,
   ProfileData.replies,
-  ProfileData.mentions
+  ProfileData.mentions,
+  ProfileData.highlights,
 ];
 
 class ProfileNotes extends HookWidget {

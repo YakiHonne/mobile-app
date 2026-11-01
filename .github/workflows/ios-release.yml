@@ -1,0 +1,111 @@
+name: iOS release
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Distribution track
+        type: choice
+        required: true
+        options: [internal, production]
+      release_notes:
+        description: Optional store release notes (leave blank to use the changelog)
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-15
+    environment: app-store
+    timeout-minutes: 120
+    env:
+      RELEASE_TRACK: ${{ inputs.track }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.GLITCHTIP_AUTH_TOKEN }}
+      SENTRY_URL: ${{ secrets.GLITCHTIP_URL }}
+      GLITCHTIP_ORG: ${{ secrets.GLITCHTIP_ORG }}
+      GLITCHTIP_PROJECT: ${{ secrets.GLITCHTIP_PROJECT }}
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: mobile-app
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: YakiHonne/nostr_core_enhanced
+          ref: bd84e5fdd1a7c7da810ca209492beedc20cc340f
+          path: nostr_core_enhanced
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.9'
+          channel: stable
+          cache: true
+      - name: Verify Xcode version
+        run: xcodebuild -version
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Prepare version and release notes
+        id: release
+        working-directory: mobile-app
+        env:
+          RELEASE_NOTES_OVERRIDE: ${{ inputs.release_notes }}
+        run: python3 .github/scripts/release_notes.py --platform "ios"
+      - name: Restore shared configuration
+        working-directory: mobile-app
+        env:
+          APP_ENV: ${{ secrets.APP_ENV }}
+        run: |
+          for setting in APP_ENV SENTRY_AUTH_TOKEN SENTRY_URL GLITCHTIP_ORG GLITCHTIP_PROJECT; do
+            if [ -z "${!setting}" ]; then
+              echo "Missing required configuration: $setting" >&2
+              exit 1
+            fi
+          done
+          printf '%s' "$APP_ENV" > .env
+      - name: Restore iOS Firebase configuration
+        working-directory: mobile-app
+        env:
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+        run: |
+          test -n "$GOOGLE_SERVICE_INFO_PLIST"
+          printf '%s' "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
+      - name: Install Fastlane
+        working-directory: mobile-app
+        run: bundle install
+      - name: Install Flutter dependencies
+        working-directory: mobile-app
+        run: flutter pub get --enforce-lockfile
+      - name: Configure iOS signing
+        working-directory: mobile-app
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_RUNNER_PROFILE_BASE64: ${{ secrets.IOS_RUNNER_PROFILE_BASE64 }}
+          IOS_SHARE_PROFILE_BASE64: ${{ secrets.IOS_SHARE_PROFILE_BASE64 }}
+          IOS_SAFARI_PROFILE_BASE64: ${{ secrets.IOS_SAFARI_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+        run: bash .github/scripts/ios_signing.sh
+      - name: Build iOS
+        working-directory: mobile-app
+        run: flutter build ipa --release --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
+      - name: Upload debug symbols to GlitchTip
+        working-directory: mobile-app
+        run: npx --yes @sentry/cli@2.41.1 debug-files upload --org "$GLITCHTIP_ORG" --project "$GLITCHTIP_PROJECT" build/ios/archive/Runner.xcarchive/dSYMs
+      - name: Publish iOS
+        working-directory: mobile-app
+        env:
+          APP_VERSION: ${{ steps.release.outputs.version }}
+          APP_BUILD: ${{ steps.release.outputs.build }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          TESTFLIGHT_EXTERNAL_GROUPS: ${{ secrets.TESTFLIGHT_EXTERNAL_GROUPS }}
+        run: bundle exec fastlane ios release

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
@@ -41,7 +41,6 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
-    controller?.dispose();
     super.dispose();
   }
 
@@ -51,15 +50,15 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
       return;
     }
     if (state == AppLifecycleState.paused) {
-      controller!.pauseCameraSafely();
+      controller!.pauseCamera();
     } else if (state == AppLifecycleState.resumed && isVisible) {
-      controller!.resumeCameraSafely();
+      controller!.resumeCamera();
     }
   }
 
   @override
   void didPushNext() {
-    controller?.pauseCameraSafely();
+    controller?.pauseCamera();
     setState(() {
       isVisible = false;
       invoice = '';
@@ -68,7 +67,7 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
 
   @override
   void didPopNext() {
-    controller?.resumeCameraSafely();
+    controller?.resumeCamera();
     setState(() {
       isVisible = true;
     });

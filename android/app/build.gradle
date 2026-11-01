@@ -84,7 +84,7 @@ android {
     buildTypes {
         release {
             shrinkResources false
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
@@ -106,4 +106,4 @@ flutter {
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
     implementation 'org.unifiedpush.android:foss-embedded-fcm-distributor:1.0.0'
-} 
+}

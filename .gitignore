@@ -49,6 +49,9 @@ app.*.map.json
 /build/
 /functions/
 /md/
+!/md/
+/md/*
+!/md/FEATURES_IMPROVEMENTS_FIXES_2.1.1.md
 
 # Files
 /android/key.properties
@@ -57,7 +60,6 @@ app.*.map.json
 /ios/firebase_app_id_file.json
 /lib/firebase_options.dart
 sentry.properties
-shorebird.yaml
 firebase.json
 .env
 # Added by code-review-graph
@@ -67,4 +69,4 @@ firebase.json
 CLAUDE.md
 AGENTS.md
 opencode.json
-.tokensave/
+.token-savior-cache.json

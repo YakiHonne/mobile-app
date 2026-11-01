@@ -39,7 +39,7 @@ class YakihonneCycle with WidgetsBindingObserver {
           if (!_hasGoneOffline) {
             if (canSign()) {
               NotificationHelper.sharedInstance.setOffline();
-              notificationsCubit.closeNotifications();
+              unawaited(notificationsCubit.closeNotifications());
             }
 
             _hasGoneOffline = true;

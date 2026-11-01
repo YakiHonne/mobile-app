@@ -137,6 +137,9 @@ class BotToastUtils {
   }
 
   static CancelFunc showLoading() {
+    if (!nostrRepository.isMainCubitReady) {
+      return () {};
+    }
     final ctx = nostrRepository.currentContext();
 
     return BotToast.showCustomLoading(

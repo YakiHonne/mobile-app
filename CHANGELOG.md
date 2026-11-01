@@ -1,5 +1,72 @@
 # Changelog
 
+## [2.1.1] - 2026-11-01
+
+### Changed
+
+- Added an All profile filter for notes, replies, mentions, highlights, and pins, without duplicates.
+
+### Fixed
+
+- Improved sensor, camera, notification, and callback stability.
+- Fixed video export, image editing, and missing thumbnails.
+- Fixed wallet timeouts, Cashu redemption, and malformed zap invoices.
+- Fixed message scrolling, repost IDs, scheduled notes, selections, autocomplete, and Nostr links.
+- Fixed account changes, contacts, points, dashboard pagination, statistics, and cache purges.
+
+## [2.1.0] - 2026-10-20
+
+### Added
+
+- Group likely spam replies behind a reveal control, with filter adjustment and spam/not-spam author controls.
+- Publish NIP-84 highlights from selected text in notes, articles, and shared browser content with source context, iOS Safari sharing, and highlight notifications.
+
+### Changed
+
+- Load Discover and Media feeds on demand, reduce the initial Home feed batch, and pause feed polling when tabs are inactive or the app is backgrounded.
+- Show cached DMs sooner while older history loads in the background, and receive live messages while the DMs tab is closed.
+- Restore the notification unread indicator at startup, load history when Notifications opens, and separate live updates from catch-up.
+- Load fiat rates and Cashu data when wallet or payment screens need them.
+- Resume the last main tab and notification subtab, restore scroll positions, and show cached feeds and notifications while refreshing.
+- Delay inactive feed refreshes after customization changes until the feed becomes active.
+- Use compact, one-line text previews in dashboard cards.
+
+### Fixed
+
+- Preserve quote intent when posting from content menus and related views so quote actions create quote posts.
+
+## [2.0.9] - 2026-09-28
+
+### Changed
+
+- Updated QR code scanning for more reliable camera lifecycle handling.
+- Video playback now keeps the device awake while a video is open.
+
+### Fixed
+
+- Lightning invoices prefixed with `lightning:` are now accepted across payments and QR scans.
+- Reply threads retain available root-note context when an intermediate reply is unavailable.
+- Paid-note payment events are removed after processing.
+- General bug fixes and performance enhancements.
+
+## [2.0.8] - 2026-09-17
+
+### Added
+
+- Video editor and video compressor before publishing.
+
+### Changed
+
+- Engagement chart enhancements.
+
+### Fixed
+
+- GrapheneOS feed issue where notes failed to load.
+- Note preview before publishing is now scrollable.
+- Paid notes payment issue.
+- Notification tap no longer shows "notification not found" when the note isn't in the local DB yet.
+- Replies not showing under some notes.
+
 ## [2.0.7] - 2026-08-31
 
 ### Added

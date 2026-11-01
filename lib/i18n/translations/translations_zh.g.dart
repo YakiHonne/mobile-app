@@ -307,6 +307,12 @@ class TranslationsZh extends Translations {
 	@override String get following => '关注中';
 	@override String get trending => '趋势';
 	@override String get highlights => '亮点';
+	@override String get highlight => '高亮';
+	@override String get highlighted => '已高亮';
+	@override String get highlightedFrom => '高亮自';
+	@override String get untitledArticle => '无标题文章';
+	@override String get untitledNote => '无标题笔记';
+	@override String get loadingSource => '正在加载来源…';
 	@override String get paid => '付费';
 	@override String get others => '其他';
 	@override String get suggestionsBox => '建议盒';
@@ -895,6 +901,10 @@ class TranslationsZh extends Translations {
 	@override String get fetchingUserInboxRelays => '获取用户收件箱中继';
 	@override String userZappedYou({required Object name, required Object number}) => '${name} zap您${number} sats';
 	@override String userReactedYou({required Object name, required Object reaction}) => '${name} 对您反应${reaction}';
+	@override String get highlightsDesc => '当有人高亮你的内容时收到通知。';
+	@override String userHighlightedFromYourArticle({required Object name}) => '${name}高亮了你的文章片段';
+	@override String userHighlightedFromYourNote({required Object name}) => '${name}高亮了你的笔记片段';
+	@override String userHighlightedYourContent({required Object name}) => '${name}高亮了你的内容';
 	@override String userRepostedYou({required Object name}) => '${name} repost您的内容';
 	@override String userMentionedYouInComment({required Object name}) => '${name} 在评论中提及您';
 	@override String userMentionedYouInNote({required Object name}) => '${name} 在笔记中提及您';
@@ -1129,6 +1139,8 @@ class TranslationsZh extends Translations {
 	@override String get shareWidgetImage => '分享部件图像';
 	@override String get inputField => '输入字段';
 	@override String get noReplies => '无回复';
+	@override String get noVisibleReplies => '没有可见回复';
+	@override String get spamRepliesHiddenHint => '疑似垃圾信息回复已在下方隐藏。';
 	@override String get message => '消息';
 	@override String get chat => '聊天';
 	@override String get onlyLettersNumber => '仅允许字母和数字';
@@ -2152,7 +2164,7 @@ class TranslationsZh extends Translations {
 	@override String get googleManageUnlinkDesc => '将此账户从中心服务器删除。请使用私钥重新登录。';
 	@override String get pricing_restore_purchases => '恢复购买';
 	@override String get pricing_manage_on_store => '管理订阅';
-	@override String get pricing_web_managed => '你有一个在 yakihonne.pro 上管理的有效订阅。请前往该网站更改或取消你的方案。';
+	@override String get pricing_web_managed => '你有一个在 yakihonne.com 上管理的有效订阅。请前往该网站更改或取消你的方案。';
 	@override String get sub_managed_via_web => '你的订阅正在生效。';
 	@override String get pricing_toggle_store => '🛍️ 商店';
 	@override String get pricing_toggle_points => '🏆 积分';
@@ -2230,6 +2242,13 @@ class TranslationsZh extends Translations {
 	@override String get pastDue => '已逾期';
 	@override String get unpaid => '未支付';
 	@override String get incomplete => '未完成';
+	@override String get spamFilter => '潜在垃圾信息过滤器';
+	@override String get spamFilterDesc => '折叠看起来像垃圾信息发布者的回复。你随时可以展开查看。';
+	@override String seePotentialSpams({required Object count}) => '查看 ${count} 条潜在垃圾信息';
+	@override String get showSpamReplies => '显示疑似垃圾信息回复';
+	@override String get hideSpamReplies => '隐藏疑似垃圾信息回复';
+	@override String get markAsSpam => '标记为垃圾信息';
+	@override String get notSpam => '不是垃圾信息';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2516,6 +2535,12 @@ extension on TranslationsZh {
 			'following' => '关注中',
 			'trending' => '趋势',
 			'highlights' => '亮点',
+			'highlight' => '高亮',
+			'highlighted' => '已高亮',
+			'highlightedFrom' => '高亮自',
+			'untitledArticle' => '无标题文章',
+			'untitledNote' => '无标题笔记',
+			'loadingSource' => '正在加载来源…',
 			'paid' => '付费',
 			'others' => '其他',
 			'suggestionsBox' => '建议盒',
@@ -2754,18 +2779,18 @@ extension on TranslationsZh {
 			'votesByUsers' => '用户投票',
 			'alreadyVoted' => '您已在此投票中投票',
 			'userCannotBeFound' => '未找到用户',
-			'votesNumber' => ({required Object number}) => '投票: ${number}',
-			'voteRequired' => '需要投票以显示统计。',
-			'showStats' => '显示统计',
-			'pollClosesAt' => ({required Object date}) => '关闭于: ${date}',
-			'pollClosedAt' => ({required Object date}) => '关闭于: ${date}',
-			'checkSmartWidget' => '检查智能部件',
 			_ => null,
 		};
 	}
 
 	dynamic _flatMapFunction$1(String path) {
 		return switch (path) {
+			'votesNumber' => ({required Object number}) => '投票: ${number}',
+			'voteRequired' => '需要投票以显示统计。',
+			'showStats' => '显示统计',
+			'pollClosesAt' => ({required Object date}) => '关闭于: ${date}',
+			'pollClosedAt' => ({required Object date}) => '关闭于: ${date}',
+			'checkSmartWidget' => '检查智能部件',
 			'emptyVerifiedNote' => '验证笔记内容为空！',
 			'post' => '发布',
 			'seeAnything' => '看到可以改进的东西吗？',
@@ -3110,6 +3135,10 @@ extension on TranslationsZh {
 			'fetchingUserInboxRelays' => '获取用户收件箱中继',
 			'userZappedYou' => ({required Object name, required Object number}) => '${name} zap您${number} sats',
 			'userReactedYou' => ({required Object name, required Object reaction}) => '${name} 对您反应${reaction}',
+			'highlightsDesc' => '当有人高亮你的内容时收到通知。',
+			'userHighlightedFromYourArticle' => ({required Object name}) => '${name}高亮了你的文章片段',
+			'userHighlightedFromYourNote' => ({required Object name}) => '${name}高亮了你的笔记片段',
+			'userHighlightedYourContent' => ({required Object name}) => '${name}高亮了你的内容',
 			'userRepostedYou' => ({required Object name}) => '${name} repost您的内容',
 			'userMentionedYouInComment' => ({required Object name}) => '${name} 在评论中提及您',
 			'userMentionedYouInNote' => ({required Object name}) => '${name} 在笔记中提及您',
@@ -3268,6 +3297,12 @@ extension on TranslationsZh {
 			'circuit' => '电路',
 			'votingSystem' => '投票系统',
 			'proofSystem' => '证明系统',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'gasStation' => '加油站',
 			'totalFund' => '（总基金）',
 			'roundStart' => '回合开始',
@@ -3278,12 +3313,6 @@ extension on TranslationsZh {
 			'blockHeight' => '块高度',
 			'atContractCreation' => ({required Object number}) => '${number} （合同创建时）',
 			'zkProofs' => 'ZK证明',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'downloadZkProofs' => '下载证明',
 			'walletConnectionString' => '钱包连接字符串',
 			'walletConnectionStringDesc' => '确保安全复制或导出钱包连接字符串。我们不存储此信息，如果丢失，无法恢复。',
@@ -3350,6 +3379,8 @@ extension on TranslationsZh {
 			'shareWidgetImage' => '分享部件图像',
 			'inputField' => '输入字段',
 			'noReplies' => '无回复',
+			'noVisibleReplies' => '没有可见回复',
+			'spamRepliesHiddenHint' => '疑似垃圾信息回复已在下方隐藏。',
 			'message' => '消息',
 			'chat' => '聊天',
 			'onlyLettersNumber' => '仅允许字母和数字',
@@ -3784,6 +3815,12 @@ extension on TranslationsZh {
 			'redeemEcashDesc' => '将 ecash 代币兑换到您的钱包',
 			'depositDesc' => '通过存入 sats 铸造新的 ecash 代币',
 			'pasteToken' => '粘贴代币',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'scanToken' => '扫描',
 			'tokenDetails' => '代币详情',
 			'issuingMint' => '发行 Mint',
@@ -3796,12 +3833,6 @@ extension on TranslationsZh {
 			'nuts' => 'NUTs',
 			'errorUpdatingMint' => '更新 Mints 列表时出错',
 			'active' => '活跃',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'inactive' => '非活跃',
 			'addCashuWallet' => '添加 Cashu 钱包并开始通过 nostr 发送和接收 Ecash。',
 			'mintUrl' => 'Mint URL',
@@ -4302,6 +4333,12 @@ extension on TranslationsZh {
 			'pomAuthenticating' => '正在通过 Google 验证…',
 			'pomCheckingAccount' => '正在检查账号…',
 			'pomCreatingAccount' => '正在创建账号…',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'pomNewAccountTitle' => '保存你的私钥',
 			'pomSaveKeyDesc' => '你的私钥已生成。请在创建账号前妥善保存。',
 			'pomCreateAccount' => '创建账号',
@@ -4314,12 +4351,6 @@ extension on TranslationsZh {
 			'pomShardsProgress' => ({required Object collected, required Object threshold}) => '已获取 ${collected}/${threshold} 个分片',
 			'pomRecoverSuccess' => '私钥已恢复',
 			'pomDownloadKey' => '下载密钥',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomUnlinkTitle' => '解除账户关联',
 			'pomUnlinkIntro' => '请先恢复并复制你的私钥——解除关联后需要用它重新登录。',
 			'pomUnlinkContinue' => '我已保存密钥——继续',
@@ -4385,7 +4416,7 @@ extension on TranslationsZh {
 			'googleManageUnlinkDesc' => '将此账户从中心服务器删除。请使用私钥重新登录。',
 			'pricing_restore_purchases' => '恢复购买',
 			'pricing_manage_on_store' => '管理订阅',
-			'pricing_web_managed' => '你有一个在 yakihonne.pro 上管理的有效订阅。请前往该网站更改或取消你的方案。',
+			'pricing_web_managed' => '你有一个在 yakihonne.com 上管理的有效订阅。请前往该网站更改或取消你的方案。',
 			'sub_managed_via_web' => '你的订阅正在生效。',
 			'pricing_toggle_store' => '🛍️ 商店',
 			'pricing_toggle_points' => '🏆 积分',
@@ -4463,6 +4494,13 @@ extension on TranslationsZh {
 			'pastDue' => '已逾期',
 			'unpaid' => '未支付',
 			'incomplete' => '未完成',
+			'spamFilter' => '潜在垃圾信息过滤器',
+			'spamFilterDesc' => '折叠看起来像垃圾信息发布者的回复。你随时可以展开查看。',
+			'seePotentialSpams' => ({required Object count}) => '查看 ${count} 条潜在垃圾信息',
+			'showSpamReplies' => '显示疑似垃圾信息回复',
+			'hideSpamReplies' => '隐藏疑似垃圾信息回复',
+			'markAsSpam' => '标记为垃圾信息',
+			'notSpam' => '不是垃圾信息',
 			_ => null,
 		};
 	}

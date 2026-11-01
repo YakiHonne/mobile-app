@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -240,13 +241,15 @@ class YakiHonneFirstRewards extends HookWidget {
   }
 }
 
-class YakiLoginChest extends StatelessWidget {
+class YakiLoginChest extends HookWidget {
   const YakiLoginChest({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = useState(false);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -279,20 +282,32 @@ class YakiLoginChest extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: TextButton(
-            onPressed: () {
-              if (currentSigner?.canSign() ?? false) {
-                pointsManagementCubit.login(
-                  onSuccess: () {
-                    if (context.mounted) {
-                      Navigator.pop(context);
+            onPressed: isLoading.value
+                ? null
+                : () async {
+                    if (currentSigner?.canSign() ?? false) {
+                      isLoading.value = true;
+                      await pointsManagementCubit.login(
+                        onSuccess: () {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                      );
+                      if (context.mounted) {
+                        isLoading.value = false;
+                      }
                     }
                   },
-                );
-              }
-            },
             style: TbuttonsTheme.solidTextButtonStyle(
                 Theme.of(context).primaryColor),
-            child: Text(context.t.login.capitalizeFirst()),
+            child: isLoading.value
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: SpinKitCircle(color: kWhite, size: 18),
+                  )
+                : Text(context.t.login.capitalizeFirst()),
           ),
         ),
         TextButton(

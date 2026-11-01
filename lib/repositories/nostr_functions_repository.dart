@@ -723,13 +723,19 @@ class NostrFunctionsRepository {
   // DMS FUNCTIONS
   // =============================================================================
 
-  static Future<Map<String, List<Event>>> getUserDmsAsync({
+  static Future<
+      ({
+        List<Event> directMessages,
+        List<Event> giftWraps,
+        bool isComplete,
+      })> getUserDmsAsync({
     int? since,
     int? until,
   }) async {
     final directMessages = <String, Event>{};
     final giftWraps = <String, Event>{};
     final pubkey = currentSigner!.getPublicKey();
+    var isComplete = false;
 
     final f1 = Filter(
       kinds: [
@@ -774,12 +780,18 @@ class NostrFunctionsRepository {
           }
         }
       },
+      eoseCallBack: (requestId, ok, relay, unCompletedRelays) {
+        if (unCompletedRelays.isEmpty) {
+          isComplete = true;
+        }
+      },
     );
 
-    return {
-      'directMessages': directMessages.values.toList(),
-      'giftWraps': giftWraps.values.toList(),
-    };
+    return (
+      directMessages: directMessages.values.toList(),
+      giftWraps: giftWraps.values.toList(),
+      isComplete: isComplete,
+    );
   }
 
   static String getUserDms({
@@ -862,26 +874,36 @@ class NostrFunctionsRepository {
         if (filters[3] != null) filters[3]!,
         if (filters[4] != null) filters[4]!,
         if (filters[5] != null) filters[5]!,
+        if (filters[6] != null) filters[6]!,
       ],
       currentUserRelayList.relays.keys.toList(),
-      source: EventsSource.all,
+      // History and bounded catch-up are queried separately. Keep this live
+      // subscription on relays so it cannot replay an unbounded local backlog.
+      source: EventsSource.relays,
       eventCallBack: (event, relay) {
         if (canNotificationBeAdded(event, eventsToBeEmitted, pubkey, c)) {
           onEvents.call(event);
           eventsToBeEmitted[event.id] = event;
+          if (eventsToBeEmitted.length > 2000) {
+            eventsToBeEmitted.remove(eventsToBeEmitted.keys.first);
+          }
         }
       },
     );
   }
 
-  static Future<List<Event>> queryNotifications({
+  static Future<({List<Event> events, bool isComplete})> queryNotifications({
     required String pubkey,
     int? limit,
     int? since,
     int? until,
+    int? startingTimeout,
+    void Function(Event)? onHistoryEvent,
   }) async {
+    final Map<String, Event> eventsToBeEmitted = {};
+    var isComplete = false;
+
     try {
-      final Map<String, Event> eventsToBeEmitted = {};
       final c = nostrRepository.currentAppCustomization;
 
       final filters = getNotificationsFilter(
@@ -892,30 +914,40 @@ class NostrFunctionsRepository {
         c: c,
       );
 
+      final queryFilters = filters.whereType<Filter>().toList();
+      if (queryFilters.isEmpty) {
+        return (events: <Event>[], isComplete: true);
+      }
+
       await queryEvents(
-        [
-          if (filters[0] != null) filters[0]!,
-          if (filters[1] != null) filters[1]!,
-          if (filters[2] != null) filters[2]!,
-          if (filters[3] != null) filters[3]!,
-          if (filters[4] != null) filters[4]!,
-          if (filters[5] != null) filters[5]!,
-        ],
+        queryFilters,
         currentUserRelayList.relays.keys.toList(),
-        startingTimeout: 3,
+        startingTimeout: startingTimeout,
         closeRelaysOnFinish: false,
         source: EventsSource.all,
         eventCallBack: (event, relay) {
           if (canNotificationBeAdded(event, eventsToBeEmitted, pubkey, c)) {
             eventsToBeEmitted[event.id] = event;
+            onHistoryEvent?.call(event);
+          }
+        },
+        eoseCallBack: (requestId, ok, relay, unCompletedRelays) {
+          if (unCompletedRelays.isEmpty) {
+            isComplete = true;
           }
         },
       );
 
-      return eventsToBeEmitted.values.toList();
+      return (
+        events: eventsToBeEmitted.values.toList(),
+        isComplete: isComplete,
+      );
     } catch (e) {
       lg.e('Error querying notifications: $e');
-      return [];
+      return (
+        events: eventsToBeEmitted.values.toList(),
+        isComplete: false,
+      );
     }
   }
 
@@ -925,19 +957,25 @@ class NostrFunctionsRepository {
     String pubkey,
     AppCustomization? c,
   ) {
+    if (event.kind == EventKind.HIGHLIGHT &&
+        (!(c?.notifHighlights ?? true) ||
+            !isHighlightForAuthor(event, pubkey))) {
+      return false;
+    }
+
     final hideEvent = (c?.notifMaxMentions ?? true) && event.pTags.length > 10;
 
     if (hideEvent) {
       return false;
     }
 
-    final allowed = (event.kind == EventKind.ZAP &&
-            !isUserMuted(getZapPubkey(event.tags).first)) ||
-        (event.kind != EventKind.ZAP &&
-            !isUserMuted(event.pubkey) &&
-            !isThreadMutedByEvent(event) &&
-            !eventsToBeEmitted.keys.contains(event.id) &&
-            event.pubkey != pubkey);
+    final allowed = !eventsToBeEmitted.containsKey(event.id) &&
+        ((event.kind == EventKind.ZAP &&
+                !isUserMuted(getZapPubkey(event.tags).first)) ||
+            (event.kind != EventKind.ZAP &&
+                !isUserMuted(event.pubkey) &&
+                !isThreadMutedByEvent(event) &&
+                event.pubkey != pubkey));
 
     final notOusideEvent = event.pTags.contains(pubkey) ||
         ((c?.notifFollowings ?? false) &&
@@ -949,6 +987,18 @@ class NostrFunctionsRepository {
         (event.kind != EventKind.TEXT_NOTE && event.kind != EventKind.REACTION);
 
     return allowed && checkKind && notOusideEvent;
+  }
+
+  /// NIP-84 distinguishes the source author from editors and mentions.
+  /// Older clients may omit the role marker on their author p tag.
+  static bool isHighlightForAuthor(Event event, String pubkey) {
+    return event.kind == EventKind.HIGHLIGHT &&
+        event.pubkey != pubkey &&
+        event.tags.any((tag) =>
+            tag.length > 1 &&
+            tag[0] == 'p' &&
+            tag[1] == pubkey &&
+            (tag.length < 4 || tag[3].isEmpty || tag[3] == 'author'));
   }
 
   static List<Filter?> getNotificationsFilter({
@@ -976,7 +1026,7 @@ class NostrFunctionsRepository {
         p: [pubkey],
         since: since,
         until: until,
-        limit: 100,
+        limit: limit == 1 ? 1 : 100,
       );
     }
 
@@ -1056,6 +1106,16 @@ class NostrFunctionsRepository {
       filter3,
       filter4,
       filter5,
+      if (c?.notifHighlights ?? true)
+        Filter(
+          kinds: [EventKind.HIGHLIGHT],
+          p: [pubkey],
+          since: since,
+          until: until,
+          limit: limit,
+        )
+      else
+        null,
     ];
   }
 
@@ -1438,6 +1498,21 @@ class NostrFunctionsRepository {
     return evs;
   }
 
+  /// Load saved feed events from the local cache without querying relays.
+  static Future<List<Event>> getCachedEventsByIds(List<String> ids) async {
+    if (ids.isEmpty) {
+      return [];
+    }
+
+    return getEventsAsync(
+      ids: ids,
+      // Snapshot ids are authoritative; don't drop cached events because
+      // their seen-on relay isn't in the user's current relay list.
+      relays: const [],
+      source: EventsSource.cache,
+    );
+  }
+
   static Stream<Event> getCurrentUserRelatedData() {
     final controller = StreamController<Event>();
     List<String> currentUncompletedRelays = nc.activeRelays();
@@ -1498,13 +1573,13 @@ class NostrFunctionsRepository {
     int? since,
     int? until,
     bool includeComments = false,
-  }) {
-    final controller = StreamController<Event>();
-    List<String> currentUncompletedRelays = nc.activeRelays();
-
+    String? authorPubkey,
+  }) async* {
     final filters = <Filter>[];
     final nds = List<String>.from(noteIds);
     final atgs = List<String>.from(aTags);
+    final controller = StreamController<Event>();
+    List<String> currentUncompletedRelays = nc.activeRelays();
 
     if (nds.isNotEmpty) {
       final f1 = Filter(
@@ -1514,6 +1589,7 @@ class NostrFunctionsRepository {
           EventKind.TEXT_NOTE,
           EventKind.REACTION,
           EventKind.REPOST,
+          EventKind.GENERIC_REPOST,
           if (includeComments) EventKind.COMMENT,
         ],
         since: since,
@@ -1560,6 +1636,7 @@ class NostrFunctionsRepository {
           EventKind.TEXT_NOTE,
           EventKind.REACTION,
           EventKind.REPOST,
+          EventKind.GENERIC_REPOST,
           if (includeComments) EventKind.COMMENT,
         ],
         since: since,
@@ -1599,6 +1676,28 @@ class NostrFunctionsRepository {
     }
 
     final seenIds = <String>{};
+    List<String> missingRelays = [];
+
+    if (authorPubkey != null && authorPubkey.isNotEmpty) {
+      try {
+        final authorRelayList =
+            (await nc.getSingleUserRelayList(authorPubkey))?.writes;
+        if (authorRelayList != null && authorRelayList.isNotEmpty) {
+          missingRelays = nc.missingRelays(authorRelayList);
+
+          if (missingRelays.isNotEmpty) {
+            await nc.connectRelays(
+              missingRelays,
+              waitForAuth: true,
+            );
+          }
+
+          await nc.connectNonConnectedRelays(authorRelayList.toSet());
+        }
+      } catch (e) {
+        lg.i(e);
+      }
+    }
 
     nc.addSubscription(
       filters,
@@ -1606,11 +1705,7 @@ class NostrFunctionsRepository {
       eventCallBack: (event, relay) {
         if (!controller.isClosed && seenIds.add(event.id)) {
           if (cleanEvent(event: event, noteIds: nds, aTags: atgs)) {
-            if ((event.kind == EventKind.TEXT_NOTE &&
-                    !event.isUncensoredNote()) ||
-                event.kind != EventKind.TEXT_NOTE) {
-              controller.add(event);
-            }
+            controller.add(event);
           }
         }
       },
@@ -1626,11 +1721,14 @@ class NostrFunctionsRepository {
         if (currentUncompletedRelays.isEmpty || timer.tick > timerTicks) {
           controller.close();
           timer.cancel();
+          if (missingRelays.isNotEmpty) {
+            unawaited(nc.closeConnect(missingRelays));
+          }
         }
       },
     );
 
-    return controller.stream;
+    yield* controller.stream;
   }
 
   static bool cleanEvent({
@@ -2582,6 +2680,10 @@ class NostrFunctionsRepository {
       filters,
       [],
       eventCallBack: (ev, relay) {
+        if (controller.isClosed) {
+          return;
+        }
+
         bool canBeAdded = false;
 
         if (isEtag) {
@@ -2901,6 +3003,34 @@ class NostrFunctionsRepository {
     int? since,
     bool includeExpired = true,
   }) async {
+    if (type == CommonFeedTypes.nip84Highlights) {
+      final configuredRelays = feedRelaySet?.urls.toList();
+      final userRelays = currentUserRelayList.relays.keys.toList();
+      final selectedRelays = relays ??
+          (core != null
+              ? core.relays()
+              : configuredRelays != null && configuredRelays.isNotEmpty
+                  ? [...configuredRelays, ...userRelays]
+                  : userRelays.isNotEmpty
+                      ? userRelays
+                      : DEFAULT_BOOTSTRAP_RELAYS);
+      final events = await getEventsAsync(
+        kinds: [EventKind.HIGHLIGHT],
+        pubkeys: pubkeys,
+        relays: selectedRelays,
+        until: until,
+        since: since,
+        limit: limit,
+        includeExpired: includeExpired,
+        core: core,
+        source: EventsSource.all,
+      );
+      return events
+          .where((event) =>
+              event.kind == EventKind.HIGHLIGHT && !isUserMuted(event.pubkey))
+          .toList();
+    }
+
     final eventsToBeEmitted = <String, Event>{};
     final fallBackEventToBeEmitted = <String, Event>{};
     final removeReplies = type == CommonFeedTypes.recent;
@@ -4916,6 +5046,7 @@ class NostrFunctionsRepository {
       int? startingTimeout,
       bool includeExpired = true,
       bool closeRelaysOnFinish = true,
+      Duration? connectTimeout,
       EventsSource source = EventsSource.cacheFirst,
       NostrCore? core,
       void Function(Event, String)? eventCallBack,
@@ -4926,7 +5057,11 @@ class NostrFunctionsRepository {
     final missingRelays = client.missingRelays(targetRelays);
 
     if (missingRelays.isNotEmpty) {
-      await client.connectRelays(missingRelays, waitForAuth: true);
+      await client.connectRelays(
+        missingRelays,
+        waitForAuth: true,
+        connectTimeout: connectTimeout,
+      );
     }
 
     try {
@@ -4938,12 +5073,17 @@ class NostrFunctionsRepository {
         includeExpired: includeExpired,
         source: source,
         eventCallBack: eventCallBack,
+        eoseCallBack: eoseCallBack,
+        connectTimeout: connectTimeout,
       );
     } catch (e) {
       lg.e('Error querying events: $e');
     } finally {
+      // The caller already has its events; closing sockets is cleanup, not
+      // something it needs to wait on. closeConnect also closes relays one
+      // at a time under the hood, so awaiting it here serialized that too.
       if (closeRelaysOnFinish && missingRelays.isNotEmpty) {
-        await client.closeConnect(missingRelays);
+        unawaited(client.closeConnect(missingRelays));
       }
     }
   }

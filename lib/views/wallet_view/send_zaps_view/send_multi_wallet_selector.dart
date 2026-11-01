@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +61,16 @@ class MultiWalletSelector extends StatelessWidget {
   ) {
     switch (zapPaymentMethod.value) {
       case ZapPaymentMethod.cashu:
+        if (cashuState.isInitializing) {
+          return const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        }
+
         if (cashuState.walletMints.isEmpty) {
           return CreateWalletPrompt(
             onTap: () {
@@ -278,6 +290,9 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay>
                           Images.cashu,
                           'Cashu Wallet',
                           () {
+                            unawaited(
+                              cashuWalletManagerCubit.ensureInitialized(),
+                            );
                             widget.zapPaymentMethod.value =
                                 ZapPaymentMethod.cashu;
                             widget.onDismiss();

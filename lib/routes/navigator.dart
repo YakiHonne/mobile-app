@@ -26,6 +26,10 @@ class YNavigator extends Navigator {
   static RouteObserver routeObserver = RouteObserver();
 
   static bool canPop(BuildContext context) {
+    if (!context.mounted) {
+      return false;
+    }
+
     return Navigator.canPop(context);
   }
 
@@ -48,6 +52,10 @@ class YNavigator extends Navigator {
 
   /// Flutter stack
   static void popToRoot<T extends Object>(BuildContext context) {
+    if (!context.mounted) {
+      return;
+    }
+
     // Remove the current focus
     FocusScope.of(context).requestFocus(FocusNode());
     if (canPop(context)) {

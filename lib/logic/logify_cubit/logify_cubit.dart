@@ -763,18 +763,23 @@ class LogifyCubit extends Cubit<LogifyState> {
     required BuildContext context,
     required Function(String) onConnectionUrlReady,
   }) async {
-    final signer = await RemoteEventSigner.fromURI(
-      onConnectionUrlReady: onConnectionUrlReady,
-      onAuth: (url, p1) => launchRemoteSignerAuth(
-        url: url,
-      ),
-      nc: nc,
-    );
+    try {
+      final signer = await RemoteEventSigner.fromURI(
+        onConnectionUrlReady: onConnectionUrlReady,
+        onAuth: (url, p1) => launchRemoteSignerAuth(
+          url: url,
+        ),
+        nc: nc,
+      );
 
-    if (signer != null) {
-      await signer.getPublicKeyAsync();
-      loadRemotePubkeyAndLogin(
-          remoteSigner: signer, onSuccess: onSuccess, context: context);
+      if (signer != null) {
+        await signer.getPublicKeyAsync();
+        loadRemotePubkeyAndLogin(
+            remoteSigner: signer, onSuccess: onSuccess, context: context);
+      }
+    } catch (e) {
+      lg.i(e);
+      BotToastUtils.showError('Error connecting to signer');
     }
   }
 
@@ -794,24 +799,29 @@ class LogifyCubit extends Cubit<LogifyState> {
 
     final keys = Keychain.generate();
 
-    final signer = await RemoteEventSigner.fromBunker(
-      keys.private,
-      bunkerPointer,
-      onAuth: (url, p1) => launchRemoteSignerAuth(
-        url: url,
-      ),
-      nc: nc,
-    );
-
-    if (signer != null) {
-      await signer.getPublicKeyAsync();
-      loadRemotePubkeyAndLogin(
-        remoteSigner: signer,
-        onSuccess: onSuccess,
-        context: context,
-        externalKeyType: externalKeyType,
-        pomegranateSetup: pomegranateSetup,
+    try {
+      final signer = await RemoteEventSigner.fromBunker(
+        keys.private,
+        bunkerPointer,
+        onAuth: (url, p1) => launchRemoteSignerAuth(
+          url: url,
+        ),
+        nc: nc,
       );
+
+      if (signer != null) {
+        await signer.getPublicKeyAsync();
+        loadRemotePubkeyAndLogin(
+          remoteSigner: signer,
+          onSuccess: onSuccess,
+          context: context,
+          externalKeyType: externalKeyType,
+          pomegranateSetup: pomegranateSetup,
+        );
+      }
+    } catch (e) {
+      lg.i(e);
+      BotToastUtils.showError(e is String ? e : 'Error connecting to signer');
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
@@ -9,9 +11,11 @@ import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/discover_cubit/discover_cubit.dart';
+import '../../logic/dms_cubit/dms_cubit.dart';
 import '../../logic/leading_cubit/leading_cubit.dart';
 import '../../logic/main_cubit/main_cubit.dart';
 import '../../logic/media_cubit/media_cubit.dart';
+import '../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../logic/theme_cubit/theme_cubit.dart';
 import '../../main.dart' show AppConstants;
 import '../../models/app_models/diverse_functions.dart';
@@ -41,6 +45,8 @@ import 'widgets/flip_to_share_wrapper.dart';
 import 'widgets/main_view_appbar.dart';
 
 class MultiSafeScrollController extends ScrollController {
+  MultiSafeScrollController({super.initialScrollOffset});
+
   @override
   ScrollPosition get position =>
       positions.length <= 1 ? super.position : positions.last;
@@ -75,25 +81,21 @@ final indexMap = {
   MainViews.articles: 6,
 };
 
+const _mainScrollStorageKeys = [
+  'leading',
+  'media',
+  'wallet',
+  'dms',
+  'notifications',
+  'smartWidgets',
+  'articles',
+];
+
 class MainView extends HookWidget {
   const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final mainScrollControllers = useMemoized(
-        () => [
-              for (var i = 0; i < 7; i++) MultiSafeScrollController(),
-            ],
-        []);
-
-    useEffect(() {
-      return () {
-        for (final controller in mainScrollControllers) {
-          controller.dispose();
-        }
-      };
-    }, [mainScrollControllers]);
-
     return BlocProvider(
       create: (context) {
         YakihonneCycle(buildContext: context);
@@ -106,25 +108,42 @@ class MainView extends HookWidget {
 
         return nostrRepository.mainCubit;
       },
-      child: FlipToShareWrapper(
-        child: MainViewContent(
-          mainScrollControllers: mainScrollControllers,
-        ),
+      child: const FlipToShareWrapper(
+        child: MainViewContent(),
       ),
     );
   }
 }
 
 class MainViewContent extends HookWidget {
-  const MainViewContent({
-    required this.mainScrollControllers,
-    super.key,
-  });
-
-  final List<ScrollController> mainScrollControllers;
+  const MainViewContent({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final mainState = context.watch<MainCubit>().state;
+    final resumeOwner = mainState.pubKey;
+    final mainScrollControllers = useMemoized(
+      () => [
+        for (final key in _mainScrollStorageKeys)
+          MultiSafeScrollController(
+            initialScrollOffset:
+                localDatabaseRepository.getMainViewScrollPosition(
+              resumeOwner,
+              key,
+            ),
+          ),
+      ],
+      [resumeOwner],
+    );
+
+    useEffect(() {
+      return () {
+        for (final controller in mainScrollControllers) {
+          controller.dispose();
+        }
+      };
+    }, [mainScrollControllers]);
+
     final barsVisible = useState(true);
     // Drives the fade-out/jump/fade-in used to "scroll" to top from deep in
     // a feed. 0 = fully visible, 1 = faded out.
@@ -143,8 +162,98 @@ class MainViewContent extends HookWidget {
     }, [barsVisible]);
 
     // Read current view index at hook level (outside BlocBuilder)
-    final mainState = context.watch<MainCubit>().state;
     final currentIndex = indexMap[mainState.mainView] ?? 0;
+    final lifecycleState = useAppLifecycleState();
+    final appIsResumed =
+        lifecycleState == null || lifecycleState == AppLifecycleState.resumed;
+
+    final scrollSaveTimers = useMemoized(
+      () => List<Timer?>.filled(mainScrollControllers.length, null),
+      [mainScrollControllers],
+    );
+
+    void saveScrollPosition(int index, {bool immediately = false}) {
+      if (index != currentIndex) {
+        return;
+      }
+
+      final controller = mainScrollControllers[index];
+      if (!controller.hasClients) {
+        return;
+      }
+
+      final offset = controller.position.pixels;
+      if (!offset.isFinite) {
+        return;
+      }
+
+      scrollSaveTimers[index]?.cancel();
+      if (immediately) {
+        unawaited(
+          localDatabaseRepository.setMainViewScrollPosition(
+            resumeOwner,
+            _mainScrollStorageKeys[index],
+            offset < 0 ? 0 : offset,
+          ),
+        );
+      } else {
+        scrollSaveTimers[index] = Timer(
+          const Duration(milliseconds: 300),
+          () => unawaited(
+            localDatabaseRepository.setMainViewScrollPosition(
+              resumeOwner,
+              _mainScrollStorageKeys[index],
+              offset < 0 ? 0 : offset,
+            ),
+          ),
+        );
+      }
+    }
+
+    useEffect(() {
+      final listeners = <VoidCallback>[];
+      for (var index = 0; index < mainScrollControllers.length; index++) {
+        final currentIndex = index;
+        void listener() => saveScrollPosition(currentIndex);
+        listeners.add(listener);
+        mainScrollControllers[index].addListener(listener);
+      }
+
+      return () {
+        for (var index = 0; index < mainScrollControllers.length; index++) {
+          mainScrollControllers[index].removeListener(listeners[index]);
+          scrollSaveTimers[index]?.cancel();
+        }
+      };
+    }, [mainScrollControllers, resumeOwner, currentIndex]);
+
+    useEffect(() {
+      if (lifecycleState == AppLifecycleState.inactive ||
+          lifecycleState == AppLifecycleState.paused ||
+          lifecycleState == AppLifecycleState.hidden) {
+        saveScrollPosition(currentIndex, immediately: true);
+      }
+      return null;
+    }, [lifecycleState, resumeOwner, currentIndex]);
+
+    final savedScrollOffsets = useMemoized(
+      () => [
+        for (final key in _mainScrollStorageKeys)
+          localDatabaseRepository.getMainViewScrollPosition(resumeOwner, key),
+      ],
+      [resumeOwner],
+    );
+    final previousScrollTab = useRef(currentIndex);
+
+    useEffect(() {
+      if (previousScrollTab.value != currentIndex) {
+        previousScrollTab.value = currentIndex;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          saveScrollPosition(currentIndex, immediately: true);
+        });
+      }
+      return null;
+    }, [currentIndex, resumeOwner]);
 
     final visitedTabs = useState<Set<int>>({currentIndex});
     final isFirstVisit = !visitedTabs.value.contains(currentIndex);
@@ -152,6 +261,22 @@ class MainViewContent extends HookWidget {
         isFirstVisit ? {...visitedTabs.value, currentIndex} : visitedTabs.value;
 
     final settledGlassIndex = useState(currentIndex);
+    final smartWidgetsReady = useState(false);
+
+    useEffect(() {
+      leadingCubit.setAppResumed(appIsResumed);
+      mediaCubit.setAppResumed(appIsResumed);
+      discoverCubit.setAppResumed(appIsResumed);
+      return null;
+    }, [appIsResumed]);
+
+    useEffect(() {
+      return () {
+        leadingCubit.setFeedActive(false);
+        mediaCubit.setFeedActive(false);
+        discoverCubit.setFeedActive(false);
+      };
+    }, const []);
 
     useEffect(() {
       if (isFirstVisit) {
@@ -162,6 +287,11 @@ class MainViewContent extends HookWidget {
       } else {
         settledGlassIndex.value = currentIndex;
       }
+
+      leadingCubit.setFeedActive(currentIndex == indexMap[MainViews.leading]);
+      mediaCubit.setFeedActive(currentIndex == indexMap[MainViews.media]);
+      discoverCubit.setFeedActive(currentIndex == indexMap[MainViews.articles]);
+
       return null;
     }, [currentIndex]);
 
@@ -232,17 +362,37 @@ class MainViewContent extends HookWidget {
             child: IndexedStack(
               index: currentIndex,
               children: [
-                LeadingView(
-                  key: const PageStorageKey('leading'),
-                  scrollController: mainScrollControllers[0],
-                  barsVisible: barsVisible,
-                ),
+                if (effectiveVisitedTabs.contains(0))
+                  BlocBuilder<LeadingCubit, LeadingState>(
+                    builder: (context, feedState) => _ResumeMainScrollPosition(
+                      key: ValueKey('leading-${mainState.pubKey}'),
+                      controller: mainScrollControllers[0],
+                      savedOffset: savedScrollOffsets[0],
+                      isReady: !feedState.onContentLoading,
+                      child: LeadingView(
+                        key: const PageStorageKey('leading'),
+                        scrollController: mainScrollControllers[0],
+                        barsVisible: barsVisible,
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
                 if (effectiveVisitedTabs.contains(1))
                   _fadeInTab(
-                    MediaView(
-                      key: const PageStorageKey('media'),
-                      scrollController: mainScrollControllers[1],
-                      barsVisible: barsVisible,
+                    BlocBuilder<MediaCubit, MediaState>(
+                      builder: (context, feedState) =>
+                          _ResumeMainScrollPosition(
+                        key: ValueKey('media-${mainState.pubKey}'),
+                        controller: mainScrollControllers[1],
+                        savedOffset: savedScrollOffsets[1],
+                        isReady: !feedState.onLoading,
+                        child: MediaView(
+                          key: const PageStorageKey('media'),
+                          scrollController: mainScrollControllers[1],
+                          barsVisible: barsVisible,
+                        ),
+                      ),
                     ),
                   )
                 else
@@ -257,40 +407,87 @@ class MainViewContent extends HookWidget {
                   const SizedBox.shrink(),
                 if (effectiveVisitedTabs.contains(3))
                   _fadeInTab(
-                    DmsView(
-                      key: const PageStorageKey('dms'),
-                      // Index must match indexMap[MainViews.dms]; anything
-                      // else hands the bars a controller nothing is
-                      // scrolling.
-                      scrollController: mainScrollControllers[3],
+                    BlocBuilder<DmsCubit, DmsState>(
+                      builder: (context, dmsState) => _ResumeMainScrollPosition(
+                        key: ValueKey('dms-${mainState.pubKey}'),
+                        controller: mainScrollControllers[3],
+                        savedOffset: savedScrollOffsets[3],
+                        isReady: dmsState.dmDataState == DmDataState.enabled &&
+                            !dmsState.isLoadingHistory &&
+                            (dmsState.dmSessionDetails.isNotEmpty ||
+                                savedScrollOffsets[3] <= 0),
+                        child: DmsView(
+                          key: const PageStorageKey('dms'),
+                          // Index must match indexMap[MainViews.dms]; anything
+                          // else hands the bars a controller nothing is
+                          // scrolling.
+                          scrollController: mainScrollControllers[3],
+                        ),
+                      ),
                     ),
                   )
                 else
                   const SizedBox.shrink(),
                 if (effectiveVisitedTabs.contains(4))
                   _fadeInTab(
-                    NotificationsView(
-                      key: const PageStorageKey('notifications'),
-                      barsVisible: barsVisible,
-                      scrollController: mainScrollControllers[4],
+                    BlocBuilder<NotificationsCubit, NotificationsState>(
+                      builder: (context, notificationState) =>
+                          _ResumeMainScrollPosition(
+                        key: ValueKey('notifications-${mainState.pubKey}'),
+                        controller: mainScrollControllers[4],
+                        savedOffset: savedScrollOffsets[4],
+                        isReady: notificationState.index == 5
+                            ? !notificationState.isPremiumLoading &&
+                                (notificationState.premiumEvents.isNotEmpty ||
+                                    savedScrollOffsets[4] <= 0)
+                            : !notificationState.isLoading &&
+                                (notificationState.events.isNotEmpty ||
+                                    savedScrollOffsets[4] <= 0),
+                        child: NotificationsView(
+                          key: const PageStorageKey('notifications'),
+                          barsVisible: barsVisible,
+                          scrollController: mainScrollControllers[4],
+                        ),
+                      ),
                     ),
                   )
                 else
                   const SizedBox.shrink(),
                 if (effectiveVisitedTabs.contains(5))
                   _fadeInTab(
-                    SmartWidgetsSearch(
-                      key: const PageStorageKey('smartwidgets'),
+                    _ResumeMainScrollPosition(
+                      key: ValueKey('smartwidgets-${mainState.pubKey}'),
+                      controller: mainScrollControllers[5],
+                      savedOffset: savedScrollOffsets[5],
+                      isReady: smartWidgetsReady.value,
+                      child: SmartWidgetsSearch(
+                        key: const PageStorageKey('smartwidgets'),
+                        scrollController: mainScrollControllers[5],
+                        onReadyChanged: (ready) {
+                          if (smartWidgetsReady.value != ready) {
+                            smartWidgetsReady.value = ready;
+                          }
+                        },
+                      ),
                     ),
                   )
                 else
                   const SizedBox.shrink(),
                 if (effectiveVisitedTabs.contains(6))
                   _fadeInTab(
-                    DiscoverView(
-                      key: const PageStorageKey('discover'),
-                      barsVisible: barsVisible,
-                      scrollController: mainScrollControllers[6],
+                    BlocBuilder<DiscoverCubit, DiscoverState>(
+                      builder: (context, feedState) =>
+                          _ResumeMainScrollPosition(
+                        key: ValueKey('articles-${mainState.pubKey}'),
+                        controller: mainScrollControllers[6],
+                        savedOffset: savedScrollOffsets[6],
+                        isReady: !feedState.onLoading,
+                        child: DiscoverView(
+                          key: const PageStorageKey('discover'),
+                          barsVisible: barsVisible,
+                          scrollController: mainScrollControllers[6],
+                        ),
+                      ),
                     ),
                   )
                 else
@@ -337,9 +534,10 @@ class MainViewContent extends HookWidget {
                             builder: (context, constraints) {
                               // DMs already own a two-column layout; a third
                               // column would leave each of them ~300pt.
-                              final showPane = state.mainView != MainViews.dms &&
-                                  constraints.maxWidth >=
-                                      kDetailPaneMinPanelWidth;
+                              final showPane =
+                                  state.mainView != MainViews.dms &&
+                                      constraints.maxWidth >=
+                                          kDetailPaneMinPanelWidth;
 
                               final feedWidth = showPane
                                   ? constraints.maxWidth - kDetailPaneWidth - 1
@@ -427,6 +625,10 @@ class MainViewContent extends HookWidget {
               bottomEdgeFade: true,
               topEdgeFade: true,
               contentAwareBrightness: true,
+              // The main tabs do not host text inputs. Keeping the shell at
+              // its full height prevents an IME inset from leaving a blank
+              // keyboard-sized area on Android builds that report it late.
+              resizeToAvoidBottomInset: false,
               bottomBarHeight: kBottomNavigationBarHeight + kDefaultPadding / 2,
               appBar: FluidMainViewAppBar(
                 isConnected: state.isConnected,
@@ -557,7 +759,9 @@ class MainViewContent extends HookWidget {
               )
             : Scaffold(
                 key: mainScaffoldKey,
-                resizeToAvoidBottomInset: true,
+                // Text entry lives in pushed pages and sheets, which handle
+                // their own insets. Do not resize the persistent main shell.
+                resizeToAvoidBottomInset: false,
                 bottomNavigationBar:
                     MainViewBottomNavigationBar(onClicked: onScrollTop),
                 floatingActionButton: showFab
@@ -569,6 +773,14 @@ class MainViewContent extends HookWidget {
                   onClicked: onScrollTop,
                 ),
                 drawer: const MainViewDrawer(),
+                onDrawerChanged: (isOpened) {
+                  if (isOpened && canSign()) {
+                    unawaited(walletManagerCubit.ensureBtcInFiat());
+                    if (state.isCashuWallet) {
+                      unawaited(cashuWalletManagerCubit.ensureInitialized());
+                    }
+                  }
+                },
                 body: body,
               );
       },
@@ -662,13 +874,6 @@ class MainViewContent extends HookWidget {
   }
 }
 
-/// A column's own `MediaQuery` / breakpoint scope. Same trick the DM split
-/// plays for its list pane: without it every `largerThan(MOBILE)` inside the
-/// column measures the whole panel and picks a branch too wide for the space
-/// it actually gets.
-///
-/// ponytail: does not fix raw sizer calls — `.w` / `.h` read window statics set
-/// once at startup and ignore this entirely. Those still need explicit gating.
 class _PanelScope extends StatelessWidget {
   const _PanelScope({
     required this.width,
@@ -689,6 +894,51 @@ class _PanelScope extends StatelessWidget {
         child: child,
       ),
     );
+  }
+}
+
+class _ResumeMainScrollPosition extends HookWidget {
+  const _ResumeMainScrollPosition({
+    super.key,
+    required this.controller,
+    required this.savedOffset,
+    required this.isReady,
+    required this.child,
+  });
+
+  final ScrollController controller;
+  final double savedOffset;
+  final bool isReady;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final restored = useState(false);
+
+    useEffect(() {
+      if (!isReady || savedOffset <= 0 || restored.value) {
+        return null;
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!controller.hasClients || restored.value) {
+          return;
+        }
+
+        final position = controller.position;
+        if (position.userScrollDirection != ScrollDirection.idle) {
+          return;
+        }
+
+        controller.jumpTo(
+          savedOffset.clamp(position.minScrollExtent, position.maxScrollExtent),
+        );
+        restored.value = true;
+      });
+      return null;
+    }, [isReady, savedOffset, controller]);
+
+    return child;
   }
 }
 
