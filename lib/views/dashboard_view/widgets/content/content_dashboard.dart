@@ -708,7 +708,7 @@ class DashboardContentList extends StatelessWidget {
       }
 
       kind = EventKind.PICTURE;
-      image = item.images.first.url;
+      image = item.images.isEmpty ? null : item.images.first.url;
       id = item.id;
 
       onClick = () {

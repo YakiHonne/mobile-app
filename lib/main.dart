@@ -1,6 +1,7 @@
 import 'dart:io' show HandshakeException, SocketException;
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' as cupertino_ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -40,6 +41,7 @@ class AppConstants {
     GlobalCupertinoLocalizations.delegate,
     FlutterQuillLocalizations.delegate,
     material_ui.GlobalMaterialLocalizations.delegate,
+    cupertino_ui.GlobalCupertinoLocalizations.delegate,
   ];
 
   // Navigator observers list

@@ -17,6 +17,7 @@ import '../../views/widgets/fluid_sheet.dart';
 import '../../views/widgets/smart_widget_selection.dart';
 import '../common_regex.dart';
 import 'format_markdown.dart';
+import 'markdown_text_selection.dart';
 
 /// Widget with markdown buttons
 class MarkdownTextInput extends StatefulWidget {
@@ -592,8 +593,15 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
   }
 
   Future<void> setLink(MarkdownType type) async {
-    final text = _controller.text
-        .substring(textSelection.baseOffset, textSelection.extentOffset);
+    final controllerText = _controller.text;
+    final selectionRange = normalizeMarkdownSelection(
+      textSelection,
+      controllerText.length,
+    );
+    final text = controllerText.substring(
+      selectionRange.start,
+      selectionRange.end,
+    );
 
     final textController = TextEditingController()..text = text;
     final linkController = TextEditingController();

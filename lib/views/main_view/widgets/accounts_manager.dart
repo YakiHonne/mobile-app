@@ -242,7 +242,11 @@ class AccountManager extends HookWidget {
 
   /// Handles account selection
   void _handleAccountSelection(BuildContext context, int selectedIndex) {
-    settingsCubit.onLoginTap(selectedIndex, () => _navigateToMain(context));
+    settingsCubit.onLoginTap(selectedIndex, () {
+      if (context.mounted) {
+        _navigateToMain(context);
+      }
+    });
   }
 
   /// Handles account disconnection
@@ -325,8 +329,13 @@ class AccountManager extends HookWidget {
 
   /// Navigates to the main view and closes modals
   void _navigateToMain(BuildContext context) {
+    if (!context.mounted) {
+      return;
+    }
+
+    final mainCubit = context.read<MainCubit>();
     YNavigator.popToRoot(context);
-    context.read<MainCubit>().updateIndex(MainViews.leading);
+    mainCubit.updateIndex(MainViews.leading);
     closeMainDrawer(context);
   }
 }

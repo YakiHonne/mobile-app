@@ -64,6 +64,13 @@ class DashboardContentCubit extends Cubit<DashboardContentState> {
     required bool onAdd,
     required bool isPublished,
   }) async {
+    if (isClosed) {
+      return;
+    }
+    if (onAdd && state.content.isEmpty) {
+      emit(state.copyWith(updatingState: UpdatingState.idle));
+      return;
+    }
     if (!onAdd) {
       if (!isClosed) {
         emit(

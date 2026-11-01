@@ -41,6 +41,7 @@ class CrashlyticsCubit extends Cubit<CrashlyticsState> {
           await purgeCache(
             dataCheckBox: dataSize > cacheMaxSize,
             mediaCheckBox: mediaSize > cacheMaxSize,
+            showProgress: false,
           );
         } else {
           emit(state.copyWith(
@@ -90,18 +91,22 @@ class CrashlyticsCubit extends Cubit<CrashlyticsState> {
     required bool dataCheckBox,
     required bool mediaCheckBox,
     Function()? onSuccess,
+    bool showProgress = true,
   }) async {
-    final cancel = BotToastUtils.showLoading();
+    final cancel = showProgress ? BotToastUtils.showLoading() : null;
 
-    await Future.wait([
-      if (dataCheckBox) NostrFunctionsRepository.clearCache(),
-      if (mediaCheckBox) clearDiskCachedImages(),
-    ]);
+    try {
+      await Future.wait([
+        if (dataCheckBox) NostrFunctionsRepository.clearCache(),
+        if (mediaCheckBox) clearDiskCachedImages(),
+      ]);
 
-    localDatabaseRepository.setCachePopup(true);
-    getSizes();
-    cancel.call();
-    onSuccess?.call();
+      localDatabaseRepository.setCachePopup(true);
+      getSizes();
+      onSuccess?.call();
+    } finally {
+      cancel?.call();
+    }
   }
 
   Future<void> getSizes() async {

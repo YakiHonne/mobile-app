@@ -207,17 +207,21 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   }) async {
     final cancel = BotToastUtils.showLoading();
 
-    final wallet = await _createWalletOnServer(name);
-
-    if (wallet != null && context.mounted) {
-      addNwc(wallet);
-      _showWalletCreatedSuccess(context);
-      await _showExportWalletModal(context, wallet);
-    } else {
-      _showWalletCreationError(context);
+    try {
+      final wallet = await _createWalletOnServer(name);
+      if (!context.mounted) {
+        return;
+      }
+      if (wallet != null) {
+        addNwc(wallet);
+        _showWalletCreatedSuccess(context);
+        await _showExportWalletModal(context, wallet);
+      } else {
+        _showWalletCreationError(context);
+      }
+    } finally {
+      cancel();
     }
-
-    cancel();
   }
 
   Future<String?> _createWalletOnServer(String name) async {
@@ -253,6 +257,9 @@ class WalletsManagerCubit extends Cubit<WalletsManagerState>
   Future<void> _showExportWalletModal(
       BuildContext context, String wallet) async {
     await Future.delayed(const Duration(seconds: 1));
+    if (!context.mounted) {
+      return;
+    }
     final walletDetails = Uri.parse(wallet);
 
     showBlurredModal(

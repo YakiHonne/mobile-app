@@ -116,7 +116,7 @@ late EventSigner actionsSigner;
 
 late BuildContext gc;
 
-late List<CameraDescription> cameras;
+List<CameraDescription> cameras = [];
 
 RelaySet? feedRelaySet;
 

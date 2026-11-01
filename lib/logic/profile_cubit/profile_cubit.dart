@@ -451,8 +451,61 @@ class ProfileCubit extends Cubit<ProfileState> {
           timeout: 1,
         );
 
-    var events = await fetchPage(until);
+    Future<List<Event>> fetchAllNotesPage(int? until) async {
+      final pages = await Future.wait([
+        NostrFunctionsRepository.getEventsAsync(
+          kinds: [EventKind.TEXT_NOTE, EventKind.REPOST, EventKind.HIGHLIGHT],
+          pubkeys: [pubkey],
+          until: until,
+          limit: 100,
+          relays: userWriteRelays.toList(),
+          source: EventsSource.all,
+          timeout: 1,
+        ),
+        NostrFunctionsRepository.getEventsAsync(
+          kinds: [EventKind.TEXT_NOTE],
+          pTags: [pubkey],
+          until: until,
+          limit: 100,
+          relays: userWriteRelays.toList(),
+          source: EventsSource.all,
+          timeout: 1,
+        ),
+        if (pinnedNotes.isNotEmpty)
+          NostrFunctionsRepository.getEventsAsync(
+            kinds: [EventKind.TEXT_NOTE],
+            ids: pinnedNotes.toList(),
+            until: until,
+            limit: 100,
+            relays: userWriteRelays.toList(),
+            source: EventsSource.all,
+            timeout: 1,
+          ),
+      ]);
+      final unique = <String, Event>{};
+      for (final event in pages[0]) {
+        unique[event.id] = event;
+      }
+      for (final event in pages[1]) {
+        if (hasMention(content: event.content, pubkey: pubkey)) {
+          unique[event.id] = event;
+        }
+      }
+      if (pages.length > 2) {
+        for (final event in pages[2]) {
+          unique[event.id] = event;
+        }
+      }
+      return unique.values.toList();
+    }
+
+    var events = profileData == ProfileData.all
+        ? await fetchAllNotesPage(until)
+        : await fetchPage(until);
     var handledEvents = handleEvents(events: events, profileData: profileData);
+    if (profileData == ProfileData.all) {
+      handledEvents = handledEvents.take(100).toList();
+    }
 
     void trackCursor() {
       if (events.isNotEmpty) {
@@ -506,6 +559,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     List<Event> selectedEvents = <Event>[];
 
     switch (profileData) {
+      case ProfileData.all:
+        selectedEvents = events;
+
       case ProfileData.notes:
         for (final e in events) {
           if ((e.kind == EventKind.TEXT_NOTE && e.root == null) ||

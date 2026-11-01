@@ -2,7 +2,7 @@ name: yakihonne
 description: YakiHonne social platform.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.1.0+209
+version: 2.1.1+210
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -93,6 +93,7 @@ dependencies:
   markdown_quill: ^4.3.0
   markdown_widget: ^2.3.2+6
   material_ui: ^1.2.0
+  cupertino_ui: ^1.0.2
   mention_tag_text_field: ^0.0.8
   modal_bottom_sheet: ^3.0.0
   nested_scroll_view_plus: ^2.0.0
