@@ -37,6 +37,7 @@ platform :ios do
     testflight_options = {
       api_key: key,
       app_identifier: 'com.yakihonne.appyakihonne',
+      app_platform: 'ios',
       changelog: notes,
       distribute_external: production,
       groups: groups,
