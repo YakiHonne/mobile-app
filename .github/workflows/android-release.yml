@@ -87,11 +87,12 @@ jobs:
         run: |
           test -n "$GOOGLE_SERVICES_JSON"
           printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
-      - name: Install dependencies
+      - name: Install Fastlane
         working-directory: mobile-app
-        run: |
-          bundle install
-          flutter pub get --enforce-lockfile
+        run: bundle install
+      - name: Install Flutter dependencies
+        working-directory: mobile-app
+        run: flutter pub get --enforce-lockfile
       - name: Configure Android signing
         working-directory: mobile-app
         env:
@@ -101,7 +102,12 @@ jobs:
           ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
-          test -n "$ANDROID_KEYSTORE_BASE64" && test -n "$ANDROID_KEY_ALIAS" && test -n "$ANDROID_KEY_PASSWORD" && test -n "$ANDROID_STORE_PASSWORD" && test -n "$PLAY_SERVICE_ACCOUNT_JSON"
+          for setting in ANDROID_KEYSTORE_BASE64 ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD ANDROID_STORE_PASSWORD PLAY_SERVICE_ACCOUNT_JSON; do
+            if [ -z "${!setting}" ]; then
+              echo "Missing required configuration: $setting" >&2
+              exit 1
+            fi
+          done
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
           printf 'storeFile=%s\nkeyAlias=%s\nkeyPassword=%s\nstorePassword=%s\n' "$RUNNER_TEMP/upload.jks" "$ANDROID_KEY_ALIAS" "$ANDROID_KEY_PASSWORD" "$ANDROID_STORE_PASSWORD" > android/key.properties
           printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-service-account.json"
