@@ -16,7 +16,7 @@ bool get deviceIsTablet {
 }
 
 // ** App version
-const String appVersion = 'v2.1.1+212';
+const String appVersion = 'v2.1.1+213';
 
 //** network
 const yakiProBlossomServer = 'https://blossom.yakihonne.com';
