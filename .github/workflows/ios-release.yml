@@ -1,0 +1,26 @@
+name: iOS release
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Distribution track
+        type: choice
+        required: true
+        options: [internal, production]
+      release_notes:
+        description: Optional store release notes (leave blank to use the changelog)
+        type: string
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/release.yml
+    with:
+      platform: ios
+      track: ${{ inputs.track }}
+      release_notes: ${{ inputs.release_notes }}
+    secrets: inherit
