@@ -50,7 +50,7 @@ platform :ios do
         build_number: ENV.fetch('APP_BUILD'),
         skip_binary_upload: true,
         skip_screenshots: true,
-        release_notes: { 'en-US' => notes },
+        release_notes: { 'default' => notes },
         submit_for_review: true,
         automatic_release: true,
         force: true,
