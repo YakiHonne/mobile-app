@@ -37,6 +37,8 @@ import 'logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import 'repositories/connectivity_repository.dart';
 import 'repositories/localdatabase_repository.dart';
 import 'repositories/nostr_data_repository.dart';
+import 'services/namecoin/namecoin_name_service.dart';
+import 'services/namecoin/namecoin_shared_preferences.dart';
 
 late SettingsCubit settingsCubit;
 
@@ -121,5 +123,9 @@ List<CameraDescription> cameras = [];
 RelaySet? feedRelaySet;
 
 EventSigner? currentSigner;
+
+late NamecoinNameService namecoinService;
+
+late NamecoinSharedPreferences namecoinPreferences;
 
 final routeObserver = RouteObserver<PageRoute>();
