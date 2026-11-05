@@ -86,20 +86,28 @@ class _HomeDashboardState extends State<HomeDashboard> {
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
+          child: !isDesktopPlatform
+              ? Text(
                   context.t.home.capitalizeFirst(),
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        context.t.home.capitalizeFirst(),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                      ),
+                    ),
+                    if (isDesktopPlatform)
+                      DesktopRefreshButton(controller: refreshController),
+                  ],
                 ),
-              ),
-              if (isDesktopPlatform)
-                DesktopRefreshButton(controller: refreshController),
-            ],
-          ),
         ),
       ),
     );
@@ -977,6 +985,19 @@ class _HomeDashboardState extends State<HomeDashboard> {
       ),
     );
 
+    if (!isDesktopPlatform) {
+      return SmartRefresher(
+        enablePullUp: true,
+        controller: refreshController,
+        header: const RefresherClassicHeader(),
+        onRefresh: () async {
+          context.read<DashboardHomeCubit>().init();
+          await Future.delayed(const Duration(seconds: 1));
+          refreshController.refreshCompleted();
+        },
+        child: CustomScrollView(slivers: widgets),
+      );
+    }
     return AdaptiveSmartRefresher(
       enablePullUp: true,
       controller: refreshController,

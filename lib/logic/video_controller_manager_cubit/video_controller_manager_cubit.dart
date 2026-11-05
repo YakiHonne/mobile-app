@@ -410,7 +410,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
       WakelockPlus.enable();
 
       // Update owner registration to the resolved URL (may differ via fallback)
-      if (desktopPlaybackEnabled && usedUrl != url) {
+      if (usedUrl != url) {
         _urlAliases[url] = usedUrl;
         // Move all owners registered under the original url, not just this
         // one — they all render the fallback controller now.
@@ -422,7 +422,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       // Notify only this URL's subscriber — zero impact on other videos
       _notifyUrl(usedUrl);
-      if (usedUrl != url) {
+      if (desktopPlaybackEnabled && usedUrl != url) {
         _notifyUrl(url);
       }
     } catch (e) {

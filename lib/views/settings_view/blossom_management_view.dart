@@ -785,7 +785,9 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
     );
 
     if (response.data == null) {
-      cancel();
+      if (isDesktopPlatform) {
+        cancel();
+      }
       return;
     }
 
@@ -818,6 +820,9 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
     }
   } on FileSaverCancelledException {
     cancel();
+    if (!isDesktopPlatform) {
+      BotToastUtils.showError(t.downloadFailed);
+    }
   } catch (e) {
     cancel();
     BotToastUtils.showError(t.downloadFailed);

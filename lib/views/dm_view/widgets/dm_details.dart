@@ -58,7 +58,7 @@ class DmDetails extends HookWidget {
     nostrRepository.usersMessageNotifications.add(data[0]);
 
     return CupertinoPageRoute(
-      settings: settings,
+      settings: isDesktopPlatform ? settings : null,
       builder: (_) => DmDetails(pubkey: data[0]),
     );
   }

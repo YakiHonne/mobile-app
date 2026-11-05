@@ -76,6 +76,21 @@ class CashuHistory extends HookWidget {
       return null;
     }, []);
 
+    Widget buildTabBar(BuildContext context) => TabBar(
+          controller: tabController,
+          dividerHeight: 0,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorColor: Theme.of(context).primaryColor,
+          labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+          tabs: [
+            Tab(text: context.t.history),
+            Tab(text: context.t.eCash),
+            Tab(text: context.t.nutzaps),
+          ],
+        );
+
     return ModalSheetContainer(
       child: AdaptiveDraggableSheet(
         expand: false,
@@ -86,35 +101,17 @@ class CashuHistory extends HookWidget {
           children: [
             const ModalBottomSheetHandle(),
             const SizedBox(height: kDefaultPadding / 2),
-            Row(children: [
-              Expanded(
-                  child: TabBar(
-                controller: tabController,
-                dividerHeight: 0,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: Theme.of(context).primaryColor,
-                labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                tabs: [
-                  Tab(
-                    text: context.t.history,
-                  ),
-                  Tab(
-                    text: context.t.eCash,
-                  ),
-                  Tab(
-                    text: context.t.nutzaps,
-                  ),
-                ],
-              )),
-              if (isDesktopPlatform)
+            if (isDesktopPlatform)
+              Row(children: [
+                Expanded(child: buildTabBar(context)),
                 IconButton(
                   tooltip: context.t.refresh,
                   icon: const Icon(LucideIcons.refreshCw),
                   onPressed: isLoading.value ? null : refresh,
                 ),
-            ]),
+              ])
+            else
+              buildTabBar(context),
             const SizedBox(height: kDefaultPadding / 2),
             Expanded(
               child: isLoading.value

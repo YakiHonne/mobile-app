@@ -740,7 +740,9 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
   @override
   void initState() {
     super.initState();
-    _isPlaying = widget.controller.value.isPlaying;
+    if (isDesktopPlatform) {
+      _isPlaying = widget.controller.value.isPlaying;
+    }
     _showIcon = isDesktopPlatform && !_isPlaying;
   }
 

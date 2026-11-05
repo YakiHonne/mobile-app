@@ -184,7 +184,7 @@ class _ArticleContent extends HookWidget {
         content: concatenatedContent.value,
       );
 
-      if (!context.mounted) {
+      if (isDesktopPlatform && !context.mounted) {
         return;
       }
 

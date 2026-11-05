@@ -80,6 +80,19 @@ class _VideoPlatform extends VideoPlayerPlatform {
   Future<void> setPlaybackSpeed(int playerId, double speed) async {}
 }
 
+class _FallbackVideoPlatform extends _VideoPlatform {
+  bool _failed = false;
+
+  @override
+  Future<int?> createWithOptions(VideoCreationOptions options) {
+    if (!_failed) {
+      _failed = true;
+      throw StateError('Primary video unavailable');
+    }
+    return super.createWithOptions(options);
+  }
+}
+
 VideoModel _video(String url) => VideoModel(
       id: 'event',
       pubkey: 'author',
@@ -106,6 +119,28 @@ VideoModel _video(String url) => VideoModel(
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('mobile releases fallback video through the original URL', () async {
+    final previousPlatform = VideoPlayerPlatform.instance;
+    final previousWakelock = wakelock.wakelockPlusPlatformInstance;
+    final platform = _FallbackVideoPlatform();
+    VideoPlayerPlatform.instance = platform;
+    wakelock.wakelockPlusPlatformInstance = _Wakelock();
+    final manager = VideoControllerManagerCubit(desktopPlayback: false);
+    const primary = 'https://example.com/primary.mp4';
+    const fallback = 'https://example.com/fallback.mp4';
+    await manager.acquireVideo(primary, 'owner', fallbackUrls: [fallback]);
+    expect(manager.getVideoController(fallback), isNotNull);
+    manager.releaseVideo(url: primary, id: 'owner');
+    expect(manager.getVideoController(fallback), isNull);
+    for (var i = 0; i < 20 && platform.disposals == 0; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    expect(platform.disposals, 1);
+    await manager.close();
+    VideoPlayerPlatform.instance = previousPlatform;
+    wakelock.wakelockPlusPlatformInstance = previousWakelock;
+  });
 
   test('desktop playback tracks the played video and pauses the previous one',
       () async {

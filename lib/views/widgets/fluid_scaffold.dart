@@ -208,6 +208,19 @@ class FluidScaffold extends StatelessWidget {
       );
     }
 
+    final appBar = GlassAppBar(
+      buttonSettings: GlassSettings.innerAppBar(context),
+      leading: leading ??
+          AppIconButton(
+            icon: LucideIcons.chevronLeft,
+            onClicked: onBackClicked ?? () => Navigator.pop(context),
+          ),
+      centerTitle: titleWidget == null,
+      title: titleWidget ??
+          (title != null || description != null ? _title(context) : null),
+      actions: actions ?? [_logo(context)],
+    );
+
     return GlassScaffold(
       backgroundColor:
           backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
@@ -233,25 +246,9 @@ class FluidScaffold extends StatelessWidget {
       topEdgeFadeExtent: _kTopEdgeFadeExtent,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       appBarHeight: isDesktopPlatform ? _kGlassAppBarHeight + paneInset : 44.0,
-      appBar: Padding(
-        padding: EdgeInsets.only(top: paneInset),
-        child: GlassAppBar(
-          // GlassAppBar has no automaticallyImplyLeading — the back button is
-          // ours to supply or the view loses it.
-          buttonSettings: GlassSettings.innerAppBar(context),
-          leading: leading ??
-              AppIconButton(
-                icon: LucideIcons.chevronLeft,
-                onClicked: onBackClicked ?? () => Navigator.pop(context),
-              ),
-          // A title widget owns the full width, so it must not be centred.
-          centerTitle: titleWidget == null,
-          title: titleWidget ??
-              (title != null || description != null ? _title(context) : null),
-
-          actions: actions ?? [_logo(context)],
-        ),
-      ),
+      appBar: paneInset == 0
+          ? appBar
+          : Padding(padding: EdgeInsets.only(top: paneInset), child: appBar),
       // GlassScaffold is a CupertinoPageScaffold, so unlike Scaffold it
       // supplies no Material ancestor — InkWell, TextField, ListTile and
       // Tooltip all assert without one. Given unconditionally rather than
