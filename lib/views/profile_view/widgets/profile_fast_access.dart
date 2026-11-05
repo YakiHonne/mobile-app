@@ -18,6 +18,7 @@ import '../../../routes/pages_router.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../dm_view/widgets/dm_details.dart';
+import '../../main_view/desktop/desktop_glass_button.dart';
 import '../../main_view/widgets/profile_share_view.dart';
 import '../../profile_settings_view/profile_settings_view.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
@@ -353,7 +354,7 @@ class ProfileFastAccess extends HookWidget {
         ],
         CustomizedIconButton(
           onClicked: () {
-            Navigator.push(
+            YNavigator.push(
               context,
               createViewFromBottom(
                 ProfileShareView(
@@ -564,8 +565,9 @@ class CommonUsersRow extends StatelessWidget {
                 ),
                 Flexible(
                   child: Builder(builder: (context) {
-                    final number = (commonPubkeys.length - usersToBeShown.length)
-                        .toString();
+                    final number =
+                        (commonPubkeys.length - usersToBeShown.length)
+                            .toString();
                     return Text(
                       (useOthers
                               ? context.t.othersNumber(number: number)
@@ -656,7 +658,11 @@ class _FluidProfileCard extends StatelessWidget {
 
     return Center(
       child: SizedBox(
-        width: 75.w,
+        width: isDesktopPlatform
+            ? (MediaQuery.sizeOf(context).height * 0.6)
+                .clamp(0.0, MediaQuery.sizeOf(context).width * 0.75)
+                .clamp(0.0, 360.0)
+            : 75.w,
         child: AspectRatio(
           aspectRatio: 3 / 4,
           child: Stack(
@@ -889,49 +895,56 @@ class _FluidActionButtons extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: isOwnProfile
-              ? TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    YNavigator.push(
-                      context,
-                      SlideupPageRoute(
-                        builder: (_) => ProfileSettingsView(),
-                        settings: const RouteSettings(),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    context.t.editProfile.capitalizeFirst(),
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
+          child: Builder(builder: (context) {
+            final button = isOwnProfile
+                ? TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      YNavigator.push(
+                        context,
+                        SlideupPageRoute(
+                          builder: (_) => ProfileSettingsView(),
+                          settings: const RouteSettings(),
                         ),
-                  ),
-                )
-              : BlocBuilder<ProfileFastAccessCubit, ProfileFastAccessState>(
-                  buildWhen: (p, c) => p.isFollowing != c.isFollowing,
-                  builder: (context, state) {
-                    return AbsorbPointer(
-                      absorbing: !canBeFollowed,
-                      child: TextButton(
-                        onPressed: canBeFollowed
-                            ? () => context
-                                .read<ProfileFastAccessCubit>()
-                                .setFollowingState()
-                            : null,
-                        child: Text(
-                          state.isFollowing
-                              ? context.t.unfollow.capitalizeFirst()
-                              : context.t.follow.capitalizeFirst(),
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                      );
+                    },
+                    child: Text(
+                      context.t.editProfile.capitalizeFirst(),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  )
+                : BlocBuilder<ProfileFastAccessCubit, ProfileFastAccessState>(
+                    buildWhen: (p, c) => p.isFollowing != c.isFollowing,
+                    builder: (context, state) {
+                      return AbsorbPointer(
+                        absorbing: !canBeFollowed,
+                        child: TextButton(
+                          onPressed: canBeFollowed
+                              ? () => context
+                                  .read<ProfileFastAccessCubit>()
+                                  .setFollowingState()
+                              : null,
+                          child: Text(
+                            state.isFollowing
+                                ? context.t.unfollow.capitalizeFirst()
+                                : context.t.follow.capitalizeFirst(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+            return isDesktopPlatform
+                ? DesktopGlassButtonHeight(child: button)
+                : button;
+          }),
         ),
         if (canSign() && !isOwnProfile) ...[
           const SizedBox(width: kDefaultPadding / 4),

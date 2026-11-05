@@ -2208,5 +2208,12 @@
   "showSpamReplies": "显示疑似垃圾信息回复",
   "hideSpamReplies": "隐藏疑似垃圾信息回复",
   "markAsSpam": "标记为垃圾信息",
-  "notSpam": "不是垃圾信息"
+  "notSpam": "不是垃圾信息",
+  "desktopPlay": "播放",
+  "desktopPause": "暂停",
+  "desktopResizePanes": "调整窗格大小",
+  "desktopDensity": "桌面显示密度",
+  "desktopDensityComfortable": "舒适",
+  "desktopDensityCompact": "紧凑",
+  "desktopKnowPeople": "认识新朋友"
 }

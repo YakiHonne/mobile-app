@@ -21,6 +21,7 @@ import '../../models/flash_news_model.dart';
 import '../../models/picture_model.dart';
 import '../../models/video_model.dart';
 import '../../repositories/nostr_data_repository.dart';
+import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../threads_view/threads_view.dart';
@@ -587,7 +588,7 @@ class ContentStats extends HookWidget {
       backgroundColor: kTransparent,
       icon: FeatureIcons.comments,
       onLongPress: () {
-        Navigator.push(
+        YNavigator.push(
           context,
           CupertinoPageRoute(
             builder: (_) => ContentThreadsView(aTag: aTag),

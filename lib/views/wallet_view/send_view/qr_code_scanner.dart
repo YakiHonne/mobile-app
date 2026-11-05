@@ -224,19 +224,26 @@ class _WalletQrCodeViewState extends State<WalletQrCodeView>
             borderRadius: BorderRadius.circular(
               kDefaultPadding + 5,
             ),
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: (controller) => _onQRViewCreated(
-                controller,
-                context,
-              ),
-              overlay: QrScannerOverlayShape(
-                borderRadius: kDefaultPadding,
-                borderColor: kWhite,
-                borderWidth: 5,
-                cutOutSize: 80.w,
-              ),
-            ),
+            child: isMobilePlatform
+                ? QRView(
+                    key: qrKey,
+                    onQRViewCreated: (controller) => _onQRViewCreated(
+                      controller,
+                      context,
+                    ),
+                    overlay: QrScannerOverlayShape(
+                      borderRadius: kDefaultPadding,
+                      borderColor: kWhite,
+                      borderWidth: 5,
+                      cutOutSize: 80.w,
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(

@@ -152,15 +152,29 @@ class HorizontalSkeletonSelector extends StatelessWidget {
   }
 }
 
+Border _skeletonBorder(BuildContext context) {
+  final color = Theme.of(context).dividerColor;
+  return Border(
+    top: BorderSide(color: color),
+    left: BorderSide(color: color, width: 0.5),
+    right: BorderSide(color: color, width: 0.5),
+    bottom: BorderSide(color: color, width: 0.5),
+  );
+}
+
 class ArticleSkeleton extends StatelessWidget {
-  const ArticleSkeleton({super.key});
+  const ArticleSkeleton({super.key, this.outlined = false});
+
+  final bool outlined;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight,
-        borderRadius: BorderRadius.circular(kDefaultPadding),
+        color: outlined ? null : Theme.of(context).primaryColorLight,
+        borderRadius: BorderRadius.circular(
+            outlined ? kDefaultPadding / 1.5 : kDefaultPadding),
+        border: outlined ? _skeletonBorder(context) : null,
       ),
       width: double.infinity,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
@@ -312,7 +326,9 @@ class ArticleSkeleton extends StatelessWidget {
 }
 
 class SearchProfileSkeleton extends StatelessWidget {
-  const SearchProfileSkeleton({super.key});
+  const SearchProfileSkeleton({super.key, this.outlined = false});
+
+  final bool outlined;
 
   @override
   Widget build(BuildContext context) {
@@ -322,13 +338,17 @@ class SearchProfileSkeleton extends StatelessWidget {
         vertical: kDefaultPadding / 2,
       ),
       width: 300,
-      margin: const EdgeInsets.symmetric(
-        vertical: kDefaultPadding / 3,
-        horizontal: kDefaultPadding / 4,
-      ),
+      margin: outlined
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(
+              vertical: kDefaultPadding / 3,
+              horizontal: kDefaultPadding / 4,
+            ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-        color: Theme.of(context).primaryColorLight,
+        borderRadius: BorderRadius.circular(
+            outlined ? kDefaultPadding / 1.5 : kDefaultPadding),
+        color: outlined ? null : Theme.of(context).primaryColorLight,
+        border: outlined ? _skeletonBorder(context) : null,
       ),
       child: Skeletonizer(
         child: Row(

@@ -198,6 +198,9 @@ class SuggestionsBoxCubit extends Cubit<SuggestionsBoxState> {
     final selectedTopics = <String>[];
     if (tag == null) {
       final t = nostrRepository.topics;
+      if (isDesktopPlatform && t.isEmpty) {
+        return;
+      }
       final random = Random();
 
       for (int i = 0; i < 3; i++) {

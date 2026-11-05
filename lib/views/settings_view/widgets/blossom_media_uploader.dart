@@ -212,79 +212,87 @@ class BlossomMediaUploader extends HookWidget {
                 ),
           ),
           const SizedBox(height: kDefaultPadding / 2),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 250),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: servers.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final server = servers[index];
-                final isSelected = selectedServers.value.contains(server);
-
-                return InkWell(
-                  onTap: () {
-                    final current = List<String>.from(selectedServers.value);
-                    if (isSelected) {
-                      current.remove(server);
-                    } else {
-                      current.add(server);
-                    }
-                    selectedServers.value = current;
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPadding,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Checkbox(
-                            value: isSelected,
-                            onChanged: (val) {
-                              final current =
-                                  List<String>.from(selectedServers.value);
-                              if (val ?? false) {
-                                current.add(server);
-                              } else {
-                                current.remove(server);
-                              }
-                              selectedServers.value = current;
-                            },
-                            activeColor: kMainColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            side: BorderSide(
-                              color: Theme.of(context).dividerColor,
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            server,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
-                    ),
+          if (isDesktopPlatform && servers.isEmpty)
+            Text(
+              '${context.t.noServerFound}. ${context.t.media_yakipro_server_action}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).hintColor,
                   ),
-                );
-              },
+            )
+          else
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 250),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: servers.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final server = servers[index];
+                  final isSelected = selectedServers.value.contains(server);
+
+                  return InkWell(
+                    onTap: () {
+                      final current = List<String>.from(selectedServers.value);
+                      if (isSelected) {
+                        current.remove(server);
+                      } else {
+                        current.add(server);
+                      }
+                      selectedServers.value = current;
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: kDefaultPadding,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).dividerColor,
+                          width: 0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Checkbox(
+                              value: isSelected,
+                              onChanged: (val) {
+                                final current =
+                                    List<String>.from(selectedServers.value);
+                                if (val ?? false) {
+                                  current.add(server);
+                                } else {
+                                  current.remove(server);
+                                }
+                                selectedServers.value = current;
+                              },
+                              activeColor: kMainColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              side: BorderSide(
+                                color: Theme.of(context).dividerColor,
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              server,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

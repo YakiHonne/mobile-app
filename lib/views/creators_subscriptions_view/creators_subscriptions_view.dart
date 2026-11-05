@@ -26,12 +26,32 @@ class CreatorsSubscriptionsView extends HookWidget {
     final subscriptions = useState(<SubscriberSubscription>[]);
     final payments = useState(<SubscriptionPayment>[]);
     final isLoading = useState(true);
+    final isFetching = useState(false);
 
     Future<void> fetch() async {
-      final res = await HttpFunctionsRepository.getSubscriberSubscriptions();
-      subscriptions.value = res.subscriptions;
-      payments.value = res.payments;
-      isLoading.value = false;
+      if (!isDesktopPlatform) {
+        final res = await HttpFunctionsRepository.getSubscriberSubscriptions();
+        subscriptions.value = res.subscriptions;
+        payments.value = res.payments;
+        isLoading.value = false;
+        return;
+      }
+      if (isFetching.value) {
+        return;
+      }
+      isFetching.value = true;
+      try {
+        final res = await HttpFunctionsRepository.getSubscriberSubscriptions();
+        if (context.mounted) {
+          subscriptions.value = res.subscriptions;
+          payments.value = res.payments;
+        }
+      } finally {
+        if (context.mounted) {
+          isLoading.value = false;
+          isFetching.value = false;
+        }
+      }
     }
 
     useEffect(() {
@@ -51,6 +71,18 @@ class CreatorsSubscriptionsView extends HookWidget {
 
     return FluidScaffold(
       title: context.t.creatorsSubscriptions.capitalizeFirst(),
+      actions: isDesktopPlatform
+          ? [
+              Material(
+                type: MaterialType.transparency,
+                child: IconButton(
+                  tooltip: context.t.refresh,
+                  icon: const Icon(LucideIcons.refreshCw),
+                  onPressed: isFetching.value ? null : fetch,
+                ),
+              ),
+            ]
+          : null,
       body: Padding(
         padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),
         child: SafeArea(
@@ -438,16 +470,17 @@ class _InvoiceCard extends StatelessWidget {
                             payment.subscribedAt * 1000,
                           ),
                         ),
-                  style:
-                      theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.hintColor),
                 ),
               ),
               if (payment.paymentMethod.isNotEmpty) ...[
                 const SizedBox(width: kDefaultPadding / 2),
                 _Chip(
                   label: payment.paymentMethod,
-                  color:
-                      payment.provider == 'lightning' ? kMainColor : kMainColor5,
+                  color: payment.provider == 'lightning'
+                      ? kMainColor
+                      : kMainColor5,
                 ),
               ],
             ],

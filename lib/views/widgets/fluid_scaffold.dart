@@ -8,6 +8,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../repositories/nostr_data_repository.dart';
 import '../../utils/theme/glass_settings.dart';
 import '../../utils/utils.dart';
+import '../main_view/widgets/detail_pane_scope.dart';
 import 'buttons_containers_widgets.dart';
 import 'custom_app_bar.dart';
 
@@ -184,6 +185,8 @@ class FluidScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final paneInset =
+        DetailPaneScope.contains(context) ? kDefaultPadding / 2 : 0.0;
     if (!isFluid()) {
       return Scaffold(
         backgroundColor: backgroundColor,
@@ -213,25 +216,41 @@ class FluidScaffold extends StatelessWidget {
       // theme, so it updates the moment the theme changes. Backgrounds here
       // are solid colours, where the two paths render identically.
       enableBackgroundSampling: false,
-      bottomBar: bottomBar,
-      bottomBarHeight: bottomBarHeight,
+      bottomBar: bottomBar == null || paneInset == 0
+          ? bottomBar
+          : Padding(
+              padding: EdgeInsets.only(bottom: paneInset),
+              child: bottomBar,
+            ),
+      bottomBarHeight: paneInset == 0
+          ? bottomBarHeight
+          : bottomBar == null
+              ? null
+              : (bottomBar is PreferredSizeWidget
+                      ? (bottomBar! as PreferredSizeWidget).preferredSize.height
+                      : bottomBarHeight ?? 60) +
+                  paneInset,
       topEdgeFadeExtent: _kTopEdgeFadeExtent,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      appBar: GlassAppBar(
-        // GlassAppBar has no automaticallyImplyLeading — the back button is
-        // ours to supply or the view loses it.
-        buttonSettings: GlassSettings.innerAppBar(context),
-        leading: leading ??
-            AppIconButton(
-              icon: LucideIcons.chevronLeft,
-              onClicked: onBackClicked ?? () => Navigator.pop(context),
-            ),
-        // A title widget owns the full width, so it must not be centred.
-        centerTitle: titleWidget == null,
-        title: titleWidget ??
-            (title != null || description != null ? _title(context) : null),
+      appBarHeight: isDesktopPlatform ? _kGlassAppBarHeight + paneInset : 44.0,
+      appBar: Padding(
+        padding: EdgeInsets.only(top: paneInset),
+        child: GlassAppBar(
+          // GlassAppBar has no automaticallyImplyLeading — the back button is
+          // ours to supply or the view loses it.
+          buttonSettings: GlassSettings.innerAppBar(context),
+          leading: leading ??
+              AppIconButton(
+                icon: LucideIcons.chevronLeft,
+                onClicked: onBackClicked ?? () => Navigator.pop(context),
+              ),
+          // A title widget owns the full width, so it must not be centred.
+          centerTitle: titleWidget == null,
+          title: titleWidget ??
+              (title != null || description != null ? _title(context) : null),
 
-        actions: actions ?? [_logo(context)],
+          actions: actions ?? [_logo(context)],
+        ),
       ),
       // GlassScaffold is a CupertinoPageScaffold, so unlike Scaffold it
       // supplies no Material ancestor — InkWell, TextField, ListTile and

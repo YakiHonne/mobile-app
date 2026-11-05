@@ -1,4 +1,6 @@
 analyzer:
+  exclude:
+    - third_party/**
   errors:
     avoid_renaming_method_parameters: ignore
     avoid_dynamic_calls: ignore

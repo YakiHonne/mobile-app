@@ -102,7 +102,7 @@ class DMGiftWidget extends HookWidget {
         : 'All the best';
 
     return Container(
-      width: 70.w,
+      width: isDesktopPlatform ? double.infinity : 70.w,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -178,7 +178,7 @@ class DMGiftWidget extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 70.w,
+          width: isDesktopPlatform ? double.infinity : 70.w,
           padding: const EdgeInsets.all(kDefaultPadding / 2),
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
@@ -228,7 +228,7 @@ class DMGiftWidget extends HookWidget {
     final image = data['img'] ?? '';
 
     return Container(
-      width: 80.w,
+      width: isDesktopPlatform ? double.infinity : 80.w,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(kDefaultPadding),
@@ -275,9 +275,15 @@ class DMGiftWidget extends HookWidget {
           ),
           Positioned(
             top: 200,
-            right: 26.w,
-            child: _buildClaimButton(context, data, isExpired, isClaimed,
-                isRefunded, isCheckingStatus),
+            left: isDesktopPlatform ? 0 : null,
+            right: isDesktopPlatform ? 0 : 26.w,
+            child: isDesktopPlatform
+                ? Center(
+                    child: _buildClaimButton(context, data, isExpired,
+                        isClaimed, isRefunded, isCheckingStatus),
+                  )
+                : _buildClaimButton(context, data, isExpired, isClaimed,
+                    isRefunded, isCheckingStatus),
           ),
         ],
       ),

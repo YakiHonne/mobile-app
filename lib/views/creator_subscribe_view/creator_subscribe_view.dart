@@ -205,7 +205,7 @@ class _ProviderCard extends HookWidget {
   void _onSubscribe(BuildContext context) {
     if (_isOurGateway) {
       YNavigator.pop(context);
-      Navigator.push(
+      YNavigator.push(
         context,
         CupertinoPageRoute(
           builder: (_) => CreatorSubscribePlansView(
@@ -590,7 +590,7 @@ class _PlanCard extends HookWidget {
           // replacing the sheet instead of the plans view underneath it.
           Navigator.pop(sheetContext);
           Navigator.pop(context);
-          Navigator.push(
+          YNavigator.push(
             context,
             CupertinoPageRoute(
               builder: (_) => const CreatorsSubscriptionsView(),

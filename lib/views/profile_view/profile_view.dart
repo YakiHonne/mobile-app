@@ -19,6 +19,7 @@ import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../dm_view/widgets/dm_details.dart';
 import '../gallery_view/gallery_view.dart';
+import '../main_view/widgets/detail_pane_scope.dart';
 import '../profile_settings_view/profile_settings_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../widgets/adaptive_smart_refresher.dart';
@@ -170,6 +171,7 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
       },
       buildWhen: (previous, current) =>
           previous.isLoading != current.isLoading ||
+          (isDesktopPlatform && previous.content != current.content) ||
           previous.loadingState != current.loadingState ||
           previous.mutes != current.mutes ||
           previous.user != current.user,
@@ -184,10 +186,19 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
         return Stack(
           children: [
             AdaptiveSmartRefresher(
+              desktopHasResults: !state.isLoading && state.content.isNotEmpty,
               controller: refreshController,
               enablePullUp: true,
               enablePullDown: false,
+              showDesktopRefresh: false,
               footer: const RefresherClassicFooter(),
+              onRefresh: isDesktopPlatform
+                  ? () => onRefresh(
+                        onInit: () => context.read<ProfileCubit>().getUserInfos(
+                              profileData: widget.profileDataState.value,
+                            ),
+                      )
+                  : null,
               onLoading: () => context.read<ProfileCubit>().getUserInfos(
                     profileData: widget.profileDataState.value,
                     isAdding: true,
@@ -196,6 +207,11 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                 slivers: [
                   ProfileAppBar(
                     profileData: widget.profileDataState.value,
+                    onRefresh: () => onRefresh(
+                      onInit: () => context.read<ProfileCubit>().getUserInfos(
+                            profileData: widget.profileDataState.value,
+                          ),
+                    ),
                   ),
                   const SliverToBoxAdapter(
                     child: ProfileHeader(),
@@ -227,7 +243,9 @@ class _ProfileNestedScrollViewState extends State<ProfileNestedScrollView> {
                 bottom: kDefaultPadding + MediaQuery.of(context).padding.bottom,
                 child: Align(
                   child: SizedBox(
-                    width: 50.w,
+                    width: isDesktopPlatform
+                        ? MediaQuery.sizeOf(context).width / 2
+                        : 50.w,
                     child: FluidBlurContainer(
                       borderRadius: kDefaultPadding * 2,
                       backgroundLighten: 0.12,
@@ -508,29 +526,40 @@ class OptionsHeader extends HookWidget {
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar({
     super.key,
+    required this.onRefresh,
     required this.profileData,
   });
 
+  final VoidCallback onRefresh;
   final ProfileData profileData;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
+        final topInset =
+            DetailPaneScope.contains(context) ? kDefaultPadding / 2 : 0.0;
         return SliverAppBar(
           expandedHeight: kToolbarHeight + 80,
+          toolbarHeight: kToolbarHeight + topInset,
           pinned: true,
           elevation: 0,
           scrolledUnderElevation: 0,
           stretch: true,
-          leading: Center(
-            child: AppIconButton(
-              icon: FeatureIcons.arrowLeft,
-              onClicked: () => YNavigator.pop(context),
+          leading: Padding(
+            padding: EdgeInsets.only(top: topInset),
+            child: Center(
+              child: AppIconButton(
+                icon: FeatureIcons.arrowLeft,
+                onClicked: () => YNavigator.pop(context),
+              ),
             ),
           ),
           actions: [
-            _pulldownButton(context, state),
+            Padding(
+              padding: EdgeInsets.only(top: topInset),
+              child: _pulldownButton(context, state),
+            ),
             const SizedBox(
               width: kDefaultPadding / 2,
             ),
@@ -703,7 +732,7 @@ class ProfileAppBar extends StatelessWidget {
                 context.read<DmsCubit>().updateReadedTime(
                       state.user.pubkey,
                     );
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   DmDetails.routeName,
                   arguments: [
@@ -777,11 +806,11 @@ class ProfileAppBar extends StatelessWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
-      onRefresh: () {
-        context.read<ProfileCubit>().getUserInfos(
-              profileData: profileData,
-            );
-      },
+      onRefresh: isDesktopPlatform
+          ? onRefresh
+          : () => context
+              .read<ProfileCubit>()
+              .getUserInfos(profileData: profileData),
       useFluidMode: true,
     );
   }

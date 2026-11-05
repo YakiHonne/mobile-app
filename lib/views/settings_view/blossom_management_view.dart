@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:intl/intl.dart';
@@ -636,7 +639,7 @@ class BlossomMediaDetails extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(kDefaultPadding / 2),
                     ),
-                  ),
+                  ).copyWith(overlayColor: desktopNoHoverOverlay(kWhite)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -782,6 +785,23 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
     );
 
     if (response.data == null) {
+      cancel();
+      return;
+    }
+
+    if (isDesktopPlatform) {
+      cancel();
+      if (!Platform.isMacOS) {
+        BotToastUtils.showError(t.downloadFailed);
+        return;
+      }
+      final uri = Uri.tryParse(media.url);
+      final name = uri?.pathSegments.lastOrNull ?? '';
+      await FlutterFileSaver().writeFileAsBytes(
+        fileName: name.isEmpty ? media.sha256 : name,
+        bytes: Uint8List.fromList(response.data!),
+      );
+      BotToastUtils.showSuccess(t.downloadSuccessful);
       return;
     }
 
@@ -796,6 +816,8 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
     } else {
       BotToastUtils.showError(t.downloadFailed);
     }
+  } on FileSaverCancelledException {
+    cancel();
   } catch (e) {
     cancel();
     BotToastUtils.showError(t.downloadFailed);

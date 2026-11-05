@@ -21,6 +21,7 @@ import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
 import 'logic/theme_cubit/theme_cubit.dart';
 import 'routes/app_router.dart';
 import 'utils/global_keys.dart';
+import 'utils/theme/custom/buttons_theme.dart';
 import 'utils/utils.dart';
 import 'views/main_view/widgets/detail_pane.dart';
 import 'views/widgets/relay_progress_bar.dart';
@@ -196,7 +197,28 @@ class MyApp extends HookWidget {
                         ),
                         child: MaterialApp(
                           debugShowCheckedModeBanner: false,
-                          theme: state.theme,
+                          theme: isDesktopPlatform
+                              ? withoutHoverHighlights(state.theme.copyWith(
+                                  textButtonTheme: state.isFluid
+                                      ? TbuttonsTheme
+                                          .desktopFluidTextButtonTheme(
+                                          state.theme.textButtonTheme,
+                                        )
+                                      : state.theme.textButtonTheme,
+                                  elevatedButtonTheme: state.isFluid
+                                      ? TbuttonsTheme
+                                          .desktopFluidElevatedButtonTheme(
+                                          state.theme.elevatedButtonTheme,
+                                        )
+                                      : state.theme.elevatedButtonTheme,
+                                  outlinedButtonTheme: state.isFluid
+                                      ? TbuttonsTheme
+                                          .desktopFluidOutlinedButtonTheme(
+                                          state.theme.outlinedButtonTheme,
+                                        )
+                                      : state.theme.outlinedButtonTheme,
+                                ))
+                              : state.theme,
                           onGenerateRoute: (settings) =>
                               onGenerateRoute(settings),
                           navigatorObservers: AppConstants.navigatorObservers,

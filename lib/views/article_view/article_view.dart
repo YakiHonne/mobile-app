@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/nip84_highlight.dart';
@@ -13,11 +15,13 @@ import '../../models/app_models/diverse_functions.dart';
 import '../../models/article_model.dart';
 import '../../repositories/localdatabase_repository.dart';
 import '../../repositories/nostr_data_repository.dart';
+import '../../repositories/nostr_functions_repository.dart';
 import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
 import '../add_content_view/add_content_view.dart';
 import '../gallery_view/gallery_view.dart';
+import '../main_view/widgets/detail_pane_scope.dart';
 import '../search_view/search_view.dart';
 import '../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../widgets/app_icon.dart';
@@ -61,6 +65,107 @@ class ArticleView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentArticle = useState(article);
+    final isRefreshing = useState(false);
+
+    Future<void> refreshArticle() async {
+      if (isRefreshing.value) {
+        return;
+      }
+      isRefreshing.value = true;
+      final original = currentArticle.value;
+      final kind =
+          original.isDraft ? EventKind.LONG_FORM_DRAFT : EventKind.LONG_FORM;
+      try {
+        final events = <Event>[];
+        var seenRelays = <String>[];
+        try {
+          seenRelays = await getEventSeenOnRelays(
+            id: original.id,
+            isReplaceable: false,
+          );
+        } catch (_) {
+          // Relay hints are optional; the connected relays can still answer.
+        }
+        final relays = {
+          ...original.relays,
+          ...seenRelays,
+          ...nc.activeRelays(),
+          ...currentUserRelayList.urls,
+        }.toList();
+        await NostrFunctionsRepository.queryEvents(
+          [
+            Filter(
+              authors: [original.pubkey],
+              kinds: [kind],
+              d: [original.identifier],
+            ),
+          ],
+          relays,
+          source: EventsSource.relays,
+          connectTimeout: const Duration(seconds: 3),
+          eventCallBack: (event, _) => events.add(event),
+        ).timeout(const Duration(seconds: 20));
+        if (!context.mounted) {
+          return;
+        }
+        final matches = events
+            .where((event) =>
+                event.pubkey == original.pubkey &&
+                event.kind == kind &&
+                event.dTag == original.identifier)
+            .toList()
+          ..sort((a, b) {
+            final time = b.createdAt.compareTo(a.createdAt);
+            return time != 0 ? time : a.id.compareTo(b.id);
+          });
+        if (matches.isEmpty) {
+          BotToastUtils.showError(
+              context.t.somethingWentWrong.capitalizeFirst());
+          return;
+        }
+        final latest =
+            Article.fromEvent(matches.first, isDraft: original.isDraft);
+        if (latest.createdAt.isAfter(original.createdAt) ||
+            (latest.createdAt == original.createdAt &&
+                latest.id.compareTo(original.id) < 0)) {
+          currentArticle.value = latest;
+        }
+      } catch (_) {
+        if (context.mounted) {
+          BotToastUtils.showError(
+              context.t.somethingWentWrong.capitalizeFirst());
+        }
+      } finally {
+        if (context.mounted) {
+          isRefreshing.value = false;
+        }
+      }
+    }
+
+    return _ArticleContent(
+      key: ValueKey(currentArticle.value.id),
+      article: currentArticle.value,
+      isRefreshing: isRefreshing.value,
+      refreshArticle: refreshArticle,
+    );
+  }
+}
+
+class _ArticleContent extends HookWidget {
+  const _ArticleContent({
+    super.key,
+    required this.article,
+    required this.isRefreshing,
+    required this.refreshArticle,
+  });
+
+  final Article article;
+  final bool isRefreshing;
+  final Future<void> Function() refreshArticle;
+
+  @override
+  Widget build(BuildContext context) {
     final scrollController = useScrollController();
 
     final articleContent = useState(article.content);
@@ -78,6 +183,10 @@ class ArticleView extends HookWidget {
       final res = await localizationCubit.translateContent(
         content: concatenatedContent.value,
       );
+
+      if (!context.mounted) {
+        return;
+      }
 
       if (res.key) {
         try {
@@ -151,6 +260,15 @@ class ArticleView extends HookWidget {
           builder: (context, state) {
             return FluidScaffold(
               title: context.t.article.capitalizeFirst(),
+              actions: isDesktopPlatform
+                  ? [
+                      IconButton(
+                        tooltip: context.t.refresh,
+                        icon: const Icon(LucideIcons.refreshCw),
+                        onPressed: isRefreshing ? null : refreshArticle,
+                      ),
+                    ]
+                  : null,
               bottomBar: isFluid()
                   ? null
                   : _contentStatsBar(
@@ -177,6 +295,7 @@ class ArticleView extends HookWidget {
                       isTranslating,
                       showOriginalContent,
                       translateContent,
+                      refreshArticle,
                       context),
             );
           },
@@ -194,16 +313,19 @@ class ArticleView extends HookWidget {
       ValueNotifier<bool> isTranslating,
       ValueNotifier<bool> showOriginalContent,
       Function() translateContent,
+      Future<void> Function() refreshArticle,
       BuildContext context) {
     return Stack(
       children: [
         Builder(
           builder: (context) {
             return RefreshIndicator(
-              onRefresh: () async {
-                context.read<ArticleCubit>().emptyArticleState();
-                context.read<ArticleCubit>().initView();
-              },
+              onRefresh: isDesktopPlatform
+                  ? refreshArticle
+                  : () async {
+                      context.read<ArticleCubit>().emptyArticleState();
+                      context.read<ArticleCubit>().initView();
+                    },
               edgeOffset: fluidScaffoldTopInset(context),
               displacement: kDefaultPadding / 2,
               triggerMode: RefreshIndicatorTriggerMode.anywhere,
@@ -602,8 +724,10 @@ class ArticleView extends HookWidget {
     );
 
     if (isFluid()) {
-      final bottomPad =
-          MediaQuery.of(context).padding.bottom + kDefaultPadding / 4;
+      final bottomPad = MediaQuery.of(context).padding.bottom +
+          (DetailPaneScope.contains(context)
+              ? kDefaultPadding / 2
+              : kDefaultPadding / 4);
       return Visibility(
         visible: !isUserMuted(article.pubkey),
         maintainSize: true,
@@ -738,8 +862,7 @@ class ArticleView extends HookWidget {
                         return MarkDownWidget(
                           content: articleContent.value,
                           onLinkClicked: (link) => openWebPage(url: link),
-                          onHighlight: (selectedText) =>
-                              publishNip84Highlight(
+                          onHighlight: (selectedText) => publishNip84Highlight(
                             context: context,
                             selectedText: selectedText,
                             sourceContent: article.content,
@@ -754,8 +877,7 @@ class ArticleView extends HookWidget {
                         return MarkDownWidget(
                           content: article.content,
                           onLinkClicked: (link) => openWebPage(url: link),
-                          onHighlight: (selectedText) =>
-                              publishNip84Highlight(
+                          onHighlight: (selectedText) => publishNip84Highlight(
                             context: context,
                             selectedText: selectedText,
                             sourceContent: article.content,

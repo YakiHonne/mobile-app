@@ -15,6 +15,7 @@ import '../../../logic/write_article_cubit/write_article_cubit.dart';
 import '../../../models/article_model.dart';
 import '../../../repositories/localdatabase_repository.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/detail_pane_scope.dart';
 import '../../subscription_view/pricing/subscription_gate.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../../widgets/data_providers.dart';
@@ -178,6 +179,7 @@ class AddArticleMainView extends HookWidget {
 
               showAdaptiveModal(
                 context,
+                useRootNavigator: !DetailPaneScope.contains(context),
                 dialogHeight: 640,
                 builder: (_) {
                   return BlocProvider<WriteArticleCubit>.value(

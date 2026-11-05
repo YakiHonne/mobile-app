@@ -7,6 +7,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_smart_widget_cubit/write_smart_widget_cubit.dart';
 import '../../../models/smart_widgets_components.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/detail_pane_scope.dart';
 import '../../widgets/custom_icon_buttons.dart';
 import '../add_content_specification_views/add_smart_widget_specification_view.dart';
 import '../related_adding_views/smart_widget_widgets/smart_widget_specifications.dart';
@@ -52,6 +53,7 @@ class AddSmartWidgetMainView extends HookWidget {
               onActionClicked: () {
                 showAdaptiveModal(
                   context,
+                  useRootNavigator: !DetailPaneScope.contains(context),
                   dialogHeight: 640,
                   builder: (_) {
                     return BlocProvider<WriteSmartWidgetCubit>.value(

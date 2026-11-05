@@ -39,6 +39,7 @@ dependencies:
   expandable: ^5.0.1
   extended_image: ^10.0.1
   fc_native_video_thumbnail: ^0.12.0
+  file_selector_platform_interface: ^2.6.2
   fl_chart: ^0.69.0
   flutter:
     sdk: flutter
@@ -85,7 +86,8 @@ dependencies:
   interactiveviewer_gallery_plus: ^0.1.0
   intl: ^0.20.2
   just_audio: ^0.10.5
-  liquid_glass_widgets: ^1.2.3
+  liquid_glass_widgets:
+    path: third_party/liquid_glass_widgets
   logger: ^2.4.0
   lottie: ^3.1.2
   lucide_icons_flutter: ^3.1.15
@@ -111,7 +113,8 @@ dependencies:
   pretty_qr_code: ^3.4.0
   pro_image_editor: ^14.2.0
   pro_video_editor: ^2.13.0
-  pull_down_button: ^0.10.2
+  pull_down_button:
+    path: third_party/pull_down_button
   pull_to_refresh: ^2.0.0
   qr_code_scanner_plus: ^2.3.0
   qr_flutter: ^4.1.0

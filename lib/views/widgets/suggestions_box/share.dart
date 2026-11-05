@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../main_view/widgets/profile_share_view.dart';
 import '../profile_picture.dart';
@@ -48,7 +49,7 @@ class SuggestedShare extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: kDefaultPadding,
-        horizontal: 18.w,
+        horizontal: isDesktopPlatform ? kDefaultPadding : 18.w,
       ),
       child: Column(
         children: [
@@ -89,7 +90,7 @@ class SuggestedShare extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () async {
-                Navigator.push(
+                YNavigator.push(
                   context,
                   createViewFromBottom(
                     ProfileShareView(

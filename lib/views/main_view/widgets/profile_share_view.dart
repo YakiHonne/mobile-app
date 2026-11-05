@@ -443,33 +443,34 @@ class _ConnectedUserProfileShareViewState
             const SizedBox(
               height: kDefaultPadding,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  if (isQRcodeShown) {
-                    controller?.resumeCamera();
-                  } else {
-                    controller?.pauseCamera();
-                  }
-                  setState(() {
-                    isQRcodeShown = !isQRcodeShown;
-                  });
-                },
-                style: TextButton.styleFrom(
-                  backgroundBuilder: (_, __, child) => child!,
-                  backgroundColor: kWhite,
-                ),
-                child: Text(
-                  isQRcodeShown
-                      ? context.t.scanQrCode.capitalizeFirst()
-                      : context.t.viewQrCode.capitalizeFirst(),
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: kBlack,
-                      ),
+            if (isMobilePlatform)
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () {
+                    if (isQRcodeShown) {
+                      controller?.resumeCamera();
+                    } else {
+                      controller?.pauseCamera();
+                    }
+                    setState(() {
+                      isQRcodeShown = !isQRcodeShown;
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundBuilder: (_, __, child) => child!,
+                    backgroundColor: kWhite,
+                  ),
+                  child: Text(
+                    isQRcodeShown
+                        ? context.t.scanQrCode.capitalizeFirst()
+                        : context.t.viewQrCode.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: kBlack,
+                        ),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -501,19 +502,26 @@ class _ConnectedUserProfileShareViewState
                     borderRadius: BorderRadius.circular(
                       kDefaultPadding + 5,
                     ),
-                    child: QRView(
-                      key: qrKey,
-                      onQRViewCreated: (controller) => _onQRViewCreated(
-                        controller,
-                        context: context,
-                      ),
-                      overlay: QrScannerOverlayShape(
-                        borderRadius: kDefaultPadding,
-                        borderColor: kWhite,
-                        borderWidth: 5,
-                        cutOutSize: width,
-                      ),
-                    ),
+                    child: isMobilePlatform
+                        ? QRView(
+                            key: qrKey,
+                            onQRViewCreated: (controller) => _onQRViewCreated(
+                              controller,
+                              context: context,
+                            ),
+                            overlay: QrScannerOverlayShape(
+                              borderRadius: kDefaultPadding,
+                              borderColor: kWhite,
+                              borderWidth: 5,
+                              cutOutSize: width,
+                            ),
+                          )
+                        : const Center(
+                            child: Text(
+                              'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                   ),
                 ),
               ],

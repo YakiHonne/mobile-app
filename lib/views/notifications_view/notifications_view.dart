@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -22,6 +23,7 @@ import '../widgets/classic_footer.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/empty_list.dart';
 import '../widgets/fluid_blur_container.dart';
+import '../widgets/fluid_source_filter_row.dart';
 import '../widgets/no_content_widgets.dart';
 import 'widgets/notification_global_container.dart';
 import 'widgets/notifications_customization.dart';
@@ -132,7 +134,15 @@ class NotificationsView extends HookWidget {
         );
 
         if (!isFluid()) {
-          return tabView;
+          return isDesktopPlatform
+              ? Column(children: [
+                  const Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: _NotificationsRefreshButton(),
+                  ),
+                  Expanded(child: tabView),
+                ])
+              : tabView;
         }
 
         return Stack(
@@ -141,9 +151,7 @@ class NotificationsView extends HookWidget {
             Positioned(
               left: kDefaultPadding / 2,
               right: kDefaultPadding / 2,
-              top: MediaQuery.of(context).padding.top +
-                  kToolbarHeight +
-                  kDefaultPadding / 2,
+              top: fluidFilterRowTop(context),
               child: Align(
                 child: ValueListenableBuilder<bool>(
                   valueListenable: barsVisible ?? ValueNotifier(true),
@@ -194,6 +202,17 @@ class NotificationsView extends HookWidget {
                             borderColor: kTransparent,
                             vd: -1,
                           ),
+                          if (isDesktopPlatform) ...[
+                            SizedBox(
+                              height: 20,
+                              child: VerticalDivider(
+                                width: 1,
+                                thickness: 0.5,
+                                color: Theme.of(context).dividerColor,
+                              ),
+                            ),
+                            const _NotificationsRefreshButton(),
+                          ],
                         ],
                       ),
                     ),
@@ -202,6 +221,50 @@ class NotificationsView extends HookWidget {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _NotificationsRefreshButton extends StatefulWidget {
+  const _NotificationsRefreshButton();
+
+  @override
+  State<_NotificationsRefreshButton> createState() =>
+      _NotificationsRefreshButtonState();
+}
+
+class _NotificationsRefreshButtonState
+    extends State<_NotificationsRefreshButton> {
+  bool _refreshing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NotificationsCubit, NotificationsState>(
+      builder: (context, state) {
+        final premium = state.index == 5;
+        final loading = premium ? state.isPremiumLoading : state.isLoading;
+        return IconButton(
+          tooltip: context.t.refresh,
+          icon: const Icon(LucideIcons.refreshCw),
+          onPressed: loading || _refreshing
+              ? null
+              : () async {
+                  setState(() => _refreshing = true);
+                  final cubit = context.read<NotificationsCubit>();
+                  try {
+                    if (premium) {
+                      await cubit.fetchPremiumContent(force: true);
+                    } else {
+                      await cubit.loadHistory(force: true);
+                    }
+                  } finally {
+                    if (mounted) {
+                      setState(() => _refreshing = false);
+                    }
+                  }
+                },
         );
       },
     );
@@ -265,13 +328,12 @@ class SelectedNotifications extends HookWidget {
     }
 
     final usedEvents = useMemoized(
-      () => index == 5 ? state.premiumEvents : getUsedEvents(index, state.events),
+      () =>
+          index == 5 ? state.premiumEvents : getUsedEvents(index, state.events),
       [index, state.events, state.premiumEvents],
     );
 
-    final topInset = isFluid()
-        ? MediaQuery.of(context).padding.top + kToolbarHeight + 50
-        : 0.0;
+    final topInset = isFluid() ? fluidFeedTopInset(context, extra: 50) : 0.0;
 
     return SmartRefresher(
       controller: controller,
@@ -396,9 +458,11 @@ class EnableTypeNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topInset = isFluid()
-        ? MediaQuery.of(context).padding.top +
-            kToolbarHeight +
-            kDefaultPadding * 3
+        ? isDesktopPlatform
+            ? kDefaultPadding * 2
+            : MediaQuery.of(context).padding.top +
+                kToolbarHeight +
+                kDefaultPadding * 3
         : kDefaultPadding * 2;
 
     return MediaQuery.removePadding(

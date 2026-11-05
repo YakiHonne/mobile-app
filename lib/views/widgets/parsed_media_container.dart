@@ -592,9 +592,31 @@ class YoutubeVideoPlayer extends HookWidget {
       );
     }, [url]);
 
-    // Dispose when widget unmounts
     useEffect(() {
-      return controller.dispose;
+      if (!isDesktopPlatform) {
+        return controller.dispose;
+      }
+      final manager = videoControllerManagerCubit;
+      final token = manager.registerDesktopExternalPlayer(() {
+        if (controller.value.isReady) {
+          controller.pause();
+        }
+      });
+      var wasPlaying = controller.value.isPlaying;
+      void listener() {
+        final playing = controller.value.isPlaying;
+        if (playing && !wasPlaying) {
+          manager.desktopExternalPlayerStarted(token);
+        }
+        wasPlaying = playing;
+      }
+
+      controller.addListener(listener);
+      return () {
+        controller.removeListener(listener);
+        manager.unregisterDesktopExternalPlayer(token);
+        controller.dispose();
+      };
     }, [controller]);
 
     return ClipRRect(
@@ -644,7 +666,9 @@ class MediaFeedContainer extends HookWidget {
         }
       },
       child: SizedBox(
-        width: 60.w,
+        width: isDesktopPlatform
+            ? (MediaQuery.sizeOf(context).width * 0.6).clamp(0.0, 360.0)
+            : 60.w,
         child: AspectRatio(
           aspectRatio: 9 / 11,
           child: Container(

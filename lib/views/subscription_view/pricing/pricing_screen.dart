@@ -13,6 +13,7 @@ import '../../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../../models/app_models/pricing_plan_model.dart';
 import '../../../models/points_system_models.dart';
 import '../../../repositories/http_functions_repository.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import 'widgets/checkout_screen.dart';
@@ -97,6 +98,11 @@ class _PricingScreenState extends State<PricingScreen> {
   /// Everything else is handed to [CheckoutScreen], which owns the purchase
   /// stream for exactly as long as that one purchase is in flight.
   Future<void> _checkout(PricingPlan plan) async {
+    if (isDesktopPlatform && _useIap && !_isPoints) {
+      BotToastUtils.showError('Store purchases are unavailable on desktop.');
+      return;
+    }
+
     if (_isPoints) {
       setState(() => _loadingPlanId = plan.plan);
       try {
@@ -112,7 +118,8 @@ class _PricingScreenState extends State<PricingScreen> {
       return;
     }
 
-    await Navigator.of(context).push(
+    await YNavigator.push(
+      context,
       CheckoutScreen.route(
         plan: plan,
         method: _useIap

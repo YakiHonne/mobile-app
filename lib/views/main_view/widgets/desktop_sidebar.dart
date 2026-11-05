@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
@@ -31,6 +32,7 @@ import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
+import '../desktop/desktop_smart_widgets_page.dart';
 import 'accounts_manager.dart';
 import 'feature_tour.dart';
 
@@ -42,7 +44,7 @@ const double kDesktopSidebarWidth = 268;
 /// Below this window width the labelled rail starves the content column, so it
 /// collapses to icons with tooltips.
 const double kDesktopSidebarCompactWidth = 72;
-const double kSidebarCollapseWidth = 1080;
+const double kSidebarCollapseWidth = 1450;
 
 class DesktopSidebar extends StatelessWidget {
   const DesktopSidebar({
@@ -76,7 +78,12 @@ class DesktopSidebar extends StatelessWidget {
                   const SizedBox(height: kDefaultPadding),
                   _SearchField(compact: compact),
                   const SizedBox(height: kDefaultPadding / 2),
-                  Expanded(child: _destinations(context, state)),
+                  Expanded(
+                    child: ScrollShadow(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: _destinations(context, state),
+                    ),
+                  ),
                   const SizedBox(height: kDefaultPadding / 2),
                   _ComposeButton(compact: compact),
                   const SizedBox(height: kDefaultPadding / 2),
@@ -192,7 +199,10 @@ class DesktopSidebar extends StatelessWidget {
               selectedIcon: FeatureIcons.smartWidget,
               title: context.t.smartWidget.capitalizeFirst(),
               isSelected: state.mainView == MainViews.smartWidgets,
-              onClicked: () => go(MainViews.smartWidgets),
+              onClicked: () => YNavigator.pushPage(
+                context,
+                (_) => const DesktopSmartWidgetsPage(),
+              ),
             ),
           const Divider(height: kDefaultPadding, indent: kDefaultPadding / 2),
           _item(
@@ -359,7 +369,7 @@ class _SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Hoverable(
-      builder: (context, hovered) => Tooltip(
+      builder: (context, _) => Tooltip(
         message: compact ? context.t.search.capitalizeFirst() : '',
         child: GestureDetector(
           onTap: () => YNavigator.pushPage(context, (context) => SearchView()),
@@ -372,9 +382,7 @@ class _SearchField extends StatelessWidget {
                 horizontal: compact ? 0 : kDefaultPadding / 1.5,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .cardColor
-                    .withValues(alpha: hovered ? 0.85 : 0.55),
+                color: Theme.of(context).cardColor.withValues(alpha: 0.55),
                 shape: compact ? BoxShape.circle : BoxShape.rectangle,
                 borderRadius:
                     compact ? null : BorderRadius.circular(kDefaultPadding),
@@ -599,27 +607,27 @@ class _AccountFooter extends StatelessWidget {
 
     return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
+        void openAccounts() => showAdaptiveModal(
+              context,
+              dialogHeight: 560,
+              builder: (_) => BlocProvider.value(
+                value: context.read<MainCubit>(),
+                child: AccountManager(scaffoldContext: context),
+              ),
+            );
+
         return _Hoverable(
-          builder: (context, hovered) => _CenterIfCompact(
+          builder: (context, _) => _CenterIfCompact(
             compact: compact,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => showAdaptiveModal(
-                context,
-                dialogHeight: 560,
-                builder: (_) => BlocProvider.value(
-                  value: context.read<MainCubit>(),
-                  child: AccountManager(scaffoldContext: context),
-                ),
-              ),
+              onTap: openAccounts,
               child: Container(
                 padding: EdgeInsets.all(
                   compact ? kDefaultPadding / 4 : kDefaultPadding / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: hovered
-                      ? Theme.of(context).cardColor.withValues(alpha: 0.85)
-                      : kTransparent,
+                  color: kTransparent,
                   shape: compact ? BoxShape.circle : BoxShape.rectangle,
                   borderRadius:
                       compact ? null : BorderRadius.circular(kDefaultPadding),
@@ -633,14 +641,10 @@ class _AccountFooter extends StatelessWidget {
                           compact ? MainAxisSize.min : MainAxisSize.max,
                       spacing: kDefaultPadding / 2,
                       children: [
-                        ProfilePicture2(
-                          size: 36,
+                        DesktopAccountAvatar(
                           image: metadata.picture,
                           pubkey: metadata.pubkey,
-                          padding: 0,
-                          strokeWidth: 0,
-                          strokeColor: kTransparent,
-                          onClicked: () {},
+                          onPressed: openAccounts,
                         ),
                         if (!compact) ...[
                           Expanded(
@@ -681,6 +685,31 @@ class _AccountFooter extends StatelessWidget {
       },
     );
   }
+}
+
+/// The avatar shares the footer action rather than intercepting its tap.
+class DesktopAccountAvatar extends StatelessWidget {
+  const DesktopAccountAvatar({
+    super.key,
+    required this.image,
+    required this.pubkey,
+    required this.onPressed,
+  });
+
+  final String image;
+  final String pubkey;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => ProfilePicture2(
+        size: 36,
+        image: image,
+        pubkey: pubkey,
+        padding: 0,
+        strokeWidth: 0,
+        strokeColor: kTransparent,
+        onClicked: onPressed,
+      );
 }
 
 /// A rail destination: rounded highlight when selected, softer one on hover.
@@ -724,7 +753,7 @@ class _RailItem extends StatelessWidget {
     );
 
     return _Hoverable(
-      builder: (context, hovered) => Tooltip(
+      builder: (context, _) => Tooltip(
         message: compact ? title : '',
         child: GestureDetector(
           onTap: onClicked,
@@ -748,9 +777,7 @@ class _RailItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? Theme.of(context).cardColor.withValues(alpha: 0.9)
-                    : hovered
-                        ? Theme.of(context).cardColor.withValues(alpha: 0.5)
-                        : kTransparent,
+                    : kTransparent,
                 shape: compact ? BoxShape.circle : BoxShape.rectangle,
                 borderRadius:
                     compact ? null : BorderRadius.circular(kDefaultPadding),
@@ -806,27 +833,17 @@ class _CenterIfCompact extends StatelessWidget {
   Widget build(BuildContext context) => compact ? Center(child: child) : child;
 }
 
-/// Hover state + pointer cursor. The app's custom gesture targets were built
-/// for touch and give no feedback under a mouse.
-class _Hoverable extends StatefulWidget {
+/// Supplies a pointer cursor without changing the control's appearance.
+class _Hoverable extends StatelessWidget {
   const _Hoverable({required this.builder});
 
   final Widget Function(BuildContext context, bool hovered) builder;
 
   @override
-  State<_Hoverable> createState() => _HoverableState();
-}
-
-class _HoverableState extends State<_Hoverable> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: widget.builder(context, _hovered),
+      child: builder(context, false),
     );
   }
 }

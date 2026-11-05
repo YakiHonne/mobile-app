@@ -468,7 +468,7 @@ class PdmCommonActions {
     BuildContext context,
     SmartWidget smartWidgetModel,
   ) {
-    Navigator.pushNamed(
+    YNavigator.pushNamed(
       context,
       SmartWidgetChecker.routeName,
       arguments: [

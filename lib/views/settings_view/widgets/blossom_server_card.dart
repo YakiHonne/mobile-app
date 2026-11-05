@@ -281,6 +281,9 @@ class BlossomServerCard extends StatelessWidget {
                           style: TextButton.styleFrom(
                             backgroundColor: theme.dividerColor,
                             foregroundColor: theme.primaryColorDark,
+                          ).copyWith(
+                            overlayColor:
+                                desktopNoHoverOverlay(theme.primaryColorDark),
                           ),
                           icon: const AppIcon(LucideIcons.plus, size: 16),
                           label: Text(context.t.media_yakipro_server_action),

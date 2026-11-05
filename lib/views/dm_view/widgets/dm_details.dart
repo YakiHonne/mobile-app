@@ -58,6 +58,7 @@ class DmDetails extends HookWidget {
     nostrRepository.usersMessageNotifications.add(data[0]);
 
     return CupertinoPageRoute(
+      settings: settings,
       builder: (_) => DmDetails(pubkey: data[0]),
     );
   }
@@ -68,10 +69,7 @@ class DmDetails extends HookWidget {
 
   final String pubkey;
 
-  /// Non-null only when this thread is the desktop detail pane's content
-  /// rather than a route. Pane-ness is a structural fact, so it is passed in —
-  /// inferring it from [selectedDmPubkey] would misfire for a pushed
-  /// `DmDetails` opened on the same peer that the pane already has selected.
+  /// Optional close handler for an embedded conversation.
   final VoidCallback? onClose;
 
   @override
@@ -855,7 +853,7 @@ class DmTextfieldBox extends StatelessWidget {
 
     if (scrollController.hasClients &&
         (dmsCubit.state.dmSessionDetails[pubkey]?.dmSession.length() ?? 0) >
-        0) {
+            0) {
       scrollController.animateTo(
         0.0,
         duration: _scrollDuration,
@@ -1035,7 +1033,7 @@ class DmAppBar {
   final VoidCallback? onClose;
 
   /// Null on the normal path, so FluidScaffold supplies its own back chevron.
-  /// In the pane there is nothing to pop, so it shows an X that closes the pane.
+  /// Embedded conversations do not have a close button in the app bar.
   Widget? leading(BuildContext context) {
     if (isSelectionMode.value) {
       return IconButton(
@@ -1048,10 +1046,7 @@ class DmAppBar {
     }
 
     if (onClose != null) {
-      return IconButton(
-        onPressed: onClose,
-        icon: const Icon(LucideIcons.x),
-      );
+      return const SizedBox.shrink();
     }
 
     return null;

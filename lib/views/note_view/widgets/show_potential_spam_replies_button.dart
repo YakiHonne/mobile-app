@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../utils/utils.dart';
 
@@ -21,7 +22,9 @@ class ShowPotentialSpamRepliesButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: onPressed,
         icon: Icon(
-          Icons.keyboard_arrow_down,
+          isDesktopPlatform
+              ? LucideIcons.chevronDown
+              : Icons.keyboard_arrow_down,
           size: 22,
           color: foregroundColor,
         ),
@@ -40,7 +43,7 @@ class ShowPotentialSpamRepliesButton extends StatelessWidget {
           ),
           minimumSize: const Size(0, kDefaultPadding * 2),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
+        ).copyWith(overlayColor: desktopNoHoverOverlay(foregroundColor)),
       ),
     );
   }

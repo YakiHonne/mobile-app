@@ -34,7 +34,7 @@ class DMRedeemWidget extends HookWidget {
         resultCode.value == 'codeAlreadyRedeemed';
 
     return Container(
-      width: 70.w,
+      width: isDesktopPlatform ? double.infinity : 70.w,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,

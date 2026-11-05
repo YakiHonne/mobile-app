@@ -2249,6 +2249,13 @@ class TranslationsAr extends Translations {
 	@override String get hideSpamReplies => 'إخفاء الردود المشتبه بأنها مزعجة';
 	@override String get markAsSpam => 'وضع علامة كرسالة مزعجة';
 	@override String get notSpam => 'ليست مزعجة';
+	@override String get desktopPlay => 'تشغيل';
+	@override String get desktopPause => 'إيقاف مؤقت';
+	@override String get desktopResizePanes => 'تغيير حجم الجزأين';
+	@override String get desktopDensity => 'كثافة سطح المكتب';
+	@override String get desktopDensityComfortable => 'مريح';
+	@override String get desktopDensityCompact => 'مضغوط';
+	@override String get desktopKnowPeople => 'تعرّف على أشخاص';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -4501,6 +4508,13 @@ extension on TranslationsAr {
 			'hideSpamReplies' => 'إخفاء الردود المشتبه بأنها مزعجة',
 			'markAsSpam' => 'وضع علامة كرسالة مزعجة',
 			'notSpam' => 'ليست مزعجة',
+			'desktopPlay' => 'تشغيل',
+			'desktopPause' => 'إيقاف مؤقت',
+			'desktopResizePanes' => 'تغيير حجم الجزأين',
+			'desktopDensity' => 'كثافة سطح المكتب',
+			'desktopDensityComfortable' => 'مريح',
+			'desktopDensityCompact' => 'مضغوط',
+			'desktopKnowPeople' => 'تعرّف على أشخاص',
 			_ => null,
 		};
 	}

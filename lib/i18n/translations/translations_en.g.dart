@@ -6676,6 +6676,27 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Not spam'
 	String get notSpam => 'Not spam';
+
+	/// en: 'Play'
+	String get desktopPlay => 'Play';
+
+	/// en: 'Pause'
+	String get desktopPause => 'Pause';
+
+	/// en: 'Resize panes'
+	String get desktopResizePanes => 'Resize panes';
+
+	/// en: 'Desktop density'
+	String get desktopDensity => 'Desktop density';
+
+	/// en: 'Comfortable'
+	String get desktopDensityComfortable => 'Comfortable';
+
+	/// en: 'Compact'
+	String get desktopDensityCompact => 'Compact';
+
+	/// en: 'Know people'
+	String get desktopKnowPeople => 'Know people';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -8930,6 +8951,13 @@ extension on Translations {
 			'hideSpamReplies' => 'Hide potentially spam replies',
 			'markAsSpam' => 'Mark as spam',
 			'notSpam' => 'Not spam',
+			'desktopPlay' => 'Play',
+			'desktopPause' => 'Pause',
+			'desktopResizePanes' => 'Resize panes',
+			'desktopDensity' => 'Desktop density',
+			'desktopDensityComfortable' => 'Comfortable',
+			'desktopDensityCompact' => 'Compact',
+			'desktopKnowPeople' => 'Know people',
 			_ => null,
 		};
 	}

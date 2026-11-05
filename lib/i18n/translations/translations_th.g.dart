@@ -2249,6 +2249,13 @@ class TranslationsTh extends Translations {
 	@override String get hideSpamReplies => 'ซ่อนการตอบกลับที่อาจเป็นสแปม';
 	@override String get markAsSpam => 'ทำเครื่องหมายว่าเป็นสแปม';
 	@override String get notSpam => 'ไม่ใช่สแปม';
+	@override String get desktopPlay => 'เล่น';
+	@override String get desktopPause => 'หยุดชั่วคราว';
+	@override String get desktopResizePanes => 'ปรับขนาดแผง';
+	@override String get desktopDensity => 'ความหนาแน่นเดสก์ท็อป';
+	@override String get desktopDensityComfortable => 'สบายตา';
+	@override String get desktopDensityCompact => 'กะทัดรัด';
+	@override String get desktopKnowPeople => 'รู้จักผู้คน';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -4501,6 +4508,13 @@ extension on TranslationsTh {
 			'hideSpamReplies' => 'ซ่อนการตอบกลับที่อาจเป็นสแปม',
 			'markAsSpam' => 'ทำเครื่องหมายว่าเป็นสแปม',
 			'notSpam' => 'ไม่ใช่สแปม',
+			'desktopPlay' => 'เล่น',
+			'desktopPause' => 'หยุดชั่วคราว',
+			'desktopResizePanes' => 'ปรับขนาดแผง',
+			'desktopDensity' => 'ความหนาแน่นเดสก์ท็อป',
+			'desktopDensityComfortable' => 'สบายตา',
+			'desktopDensityCompact' => 'กะทัดรัด',
+			'desktopKnowPeople' => 'รู้จักผู้คน',
 			_ => null,
 		};
 	}

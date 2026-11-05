@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../logify_view/widgets/eula_view.dart';
 import '../../version_news/version_news.dart';
@@ -16,7 +17,7 @@ class PropertyVersion extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        YNavigator.push(
           context,
           createViewFromBottom(
             VersionNews(

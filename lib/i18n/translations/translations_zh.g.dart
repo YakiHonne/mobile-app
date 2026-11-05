@@ -2249,6 +2249,13 @@ class TranslationsZh extends Translations {
 	@override String get hideSpamReplies => '隐藏疑似垃圾信息回复';
 	@override String get markAsSpam => '标记为垃圾信息';
 	@override String get notSpam => '不是垃圾信息';
+	@override String get desktopPlay => '播放';
+	@override String get desktopPause => '暂停';
+	@override String get desktopResizePanes => '调整窗格大小';
+	@override String get desktopDensity => '桌面显示密度';
+	@override String get desktopDensityComfortable => '舒适';
+	@override String get desktopDensityCompact => '紧凑';
+	@override String get desktopKnowPeople => '认识新朋友';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -4501,6 +4508,13 @@ extension on TranslationsZh {
 			'hideSpamReplies' => '隐藏疑似垃圾信息回复',
 			'markAsSpam' => '标记为垃圾信息',
 			'notSpam' => '不是垃圾信息',
+			'desktopPlay' => '播放',
+			'desktopPause' => '暂停',
+			'desktopResizePanes' => '调整窗格大小',
+			'desktopDensity' => '桌面显示密度',
+			'desktopDensityComfortable' => '舒适',
+			'desktopDensityCompact' => '紧凑',
+			'desktopKnowPeople' => '认识新朋友',
 			_ => null,
 		};
 	}

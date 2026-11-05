@@ -86,6 +86,7 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
 
   Column _curationColumn(ScrollController scrollController,
       BuildContext context, TextField searchTextField) {
+    final state = context.watch<WriteCurationCubit>().state;
     return Column(
       children: [
         const ModalBottomSheetHandle(),
@@ -113,6 +114,10 @@ class _CurationArticlesListState extends State<CurationArticlesList> {
         ),
         Expanded(
           child: AdaptiveSmartRefresher(
+            desktopHasResults: !state.isLoading &&
+                (state.isArticlesCuration
+                    ? state.articles.isNotEmpty
+                    : state.videos.isNotEmpty),
             controller: refreshController,
             enablePullUp: true,
             scrollController: scrollController,

@@ -2249,6 +2249,13 @@ class TranslationsFr extends Translations {
 	@override String get hideSpamReplies => 'Masquer les réponses potentiellement indésirables';
 	@override String get markAsSpam => 'Signaler comme indésirable';
 	@override String get notSpam => 'Pas indésirable';
+	@override String get desktopPlay => 'Lire';
+	@override String get desktopPause => 'Pause';
+	@override String get desktopResizePanes => 'Redimensionner les volets';
+	@override String get desktopDensity => 'Densité du bureau';
+	@override String get desktopDensityComfortable => 'Confortable';
+	@override String get desktopDensityCompact => 'Compacte';
+	@override String get desktopKnowPeople => 'Découvrir des personnes';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -4501,6 +4508,13 @@ extension on TranslationsFr {
 			'hideSpamReplies' => 'Masquer les réponses potentiellement indésirables',
 			'markAsSpam' => 'Signaler comme indésirable',
 			'notSpam' => 'Pas indésirable',
+			'desktopPlay' => 'Lire',
+			'desktopPause' => 'Pause',
+			'desktopResizePanes' => 'Redimensionner les volets',
+			'desktopDensity' => 'Densité du bureau',
+			'desktopDensityComfortable' => 'Confortable',
+			'desktopDensityCompact' => 'Compacte',
+			'desktopKnowPeople' => 'Découvrir des personnes',
 			_ => null,
 		};
 	}

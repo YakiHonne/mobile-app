@@ -2208,5 +2208,12 @@
   "showSpamReplies": "Mostrar respostas possivelmente spam",
   "hideSpamReplies": "Ocultar respostas possivelmente spam",
   "markAsSpam": "Marcar como spam",
-  "notSpam": "Não é spam"
+  "notSpam": "Não é spam",
+  "desktopPlay": "Reproduzir",
+  "desktopPause": "Pausar",
+  "desktopResizePanes": "Redimensionar painéis",
+  "desktopDensity": "Densidade da área de trabalho",
+  "desktopDensityComfortable": "Confortável",
+  "desktopDensityCompact": "Compacta",
+  "desktopKnowPeople": "Conhecer pessoas"
 }

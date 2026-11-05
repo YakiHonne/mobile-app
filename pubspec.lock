@@ -779,7 +779,7 @@ packages:
     source: hosted
     version: "0.9.4+1"
   file_selector_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file_selector_platform_interface
       sha256: a3994c26f10378a039faa11de174d7b78eb8f79e4dd0af2a451410c1a5c3f66b
@@ -1619,10 +1619,9 @@ packages:
   liquid_glass_widgets:
     dependency: "direct main"
     description:
-      name: liquid_glass_widgets
-      sha256: b00e51b4b72f4164fac39aa75b8072ea97d1955d91b703d1f354464b082f5b98
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/liquid_glass_widgets"
+      relative: true
+    source: path
     version: "1.4.4"
   logger:
     dependency: "direct main"
@@ -2074,10 +2073,9 @@ packages:
   pull_down_button:
     dependency: "direct main"
     description:
-      name: pull_down_button
-      sha256: "12cdd8ff187a3150ebdf075e5074299f085579b158d2b4e655ccbafccf95f25b"
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/pull_down_button"
+      relative: true
+    source: path
     version: "0.10.2"
   pull_to_refresh:
     dependency: "direct main"

@@ -194,22 +194,30 @@ class SuggestedArticleContainer extends HookWidget {
 }
 
 class SuggestedNotes extends StatelessWidget {
-  const SuggestedNotes({super.key, required this.notes});
+  const SuggestedNotes(
+      {super.key, required this.notes, this.desktopPane = false});
 
   final List<DetailedNoteModel> notes;
+  final bool desktopPane;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 145,
+      height: desktopPane
+          ? 145 * MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0) +
+              kDefaultPadding
+          : 145,
       child: ListView.separated(
+        padding: desktopPane
+            ? const EdgeInsets.symmetric(horizontal: kDefaultPadding)
+            : null,
         shrinkWrap: true,
         primary: false,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final note = notes[index];
 
-          return SuggestedNoteContainer(note: note);
+          return SuggestedNoteContainer(note: note, desktopPane: desktopPane);
         },
         separatorBuilder: (context, index) => const SizedBox(
           width: kDefaultPadding / 4,
@@ -221,9 +229,11 @@ class SuggestedNotes extends StatelessWidget {
 }
 
 class SuggestedNoteContainer extends HookWidget {
-  const SuggestedNoteContainer({super.key, required this.note});
+  const SuggestedNoteContainer(
+      {super.key, required this.note, this.desktopPane = false});
 
   final DetailedNoteModel note;
+  final bool desktopPane;
 
   @override
   Widget build(BuildContext context) {
@@ -260,11 +270,16 @@ class SuggestedNoteContainer extends HookWidget {
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
-            Text(
-              note.content,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+            if (desktopPane)
+              Expanded(
+                  child: Text(note.content,
+                      maxLines: 3, overflow: TextOverflow.ellipsis))
+            else
+              Text(
+                note.content,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
           ],
         ),
       ),

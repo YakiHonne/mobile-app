@@ -40,16 +40,34 @@ class CashuHistory extends HookWidget {
 
     final refresh = useCallback(() async {
       isLoading.value = true;
-      final results = await Future.wait([
-        cashuWalletManagerCubit.getHistory(),
-        cashuWalletManagerCubit.getReceivedNutzaps(),
-      ]);
+      if (!isDesktopPlatform) {
+        final results = await Future.wait([
+          cashuWalletManagerCubit.getHistory(),
+          cashuWalletManagerCubit.getReceivedNutzaps(),
+        ]);
+        if (context.mounted) {
+          history.value = results[0] as List<CashuSpendingData>;
+          nutzaps.value = results[1] as List<NutZap>;
+          tokens.value = cashuWalletManagerCubit.getCreatedTokens();
+          isLoading.value = false;
+        }
+        return;
+      }
+      try {
+        final results = await Future.wait([
+          cashuWalletManagerCubit.getHistory(),
+          cashuWalletManagerCubit.getReceivedNutzaps(),
+        ]);
 
-      if (context.mounted) {
-        history.value = results[0] as List<CashuSpendingData>;
-        nutzaps.value = results[1] as List<NutZap>;
-        tokens.value = cashuWalletManagerCubit.getCreatedTokens();
-        isLoading.value = false;
+        if (context.mounted) {
+          history.value = results[0] as List<CashuSpendingData>;
+          nutzaps.value = results[1] as List<NutZap>;
+          tokens.value = cashuWalletManagerCubit.getCreatedTokens();
+        }
+      } finally {
+        if (context.mounted) {
+          isLoading.value = false;
+        }
       }
     }, []);
 
@@ -68,26 +86,35 @@ class CashuHistory extends HookWidget {
           children: [
             const ModalBottomSheetHandle(),
             const SizedBox(height: kDefaultPadding / 2),
-            TabBar(
-              controller: tabController,
-              dividerHeight: 0,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Theme.of(context).primaryColor,
-              labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
+            Row(children: [
+              Expanded(
+                  child: TabBar(
+                controller: tabController,
+                dividerHeight: 0,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: Theme.of(context).primaryColor,
+                labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                tabs: [
+                  Tab(
+                    text: context.t.history,
                   ),
-              tabs: [
-                Tab(
-                  text: context.t.history,
+                  Tab(
+                    text: context.t.eCash,
+                  ),
+                  Tab(
+                    text: context.t.nutzaps,
+                  ),
+                ],
+              )),
+              if (isDesktopPlatform)
+                IconButton(
+                  tooltip: context.t.refresh,
+                  icon: const Icon(LucideIcons.refreshCw),
+                  onPressed: isLoading.value ? null : refresh,
                 ),
-                Tab(
-                  text: context.t.eCash,
-                ),
-                Tab(
-                  text: context.t.nutzaps,
-                ),
-              ],
-            ),
+            ]),
             const SizedBox(height: kDefaultPadding / 2),
             Expanded(
               child: isLoading.value

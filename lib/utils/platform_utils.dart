@@ -24,25 +24,33 @@ final double kMacTitlebarInset = Platform.isMacOS ? 28 : 0;
 /// `MainView`'s desktop branch re-scopes `MediaQuery` to the content panel, so
 /// this stays correct as the rail expands and collapses.
 ///
-/// 2 is the floor, which is what every feed grid used before, so phones and
-/// narrow windows are unchanged.
+/// Desktop panes use one column when there is not enough room for two cards.
+/// Mobile keeps its existing grid.
 int feedGridColumns(BuildContext context) {
   // ponytail: a plain threshold, not a min-extent grid — masonry needs a fixed
   // count, and one breakpoint is cheaper than reworking the call sites.
   // 990 keeps each of the 3 cards at ~330pt, which is where they stop
   // wrapping badly. Measured, not guessed.
-  return MediaQuery.of(context).size.width >= 990 ? 3 : 2;
+  final width = MediaQuery.of(context).size.width;
+  if (isDesktopPlatform && width < 660) {
+    return 1;
+  }
+  return width >= 990 ? 3 : 2;
 }
 
 /// Columns for the media (photo / video) quilted grid. Wider than
 /// [feedGridColumns] on purpose — media tiles carry no text, so they tolerate
 /// being small in a way a note card does not.
 ///
-/// 3 is the floor, which is what the grid used before, so phones are unchanged.
+/// Narrow desktop panes use two columns; phones retain their existing grid.
 /// The caller must feed the same value to both `crossAxisCount` and
 /// [mediaGridLargeTileOffset] — see `MediaGrid`.
 int mediaGridColumns(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
+
+  if (isDesktopPlatform && width < 450) {
+    return 2;
+  }
 
   if (width >= 1250) {
     return 5;

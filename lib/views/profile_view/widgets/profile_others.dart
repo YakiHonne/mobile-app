@@ -275,7 +275,7 @@ class ProfileOthersFilter extends StatelessWidget {
         onTap: showMenu,
         behavior: HitTestBehavior.translucent,
         child: SizedBox(
-          width: 50.w,
+          width: isDesktopPlatform ? double.infinity : 50.w,
           child: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,

@@ -19,6 +19,7 @@ import '../../logic/notifications_cubit/notifications_cubit.dart';
 import '../../logic/theme_cubit/theme_cubit.dart';
 import '../../main.dart' show AppConstants;
 import '../../models/app_models/diverse_functions.dart';
+import '../../repositories/localdatabase_repository.dart' show prefs;
 import '../../routes/navigator.dart';
 import '../../utils/app_cycle.dart';
 import '../../utils/utils.dart';
@@ -36,6 +37,12 @@ import '../wallet_view/wallet_view.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/fluid_blur_container.dart';
 import '../widgets/fluid_scaffold.dart';
+import 'desktop/desktop_compact_content.dart';
+import 'desktop/desktop_density.dart';
+import 'desktop/desktop_dm_routing.dart' as dm_routing;
+import 'desktop/desktop_dm_workspace.dart';
+import 'desktop/desktop_now_playing.dart';
+import 'desktop/desktop_pane_split.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'widgets/desktop_sidebar.dart';
 import 'widgets/detail_pane.dart';
@@ -121,7 +128,39 @@ class MainViewContent extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final mainState = context.watch<MainCubit>().state;
+    final density = useMemoized(
+      () => isDesktopPlatform ? DesktopDensityController(prefs) : null,
+    );
+    useEffect(() => density?.dispose, [density]);
     final resumeOwner = mainState.pubKey;
+    final selectedConversation = useMemoized(
+      () => ValueNotifier<String?>(null),
+      [resumeOwner],
+    );
+    useEffect(() {
+      if (!isDesktopPlatform) {
+        return selectedConversation.dispose;
+      }
+      void openConversation(String pubkey) {
+        selectedConversation.value = pubkey;
+        context.read<MainCubit>().updateIndex(MainViews.dms);
+      }
+
+      dm_routing.openDesktopConversation = openConversation;
+      return () {
+        if (identical(dm_routing.openDesktopConversation, openConversation)) {
+          dm_routing.openDesktopConversation = null;
+        }
+        selectedConversation.dispose();
+      };
+    }, [selectedConversation]);
+    useEffect(() {
+      if (isDesktopPlatform) {
+        videoControllerManagerCubit
+            .clearDesktopVideoForAccount(currentSigner?.getPublicKey());
+      }
+      return null;
+    }, [resumeOwner]);
     final mainScrollControllers = useMemoized(
       () => [
         for (final key in _mainScrollStorageKeys)
@@ -400,7 +439,9 @@ class MainViewContent extends HookWidget {
                 if (effectiveVisitedTabs.contains(2))
                   _fadeInTab(
                     BlocBuilder<MainCubit, MainState>(
-                      builder: (context, state) => _walletWidget(state),
+                      builder: (context, state) => isDesktopPlatform
+                          ? DesktopCompactContent(child: _walletWidget(state))
+                          : _walletWidget(state),
                     ),
                   )
                 else
@@ -416,13 +457,18 @@ class MainViewContent extends HookWidget {
                             !dmsState.isLoadingHistory &&
                             (dmsState.dmSessionDetails.isNotEmpty ||
                                 savedScrollOffsets[3] <= 0),
-                        child: DmsView(
-                          key: const PageStorageKey('dms'),
-                          // Index must match indexMap[MainViews.dms]; anything
-                          // else hands the bars a controller nothing is
-                          // scrolling.
-                          scrollController: mainScrollControllers[3],
-                        ),
+                        child: isDesktopPlatform
+                            ? DesktopDmWorkspace(
+                                selected: selectedConversation,
+                                list: DmsView(
+                                  key: const PageStorageKey('dms'),
+                                  scrollController: mainScrollControllers[3],
+                                ),
+                              )
+                            : DmsView(
+                                key: const PageStorageKey('dms'),
+                                scrollController: mainScrollControllers[3],
+                              ),
                       ),
                     ),
                   )
@@ -443,11 +489,19 @@ class MainViewContent extends HookWidget {
                             : !notificationState.isLoading &&
                                 (notificationState.events.isNotEmpty ||
                                     savedScrollOffsets[4] <= 0),
-                        child: NotificationsView(
-                          key: const PageStorageKey('notifications'),
-                          barsVisible: barsVisible,
-                          scrollController: mainScrollControllers[4],
-                        ),
+                        child: isDesktopPlatform
+                            ? DesktopCompactContent(
+                                child: NotificationsView(
+                                  key: const PageStorageKey('notifications'),
+                                  barsVisible: barsVisible,
+                                  scrollController: mainScrollControllers[4],
+                                ),
+                              )
+                            : NotificationsView(
+                                key: const PageStorageKey('notifications'),
+                                barsVisible: barsVisible,
+                                scrollController: mainScrollControllers[4],
+                              ),
                       ),
                     ),
                   )
@@ -502,107 +556,77 @@ class MainViewContent extends HookWidget {
         // feed keeps a readable measure on a wide monitor. The 7 IndexedStack
         // views are untouched.
         if (isDesktopPlatform) {
-          return Scaffold(
-            // The rail and the content panel both begin below the titlebar
-            // strip, which the glass background shows through. removePadding
-            // stops the SafeAreas inside from reserving it a second time.
-            body: Padding(
-              padding: EdgeInsets.only(top: kMacTitlebarInset),
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: Row(
-                  children: [
-                    DesktopSidebar(
-                      onScrollTop: onScrollTop,
-                      compact: MediaQuery.of(context).size.width <
-                          kSidebarCollapseWidth,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: kDefaultPadding / 1.5,
-                          bottom: kDefaultPadding / 1.5,
-                          right: kDefaultPadding / 1.5,
-                        ),
-                        // Same floating glass surface as the rail, filling the
-                        // space the rail leaves.
-                        child: FluidBlurContainer(
-                          sigma: 20,
-                          borderRadius: kDefaultPadding * 1.75,
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              // DMs already own a two-column layout; a third
-                              // column would leave each of them ~300pt.
-                              final showPane =
-                                  state.mainView != MainViews.dms &&
-                                      constraints.maxWidth >=
-                                          kDetailPaneMinPanelWidth;
-
-                              final feedWidth = showPane
-                                  ? constraints.maxWidth - kDetailPaneWidth - 1
-                                  : constraints.maxWidth
-                                      .clamp(0.0, kMaxFeedColumnWidth);
-
-                              return Row(
-                                mainAxisAlignment: showPane
-                                    ? MainAxisAlignment.start
-                                    : MainAxisAlignment.center,
-                                children: [
-                                  // One scope per column, each measuring its
-                                  // own width. Re-scoping the whole panel and
-                                  // then splitting it would have the feed
-                                  // render at `feedWidth` while every
-                                  // `largerThan(MOBILE)` site inside it still
-                                  // measured the full panel.
-                                  SizedBox(
-                                    width: feedWidth,
-                                    child: _PanelScope(
-                                      width: feedWidth,
-                                      child: Stack(
-                                        children: [
-                                          body,
-                                          Positioned(
-                                            left: 0,
-                                            right: 0,
-                                            bottom: kDefaultPadding,
-                                            child: _FluidNewContentOverlay(
-                                              key: ValueKey(state.mainView),
-                                              mainView: state.mainView,
-                                              scrollController:
-                                                  mainScrollControllers[
-                                                      currentIndex.clamp(
-                                                          0,
-                                                          mainScrollControllers
-                                                                  .length -
-                                                              1)],
-                                              barsVisible: barsVisible,
-                                            ),
-                                          ),
-                                        ],
+          return DesktopDensityScope(
+            controller: density!,
+            child: Scaffold(
+              // The rail and the content panel both begin below the titlebar
+              // strip, which the glass background shows through. removePadding
+              // stops the SafeAreas inside from reserving it a second time.
+              body: Padding(
+                padding: EdgeInsets.only(top: kMacTitlebarInset),
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: Row(
+                    children: [
+                      DesktopSidebar(
+                        onScrollTop: onScrollTop,
+                        compact: MediaQuery.of(context).size.width <
+                            kSidebarCollapseWidth,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: kDefaultPadding / 1.5,
+                            bottom: kDefaultPadding / 1.5,
+                            right: kDefaultPadding / 1.5,
+                          ),
+                          // Same floating glass surface as the rail, filling the
+                          // space the rail leaves.
+                          child: DesktopContentArea(
+                            player: const DesktopNowPlayingBar(),
+                            content: FluidBlurContainer(
+                              sigma: 20,
+                              borderRadius: kDesktopWorkspaceRadius,
+                              child: DesktopPaneSplit(
+                                preferences: prefs,
+                                label: context.t.desktopResizePanes,
+                                mainBuilder: (feedWidth) => _PanelScope(
+                                  width: feedWidth,
+                                  child: Stack(
+                                    children: [
+                                      body,
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        bottom: kDefaultPadding,
+                                        child: _FluidNewContentOverlay(
+                                          key: ValueKey(state.mainView),
+                                          mainView: state.mainView,
+                                          scrollController:
+                                              mainScrollControllers[
+                                                  currentIndex.clamp(
+                                                      0,
+                                                      mainScrollControllers
+                                                              .length -
+                                                          1)],
+                                          barsVisible: barsVisible,
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                  if (showPane)
-                                    const VerticalDivider(
-                                      width: 1,
-                                      thickness: 1,
-                                    ),
-                                  if (showPane)
-                                    const Expanded(
-                                      child: _PanelScope(
-                                        width: kDetailPaneWidth,
-                                        child: DetailPane(),
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
+                                ),
+                                sideBuilder: (paneWidth) => _PanelScope(
+                                  width: paneWidth,
+                                  child: const DetailPane(),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

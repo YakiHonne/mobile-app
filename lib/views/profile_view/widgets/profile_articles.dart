@@ -59,17 +59,19 @@ class ProfileArticles extends StatelessWidget {
 
   SliverList _itemsList(ProfileState state) {
     return SliverList.separated(
-      separatorBuilder: (context, index) => useFluidCards()
-          ? const SizedBox(height: kDefaultPadding / 2)
-          : const Divider(
-              height: kDefaultPadding * 1.5,
-              thickness: 0.5,
-            ),
+      separatorBuilder: (context, index) =>
+          (isDesktopPlatform || useFluidCards())
+              ? const SizedBox(height: kDefaultPadding / 2)
+              : const Divider(
+                  height: kDefaultPadding * 1.5,
+                  thickness: 0.5,
+                ),
       itemBuilder: (context, index) {
         final event = state.content[index];
         final article = Article.fromEvent(event);
 
         return FluidContentCard(
+          desktopContainer: true,
           child: ArticleContainer(
             isFollowing: false,
             article: article,
@@ -99,6 +101,7 @@ class ProfileArticles extends StatelessWidget {
         final article = Article.fromEvent(event);
 
         return FluidContentCard(
+          desktopContainer: true,
           child: ArticleContainer(
             isFollowing: false,
             article: article,

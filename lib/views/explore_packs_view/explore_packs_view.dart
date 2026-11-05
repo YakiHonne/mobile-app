@@ -63,10 +63,12 @@ class _ExplorePacksViewState extends State<ExplorePacksView> {
         title: context.t.followPacks.capitalizeFirst(),
         description: context.t.followPacksDesc,
         body: Builder(builder: (context) {
+          final state = context.watch<ExplorePacksCubit>().state;
           return Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
             child: AdaptiveSmartRefresher(
+              desktopHasResults: !state.isLoading && state.packs.isNotEmpty,
               controller: refreshController,
               enablePullUp: true,
               scrollController: scrollController,

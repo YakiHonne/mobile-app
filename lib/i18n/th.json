@@ -2208,5 +2208,12 @@
   "showSpamReplies": "แสดงการตอบกลับที่อาจเป็นสแปม",
   "hideSpamReplies": "ซ่อนการตอบกลับที่อาจเป็นสแปม",
   "markAsSpam": "ทำเครื่องหมายว่าเป็นสแปม",
-  "notSpam": "ไม่ใช่สแปม"
+  "notSpam": "ไม่ใช่สแปม",
+  "desktopPlay": "เล่น",
+  "desktopPause": "หยุดชั่วคราว",
+  "desktopResizePanes": "ปรับขนาดแผง",
+  "desktopDensity": "ความหนาแน่นเดสก์ท็อป",
+  "desktopDensityComfortable": "สบายตา",
+  "desktopDensityCompact": "กะทัดรัด",
+  "desktopKnowPeople": "รู้จักผู้คน"
 }

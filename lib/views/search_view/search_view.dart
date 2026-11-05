@@ -294,20 +294,23 @@ class SearchView extends HookWidget {
           bottom: tabPillBottom,
           left: 0,
           right: 0,
-          child: Center(
-            child: SizedBox(
-              width: 90.w,
-              child: FluidGlassTabBar(
-                floating: true,
-                barHeight: tabPillHeight,
-                controller: tabController,
-                onTap: (i) {
-                  selectedIndex.value = i;
-                  HapticFeedback.lightImpact();
-                },
-                tabs: [
-                  for (final option in contentOptions) GlassTab(label: option),
-                ],
+          child: LayoutBuilder(
+            builder: (context, constraints) => Center(
+              child: SizedBox(
+                width: isDesktopPlatform ? constraints.maxWidth * 0.9 : 90.w,
+                child: FluidGlassTabBar(
+                  floating: true,
+                  barHeight: tabPillHeight,
+                  controller: tabController,
+                  onTap: (i) {
+                    selectedIndex.value = i;
+                    HapticFeedback.lightImpact();
+                  },
+                  tabs: [
+                    for (final option in contentOptions)
+                      GlassTab(label: option),
+                  ],
+                ),
               ),
             ),
           ),

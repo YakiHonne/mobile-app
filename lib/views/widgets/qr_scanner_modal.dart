@@ -45,28 +45,35 @@ class _QrScannerModalState extends State<QrScannerModal> {
                   height: 70.w,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(kDefaultPadding),
-                    child: QRView(
-                      key: qrKey,
-                      onQRViewCreated: (controller) {
-                        this.controller = controller;
-                        controller.scannedDataStream.listen((scanData) {
-                          if (scanData.code != null &&
-                              scanData.code!.isNotEmpty &&
-                              qrValue == null) {
-                            qrValue = scanData.code;
-                            controller.pauseCamera();
-                            YNavigator.pop(context);
-                            widget.onValue(scanData.code!);
-                          }
-                        });
-                      },
-                      overlay: QrScannerOverlayShape(
-                        borderRadius: kDefaultPadding,
-                        borderColor: Theme.of(context).primaryColor,
-                        borderWidth: 5,
-                        cutOutSize: 70.w,
-                      ),
-                    ),
+                    child: isMobilePlatform
+                        ? QRView(
+                            key: qrKey,
+                            onQRViewCreated: (controller) {
+                              this.controller = controller;
+                              controller.scannedDataStream.listen((scanData) {
+                                if (scanData.code != null &&
+                                    scanData.code!.isNotEmpty &&
+                                    qrValue == null) {
+                                  qrValue = scanData.code;
+                                  controller.pauseCamera();
+                                  YNavigator.pop(context);
+                                  widget.onValue(scanData.code!);
+                                }
+                              });
+                            },
+                            overlay: QrScannerOverlayShape(
+                              borderRadius: kDefaultPadding,
+                              borderColor: Theme.of(context).primaryColor,
+                              borderWidth: 5,
+                              cutOutSize: 70.w,
+                            ),
+                          )
+                        : const Center(
+                            child: Text(
+                              'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: kDefaultPadding),

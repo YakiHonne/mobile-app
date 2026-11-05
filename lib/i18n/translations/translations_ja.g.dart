@@ -2249,6 +2249,13 @@ class TranslationsJa extends Translations {
 	@override String get hideSpamReplies => 'スパムの可能性がある返信を非表示';
 	@override String get markAsSpam => 'スパムとしてマーク';
 	@override String get notSpam => 'スパムではない';
+	@override String get desktopPlay => '再生';
+	@override String get desktopPause => '一時停止';
+	@override String get desktopResizePanes => 'ペインのサイズを変更';
+	@override String get desktopDensity => 'デスクトップの表示密度';
+	@override String get desktopDensityComfortable => '標準';
+	@override String get desktopDensityCompact => 'コンパクト';
+	@override String get desktopKnowPeople => 'ユーザーを見つける';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -4501,6 +4508,13 @@ extension on TranslationsJa {
 			'hideSpamReplies' => 'スパムの可能性がある返信を非表示',
 			'markAsSpam' => 'スパムとしてマーク',
 			'notSpam' => 'スパムではない',
+			'desktopPlay' => '再生',
+			'desktopPause' => '一時停止',
+			'desktopResizePanes' => 'ペインのサイズを変更',
+			'desktopDensity' => 'デスクトップの表示密度',
+			'desktopDensityComfortable' => '標準',
+			'desktopDensityCompact' => 'コンパクト',
+			'desktopKnowPeople' => 'ユーザーを見つける',
 			_ => null,
 		};
 	}

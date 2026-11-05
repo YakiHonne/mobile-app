@@ -205,10 +205,19 @@ class PaymentMethodLabel extends StatelessWidget {
     }
     if (method == 'iap') {
       return Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Platform.isIOS ? Icons.apple : Icons.android,
-            size: 14, color: theme.hintColor),
+        Icon(
+            isDesktopPlatform
+                ? LucideIcons.store
+                : (Platform.isIOS ? Icons.apple : Icons.android),
+            size: 14,
+            color: theme.hintColor),
         const SizedBox(width: kDefaultPadding / 4),
-        Text(Platform.isIOS ? 'App Store' : 'Google Play',
+        Text(
+            isDesktopPlatform
+                ? 'In-app purchase'
+                : Platform.isIOS
+                    ? 'App Store'
+                    : 'Google Play',
             style: theme.textTheme.bodySmall),
       ]);
     }
@@ -546,7 +555,7 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
               _SectionLabel(context.t.sub_actions),
               _SubActionsGroup(onUpgrade: widget.onUpgrade),
             ],
-            if (kIapEnabled && isIapActive) ...[
+            if (kIapEnabled && isMobilePlatform && isIapActive) ...[
               _SectionLabel(context.t.pricing_manage_on_store),
               const _ManageOnStoreButton(),
             ],
@@ -574,7 +583,7 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
                 ),
               ),
             ],
-            if (kIapEnabled) ...[
+            if (kIapEnabled && isMobilePlatform) ...[
               _SectionLabel(context.t.pricing_restore_purchases),
               _RestorePurchasesButton(
                 restoring: _restoringPurchases,
@@ -873,6 +882,9 @@ class _PlanSwitcherGroup extends StatelessWidget {
                                     side: BorderSide(
                                         color: theme.primaryColor
                                             .withValues(alpha: 0.4)),
+                                  ).copyWith(
+                                    overlayColor: desktopNoHoverOverlay(
+                                        theme.primaryColor),
                                   ),
                                   child: Text(context.t.sub_current),
                                 )

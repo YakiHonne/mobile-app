@@ -86,7 +86,9 @@ List<PullDownMenuEntry>? _spamModerationMenuItems({
             : spamFilter.markAuthorNotSpam(model.pubkey),
       ),
       iconWidget: Icon(
-        isSafelisted ? Icons.flag_outlined : Icons.check_circle_outline,
+        isDesktopPlatform
+            ? (isSafelisted ? LucideIcons.flag : LucideIcons.circleCheck)
+            : (isSafelisted ? Icons.flag_outlined : Icons.check_circle_outline),
       ),
     ),
   ];
@@ -1082,7 +1084,7 @@ class ZappersRow extends StatelessWidget {
       onTap: () {
         doIfCanSign(
           func: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               DmDetails.routeName,
               arguments: [
@@ -3776,86 +3778,96 @@ class _NoteStatsModal extends HookWidget {
       initialIndex: initialIndex,
     );
 
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: FluidBlurContainer(
-        customBorderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        customBorder: Border(
-          top: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
-          left: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
-          right: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
-        ),
-        backgroundAlpha: isFluid() ? 0.55 : 1,
-        child: AdaptiveDraggableSheet(
-          initialChildSize: 0.9,
-          minChildSize: 0.60,
-          maxChildSize: 0.9,
-          expand: false,
-          builder: (_, sheetController) => Column(
-            children: [
-              const ModalBottomSheetHandle(),
-              _fluidTabBar(context, tabController),
-              const SizedBox(height: kDefaultPadding / 2),
-              Expanded(
-                child: Stack(
+    final content = AdaptiveDraggableSheet(
+      initialChildSize: 0.9,
+      minChildSize: 0.60,
+      maxChildSize: 0.9,
+      expand: false,
+      builder: (_, sheetController) => Column(
+        children: [
+          const ModalBottomSheetHandle(),
+          _fluidTabBar(context, tabController),
+          const SizedBox(height: kDefaultPadding / 2),
+          Expanded(
+            child: Stack(
+              children: [
+                TabBarView(
+                  controller: tabController,
                   children: [
-                    TabBarView(
-                      controller: tabController,
-                      children: [
-                        NetStatsView(
-                          id: id,
-                          type: NoteRelatedEventsType.replies,
-                          embedded: true,
-                          controller: sheetController,
-                        ),
-                        NetStatsView(
-                          id: id,
-                          type: NoteRelatedEventsType.reactions,
-                          embedded: true,
-                          controller: sheetController,
-                        ),
-                        NetStatsView(
-                          id: id,
-                          type: NoteRelatedEventsType.reposts,
-                          embedded: true,
-                          controller: sheetController,
-                        ),
-                        NetStatsView(
-                          id: id,
-                          type: NoteRelatedEventsType.quotes,
-                          embedded: true,
-                          controller: sheetController,
-                        ),
-                        _EmbeddedZappersList(
-                          zappers: zappers,
-                          controller: sheetController,
-                        ),
-                      ],
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.replies,
+                      embedded: true,
+                      controller: sheetController,
                     ),
-                    Positioned(
-                      left: kDefaultPadding,
-                      right: kDefaultPadding,
-                      bottom: kDefaultPadding,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          NoteStatsChart(id: id),
-                          const SizedBox(height: kDefaultPadding / 2),
-                          _SeenOnBar(id: id),
-                        ],
-                      ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.reactions,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.reposts,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    NetStatsView(
+                      id: id,
+                      type: NoteRelatedEventsType.quotes,
+                      embedded: true,
+                      controller: sheetController,
+                    ),
+                    _EmbeddedZappersList(
+                      zappers: zappers,
+                      controller: sheetController,
                     ),
                   ],
                 ),
-              ),
-            ],
+                Positioned(
+                  left: kDefaultPadding,
+                  right: kDefaultPadding,
+                  bottom: kDefaultPadding,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      NoteStatsChart(id: id),
+                      const SizedBox(height: kDefaultPadding / 2),
+                      _SeenOnBar(id: id),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
+    );
+    final inDesktopModal = isDesktopPlatform &&
+        context.dependOnInheritedWidgetOfExactType<
+                DesktopModalSurfaceScope>() !=
+            null;
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: inDesktopModal
+          ? content
+          : FluidBlurContainer(
+              customBorderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              customBorder: Border(
+                top: BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.5),
+                left: BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.5),
+                right: BorderSide(
+                    color: Theme.of(context).dividerColor, width: 0.5),
+              ),
+              backgroundAlpha: isFluid() ? 0.55 : 1,
+              child: content,
+            ),
     );
   }
 

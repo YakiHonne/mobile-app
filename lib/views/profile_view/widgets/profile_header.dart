@@ -9,6 +9,7 @@ import 'package:numeral/numeral.dart';
 
 import '../../../logic/creator_subscriptions_cubit/creator_subscriptions_cubit.dart';
 import '../../../logic/profile_cubit/profile_cubit.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../creator_subscribe_view/creator_subscribe_view.dart';
@@ -248,7 +249,7 @@ class ProfileHeader extends StatelessWidget {
             const SizedBox(width: kDefaultPadding / 4),
             CustomIconButton(
               onClicked: () {
-                Navigator.push(
+                YNavigator.push(
                   context,
                   createViewFromBottom(
                     ProfileShareView(
@@ -301,7 +302,7 @@ class _CreatorSubscribeButton extends StatelessWidget {
 
               if (isSubscribed) {
                 return OutlinedButton.icon(
-                  onPressed: () => Navigator.push(
+                  onPressed: () => YNavigator.push(
                     context,
                     CupertinoPageRoute(
                       builder: (_) => const CreatorsSubscriptionsView(),

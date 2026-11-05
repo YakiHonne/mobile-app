@@ -38,9 +38,11 @@ class CashuWalletView extends HookWidget {
           padding: EdgeInsets.only(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
-            top: isFluid()
-                ? MediaQuery.of(context).padding.top + kToolbarHeight
-                : kDefaultPadding,
+            top: isDesktopPlatform
+                ? kDefaultPadding
+                : isFluid()
+                    ? MediaQuery.of(context).padding.top + kToolbarHeight
+                    : kDefaultPadding,
           ),
           child: BlocBuilder<CashuWalletManagerCubit, CashuWalletManagerState>(
             builder: (context, state) {

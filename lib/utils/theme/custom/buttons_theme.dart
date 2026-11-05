@@ -2,8 +2,33 @@ import 'package:flutter/material.dart';
 
 import '../../constants.dart';
 
+/// Visible diameter of the default glass icon button.
+const double kDesktopGlassButtonHeight = 44;
+
 class TbuttonsTheme {
   TbuttonsTheme._();
+
+  /// Keep desktop glass action surfaces aligned with the default icon button.
+  /// A minimum, rather than a fixed height, lets large text expand naturally.
+  static ButtonStyle desktopFluidButtonStyle(ButtonStyle? original) =>
+      (original ?? const ButtonStyle()).copyWith(
+        minimumSize:
+            const WidgetStatePropertyAll(Size(0, kDesktopGlassButtonHeight)),
+        visualDensity: VisualDensity.standard,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      );
+
+  static TextButtonThemeData desktopFluidTextButtonTheme(
+          TextButtonThemeData original) =>
+      TextButtonThemeData(style: desktopFluidButtonStyle(original.style));
+
+  static ElevatedButtonThemeData desktopFluidElevatedButtonTheme(
+          ElevatedButtonThemeData original) =>
+      ElevatedButtonThemeData(style: desktopFluidButtonStyle(original.style));
+
+  static OutlinedButtonThemeData desktopFluidOutlinedButtonTheme(
+          OutlinedButtonThemeData original) =>
+      OutlinedButtonThemeData(style: desktopFluidButtonStyle(original.style));
 
   static ElevatedButtonThemeData lightElevatedButtonTheme({
     Color primaryColor = kMainColor,

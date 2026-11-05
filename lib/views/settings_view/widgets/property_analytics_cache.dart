@@ -93,7 +93,7 @@ class PropertyAnalyticsCache extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(
+                  YNavigator.pushNamed(
                     context,
                     MuteListView.routeName,
                   );

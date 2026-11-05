@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../../logic/media_servers_cubit/media_servers_cubit.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/buttons_containers_widgets.dart';
@@ -257,7 +258,8 @@ class MediaUploaderSettings extends HookWidget {
             StatusButton(
               isDisabled: false,
               onClicked: () {
-                Navigator.of(context).push(
+                YNavigator.push(
+                  context,
                   MaterialPageRoute(
                     builder: (context) => const BlossomManagementView(),
                   ),

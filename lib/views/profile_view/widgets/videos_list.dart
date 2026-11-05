@@ -6,6 +6,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/profile_cubit/profile_cubit.dart';
 import '../../../models/video_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/empty_list.dart';
@@ -83,7 +84,7 @@ class ProfileVideos extends StatelessWidget {
           isMuted: state.mutes.contains(video.pubkey),
           isFollowing: false,
           onTap: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               video.isHorizontal
                   ? HorizontalVideoView.routeName
@@ -119,7 +120,7 @@ class ProfileVideos extends StatelessWidget {
           isFollowing: false,
           video: video,
           onTap: () {
-            Navigator.pushNamed(
+            YNavigator.pushNamed(
               context,
               video.isHorizontal
                   ? HorizontalVideoView.routeName

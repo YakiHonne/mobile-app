@@ -122,11 +122,13 @@ class _RelayContentFeedState extends State<RelayContentFeed>
             }
           },
           buildWhen: (previous, current) =>
-              previous.onLoading != current.onLoading,
+              previous.onLoading != current.onLoading ||
+              previous.content != current.content,
           builder: (context, state) {
             final relay = context.read<RelayFeedCubit>().relay;
 
             final scrollBody = AdaptiveSmartRefresher(
+              desktopHasResults: !state.onLoading && state.content.isNotEmpty,
               controller: refreshController,
               scrollController: scrollController,
               enablePullUp: true,

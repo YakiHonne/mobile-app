@@ -9,6 +9,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
+import '../../../logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/empty_list.dart';
 import 'add_media_bottom_navigation_bar.dart';
@@ -213,6 +214,10 @@ class VideoWidget extends StatefulWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   VideoPlayerController? _videoController;
+  VideoControllerManagerCubit? _desktopManager;
+  Object? _desktopToken;
+  int? _desktopPlayIntent;
+  bool _wasPlaying = false;
 
   @override
   void initState() {
@@ -221,11 +226,47 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   Future<void> _initializeVideo() async {
-    _videoController = VideoPlayerController.file(File(widget.media.path));
-    await _videoController!.initialize();
-    await _videoController!.setLooping(true);
-    await _videoController!.play();
-    final size = _videoController!.value.size;
+    if (!isDesktopPlatform) {
+      _videoController = VideoPlayerController.file(File(widget.media.path));
+      await _videoController!.initialize();
+      await _videoController!.setLooping(true);
+      await _videoController!.play();
+      final size = _videoController!.value.size;
+      widget.dimensions.value = '${size.width}x${size.height}';
+      if (mounted) {
+        setState(() {});
+      }
+      return;
+    }
+    final controller = VideoPlayerController.file(File(widget.media.path));
+    _videoController = controller;
+    if (isDesktopPlatform) {
+      final manager = videoControllerManagerCubit;
+      _desktopManager = manager;
+      _desktopPlayIntent = manager.reserveDesktopPlay();
+      _desktopToken = manager.registerDesktopExternalPlayer(() {
+        if (controller.value.isInitialized) {
+          controller.pause();
+        }
+      });
+      controller.addListener(_onDesktopPlaybackChanged);
+    }
+    await controller.initialize();
+    if (!mounted) {
+      return;
+    }
+    await controller.setLooping(true);
+    if (!mounted) {
+      return;
+    }
+    if (_desktopPlayIntent == null ||
+        _desktopManager!.isDesktopPlayCurrent(_desktopPlayIntent!)) {
+      await controller.play();
+    }
+    if (!mounted) {
+      return;
+    }
+    final size = controller.value.size;
     widget.dimensions.value = '${size.width}x${size.height}';
 
     if (mounted) {
@@ -233,8 +274,23 @@ class _VideoWidgetState extends State<VideoWidget> {
     }
   }
 
+  void _onDesktopPlaybackChanged() {
+    final playing = _videoController?.value.isPlaying ?? false;
+    if (playing && !_wasPlaying && _desktopToken != null) {
+      _desktopManager?.desktopExternalPlayerStarted(_desktopToken!);
+    }
+    _wasPlaying = playing;
+  }
+
   @override
   void dispose() {
+    if (_desktopPlayIntent != null) {
+      _desktopManager?.cancelDesktopPlay(_desktopPlayIntent!);
+    }
+    if (_desktopToken != null) {
+      _videoController?.removeListener(_onDesktopPlaybackChanged);
+      _desktopManager?.unregisterDesktopExternalPlayer(_desktopToken!);
+    }
     _videoController?.dispose();
     super.dispose();
   }
@@ -267,10 +323,37 @@ class _VideoWidgetState extends State<VideoWidget> {
             child: (_videoController != null &&
                     _videoController!.value.isInitialized)
                 ? Center(
-                    child: AspectRatio(
-                      aspectRatio: _videoController!.value.aspectRatio,
-                      child: VideoPlayer(_videoController!),
-                    ),
+                    child: !isDesktopPlatform
+                        ? AspectRatio(
+                            aspectRatio: _videoController!.value.aspectRatio,
+                            child: VideoPlayer(_videoController!),
+                          )
+                        : Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              AspectRatio(
+                                aspectRatio:
+                                    _videoController!.value.aspectRatio,
+                                child: VideoPlayer(_videoController!),
+                              ),
+                              if (isDesktopPlatform)
+                                ValueListenableBuilder<VideoPlayerValue>(
+                                  valueListenable: _videoController!,
+                                  builder: (context, value, _) =>
+                                      IconButton.filled(
+                                    tooltip: value.isPlaying
+                                        ? context.t.desktopPause
+                                        : context.t.desktopPlay,
+                                    onPressed: () => value.isPlaying
+                                        ? _videoController!.pause()
+                                        : _videoController!.play(),
+                                    icon: Icon(value.isPlaying
+                                        ? LucideIcons.pause
+                                        : LucideIcons.play),
+                                  ),
+                                ),
+                            ],
+                          ),
                   )
                 : Center(
                     child: SpinKitCircle(

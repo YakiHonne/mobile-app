@@ -5,6 +5,7 @@ import '../../../logic/add_content_cubit/add_content_cubit.dart';
 import '../../../logic/write_curation_cubit/write_curation_cubit.dart';
 import '../../../models/curation_model.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/detail_pane_scope.dart';
 import '../add_content_specification_views/add_curation_specification_view.dart';
 import '../related_adding_views/curation_widgets/curation_content.dart';
 import '../widgets/add_content_appbar.dart';
@@ -31,6 +32,7 @@ class AddCurationMainView extends StatelessWidget {
               onActionClicked: () {
                 showAdaptiveModal(
                   context,
+                  useRootNavigator: !DetailPaneScope.contains(context),
                   dialogHeight: 640,
                   builder: (_) {
                     return BlocProvider<WriteCurationCubit>.value(

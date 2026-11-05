@@ -344,7 +344,7 @@ class MainViewDrawer extends HookWidget {
     return Builder(
       builder: (context) {
         void onClick() {
-          Navigator.push(
+          YNavigator.push(
             context,
             createViewFromBottom(
               BlocProvider.value(
@@ -538,7 +538,7 @@ class MainViewDrawer extends HookWidget {
           onClicked: () {
             closeMainDrawer(context);
             if (isLoggedIn) {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 PointsStatisticsView.routeName,
               );

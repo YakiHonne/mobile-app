@@ -783,6 +783,10 @@ class _RedeemCodesSection extends StatelessWidget {
                   width: 1.5,
                 ),
                 shape: const StadiumBorder(),
+              ).copyWith(
+                overlayColor: desktopNoHoverOverlay(
+                  disabled ? theme.dividerColor : theme.primaryColor,
+                ),
               ),
               icon: requesting
                   ? SpinKitCircle(color: theme.primaryColor, size: 14)

@@ -62,7 +62,9 @@ class AddBookmarksListView extends HookWidget {
         body: BlocBuilder<DashboardBookmarksCubit, DashboardBookmarksState>(
           builder: (context, state) {
             return ListView(
-              padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding / 2)
+              padding: EdgeInsets.all(isDesktopPlatform
+                      ? kDefaultPadding
+                      : (isTablet ? 15.w : kDefaultPadding / 2))
                   .copyWith(top: fluidScaffoldTopInset(context)),
               children: [
                 const SizedBox(

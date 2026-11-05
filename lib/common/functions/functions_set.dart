@@ -394,11 +394,30 @@ Future<T?> showAdaptiveModal<T>(
           // that is the root surface of ~170 sheets still sliding off the bottom
           // edge, and rounding their bottom corners would be a visible
           // regression.
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(kDefaultPadding),
-            child: ColoredBox(
-              color: background,
-              child: builder(context),
+          child: DecoratedBox(
+            position: DecorationPosition.foreground,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(kDefaultPadding),
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 0.5,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(kDefaultPadding),
+              child: ColoredBox(
+                color: background == kTransparent
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : background,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPadding / 2,
+                  ),
+                  child: DesktopModalSurfaceScope(
+                    child: Builder(builder: builder),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -501,6 +520,10 @@ Future<ResultType> exportWalletToUserDirectory(
       data: fileContent,
     );
 
+    if (Platform.isMacOS) {
+      return ResultType.done;
+    }
+
     final openablePath = await _getOpenableFilePath(
       path,
       fileName,
@@ -530,6 +553,10 @@ Future<ResultType> exportKeysToUserDirectory({
       fileName: fileName,
       data: fileContent,
     );
+
+    if (Platform.isMacOS) {
+      return ResultType.done;
+    }
 
     final openablePath = await _getOpenableFilePath(
       path,
@@ -1323,8 +1350,7 @@ void openProfileFastAccess({
         view: ProfileFastAccessFluid(pubkey: pubkey),
       );
     } else {
-      showAdaptiveModal(
-          context,
+      showAdaptiveModal(context,
           dialogHeight: 620,
           builder: (context) => ProfileFastAccess(
                 pubkey: pubkey,

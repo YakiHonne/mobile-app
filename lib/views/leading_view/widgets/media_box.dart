@@ -20,7 +20,9 @@ import '../../widgets/profile_picture.dart';
 import '../../widgets/pull_down_global_button.dart';
 
 class MediaBox extends StatelessWidget {
-  const MediaBox({super.key});
+  const MediaBox({super.key, this.desktopPane = false});
+
+  final bool desktopPane;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,10 @@ class MediaBox extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(
               width: kDefaultPadding / 2,
             ),
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
+            padding: desktopPane
+                ? const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
+                : const EdgeInsets.all(kDefaultPadding / 2),
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               final item = state.media[index];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/picture_cubit/picture_cubit.dart';
@@ -350,9 +351,11 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkTextLength();
-    });
+    if (!isDesktopPlatform) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkTextLength();
+      });
+    }
   }
 
   void _checkTextLength() {
@@ -377,9 +380,25 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
 
   @override
   Widget build(BuildContext context) {
+    if (isDesktopPlatform) {
+      return LayoutBuilder(builder: (context, constraints) {
+        final exceeds = pictureDescriptionExceedsTwoLines(
+          content: widget.content,
+          style: widget.textStyle,
+          width: constraints.maxWidth,
+          textScaler: MediaQuery.textScalerOf(context),
+        );
+        return _description(context, exceeds);
+      });
+    }
+    return _description(context, _exceedsTwoLines);
+  }
+
+  Widget _description(BuildContext context, bool exceedsTwoLines) {
+    final isExpanded = _isExpanded && (!isDesktopPlatform || exceedsTwoLines);
     return GestureDetector(
       onTap: () {
-        if (_exceedsTwoLines) {
+        if (exceedsTwoLines) {
           setState(() {
             _isExpanded = !_isExpanded;
           });
@@ -390,12 +409,17 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
         spacing: kDefaultPadding / 4,
         children: [
           Expanded(
-            child: _isExpanded
+            child: isExpanded
                 ? ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: widget.textStyle.fontSize! *
-                          widget.textStyle.height! *
-                          5,
+                      maxHeight: isDesktopPlatform
+                          ? MediaQuery.textScalerOf(context)
+                                  .scale(widget.textStyle.fontSize ?? 14) *
+                              (widget.textStyle.height ?? 1) *
+                              5
+                          : widget.textStyle.fontSize! *
+                              widget.textStyle.height! *
+                              5,
                     ),
                     child: SingleChildScrollView(
                       child: ParsedText(
@@ -414,9 +438,9 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
                     maxLines: 2,
                   ),
           ),
-          if (_exceedsTwoLines)
+          if (exceedsTwoLines)
             Icon(
-              _isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
+              isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
               color: kWhite,
               size: 20,
               shadows: const [
@@ -429,4 +453,26 @@ class ExpandableDescriptionState extends State<ExpandableDescription> {
       ),
     );
   }
+}
+
+/// Measure against the local content width on every desktop layout pass.
+@visibleForTesting
+bool pictureDescriptionExceedsTwoLines({
+  required String content,
+  required TextStyle style,
+  required double width,
+  required TextScaler textScaler,
+}) {
+  final painter = TextPainter(
+    text: TextSpan(
+        text: content, style: style.copyWith(fontFamilyFallback: ['NotoSans'])),
+    maxLines: 2,
+    textScaler: textScaler,
+    textDirection: intl.Bidi.detectRtlDirectionality(content)
+        ? TextDirection.rtl
+        : TextDirection.ltr,
+  )..layout(maxWidth: width.clamp(0.0, double.infinity));
+  final exceeds = painter.didExceedMaxLines;
+  painter.dispose();
+  return exceeds;
 }

@@ -212,7 +212,7 @@ class _HeadingPickerState extends State<_HeadingPicker> {
               ? IconButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
-                )
+                ).copyWith(overlayColor: desktopNoHoverOverlay(Colors.white))
               : null,
         );
 

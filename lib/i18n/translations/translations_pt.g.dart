@@ -2249,6 +2249,13 @@ class TranslationsPt extends Translations {
 	@override String get hideSpamReplies => 'Ocultar respostas possivelmente spam';
 	@override String get markAsSpam => 'Marcar como spam';
 	@override String get notSpam => 'Não é spam';
+	@override String get desktopPlay => 'Reproduzir';
+	@override String get desktopPause => 'Pausar';
+	@override String get desktopResizePanes => 'Redimensionar painéis';
+	@override String get desktopDensity => 'Densidade da área de trabalho';
+	@override String get desktopDensityComfortable => 'Confortável';
+	@override String get desktopDensityCompact => 'Compacta';
+	@override String get desktopKnowPeople => 'Conhecer pessoas';
 }
 
 /// The flat map containing all translations for locale <pt>.
@@ -4501,6 +4508,13 @@ extension on TranslationsPt {
 			'hideSpamReplies' => 'Ocultar respostas possivelmente spam',
 			'markAsSpam' => 'Marcar como spam',
 			'notSpam' => 'Não é spam',
+			'desktopPlay' => 'Reproduzir',
+			'desktopPause' => 'Pausar',
+			'desktopResizePanes' => 'Redimensionar painéis',
+			'desktopDensity' => 'Densidade da área de trabalho',
+			'desktopDensityComfortable' => 'Confortável',
+			'desktopDensityCompact' => 'Compacta',
+			'desktopKnowPeople' => 'Conhecer pessoas',
 			_ => null,
 		};
 	}

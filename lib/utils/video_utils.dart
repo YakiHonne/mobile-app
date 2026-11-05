@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -47,6 +48,88 @@ class VideoUtils {
   }
 
   static Future<String?> getVideoThumbnailImage({
+    required String videoURL,
+    required BuildContext context,
+    bool onlyFromCache = false,
+  }) async {
+    if (Platform.isIOS || Platform.isAndroid) {
+      return _getMobileVideoThumbnailImage(
+          videoURL: videoURL, context: context, onlyFromCache: onlyFromCache);
+    }
+    try {
+      String? memUrl;
+
+      // Memory
+      memUrl = getVideoThumbnailImageFromMem(videoURL: videoURL);
+      if (memUrl != null) {
+        return memUrl;
+      }
+
+      final thumbnailURL = _thumbnailSnapshotURL(videoURL);
+      final thumbnailImageFile =
+          (await imagesCacheManager.getFileFromCache(thumbnailURL))?.file;
+
+      if (thumbnailImageFile != null && thumbnailImageFile.existsSync()) {
+        putVideoThumbnailImageToMem(
+          videoURL: videoURL,
+          memUrl: thumbnailImageFile.path,
+        );
+
+        return thumbnailImageFile.path;
+      }
+
+      if (onlyFromCache) {
+        return null;
+      }
+
+      // video_thumbnail has no desktop implementation.
+      if (Platform.isLinux) {
+        return null;
+      }
+      String? filePath;
+
+      if (context.mounted) {
+        final path = (await getTemporaryDirectory()).path;
+
+        if (Platform.isMacOS || Platform.isWindows) {
+          // Windows accepts local paths only; avoid passing remote URLs there.
+          if (Platform.isWindows &&
+              (Uri.tryParse(videoURL)?.hasScheme ?? false)) {
+            return null;
+          }
+          final destination = '$path/${const Uuid().v1()}.jpeg';
+          final created = await FcNativeVideoThumbnail().getVideoThumbnail(
+            srcFile: videoURL,
+            srcFileUri: Platform.isMacOS &&
+                (Uri.tryParse(videoURL)?.hasScheme ?? false),
+            destFile: destination,
+            width: 1024,
+            height: 1024,
+            quality: 100,
+          );
+          filePath = created ? destination : null;
+        } else {
+          filePath = await VideoThumbnail.thumbnailFile(
+            video: videoURL,
+            thumbnailPath: path,
+            quality: 100,
+          );
+        }
+      }
+
+      if (filePath == null) {
+        return null;
+      }
+
+      final s = File(filePath);
+      await _putFileToCache(thumbnailURL, s);
+      return filePath;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<String?> _getMobileVideoThumbnailImage({
     required String videoURL,
     required BuildContext context,
     bool onlyFromCache = false,

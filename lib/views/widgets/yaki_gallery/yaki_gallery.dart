@@ -19,6 +19,7 @@ class YakiGallery<T> extends StatefulWidget {
     this.onPageChanged,
     this.onDismissDragStart,
     this.onDismissDragCancel,
+    this.pageController,
   });
 
   final List<T> sources;
@@ -29,6 +30,7 @@ class YakiGallery<T> extends StatefulWidget {
   final ValueChanged<int>? onPageChanged;
   final VoidCallback? onDismissDragStart;
   final VoidCallback? onDismissDragCancel;
+  final PageController? pageController;
 
   @override
   _YakiGalleryState createState() => _YakiGalleryState();
@@ -56,7 +58,8 @@ class _YakiGalleryState extends State<YakiGallery>
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: widget.initIndex);
+    _pageController =
+        widget.pageController ?? PageController(initialPage: widget.initIndex);
     _transformationController = TransformationController();
 
     _animationController = AnimationController(
@@ -82,7 +85,9 @@ class _YakiGalleryState extends State<YakiGallery>
 
   @override
   void dispose() {
-    _pageController!.dispose();
+    if (widget.pageController == null) {
+      _pageController!.dispose();
+    }
     _animationController.dispose();
     _transformationController!.dispose();
     super.dispose();

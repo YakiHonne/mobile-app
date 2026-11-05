@@ -3,6 +3,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../utils/utils.dart';
 
+/// Marks the shared desktop dialog surface so its root sheet does not draw a
+/// second border or background inside the dialog padding.
+class DesktopModalSurfaceScope extends InheritedWidget {
+  const DesktopModalSurfaceScope({super.key, required super.child});
+
+  @override
+  bool updateShouldNotify(DesktopModalSurfaceScope oldWidget) => false;
+}
+
 /// Drop-in replacement for the [DraggableScrollableSheet] at the root of a modal
 /// sheet body — same parameters, so migrating a body is a one-word rename.
 ///
@@ -89,6 +98,11 @@ class ModalSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inDesktopSurface = isDesktopPlatform &&
+        context.dependOnInheritedWidgetOfExactType<
+                DesktopModalSurfaceScope>() !=
+            null &&
+        context.findAncestorWidgetOfExactType<ModalSheetContainer>() == null;
     final topRadius = Radius.circular(borderRadius);
     final br = BorderRadius.only(topLeft: topRadius, topRight: topRadius);
     final bSide = BorderSide(
@@ -98,9 +112,14 @@ class ModalSheetContainer extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: color ?? Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: br,
-        border: Border(top: bSide, left: bSide, right: bSide),
+        color: color ??
+            (inDesktopSurface
+                ? Colors.transparent
+                : Theme.of(context).scaffoldBackgroundColor),
+        borderRadius: inDesktopSurface ? null : br,
+        border: inDesktopSurface
+            ? null
+            : Border(top: bSide, left: bSide, right: bSide),
       ),
       width: double.infinity,
       height: height,

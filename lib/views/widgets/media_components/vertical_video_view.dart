@@ -19,6 +19,17 @@ import '../link_previewer.dart';
 import '../no_content_widgets.dart';
 import 'picture_view.dart';
 
+/// Zero or unbounded constraints occur briefly while the desktop pane resizes.
+double verticalVideoAspectRatio(BoxConstraints constraints) {
+  final width = constraints.maxWidth;
+  final height = constraints.maxHeight;
+  if (!width.isFinite || !height.isFinite || width <= 0 || height <= 0) {
+    return 9 / 16;
+  }
+  final ratio = width / height;
+  return ratio.isFinite && ratio > 0 ? ratio : 9 / 16;
+}
+
 class VerticalVideoView extends HookWidget {
   static const routeName = '/verticalVideoView';
   static Route route(RouteSettings settings) {
@@ -57,7 +68,8 @@ class VerticalVideoView extends HookWidget {
 
     useEffect(() {
       return () {
-        if (enableSound) {
+        if (enableSound &&
+            !videoControllerManagerCubit.isDesktopVideo(video.url)) {
           videoControllerManagerCubit
               .getChewieController(video.url)
               ?.setVolume(0);
@@ -324,14 +336,19 @@ class VerticalVideoView extends HookWidget {
 
   LayoutBuilder _videoPlayer() {
     return LayoutBuilder(
-      builder: (context, constraints) => CustomVideoPlayer(
-        link: video.url,
-        ratio: constraints.maxWidth / constraints.maxHeight,
-        removePadding: true,
-        removeBorders: true,
-        removeControls: true,
-        fallbackUrls: video.fallbackUrls,
-      ),
+      builder: (context, constraints) {
+        return CustomVideoPlayer(
+          link: video.url,
+          ratio: isDesktopPlatform
+              ? verticalVideoAspectRatio(constraints)
+              : constraints.maxWidth / constraints.maxHeight,
+          removePadding: true,
+          removeBorders: true,
+          removeControls: true,
+          fallbackUrls: video.fallbackUrls,
+          desktopVideo: video,
+        );
+      },
     );
   }
 }

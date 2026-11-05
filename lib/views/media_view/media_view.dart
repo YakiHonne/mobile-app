@@ -78,6 +78,8 @@ class _MediaViewState extends State<MediaView> {
               padding: EdgeInsets.zero,
               child: AdaptiveSmartRefresher(
                 controller: refreshController,
+                desktopHasResults: !state.onLoading && state.content.isNotEmpty,
+                showDesktopRefresh: !isFluid(),
                 scrollController: widget.scrollController,
                 enablePullUp: true,
                 header: const RefresherClassicHeader(
@@ -152,6 +154,7 @@ class _MediaViewState extends State<MediaView> {
                       ),
                       child: FluidSourceFilterRow(
                         viewType: ViewDataTypes.media,
+                        refreshController: refreshController,
                         onSourceChanged: () =>
                             mediaCubit.buildMediaFeed(isAdding: false),
                       ),

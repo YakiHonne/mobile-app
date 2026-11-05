@@ -95,11 +95,14 @@ class _DiscoverViewState extends State<DiscoverView> {
         },
         buildWhen: (previous, current) =>
             previous.onLoading != current.onLoading ||
+            (isDesktopPlatform && previous.content != current.content) ||
             previous.showFollowingListMessage !=
                 current.showFollowingListMessage,
         builder: (context, state) {
           final refresher = AdaptiveSmartRefresher(
             controller: refreshController,
+            desktopHasResults: !state.onLoading && state.content.isNotEmpty,
+            showDesktopRefresh: !isFluid(),
             enablePullUp: true,
             header: const RefresherClassicHeader(
               additionalOffset: kDefaultPadding * 3,
@@ -167,6 +170,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                     ),
                     child: FluidSourceFilterRow(
                       viewType: ViewDataTypes.articles,
+                      refreshController: refreshController,
                       onSourceChanged: () => discoverCubit.buildDiscoverFeed(
                         exploreType: discoverCubit.exploreType,
                         isAdding: false,
@@ -332,6 +336,8 @@ class SourceButton extends HookWidget {
 
         return Text(
           title,
+          maxLines: isDesktopPlatform ? 1 : null,
+          overflow: isDesktopPlatform ? TextOverflow.ellipsis : null,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
               ),
@@ -341,7 +347,7 @@ class SourceButton extends HookWidget {
     );
 
     return Container(
-      height: 40,
+      height: kFluidSourceControlHeight,
       padding: const EdgeInsets.symmetric(
         horizontal: kDefaultPadding / 2,
         vertical: kDefaultPadding / 3,

@@ -13,6 +13,7 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../common/media_handler/media_handler.dart';
+import '../../models/video_model.dart';
 import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
@@ -469,6 +470,7 @@ class CustomVideoPlayer extends StatefulWidget {
     this.autoPlay = true,
     this.fallbackUrls,
     this.enableSound = true,
+    this.desktopVideo,
   });
 
   final String link;
@@ -480,6 +482,7 @@ class CustomVideoPlayer extends StatefulWidget {
   final bool autoPlay;
   final List<String>? fallbackUrls;
   final bool enableSound;
+  final VideoModel? desktopVideo;
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -487,12 +490,16 @@ class CustomVideoPlayer extends StatefulWidget {
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   late bool autoplay;
+  bool _desktopStartOnReady = false;
 
   @override
   void initState() {
     super.initState();
-    if (videoControllerManagerCubit.getVideoController(widget.link) != null) {
+    if ((isDesktopPlatform && widget.link.isEmpty) ||
+        videoControllerManagerCubit.getVideoController(widget.link) != null) {
       autoplay = true;
+    } else if (isDesktopPlatform && widget.desktopVideo == null) {
+      autoplay = false;
     } else {
       autoplay = widget.autoPlay;
     }
@@ -505,12 +512,15 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    final ratio = widget.ratio;
     return Padding(
       padding: widget.removePadding != null
           ? EdgeInsets.zero
           : const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       child: AspectRatio(
-        aspectRatio: widget.ratio ?? (16 / 9),
+        aspectRatio: isDesktopPlatform
+            ? (ratio != null && ratio.isFinite && ratio > 0 ? ratio : 16 / 9)
+            : widget.ratio ?? (16 / 9),
         child: Center(
           child: autoplay
               ? _container(context, autoplay)
@@ -518,6 +528,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                   url: widget.link,
                   onTap: () {
                     setState(() {
+                      _desktopStartOnReady = isDesktopPlatform;
                       autoplay = true;
                     });
                   },
@@ -569,6 +580,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           autoPlay: autoplay,
           fallbackUrls: fallbackUrls,
           enableSound: widget.enableSound,
+          desktopVideo: widget.desktopVideo,
+          desktopStartOnReady: _desktopStartOnReady,
         ),
       );
     } catch (_) {
@@ -594,6 +607,8 @@ class RegularVideoPlayer extends StatefulWidget {
     this.loop,
     this.fallbackUrls,
     this.enableSound = true,
+    this.desktopVideo,
+    this.desktopStartOnReady = false,
   });
 
   final String link;
@@ -603,6 +618,8 @@ class RegularVideoPlayer extends StatefulWidget {
   final bool? loop;
   final List<String>? fallbackUrls;
   final bool enableSound;
+  final VideoModel? desktopVideo;
+  final bool desktopStartOnReady;
 
   @override
   State<RegularVideoPlayer> createState() => _RegularVideoPlayerState();
@@ -611,6 +628,7 @@ class RegularVideoPlayer extends StatefulWidget {
 class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
   late String _ownerId;
   late String _usedUrl;
+  int? _desktopPlayGeneration;
 
   @override
   void initState() {
@@ -619,6 +637,10 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
 
     _usedUrl = widget.link;
 
+    final playGeneration = widget.desktopStartOnReady && isDesktopPlatform
+        ? videoControllerManagerCubit.reserveDesktopPlay()
+        : null;
+    _desktopPlayGeneration = playGeneration;
     videoControllerManagerCubit.acquireVideo(
       _usedUrl,
       _ownerId,
@@ -628,6 +650,7 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
       isNetwork: widget.isNetwork,
       fallbackUrls: widget.fallbackUrls,
       enableSound: widget.enableSound,
+      desktopVideo: widget.desktopVideo,
       onFallbackUrlCalled: (url) {
         _usedUrl = url;
       },
@@ -646,11 +669,22 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         );
       },
-    );
+    ).then((_) {
+      if (mounted && playGeneration != null) {
+        videoControllerManagerCubit.playDesktopVideoIfCurrent(
+          _usedUrl,
+          playGeneration,
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
+    final generation = _desktopPlayGeneration;
+    if (generation != null) {
+      videoControllerManagerCubit.cancelDesktopPlay(generation);
+    }
     videoControllerManagerCubit.releaseVideo(url: _usedUrl, id: _ownerId);
     super.dispose();
   }
@@ -667,7 +701,8 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
           // Use _ownerId so two widgets playing the same URL get distinct keys
           key: ValueKey(_ownerId),
           onVisibilityChanged: (info) {
-            if (info.visibleFraction <= 0.5) {
+            if (info.visibleFraction <= 0.5 &&
+                !videoControllerManagerCubit.isDesktopVideo(widget.link)) {
               videoControllerManagerCubit.pauseVideo(widget.link);
             }
           },
@@ -702,6 +737,13 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
   bool _showIcon = false;
   bool _isPlaying = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _isPlaying = widget.controller.value.isPlaying;
+    _showIcon = isDesktopPlatform && !_isPlaying;
+  }
+
   void _togglePlayPause() {
     setState(() {
       if (widget.controller.value.isPlaying) {
@@ -717,7 +759,8 @@ class _TapPlayPauseControlsState extends State<TapPlayPauseControls> {
 
     // hide the icon after 800ms
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) {
+      if (mounted &&
+          (!isDesktopPlatform || widget.controller.value.isPlaying)) {
         setState(() => _showIcon = false);
       }
     });

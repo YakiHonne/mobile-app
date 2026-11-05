@@ -59,6 +59,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   String? _livePubkey;
   String? _historyLoadedPubkey;
   String? _historySnapshotPubkey;
+
+  /// Whether the current history snapshot belongs to the given account.
+  bool hasHistoryForAccount(String pubkey) => _historySnapshotPubkey == pubkey;
   final Map<String, Future<void>> _historySnapshotRestores = {};
   Future<void> _historySnapshotPersistence = Future<void>.value();
   bool _liveInitialized = false;

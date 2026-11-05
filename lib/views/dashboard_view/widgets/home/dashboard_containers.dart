@@ -534,7 +534,7 @@ class DashboardContentContainer extends StatelessWidget {
       size: 25,
       onEdit: isScheduled == null && kind == EventKind.CATEGORIZED_BOOKMARK
           ? () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 AddBookmarksListView.routeName,
                 arguments: [

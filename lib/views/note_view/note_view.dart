@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -610,7 +611,7 @@ class _MissingPreviousNoteBridge extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.link_off_rounded,
+              isDesktopPlatform ? LucideIcons.link2Off : Icons.link_off_rounded,
               color: theme.hintColor,
               size: kDefaultPadding,
             ),
@@ -685,9 +686,13 @@ SliverToBoxAdapter _buildEmptyRepliesContent(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            hasHiddenSpam
-                ? Icons.visibility_off_outlined
-                : Icons.chat_bubble_outline,
+            isDesktopPlatform
+                ? (hasHiddenSpam
+                    ? LucideIcons.eyeOff
+                    : LucideIcons.messageCircle)
+                : (hasHiddenSpam
+                    ? Icons.visibility_off_outlined
+                    : Icons.chat_bubble_outline),
             size: kDefaultPadding,
             color: Theme.of(context).hintColor,
           ),

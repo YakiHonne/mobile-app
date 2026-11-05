@@ -141,7 +141,11 @@ class ZappersList extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(
             height: kDefaultPadding / 2,
           ),
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                isDesktopPlatform ? kDefaultPadding : kDefaultPadding / 2,
+            vertical: kDefaultPadding / 2,
+          ),
           controller: controller,
           itemBuilder: (context, index) {
             final pubkey = z[index];

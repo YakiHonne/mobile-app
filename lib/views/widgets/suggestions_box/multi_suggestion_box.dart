@@ -20,11 +20,13 @@ class MultiSuggestionBox extends StatelessWidget {
     this.tag,
     required this.index,
     required this.isLeading,
+    this.desktopPane = false,
   });
 
   final String? tag;
   final int index;
   final bool isLeading;
+  final bool desktopPane;
 
   @override
   Widget build(BuildContext context) {
@@ -36,34 +38,49 @@ class MultiSuggestionBox extends StatelessWidget {
     return BlocBuilder<SuggestionsBoxCubit, SuggestionsBoxState>(
       builder: (context, state) {
         if (shouldSkip(state)) {
-          return divider;
+          return desktopPane ? const SizedBox.shrink() : divider;
         }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            divider,
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    getTitle(context),
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+            if (!desktopPane) divider,
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: desktopPane ? kDefaultPadding : 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      getTitle(context),
+                      style: (desktopPane
+                              ? Theme.of(context).textTheme.titleMedium!
+                              : Theme.of(context).textTheme.titleLarge!)
+                          .copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
-                ),
-                if (index != 4 && index != 5) _pulldownButton(context),
-              ],
+                  if (!desktopPane && index != 4 && index != 5)
+                    _pulldownButton(context),
+                ],
+              ),
             ),
             const SizedBox(
               height: kDefaultPadding / 2,
             ),
-            getAttachedWidget(),
-            const SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            divider,
+            if (desktopPane && index != 1)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                child: getAttachedWidget(),
+              )
+            else
+              getAttachedWidget(),
+            SizedBox(
+                height:
+                    desktopPane ? kDefaultPadding * 1.5 : kDefaultPadding / 2),
+            if (!desktopPane) divider,
           ],
         );
       },
@@ -136,7 +153,7 @@ class MultiSuggestionBox extends StatelessWidget {
     final currentIndex = index - 1;
 
     if (currentIndex == 0) {
-      return const SuggestedTrendingUsers24();
+      return SuggestedTrendingUsers24(desktopPane: desktopPane);
     } else if (currentIndex == 1) {
       return SuggestedRelatedContent(isLeading: isLeading);
     } else if (currentIndex == 2) {
@@ -152,19 +169,31 @@ class MultiSuggestionBox extends StatelessWidget {
     final currentIndex = index - 1;
     final c = nostrRepository.currentAppCustomization;
 
+    if (desktopPane) {
+      return _isEmpty(state) || (currentIndex >= 3 && !canSign());
+    }
+
     if (currentIndex == 0) {
       return state.trendingUsers24.isEmpty || !(c?.showTrendingUsers ?? true);
     } else if (currentIndex == 1) {
       return (isLeading ? state.articles.isEmpty : state.notes.isEmpty) ||
           !(c?.showRelatedContent ?? true);
     } else if (currentIndex == 2) {
-      return !(c?.showSuggestedInterests ?? true);
+      return (desktopPane && state.suggestions.isEmpty) ||
+          !(c?.showSuggestedInterests ?? true);
     } else if (currentIndex == 3) {
       return !(c?.showDonationBox ?? canSign());
     } else {
       return !(c?.showShareBox ?? canSign());
     }
   }
+
+  bool _isEmpty(SuggestionsBoxState state) => switch (index) {
+        1 => state.trendingUsers24.isEmpty,
+        2 => isLeading ? state.articles.isEmpty : state.notes.isEmpty,
+        3 => state.suggestions.isEmpty,
+        _ => false,
+      };
 
   String getTitle(BuildContext context) {
     final currentIndex = index - 1;

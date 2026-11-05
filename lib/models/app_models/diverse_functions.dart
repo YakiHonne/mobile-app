@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
@@ -819,6 +821,25 @@ bool? isLightningAddress(String val) {
 }
 
 Future<void> saveByteDataImage(ByteData image) async {
+  if (isDesktopPlatform) {
+    if (!Platform.isMacOS) {
+      BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
+      return;
+    }
+    try {
+      await FlutterFileSaver().writeFileAsBytes(
+        fileName: 'image.png',
+        bytes:
+            image.buffer.asUint8List(image.offsetInBytes, image.lengthInBytes),
+      );
+      BotToastUtils.showSuccess(t.downloadSuccessful);
+    } on FileSaverCancelledException {
+      return;
+    } catch (_) {
+      BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
+    }
+    return;
+  }
   final res = await ImageGallerySaverPlus.saveImage(image.buffer.asUint8List());
 
   if (res != null && res is Map && res['isSuccess']) {

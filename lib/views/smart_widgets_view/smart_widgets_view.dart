@@ -9,6 +9,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../logic/smart_widgets_cubit/smart_widgets_cubit.dart';
 import '../../models/app_models/diverse_functions.dart';
+import '../../routes/navigator.dart';
 import '../../utils/utils.dart';
 import '../widgets/adaptive_smart_refresher.dart';
 import '../widgets/classic_footer.dart';
@@ -111,9 +112,9 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
     );
   }
 
-  Widget _items(
-      BuildContext context, bool isTablet, SmartWidgetsState state) {
+  Widget _items(BuildContext context, bool isTablet, SmartWidgetsState state) {
     return AdaptiveSmartRefresher(
+      desktopHasResults: state.widgets.isNotEmpty,
       controller: refreshController,
       enablePullDown: false,
       enablePullUp: true,
@@ -189,7 +190,7 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
             CustomIconButton(
               backgroundColor: Theme.of(context).cardColor,
               onClicked: () {
-                Navigator.pushNamed(
+                YNavigator.pushNamed(
                   context,
                   SmartWidgetChecker.routeName,
                 );

@@ -110,6 +110,7 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
           );
         } else {
           return AdaptiveSmartRefresher(
+            desktopHasResults: state.widgets.isNotEmpty,
             controller: refreshController,
             enablePullDown: false,
             enablePullUp: true,

@@ -26,6 +26,7 @@ import '../../../points_management_view/points_management_view.dart';
 import '../../../points_management_view/widgets/points_login_popup.dart';
 import '../../../profile_view/profile_view.dart';
 import '../../../profile_view/widgets/profile_connections_view.dart';
+import '../../../widgets/adaptive_smart_refresher.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/classic_footer.dart';
 import '../../../widgets/fluid_blur_container.dart';
@@ -85,11 +86,19 @@ class _HomeDashboardState extends State<HomeDashboard> {
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          child: Text(
-            context.t.home.capitalizeFirst(),
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontWeight: FontWeight.w800,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.t.home.capitalizeFirst(),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
+              ),
+              if (isDesktopPlatform)
+                DesktopRefreshButton(controller: refreshController),
+            ],
           ),
         ),
       ),
@@ -153,7 +162,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                       builder: (context) {
                         void onNavigate() {
                           if (state.userGlobalStats != null) {
-                            Navigator.pushNamed(
+                            YNavigator.pushNamed(
                               context,
                               PointsStatisticsView.routeName,
                             );
@@ -968,9 +977,10 @@ class _HomeDashboardState extends State<HomeDashboard> {
       ),
     );
 
-    return SmartRefresher(
+    return AdaptiveSmartRefresher(
       enablePullUp: true,
       controller: refreshController,
+      showDesktopRefresh: false,
       header: const RefresherClassicHeader(),
       onRefresh: () async {
         context.read<DashboardHomeCubit>().init();

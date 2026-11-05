@@ -14,7 +14,7 @@ class RedeemCodeView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final type = useState(RedeemCodeStatus.options);
-    final isQrCode = useState(true);
+    final isQrCode = useState(isMobilePlatform);
     final resultData = useState<Map<String, dynamic>>({});
     final redeemCode = useTextEditingController();
     final code = useState('');
@@ -138,5 +138,4 @@ class RedeemCodeView extends HookWidget {
   }) {
     return RedeemCodeResults(onSwitchToOptions: onSwitchToOptions, data: data);
   }
-
 }

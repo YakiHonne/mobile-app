@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../common/functions/functions_set.dart';
+import '../views/main_view/desktop/desktop_dm_routing.dart' as dm_routing;
 import '../views/main_view/widgets/detail_pane.dart';
 import 'pages_router.dart';
 
@@ -112,7 +113,7 @@ class YNavigator extends Navigator {
     SystemNavigator.pop();
   }
 
-  /// The desktop detail pane, when an allowlisted content push should be
+  /// The desktop detail pane, when a page push should be
   /// routed into it rather than over the whole window. Null means "push
   /// normally".
   ///
@@ -122,14 +123,13 @@ class YNavigator extends Navigator {
   /// the push stays full-screen; from a sheet over the panel it reaches the
   /// pane; and from inside the pane `Navigator.of` is already the pane, so
   /// either branch stacks in the same place.
-  static NavigatorState? _detailPane(BuildContext context, bool isPaneRoute) {
-    if (!isPaneRoute) {
-      return null;
-    }
-
+  static NavigatorState? _detailPane(BuildContext context) {
     final pane = detailPaneNavigatorKey.currentState;
 
-    if (pane == null || !DetailPaneRouteTracker.isMainPanelUnderneath) {
+    if (pane == null ||
+        (pane.context.findAncestorWidgetOfExactType<Offstage>()?.offstage ??
+            false) ||
+        !DetailPaneRouteTracker.isMainPanelUnderneath) {
       return null;
     }
 
@@ -137,16 +137,30 @@ class YNavigator extends Navigator {
   }
 
   /// Drop-in for `Navigator.pushNamed`, with detail-pane interception for the
-  /// routes in [kDetailPaneRoutes]. Identical behaviour everywhere else.
+  /// desktop pages. Identical behaviour when no pane is available.
   @optionalTypeArgs
   static Future<T?> pushNamed<T extends Object?>(
     BuildContext context,
     String routeName, {
     Object? arguments,
   }) {
-    final pane = _detailPane(context, kDetailPaneRoutes.contains(routeName));
+    final pane = _detailPane(context);
+
+    if (pane != null &&
+        routeName == '/dmDetailsView' &&
+        dm_routing.openDesktopConversation != null &&
+        arguments is List &&
+        arguments.isNotEmpty &&
+        arguments.first is String) {
+      dm_routing.openDesktopConversation!(arguments.first as String);
+      return Future<T?>.value();
+    }
 
     if (pane != null) {
+      if (routeName == '/dmDetailsView' &&
+          detailPaneObserver.currentRoute?.settings.name == routeName) {
+        return pane.pushReplacementNamed<T, T>(routeName, arguments: arguments);
+      }
       return pane.pushNamed<T>(routeName, arguments: arguments);
     }
 
@@ -156,6 +170,10 @@ class YNavigator extends Navigator {
   @optionalTypeArgs
   static Future<T?> push<T extends Object?>(
       BuildContext context, Route<T> route) {
+    final pane = route is PageRoute<T> ? _detailPane(context) : null;
+    if (pane != null) {
+      return pane.push<T>(route);
+    }
     // // Remove the current focus
     // FocusScope.of(context).requestFocus(FocusNode());
     return Navigator.push<T>(context, route);
@@ -166,6 +184,16 @@ class YNavigator extends Navigator {
     Widget page, {
     TO? result,
   }) {
+    final pane = _detailPane(context);
+    if (pane != null && Navigator.of(context) != pane) {
+      final currentRoute = ModalRoute.of(context);
+      if (currentRoute != null &&
+          !currentRoute.opaque &&
+          currentRoute.isCurrent) {
+        Navigator.of(context).pop(result);
+      }
+      return pane.push<T>(generalPageRouter(builder: (_) => page));
+    }
     return Navigator.pushReplacement<T, TO>(
       context,
       generalPageRouter(builder: (_) => page),
@@ -176,6 +204,19 @@ class YNavigator extends Navigator {
   static Future<T?> replace<T extends Object?, TO extends Object?>(
       BuildContext context, Widget page,
       {TO? result}) {
+    final pane = _detailPane(context);
+    if (pane != null && Navigator.of(context) != pane) {
+      final currentRoute = ModalRoute.of(context);
+      if (currentRoute != null &&
+          !currentRoute.opaque &&
+          currentRoute.isCurrent) {
+        Navigator.of(context).pop(result);
+      }
+      return pane.push<T>(generalPageRouter(
+        builder: (_) => page,
+        pageName: page.runtimeType.toString(),
+      ));
+    }
     return Navigator.pushReplacement<T, TO>(
       context,
       generalPageRouter(
@@ -236,7 +277,7 @@ class YNavigator extends Navigator {
         );
     }
 
-    final pane = _detailPane(context, kDetailPanePages.contains(pageName));
+    final pane = _detailPane(context);
 
     if (pane != null) {
       return pane.push<T>(route);

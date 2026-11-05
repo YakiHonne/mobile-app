@@ -2208,5 +2208,12 @@
   "showSpamReplies": "إظهار الردود المشتبه بأنها مزعجة",
   "hideSpamReplies": "إخفاء الردود المشتبه بأنها مزعجة",
   "markAsSpam": "وضع علامة كرسالة مزعجة",
-  "notSpam": "ليست مزعجة"
+  "notSpam": "ليست مزعجة",
+  "desktopPlay": "تشغيل",
+  "desktopPause": "إيقاف مؤقت",
+  "desktopResizePanes": "تغيير حجم الجزأين",
+  "desktopDensity": "كثافة سطح المكتب",
+  "desktopDensityComfortable": "مريح",
+  "desktopDensityCompact": "مضغوط",
+  "desktopKnowPeople": "تعرّف على أشخاص"
 }

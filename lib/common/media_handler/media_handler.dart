@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
+import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -214,6 +216,21 @@ class MediaHandler {
       final ctx = nostrRepository.mainCubit.context;
       dynamic res;
 
+      if (isDesktopPlatform) {
+        if (!Platform.isMacOS) {
+          BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
+          return;
+        }
+        final uri = Uri.tryParse(url);
+        final name = uri?.pathSegments.lastOrNull ?? '';
+        await FlutterFileSaver().writeFileAsBytes(
+          fileName: name.isEmpty ? 'image.png' : name,
+          bytes: Uint8List.fromList(response.data),
+        );
+        BotToastUtils.showSuccess(t.downloadSuccessful);
+        return;
+      }
+
       // Detect GIF based on extension or content type
       final isGif = url.toLowerCase().endsWith('.gif') ||
           (response.headers.value('content-type')?.contains('gif') ?? false);
@@ -249,13 +266,106 @@ class MediaHandler {
           );
         }
       }
+    } on FileSaverCancelledException {
+      return;
     } catch (e) {
       lg.i(e);
       BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
     }
   }
 
-  static Future<void> saveNetworkVideo(
+  /// Returns true after saving, false on failure, and null on cancellation.
+  static Future<bool?> saveNetworkVideo(
+    String url, {
+    Function(double)? onProgress,
+    bool showSuccessMessage = true,
+  }) async {
+    if (!isDesktopPlatform) {
+      await _saveNetworkVideoMobile(url,
+          onProgress: onProgress, showSuccessMessage: showSuccessMessage);
+      return null;
+    }
+    final ctx = nostrRepository.mainCubit.context;
+    File? downloadedFile;
+
+    try {
+      if (isDesktopPlatform && !Platform.isMacOS) {
+        BotToastUtils.showError(t.errorSavingVideo.capitalizeFirst());
+        return false;
+      }
+      final uri = Uri.parse(url);
+      final pathSegments = uri.pathSegments;
+      final fileName = pathSegments.isNotEmpty ? pathSegments.last : 'video';
+      final fileExtension =
+          fileName.contains('.') ? '.${fileName.split('.').last}' : '.mp4';
+
+      final appDocDir = await getTemporaryDirectory();
+      final savePath =
+          '${appDocDir.path}/${uuid.v4()}${fileExtension.toLowerCase()}';
+      downloadedFile = File(savePath);
+
+      await Dio().download(
+        url,
+        savePath,
+        onReceiveProgress: (count, total) {
+          if (total > 0) {
+            onProgress?.call(count / total * 100);
+          }
+        },
+        // options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (isDesktopPlatform) {
+        final location = await FileSelectorPlatform.instance.getSaveLocation(
+          options: SaveDialogOptions(
+            suggestedName: fileName.isEmpty ? 'video.mp4' : fileName,
+          ),
+        );
+        if (location == null) {
+          return null;
+        }
+        await downloadedFile.copy(location.path);
+        if (showSuccessMessage) {
+          BotToastUtils.showSuccess(t.downloadSuccessful);
+        }
+        return true;
+      }
+
+      final res = await ImageGallerySaverPlus.saveFile(savePath);
+
+      if (res != null && res is Map && res['isSuccess']) {
+        if (ctx.mounted && showSuccessMessage) {
+          BotToastUtils.showSuccess(
+            ctx.t.saveVideoGallery.capitalizeFirst(),
+          );
+        }
+        return true;
+      }
+      if (ctx.mounted) {
+        BotToastUtils.showError(
+          ctx.t.errorSavingVideo.capitalizeFirst(),
+        );
+      }
+      return false;
+    } on FileSaverCancelledException {
+      return null;
+    } catch (e) {
+      BotToastUtils.showError(
+        ctx.t.errorSavingVideo.capitalizeFirst(),
+      );
+      return false;
+    } finally {
+      if (downloadedFile != null) {
+        try {
+          await downloadedFile.delete();
+        } on FileSystemException {
+          // A failed or cancelled download may not have created the file.
+        }
+      }
+    }
+  }
+
+  static Future<void> _saveNetworkVideoMobile(
     String url, {
     Function(double)? onProgress,
     bool showSuccessMessage = true,

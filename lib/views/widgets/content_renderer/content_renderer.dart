@@ -1932,7 +1932,11 @@ class MediaContainer extends HookWidget {
               ),
               borderRadius: BorderRadius.circular(kDefaultPadding / 2),
             ),
-            constraints: BoxConstraints(maxHeight: 35.h),
+            constraints: BoxConstraints(
+              maxHeight: isDesktopPlatform
+                  ? (MediaQuery.sizeOf(context).height / 2).clamp(0.0, 420.0)
+                  : 35.h,
+            ),
             child: MediaImage(
               url: mediaItem.key,
               isHidden: hideMedia,
@@ -1971,6 +1975,7 @@ class MediaImage extends HookWidget {
           CommonThumbnail(
             image: url,
             height: 0,
+            fit: isDesktopPlatform ? BoxFit.contain : null,
             radius: kDefaultPadding / 2,
             isRound: true,
             useDefaultNoMedia: false,

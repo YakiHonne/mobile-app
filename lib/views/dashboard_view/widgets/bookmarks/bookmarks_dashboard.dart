@@ -252,7 +252,7 @@ class BookmarksHeader extends StatelessWidget {
   IconButton _addButton(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Navigator.pushNamed(
+        YNavigator.pushNamed(
           context,
           AddBookmarksListView.routeName,
           arguments: [

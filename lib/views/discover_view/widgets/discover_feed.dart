@@ -11,6 +11,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../article_view/article_view.dart';
 import '../../curation_view/curation_view.dart';
+import '../../main_view/desktop/desktop_density.dart';
 import '../../widgets/article_container.dart';
 import '../../widgets/curation_container.dart';
 import '../../widgets/fluid_content_card.dart';
@@ -43,8 +44,12 @@ class ExploreFeed extends StatelessWidget {
                 return getItem(item, false);
               },
               childCount: state.content.length,
-              crossAxisSpacing: kDefaultPadding,
-              mainAxisSpacing: kDefaultPadding,
+              crossAxisSpacing: isDesktopPlatform
+                  ? DesktopDensityScope.of(context).gap
+                  : kDefaultPadding,
+              mainAxisSpacing: isDesktopPlatform
+                  ? DesktopDensityScope.of(context).gap
+                  : kDefaultPadding,
             ),
           );
         } else {
@@ -61,11 +66,17 @@ class ExploreFeed extends StatelessWidget {
                     isLeading: false,
                   );
                 } else if (useFluidCards()) {
-                  return const SizedBox(height: kDefaultPadding / 2);
+                  return SizedBox(
+                    height: isDesktopPlatform
+                        ? DesktopDensityScope.of(context).gap / 2
+                        : kDefaultPadding / 2,
+                  );
                 } else {
-                  return const Divider(
+                  return Divider(
                     thickness: 0.3,
-                    height: kDefaultPadding * 1.5,
+                    height: isDesktopPlatform
+                        ? kDefaultPadding
+                        : kDefaultPadding * 1.5,
                   );
                 }
               },
@@ -83,6 +94,7 @@ class ExploreFeed extends StatelessWidget {
 
   Widget getItem(BaseEventModel item, bool reduceImageSize) {
     return FluidContentCard(
+      desktopContainer: item is Article,
       child: BlocBuilder<DiscoverCubit, DiscoverState>(
         builder: (context, state) =>
             _content(context, item, reduceImageSize, state),

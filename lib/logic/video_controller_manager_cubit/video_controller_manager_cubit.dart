@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../common/media_handler/media_handler.dart';
+import '../../models/video_model.dart';
 import '../../utils/utils.dart';
 import '../../views/widgets/app_video_player/fullscreen_video_player.dart';
 import '../../views/widgets/link_previewer.dart';
@@ -16,8 +18,32 @@ import '../../views/widgets/media_components/custom_video_controls.dart';
 
 part 'video_controller_manager_state.dart';
 
+/// Metadata for a desktop session. Inline note videos may have only a URL.
+class DesktopVideoSession {
+  const DesktopVideoSession({
+    required this.url,
+    required this.isNetwork,
+    this.video,
+  });
+
+  final String url;
+  final bool isNetwork;
+  final VideoModel? video;
+}
+
+class _DesktopExternalPlayer {
+  _DesktopExternalPlayer(this.account, this.pause);
+
+  final String? account;
+  final VoidCallback pause;
+}
+
 class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
-  VideoControllerManagerCubit() : super(const VideoControllerManagerState());
+  VideoControllerManagerCubit({bool? desktopPlayback})
+      : desktopPlaybackEnabled = desktopPlayback ?? isDesktopPlatform,
+        super(const VideoControllerManagerState());
+
+  final bool desktopPlaybackEnabled;
 
   // Phones are locked to portraitUp (initializers._configureSystemUI), so
   // fullscreen video must restore that lock on exit; tablets rotate freely.
@@ -48,11 +74,176 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   // controller alive until exitFullScreen.
   final _fullScreenUrls = <String>{};
 
-  // ── Public getters (unchanged API) ────────────────────────────────────────
-  VideoPlayerController? getVideoController(String url) =>
-      _videoControllers[url];
+  /// A desktop player is an additional owner of the existing controller.
+  final ValueNotifier<DesktopVideoSession?> desktopNowPlaying =
+      ValueNotifier(null);
+  static const _desktopOwner = 'desktop-now-playing';
+  final _desktopSessions = <String, DesktopVideoSession>{};
+  final _desktopListeners = <String, VoidCallback>{};
+  final _desktopExternalPlayers = <Object, _DesktopExternalPlayer>{};
+  String? _desktopUrl;
+  String? _desktopAccount;
+  String? _desktopPlayAccount;
+  int _desktopPlayGeneration = 0;
 
-  ChewieController? getChewieController(String url) => _chewieControllers[url];
+  /// Register a widget-owned player that cannot be retained in the video bar.
+  Object registerDesktopExternalPlayer(VoidCallback pause) {
+    final token = Object();
+    if (desktopPlaybackEnabled) {
+      _desktopExternalPlayers[token] =
+          _DesktopExternalPlayer(currentSigner?.getPublicKey(), pause);
+    }
+    return token;
+  }
+
+  void unregisterDesktopExternalPlayer(Object token) {
+    _desktopExternalPlayers.remove(token);
+  }
+
+  /// Called when an external player reports that it has started playing.
+  void desktopExternalPlayerStarted(Object token) {
+    final player = _desktopExternalPlayers[token];
+    if (!desktopPlaybackEnabled || player == null) {
+      return;
+    }
+    if (player.account != currentSigner?.getPublicKey()) {
+      player.pause();
+      return;
+    }
+    _desktopPlayGeneration++;
+    for (final entry in _desktopExternalPlayers.entries.toList()) {
+      if (entry.key != token) {
+        entry.value.pause();
+      }
+    }
+    for (final controller in _videoControllers.values.toList()) {
+      if (controller.value.isPlaying) {
+        unawaited(controller.pause());
+      }
+    }
+  }
+
+  void _pauseDesktopExternalPlayers() {
+    for (final player in _desktopExternalPlayers.values.toList()) {
+      player.pause();
+    }
+  }
+
+  /// Prevent a slow-loading earlier click from replacing a later selection.
+  int reserveDesktopPlay() {
+    _desktopPlayAccount = currentSigner?.getPublicKey();
+    return ++_desktopPlayGeneration;
+  }
+
+  bool isDesktopPlayCurrent(int generation) =>
+      desktopPlaybackEnabled && generation == _desktopPlayGeneration;
+
+  void cancelDesktopPlay(int generation) {
+    if (generation == _desktopPlayGeneration) {
+      _desktopPlayGeneration++;
+    }
+  }
+
+  Future<void> playDesktopVideoIfCurrent(String url, int generation) async {
+    if (!desktopPlaybackEnabled || generation != _desktopPlayGeneration) {
+      return;
+    }
+    if (getVideoController(url) == null) {
+      try {
+        await watchUrl(url).first.timeout(const Duration(seconds: 12));
+      } on TimeoutException {
+        return;
+      } on StateError {
+        return;
+      }
+    }
+    if (generation == _desktopPlayGeneration) {
+      await getVideoController(url)?.play();
+    }
+  }
+
+  void _activateDesktopVideo(String resolved) {
+    if (_desktopUrl != resolved) {
+      closeDesktopVideo();
+    }
+    for (final entry in _videoControllers.entries.toList()) {
+      if (entry.key != resolved && entry.value.value.isPlaying) {
+        unawaited(entry.value.pause());
+      }
+    }
+    final session = _desktopSessions[resolved];
+    if (session == null || !_videoControllers.containsKey(resolved)) {
+      return;
+    }
+    _desktopUrl = resolved;
+    _desktopAccount = currentSigner?.getPublicKey();
+    _urlOwners.putIfAbsent(resolved, () => {}).add(_desktopOwner);
+    desktopNowPlaying.value = session;
+  }
+
+  void _watchDesktopPlayback(
+      String resolved, VideoPlayerController controller) {
+    if (!desktopPlaybackEnabled) {
+      return;
+    }
+    var wasPlaying = controller.value.isPlaying;
+    void listener() {
+      final playing = controller.value.isPlaying;
+      if (playing && !wasPlaying) {
+        _desktopPlayGeneration++;
+        _pauseDesktopExternalPlayers();
+        if (_desktopUrl != resolved) {
+          _activateDesktopVideo(resolved);
+        }
+      }
+      wasPlaying = playing;
+    }
+
+    _desktopListeners[resolved] = listener;
+    controller.addListener(listener);
+  }
+
+  VideoPlayerController? get desktopVideoController =>
+      _desktopUrl == null ? null : _videoControllers[_desktopUrl];
+
+  bool isDesktopVideo(String url) =>
+      _desktopUrl != null && (_urlAliases[url] ?? url) == _desktopUrl;
+
+  void closeDesktopVideo() {
+    _desktopPlayGeneration++;
+    final url = _desktopUrl;
+    _desktopUrl = null;
+    _desktopAccount = null;
+    desktopNowPlaying.value = null;
+    if (url != null) {
+      _videoControllers[url]?.pause();
+      releaseVideo(url: url, id: _desktopOwner);
+    }
+  }
+
+  void clearDesktopVideoForAccount(String? pubkey) {
+    // A pending load can outlive its originating account even when no player
+    // has been activated yet. Invalidate its play intent on account change.
+    if (_desktopPlayAccount != pubkey) {
+      _desktopPlayGeneration++;
+      _desktopPlayAccount = pubkey;
+    }
+    for (final player in _desktopExternalPlayers.values.toList()) {
+      if (player.account != pubkey) {
+        player.pause();
+      }
+    }
+    if (_desktopUrl != null && _desktopAccount != pubkey) {
+      closeDesktopVideo();
+    }
+  }
+
+  // ── Public getters (unchanged API) ────────────────────────────────────────
+  VideoPlayerController? getVideoController(String url) => _videoControllers[
+      desktopPlaybackEnabled ? (_urlAliases[url] ?? url) : url];
+
+  ChewieController? getChewieController(String url) => _chewieControllers[
+      desktopPlaybackEnabled ? (_urlAliases[url] ?? url) : url];
 
   /// Returns a stream that emits whenever [url]'s controller changes.
   /// Each widget subscribes only to its own URL — no cross-video rebuilds.
@@ -76,9 +267,29 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
     double? aspectRatio,
     bool? removeControls,
     List<String>? fallbackUrls,
+    VideoModel? desktopVideo,
     Function(String)? onFallbackUrlCalled,
     Function(String)? onDownloadVideo,
   }) async {
+    final resolved = _urlAliases[url] ?? url;
+    if (desktopPlaybackEnabled && _videoControllers.containsKey(resolved)) {
+      if (desktopVideo != null && desktopPlaybackEnabled) {
+        _desktopSessions[resolved] = DesktopVideoSession(
+          url: url,
+          isNetwork: isNetwork,
+          video: desktopVideo,
+        );
+        if (_desktopUrl == resolved) {
+          desktopNowPlaying.value = _desktopSessions[resolved];
+        }
+      }
+      _urlOwners.putIfAbsent(resolved, () => {}).add(id);
+      if (resolved != url) {
+        onFallbackUrlCalled?.call(resolved);
+      }
+      _notifyUrl(url);
+      return;
+    }
     // Register owner
     _urlOwners.putIfAbsent(url, () => {}).add(id);
 
@@ -163,7 +374,7 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       final chewieController = ChewieController(
         videoPlayerController: videoController,
-        autoPlay: autoPlay,
+        autoPlay: !desktopPlaybackEnabled && autoPlay,
         allowPlaybackSpeedChanging: false,
         showControlsOnInitialize: false,
         showControls: showControls,
@@ -188,10 +399,18 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       _videoControllers[usedUrl] = videoController;
       _chewieControllers[usedUrl] = chewieController;
+      if (desktopPlaybackEnabled) {
+        _desktopSessions[usedUrl] = DesktopVideoSession(
+          url: url,
+          isNetwork: isNetwork,
+          video: desktopVideo,
+        );
+        _watchDesktopPlayback(usedUrl, videoController);
+      }
       WakelockPlus.enable();
 
       // Update owner registration to the resolved URL (may differ via fallback)
-      if (usedUrl != url) {
+      if (desktopPlaybackEnabled && usedUrl != url) {
         _urlAliases[url] = usedUrl;
         // Move all owners registered under the original url, not just this
         // one — they all render the fallback controller now.
@@ -203,6 +422,9 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
       // Notify only this URL's subscriber — zero impact on other videos
       _notifyUrl(usedUrl);
+      if (usedUrl != url) {
+        _notifyUrl(url);
+      }
     } catch (e) {
       lg.i(e);
       _inProcessUrls.remove(url);
@@ -242,6 +464,11 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   void _disposeUrl(String resolvedUrl) {
     _urlOwners.remove(resolvedUrl);
     _urlAliases.removeWhere((_, target) => target == resolvedUrl);
+    final listener = _desktopListeners.remove(resolvedUrl);
+    if (listener != null) {
+      _videoControllers[resolvedUrl]?.removeListener(listener);
+    }
+    _desktopSessions.remove(resolvedUrl);
     _chewieControllers.remove(resolvedUrl)?.dispose();
     _videoControllers.remove(resolvedUrl)?.dispose();
 
@@ -268,10 +495,12 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
   }
 
   // ── Playback helpers ──────────────────────────────────────────────────────
-  void pauseVideo(String url) => _videoControllers[url]?.pause();
+  void pauseVideo(String url) => desktopPlaybackEnabled
+      ? getVideoController(url)?.pause()
+      : _videoControllers[url]?.pause();
 
-  Future<void> downloadVideo(String url, Function(double) onProgress) async {
-    await MediaHandler.saveNetworkVideo(
+  Future<bool?> downloadVideo(String url, Function(double) onProgress) async {
+    return MediaHandler.saveNetworkVideo(
       url,
       onProgress: onProgress,
       showSuccessMessage: false,
@@ -310,6 +539,11 @@ class VideoControllerManagerCubit extends Cubit<VideoControllerManagerState> {
 
   @override
   Future<void> close() {
+    _desktopExternalPlayers.clear();
+    desktopNowPlaying.dispose();
+    for (final entry in _desktopListeners.entries) {
+      _videoControllers[entry.key]?.removeListener(entry.value);
+    }
     for (final c in _chewieControllers.values) {
       c.dispose();
     }

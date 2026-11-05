@@ -52,6 +52,8 @@ app.*.map.json
 !/md/
 /md/*
 !/md/FEATURES_IMPROVEMENTS_FIXES_2.1.1.md
+!/md/DESKTOP_PRODUCT_ASSESSMENT.md
+!/md/DESKTOP_TASK_PLAN.md
 
 # Files
 /android/key.properties

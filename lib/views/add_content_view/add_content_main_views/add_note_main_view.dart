@@ -12,6 +12,7 @@ import '../../../models/detailed_note_model.dart';
 import '../../../models/flash_news_model.dart';
 import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/widgets/detail_pane_scope.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/content_published_modal.dart';
 import '../../widgets/custom_icon_buttons.dart';
@@ -95,6 +96,7 @@ class AddNoteMainView extends HookWidget {
                       onPaymentProcess: () {
                         showAdaptiveModal(
                           context,
+                          useRootNavigator: !DetailPaneScope.contains(context),
                           dialogHeight: 620,
                           builder: (_) {
                             return BlocProvider.value(

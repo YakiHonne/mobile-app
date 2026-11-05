@@ -140,9 +140,12 @@ class _ContentDashboardState extends State<ContentDashboard>
           refreshController.refreshCompleted();
         }
       },
-      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      buildWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
+          (isDesktopPlatform && previous.content != current.content),
       builder: (context, state) {
         final scrollBody = AdaptiveSmartRefresher(
+          desktopHasResults: !state.isLoading && state.content.isNotEmpty,
           controller: refreshController,
           enablePullUp: true,
           header: const RefresherClassicHeader(),
@@ -399,7 +402,8 @@ class _ContentDashboardState extends State<ContentDashboard>
     );
   }
 
-  FluidPullDownButton _postPulldownButton(BuildContext context, TextStyle style) {
+  FluidPullDownButton _postPulldownButton(
+      BuildContext context, TextStyle style) {
     return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;

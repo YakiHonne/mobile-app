@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:interactiveviewer_gallery_plus/hero_dialog_route.dart';
 import 'package:interactiveviewer_gallery_plus/interactiveviewer_gallery_plus.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import '../../common/media_handler/media_handler.dart';
@@ -18,6 +19,7 @@ import '../widgets/content_renderer/hidden_media_container.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/link_previewer.dart';
+import '../widgets/yaki_gallery/yaki_gallery.dart';
 
 class GalleryImageView extends StatelessWidget {
   /// The image to display
@@ -342,7 +344,8 @@ void openGallery({
 }) {
   final media = sources ?? {source.key: source.value};
 
-  Navigator.of(context).push(
+  YNavigator.push(
+    context,
     HeroDialogRoute<void>(
       builder: (BuildContext context) {
         return OpenGalleryWidget(
@@ -377,7 +380,11 @@ class OpenGalleryWidget extends HookWidget {
   Widget build(BuildContext context) {
     final currentIndex = useState(index);
     final currentSource = useState(entry);
-    final bottomPadding = useState<double>(kBottomNavigationBarHeight);
+    final pageController = usePageController(initialPage: index);
+    final bottomPadding = useState<double>(
+        isDesktopPlatform && media[index].value == UrlType.video
+            ? kBottomNavigationBarHeight + 35
+            : kBottomNavigationBarHeight);
 
     void calculateBottomPadding() {
       if (media[currentIndex.value].value == UrlType.video) {
@@ -401,6 +408,7 @@ class OpenGalleryWidget extends HookWidget {
           currentSource,
           calculateBottomPadding,
           isRound,
+          pageController,
         ),
         if (addBlackLayer)
           Positioned.fill(
@@ -420,7 +428,8 @@ class OpenGalleryWidget extends HookWidget {
               ),
             ),
           ),
-        if (media.length > 1) _count(bottomPadding, context, currentIndex),
+        if (media.length > 1)
+          _count(bottomPadding, context, currentIndex, pageController),
         _viewer(currentIndex, context, currentSource),
       ],
     );
@@ -493,7 +502,8 @@ class OpenGalleryWidget extends HookWidget {
         return [
           PullDownMenuItem(
             title: context.t.copy.capitalizeFirst(),
-            onTap: () => MediaUtils.copyImageToClipboard(entry.key),
+            onTap: () => MediaUtils.copyImageToClipboard(
+                isDesktopPlatform ? currentSource.value.key : entry.key),
             itemTheme: PullDownMenuItemTheme(
               textStyle: textStyle,
             ),
@@ -527,52 +537,28 @@ class OpenGalleryWidget extends HookWidget {
     );
   }
 
-  AnimatedPositioned _count(ValueNotifier<double> bottomPadding,
-      BuildContext context, ValueNotifier<int> currentIndex) {
+  AnimatedPositioned _count(
+      ValueNotifier<double> bottomPadding,
+      BuildContext context,
+      ValueNotifier<int> currentIndex,
+      PageController pageController) {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
       bottom: bottomPadding.value,
       left: kDefaultPadding / 2,
       right: kDefaultPadding / 2,
-      child: Container(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 0.5,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              '${currentIndex.value + 1} / ',
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-            Text(
-              media.length.toString(),
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).highlightColor,
-                  ),
-            ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            ),
-            Expanded(
-              child: LinearProgressIndicator(
-                value: (currentIndex.value + 1) / media.length,
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(kDefaultPadding),
-                backgroundColor: Theme.of(context).cardColor,
-              ),
+      child: isDesktopPlatform
+          ? DesktopGalleryProgress(
+              currentIndex: currentIndex.value,
+              count: media.length,
+              pageController: pageController,
             )
-          ],
-        ),
-      ),
+          : Container(
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              decoration: _galleryProgressDecoration(context),
+              child: _galleryProgressRow(
+                  context, currentIndex.value, media.length),
+            ),
     );
   }
 
@@ -581,28 +567,142 @@ class OpenGalleryWidget extends HookWidget {
       ValueNotifier<int> currentIndex,
       ValueNotifier<MapEntry<String, UrlType>> currentSource,
       Function() calculateBottomPadding,
-      bool isRound) {
+      bool isRound,
+      PageController pageController) {
+    void onPageChanged(int pageIndex) {
+      currentIndex.value = pageIndex;
+      currentSource.value = media[pageIndex];
+      calculateBottomPadding();
+    }
+
+    Widget buildItem(BuildContext ctx, int index, bool isFocus) => itemBuilder(
+          entry: media[index],
+          context: context,
+          isRound: isRound,
+        );
+
     return Positioned.fill(
       child: GestureDetector(
         onLongPress: () {
           MediaUtils.shareImage(currentSource.value.key);
         },
-        child: InteractiveviewerGalleryPlus<MapEntry<String, UrlType>>(
-          sources: media,
-          initIndex: index,
-          itemBuilder: (ctx, index, isFocus) {
-            return itemBuilder(
-              entry: media[index],
-              context: context,
-              isRound: isRound,
-            );
-          },
-          onPageChanged: (int pageIndex) {
-            currentIndex.value = pageIndex;
-            currentSource.value = media[pageIndex];
-            calculateBottomPadding();
-          },
+        child: isDesktopPlatform
+            ? YakiGallery<MapEntry<String, UrlType>>(
+                sources: media,
+                initIndex: index,
+                pageController: pageController,
+                maxScale: 4.5,
+                itemBuilder: buildItem,
+                onPageChanged: onPageChanged,
+              )
+            : InteractiveviewerGalleryPlus<MapEntry<String, UrlType>>(
+                sources: media,
+                initIndex: index,
+                itemBuilder: buildItem,
+                onPageChanged: onPageChanged,
+              ),
+      ),
+    );
+  }
+}
+
+BoxDecoration _galleryProgressDecoration(BuildContext context) => BoxDecoration(
+      color: Theme.of(context).cardColor.withValues(alpha: 0.5),
+      borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+      border: Border.all(color: Theme.of(context).dividerColor, width: 0.5),
+    );
+
+Widget _galleryProgressRow(BuildContext context, int index, int count) => Row(
+      children: [
+        Text('${index + 1} / ',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.w600,
+                )),
+        Text('$count',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).highlightColor,
+                )),
+        const SizedBox(width: kDefaultPadding / 2),
+        Expanded(
+          child: LinearProgressIndicator(
+            value: (index + 1) / count,
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(kDefaultPadding),
+            backgroundColor: Theme.of(context).cardColor,
+          ),
         ),
+      ],
+    );
+
+/// Desktop navigation and progress use separate, equally tall surfaces.
+class DesktopGalleryProgress extends StatelessWidget {
+  const DesktopGalleryProgress({
+    super.key,
+    required this.currentIndex,
+    required this.count,
+    required this.pageController,
+  });
+
+  final int currentIndex;
+  final int count;
+  final PageController pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget arrow(
+            Key key, IconData icon, String label, int target, bool enabled) =>
+        Container(
+          key: key,
+          width: kDefaultPadding * 2,
+          decoration: _galleryProgressDecoration(context),
+          child: IconButton(
+            tooltip: label,
+            padding: EdgeInsets.zero,
+            iconSize: kDefaultPadding,
+            style: IconButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.standard,
+            ),
+            onPressed: enabled
+                ? () => pageController.animateToPage(
+                      target,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                    )
+                : null,
+            icon: Icon(icon),
+          ),
+        );
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          arrow(
+              const ValueKey('gallery-previous'),
+              LucideIcons.chevronLeft,
+              context.t.previous.capitalizeFirst(),
+              currentIndex - 1,
+              currentIndex > 0),
+          const SizedBox(width: kDefaultPadding / 4),
+          Expanded(
+            child: Container(
+              key: const ValueKey('gallery-progress'),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              decoration: _galleryProgressDecoration(context),
+              child: _galleryProgressRow(context, currentIndex, count),
+            ),
+          ),
+          const SizedBox(width: kDefaultPadding / 4),
+          arrow(
+              const ValueKey('gallery-next'),
+              LucideIcons.chevronRight,
+              context.t.next.capitalizeFirst(),
+              currentIndex + 1,
+              currentIndex < count - 1),
+        ],
       ),
     );
   }

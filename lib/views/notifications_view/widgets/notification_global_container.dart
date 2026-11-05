@@ -367,7 +367,7 @@ class SlidableButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           side: BorderSide.none,
-        ),
+        ).copyWith(overlayColor: desktopNoHoverOverlay(effectiveForegroundColor)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           spacing: kDefaultPadding / 4,

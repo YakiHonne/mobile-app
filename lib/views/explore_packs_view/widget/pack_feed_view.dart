@@ -116,9 +116,11 @@ class _PackContentFeedState extends State<PackContentFeed> {
             }
           },
           buildWhen: (previous, current) =>
-              previous.onLoading != current.onLoading,
+              previous.onLoading != current.onLoading ||
+              (isDesktopPlatform && previous.content != current.content),
           builder: (context, state) {
             return AdaptiveSmartRefresher(
+              desktopHasResults: !state.onLoading && state.content.isNotEmpty,
               controller: refreshController,
               scrollController: scrollController,
               enablePullUp: true,

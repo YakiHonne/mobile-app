@@ -2208,5 +2208,12 @@
   "showSpamReplies": "スパムの可能性がある返信を表示",
   "hideSpamReplies": "スパムの可能性がある返信を非表示",
   "markAsSpam": "スパムとしてマーク",
-  "notSpam": "スパムではない"
+  "notSpam": "スパムではない",
+  "desktopPlay": "再生",
+  "desktopPause": "一時停止",
+  "desktopResizePanes": "ペインのサイズを変更",
+  "desktopDensity": "デスクトップの表示密度",
+  "desktopDensityComfortable": "標準",
+  "desktopDensityCompact": "コンパクト",
+  "desktopKnowPeople": "ユーザーを見つける"
 }

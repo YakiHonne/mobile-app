@@ -1146,7 +1146,7 @@ class DefaultRelaySuggestionContainer extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 if (relayInfo != null) {
-                  Navigator.pushNamed(
+                  YNavigator.pushNamed(
                     context,
                     RelayInfoView.routeName,
                     arguments: relayInfo,
@@ -1311,7 +1311,7 @@ class DefaultRelayUpdateContainer extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 if (relayInfo != null) {
-                  Navigator.pushNamed(
+                  YNavigator.pushNamed(
                     context,
                     RelayInfoView.routeName,
                     arguments: relayInfo,
@@ -1551,7 +1551,7 @@ class ContentRelayUpdateContainer extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 if (relayInfo != null) {
-                  Navigator.pushNamed(
+                  YNavigator.pushNamed(
                     context,
                     RelayInfoView.routeName,
                     arguments: relayInfo,

@@ -82,6 +82,9 @@ class _LeadingViewState extends State<LeadingView> {
             builder: (context, state) {
               return AdaptiveSmartRefresher(
                 controller: refreshController,
+                desktopHasResults:
+                    !state.onContentLoading && state.content.isNotEmpty,
+                showDesktopRefresh: !isFluid(),
                 enablePullUp: true,
                 header: const RefresherClassicHeader(
                   additionalOffset: kDefaultPadding * 3,
@@ -104,13 +107,15 @@ class _LeadingViewState extends State<LeadingView> {
                           height: fluidFeedTopInset(context, extra: 40),
                         ),
                       ),
-                    const SliverToBoxAdapter(
+                    SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.only(top: kDefaultPadding),
-                        child: UpgradeBanner(dismissible: true),
+                        padding: EdgeInsets.only(
+                            top: isDesktopPlatform ? 0 : kDefaultPadding),
+                        child: const UpgradeBanner(dismissible: true),
                       ),
                     ),
-                    if (state.showSuggestions &&
+                    if (!isDesktopPlatform &&
+                        state.showSuggestions &&
                         (state.onMediaLoading ||
                             (!state.onMediaLoading &&
                                 state.media.isNotEmpty))) ...[
@@ -129,11 +134,10 @@ class _LeadingViewState extends State<LeadingView> {
                         ),
                       ),
                     ],
-                    const SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: kDefaultPadding / 2,
+                    if (!isDesktopPlatform)
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: kDefaultPadding / 2),
                       ),
-                    ),
                     if (state.showFollowingListMessage) ...[
                       const SliverToBoxAdapter(
                         child: ShowFollowingListMessageBox(),
@@ -209,6 +213,7 @@ class _LeadingViewState extends State<LeadingView> {
               ),
               child: FluidSourceFilterRow(
                 viewType: ViewDataTypes.notes,
+                refreshController: refreshController,
                 onSourceChanged: () =>
                     leadingCubit.buildLeadingFeed(isAdding: false),
               ),

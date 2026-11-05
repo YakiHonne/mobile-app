@@ -10,6 +10,7 @@ import '../../../logic/leading_cubit/leading_cubit.dart';
 import '../../../logic/theme_cubit/theme_cubit.dart';
 import '../../../models/detailed_note_model.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/desktop/desktop_density.dart';
 import '../../widgets/fluid_content_card.dart';
 import '../../widgets/note_stats.dart';
 import '../../widgets/suggestions_box/multi_suggestion_box.dart';
@@ -42,7 +43,8 @@ class LeadingFeed extends StatelessWidget {
       sliver: SliverList.separated(
         itemCount: state.content.length,
         separatorBuilder: (context, index) {
-          if (index >= suggestionLeadingSeparatorCount - 3 &&
+          if (!isDesktopPlatform &&
+              index >= suggestionLeadingSeparatorCount - 3 &&
               index < suggestionLeadingSeparatorCount * 6) {
             _scheduleLeadingSuggestions(context);
           }
@@ -50,7 +52,8 @@ class LeadingFeed extends StatelessWidget {
             _schedulePaidNoteAds(context);
           }
 
-          if (index > 0 &&
+          if (!isDesktopPlatform &&
+              index > 0 &&
               index % suggestionLeadingSeparatorCount == 0 &&
               index < suggestionLeadingSeparatorCount * 6) {
             return MultiSuggestionBox(
@@ -73,9 +76,11 @@ class LeadingFeed extends StatelessWidget {
             buildWhen: (previous, current) =>
                 previous.fluidCards != current.fluidCards,
             builder: (context, state) {
-              return useFluidCards()
-                  ? const SizedBox(
-                      height: kDefaultPadding / 2,
+              return (isDesktopPlatform || useFluidCards())
+                  ? SizedBox(
+                      height: isDesktopPlatform
+                          ? DesktopDensityScope.of(context).gap / 2
+                          : kDefaultPadding / 2,
                     )
                   : const Divider(
                       thickness: 0.3,
@@ -122,7 +127,7 @@ class LeadingFeed extends StatelessWidget {
             }
           }
 
-          return FluidContentCard(child: child);
+          return FluidContentCard(desktopContainer: true, child: child);
         },
       ),
     );
@@ -163,6 +168,7 @@ class LeadingFeed extends StatelessWidget {
           }
 
           return FluidContentCard(
+            desktopContainer: true,
             child: event.kind == EventKind.REPOST
                 ? RepostNoteContainer(
                     key: PageStorageKey<String>('item_${event.id}'),
@@ -181,8 +187,12 @@ class LeadingFeed extends StatelessWidget {
           );
         },
         childCount: cells.length,
-        crossAxisSpacing: kDefaultPadding,
-        mainAxisSpacing: kDefaultPadding,
+        crossAxisSpacing: isDesktopPlatform
+            ? DesktopDensityScope.of(context).gap
+            : kDefaultPadding,
+        mainAxisSpacing: isDesktopPlatform
+            ? DesktopDensityScope.of(context).gap
+            : kDefaultPadding,
       ),
     );
   }

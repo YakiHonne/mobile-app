@@ -2208,5 +2208,12 @@
   "showSpamReplies": "संभावित स्पैम प्रतिक्रियाएँ दिखाएँ",
   "hideSpamReplies": "संभावित स्पैम प्रतिक्रियाएँ छिपाएँ",
   "markAsSpam": "स्पैम के रूप में चिह्नित करें",
-  "notSpam": "स्पैम नहीं"
+  "notSpam": "स्पैम नहीं",
+  "desktopPlay": "चलाएं",
+  "desktopPause": "रोकें",
+  "desktopResizePanes": "पैनल का आकार बदलें",
+  "desktopDensity": "डेस्कटॉप घनत्व",
+  "desktopDensityComfortable": "आरामदायक",
+  "desktopDensityCompact": "सघन",
+  "desktopKnowPeople": "लोगों को जानें"
 }

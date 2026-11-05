@@ -2249,6 +2249,13 @@ class TranslationsRu extends Translations {
 	@override String get hideSpamReplies => 'Скрыть потенциально нежелательные ответы';
 	@override String get markAsSpam => 'Пометить как спам';
 	@override String get notSpam => 'Не спам';
+	@override String get desktopPlay => 'Воспроизвести';
+	@override String get desktopPause => 'Пауза';
+	@override String get desktopResizePanes => 'Изменить размер панелей';
+	@override String get desktopDensity => 'Плотность интерфейса';
+	@override String get desktopDensityComfortable => 'Комфортная';
+	@override String get desktopDensityCompact => 'Компактная';
+	@override String get desktopKnowPeople => 'Найти людей';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -4501,6 +4508,13 @@ extension on TranslationsRu {
 			'hideSpamReplies' => 'Скрыть потенциально нежелательные ответы',
 			'markAsSpam' => 'Пометить как спам',
 			'notSpam' => 'Не спам',
+			'desktopPlay' => 'Воспроизвести',
+			'desktopPause' => 'Пауза',
+			'desktopResizePanes' => 'Изменить размер панелей',
+			'desktopDensity' => 'Плотность интерфейса',
+			'desktopDensityComfortable' => 'Комфортная',
+			'desktopDensityCompact' => 'Компактная',
+			'desktopKnowPeople' => 'Найти людей',
 			_ => null,
 		};
 	}

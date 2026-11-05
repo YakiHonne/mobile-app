@@ -54,11 +54,14 @@ class InternalWalletsView extends HookWidget {
 
     // Define the refresh logic
     Future<void> onRefresh() async {
-      if (controller != null) {
+      if (!isDesktopPlatform || !isRefreshing.value) {
         isRefreshing.value = true;
         controller.forward();
         walletManagerCubit.requestBalance();
         walletManagerCubit.getBtcInFiat();
+        if (isDesktopPlatform) {
+          unawaited(walletManagerCubit.getTransactions());
+        }
 
         await Future.delayed(
           const Duration(seconds: 1),
@@ -69,7 +72,9 @@ class InternalWalletsView extends HookWidget {
             }
           },
         );
-        isRefreshing.value = false;
+        if (!isDesktopPlatform || context.mounted) {
+          isRefreshing.value = false;
+        }
       }
     }
 
@@ -89,7 +94,9 @@ class InternalWalletsView extends HookWidget {
           padding: EdgeInsets.only(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
-            top: MediaQuery.of(context).padding.top + kToolbarHeight,
+            top: isDesktopPlatform
+                ? kDefaultPadding
+                : MediaQuery.of(context).padding.top + kToolbarHeight,
           ),
           child: BlocBuilder<WalletsManagerCubit, WalletsManagerState>(
             builder: (context, state) {
@@ -109,8 +116,8 @@ class InternalWalletsView extends HookWidget {
                 );
               }
 
-              return _refreshable(
-                  context, onVerticalDragUpdate, animation, isRefreshing, iwto);
+              return _refreshable(context, onVerticalDragUpdate, onRefresh,
+                  animation, isRefreshing, iwto);
             },
           ),
         ),
@@ -121,16 +128,26 @@ class InternalWalletsView extends HookWidget {
   RefreshIndicator _refreshable(
       BuildContext context,
       Function(DragUpdateDetails) onVerticalDragUpdate,
+      Future<void> Function() onRefresh,
       Animation<double> animation,
       ValueNotifier<bool> isRefreshing,
       ValueNotifier<InternalWalletTransactionOption> iwto) {
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: isDesktopPlatform ? onRefresh : () async {},
       color: Theme.of(context).primaryColorDark,
       child: GestureDetector(
         onVerticalDragUpdate: onVerticalDragUpdate,
         child: Column(
           children: [
+            if (isDesktopPlatform)
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: IconButton(
+                  tooltip: context.t.refresh,
+                  icon: const Icon(LucideIcons.refreshCw),
+                  onPressed: isRefreshing.value ? null : onRefresh,
+                ),
+              ),
             _loadingCircle(animation, isRefreshing),
             // ponytail: fluid appbar has no title slot, so the wallet
             // selector lives in the view.
@@ -418,9 +435,7 @@ class InternalWalletZapContainer extends HookWidget {
               ),
               child: Center(
                 child: Icon(
-                  zap.isIncoming
-                      ? LucideIcons.arrowDown
-                      : LucideIcons.arrowUp,
+                  zap.isIncoming ? LucideIcons.arrowDown : LucideIcons.arrowUp,
                   color: zap.isIncoming ? kGreen : kRed,
                   size: 15,
                 ),

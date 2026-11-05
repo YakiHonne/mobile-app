@@ -45,8 +45,11 @@ class UserProfileContainer extends HookWidget {
       child: (metadata, isNip05Valid) {
         return Container(
           padding: EdgeInsets.symmetric(
-            horizontal:
-                ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 10.w : 0,
+            horizontal: isDesktopPlatform
+                ? 0
+                : (ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+                    ? 10.w
+                    : 0),
           ),
           child: Row(
             children: [
@@ -227,8 +230,11 @@ class UserNoteStatContainer extends HookWidget {
       child: (metadata, isNip05Valid) {
         return Container(
           padding: EdgeInsets.symmetric(
-            horizontal:
-                ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 10.w : 0,
+            horizontal: isDesktopPlatform
+                ? 0
+                : (ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+                    ? 10.w
+                    : 0),
           ),
           child: Row(
             children: [
@@ -406,8 +412,8 @@ class ReactionIcon extends StatelessWidget {
           case LoadState.loading:
             return Center(
               child: SpinKitCircle(
-                color: Theme.of(nostrRepository.currentContext())
-                    .primaryColorDark,
+                color:
+                    Theme.of(nostrRepository.currentContext()).primaryColorDark,
                 size: 20,
               ),
             );

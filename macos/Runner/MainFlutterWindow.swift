@@ -13,14 +13,20 @@ class MainFlutterWindow: NSWindow {
     super.awakeFromNib()
 
     // Must run after super, which re-applies the nib's frame.
-    // Below 720pt the layout falls back to the MOBILE breakpoint, which is not
-    // a shape this window should ever be resizable into.
-    self.minSize = NSSize(width: 720, height: 600)
+    // Two 520-point panes, a 1-point divider, the 72-point compact rail,
+    // and 40 points of horizontal shell padding.
+    self.minSize = NSSize(width: 1153, height: 600)
     // AppKit persists and restores the frame across launches for us — no plugin
     // needed. ponytail: the first-launch default size is left to AppKit; setting
     // it explicitly here gets overridden by something later in window setup and
     // it only matters until the user resizes once.
     self.setFrameAutosaveName("YakiHonneMainWindow")
+    // An older saved window may already be narrower than the new minimum.
+    if self.frame.width < self.minSize.width {
+      var frame = self.frame
+      frame.size.width = self.minSize.width
+      self.setFrame(frame, display: true)
+    }
 
     // The titlebar stays (traffic lights, drag, double-click-to-zoom) but stops
     // painting: no chrome, no separator, no title, and the Flutter view spans

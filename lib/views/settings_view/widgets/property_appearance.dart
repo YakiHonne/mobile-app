@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../logic/theme_cubit/theme_cubit.dart';
 import '../../../utils/theme/glass_settings.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/desktop/desktop_density.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/fluid_switch.dart';
@@ -53,6 +54,11 @@ class PropertyAppearance extends HookWidget {
             height: kDefaultPadding,
           ),
           const AppPrimaryColorBox(),
+          if (isDesktopPlatform &&
+              DesktopDensityScope.maybeOf(context) != null) ...[
+            const SizedBox(height: kDefaultPadding),
+            const _DesktopDensitySetting(),
+          ],
           const SizedBox(
             height: kDefaultPadding,
           ),
@@ -165,6 +171,41 @@ class PropertyAppearance extends HookWidget {
   }
 }
 
+class _DesktopDensitySetting extends StatelessWidget {
+  const _DesktopDensitySetting();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = DesktopDensityScope.maybeOf(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.t.desktopDensity,
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: kDefaultPadding / 2),
+        GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: kDefaultPadding / 8,
+          mainAxisSpacing: kDefaultPadding / 8,
+          mainAxisExtent: 45,
+          shrinkWrap: true,
+          primary: false,
+          children: [
+            for (final density in DesktopDensity.values)
+              _AppearanceChoiceCard(
+                label: density == DesktopDensity.comfortable
+                    ? context.t.desktopDensityComfortable
+                    : context.t.desktopDensityCompact,
+                selected: controller.value == density,
+                onTap: () => controller.select(density),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class GlassQualityBox extends StatelessWidget {
   const GlassQualityBox({super.key});
 
@@ -206,10 +247,10 @@ class GlassQualityBox extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final quality = _qualities[index];
 
-                  return _qualityItem(
-                    context,
-                    quality,
-                    state.glassQuality == quality,
+                  return _AppearanceChoiceCard(
+                    label: _label(context, quality),
+                    selected: state.glassQuality == quality,
+                    onTap: () => themeCubit.setGlassQuality(quality),
                   );
                 },
                 itemCount: _qualities.length,
@@ -218,38 +259,6 @@ class GlassQualityBox extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  Widget _qualityItem(
-    BuildContext context,
-    GlassQuality quality,
-    bool isSelected,
-  ) {
-    return GestureDetector(
-      onTap: () => themeCubit.setGlassQuality(quality),
-      behavior: HitTestBehavior.translucent,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-          color: Theme.of(context).cardColor,
-          border: isSelected
-              ? Border.all(color: Theme.of(context).primaryColor)
-              : Border.all(
-                  color: Theme.of(context).dividerColor,
-                  width: 0.5,
-                ),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          _label(context, quality),
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                fontWeight: FontWeight.w700,
-                color: isSelected ? Theme.of(context).primaryColor : null,
-              ),
-        ),
-      ),
     );
   }
 
@@ -262,6 +271,50 @@ class GlassQualityBox extends StatelessWidget {
       case GlassQuality.minimal:
         return context.t.glassQualityMinimal;
     }
+  }
+}
+
+class _AppearanceChoiceCard extends StatelessWidget {
+  const _AppearanceChoiceCard({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          color: Theme.of(context).cardColor,
+          border: selected
+              ? Border.all(color: Theme.of(context).primaryColor)
+              : Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          textAlign: isDesktopPlatform ? TextAlign.center : null,
+          maxLines: isDesktopPlatform ? 2 : null,
+          overflow: isDesktopPlatform ? TextOverflow.ellipsis : null,
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontWeight: FontWeight.w700,
+                color: selected ? Theme.of(context).primaryColor : null,
+              ),
+        ),
+      ),
+    );
   }
 }
 

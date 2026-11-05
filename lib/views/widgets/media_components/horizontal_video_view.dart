@@ -12,6 +12,7 @@ import '../../../logic/horizontal_video_cubit/horizontal_video_cubit.dart';
 import '../../../logic/notes_events_cubit/notes_events_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../models/video_model.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_zaps_view/send_zaps_view.dart';
 import '../app_icon.dart';
@@ -138,6 +139,7 @@ class HorizontalVideoView extends HookWidget {
                     removeBorders: true,
                     removePadding: true,
                     fallbackUrls: video.fallbackUrls,
+                    desktopVideo: video,
                   ),
                 ),
                 _videoData(context, state),
@@ -211,7 +213,7 @@ class HorizontalVideoView extends HookWidget {
           return HorizontalVideoContainer(
             video: video,
             onClicked: () {
-              Navigator.pushNamed(
+              YNavigator.pushNamed(
                 context,
                 HorizontalVideoView.routeName,
                 arguments: [

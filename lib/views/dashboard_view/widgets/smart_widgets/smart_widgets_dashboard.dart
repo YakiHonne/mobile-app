@@ -92,9 +92,15 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
           refreshController.refreshCompleted();
         }
       },
-      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      buildWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
+          (isDesktopPlatform &&
+              (previous.content != current.content ||
+                  previous.savedTools != current.savedTools)),
       builder: (context, state) {
         return AdaptiveSmartRefresher(
+          desktopHasResults: !state.isLoading &&
+              (state.content.isNotEmpty || state.savedTools.isNotEmpty),
           controller: refreshController,
           enablePullUp: true,
           header: const RefresherClassicHeader(),
@@ -242,7 +248,8 @@ class _SmartWidgetsDashboardState extends State<SmartWidgetsDashboard> {
     );
   }
 
-  FluidPullDownButton _globalPulldownButton(BuildContext context, TextStyle style) {
+  FluidPullDownButton _globalPulldownButton(
+      BuildContext context, TextStyle style) {
     return FluidPullDownButton(
       animationBuilder: (context, state, child) {
         return child;

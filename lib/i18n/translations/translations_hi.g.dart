@@ -2249,6 +2249,13 @@ class TranslationsHi extends Translations {
 	@override String get hideSpamReplies => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ';
 	@override String get markAsSpam => 'स्पैम के रूप में चिह्नित करें';
 	@override String get notSpam => 'स्पैम नहीं';
+	@override String get desktopPlay => 'चलाएं';
+	@override String get desktopPause => 'रोकें';
+	@override String get desktopResizePanes => 'पैनल का आकार बदलें';
+	@override String get desktopDensity => 'डेस्कटॉप घनत्व';
+	@override String get desktopDensityComfortable => 'आरामदायक';
+	@override String get desktopDensityCompact => 'सघन';
+	@override String get desktopKnowPeople => 'लोगों को जानें';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -4501,6 +4508,13 @@ extension on TranslationsHi {
 			'hideSpamReplies' => 'संभावित स्पैम प्रतिक्रियाएँ छिपाएँ',
 			'markAsSpam' => 'स्पैम के रूप में चिह्नित करें',
 			'notSpam' => 'स्पैम नहीं',
+			'desktopPlay' => 'चलाएं',
+			'desktopPause' => 'रोकें',
+			'desktopResizePanes' => 'पैनल का आकार बदलें',
+			'desktopDensity' => 'डेस्कटॉप घनत्व',
+			'desktopDensityComfortable' => 'आरामदायक',
+			'desktopDensityCompact' => 'सघन',
+			'desktopKnowPeople' => 'लोगों को जानें',
 			_ => null,
 		};
 	}

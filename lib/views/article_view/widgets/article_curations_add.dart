@@ -208,7 +208,11 @@ class AddCuration extends HookWidget {
         return ListView(
           controller: controller,
           physics: physics,
-          padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding),
+          padding: EdgeInsets.all(
+            isDesktopPlatform
+                ? kDefaultPadding
+                : (isTablet ? 15.w : kDefaultPadding),
+          ),
           children: [
             _contentStack(imageUrlController),
             const SizedBox(
@@ -347,8 +351,9 @@ class AddCuration extends HookWidget {
   }
 
   Container _imageContainer(ArticleCurationsState state, BuildContext context) {
+    final imageHeight = isDesktopPlatform ? 180.0 : 20.h;
     return Container(
-      height: 20.h,
+      height: imageHeight,
       decoration: state.isImageSelected
           ? null
           : BoxDecoration(
@@ -372,12 +377,12 @@ class AddCuration extends HookWidget {
       child: state.isImageSelected && !state.isLocalImage
           ? state.imageLink.isEmpty
               ? SizedBox(
-                  height: 20.h,
+                  height: imageHeight,
                   child: const NoMediaPlaceHolder(),
                 )
               : CommonThumbnail(
                   image: state.imageLink,
-                  height: 20.h,
+                  height: imageHeight,
                   width: double.infinity,
                   isRound: true,
                   radius: kDefaultPadding,

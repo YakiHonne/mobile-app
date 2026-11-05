@@ -2208,5 +2208,12 @@
   "showSpamReplies": "Afficher les réponses potentiellement indésirables",
   "hideSpamReplies": "Masquer les réponses potentiellement indésirables",
   "markAsSpam": "Signaler comme indésirable",
-  "notSpam": "Pas indésirable"
+  "notSpam": "Pas indésirable",
+  "desktopPlay": "Lire",
+  "desktopPause": "Pause",
+  "desktopResizePanes": "Redimensionner les volets",
+  "desktopDensity": "Densité du bureau",
+  "desktopDensityComfortable": "Confortable",
+  "desktopDensityCompact": "Compacte",
+  "desktopKnowPeople": "Découvrir des personnes"
 }

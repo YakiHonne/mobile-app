@@ -110,12 +110,19 @@ class PaidNoteProcess extends HookWidget {
       listener: (context, state) {
         if (state.verification == PaidNoteVerification.published) {
           final event = context.read<WriteNoteCubit>().toBeSubmittedEvent;
-          final rootCtx = YNavigator.navigatorKey.currentContext ??
-              nostrRepository.currentContext();
-
-          Navigator.pop(context);
-          if (!checkZap && Navigator.canPop(rootCtx)) {
-            Navigator.pop(rootCtx);
+          if (isDesktopPlatform) {
+            final navigator = Navigator.of(context);
+            navigator.pop();
+            if (!checkZap && navigator.canPop()) {
+              navigator.pop();
+            }
+          } else {
+            final rootCtx = YNavigator.navigatorKey.currentContext ??
+                nostrRepository.currentContext();
+            Navigator.pop(context);
+            if (!checkZap && Navigator.canPop(rootCtx)) {
+              Navigator.pop(rootCtx);
+            }
           }
 
           if (event != null) {

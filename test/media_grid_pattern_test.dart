@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yakihonne/utils/platform_utils.dart';
@@ -8,6 +9,25 @@ import 'package:yakihonne/utils/platform_utils.dart';
 /// geometry* rather than against itself — a self-consistent formula that
 /// disagrees with the layout is exactly the failure mode here.
 void main() {
+  testWidgets('narrow desktop panels use fewer columns', (tester) async {
+    late int feedColumns;
+    late int mediaColumns;
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(size: Size(300, 600)),
+        child: Builder(builder: (context) {
+          feedColumns = feedGridColumns(context);
+          mediaColumns = mediaGridColumns(context);
+          return const SizedBox.shrink();
+        }),
+      ),
+    );
+    if (isDesktopPlatform) {
+      expect(feedColumns, 1);
+      expect(mediaColumns, 2);
+    }
+  });
+
   const constraints = SliverConstraints(
     axisDirection: AxisDirection.down,
     growthDirection: GrowthDirection.forward,
@@ -23,7 +43,7 @@ void main() {
     cacheOrigin: 0,
   );
 
-  for (final columns in [3, 4, 5]) {
+  for (final columns in [2, 3, 4, 5]) {
     test('$columns-column media grid: predicted large tiles match the layout',
         () {
       final SliverGridDelegate delegate = SliverQuiltedGridDelegate(
@@ -50,13 +70,13 @@ void main() {
 
       for (var i = 0; i < cycle * 2; i++) {
         final laidOutLarge = extents[i] > cell * 1.5;
-        final predictedLarge =
-            i % cycle == 0 || i % cycle == largeOffset;
+        final predictedLarge = i % cycle == 0 || i % cycle == largeOffset;
 
         expect(
           predictedLarge,
           laidOutLarge,
-          reason: 'index $i: predicted large=$predictedLarge but the layout gave '
+          reason:
+              'index $i: predicted large=$predictedLarge but the layout gave '
               'mainAxisExtent ${extents[i]} (cell $cell)',
         );
       }

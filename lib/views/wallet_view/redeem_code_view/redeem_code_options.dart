@@ -165,22 +165,29 @@ class RedeemCodeOptions extends HookWidget {
             borderRadius: BorderRadius.circular(
               kDefaultPadding + 5,
             ),
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: (controller) => _onQRViewCreated(
-                controller: controller,
-                context: context,
-                controllerState: controllerState,
-                code: code,
-              ),
-              overlay: QrScannerOverlayShape(
-                borderRadius: kDefaultPadding,
-                borderColor: kTransparent,
-                borderWidth: 5,
-                overlayColor: kTransparent,
-                cutOutSize: 80.w,
-              ),
-            ),
+            child: isMobilePlatform
+                ? QRView(
+                    key: qrKey,
+                    onQRViewCreated: (controller) => _onQRViewCreated(
+                      controller: controller,
+                      context: context,
+                      controllerState: controllerState,
+                      code: code,
+                    ),
+                    overlay: QrScannerOverlayShape(
+                      borderRadius: kDefaultPadding,
+                      borderColor: kTransparent,
+                      borderWidth: 5,
+                      overlayColor: kTransparent,
+                      cutOutSize: 80.w,
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
           ),
         ),
       ],
@@ -234,17 +241,18 @@ class RedeemCodeOptions extends HookWidget {
           Row(
             spacing: kDefaultPadding / 4,
             children: [
-              Expanded(
-                child: SendOptionsButton(
-                  onClicked: () {
-                    isQrCode.value = true;
-                  },
-                  title: context.t.scanCode,
-                  icon: FeatureIcons.qr,
-                  borderColor:
-                      isQrCode.value ? Theme.of(context).primaryColor : null,
+              if (isMobilePlatform)
+                Expanded(
+                  child: SendOptionsButton(
+                    onClicked: () {
+                      isQrCode.value = true;
+                    },
+                    title: context.t.scanCode,
+                    icon: FeatureIcons.qr,
+                    borderColor:
+                        isQrCode.value ? Theme.of(context).primaryColor : null,
+                  ),
                 ),
-              ),
               Expanded(
                 child: SendOptionsButton(
                   onClicked: () {

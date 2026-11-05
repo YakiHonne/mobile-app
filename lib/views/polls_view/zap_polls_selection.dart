@@ -123,6 +123,7 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
   Widget _items(BuildContext context, bool isTablet,
       ScrollController scrollController, PollsState state) {
     return AdaptiveSmartRefresher(
+      desktopHasResults: state.polls.isNotEmpty,
       controller: refreshController,
       enablePullDown: false,
       enablePullUp: true,

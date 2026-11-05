@@ -7,6 +7,7 @@ import 'package:nostr_core_enhanced/models/models.dart';
 import 'package:nostr_core_enhanced/nostr/nips/nip_019.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
+import '../../../routes/navigator.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/nip05_component.dart';
@@ -14,10 +15,11 @@ import '../../widgets/profile_picture.dart';
 import 'dm_details.dart';
 
 class DmUserSearch extends HookWidget {
-  DmUserSearch({super.key}) {
+  DmUserSearch({super.key, this.onSelected}) {
     umamiAnalytics.trackEvent(screenName: 'Private message search view');
   }
   static const routeName = '/dmUserSearchView';
+  final ValueChanged<String>? onSelected;
 
   static Route route() {
     return CupertinoPageRoute(
@@ -70,7 +72,13 @@ class DmUserSearch extends HookWidget {
                     author.pubkey,
                   );
 
-              Navigator.pushNamed(
+              if (onSelected != null) {
+                onSelected!(author.pubkey);
+                Navigator.of(context).pop();
+                return;
+              }
+
+              YNavigator.pushNamed(
                 context,
                 DmDetails.routeName,
                 arguments: [

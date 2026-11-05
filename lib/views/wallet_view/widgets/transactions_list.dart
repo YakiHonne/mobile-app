@@ -66,6 +66,8 @@ class _TransactionsListState extends State<TransactionsList> {
             },
             builder: (context, state) {
               return AdaptiveSmartRefresher(
+                desktopHasResults: !state.isLoadingTransactions &&
+                    state.transactions.isNotEmpty,
                 controller: refreshController,
                 scrollController: scrollController,
                 enablePullDown: false,
@@ -74,6 +76,18 @@ class _TransactionsListState extends State<TransactionsList> {
                   color: Theme.of(context).primaryColor,
                 ),
                 footer: const RefresherClassicFooter(),
+                onRefresh: isDesktopPlatform
+                    ? () async {
+                        refreshController.resetNoData();
+                        try {
+                          await walletManagerCubit.getTransactions();
+                        } finally {
+                          if (mounted) {
+                            refreshController.refreshCompleted();
+                          }
+                        }
+                      }
+                    : null,
                 onLoading: () =>
                     walletManagerCubit.getTransactions(isAdding: true),
                 child: CustomScrollView(

@@ -2208,5 +2208,12 @@
   "showSpamReplies": "Показать потенциально нежелательные ответы",
   "hideSpamReplies": "Скрыть потенциально нежелательные ответы",
   "markAsSpam": "Пометить как спам",
-  "notSpam": "Не спам"
+  "notSpam": "Не спам",
+  "desktopPlay": "Воспроизвести",
+  "desktopPause": "Пауза",
+  "desktopResizePanes": "Изменить размер панелей",
+  "desktopDensity": "Плотность интерфейса",
+  "desktopDensityComfortable": "Комфортная",
+  "desktopDensityCompact": "Компактная",
+  "desktopKnowPeople": "Найти людей"
 }

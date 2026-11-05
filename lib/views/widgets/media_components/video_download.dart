@@ -7,9 +7,158 @@ import '../../../utils/utils.dart';
 import '../dotted_container.dart';
 import '../modal_sheet_container.dart';
 
-class VideoDownload extends HookWidget {
-  const VideoDownload({
-    super.key,
+class VideoDownload extends StatelessWidget {
+  const VideoDownload({super.key, required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) => isDesktopPlatform
+      ? _DesktopVideoDownload(url: url)
+      : _MobileVideoDownload(url: url);
+}
+
+class _DesktopVideoDownload extends HookWidget {
+  const _DesktopVideoDownload({
+    required this.url,
+  });
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = useState<double>(0);
+    final finished = useState(false);
+    final saved = useState<bool?>(null);
+
+    useMemoized(
+      () async {
+        final result = await videoControllerManagerCubit.downloadVideo(
+          url,
+          (val) {
+            if (context.mounted) {
+              progress.value = val.clamp(0, 99);
+            }
+          },
+        );
+        if (context.mounted) {
+          saved.value = result;
+          finished.value = true;
+        }
+      },
+    );
+
+    return ModalSheetContainer(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const ModalBottomSheetHandle(),
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            !finished.value
+                ? context.t.downloadingVideo
+                : (saved.value ?? false)
+                    ? context.t.downloadSuccessful
+                    : saved.value == false
+                        ? context.t.errorSavingVideo
+                        : context.t.canceled,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(
+            url,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: kDefaultPadding),
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: finished.value && (saved.value ?? false)
+                  ? Lottie.asset(
+                      LottieAnimations.success,
+                      fit: BoxFit.cover,
+                      frameRate: const FrameRate(60),
+                      repeat: false,
+                    )
+                  : finished.value
+                      ? const SizedBox.shrink()
+                      : Stack(
+                          children: [
+                            Positioned.fill(
+                              child: CircularProgressIndicator(
+                                value: progress.value / 100,
+                                backgroundColor: Theme.of(context).dividerColor,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                '${progress.value.toStringAsFixed(0)}%',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+            ),
+          ),
+          const SizedBox(height: kDefaultPadding),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: finished.value
+                ? SizedBox(
+                    key: const ValueKey('ok_button'),
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {
+                        YNavigator.pop(context);
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundBuilder: (_, __, child) => child!,
+                        backgroundColor: Theme.of(context).cardColor,
+                        side: BorderSide(
+                          color: Theme.of(context).dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Text(
+                        context.t.ok.capitalize(),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                  )
+                : const SizedBox(
+                    key: ValueKey('empty_button'),
+                    width: double.infinity,
+                  ),
+          ),
+          const SizedBox(height: kBottomNavigationBarHeight),
+        ],
+      ),
+    );
+  }
+}
+
+class _MobileVideoDownload extends HookWidget {
+  const _MobileVideoDownload({
     required this.url,
   });
 

@@ -11,7 +11,9 @@ import '../app_icon.dart';
 import '../profile_picture.dart';
 
 class SuggestedTrendingUsers24 extends StatelessWidget {
-  const SuggestedTrendingUsers24({super.key});
+  const SuggestedTrendingUsers24({super.key, this.desktopPane = false});
+
+  final bool desktopPane;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,9 @@ class SuggestedTrendingUsers24 extends StatelessWidget {
               height: 207,
               child: ListView.separated(
                 key: const PageStorageKey('trending-users-24'),
+                padding: desktopPane
+                    ? const EdgeInsets.symmetric(horizontal: kDefaultPadding)
+                    : null,
                 separatorBuilder: (context, index) => const SizedBox(
                   width: kDefaultPadding / 2,
                 ),

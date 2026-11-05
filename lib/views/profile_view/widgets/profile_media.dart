@@ -80,7 +80,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   void _handlePlaybackState() {
-    if (!mounted) {
+    if (!mounted || isDesktopPlatform) {
       return;
     }
 
@@ -111,6 +111,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    if (isDesktopPlatform) {
+      return VideoCard(video: widget.video);
+    }
     return StreamBuilder<void>(
       stream: videoControllerManagerCubit.watchUrl(_usedUrl),
       builder: (context, _) {
@@ -661,7 +664,7 @@ class ProfileMediaFilter extends StatelessWidget {
         onTap: showMenu,
         behavior: HitTestBehavior.translucent,
         child: SizedBox(
-          width: 50.w,
+          width: isDesktopPlatform ? double.infinity : 50.w,
           child: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
