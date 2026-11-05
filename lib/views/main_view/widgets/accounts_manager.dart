@@ -224,6 +224,7 @@ class AccountManager extends HookWidget {
   /// Builds the action buttons at the bottom
   Widget _buildActionButtons(BuildContext context) {
     return Column(
+      spacing: kDefaultPadding / 4,
       children: [
         AccountManagerButton(
           icon: FeatureIcons.addRaw,
