@@ -360,6 +360,7 @@ class WalletsLogos {
   static const String albyGo = 'assets/images/albygo.webp';
   static const String blitz = 'assets/images/blitz.jpeg';
   static const String minibits = 'assets/images/minibits.png';
+  static const String buhogo = 'assets/images/buhogo.png';
 }
 
 // class FluidFeatureIcons {
