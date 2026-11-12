@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 3.14)
 project(yakihonne LANGUAGES CXX)
 
+# flutter_inappwebview_windows still uses /await-era experimental coroutine
+# headers, which recent MSVC hard-errors on. Silence it for every target,
+# including plugin subprojects added via add_subdirectory.
+add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "YakiHonne")

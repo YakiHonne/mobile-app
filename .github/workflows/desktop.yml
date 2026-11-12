@@ -44,10 +44,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libcurl4-openssl-dev
-      - name: Install Windows build dependencies
-        if: matrix.platform == 'windows'
-        run: |
-          echo "CL=/D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS" >> "$GITHUB_ENV"
       - name: Use ad-hoc macOS signing
         if: matrix.platform == 'macos'
         run: |
