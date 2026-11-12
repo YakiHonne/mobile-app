@@ -16,9 +16,17 @@ class SmartWidgetDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final content = SingleChildScrollView(
+      child: GlobalSmartWidgetContainer(
+        smartWidgetModel: smartWidgetModel,
+        disableActions: true,
+      ),
+    );
+    final display = Container(
       constraints: BoxConstraints(
-        maxHeight: 70.h,
+        maxWidth: isDesktopPlatform ? 560 : double.infinity,
+        maxHeight:
+            isDesktopPlatform ? MediaQuery.sizeOf(context).height * 0.7 : 70.h,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kDefaultPadding / 2),
@@ -57,14 +65,10 @@ class SmartWidgetDisplay extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding / 4,
           ),
-          SingleChildScrollView(
-            child: GlobalSmartWidgetContainer(
-              smartWidgetModel: smartWidgetModel,
-              disableActions: true,
-            ),
-          ),
+          if (isDesktopPlatform) Flexible(child: content) else content,
         ],
       ),
     );
+    return display;
   }
 }

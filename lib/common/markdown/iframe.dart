@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:markdown_widget/widget/all.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../utils/utils.dart';
 import '../../views/widgets/link_previewer.dart';
@@ -80,6 +82,19 @@ class _XWebViewState extends State<XWebView> {
 
   @override
   Widget build(BuildContext context) {
+    if (defaultTargetPlatform == TargetPlatform.linux) {
+      final uri = Uri.tryParse(widget.html);
+      if (uri == null || (uri.scheme != 'https' && uri.scheme != 'http')) {
+        return const SizedBox.shrink();
+      }
+      return TextButton(
+        onPressed: () => launchUrlString(
+          widget.html,
+          mode: LaunchMode.externalApplication,
+        ),
+        child: Text(context.t.enableExternalBrowser),
+      );
+    }
     final id = widget.html.split('status/').last.split('?').first;
 
     return SizedBox(

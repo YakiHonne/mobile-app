@@ -18,8 +18,8 @@ class PointsLoginPopup extends HookWidget {
   Widget build(BuildContext context) {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
-    return Container(
-      width: isTablet ? 50.w : double.infinity,
+    final content = Container(
+      width: isDesktopPlatform ? 520 : (isTablet ? 50.w : double.infinity),
       margin: const EdgeInsets.all(kDefaultPadding),
       child: Container(
         decoration: BoxDecoration(
@@ -47,6 +47,9 @@ class PointsLoginPopup extends HookWidget {
         ),
       ),
     );
+    return isDesktopPlatform
+        ? SingleChildScrollView(child: Center(child: content))
+        : content;
   }
 }
 

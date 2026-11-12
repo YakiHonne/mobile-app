@@ -146,18 +146,20 @@ class RewardsList extends StatelessWidget {
                   description: context.t.noRewards.capitalizeFirst(),
                   icon: FeatureIcons.reward,
                 )
-              : isMobile
-                  ? _itemsList(state)
-                  : _itemsGrid(state),
+              : isDesktopPlatform
+                  ? DesktopPaneGridBuilder(
+                      builder: (context, columns) =>
+                          _itemsGrid(state, columns: columns))
+                  : (isMobile ? _itemsList(state) : _itemsGrid(state)),
         );
       },
     );
   }
 
-  MasonryGridView _itemsGrid(RewardsState state) {
+  MasonryGridView _itemsGrid(RewardsState state, {int columns = 2}) {
     return MasonryGridView.builder(
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
       ),
       mainAxisSpacing: kDefaultPadding / 2,
       crossAxisSpacing: kDefaultPadding / 2,

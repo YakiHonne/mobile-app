@@ -166,6 +166,12 @@ class UnFlashNewsDetails extends HookWidget {
             );
           }
 
+          if (isDesktopPlatform) {
+            return DesktopPaneGridBuilder(
+              builder: (context, columns) =>
+                  _itemsGrid(filteredUncensoredNotes, state, columns: columns),
+            );
+          }
           if (isMobile) {
             return _itemsList(filteredUncensoredNotes, state);
           } else {
@@ -177,10 +183,11 @@ class UnFlashNewsDetails extends HookWidget {
   }
 
   MasonryGridView _itemsGrid(List<UncensoredNote> filteredUncensoredNotes,
-      UnFlashNewsDetailsState state) {
+      UnFlashNewsDetailsState state,
+      {int columns = 2}) {
     return MasonryGridView.builder(
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
       ),
       mainAxisSpacing: kDefaultPadding / 2,
       crossAxisSpacing: kDefaultPadding / 2,
@@ -233,7 +240,8 @@ class UnFlashNewsDetails extends HookWidget {
           Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 1),
       toolbarHeight: 45,
       titleSpacing: 0,
-      actions: const [SizedBox.shrink()],      title: SizedBox(
+      actions: const [SizedBox.shrink()],
+      title: SizedBox(
         width: double.infinity,
         child: ButtonsTabBar(
           splashColor: kTransparent,
@@ -442,7 +450,8 @@ class UnFlashNewsDetails extends HookWidget {
                               },
                             ),
                           );
-                        },                      );
+                        },
+                      );
                     },
                     icon: Icon(
                       LucideIcons.plus,

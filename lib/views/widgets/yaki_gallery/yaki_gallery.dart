@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../utils/platform_utils.dart';
+
 import './custom_dismissible.dart';
 import './interactive_viewer_boundary.dart';
 
@@ -147,58 +149,62 @@ class _YakiGalleryState extends State<YakiGallery>
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveViewerBoundary(
-      controller: _transformationController,
-      boundaryWidth: MediaQuery.of(context).size.width,
-      onScaleChanged: _onScaleChanged,
-      onLeftBoundaryHit: _onLeftBoundaryHit,
-      onRightBoundaryHit: _onRightBoundaryHit,
-      onNoBoundaryHit: _onNoBoundaryHit,
-      maxScale: widget.maxScale,
-      minScale: widget.minScale,
-      child: Listener(
-        // This Listener only tracks touch count for PageView/zoom purposes.
-        // Dismiss logic is fully inside CustomDismissible now.
-        onPointerDown: (event) {
-          currentTouchPointNum++;
-          if (currentTouchPointNum > 1 && _enablePageView) {
-            setState(() => _enablePageView = false);
-          }
-        },
-        onPointerUp: (event) {
-          currentTouchPointNum = (currentTouchPointNum - 1).clamp(0, 10);
-          if (currentTouchPointNum <= 1 &&
-              _currentScale <= widget.minScale &&
-              !_enablePageView) {
-            setState(() => _enablePageView = true);
-          }
-        },
-        child: CustomDismissible(
-          onDismissed: () => Navigator.of(context).pop(),
-          onDismissDragStart: () {
-            widget.onDismissDragStart?.call();
-            setState(() => _enablePageView = false);
+    return LayoutBuilder(
+      builder: (context, constraints) => InteractiveViewerBoundary(
+        controller: _transformationController,
+        boundaryWidth: isDesktopPlatform
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width,
+        onScaleChanged: _onScaleChanged,
+        onLeftBoundaryHit: _onLeftBoundaryHit,
+        onRightBoundaryHit: _onRightBoundaryHit,
+        onNoBoundaryHit: _onNoBoundaryHit,
+        maxScale: widget.maxScale,
+        minScale: widget.minScale,
+        child: Listener(
+          // This Listener only tracks touch count for PageView/zoom purposes.
+          // Dismiss logic is fully inside CustomDismissible now.
+          onPointerDown: (event) {
+            currentTouchPointNum++;
+            if (currentTouchPointNum > 1 && _enablePageView) {
+              setState(() => _enablePageView = false);
+            }
           },
-          onDismissDragCancel: () {
-            widget.onDismissDragCancel?.call();
-            setState(() => _enablePageView = true);
+          onPointerUp: (event) {
+            currentTouchPointNum = (currentTouchPointNum - 1).clamp(0, 10);
+            if (currentTouchPointNum <= 1 &&
+                _currentScale <= widget.minScale &&
+                !_enablePageView) {
+              setState(() => _enablePageView = true);
+            }
           },
-          child: PageView.builder(
-            onPageChanged: _onPageChanged,
-            controller: _pageController,
-            physics:
-                _enablePageView ? null : const NeverScrollableScrollPhysics(),
-            itemCount: widget.sources.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onDoubleTapDown: (TapDownDetails details) {
-                  _doubleTapLocalPosition = details.localPosition;
-                },
-                onDoubleTap: onDoubleTap,
-                child:
-                    widget.itemBuilder(context, index, index == currentIndex),
-              );
+          child: CustomDismissible(
+            onDismissed: () => Navigator.of(context).pop(),
+            onDismissDragStart: () {
+              widget.onDismissDragStart?.call();
+              setState(() => _enablePageView = false);
             },
+            onDismissDragCancel: () {
+              widget.onDismissDragCancel?.call();
+              setState(() => _enablePageView = true);
+            },
+            child: PageView.builder(
+              onPageChanged: _onPageChanged,
+              controller: _pageController,
+              physics:
+                  _enablePageView ? null : const NeverScrollableScrollPhysics(),
+              itemCount: widget.sources.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onDoubleTapDown: (TapDownDetails details) {
+                    _doubleTapLocalPosition = details.localPosition;
+                  },
+                  onDoubleTap: onDoubleTap,
+                  child:
+                      widget.itemBuilder(context, index, index == currentIndex),
+                );
+              },
+            ),
           ),
         ),
       ),

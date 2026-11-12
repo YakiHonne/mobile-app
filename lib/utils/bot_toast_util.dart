@@ -36,8 +36,8 @@ class BotToastUtils {
     );
   }
 
-  static void showError(String message) {
-    if (!_popupsEnabled) {
+  static void showError(String message, {bool force = false}) {
+    if (!force && !_popupsEnabled) {
       return;
     }
 

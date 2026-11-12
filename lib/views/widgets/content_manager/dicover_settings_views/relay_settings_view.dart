@@ -244,7 +244,7 @@ class RelaySettingsView extends HookWidget {
                     }
 
                     return SizedBox(
-                      height: 20.h,
+                      height: isDesktopPlatform ? 180 : 20.h,
                       child: ListView.separated(
                         separatorBuilder: (context, index) {
                           return const SizedBox(
@@ -437,7 +437,8 @@ class RelaySettingsView extends HookWidget {
         );
       },
       itemCount: favoriteRelays.value.length,
-      onReorderItem: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
+      onReorderItem: (oldIndex, newIndex) =>
+          setFavoriteOrder(oldIndex, newIndex),
     );
   }
 
@@ -466,7 +467,8 @@ class RelaySettingsView extends HookWidget {
         );
       },
       itemCount: favoriteRelaySets.value.length,
-      onReorderItem: (oldIndex, newIndex) => setFavoriteOrder(oldIndex, newIndex),
+      onReorderItem: (oldIndex, newIndex) =>
+          setFavoriteOrder(oldIndex, newIndex),
     );
   }
 

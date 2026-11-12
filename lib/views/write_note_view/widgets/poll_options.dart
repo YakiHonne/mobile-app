@@ -17,45 +17,49 @@ class PollOptions extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = Container(
+      width: isDesktopPlatform ? double.infinity : 100.w,
+      margin: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(kDefaultPadding * 2),
+        color: Theme.of(context).cardColor,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const ModalBottomSheetHandle(),
+          Text(
+            context.t.zapPoll,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 1.5,
+          ),
+          IntrinsicHeight(
+            child: Row(
+              spacing: kDefaultPadding / 3,
+              children: [
+                _addZapPoll(context),
+                _browsePolls(context),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+        ],
+      ),
+    );
+    if (isDesktopPlatform) {
+      return SingleChildScrollView(child: content);
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
-      child: Container(
-        width: 100.w,
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefaultPadding * 2),
-          color: Theme.of(context).cardColor,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const ModalBottomSheetHandle(),
-            Text(
-              context.t.zapPoll,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: kDefaultPadding / 1.5,
-            ),
-            IntrinsicHeight(
-              child: Row(
-                spacing: kDefaultPadding / 3,
-                children: [
-                  _addZapPoll(context),
-                  _browsePolls(context),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-          ],
-        ),
-      ),
+      child: content,
     );
   }
 

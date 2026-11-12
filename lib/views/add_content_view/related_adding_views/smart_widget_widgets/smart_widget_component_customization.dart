@@ -710,7 +710,7 @@ class SwProfilePicker extends HookWidget {
             pubkey: pubkeys[index],
             child: (metadata, nip05) {
               return Container(
-                width: 65.w,
+                width: isDesktopPlatform ? 280 : 65.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(kDefaultPadding / 1.2),
                   color: Theme.of(context).cardColor,

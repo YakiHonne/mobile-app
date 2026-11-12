@@ -16,42 +16,61 @@ class CashuNoWallet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ExtendedImage.asset(
-          Images.cashu,
-          width: 30.w,
-          height: 30.w,
-          fit: BoxFit.contain,
-        ),
-        const SizedBox(
-          height: kDefaultPadding,
-        ),
-        Text(
-          context.t.addCashuWallet.capitalizeFirst(),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(
-          height: kDefaultPadding,
-        ),
-        _emptyWalletAdd(context),
-        if (isFluid()) ...[
-          const SizedBox(
-            height: kDefaultPadding / 2,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            child: WalletTypeSwitch(
-              isCashu: true,
-              onTap: () {
-                context.read<MainCubit>().changeWalletType();
-              },
+    Widget content(double imageSize) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ExtendedImage.asset(
+              Images.cashu,
+              width: imageSize,
+              height: imageSize,
+              fit: BoxFit.contain,
             ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            Text(
+              context.t.addCashuWallet.capitalizeFirst(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            _emptyWalletAdd(context),
+            if (isFluid()) ...[
+              const SizedBox(
+                height: kDefaultPadding / 2,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                child: WalletTypeSwitch(
+                  isCashu: true,
+                  onTap: () {
+                    context.read<MainCubit>().changeWalletType();
+                  },
+                ),
+              ),
+            ],
+          ],
+        );
+
+    if (!isDesktopPlatform) {
+      return content(30.w);
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final imageSize = constraints.maxWidth.clamp(0.0, 160.0);
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight:
+                  constraints.hasBoundedHeight ? constraints.maxHeight : 0,
+            ),
+            child: content(imageSize),
           ),
-        ],
-      ],
+        );
+      },
     );
   }
 

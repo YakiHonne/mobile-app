@@ -1344,7 +1344,7 @@ class _TableSheetState extends State<_TableSheet> {
                                           right: kDefaultPadding / 2,
                                         ),
                                         child: SizedBox(
-                                          width: 30.w,
+                                          width: isDesktopPlatform ? 180 : 30.w,
                                           child: TextField(
                                             controller: _rows[r][c],
                                             style: theme.textTheme.bodyMedium

@@ -18,6 +18,7 @@ import '../../models/wot_configuration.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import 'active_stats_cache.dart';
 
 part 'notes_events_state.dart';
 
@@ -47,11 +48,16 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
   final _aTags = <String>[];
   final _pendingNotesEvents = <String, Event>{};
   final _statsAccessTimes = <String, int>{};
+  final _activeStatsCache = ActiveStatsCache();
   final _previousNotesAccessTime = <String, int>{};
 
   Timer? _pendingEventsTimer;
   Map<String, Event>? _pendingEventsBuffer;
   bool _includeCommentsInLaterSearch = false;
+
+  void retainStats(String id) => _activeStatsCache.retain(id);
+
+  void releaseStats(String id) => _activeStatsCache.release(id);
 
   void pruneCache({bool isStats = true}) {
     if (isStats) {
@@ -60,6 +66,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
         accessTimes: _statsAccessTimes,
         maxSize: statesMaxCacheSize,
         name: 'eventsStats',
+        protectedKeys: _activeStatsCache.protectedKeys,
         updateState: (pruned) => state.copyWith(eventsStats: pruned),
       );
     } else {
@@ -85,6 +92,7 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     required int maxSize,
     required String name,
     required Function(Map<K, V>) updateState,
+    Set<K> protectedKeys = const {},
   }) {
     if (cache.length <= maxSize) {
       return;
@@ -95,8 +103,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
       ..sort((a, b) => (accessTimes[b] ?? 0).compareTo(accessTimes[a] ?? 0));
 
     // Split into keep/remove sets
-    final keysToKeep = sortedIds.take(maxSize).toSet();
-    final keysToRemove = sortedIds.skip(maxSize);
+    final keysToKeep = selectCacheKeys(sortedIds, maxSize, protectedKeys);
+    final keysToRemove = sortedIds.where((id) => !keysToKeep.contains(id));
 
     // Bulk remove from alreadySearchedContentIds
     alreadySearchedContentIds.removeAll(keysToRemove);
@@ -109,7 +117,8 @@ class NotesEventsCubit extends Cubit<NotesEventsState> with LaterFunction {
     // Clean up access times
     accessTimes.removeWhere((key, _) => !keysToKeep.contains(key));
 
-    lg.w('🧹 Pruned $name cache from ${cache.length} to $maxSize entries');
+    lg.w('🧹 Pruned $name cache from ${cache.length} to '
+        '${prunedCache.length} entries');
 
     emit(updateState(prunedCache));
   }

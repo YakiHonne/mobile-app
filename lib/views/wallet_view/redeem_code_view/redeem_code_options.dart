@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import '../../../utils/utils.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_using_invoice.dart';
 
@@ -54,7 +55,7 @@ class RedeemCodeOptions extends HookWidget {
       return () {};
     }, const []);
 
-    return Column(
+    final content = Column(
       children: [
         Text(
           context.t.redeemAndEarn,
@@ -92,6 +93,7 @@ class RedeemCodeOptions extends HookWidget {
         )
       ],
     );
+    return isDesktopPlatform ? DesktopScrollableForm(child: content) : content;
   }
 
   Widget _codeTextfield({
@@ -151,45 +153,54 @@ class RedeemCodeOptions extends HookWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: 80.w,
-          height: 80.w,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 2,
+        if (isDesktopPlatform)
+          const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: Text(
+              'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+              textAlign: TextAlign.center,
             ),
-            borderRadius: BorderRadius.circular(kDefaultPadding + 5),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              kDefaultPadding + 5,
+          )
+        else
+          Container(
+            width: 80.w,
+            height: 80.w,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).dividerColor,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(kDefaultPadding + 5),
             ),
-            child: isMobilePlatform
-                ? QRView(
-                    key: qrKey,
-                    onQRViewCreated: (controller) => _onQRViewCreated(
-                      controller: controller,
-                      context: context,
-                      controllerState: controllerState,
-                      code: code,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                kDefaultPadding + 5,
+              ),
+              child: isMobilePlatform
+                  ? QRView(
+                      key: qrKey,
+                      onQRViewCreated: (controller) => _onQRViewCreated(
+                        controller: controller,
+                        context: context,
+                        controllerState: controllerState,
+                        code: code,
+                      ),
+                      overlay: QrScannerOverlayShape(
+                        borderRadius: kDefaultPadding,
+                        borderColor: kTransparent,
+                        borderWidth: 5,
+                        overlayColor: kTransparent,
+                        cutOutSize: 80.w,
+                      ),
+                    )
+                  : const Center(
+                      child: Text(
+                        'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    overlay: QrScannerOverlayShape(
-                      borderRadius: kDefaultPadding,
-                      borderColor: kTransparent,
-                      borderWidth: 5,
-                      overlayColor: kTransparent,
-                      cutOutSize: 80.w,
-                    ),
-                  )
-                : const Center(
-                    child: Text(
-                      'QR scanning is unavailable on desktop. Enter or paste the code instead.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+            ),
           ),
-        ),
       ],
     );
   }

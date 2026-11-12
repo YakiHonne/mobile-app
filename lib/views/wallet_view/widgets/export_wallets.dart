@@ -21,7 +21,7 @@ class ExportWalletOnCreation extends StatelessWidget {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return Container(
-      width: isTablet ? 50.w : double.infinity,
+      width: isDesktopPlatform ? 520 : (isTablet ? 50.w : double.infinity),
       margin: const EdgeInsets.all(kDefaultPadding),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -160,7 +160,7 @@ class ExportWalletOnLoginOut extends StatelessWidget {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return Container(
-      width: isTablet ? 50.w : double.infinity,
+      width: isDesktopPlatform ? 520 : (isTablet ? 50.w : double.infinity),
       margin: const EdgeInsets.all(kDefaultPadding),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,

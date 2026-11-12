@@ -39,6 +39,11 @@ class ProfileCurations extends StatelessWidget {
                   .capitalizeFirst(),
             );
           } else {
+            if (isDesktopPlatform && !useSingleColumn) {
+              return DesktopPaneGridBuilder(
+                  builder: (context, columns) =>
+                      _itemsGrid(state, columns: columns));
+            }
             if (isTablet && !useSingleColumn) {
               return _itemsGrid(state);
             } else {
@@ -83,10 +88,10 @@ class ProfileCurations extends StatelessWidget {
     );
   }
 
-  MasonryGridView _itemsGrid(ProfileState state) {
+  MasonryGridView _itemsGrid(ProfileState state, {int columns = 2}) {
     return MasonryGridView.builder(
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
       ),
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,

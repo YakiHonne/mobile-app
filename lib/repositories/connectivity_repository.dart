@@ -9,8 +9,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 class ConnectivityRepository {
   ConnectivityRepository({
     String testHost = _defaultTestHost,
-  }) : _testHost = testHost {
+    Connectivity? connectivity,
+    Future<List<InternetAddress>> Function(String host)? lookup,
+  })  : _lookup = lookup ?? InternetAddress.lookup,
+        _testHost = testHost,
+        _connectivity = connectivity ?? Connectivity() {
     _initializeConnectivityListener();
+    unawaited(checkConnectionEnabled());
   }
 
   // ==================================================
@@ -24,12 +29,17 @@ class ConnectivityRepository {
   // PRIVATE FIELDS
   // ==================================================
 
-  final Connectivity _connectivity = Connectivity();
+  final Connectivity _connectivity;
+  final Future<List<InternetAddress>> Function(String host) _lookup;
   final String _testHost;
   final StreamController<bool> _connectionChangeController =
       StreamController.broadcast();
+  final StreamController<void> _statusChangeController =
+      StreamController.broadcast();
 
-  bool _hasConnection = true;
+  bool _hasConnection = false;
+  bool _hasKnownConnection = false;
+  int _changeGeneration = 0;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   // ==================================================
@@ -39,9 +49,14 @@ class ConnectivityRepository {
   /// Current connection status
   bool get hasConnection => _hasConnection;
 
+  /// Whether an interface result has been received from the platform.
+  bool get hasKnownConnection => _hasKnownConnection;
+
   /// Stream of connectivity changes
   Stream<bool> get connectivityChangeStream =>
       _connectionChangeController.stream;
+
+  Stream<void> get statusChangeStream => _statusChangeController.stream;
 
   // ==================================================
   // INITIALIZATION
@@ -61,51 +76,29 @@ class ConnectivityRepository {
 
   /// Checks if device has network connectivity (WiFi or Mobile)
   Future<bool> checkConnectionEnabled() async {
+    final generation = ++_changeGeneration;
     try {
       final connectivityResults = await _connectivity.checkConnectivity();
       final isConnected = _isValidConnection(connectivityResults);
-      _updateConnectionStatus(isConnected);
-      return isConnected;
+      if (generation == _changeGeneration) {
+        _setConnectionStatus(isConnected);
+      }
+      return _hasConnection;
     } catch (e) {
-      _updateConnectionStatus(false);
-      return false;
+      // A plugin failure does not establish that the device is offline.
+      if (generation == _changeGeneration) {
+        _markUnknown();
+      }
+      return _hasConnection;
     }
   }
 
   /// Performs actual internet connectivity test by reaching external host
   Future<bool> checkInternetConnection() async {
-    final previousConnection = _hasConnection;
-
     try {
-      final result = await InternetAddress.lookup(_testHost)
-          .timeout(_internetCheckTimeout);
-
-      final isConnected = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-      _updateConnectionStatus(isConnected);
-
-      // Only notify if connection status changed
-      if (previousConnection != isConnected) {
-        _notifyConnectionChange(isConnected);
-      }
-
-      return isConnected;
-    } on SocketException {
-      _updateConnectionStatus(false);
-      if (previousConnection) {
-        _notifyConnectionChange(false);
-      }
-      return false;
-    } on TimeoutException {
-      _updateConnectionStatus(false);
-      if (previousConnection) {
-        _notifyConnectionChange(false);
-      }
-      return false;
-    } catch (e) {
-      _updateConnectionStatus(false);
-      if (previousConnection) {
-        _notifyConnectionChange(false);
-      }
+      final result = await _lookup(_testHost).timeout(_internetCheckTimeout);
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
       return false;
     }
   }
@@ -117,38 +110,42 @@ class ConnectivityRepository {
   /// Handles connectivity changes from the stream
   void _onConnectivityChanged(List<ConnectivityResult> connectivityResults) {
     final isConnected = _isValidConnection(connectivityResults);
-    _updateConnectionStatus(isConnected);
-    _notifyConnectionChange(isConnected);
+    _changeGeneration++;
+    _setConnectionStatus(isConnected);
   }
 
   /// Handles errors in connectivity stream
   void _onConnectivityError(Object error) {
-    // Log error if logging is available
-    // logger?.error('Connectivity stream error: $error');
-    _updateConnectionStatus(false);
-    _notifyConnectionChange(false);
+    // A stream error is not evidence that the device is offline.
+    _changeGeneration++;
+    _markUnknown();
   }
 
   /// Determines if connectivity results indicate a valid connection
   bool _isValidConnection(List<ConnectivityResult> results) {
-    if (results.isEmpty) {
-      return false;
+    return results.any((result) => result.isConnected);
+  }
+
+  void _markUnknown() {
+    if (_hasKnownConnection) {
+      _hasKnownConnection = false;
+      if (!_statusChangeController.isClosed) {
+        _statusChangeController.add(null);
+      }
     }
-
-    return results.any((result) =>
-        result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi ||
-        result == ConnectivityResult.ethernet);
   }
 
-  /// Updates internal connection status
-  void _updateConnectionStatus(bool isConnected) {
+  void _setConnectionStatus(bool isConnected) {
+    if (_hasKnownConnection && _hasConnection == isConnected) {
+      return;
+    }
+    final changed = _hasConnection != isConnected;
     _hasConnection = isConnected;
-  }
-
-  /// Notifies listeners of connection change
-  void _notifyConnectionChange(bool isConnected) {
-    if (!_connectionChangeController.isClosed) {
+    _hasKnownConnection = true;
+    if (!_statusChangeController.isClosed) {
+      _statusChangeController.add(null);
+    }
+    if (changed && !_connectionChangeController.isClosed) {
       _connectionChangeController.add(isConnected);
     }
   }
@@ -161,6 +158,7 @@ class ConnectivityRepository {
   Future<void> dispose() async {
     await _connectivitySubscription?.cancel();
     await _connectionChangeController.close();
+    await _statusChangeController.close();
   }
 }
 
@@ -172,9 +170,7 @@ class ConnectivityRepository {
 extension ConnectivityResultExtension on ConnectivityResult {
   /// Returns true if this result represents an active connection
   bool get isConnected {
-    return this == ConnectivityResult.mobile ||
-        this == ConnectivityResult.wifi ||
-        this == ConnectivityResult.ethernet;
+    return this != ConnectivityResult.none;
   }
 
   /// Returns a human-readable description of the connection type
@@ -234,11 +230,11 @@ class ConnectivityService {
   final ConnectivityRepository _repository;
   Timer? _periodicCheckTimer;
 
-  /// Start periodic internet checks
+  /// Refresh interface availability periodically in case an event is missed.
   void startPeriodicChecks({Duration interval = const Duration(minutes: 1)}) {
     _periodicCheckTimer?.cancel();
     _periodicCheckTimer = Timer.periodic(interval, (_) {
-      _repository.checkInternetConnection();
+      _repository.checkConnectionEnabled();
     });
   }
 
@@ -251,9 +247,13 @@ class ConnectivityService {
   /// Get current connection status
   bool get isConnected => _repository.hasConnection;
 
+  bool get hasKnownConnection => _repository.hasKnownConnection;
+
   /// Get connectivity change stream
   Stream<bool> get onConnectivityChanged =>
       _repository.connectivityChangeStream;
+
+  Stream<void> get onStatusChanged => _repository.statusChangeStream;
 
   /// Check connection status
   Future<bool> checkConnection() => _repository.checkConnectionEnabled();

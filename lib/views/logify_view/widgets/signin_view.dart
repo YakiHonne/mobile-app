@@ -15,6 +15,7 @@ import '../../wallet_view/send_view/send_main_view.dart';
 import '../../wallet_view/send_zaps_view/send_tips_invoice.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/content_manager/add_discover_filter.dart';
+import '../../widgets/desktop_qr_bounds.dart';
 import 'google_login_sheet.dart';
 import 'signup_appbar.dart';
 
@@ -218,6 +219,28 @@ class RemoteLogin extends HookWidget {
 
     final connectionUrl = connectionUrlSnapshot.data ?? '';
 
+    final qr = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(kDefaultPadding),
+        border: Border.all(
+          color: Theme.of(context).primaryColorDark,
+          width: 2,
+        ),
+      ),
+      child: QrImageView(
+        data: connectionUrl,
+        size: isDesktopPlatform ? null : 70.w,
+        dataModuleStyle: QrDataModuleStyle(
+          color: Theme.of(context).primaryColorDark,
+          dataModuleShape: QrDataModuleShape.circle,
+        ),
+        eyeStyle: QrEyeStyle(
+          eyeShape: QrEyeShape.circle,
+          color: Theme.of(context).primaryColorDark,
+        ),
+      ),
+    );
+
     final components = <Widget>[
       Text(
         context.t.remoteSigner,
@@ -240,27 +263,7 @@ class RemoteLogin extends HookWidget {
         height: kDefaultPadding,
       ),
       Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(kDefaultPadding),
-            border: Border.all(
-              color: Theme.of(context).primaryColorDark,
-              width: 2,
-            ),
-          ),
-          child: QrImageView(
-            data: connectionUrl,
-            size: 70.w,
-            dataModuleStyle: QrDataModuleStyle(
-              color: Theme.of(context).primaryColorDark,
-              dataModuleShape: QrDataModuleShape.circle,
-            ),
-            eyeStyle: QrEyeStyle(
-              eyeShape: QrEyeShape.circle,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-        ),
+        child: isDesktopPlatform ? DesktopQrBounds(child: qr) : qr,
       ),
       const SizedBox(
         height: kDefaultPadding / 2,

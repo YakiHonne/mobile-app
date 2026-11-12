@@ -23,6 +23,21 @@ import '../../widgets/data_providers.dart';
 import '../../widgets/fluid_scaffold.dart';
 import '../../widgets/profile_picture.dart';
 
+/// Keeps desktop profile QR codes square within the current pane.
+class DesktopProfileQrBounds extends StatelessWidget {
+  const DesktopProfileQrBounds({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: AspectRatio(aspectRatio: 1, child: child),
+        ),
+      );
+}
+
 class ProfileShareView extends HookWidget {
   final Metadata metadata;
   final VoidCallback? onClose;
@@ -37,8 +52,11 @@ class ProfileShareView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width =
-        ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 40.w : 60.w;
+    final width = isDesktopPlatform
+        ? 320.0
+        : ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+            ? 40.w
+            : 60.w;
     final isPubkeyToggled = useState(true);
 
     return Container(
@@ -86,7 +104,12 @@ class ProfileShareView extends HookWidget {
             const SizedBox(
               height: kDefaultPadding * 1.5,
             ),
-            _qrCodeBox(width, context, isPubkeyToggled),
+            if (isDesktopPlatform)
+              DesktopProfileQrBounds(
+                child: _qrCodeBox(width, context, isPubkeyToggled),
+              )
+            else
+              _qrCodeBox(width, context, isPubkeyToggled),
             const SizedBox(
               height: kDefaultPadding,
             ),
@@ -396,8 +419,11 @@ class _ConnectedUserProfileShareViewState
 
   @override
   Widget build(BuildContext context) {
-    final width =
-        ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 50.w : 70.w;
+    final width = isDesktopPlatform
+        ? 320.0
+        : ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+            ? 50.w
+            : 70.w;
 
     return Container(
       decoration: const BoxDecoration(
@@ -571,8 +597,11 @@ class CurrentUserQrCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width =
-        ResponsiveBreakpoints.of(context).largerThan(MOBILE) ? 50.w : 70.w;
+    final width = isDesktopPlatform
+        ? 320.0
+        : ResponsiveBreakpoints.of(context).largerThan(MOBILE)
+            ? 50.w
+            : 70.w;
 
     return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
@@ -632,7 +661,10 @@ class CurrentUserQrCode extends StatelessWidget {
             const SizedBox(
               height: kDefaultPadding,
             ),
-            _qrImage(width, npub, context),
+            if (isDesktopPlatform)
+              DesktopProfileQrBounds(child: _qrImage(width, npub, context))
+            else
+              _qrImage(width, npub, context),
             const SizedBox(
               height: kDefaultPadding,
             ),

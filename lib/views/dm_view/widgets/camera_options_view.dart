@@ -72,36 +72,38 @@ class CameraOptions extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         children: [
-          Expanded(
-            child: PickChoice(
-              pubkey: pubkey,
-              replyId: replyId,
-              onSuccess: onSuccess,
-              onFailed: onFailed,
-              icon: FeatureIcons.camera,
-              title: context.t.image.capitalizeFirst(),
-              mediaType: MediaType.cameraImage,
+          if (supportsMediaCamera(Theme.of(context).platform)) ...[
+            Expanded(
+              child: PickChoice(
+                pubkey: pubkey,
+                replyId: replyId,
+                onSuccess: onSuccess,
+                onFailed: onFailed,
+                icon: FeatureIcons.camera,
+                title: context.t.image.capitalizeFirst(),
+                mediaType: MediaType.cameraImage,
+              ),
             ),
-          ),
-          const VerticalDivider(
-            indent: kDefaultPadding / 2,
-            endIndent: kDefaultPadding / 2,
-          ),
-          Expanded(
-            child: PickChoice(
-              pubkey: pubkey,
-              replyId: replyId,
-              onSuccess: onSuccess,
-              onFailed: onFailed,
-              icon: FeatureIcons.video,
-              title: context.t.video.capitalizeFirst(),
-              mediaType: MediaType.cameraVideo,
+            const VerticalDivider(
+              indent: kDefaultPadding / 2,
+              endIndent: kDefaultPadding / 2,
             ),
-          ),
-          const VerticalDivider(
-            indent: kDefaultPadding / 2,
-            endIndent: kDefaultPadding / 2,
-          ),
+            Expanded(
+              child: PickChoice(
+                pubkey: pubkey,
+                replyId: replyId,
+                onSuccess: onSuccess,
+                onFailed: onFailed,
+                icon: FeatureIcons.video,
+                title: context.t.video.capitalizeFirst(),
+                mediaType: MediaType.cameraVideo,
+              ),
+            ),
+            const VerticalDivider(
+              indent: kDefaultPadding / 2,
+              endIndent: kDefaultPadding / 2,
+            ),
+          ],
           Expanded(
             child: PickChoice(
               pubkey: pubkey,

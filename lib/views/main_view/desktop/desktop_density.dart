@@ -49,4 +49,9 @@ extension DesktopDensitySpacing on DesktopDensity {
       : kDefaultPadding / 1.5;
   double get headerGap =>
       this == DesktopDensity.compact ? kDefaultPadding / 2 : kDefaultPadding;
+  double get sectionGap =>
+      this == DesktopDensity.compact ? kDefaultPadding : kDefaultPadding * 1.5;
+  double get sectionHeadingGap => this == DesktopDensity.compact
+      ? kDefaultPadding / 4
+      : kDefaultPadding / 2;
 }

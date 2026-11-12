@@ -616,7 +616,11 @@ class DashboardContentList extends StatelessWidget {
 
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          sliver: isTablet ? _itemsGrid(state) : _itemsList(state),
+          sliver: isDesktopPlatform
+              ? DesktopPaneSliverGridBuilder(
+                  builder: (context, columns) =>
+                      _itemsGrid(state, columns: columns))
+              : (isTablet ? _itemsGrid(state) : _itemsList(state)),
         );
       },
     );
@@ -761,9 +765,9 @@ class DashboardContentList extends StatelessWidget {
     );
   }
 
-  SliverMasonryGrid _itemsGrid(DashboardContentState state) {
+  SliverMasonryGrid _itemsGrid(DashboardContentState state, {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       childCount: state.content.length,

@@ -138,7 +138,11 @@ class AddBookmarkLists extends StatelessWidget {
           color: Theme.of(context).primaryColorLight,
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: isTablet ? 15.w : kDefaultPadding / 2,
+              horizontal: isDesktopPlatform
+                  ? kDefaultPadding
+                  : isTablet
+                      ? 15.w
+                      : kDefaultPadding / 2,
             ),
             child: CustomScrollView(
               controller: scrollController,
@@ -219,7 +223,13 @@ class SubmitBookmarkList extends HookWidget {
       builder: (context, state) {
         return ListView(
           controller: controller,
-          padding: EdgeInsets.all(isTablet ? 15.w : kDefaultPadding / 2),
+          padding: EdgeInsets.all(
+            isDesktopPlatform
+                ? kDefaultPadding
+                : isTablet
+                    ? 15.w
+                    : kDefaultPadding / 2,
+          ),
           children: [
             const SizedBox(height: kDefaultPadding),
             Text(

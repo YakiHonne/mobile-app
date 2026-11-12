@@ -109,27 +109,34 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
             icon: FeatureIcons.smartWidget,
           );
         } else {
-          return AdaptiveSmartRefresher(
-            desktopHasResults: state.widgets.isNotEmpty,
-            controller: refreshController,
-            enablePullDown: false,
-            enablePullUp: true,
-            header: const MaterialClassicHeader(
-              color: kPurple,
-            ),
-            footer: const RefresherClassicFooter(),
-            onLoading: () => context
-                .read<SmartWidgetsCubit>()
-                .getSmartWidgets(isAdd: true, isSelf: false),
-            onRefresh: () => onRefresh(
-              onInit: () => context
-                  .read<SmartWidgetsCubit>()
-                  .getSmartWidgets(isAdd: false, isSelf: false),
-            ),
-            child: isTablet
-                ? _itemsGrid(scrollController, state)
-                : _itemList(state, scrollController),
-          );
+          Widget refresher(Widget content) => AdaptiveSmartRefresher(
+                desktopHasResults: state.widgets.isNotEmpty,
+                controller: refreshController,
+                enablePullDown: false,
+                enablePullUp: true,
+                header: const MaterialClassicHeader(
+                  color: kPurple,
+                ),
+                footer: const RefresherClassicFooter(),
+                onLoading: () => context
+                    .read<SmartWidgetsCubit>()
+                    .getSmartWidgets(isAdd: true, isSelf: false),
+                onRefresh: () => onRefresh(
+                  onInit: () => context
+                      .read<SmartWidgetsCubit>()
+                      .getSmartWidgets(isAdd: false, isSelf: false),
+                ),
+                child: content,
+              );
+          if (isDesktopPlatform) {
+            return DesktopPaneGridBuilder(
+              builder: (context, columns) => refresher(
+                  _itemsGrid(scrollController, state, columns: columns)),
+            );
+          }
+          return refresher(isTablet
+              ? _itemsGrid(scrollController, state)
+              : _itemList(state, scrollController));
         }
       },
     );
@@ -159,9 +166,10 @@ class _SmartWidgetZapPollSelectionState extends State<SmartWidgetSelection>
   }
 
   MasonryGridView _itemsGrid(
-      ScrollController scrollController, SmartWidgetsState state) {
+      ScrollController scrollController, SmartWidgetsState state,
+      {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       controller: scrollController,
       itemCount: state.widgets.length,
       crossAxisSpacing: kDefaultPadding / 2,

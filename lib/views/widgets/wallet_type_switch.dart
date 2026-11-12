@@ -16,6 +16,17 @@ class WalletTypeSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget label(String text) {
+      final child = Text(
+        text,
+        textAlign: isDesktopPlatform ? TextAlign.center : null,
+        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      );
+      return isDesktopPlatform ? Flexible(child: child) : child;
+    }
+
     return GestureDetector(
       onTap: () {
         HapticFeedback.mediumImpact();
@@ -46,12 +57,7 @@ class WalletTypeSwitch extends StatelessWidget {
                     width: 18,
                     height: 18,
                   ),
-                  Text(
-                    context.t.switchToNwc,
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
+                  label(context.t.switchToNwc),
                 ]
               : [
                   ExtendedImage.asset(
@@ -59,12 +65,7 @@ class WalletTypeSwitch extends StatelessWidget {
                     width: 18,
                     height: 18,
                   ),
-                  Text(
-                    context.t.switchToCashu,
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
+                  label(context.t.switchToCashu),
                 ],
         ),
       ),

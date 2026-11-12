@@ -39,6 +39,17 @@ class TranslationsZh extends Translations {
 	TranslationsZh $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsZh(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => '无法打开账户存储。您的账户未被更改。';
+	@override String get accountStorageLinuxHelp => '请解锁或启动系统密钥环，然后重试。';
+	@override String get accountStorageSaveFailed => '无法保存账户更改。请重启应用后重试。';
+	@override String get accountStorageRecoveryTitle => '您的账户需要处理';
+	@override String get accountStorageRecoveryCorrupt => '无法读取已保存的账户数据。未删除任何内容。';
+	@override String get accountStorageRecoveryLegacy => '账户数据已被其他版本或进程更改。请选择要保留的副本。';
+	@override String get accountStorageRestoreBackup => '恢复之前保存的账户';
+	@override String get accountStorageKeepSaved => '保留已保存的账户';
+	@override String get accountStorageKeepLegacy => '使用另一份账户数据';
+	@override String get accountStorageBackupMissing => '没有可用的有效先前备份。';
+	@override String get accountStorageRecoveryFailed => '无法完成恢复。您的账户数据未被更改。';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsZh extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} 引用了你的图片';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} 引用了一张提到你的图片';
 	@override String get cameraPermission => '应用没有权限访问相机，或者此设备上没有可用相机。';
+	@override String get videoQuality => '视频质量';
+	@override String get originalMedia => '原始：';
 	@override String get fetchingPicture => '正在获取图片...';
 	@override String get addDescription => '添加描述...';
 	@override String get uploadingVideo => '正在上传视频...';
@@ -2256,6 +2269,13 @@ class TranslationsZh extends Translations {
 	@override String get desktopDensityComfortable => '舒适';
 	@override String get desktopDensityCompact => '紧凑';
 	@override String get desktopKnowPeople => '认识新朋友';
+	@override String get desktopNetworkInterface => '网络接口';
+	@override String get desktopInterfaceAvailable => '可用';
+	@override String get desktopRelayConnections => '中继连接';
+	@override String get desktopSmartWidgetUnavailable => '此设备不支持交互式签名。您可以在浏览器中打开该页面。';
+	@override String get desktopPlaybackUnavailable => '此设备不支持在应用内播放。';
+	@override String get desktopGoogleSignInUnavailable => 'Linux 不支持使用 Google 登录，请选择其他登录方式。';
+	@override String get desktopCameraUnavailable => '此设备不支持相机拍摄。请改为选择文件。';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2274,6 +2294,17 @@ extension on TranslationsZh {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => '无法打开账户存储。您的账户未被更改。',
+			'accountStorageLinuxHelp' => '请解锁或启动系统密钥环，然后重试。',
+			'accountStorageSaveFailed' => '无法保存账户更改。请重启应用后重试。',
+			'accountStorageRecoveryTitle' => '您的账户需要处理',
+			'accountStorageRecoveryCorrupt' => '无法读取已保存的账户数据。未删除任何内容。',
+			'accountStorageRecoveryLegacy' => '账户数据已被其他版本或进程更改。请选择要保留的副本。',
+			'accountStorageRestoreBackup' => '恢复之前保存的账户',
+			'accountStorageKeepSaved' => '保留已保存的账户',
+			'accountStorageKeepLegacy' => '使用另一份账户数据',
+			'accountStorageBackupMissing' => '没有可用的有效先前备份。',
+			'accountStorageRecoveryFailed' => '无法完成恢复。您的账户数据未被更改。',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsZh {
 			'smartWidgetChecker' => '智能部件检查器',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => '无法显示组件',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => '元数据',
 			'createdAt' => '创建于',
 			'identifier' => '标识符',
@@ -2786,12 +2823,6 @@ extension on TranslationsZh {
 			'votesByUsers' => '用户投票',
 			'alreadyVoted' => '您已在此投票中投票',
 			'userCannotBeFound' => '未找到用户',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => '投票: ${number}',
 			'voteRequired' => '需要投票以显示统计。',
 			'showStats' => '显示统计',
@@ -3293,6 +3324,12 @@ extension on TranslationsZh {
 			'tallying' => '计数中',
 			'ended' => '已结束',
 			'closed' => '已关闭',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => '投票结果按',
 			'votes' => '投票',
 			'voiceCredit' => '语音信用',
@@ -3304,12 +3341,6 @@ extension on TranslationsZh {
 			'circuit' => '电路',
 			'votingSystem' => '投票系统',
 			'proofSystem' => '证明系统',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => '加油站',
 			'totalFund' => '（总基金）',
 			'roundStart' => '回合开始',
@@ -3782,6 +3813,8 @@ extension on TranslationsZh {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} 引用了你的图片',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} 引用了一张提到你的图片',
 			'cameraPermission' => '应用没有权限访问相机，或者此设备上没有可用相机。',
+			'videoQuality' => '视频质量',
+			'originalMedia' => '原始：',
 			'fetchingPicture' => '正在获取图片...',
 			'addDescription' => '添加描述...',
 			'uploadingVideo' => '正在上传视频...',
@@ -3809,6 +3842,12 @@ extension on TranslationsZh {
 			'swapFrom' => '交换自',
 			'swapTo' => '交换到',
 			'selectMint' => '选择 Mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => '数量',
 			'cashuHistory' => 'Cashu 历史',
 			'history' => '历史',
@@ -3822,12 +3861,6 @@ extension on TranslationsZh {
 			'redeemEcashDesc' => '将 ecash 代币兑换到您的钱包',
 			'depositDesc' => '通过存入 sats 铸造新的 ecash 代币',
 			'pasteToken' => '粘贴代币',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => '扫描',
 			'tokenDetails' => '代币详情',
 			'issuingMint' => '发行 Mint',
@@ -4327,6 +4360,12 @@ extension on TranslationsZh {
 			'creator_subscription_plans' => '订阅方案',
 			'creator_subscribe_now' => '立即订阅',
 			'creator_subscribe_error' => '无法发起订阅',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => '暂无可用的订阅方案',
 			'creator_lightning_unavailable' => 'Lightning 地址不可用',
 			'creator_view_subscriptions' => '查看我的订阅',
@@ -4340,12 +4379,6 @@ extension on TranslationsZh {
 			'pomAuthenticating' => '正在通过 Google 验证…',
 			'pomCheckingAccount' => '正在检查账号…',
 			'pomCreatingAccount' => '正在创建账号…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => '保存你的私钥',
 			'pomSaveKeyDesc' => '你的私钥已生成。请在创建账号前妥善保存。',
 			'pomCreateAccount' => '创建账号',
@@ -4515,6 +4548,13 @@ extension on TranslationsZh {
 			'desktopDensityComfortable' => '舒适',
 			'desktopDensityCompact' => '紧凑',
 			'desktopKnowPeople' => '认识新朋友',
+			'desktopNetworkInterface' => '网络接口',
+			'desktopInterfaceAvailable' => '可用',
+			'desktopRelayConnections' => '中继连接',
+			'desktopSmartWidgetUnavailable' => '此设备不支持交互式签名。您可以在浏览器中打开该页面。',
+			'desktopPlaybackUnavailable' => '此设备不支持在应用内播放。',
+			'desktopGoogleSignInUnavailable' => 'Linux 不支持使用 Google 登录，请选择其他登录方式。',
+			'desktopCameraUnavailable' => '此设备不支持相机拍摄。请改为选择文件。',
 			_ => null,
 		};
 	}

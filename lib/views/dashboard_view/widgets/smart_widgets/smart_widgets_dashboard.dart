@@ -367,9 +367,13 @@ class SmartWdigetSavedTool extends HookWidget {
               : SliverPadding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: kDefaultPadding / 2),
-                  sliver: isTablet
-                      ? _itemsGrid(savedTools, state)
-                      : _itemsList(savedTools, state),
+                  sliver: isDesktopPlatform
+                      ? DesktopPaneSliverGridBuilder(
+                          builder: (context, columns) =>
+                              _itemsGrid(savedTools, state, columns: columns))
+                      : (isTablet
+                          ? _itemsGrid(savedTools, state)
+                          : _itemsList(savedTools, state)),
                 );
         },
       ),
@@ -406,9 +410,10 @@ class SmartWdigetSavedTool extends HookWidget {
   }
 
   SliverMasonryGrid _itemsGrid(
-      ValueNotifier<List<SmartWidget>> savedTools, ToolsState state) {
+      ValueNotifier<List<SmartWidget>> savedTools, ToolsState state,
+      {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       mainAxisSpacing: kDefaultPadding / 4,
       crossAxisSpacing: kDefaultPadding / 4,
       childCount: savedTools.value.length,
@@ -497,7 +502,11 @@ class DashboardSmartWidgetsList extends StatelessWidget {
 
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          sliver: isTablet ? _itemsGrid(state) : _itemsList(state),
+          sliver: isDesktopPlatform
+              ? DesktopPaneSliverGridBuilder(
+                  builder: (context, columns) =>
+                      _itemsGrid(state, columns: columns))
+              : (isTablet ? _itemsGrid(state) : _itemsList(state)),
         );
       },
     );
@@ -560,9 +569,9 @@ class DashboardSmartWidgetsList extends StatelessWidget {
     );
   }
 
-  SliverMasonryGrid _itemsGrid(DashboardContentState state) {
+  SliverMasonryGrid _itemsGrid(DashboardContentState state, {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemBuilder: (context, index) {

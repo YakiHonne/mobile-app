@@ -139,7 +139,7 @@ class _Details extends StatelessWidget {
         CommonThumbnail(
           image: workshop['cover_image'] as String? ?? '',
           width: double.infinity,
-          height: 20.h,
+          height: isDesktopPlatform ? 180 : 20.h,
           isRound: true,
           radius: kDefaultPadding / 2,
           fit: BoxFit.cover,
@@ -189,9 +189,7 @@ class _Details extends StatelessWidget {
             child: isRegistering
                 ? const SpinKitCircle(color: Colors.white, size: 20)
                 : Text(
-                    isOpen
-                        ? context.t.register
-                        : context.t.registrationClosed,
+                    isOpen ? context.t.register : context.t.registrationClosed,
                   ),
           ),
         ),

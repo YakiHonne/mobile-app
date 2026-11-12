@@ -12,9 +12,22 @@ import '../../utils/utils.dart';
 part 'unsent_events_state.dart';
 
 class UnsentEventsCubit extends Cubit<UnsentEventsState> {
-  UnsentEventsCubit() : super(const UnsentEventsState());
+  UnsentEventsCubit({
+    Future<bool> Function(Event event, List<String>? relays)? sendEvent,
+  })  : _sendEvent = sendEvent ?? _sendPendingEvent,
+        super(const UnsentEventsState());
 
-  late StreamSubscription connectivityStream;
+  final Future<bool> Function(Event event, List<String>? relays) _sendEvent;
+
+  static Future<bool> _sendPendingEvent(Event event, List<String>? relays) =>
+      NostrFunctionsRepository.sendEvent(
+        event: event,
+        setProgress: false,
+        relays: relays,
+        relyOnUnsentEvents: false,
+      );
+
+  StreamSubscription<bool>? connectivityStream;
   bool isProcessing = false;
   bool hasConnection = connectivityService
       .isConnected; // Fixed typo: hasConnectiom -> hasConnection
@@ -23,6 +36,7 @@ class UnsentEventsCubit extends Cubit<UnsentEventsState> {
   Future<void> init() async {
     await loadUnsentEvents();
     subscribeToConnectivityStream();
+    hasConnection = connectivityService.isConnected;
     processUnsentEvents();
   }
 
@@ -59,63 +73,39 @@ class UnsentEventsCubit extends Cubit<UnsentEventsState> {
     if (checkRelays) {
       await nc.forceReconnect();
     }
-
     if (isProcessing || !hasConnection || state.events.isEmpty) {
       return;
     }
-
     isProcessing = true;
-
     try {
       final eventsSnapshot = List.of(state.events.values);
-
-      if (eventsSnapshot.isNotEmpty) {
-        for (final event in eventsSnapshot) {
-          if (!hasConnection) {
-            break;
-          }
-
-          final id = event.id;
-          List<String> relays = [];
-
-          final p = state.pubkeys[event.id];
-
-          if (p != null) {
-            final rs = await broadcastRelays(p, showMessage: false);
-
-            relays = rs.isNotEmpty
-                ? rs
-                : event.seenOn.isNotEmpty
-                    ? event.seenOn
-                    : [];
-          }
-
-          try {
-            await NostrFunctionsRepository.sendEvent(
-              event: event,
-              setProgress: false,
-              relays: relays,
-              relyOnUnsentEvents: false,
-            );
-          } catch (e) {
-            // Log error but continue processing other events
-            if (kDebugMode) {
-              print('Failed to send event ${event.id}: $e');
-            }
-          } finally {
-            removeUnsentEvent(id);
-          }
-
-          // Add delay between sends to avoid overwhelming the relay
-          await Future.delayed(const Duration(milliseconds: 500));
+      for (final event in eventsSnapshot) {
+        if (!hasConnection) {
+          break;
         }
+        List<String> relays = [];
+        final pubkey = state.pubkeys[event.id];
+        if (pubkey != null) {
+          final configured = await broadcastRelays(pubkey, showMessage: false);
+          relays = configured.isNotEmpty ? configured : event.seenOn;
+        }
+        try {
+          if (await _sendEvent(event, relays.isEmpty ? null : relays)) {
+            removeUnsentEvent(event.id);
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('Failed to send event ${event.id}: $e');
+          }
+        }
+        await Future.delayed(const Duration(milliseconds: 500));
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error processing unsent events: $e');
       }
     } finally {
-      isProcessing = false; // Important: reset the flag
+      isProcessing = false;
     }
   }
 
@@ -188,7 +178,7 @@ class UnsentEventsCubit extends Cubit<UnsentEventsState> {
 
   @override
   Future<void> close() async {
-    await connectivityStream.cancel();
+    await connectivityStream?.cancel();
     _processingTimer?.cancel();
     return super.close();
   }

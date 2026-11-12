@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../utils/utils.dart';
 import '../widgets/buttons_containers_widgets.dart';
 import '../widgets/custom_icon_buttons.dart';
 import 'version_news.dart';
 
-class AppNewsPopup extends StatelessWidget {
+class AppNewsPopup extends HookWidget {
   const AppNewsPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = useScrollController();
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(kDefaultPadding),
@@ -23,25 +25,48 @@ class AppNewsPopup extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.t.whatsNew.capitalizeFirst(),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+          if (isDesktopPlatform)
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      context.t.whatsNew.capitalizeFirst(),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                    _version(context),
+                    const SizedBox(
+                      height: kDefaultPadding / 2,
+                    ),
+                    _releaseNotes(context, controller),
+                  ],
                 ),
-                _version(context),
-                const SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
-                _releaseNotes(context),
-              ],
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.t.whatsNew.capitalizeFirst(),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  _version(context),
+                  const SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  _releaseNotes(context, controller),
+                ],
+              ),
             ),
-          ),
           Positioned(
             right: -12,
             top: -12,
@@ -60,13 +85,15 @@ class AppNewsPopup extends StatelessWidget {
     );
   }
 
-  SizedBox _releaseNotes(BuildContext context) {
+  SizedBox _releaseNotes(BuildContext context, ScrollController controller) {
     return SizedBox(
-      height: 25.h,
+      height: isDesktopPlatform ? 200 : 25.h,
       child: Scrollbar(
+        controller: isDesktopPlatform ? controller : null,
         thumbVisibility: true,
         trackVisibility: true,
         child: ListView(
+          controller: isDesktopPlatform ? controller : null,
           children: [
             ...releaseNotes.map(
               (e) {

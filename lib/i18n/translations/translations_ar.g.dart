@@ -39,6 +39,17 @@ class TranslationsAr extends Translations {
 	TranslationsAr $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsAr(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'تعذر فتح مخزن الحسابات. لم يتم تغيير حساباتك.';
+	@override String get accountStorageLinuxHelp => 'افتح قفل سلسلة مفاتيح النظام أو شغّلها، ثم حاول مجددًا.';
+	@override String get accountStorageSaveFailed => 'تعذر حفظ تغييرات الحساب. أعد تشغيل التطبيق قبل المحاولة مجددًا.';
+	@override String get accountStorageRecoveryTitle => 'حساباتك تحتاج إلى مراجعة';
+	@override String get accountStorageRecoveryCorrupt => 'تعذرت قراءة بيانات الحساب المحفوظة. لم يتم حذف أي شيء.';
+	@override String get accountStorageRecoveryLegacy => 'تم تغيير بيانات الحساب بواسطة إصدار أو عملية أخرى. اختر النسخة التي تريد الاحتفاظ بها.';
+	@override String get accountStorageRestoreBackup => 'استعادة الحسابات المحفوظة السابقة';
+	@override String get accountStorageKeepSaved => 'الاحتفاظ بالحسابات المحفوظة';
+	@override String get accountStorageKeepLegacy => 'استخدام بيانات الحساب الأخرى';
+	@override String get accountStorageBackupMissing => 'لا توجد نسخة احتياطية صالحة سابقة.';
+	@override String get accountStorageRecoveryFailed => 'تعذر إكمال الاستعادة. لم يتم تغيير بيانات حسابك.';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsAr extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} اقتبس صورةك';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} اقتبس صورة تم ذكرك فيها';
 	@override String get cameraPermission => 'إما أن التطبيق لا يملك إذن الوصول إلى الكاميرا أو لا توجد كاميرات متاحة على هذا الجهاز.';
+	@override String get videoQuality => 'جودة الفيديو';
+	@override String get originalMedia => 'الأصل:';
 	@override String get fetchingPicture => 'جاري جلب الصورة...';
 	@override String get addDescription => 'إضافة وصف...';
 	@override String get uploadingVideo => 'جاري رفع الفيديو...';
@@ -2256,6 +2269,13 @@ class TranslationsAr extends Translations {
 	@override String get desktopDensityComfortable => 'مريح';
 	@override String get desktopDensityCompact => 'مضغوط';
 	@override String get desktopKnowPeople => 'تعرّف على أشخاص';
+	@override String get desktopNetworkInterface => 'واجهة الشبكة';
+	@override String get desktopInterfaceAvailable => 'متاحة';
+	@override String get desktopRelayConnections => 'اتصالات المرحلات';
+	@override String get desktopSmartWidgetUnavailable => 'التوقيع التفاعلي غير متاح على هذا الجهاز. يمكنك فتح الصفحة في المتصفح.';
+	@override String get desktopPlaybackUnavailable => 'التشغيل غير متاح في التطبيق على هذا الجهاز.';
+	@override String get desktopGoogleSignInUnavailable => 'تسجيل الدخول باستخدام Google غير متاح على Linux. اختر طريقة أخرى.';
+	@override String get desktopCameraUnavailable => 'التقاط الصور بالكاميرا غير متاح على هذا الجهاز. اختر ملفًا بدلاً من ذلك.';
 }
 
 /// The flat map containing all translations for locale <ar>.
@@ -2274,6 +2294,17 @@ extension on TranslationsAr {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'تعذر فتح مخزن الحسابات. لم يتم تغيير حساباتك.',
+			'accountStorageLinuxHelp' => 'افتح قفل سلسلة مفاتيح النظام أو شغّلها، ثم حاول مجددًا.',
+			'accountStorageSaveFailed' => 'تعذر حفظ تغييرات الحساب. أعد تشغيل التطبيق قبل المحاولة مجددًا.',
+			'accountStorageRecoveryTitle' => 'حساباتك تحتاج إلى مراجعة',
+			'accountStorageRecoveryCorrupt' => 'تعذرت قراءة بيانات الحساب المحفوظة. لم يتم حذف أي شيء.',
+			'accountStorageRecoveryLegacy' => 'تم تغيير بيانات الحساب بواسطة إصدار أو عملية أخرى. اختر النسخة التي تريد الاحتفاظ بها.',
+			'accountStorageRestoreBackup' => 'استعادة الحسابات المحفوظة السابقة',
+			'accountStorageKeepSaved' => 'الاحتفاظ بالحسابات المحفوظة',
+			'accountStorageKeepLegacy' => 'استخدام بيانات الحساب الأخرى',
+			'accountStorageBackupMissing' => 'لا توجد نسخة احتياطية صالحة سابقة.',
+			'accountStorageRecoveryFailed' => 'تعذر إكمال الاستعادة. لم يتم تغيير بيانات حسابك.',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsAr {
 			'smartWidgetChecker' => 'مدقق الودجيت الذكي',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'لا يمكن عرض المكونات',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'البيانات الوصفية',
 			'createdAt' => 'تم الإنشاء في',
 			'identifier' => 'المعرف',
@@ -2786,12 +2823,6 @@ extension on TranslationsAr {
 			'votesByUsers' => 'الأصوات من المستخدمين',
 			'alreadyVoted' => 'لقد صوتت بالفعل في هذا الاستطلاع',
 			'userCannotBeFound' => 'تعذر العثور على المستخدم',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => 'الأصوات: ${number}',
 			'voteRequired' => 'التصويت مطلوب لعرض الإحصائيات.',
 			'showStats' => 'عرض الإحصائيات',
@@ -3293,6 +3324,12 @@ extension on TranslationsAr {
 			'tallying' => 'العد',
 			'ended' => 'انتهى',
 			'closed' => 'مغلق',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => 'نتائج التصويت حسب',
 			'votes' => 'الأصوات',
 			'voiceCredit' => 'ائتمان الصوت',
@@ -3304,12 +3341,6 @@ extension on TranslationsAr {
 			'circuit' => 'الدائرة',
 			'votingSystem' => 'نظام التصويت',
 			'proofSystem' => 'نظام الإثبات',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'محطة الغاز',
 			'totalFund' => '(الصندوق الإجمالي)',
 			'roundStart' => 'بدء الجولة',
@@ -3782,6 +3813,8 @@ extension on TranslationsAr {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} اقتبس صورةك',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} اقتبس صورة تم ذكرك فيها',
 			'cameraPermission' => 'إما أن التطبيق لا يملك إذن الوصول إلى الكاميرا أو لا توجد كاميرات متاحة على هذا الجهاز.',
+			'videoQuality' => 'جودة الفيديو',
+			'originalMedia' => 'الأصل:',
 			'fetchingPicture' => 'جاري جلب الصورة...',
 			'addDescription' => 'إضافة وصف...',
 			'uploadingVideo' => 'جاري رفع الفيديو...',
@@ -3809,6 +3842,12 @@ extension on TranslationsAr {
 			'swapFrom' => 'مبادلة من',
 			'swapTo' => 'مبادلة إلى',
 			'selectMint' => 'اختر Mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => 'الكمية',
 			'cashuHistory' => 'سجل Cashu',
 			'history' => 'سجل',
@@ -3822,12 +3861,6 @@ extension on TranslationsAr {
 			'redeemEcashDesc' => 'استرداد رموز ecash إلى محفظتك',
 			'depositDesc' => 'سك رموز ecash جديدة عن طريق إيداع sats',
 			'pasteToken' => 'لصق الرمز',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'مسح',
 			'tokenDetails' => 'تفاصيل الرمز',
 			'issuingMint' => 'Mint المُصدر',
@@ -4327,6 +4360,12 @@ extension on TranslationsAr {
 			'creator_subscription_plans' => 'خطط الاشتراك',
 			'creator_subscribe_now' => 'اشترك الآن',
 			'creator_subscribe_error' => 'تعذّر بدء الاشتراك',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'لا توجد خطط اشتراك متاحة',
 			'creator_lightning_unavailable' => 'عنوان Lightning غير متوفر',
 			'creator_view_subscriptions' => 'عرض اشتراكاتي',
@@ -4340,12 +4379,6 @@ extension on TranslationsAr {
 			'pomAuthenticating' => 'جارٍ المصادقة مع Google…',
 			'pomCheckingAccount' => 'جارٍ التحقق من الحساب…',
 			'pomCreatingAccount' => 'جارٍ إنشاء الحساب…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'احفظ مفتاحك الخاص',
 			'pomSaveKeyDesc' => 'تم إنشاء مفتاحك الخاص. احفظه في مكان آمن قبل إنشاء حسابك.',
 			'pomCreateAccount' => 'إنشاء حساب',
@@ -4515,6 +4548,13 @@ extension on TranslationsAr {
 			'desktopDensityComfortable' => 'مريح',
 			'desktopDensityCompact' => 'مضغوط',
 			'desktopKnowPeople' => 'تعرّف على أشخاص',
+			'desktopNetworkInterface' => 'واجهة الشبكة',
+			'desktopInterfaceAvailable' => 'متاحة',
+			'desktopRelayConnections' => 'اتصالات المرحلات',
+			'desktopSmartWidgetUnavailable' => 'التوقيع التفاعلي غير متاح على هذا الجهاز. يمكنك فتح الصفحة في المتصفح.',
+			'desktopPlaybackUnavailable' => 'التشغيل غير متاح في التطبيق على هذا الجهاز.',
+			'desktopGoogleSignInUnavailable' => 'تسجيل الدخول باستخدام Google غير متاح على Linux. اختر طريقة أخرى.',
+			'desktopCameraUnavailable' => 'التقاط الصور بالكاميرا غير متاح على هذا الجهاز. اختر ملفًا بدلاً من ذلك.',
 			_ => null,
 		};
 	}

@@ -186,15 +186,10 @@ class MediaGrid extends StatelessWidget {
     final autoPlay =
         nostrRepository.currentAppCustomization?.enableAutoPlay ?? true;
 
-    // One read, used for the delegate *and* the large-tile arithmetic below —
-    // reading it twice is how the two silently drift apart.
-    final columns = mediaGridColumns(context);
-    final cycle = mediaGridCycle(columns);
-    final invertedLargeOffset = mediaGridLargeTileOffset(columns);
-
-    return BlocProvider.value(
-      value: nostrRepository.mainCubit,
-      child: SliverGrid(
+    Widget grid(int columns) {
+      final cycle = mediaGridCycle(columns);
+      final invertedLargeOffset = mediaGridLargeTileOffset(columns);
+      return SliverGrid(
         gridDelegate: SliverQuiltedGridDelegate(
           crossAxisCount: columns,
           mainAxisSpacing: 2,
@@ -229,7 +224,18 @@ class MediaGrid extends StatelessWidget {
           },
           childCount: sortedContent.length,
         ),
-      ),
+      );
+    }
+
+    return BlocProvider.value(
+      value: nostrRepository.mainCubit,
+      child: isDesktopPlatform
+          ? SliverLayoutBuilder(
+              builder: (context, constraints) => grid(
+                desktopMediaGridColumns(constraints.crossAxisExtent),
+              ),
+            )
+          : grid(mediaGridColumns(context)),
     );
   }
 }

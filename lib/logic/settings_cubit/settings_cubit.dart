@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:bip340/bip340.dart';
 import 'package:equatable/equatable.dart';
@@ -12,6 +13,8 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 import '../../initializers.dart';
 import '../../models/app_client_model.dart';
 import '../../models/app_models/settings_data.dart';
+import '../../repositories/account_storage_lock.dart';
+import '../../repositories/account_storage_snapshot.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
@@ -19,8 +22,16 @@ import '../../utils/utils.dart';
 part 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
-  SettingsCubit()
-      : super(
+  SettingsCubit(
+      {bool? desktopStorageOverride,
+      AccountSnapshotStore? accountStore,
+      AccountStorageLock? accountStorageLock,
+      void Function()? storageErrorHandler})
+      : _desktopStorageOverride = desktopStorageOverride,
+        _injectedAccountStore = accountStore,
+        _injectedAccountStorageLock = accountStorageLock,
+        _storageErrorHandler = storageErrorHandler,
+        super(
           const SettingsState(
             externalKeys: {},
             keyMap: {},
@@ -30,6 +41,208 @@ class SettingsCubit extends Cubit<SettingsState> {
             externalKeysType: {},
           ),
         );
+
+  final bool? _desktopStorageOverride;
+  final AccountSnapshotStore? _injectedAccountStore;
+  final AccountStorageLock? _injectedAccountStorageLock;
+  final void Function()? _storageErrorHandler;
+  bool get _desktopStorage =>
+      _desktopStorageOverride ?? (Platform.isWindows || Platform.isLinux);
+  late AccountSnapshotStore _desktopStore;
+  List<String> _desktopRemoteSigners = [];
+  bool _accountMutationInProgress = false;
+  bool _accountRestartRequired = false;
+
+  /// Set when startup hit diverged or unreadable account data and the user
+  /// must choose a recovery path. No write happens until that choice is made.
+  AccountStorageRecoveryRequired? _pendingRecovery;
+  AccountStorageRecoveryRequired? get pendingRecovery => _pendingRecovery;
+
+  bool _beginAccountMutation() {
+    if (!_desktopStorage) {
+      return true;
+    }
+    if (_accountMutationInProgress ||
+        _accountRestartRequired ||
+        _pendingRecovery != null) {
+      if (_storageErrorHandler != null) {
+        _storageErrorHandler!();
+      } else {
+        BotToastUtils.showError(t.accountStorageSaveFailed, force: true);
+      }
+      return false;
+    }
+    _accountMutationInProgress = true;
+    return true;
+  }
+
+  void _endAccountMutation() {
+    if (_desktopStorage) {
+      _accountMutationInProgress = false;
+    }
+  }
+
+  String? get desktopRemoteSigners =>
+      _desktopStorage ? jsonEncode(_desktopRemoteSigners) : null;
+
+  Future<void> _initDesktopAccounts(SettingData setting) async {
+    final storage = localDatabaseRepository.secureStorage;
+    final lock = _injectedAccountStorageLock ??
+        await DesktopAccountStorageLockFactory().create();
+    final store = _injectedAccountStore ??
+        AccountSnapshotStore(
+          read: (key) => storage.read(key: key),
+          write: (key, value) => storage.write(key: key, value: value),
+          delete: (key) => storage.delete(key: key),
+          lock: lock,
+        );
+    final AccountStorageSnapshot snapshot;
+    try {
+      snapshot = await store.load(legacyActiveIndex: setting.privateKeyIndex);
+    } on AccountStorageRecoveryRequired catch (recovery) {
+      _pendingRecovery = recovery;
+      _desktopStore = store;
+      _settingData = setting;
+      rethrow;
+    }
+    _applyDesktopSnapshot(store, setting, snapshot);
+    // Cleanup is resumable and never affects the saved snapshot; a failure
+    // must not hide working accounts behind the recovery screen.
+    try {
+      await store.finishMigration();
+    } catch (_) {
+      // Legacy values stay in place and are checked on the next start.
+    }
+  }
+
+  void _applyDesktopSnapshot(
+    AccountSnapshotStore store,
+    SettingData setting,
+    AccountStorageSnapshot snapshot,
+  ) {
+    for (final signer in snapshot.remoteSigners) {
+      RemoteEventSigner.fromJson(
+        jsonString: signer,
+        nc: nc,
+        onAuth: (_, __) {},
+      );
+    }
+    final keys = Map<String, String>.from(snapshot.keys);
+    final privacy = Map<String, bool>.from(snapshot.privateKeys);
+    final external = Map<String, bool>.from(snapshot.externalSigners);
+    if (keys.keys
+        .any((key) => int.tryParse(key) == null || !privacy.containsKey(key))) {
+      throw const FormatException('Incomplete account privacy data');
+    }
+    final types = <String, ExternalKeyType>{};
+    final setups = <String, PomSetup>{};
+    for (final entry in snapshot.externalTypes.entries) {
+      types[entry.key] = ExternalKeyType.values.firstWhere(
+        (value) => value.name == entry.value,
+        orElse: () => ExternalKeyType.Amber,
+      );
+    }
+    for (final entry in snapshot.pomegranateSetups.entries) {
+      setups[entry.key] = PomSetup.fromJson(
+        Map<String, dynamic>.from(entry.value as Map),
+      );
+    }
+    if (snapshot.activeIndex != null &&
+        !keys.containsKey(snapshot.activeIndex.toString())) {
+      throw const FormatException('Invalid active account');
+    }
+    _keyMap
+      ..clear()
+      ..addAll(keys);
+    _keyIsPrivateMap
+      ..clear()
+      ..addAll(privacy);
+    _keyIsExternalSignerMap
+      ..clear()
+      ..addAll(external);
+    _externalKeysType
+      ..clear()
+      ..addAll(types);
+    _pomegranateSetups
+      ..clear()
+      ..addAll(setups);
+    _desktopRemoteSigners = snapshot.remoteSigners;
+    setting.privateKeyIndex = snapshot.activeIndex;
+    _settingData = setting;
+    _desktopStore = store;
+    _pendingRecovery = null;
+  }
+
+  /// Resolves a startup recovery prompt by restoring the retained backup.
+  ///
+  /// Only valid when startup failed on a corrupt snapshot. The unreadable
+  /// primary is quarantined, never deleted.
+  Future<void> recoverFromBackup() async {
+    final setting = _settingData ?? SettingData();
+    final snapshot = await _desktopStore.restoreBackup();
+    _applyDesktopSnapshot(_desktopStore, setting, snapshot);
+    _accountRestartRequired = false;
+  }
+
+  /// Resolves a startup recovery prompt by keeping the saved accounts.
+  ///
+  /// Only valid when legacy values diverged. The conflicting legacy values are
+  /// quarantined, never deleted.
+  Future<void> recoverKeepSnapshot() async {
+    final setting = _settingData ?? SettingData();
+    final active = setting.privateKeyIndex;
+    await _desktopStore.keepSnapshot(activeIndex: active);
+    final snapshot =
+        await _desktopStore.load(legacyActiveIndex: active);
+    _applyDesktopSnapshot(_desktopStore, setting, snapshot);
+    _accountRestartRequired = false;
+  }
+
+  /// Resolves a startup recovery prompt by adopting the legacy values.
+  ///
+  /// Refuses to replace saved accounts with an empty legacy store; the saved
+  /// snapshot is retained as a backup.
+  Future<void> recoverKeepLegacy() async {
+    final setting = _settingData ?? SettingData();
+    final snapshot = await _desktopStore.keepLegacy(
+      legacyActiveIndex: setting.privateKeyIndex,
+    );
+    _applyDesktopSnapshot(_desktopStore, setting, snapshot);
+    _accountRestartRequired = false;
+  }
+
+  Future<void> _saveDesktopAccounts({
+    required Map<String, String> keys,
+    required Map<String, bool> privacy,
+    required Map<String, bool> external,
+    required Map<String, ExternalKeyType> types,
+    required Map<String, PomSetup> setups,
+    required int? activeIndex,
+    required List<String> remoteSigners,
+  }) async {
+    try {
+      await _desktopStore.save(AccountStorageSnapshot(
+        keys: keys,
+        privateKeys: privacy,
+        externalSigners: external,
+        externalTypes: types.map((key, value) => MapEntry(key, value.name)),
+        pomegranateSetups:
+            setups.map((key, value) => MapEntry(key, value.toJson())),
+        activeIndex: activeIndex,
+        remoteSigners: remoteSigners,
+      ));
+      // Until the caller applies the saved change, a later mutation must not
+      // use the old in-memory maps if an intervening operation throws.
+      _accountRestartRequired = true;
+    } catch (_) {
+      if (_storageErrorHandler != null) {
+        _storageErrorHandler!();
+      } else {
+        BotToastUtils.showError(t.accountStorageSaveFailed, force: true);
+      }
+      rethrow;
+    }
+  }
 
   Map<String, String> get keyMap => _keyMap;
 
@@ -152,6 +365,23 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> init() async {
     final settingStr = localDatabaseRepository.getSettings();
+    if (_desktopStorage) {
+      final setting = StringUtil.isNotBlank(settingStr)
+          ? SettingData.fromJson(json.decode(settingStr!))
+          : SettingData();
+      await _initDesktopAccounts(setting);
+      if (!isClosed) {
+        emit(state.copyWith(
+          externalKeys: _keyIsExternalSignerMap,
+          keyMap: _keyMap,
+          externalKeysType: _externalKeysType,
+          privateKeys: _keyIsPrivateMap,
+          settingsData: _settingData,
+          refreshSettingData: !state.refreshSettingData,
+        ));
+      }
+      return;
+    }
     // await checkForUpdates();
 
     if (StringUtil.isNotBlank(settingStr)) {
@@ -325,7 +555,34 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> onLoginTap(int index, Function() onPop) async {
+    if (!_beginAccountMutation()) {
+      return;
+    }
+    try {
+      await _onLoginTap(index, onPop);
+      _accountRestartRequired = false;
+    } finally {
+      _endAccountMutation();
+    }
+  }
+
+  Future<void> _onLoginTap(int index, Function() onPop) async {
     if (privateKeyIndex != index) {
+      if (_desktopStorage) {
+        try {
+          await _saveDesktopAccounts(
+            keys: Map.of(_keyMap),
+            privacy: Map.of(_keyIsPrivateMap),
+            external: Map.of(_keyIsExternalSignerMap),
+            types: Map.of(_externalKeysType),
+            setups: Map.of(_pomegranateSetups),
+            activeIndex: index,
+            remoteSigners: List.of(_desktopRemoteSigners),
+          );
+        } catch (_) {
+          return;
+        }
+      }
       BotToastUtils.showSuccess(
         t.loggingOut.capitalizeFirst(),
       );
@@ -358,7 +615,66 @@ class SettingsCubit extends Cubit<SettingsState> {
     bool routerBack = true,
     required Function() onPop,
   }) async {
+    if (!_beginAccountMutation()) {
+      return;
+    }
+    try {
+      await _onLogoutTap(index, routerBack: routerBack, onPop: onPop);
+      _accountRestartRequired = false;
+    } finally {
+      _endAccountMutation();
+    }
+  }
+
+  Future<void> _onLogoutTap(
+    int index, {
+    required bool routerBack,
+    required Function() onPop,
+  }) async {
     final oldIndex = privateKeyIndex;
+    if (_desktopStorage) {
+      final indexStr = index.toString();
+      final keys = Map<String, String>.of(_keyMap)..remove(indexStr);
+      final privacy = Map<String, bool>.of(_keyIsPrivateMap)..remove(indexStr);
+      final external = Map<String, bool>.of(_keyIsExternalSignerMap)
+        ..remove(indexStr);
+      final types = Map<String, ExternalKeyType>.of(_externalKeysType)
+        ..remove(indexStr);
+      final setups = Map<String, PomSetup>.of(_pomegranateSetups)
+        ..remove(indexStr);
+      final removedKey = _keyMap[indexStr];
+      final removeSigner = removedKey != null &&
+          (_keyIsExternalSignerMap[indexStr] ?? false) &&
+          !keys.containsValue(removedKey);
+      final remote = removeSigner
+          ? _desktopRemoteSigners.where((signer) {
+              final decoded = jsonDecode(signer) as Map<String, dynamic>;
+              return decoded['publicKey'] != removedKey;
+            }).toList()
+          : List<String>.of(_desktopRemoteSigners);
+      final active = oldIndex == index
+          ? (keys.isEmpty ? null : int.tryParse(keys.keys.first))
+          : oldIndex;
+      try {
+        await _saveDesktopAccounts(
+            keys: keys,
+            privacy: privacy,
+            external: external,
+            types: types,
+            setups: setups,
+            activeIndex: active,
+            remoteSigners: remote);
+      } catch (_) {
+        return;
+      }
+      _desktopRemoteSigners = remote;
+      if (removeSigner) {
+        final signer = nostrRepository.remoteSigners.remove(removedKey);
+        if (signer != null) {
+          await signer.close();
+        }
+      }
+    }
     removeKey(index);
 
     if (oldIndex == index) {
@@ -388,14 +704,48 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
   }
 
-  Future<void> onAllLogout() async {
+  Future<bool> onAllLogout() async {
+    if (!_beginAccountMutation()) {
+      return false;
+    }
+    try {
+      final result = await _onAllLogout();
+      _accountRestartRequired = false;
+      return result;
+    } finally {
+      _endAccountMutation();
+    }
+  }
+
+  Future<bool> _onAllLogout() async {
+    if (_desktopStorage) {
+      try {
+        await _saveDesktopAccounts(
+            keys: {},
+            privacy: {},
+            external: {},
+            types: {},
+            setups: {},
+            activeIndex: null,
+            remoteSigners: []);
+      } catch (_) {
+        return false;
+      }
+      _desktopRemoteSigners = [];
+      for (final signer in nostrRepository.remoteSigners.values) {
+        await signer.close();
+      }
+      nostrRepository.remoteSigners.clear();
+    }
     BotToastUtils.showWarning(
       t.disconnecting.capitalizeFirst(),
     );
     final c = BotToastUtils.showLoading();
 
-    localDatabaseRepository.setKeysMap(json.encode({}));
-    localDatabaseRepository.setPomegranateSetups(json.encode({}));
+    if (!_desktopStorage) {
+      localDatabaseRepository.setKeysMap(json.encode({}));
+      localDatabaseRepository.setPomegranateSetups(json.encode({}));
+    }
     privateKeyIndex = null;
     _keyIsExternalSignerMap.clear();
     _externalKeysType.clear();
@@ -416,6 +766,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     packsSettingsCubit.initPacks();
     c.call();
     saveAndUpdate();
+    return true;
   }
 
   Future<int> addAndChangeKey(
@@ -424,6 +775,35 @@ class SettingsCubit extends Cubit<SettingsState> {
     bool isExternalSigner, {
     bool fetchData = false,
     ExternalKeyType externalKeyType = ExternalKeyType.Bunker,
+    RemoteEventSigner? remoteSigner,
+    PomSetup? pomegranateSetup,
+  }) async {
+    if (!_beginAccountMutation()) {
+      throw StateError('Account change already in progress');
+    }
+    try {
+      final result = await _addAndChangeKey(
+        key,
+        isPrivate,
+        isExternalSigner,
+        fetchData: fetchData,
+        externalKeyType: externalKeyType,
+        remoteSigner: remoteSigner,
+        pomegranateSetup: pomegranateSetup,
+      );
+      _accountRestartRequired = false;
+      return result;
+    } finally {
+      _endAccountMutation();
+    }
+  }
+
+  Future<int> _addAndChangeKey(
+    String key,
+    bool isPrivate,
+    bool isExternalSigner, {
+    required bool fetchData,
+    required ExternalKeyType externalKeyType,
     RemoteEventSigner? remoteSigner,
     PomSetup? pomegranateSetup,
   }) async {
@@ -439,20 +819,70 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
 
     if (findIndex != null) {
+      if (_desktopStorage) {
+        await _saveDesktopAccounts(
+            keys: Map.of(_keyMap),
+            privacy: Map.of(_keyIsPrivateMap),
+            external: Map.of(_keyIsExternalSignerMap),
+            types: Map.of(_externalKeysType),
+            setups: Map.of(_pomegranateSetups),
+            activeIndex: findIndex,
+            remoteSigners: List.of(_desktopRemoteSigners));
+      }
       privateKeyIndex = findIndex;
       return findIndex;
     }
 
-    await nostrRepository.clearData();
+    if (!_desktopStorage) {
+      await nostrRepository.clearData();
+    }
 
     for (var i = 0; i < 20; i++) {
       final index = i.toString();
       final pk = _keyMap[index];
 
       if (pk == null) {
+        if (_desktopStorage) {
+          final keys = Map<String, String>.of(_keyMap)..[index] = key;
+          final privacy = Map<String, bool>.of(_keyIsPrivateMap)
+            ..[index] = isPrivate;
+          final external = Map<String, bool>.of(_keyIsExternalSignerMap)
+            ..[index] = isExternalSigner;
+          final types = Map<String, ExternalKeyType>.of(_externalKeysType);
+          final setups = Map<String, PomSetup>.of(_pomegranateSetups);
+          types.remove(index);
+          setups.remove(index);
+          if (isExternalSigner) {
+            types[index] = externalKeyType;
+          }
+          if (externalKeyType == ExternalKeyType.Google &&
+              pomegranateSetup != null) {
+            setups[index] = pomegranateSetup;
+          }
+          final remote = <String>[
+            ...nostrRepository.remoteSigners.values
+                .where((signer) => signer.publicKey != remoteSigner?.publicKey)
+                .map((signer) => signer.toJson()),
+            if (remoteSigner != null) remoteSigner.toJson(),
+          ];
+          await _saveDesktopAccounts(
+              keys: keys,
+              privacy: privacy,
+              external: external,
+              types: types,
+              setups: setups,
+              activeIndex: i,
+              remoteSigners: remote);
+          _desktopRemoteSigners = remote;
+          await nostrRepository.clearData();
+        }
         _keyMap[index] = key;
         _keyIsPrivateMap[index] = isPrivate;
         _keyIsExternalSignerMap[index] = isExternalSigner;
+        if (_desktopStorage) {
+          _externalKeysType.remove(index);
+          _pomegranateSetups.remove(index);
+        }
         if (isExternalSigner) {
           _externalKeysType[index] = externalKeyType;
         }
@@ -466,31 +896,33 @@ class SettingsCubit extends Cubit<SettingsState> {
 
         _settingData!.privateKeyIndex = i;
 
-        await localDatabaseRepository.setKeysMap(json.encode(_keyMap));
+        if (!_desktopStorage) {
+          await localDatabaseRepository.setKeysMap(json.encode(_keyMap));
 
-        await localDatabaseRepository.setKeysPrivacyStatus(
-          json.encode(_keyIsPrivateMap),
-        );
+          await localDatabaseRepository.setKeysPrivacyStatus(
+            json.encode(_keyIsPrivateMap),
+          );
 
-        await localDatabaseRepository.setKeysExternalStatus(
-          json.encode(_keyIsExternalSignerMap),
-        );
+          await localDatabaseRepository.setKeysExternalStatus(
+            json.encode(_keyIsExternalSignerMap),
+          );
 
-        final converted = _externalKeysType.map(
-          (key, value) => MapEntry(key, value.name),
-        );
+          final converted = _externalKeysType.map(
+            (key, value) => MapEntry(key, value.name),
+          );
 
-        await localDatabaseRepository.setExternalKeysType(
-          json.encode(converted),
-        );
+          await localDatabaseRepository.setExternalKeysType(
+            json.encode(converted),
+          );
 
-        await localDatabaseRepository.setPomegranateSetups(
-          json.encode(
-            _pomegranateSetups.map(
-              (key, value) => MapEntry(key, value.toJson()),
+          await localDatabaseRepository.setPomegranateSetups(
+            json.encode(
+              _pomegranateSetups.map(
+                (key, value) => MapEntry(key, value.toJson()),
+              ),
             ),
-          ),
-        );
+          );
+        }
 
         saveAndUpdate(updateUI: fetchData);
 
@@ -506,8 +938,11 @@ class SettingsCubit extends Cubit<SettingsState> {
                 publicKey,
               );
 
-        if (currentSigner is RemoteEventSigner) {
+        if (currentSigner is RemoteEventSigner && !_desktopStorage) {
           nostrRepository.addRemoteSigner(currentSigner! as RemoteEventSigner);
+        } else if (currentSigner is RemoteEventSigner) {
+          final signer = currentSigner! as RemoteEventSigner;
+          nostrRepository.remoteSigners[signer.publicKey] = signer;
         }
 
         nc.setSigner(currentSigner);
@@ -545,23 +980,26 @@ class SettingsCubit extends Cubit<SettingsState> {
     _externalKeysType.remove(indexStr);
     _keyIsPrivateMap.remove(indexStr);
 
-    localDatabaseRepository.setKeysMap(json.encode(_keyMap));
+    if (!_desktopStorage) {
+      localDatabaseRepository.setKeysMap(json.encode(_keyMap));
 
-    localDatabaseRepository.setKeysPrivacyStatus(json.encode(_keyIsPrivateMap));
+      localDatabaseRepository
+          .setKeysPrivacyStatus(json.encode(_keyIsPrivateMap));
 
-    localDatabaseRepository.setKeysExternalStatus(
-      json.encode(_keyIsExternalSignerMap),
-    );
+      localDatabaseRepository.setKeysExternalStatus(
+        json.encode(_keyIsExternalSignerMap),
+      );
 
-    localDatabaseRepository.setExternalKeysType(
-      json.encode(_externalKeysType.map((k, v) => MapEntry(k, v.name))),
-    );
+      localDatabaseRepository.setExternalKeysType(
+        json.encode(_externalKeysType.map((k, v) => MapEntry(k, v.name))),
+      );
 
-    localDatabaseRepository.setPomegranateSetups(
-      json.encode(
-        _pomegranateSetups.map((key, value) => MapEntry(key, value.toJson())),
-      ),
-    );
+      localDatabaseRepository.setPomegranateSetups(
+        json.encode(
+          _pomegranateSetups.map((key, value) => MapEntry(key, value.toJson())),
+        ),
+      );
+    }
 
     if (_settingData!.privateKeyIndex == index) {
       if (_keyMap.isEmpty) {

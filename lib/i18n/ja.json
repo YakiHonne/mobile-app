@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "アカウントの保存領域を開けませんでした。アカウントは変更されていません。",
+  "accountStorageLinuxHelp": "システムのキーリングを解除または起動してから再試行してください。",
+  "accountStorageSaveFailed": "アカウントの変更を保存できませんでした。アプリを再起動してから再試行してください。",
+  "accountStorageRecoveryTitle": "アカウントの確認が必要です",
+  "accountStorageRecoveryCorrupt": "保存されたアカウントデータを読み取れませんでした。何も削除されていません。",
+  "accountStorageRecoveryLegacy": "別のバージョンまたはプロセスがアカウントデータを変更しました。保持するコピーを選択してください。",
+  "accountStorageRestoreBackup": "以前に保存したアカウントを復元",
+  "accountStorageKeepSaved": "保存済みのアカウントを保持",
+  "accountStorageKeepLegacy": "もう一方のアカウントデータを使用",
+  "accountStorageBackupMissing": "有効な以前のバックアップがありません。",
+  "accountStorageRecoveryFailed": "復元を完了できませんでした。アカウントデータは変更されていません。",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} があなたの画像を引用しました",
   "userQuotedPictureYouIn": "{{name}} があなたがメンションされた画像を引用しました",
   "cameraPermission": "アプリがカメラにアクセスする権限がないか、このデバイスに利用可能なカメラがありません。",
+  "videoQuality": "動画の品質",
+  "originalMedia": "元：",
   "fetchingPicture": "画像を取得中...",
   "addDescription": "説明を追加...",
   "uploadingVideo": "動画をアップロード中...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "デスクトップの表示密度",
   "desktopDensityComfortable": "標準",
   "desktopDensityCompact": "コンパクト",
-  "desktopKnowPeople": "ユーザーを見つける"
+  "desktopKnowPeople": "ユーザーを見つける",
+  "desktopNetworkInterface": "ネットワークインターフェース",
+  "desktopInterfaceAvailable": "利用可能",
+  "desktopRelayConnections": "リレー接続",
+  "desktopSmartWidgetUnavailable": "このデバイスでは対話型署名を利用できません。ページはブラウザーで開けます。",
+  "desktopPlaybackUnavailable": "このデバイスではアプリ内再生を利用できません。",
+  "desktopGoogleSignInUnavailable": "Linux では Google ログインを利用できません。別の方法を選んでください。",
+  "desktopCameraUnavailable": "このデバイスではカメラ撮影を利用できません。代わりにファイルを選択してください。"
 }

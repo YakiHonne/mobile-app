@@ -63,7 +63,7 @@ class DmsCubit extends Cubit<DmsState>
   Timer? _uiUpdateTimer;
   Timer? sendNotificationTimer;
   Timer? _historyBackfillTimer;
-  bool canShowNotification = true;
+  bool canShowNotification = isMobilePlatform;
   Map<String, DMSessionInfo> infoMap = {};
 
   // Only ids are needed for dedupe — keeping the full gift-wrap events here
@@ -195,6 +195,10 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   Future<void> checkNotificationAllowed() async {
+    if (!isMobilePlatform) {
+      canShowNotification = false;
+      return;
+    }
     canShowNotification = await AwesomeNotifications().isNotificationAllowed();
   }
 
@@ -1767,6 +1771,9 @@ class DmsCubit extends Cubit<DmsState>
   }
 
   Future<void> sendNotification(Event event) async {
+    if (!isMobilePlatform) {
+      return;
+    }
     if (event.pubkey != currentSigner!.getPublicKey() &&
         event.kind != EventKind.GIFT_WRAP &&
         !isDmsView &&

@@ -27,8 +27,8 @@ class HorizontalViewModeWidget extends StatelessWidget {
         children: [
           ExtendedImage.asset(
             PagesIcons.notConnected,
-            width: 12.w,
-            height: 12.w,
+            width: isDesktopPlatform ? 48 : 12.w,
+            height: isDesktopPlatform ? 48 : 12.w,
             compressionRatio: 1,
           ),
           const SizedBox(
@@ -113,7 +113,7 @@ class RelayLoginHorizontalViewModeWidget extends StatelessWidget {
         children: [
           AppIcon(
             FeatureIcons.relaysOrbit,
-            size: 12.w,
+            size: isDesktopPlatform ? 48 : 12.w,
             color: Theme.of(context).primaryColorDark,
           ),
           const SizedBox(
@@ -190,8 +190,8 @@ class VerticalViewModeWidget extends StatelessWidget {
       children: [
         ExtendedImage.asset(
           PagesIcons.notConnected,
-          width: 20.w,
-          height: 20.w,
+          width: isDesktopPlatform ? 80 : 20.w,
+          height: isDesktopPlatform ? 80 : 20.w,
           compressionRatio: 1,
         ),
         const SizedBox(
@@ -323,8 +323,8 @@ class NoMessagesWidget extends StatelessWidget {
           ),
           ExtendedImage.asset(
             PagesIcons.unauthorizedMessages,
-            width: 45.w,
-            height: 45.w,
+            width: isDesktopPlatform ? 180 : 45.w,
+            height: isDesktopPlatform ? 180 : 45.w,
             compressionRatio: 1,
           ),
         ],
@@ -348,8 +348,8 @@ class MutedUserContent extends StatelessWidget {
       children: [
         ExtendedImage.asset(
           PagesIcons.mutedUser,
-          width: 20.w,
-          height: 20.w,
+          width: isDesktopPlatform ? 80 : 20.w,
+          height: isDesktopPlatform ? 80 : 20.w,
           compressionRatio: 1,
         ),
         const SizedBox(
@@ -432,8 +432,8 @@ class MutedUserActionBox extends StatelessWidget {
         children: [
           ExtendedImage.asset(
             PagesIcons.mutedUser,
-            width: 12.w,
-            height: 12.w,
+            width: isDesktopPlatform ? 48 : 12.w,
+            height: isDesktopPlatform ? 48 : 12.w,
             compressionRatio: 1,
           ),
           const SizedBox(
@@ -521,7 +521,7 @@ class NoInternetView extends StatelessWidget {
         children: [
           Image.asset(
             PagesIcons.noData,
-            width: 35.w,
+            width: isDesktopPlatform ? 160 : 35.w,
           ),
           const SizedBox(
             height: kDefaultPadding,
@@ -583,16 +583,25 @@ class NoInternetRow extends StatelessWidget {
         SvgPicture.asset(
           ToastsIcons.check,
           colorFilter: const ColorFilter.mode(kDimGrey, BlendMode.srcATop),
-          width: 5.w,
+          width: isDesktopPlatform ? 20 : 5.w,
         ),
         const SizedBox(
           width: 10,
         ),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.bodySmall,
-          textAlign: TextAlign.center,
-        ),
+        if (isDesktopPlatform)
+          Flexible(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          )
+        else
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
       ],
     );
   }
@@ -615,7 +624,7 @@ class WrongView extends StatelessWidget {
         children: [
           SvgPicture.asset(
             PagesIcons.noData,
-            width: 35.w,
+            width: isDesktopPlatform ? 160 : 35.w,
           ),
           const SizedBox(
             height: kDefaultPadding,

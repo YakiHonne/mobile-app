@@ -44,7 +44,7 @@ class SignupPreview extends StatelessWidget {
               ),
               if (state.about.isNotEmpty) ...[
                 SizedBox(
-                  width: 80.w,
+                  width: isDesktopPlatform ? double.infinity : 80.w,
                   child: Text(
                     state.about,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(

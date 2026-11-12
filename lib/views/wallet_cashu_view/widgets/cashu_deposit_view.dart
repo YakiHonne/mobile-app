@@ -13,10 +13,13 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
+import '../../widgets/desktop_qr_bounds.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
+import 'desktop_cashu_form.dart';
 
 class CashuDepositView extends HookWidget {
   const CashuDepositView({super.key});
@@ -152,59 +155,62 @@ class CashuDepositView extends HookWidget {
     final showWalletSelection =
         availableWallets.isNotEmpty && generatedInvoice.value == null;
 
-    return ModalSheetContainer(
-      height: 90.h,
-      child: Column(
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.deposit,
-            isBack: false,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-              child: FadeIn(
-                key: ValueKey(generatedInvoice.value == null),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: kDefaultPadding,
-                  children: [
-                    if (generatedInvoice.value == null)
-                      _buildInputState(
-                        context,
-                        walletMints,
-                        cashuState,
-                        amountController,
-                        amountInSats,
-                        showWalletSelection,
-                        selectedWalletId,
-                        availableWallets,
-                      )
-                    else
-                      _buildInvoiceState(
-                        context,
-                        generatedInvoice.value!,
-                        amountController.text,
-                      ),
-                  ],
-                ),
+    final content = Column(
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.deposit,
+          isBack: false,
+        ),
+        Expanded(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: FadeIn(
+              key: ValueKey(generatedInvoice.value == null),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: kDefaultPadding,
+                children: [
+                  if (generatedInvoice.value == null)
+                    _buildInputState(
+                      context,
+                      walletMints,
+                      cashuState,
+                      amountController,
+                      amountInSats,
+                      showWalletSelection,
+                      selectedWalletId,
+                      availableWallets,
+                    )
+                  else
+                    _buildInvoiceState(
+                      context,
+                      generatedInvoice.value!,
+                      amountController.text,
+                    ),
+                ],
               ),
             ),
           ),
-          _buildActionButtons(
-            context,
-            generatedInvoice,
-            quoteId,
-            amountController,
-            availableWallets,
-            secondaryButtonStyle,
-            payWithNwc,
-            generateInvoice,
-          ),
-        ],
-      ),
+        ),
+        _buildActionButtons(
+          context,
+          generatedInvoice,
+          quoteId,
+          amountController,
+          availableWallets,
+          secondaryButtonStyle,
+          payWithNwc,
+          generateInvoice,
+        ),
+      ],
+    );
+    return ModalSheetContainer(
+      height: isDesktopPlatform ? double.infinity : 90.h,
+      child: isDesktopPlatform && generatedInvoice.value == null
+          ? DesktopScrollableForm(child: content)
+          : content,
     );
   }
 
@@ -249,7 +255,7 @@ class CashuDepositView extends HookWidget {
                     contentPadding: EdgeInsets.zero,
                   ),
                 ),
-                Row(
+                CashuAmountLine(
                   mainAxisSize: MainAxisSize.min,
                   spacing: kDefaultPadding / 4,
                   children: [
@@ -368,15 +374,32 @@ class CashuDepositView extends HookWidget {
     String invoice,
     String amount,
   ) {
-    return Expanded(
-      child: Column(
-        spacing: kDefaultPadding / 2,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            context.t.scanPay,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      spacing: kDefaultPadding / 2,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          context.t.scanPay,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        if (isDesktopPlatform)
+          Center(
+            child: DesktopQrBounds(
+              child: Container(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                decoration: BoxDecoration(
+                  color: kWhite,
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                ),
+                child: QrImageView(
+                  data: invoice,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ),
+          )
+        else
           Container(
             padding: const EdgeInsets.all(kDefaultPadding),
             decoration: BoxDecoration(
@@ -389,49 +412,52 @@ class CashuDepositView extends HookWidget {
               padding: EdgeInsets.zero,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '$amount Sats',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$amount Sats',
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(width: kDefaultPadding / 2),
+            IconButton(
+              onPressed: () {
+                Clipboard.setData(
+                  ClipboardData(text: invoice),
+                );
+                BotToastUtils.showSuccess(
+                  context.t.invoiceCopied,
+                );
+              },
+              icon: Icon(
+                LucideIcons.copy,
+                color: Theme.of(context).primaryColor,
               ),
-              const SizedBox(width: kDefaultPadding / 2),
-              IconButton(
-                onPressed: () {
-                  Clipboard.setData(
-                    ClipboardData(text: invoice),
-                  );
-                  BotToastUtils.showSuccess(
-                    context.t.invoiceCopied,
-                  );
-                },
-                icon: Icon(
-                  LucideIcons.copy,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                context.t.waitingPayment,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(width: kDefaultPadding / 2),
-              SpinKitCircle(
-                color: Theme.of(context).primaryColorDark,
-                size: 20,
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              context.t.waitingPayment,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(width: kDefaultPadding / 2),
+            SpinKitCircle(
+              color: Theme.of(context).primaryColorDark,
+              size: 20,
+            ),
+          ],
+        ),
+      ],
+    );
+    return Expanded(
+      child:
+          isDesktopPlatform ? SingleChildScrollView(child: content) : content,
     );
   }
 

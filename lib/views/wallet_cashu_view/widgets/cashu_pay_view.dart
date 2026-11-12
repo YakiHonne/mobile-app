@@ -10,11 +10,13 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/qr_scanner_modal.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
+import 'desktop_cashu_form.dart';
 
 class CashuPayView extends HookWidget {
   const CashuPayView({super.key, this.input});
@@ -117,35 +119,37 @@ class CashuPayView extends HookWidget {
       }
     }
 
+    final content = Column(
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.lightningNetwork,
+          isBack: false,
+        ),
+        _buildContent(
+          context,
+          selectedMintUrl,
+          walletMints,
+          cashuState,
+          activeMintBalance,
+          toInputController,
+          payAmountController,
+          memoController,
+          isInvoice,
+          step,
+        ),
+        _buildActionButtons(
+          context,
+          onPay,
+          step,
+          isInvoice,
+          toInputController,
+        ),
+      ],
+    );
     return ModalSheetContainer(
-      height: 90.h,
-      child: Column(
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.lightningNetwork,
-            isBack: false,
-          ),
-          _buildContent(
-            context,
-            selectedMintUrl,
-            walletMints,
-            cashuState,
-            activeMintBalance,
-            toInputController,
-            payAmountController,
-            memoController,
-            isInvoice,
-            step,
-          ),
-          _buildActionButtons(
-            context,
-            onPay,
-            step,
-            isInvoice,
-            toInputController,
-          ),
-        ],
-      ),
+      height: isDesktopPlatform ? double.infinity : 90.h,
+      child:
+          isDesktopPlatform ? DesktopScrollableForm(child: content) : content,
     );
   }
 
@@ -411,7 +415,7 @@ class CashuPayView extends HookWidget {
             contentPadding: EdgeInsets.zero,
           ),
         ),
-        Row(
+        CashuAmountLine(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: kDefaultPadding / 4,
           children: [
@@ -484,7 +488,7 @@ class CashuPayView extends HookWidget {
                 color: Theme.of(context).primaryColor,
               ),
         ),
-        Row(
+        CashuAmountLine(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: kDefaultPadding / 4,
           children: [

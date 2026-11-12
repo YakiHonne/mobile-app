@@ -185,7 +185,7 @@ class SendUsingLightningAddress extends HookWidget {
           _currencyButton(isUsingSats, context),
           _amount(amount, isUsingSats),
           SizedBox(
-            width: 70.w,
+            width: isDesktopPlatform ? 320 : 70.w,
             child: const Center(
               child: Divider(
                 thickness: 0.5,
@@ -220,7 +220,7 @@ class SendUsingLightningAddress extends HookWidget {
             ),
           ),
           SizedBox(
-            width: 70.w,
+            width: isDesktopPlatform ? 320 : 70.w,
             child: const Center(
               child: Divider(
                 thickness: 0.5,

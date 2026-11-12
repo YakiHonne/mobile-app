@@ -10,6 +10,7 @@ import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../common/media_handler/desktop_file_save.dart';
 import '../../logic/blossom_cubit/blossom_cubit.dart';
 import '../../logic/blossom_cubit/blossom_state.dart';
 import '../../logic/media_servers_cubit/media_servers_cubit.dart';
@@ -793,12 +794,18 @@ Future<void> _downloadFile(BuildContext context, BlossomMedia media) async {
 
     if (isDesktopPlatform) {
       cancel();
-      if (!Platform.isMacOS) {
-        BotToastUtils.showError(t.downloadFailed);
-        return;
-      }
       final uri = Uri.tryParse(media.url);
       final name = uri?.pathSegments.lastOrNull ?? '';
+      if (!Platform.isMacOS) {
+        final saved = await saveDesktopFileBytes(
+          suggestedName: name.isEmpty ? media.sha256 : name,
+          bytes: Uint8List.fromList(response.data!),
+        );
+        if (saved) {
+          BotToastUtils.showSuccess(t.downloadSuccessful);
+        }
+        return;
+      }
       await FlutterFileSaver().writeFileAsBytes(
         fileName: name.isEmpty ? media.sha256 : name,
         bytes: Uint8List.fromList(response.data!),

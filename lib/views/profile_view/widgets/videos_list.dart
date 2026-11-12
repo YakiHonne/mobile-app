@@ -51,6 +51,11 @@ class ProfileVideos extends StatelessWidget {
                 icon: FeatureIcons.videoOcta,
               );
             } else {
+              if (isDesktopPlatform && !useSingleColumn) {
+                return DesktopPaneGridBuilder(
+                    builder: (context, columns) =>
+                        _itemsGrid(state, columns: columns));
+              }
               if (isTablet && !useSingleColumn) {
                 return _itemsGrid(state);
               } else {
@@ -98,11 +103,11 @@ class ProfileVideos extends StatelessWidget {
     );
   }
 
-  MasonryGridView _itemsGrid(ProfileState state) {
+  MasonryGridView _itemsGrid(ProfileState state, {int columns = 2}) {
     return MasonryGridView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
       ),
       crossAxisSpacing: kDefaultPadding,
       mainAxisSpacing: kDefaultPadding,

@@ -53,48 +53,48 @@ class MuteListView extends HookWidget {
           child: DefaultTabController(
             length: 2,
             child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  pinned: true,
-                  automaticallyImplyLeading: false,
-                  toolbarHeight: 50,
-                  title: TabBar(
-                    dividerColor: kTransparent,
-                    unselectedLabelColor: Theme.of(context).highlightColor,
-                    labelColor: Theme.of(context).primaryColor,
-                    indicatorColor: Theme.of(context).primaryColor,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelStyle:
-                        Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                    tabs: [
-                      Tab(text: context.t.people.capitalizeFirst()),
-                      Tab(text: context.t.notes.capitalizeFirst()),
-                    ],
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    automaticallyImplyLeading: false,
+                    toolbarHeight: 50,
+                    title: TabBar(
+                      dividerColor: kTransparent,
+                      unselectedLabelColor: Theme.of(context).highlightColor,
+                      labelColor: Theme.of(context).primaryColor,
+                      indicatorColor: Theme.of(context).primaryColor,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelStyle:
+                          Theme.of(context).textTheme.labelLarge!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                      tabs: [
+                        Tab(text: context.t.people.capitalizeFirst()),
+                        Tab(text: context.t.notes.capitalizeFirst()),
+                      ],
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: BlocBuilder<MuteListCubit, MuteListState>(
-              builder: (context, state) {
-                return TabBarView(
-                  children: [
-                    getUsersMutesView(
-                      isEmpty: state.usersMutes.isEmpty,
-                      isTablet: isTablet,
-                      context: context,
-                    ),
-                    getEventsMutesView(
-                      isEmpty: state.eventsMutes.isEmpty,
-                      isTablet: isTablet,
-                      context: context,
-                    ),
-                  ],
-                );
+                ];
               },
-            ),
+              body: BlocBuilder<MuteListCubit, MuteListState>(
+                builder: (context, state) {
+                  return TabBarView(
+                    children: [
+                      getUsersMutesView(
+                        isEmpty: state.usersMutes.isEmpty,
+                        isTablet: isTablet,
+                        context: context,
+                      ),
+                      getEventsMutesView(
+                        isEmpty: state.eventsMutes.isEmpty,
+                        isTablet: isTablet,
+                        context: context,
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -130,7 +130,7 @@ Widget getEventsMutesView({
       description: context.t.noMutedEventsFound.capitalizeFirst(),
       icon: FeatureIcons.mute,
     );
-  } else if (isTablet) {
+  } else if (isDesktopPlatform || isTablet) {
     return const TabletEventMuteListView();
   } else {
     return const MobileEventMuteListView();
@@ -147,43 +147,51 @@ class TabletMuteListView extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(kDefaultPadding),
-          child: MasonryGridView.builder(
-            itemCount: state.usersMutes.length,
-            gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isTablet ? 4 : 2,
+          child: LayoutBuilder(
+            builder: (context, constraints) => MasonryGridView.builder(
+              itemCount: state.usersMutes.length,
+              gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isDesktopPlatform
+                    ? desktopPaneFeedColumns(context, constraints.maxWidth)
+                    : (isTablet ? 4 : 2),
+              ),
+              mainAxisSpacing: kDefaultPadding / 2,
+              crossAxisSpacing: kDefaultPadding / 2,
+              itemBuilder: (context, index) {
+                final pubkey = state.usersMutes[index];
+
+                return MutedUserContainer(
+                  pubkey: pubkey,
+                  onUnmute: (name) {
+                    final isMuted = state.usersMutes.contains(pubkey);
+
+                    showCupertinoCustomDialogue(
+                      context: context,
+                      title: isMuted
+                          ? context.t.unmuteUser.capitalizeFirst()
+                          : context.t.muteUser.capitalizeFirst(),
+                      description: isMuted
+                          ? context.t
+                              .unmuteUserDesc(name: name)
+                              .capitalizeFirst()
+                          : context.t
+                              .muteUserDesc(name: name)
+                              .capitalizeFirst(),
+                      buttonText: isMuted
+                          ? context.t.unmute.capitalizeFirst()
+                          : context.t.mute.capitalizeFirst(),
+                      buttonTextColor: isMuted ? kGreen : kRed,
+                      onClicked: () {
+                        context.read<MuteListCubit>().setMuteStatusFunc(
+                              muteKey: pubkey,
+                              onSuccess: () => Navigator.pop(context),
+                            );
+                      },
+                    );
+                  },
+                );
+              },
             ),
-            mainAxisSpacing: kDefaultPadding / 2,
-            crossAxisSpacing: kDefaultPadding / 2,
-            itemBuilder: (context, index) {
-              final pubkey = state.usersMutes[index];
-
-              return MutedUserContainer(
-                pubkey: pubkey,
-                onUnmute: (name) {
-                  final isMuted = state.usersMutes.contains(pubkey);
-
-                  showCupertinoCustomDialogue(
-                    context: context,
-                    title: isMuted
-                        ? context.t.unmuteUser.capitalizeFirst()
-                        : context.t.muteUser.capitalizeFirst(),
-                    description: isMuted
-                        ? context.t.unmuteUserDesc(name: name).capitalizeFirst()
-                        : context.t.muteUserDesc(name: name).capitalizeFirst(),
-                    buttonText: isMuted
-                        ? context.t.unmute.capitalizeFirst()
-                        : context.t.mute.capitalizeFirst(),
-                    buttonTextColor: isMuted ? kGreen : kRed,
-                    onClicked: () {
-                      context.read<MuteListCubit>().setMuteStatusFunc(
-                            muteKey: pubkey,
-                            onSuccess: () => Navigator.pop(context),
-                          );
-                    },
-                  );
-                },
-              );
-            },
           ),
         );
       },
@@ -200,44 +208,48 @@ class TabletEventMuteListView extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(kDefaultPadding),
-          child: MasonryGridView.builder(
-            gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+          child: LayoutBuilder(
+            builder: (context, constraints) => MasonryGridView.builder(
+              gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isDesktopPlatform
+                    ? desktopPaneFeedColumns(context, constraints.maxWidth)
+                    : 2,
+              ),
+              mainAxisSpacing: kDefaultPadding / 2,
+              crossAxisSpacing: kDefaultPadding / 2,
+              itemBuilder: (context, index) {
+                final id = state.eventsMutes[index];
+
+                return MutedEventContainer(
+                  id: id,
+                  onUnmute: () {
+                    final isMuted = state.eventsMutes.contains(id);
+
+                    showCupertinoCustomDialogue(
+                      context: context,
+                      title: isMuted
+                          ? context.t.unmuteThread.capitalizeFirst()
+                          : context.t.muteThread.capitalizeFirst(),
+                      description: isMuted
+                          ? context.t.unmuteThreadDesc.capitalizeFirst()
+                          : context.t.muteThreadDesc.capitalizeFirst(),
+                      buttonText: isMuted
+                          ? context.t.unmute.capitalizeFirst()
+                          : context.t.mute.capitalizeFirst(),
+                      buttonTextColor: isMuted ? kGreen : kRed,
+                      onClicked: () {
+                        context.read<MuteListCubit>().setMuteStatusFunc(
+                              muteKey: id,
+                              isPubkey: false,
+                              onSuccess: () => Navigator.pop(context),
+                            );
+                      },
+                    );
+                  },
+                );
+              },
+              itemCount: state.eventsMutes.length,
             ),
-            mainAxisSpacing: kDefaultPadding / 2,
-            crossAxisSpacing: kDefaultPadding / 2,
-            itemBuilder: (context, index) {
-              final id = state.eventsMutes[index];
-
-              return MutedEventContainer(
-                id: id,
-                onUnmute: () {
-                  final isMuted = state.eventsMutes.contains(id);
-
-                  showCupertinoCustomDialogue(
-                    context: context,
-                    title: isMuted
-                        ? context.t.unmuteThread.capitalizeFirst()
-                        : context.t.muteThread.capitalizeFirst(),
-                    description: isMuted
-                        ? context.t.unmuteThreadDesc.capitalizeFirst()
-                        : context.t.muteThreadDesc.capitalizeFirst(),
-                    buttonText: isMuted
-                        ? context.t.unmute.capitalizeFirst()
-                        : context.t.mute.capitalizeFirst(),
-                    buttonTextColor: isMuted ? kGreen : kRed,
-                    onClicked: () {
-                      context.read<MuteListCubit>().setMuteStatusFunc(
-                            muteKey: id,
-                            isPubkey: false,
-                            onSuccess: () => Navigator.pop(context),
-                          );
-                    },
-                  );
-                },
-              );
-            },
-            itemCount: state.eventsMutes.length,
           ),
         );
       },

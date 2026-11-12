@@ -42,7 +42,7 @@ class ImageSelector extends HookWidget {
               width: 0.5,
             ),
           ),
-          height: 80.h,
+          height: isDesktopPlatform ? 620 : 80.h,
           child: Column(
             children: [
               const ModalBottomSheetHandle(),
@@ -115,82 +115,91 @@ class ImageSelector extends HookWidget {
     );
   }
 
-  SizedBox _uploadAndUse(BuildContext context, bool isTablet) {
-    return SizedBox(
-      height:
-          kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isTablet ? 15.w : kDefaultPadding,
-        ),
-        child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundBuilder: (_, __, child) => child!,
-                    backgroundColor: kTransparent,
-                    side: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                    ),
+  Widget _uploadAndUse(BuildContext context, bool isTablet) {
+    final actions = Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktopPlatform
+            ? kDefaultPadding
+            : isTablet
+                ? 15.w
+                : kDefaultPadding,
+      ),
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                  backgroundBuilder: (_, __, child) => child!,
+                  backgroundColor: kTransparent,
+                  side: BorderSide(
+                    color: Theme.of(context).primaryColor,
                   ),
-                  child: Text(
-                    context.t.cancel.capitalize(),
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorDark,
-                    ),
+                ),
+                child: Text(
+                  context.t.cancel.capitalize(),
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
                   ),
                 ),
               ),
-              const SizedBox(
-                width: kDefaultPadding / 2,
-              ),
-              BlocBuilder<ArticleImageSelectorCubit, ArticleImageSelectorState>(
-                builder: (context, state) {
-                  return Expanded(
-                    child: Builder(
-                      builder: (context) {
-                        return TextButton(
-                          onPressed: () {
-                            if (state.isImageSelected) {
-                              context
-                                  .read<ArticleImageSelectorCubit>()
-                                  .addImage(
-                                onSuccess: (imetaMap) {
-                                  onTap.call(imetaMap['url']!, imeta: imetaMap);
-                                  Navigator.pop(context);
-                                },
-                                onFailure: (message) {
-                                  BotToastUtils.showError(
-                                    message,
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundBuilder: (_, __, child) => child!,
-                            backgroundColor:
-                                state.isImageSelected ? kPurple : kDimGrey,
-                          ),
-                          child: Text(
-                            context.t.uploadAndUse.capitalize(),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            BlocBuilder<ArticleImageSelectorCubit, ArticleImageSelectorState>(
+              builder: (context, state) {
+                return Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      return TextButton(
+                        onPressed: () {
+                          if (state.isImageSelected) {
+                            context.read<ArticleImageSelectorCubit>().addImage(
+                              onSuccess: (imetaMap) {
+                                onTap.call(imetaMap['url']!, imeta: imetaMap);
+                                Navigator.pop(context);
+                              },
+                              onFailure: (message) {
+                                BotToastUtils.showError(
+                                  message,
+                                );
+                              },
+                            );
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundBuilder: (_, __, child) => child!,
+                          backgroundColor:
+                              state.isImageSelected ? kPurple : kDimGrey,
+                        ),
+                        child: Text(
+                          context.t.uploadAndUse.capitalize(),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
+    );
+    if (isDesktopPlatform) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        child: actions,
+      );
+    }
+    return SizedBox(
+      height:
+          kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
+      child: actions,
     );
   }
 
@@ -206,7 +215,7 @@ class ImageSelector extends HookWidget {
         } else {
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isTablet ? 3 : 2,
+              crossAxisCount: isDesktopPlatform ? 2 : (isTablet ? 3 : 2),
               childAspectRatio: 16 / 9,
               crossAxisSpacing: kDefaultPadding / 2,
               mainAxisSpacing: kDefaultPadding / 2,
@@ -225,13 +234,13 @@ class ImageSelector extends HookWidget {
                   children: [
                     if (link.isEmpty)
                       SizedBox(
-                        height: 20.h,
+                        height: isDesktopPlatform ? 180 : 20.h,
                         child: const NoMediaPlaceHolder(),
                       )
                     else
                       CommonThumbnail(
                         image: link,
-                        height: 20.h,
+                        height: isDesktopPlatform ? 180 : 20.h,
                         width: double.infinity,
                         isRound: true,
                         radius: kDefaultPadding,
@@ -299,7 +308,7 @@ class ImageSelector extends HookWidget {
   Container _imageContainer(
       ArticleImageSelectorState state, BuildContext context) {
     return Container(
-      height: 20.h,
+      height: isDesktopPlatform ? 180 : 20.h,
       decoration: state.isImageSelected
           ? null
           : BoxDecoration(
@@ -327,12 +336,12 @@ class ImageSelector extends HookWidget {
       child: state.isImageSelected && !state.isLocalImage
           ? state.imageLink.isEmpty
               ? SizedBox(
-                  height: 20.h,
+                  height: isDesktopPlatform ? 180 : 20.h,
                   child: const NoMediaPlaceHolder(),
                 )
               : CommonThumbnail(
                   image: state.imageLink,
-                  height: 20.h,
+                  height: isDesktopPlatform ? 180 : 20.h,
                   width: double.infinity,
                   isRound: true,
                   radius: kDefaultPadding,

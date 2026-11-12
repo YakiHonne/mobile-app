@@ -136,7 +136,8 @@ class PlanCard extends StatelessWidget {
               ),
             ],
           ),
-          if (showApprox && (isPoints || isLn || !kIapEnabled))
+          if (showApprox &&
+              (isPoints || isLn || !kIapEnabled || isDesktopPlatform))
             Text(
               isPoints
                   ? (pointsEligible

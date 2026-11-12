@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: YakiHonne
+Source: https://github.com/YakiHonne
+
+Files: *
+Copyright: YakiHonne
+License: proprietary
+ This package is assembled from a Flutter bundle built by the YakiHonne
+ project. The exact distribution license for shipped artifacts must be set by
+ the release owner before any package is distributed. This placeholder is not a
+ grant of rights; it exists so the candidate package has required metadata.

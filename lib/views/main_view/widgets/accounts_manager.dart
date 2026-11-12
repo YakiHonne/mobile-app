@@ -292,7 +292,9 @@ class AccountManager extends HookWidget {
   /// Handles logging out all accounts
   void _handleLogoutAll(BuildContext context) {
     Future<void> disconnectAll() async {
-      await settingsCubit.onAllLogout();
+      if (!await settingsCubit.onAllLogout()) {
+        return;
+      }
 
       if (context.mounted) {
         context.read<MainCubit>().setDefault();

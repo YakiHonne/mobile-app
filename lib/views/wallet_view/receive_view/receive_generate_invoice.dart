@@ -13,6 +13,7 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
+import '../../widgets/desktop_qr_bounds.dart';
 import '../../widgets/fluid_scaffold.dart';
 import '../send_view/send_main_view.dart';
 import '../send_view/send_success_view.dart';
@@ -296,10 +297,11 @@ class ReceiveInvoiceQrCode extends HookWidget {
     );
   }
 
-  Container _qrCode(BuildContext context) {
-    return Container(
-      width: 70.w,
-      height: 70.w,
+  Widget _qrCode(BuildContext context) {
+    final size = isDesktopPlatform ? null : 70.w;
+    final qr = Container(
+      width: size,
+      height: size,
       padding: const EdgeInsets.all(
         kDefaultPadding / 2,
       ),
@@ -322,6 +324,7 @@ class ReceiveInvoiceQrCode extends HookWidget {
         ),
       ),
     );
+    return isDesktopPlatform ? DesktopQrBounds(child: qr) : qr;
   }
 }
 
@@ -422,7 +425,7 @@ class ReceiveGenInvoice extends HookWidget {
                       _toggleCurrency(isUsingSats, context),
                       _exchange(amount, isUsingSats),
                       SizedBox(
-                        width: 70.w,
+                        width: isDesktopPlatform ? 320 : 70.w,
                         child: const Center(
                           child: Divider(
                             thickness: 0.5,

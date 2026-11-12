@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,9 +9,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../common/media_handler/media_handler.dart';
 import '../../../logic/add_media_cubit/add_media_cubit.dart';
 import '../../../logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import '../../../utils/utils.dart';
+import '../../widgets/desktop_media_fallback.dart';
 import '../../widgets/empty_list.dart';
 import 'add_media_bottom_navigation_bar.dart';
 
@@ -222,7 +225,9 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void initState() {
     super.initState();
-    _initializeVideo();
+    if (supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      _initializeVideo();
+    }
   }
 
   Future<void> _initializeVideo() async {
@@ -297,6 +302,9 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      return const DesktopMediaFallback(url: '');
+    }
     return LayoutBuilder(
       builder: (context, constraints) => Padding(
         padding: const EdgeInsets.symmetric(
@@ -384,9 +392,16 @@ class _MediaPickerState extends State<MediaPicker> {
   bool isFrontCamera = false;
   bool isInitializing = true;
 
+  bool get _cameraSupported =>
+      !isDesktopPlatform && supportsMediaCamera(defaultTargetPlatform);
+
   @override
   void initState() {
     super.initState();
+    if (!_cameraSupported) {
+      isInitializing = false;
+      return;
+    }
     if (cameras.isNotEmpty) {
       _initializeCamera(cameras.first);
     } else {
@@ -485,6 +500,42 @@ class _MediaPickerState extends State<MediaPicker> {
     super.dispose();
   }
 
+  /// Desktop has no in-app camera; offer the file selector instead of an
+  /// unavailable-camera empty state.
+  Widget _desktopFilePickerFallback(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            EmptyList(
+              description: context.t.desktopCameraUnavailable,
+              icon: FeatureIcons.media,
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final file = await MediaHandler.selectMedia(
+                  widget.isVideo.value ? MediaType.video : MediaType.image,
+                );
+                if (file != null) {
+                  widget.onSuccess?.call(
+                    file,
+                    widget.isVideo.value ||
+                        isVideoExtension(file.path.split('.').last),
+                  );
+                }
+              },
+              icon: const Icon(LucideIcons.folderOpen),
+              label: Text(context.t.select),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isInitializing) {
@@ -494,6 +545,8 @@ class _MediaPickerState extends State<MediaPicker> {
           size: 20,
         ),
       );
+    } else if (!_cameraSupported) {
+      return _desktopFilePickerFallback(context);
     } else if (controller == null) {
       return EmptyList(
         description: context.t.cameraPermission,

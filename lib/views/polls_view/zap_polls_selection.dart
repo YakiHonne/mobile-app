@@ -122,25 +122,33 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
 
   Widget _items(BuildContext context, bool isTablet,
       ScrollController scrollController, PollsState state) {
-    return AdaptiveSmartRefresher(
-      desktopHasResults: state.polls.isNotEmpty,
-      controller: refreshController,
-      enablePullDown: false,
-      enablePullUp: true,
-      header: const MaterialClassicHeader(
-        color: kPurple,
-      ),
-      footer: const RefresherClassicFooter(),
-      onLoading: () =>
-          context.read<PollsCubit>().getPolls(isAdd: true, isSelf: false),
-      onRefresh: () => onRefresh(
-        onInit: () =>
-            context.read<PollsCubit>().getPolls(isAdd: false, isSelf: false),
-      ),
-      child: isTablet
-          ? _itemsGrid(scrollController, state)
-          : _itemsList(state, scrollController),
-    );
+    Widget refresher(Widget content) => AdaptiveSmartRefresher(
+          desktopHasResults: state.polls.isNotEmpty,
+          controller: refreshController,
+          enablePullDown: false,
+          enablePullUp: true,
+          header: const MaterialClassicHeader(
+            color: kPurple,
+          ),
+          footer: const RefresherClassicFooter(),
+          onLoading: () =>
+              context.read<PollsCubit>().getPolls(isAdd: true, isSelf: false),
+          onRefresh: () => onRefresh(
+            onInit: () => context
+                .read<PollsCubit>()
+                .getPolls(isAdd: false, isSelf: false),
+          ),
+          child: content,
+        );
+    if (isDesktopPlatform) {
+      return DesktopPaneGridBuilder(
+        builder: (context, columns) =>
+            refresher(_itemsGrid(scrollController, state, columns: columns)),
+      );
+    }
+    return refresher(isTablet
+        ? _itemsGrid(scrollController, state)
+        : _itemsList(state, scrollController));
   }
 
   ListView _itemsList(PollsState state, ScrollController scrollController) {
@@ -171,9 +179,10 @@ class _ZapPollSelectionState extends State<ZapPollSelection>
   }
 
   MasonryGridView _itemsGrid(
-      ScrollController scrollController, PollsState state) {
+      ScrollController scrollController, PollsState state,
+      {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: state.polls.length,

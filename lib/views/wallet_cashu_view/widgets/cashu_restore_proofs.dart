@@ -108,52 +108,62 @@ class CashuRestoreProofs extends HookWidget {
     List<TextEditingController> controllers,
     VoidCallback updateProgress,
   ) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: kDefaultPadding / 2,
-        childAspectRatio: 2,
-      ),
-      itemCount: 12,
-      itemBuilder: (context, index) {
-        return TextFormField(
-          controller: controllers[index],
-          onChanged: (value) {
-            if (value.trim().contains(' ')) {
-              final words = value.trim().split(RegExp(r'\s+'));
-              if (words.length > 1) {
-                for (var i = 0; i < words.length; i++) {
-                  if (index + i < 12) {
-                    controllers[index + i].text = words[i];
+    Widget grid(int columns, double? extent) => GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            crossAxisSpacing: kDefaultPadding / 2,
+            mainAxisExtent: extent,
+            childAspectRatio: 2,
+          ),
+          itemCount: 12,
+          itemBuilder: (context, index) {
+            return TextFormField(
+              controller: controllers[index],
+              onChanged: (value) {
+                if (value.trim().contains(' ')) {
+                  final words = value.trim().split(RegExp(r'\s+'));
+                  if (words.length > 1) {
+                    for (var i = 0; i < words.length; i++) {
+                      if (index + i < 12) {
+                        controllers[index + i].text = words[i];
+                      }
+                    }
+                    updateProgress();
                   }
                 }
-                updateProgress();
-              }
-            }
+              },
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    left: kDefaultPadding / 3,
+                    right: kDefaultPadding / 4,
+                  ),
+                  child: Text(
+                    '${index + 1}.',
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: Theme.of(context).highlightColor,
+                        ),
+                  ),
+                ),
+                prefixIconConstraints: const BoxConstraints(),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: kDefaultPadding / 1.5,
+                ),
+              ),
+            );
           },
-          decoration: InputDecoration(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(
-                left: kDefaultPadding / 3,
-                right: kDefaultPadding / 4,
-              ),
-              child: Text(
-                '${index + 1}.',
-                style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: Theme.of(context).highlightColor,
-                    ),
-              ),
-            ),
-            prefixIconConstraints: const BoxConstraints(),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: kDefaultPadding / 1.5,
-            ),
-          ),
         );
-      },
-    );
+    if (!isDesktopPlatform) {
+      return grid(3, null);
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+      final columns =
+          (constraints.maxWidth / (150 * scale)).floor().clamp(1, 3);
+      return grid(columns, 60 * scale);
+    });
   }
 
   Widget _buildActionSection(

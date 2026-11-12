@@ -800,6 +800,12 @@ class ContentList extends StatelessWidget {
           );
         }
 
+        if (isDesktopPlatform && !useSingleColumn) {
+          return DesktopPaneSliverGridBuilder(
+            builder: (context, columns) =>
+                _itemsGrid(content, columns: columns),
+          );
+        }
         if (isTablet && !useSingleColumn) {
           return _itemsGrid(content);
         } else {
@@ -829,11 +835,11 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  SliverPadding _itemsGrid(List<BaseEventModel> content) {
+  SliverPadding _itemsGrid(List<BaseEventModel> content, {int columns = 2}) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       sliver: SliverMasonryGrid.count(
-        crossAxisCount: 2,
+        crossAxisCount: columns,
         childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
         mainAxisSpacing: kDefaultPadding / 2,

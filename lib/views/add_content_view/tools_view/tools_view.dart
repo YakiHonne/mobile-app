@@ -111,7 +111,8 @@ class ToolList extends HookWidget {
     final searchController = useTextEditingController();
     final tools = useState<List<SmartWidget>>(<SmartWidget>[]);
     final savedTools = useState<List<SmartWidget>>(<SmartWidget>[]);
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = !isDesktopPlatform &&
+        ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return BlocConsumer<ToolsCubit, ToolsState>(
       listener: (context, state) {
@@ -285,7 +286,7 @@ class ToolList extends HookWidget {
                   final app = state.apps[tool.identifier];
 
                   return SizedBox(
-                    width: 80.w,
+                    width: isDesktopPlatform ? 280 : 80.w,
                     child: ToolContainer(
                       tool: tool,
                       appSmartWidget: state.apps[tool.identifier],

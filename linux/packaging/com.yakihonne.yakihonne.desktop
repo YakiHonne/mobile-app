@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=YakiHonne
+GenericName=Nostr Client
+Comment=Nostr social client
+Exec=/opt/yakihonne/yakihonne %u
+Icon=com.yakihonne.yakihonne
+Terminal=false
+Categories=Network;InstantMessaging;
+Keywords=nostr;social;decentralized;
+MimeType=x-scheme-handler/nostr;
+StartupWMClass=com.yakihonne.yakihonne

@@ -33,6 +33,7 @@ import '../note_container.dart';
 import '../note_stats.dart';
 import '../parsed_media_container.dart';
 import '../profile_picture.dart';
+import 'desktop_feed_media.dart';
 import 'hidden_media_container.dart';
 import 'url_type_checker.dart';
 
@@ -1943,12 +1944,42 @@ class MediaContainer extends HookWidget {
               invertColor: invertColor,
             ),
           )
-        : CustomVideoPlayer(
-            link: mediaItem.key,
-            removePadding: false,
-            autoPlay: enableAutoplay,
-            enableSound: false,
-          );
+        : _buildVideo(context, mediaItem, enableAutoplay);
+  }
+
+  Widget _buildVideo(BuildContext context, MapEntry<String, UrlType> mediaItem,
+      bool enableAutoplay) {
+    final player = CustomVideoPlayer(
+      link: mediaItem.key,
+      removePadding: false,
+      autoPlay: enableAutoplay,
+      enableSound: false,
+    );
+    if (!isDesktopPlatform) {
+      return player;
+    }
+    void open() => openGallery(source: mediaItem, context: context, index: 0);
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720),
+        child: hideMedia
+            ? AspectRatio(
+                aspectRatio: 16 / 9,
+                child: DesktopHiddenVideo(onOpen: open),
+              )
+            : Stack(
+                children: [
+                  player,
+                  PositionedDirectional(
+                    top: kDefaultPadding / 4,
+                    end: kDefaultPadding / 4,
+                    child: DesktopOpenMediaButton(onPressed: open),
+                  ),
+                ],
+              ),
+      ),
+    );
   }
 }
 
@@ -1980,6 +2011,13 @@ class MediaImage extends HookWidget {
             isRound: true,
             useDefaultNoMedia: false,
           ),
+          if (isDesktopPlatform && !hideImageStatus.value)
+            PositionedDirectional(
+              top: kDefaultPadding / 4,
+              end: kDefaultPadding / 4,
+              child: DesktopOpenMediaButton(
+                  onPressed: () => _openGallery(context)),
+            ),
           if (hideImageStatus.value)
             HiddenMediaContainer(
               hideImageStatus: hideImageStatus,

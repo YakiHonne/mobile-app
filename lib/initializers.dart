@@ -47,9 +47,11 @@ import 'logic/unsent_events_cubit/unsent_events_cubit.dart';
 import 'logic/video_controller_manager_cubit/video_controller_manager_cubit.dart';
 import 'logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import 'models/filter_status.dart';
+import 'repositories/account_storage_snapshot.dart';
 import 'repositories/connectivity_repository.dart';
 import 'repositories/localdatabase_repository.dart';
 import 'repositories/nostr_data_repository.dart';
+import 'utils/bot_toast_util.dart';
 import 'utils/utils.dart';
 
 class AppInitializer {
@@ -154,9 +156,127 @@ class AppInitializer {
 
   /// Initialize settings cubit first (other cubits depend on it)
   static Future<void> _initializeSettings() async {
-    settingsCubit = SettingsCubit();
-    await settingsCubit.init();
+    while (true) {
+      final cubit = SettingsCubit();
+      settingsCubit = cubit;
+      try {
+        await cubit.init();
+        break;
+      } catch (_) {
+        if (!Platform.isWindows && !Platform.isLinux) {
+          rethrow;
+        }
+        final recovery = cubit.pendingRecovery;
+        if (recovery == null) {
+          await cubit.close();
+        }
+        final language = await localDatabaseRepository.getLanguage();
+        final locale = AppLocale.values.firstWhere(
+          (locale) =>
+              locale.languageCode ==
+              (language ??
+                  WidgetsBinding
+                      .instance.platformDispatcher.locale.languageCode),
+          orElse: () => AppLocale.en,
+        );
+        await LocaleSettings.setLocale(locale);
+        final next = Completer<void>();
+        runApp(TranslationProvider(
+            child: MaterialApp(
+          home: Scaffold(
+              body: Center(
+                  child: Padding(
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: recovery == null
+                ? _storageUnavailableScreen(next)
+                : _accountRecoveryScreen(cubit, recovery, next),
+          ))),
+        )));
+        await next.future;
+        if (recovery != null) {
+          await cubit.close();
+        }
+      }
+    }
     initCameras();
+  }
+
+  static Widget _storageUnavailableScreen(Completer<void> retry) {
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(t.accountStorageUnavailable, textAlign: TextAlign.center),
+      if (Platform.isLinux) ...[
+        const SizedBox(height: kDefaultPadding),
+        Text(t.accountStorageLinuxHelp, textAlign: TextAlign.center),
+      ],
+      const SizedBox(height: kDefaultPadding),
+      ElevatedButton(
+          onPressed: () {
+            if (!retry.isCompleted) {
+              retry.complete();
+            }
+          },
+          child: Text(t.retry)),
+    ]);
+  }
+
+  static Widget _accountRecoveryScreen(
+    SettingsCubit cubit,
+    AccountStorageRecoveryRequired recovery,
+    Completer<void> next,
+  ) {
+    final corrupt =
+        recovery.reason == AccountRecoveryReason.corruptSnapshot;
+    Future<void> run(Future<void> Function() action) async {
+      try {
+        await action();
+        if (!next.isCompleted) {
+          next.complete();
+        }
+      } catch (_) {
+        BotToastUtils.showError(t.accountStorageRecoveryFailed, force: true);
+      }
+    }
+
+    final restore = cubit.recoverFromBackup;
+    final keepSaved = cubit.recoverKeepSnapshot;
+    final keepLegacy = cubit.recoverKeepLegacy;
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(t.accountStorageRecoveryTitle, textAlign: TextAlign.center),
+      const SizedBox(height: kDefaultPadding),
+      Text(
+        corrupt
+            ? t.accountStorageRecoveryCorrupt
+            : t.accountStorageRecoveryLegacy,
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: kDefaultPadding * 1.5),
+      if (corrupt) ...[
+        ElevatedButton(
+          onPressed:
+              recovery.hasBackup ? () => run(restore) : null,
+          child: Text(t.accountStorageRestoreBackup),
+        ),
+        if (!recovery.hasBackup) ...[
+          const SizedBox(height: kDefaultPadding / 2),
+          Text(t.accountStorageBackupMissing, textAlign: TextAlign.center),
+        ],
+      ] else ...[
+        ElevatedButton(
+          onPressed: () => run(keepSaved),
+          child: Text(t.accountStorageKeepSaved),
+        ),
+        const SizedBox(height: kDefaultPadding / 2),
+        OutlinedButton(
+          onPressed: () => run(keepLegacy),
+          child: Text(t.accountStorageKeepLegacy),
+        ),
+      ],
+      if (Platform.isLinux) ...[
+        const SizedBox(height: kDefaultPadding),
+        Text(t.accountStorageLinuxHelp, textAlign: TextAlign.center),
+      ],
+    ]);
   }
 
   static Future<void> initCameras() async {
@@ -189,7 +309,9 @@ class AppInitializer {
         );
 
     nostrRepository.setCurrentCrashlytics();
-    await nostrRepository.loadRemoteSigners();
+    await nostrRepository.loadRemoteSigners(
+      storedSigners: settingsCubit.desktopRemoteSigners,
+    );
   }
 
   /// Initialize all cubits

@@ -67,7 +67,7 @@ class PropertiesList extends HookWidget {
         final isLargeScreen =
             ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
-        return isLargeScreen
+        return isDesktopPlatform || isLargeScreen
             ? _buildDesktopLayout(context, state)
             : _buildMobileLayout(context, state);
       },
@@ -123,16 +123,19 @@ class PropertiesList extends HookWidget {
       BuildContext context, PropertiesState state) {
     final propertyBoxes = _getPropertyBoxes(context, state, isDesktop: true);
 
-    return MasonryGridView(
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      crossAxisSpacing: kDefaultPadding / 2,
-      mainAxisSpacing: kDefaultPadding / 2,
-      shrinkWrap: true,
-      primary: false,
-      children: propertyBoxes,
-    );
+    Widget grid(int columns) => MasonryGridView(
+          gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+          ),
+          crossAxisSpacing: kDefaultPadding / 2,
+          mainAxisSpacing: kDefaultPadding / 2,
+          shrinkWrap: true,
+          primary: false,
+          children: propertyBoxes,
+        );
+    return isDesktopPlatform
+        ? DesktopPaneGridBuilder(builder: (context, columns) => grid(columns))
+        : grid(2);
   }
 
   List<Widget> _buildMobilePropertyList(

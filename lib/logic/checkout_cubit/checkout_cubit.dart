@@ -13,8 +13,10 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/app_models/pricing_plan_model.dart';
+import '../../models/subscription_models.dart';
 import '../../repositories/http_functions_repository.dart';
 import '../../utils/utils.dart';
+import 'subscription_billing_policy.dart';
 
 part 'checkout_state.dart';
 
@@ -93,7 +95,11 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     required this.plan,
     required this.method,
     this.accountSession,
-  }) : super(const CheckoutState()) {
+    this.desktopStatusLoader,
+    this.stripeLinkLoader,
+    this.stripeLauncher,
+  })  : _accountPubkey = currentSigner?.getPublicKey(),
+        super(const CheckoutState()) {
     if (method == CheckoutMethod.iap) {
       _iapSub = InAppPurchase.instance.purchaseStream.listen(
         _handlePurchaseUpdate,
@@ -110,6 +116,16 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final CheckoutMethod method;
 
   final Future<void>? accountSession;
+  final Future<SubscriptionStatus?> Function()? desktopStatusLoader;
+  final Future<String?> Function(String plan)? stripeLinkLoader;
+  final Future<bool> Function(Uri uri)? stripeLauncher;
+  final String? _accountPubkey;
+
+  bool get _sameAccount =>
+      _accountPubkey != null &&
+      _accountPubkey!.isNotEmpty &&
+      currentSigner?.getPublicKey() == _accountPubkey &&
+      (currentSigner?.canSign() ?? false);
 
   StreamSubscription<List<PurchaseDetails>>? _iapSub;
   PurchaseDetails? _androidPurchase;
@@ -404,8 +420,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       // synthesises a PurchaseDetails with an empty productID. Nothing else
       // arrives without an id, so an empty one belongs to the tap in flight.
       // StoreKit always fills productID, so the leniency stays Android-only.
-      final isThisPlan =
-          _awaitingTap &&
+      final isThisPlan = _awaitingTap &&
           (purchase.productID == plan.iapProductId ||
               (Platform.isAndroid && purchase.productID.isEmpty));
       switch (purchase.status) {
@@ -525,17 +540,48 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   // -- Stripe --
 
   Future<void> _startStripe() async {
-    final url = await HttpFunctionsRepository.subscriptionGetLink(
-      planId: plan.plan,
-    );
+    if (isDesktopPlatform) {
+      if (!_sameAccount) {
+        _fail(t.pricing_error_checkout);
+        return;
+      }
+      final status = desktopStatusLoader == null
+          ? (await HttpFunctionsRepository.getUserStats())?.subscriptionStatus
+          : await desktopStatusLoader!();
+      if (isClosed) {
+        return;
+      }
+      if (status == null || !_sameAccount) {
+        _fail(t.pricing_error_checkout);
+        return;
+      }
+      if (blocksDesktopCardCheckout(status)) {
+        _fail(t.pricing_error_other_active);
+        return;
+      }
+    }
+    final url = stripeLinkLoader == null
+        ? await HttpFunctionsRepository.subscriptionGetLink(planId: plan.plan)
+        : await stripeLinkLoader!(plan.plan);
     if (isClosed) {
       return;
     }
-    if (url == null) {
+    if (url == null || (isDesktopPlatform && !_sameAccount)) {
       _fail(t.pricing_error_checkout);
       return;
     }
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    final uri = Uri.tryParse(url);
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host.isEmpty ||
+        !(await (stripeLauncher?.call(uri) ??
+            launchUrl(uri, mode: LaunchMode.externalApplication)))) {
+      _fail(t.pricing_error_checkout);
+      return;
+    }
+    if (isClosed) {
+      return;
+    }
     // Stripe is fire-and-forget — payment completes in the browser and the
     // webhook flips the subscription, so there's nothing here to wait on.
     // Terminal state with an exit rather than a spinner that never resolves.

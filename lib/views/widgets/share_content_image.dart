@@ -34,7 +34,11 @@ class ShareContentImage extends HookWidget {
 
     return ModalSheetContainer(
       padding: EdgeInsets.symmetric(
-        horizontal: isTablet ? 15.w : kDefaultPadding / 2,
+        horizontal: isDesktopPlatform
+            ? kDefaultPadding
+            : isTablet
+                ? 15.w
+                : kDefaultPadding / 2,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -74,7 +78,7 @@ class ShareContentImage extends HookWidget {
       child: Screenshot(
         controller: screenshotController.value,
         child: Container(
-          width: 100.w,
+          width: isDesktopPlatform ? double.infinity : 100.w,
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(

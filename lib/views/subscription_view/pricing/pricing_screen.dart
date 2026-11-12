@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../logic/checkout_cubit/checkout_cubit.dart';
+import '../../../logic/checkout_cubit/subscription_billing_policy.dart';
 import '../../../logic/metadata_cubit/metadata_cubit.dart';
 import '../../../models/app_models/pricing_plan_model.dart';
 import '../../../models/points_system_models.dart';
@@ -27,7 +28,8 @@ class PricingScreen extends StatefulWidget {
   State<PricingScreen> createState() => _PricingScreenState();
 }
 
-class _PricingScreenState extends State<PricingScreen> {
+class _PricingScreenState extends State<PricingScreen>
+    with WidgetsBindingObserver {
   bool _isLn = false;
   bool _isPoints = false;
 
@@ -40,13 +42,20 @@ class _PricingScreenState extends State<PricingScreen> {
   late final PageController _pageCtrl;
   int _page = 1;
 
-  bool get _useIap => kIapEnabled;
+  bool get _useIap => usesNativeSubscriptionStore(
+        desktop: isDesktopPlatform,
+        iapEnabled: kIapEnabled,
+      );
 
-  late final Future<void> _accountSessionFuture;
+  late final Future<bool> _accountSessionFuture;
+  String? _sessionPubkey;
 
   @override
   void initState() {
     super.initState();
+    if (isDesktopPlatform) {
+      WidgetsBinding.instance.addObserver(this);
+    }
     // Slightly under a full page so the neighbouring cards peek in on both
     // sides, making the horizontal swipe discoverable. Page 1 (the first
     // fetched plan) is the entry point — the hard-coded free card sits on the
@@ -65,14 +74,31 @@ class _PricingScreenState extends State<PricingScreen> {
 
   @override
   void dispose() {
+    if (isDesktopPlatform) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     _pageCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _ensureAccountSession() async {
-    if (currentSigner?.canSign() ?? false) {
-      await HttpFunctionsRepository.loginToAppSystem();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        isDesktopPlatform &&
+        _sessionPubkey != null &&
+        currentSigner?.getPublicKey() == _sessionPubkey) {
+      unawaited(subscriptionCubit.refreshStatus());
     }
+  }
+
+  Future<bool> _ensureAccountSession() async {
+    if (currentSigner?.canSign() ?? false) {
+      final pubkey = currentSigner!.getPublicKey();
+      _sessionPubkey = pubkey;
+      final session = await HttpFunctionsRepository.loginToAppSystem();
+      return session != null && currentSigner?.getPublicKey() == pubkey;
+    }
+    return false;
   }
 
   Future<void> _fetchPlans() async {
@@ -98,11 +124,6 @@ class _PricingScreenState extends State<PricingScreen> {
   /// Everything else is handed to [CheckoutScreen], which owns the purchase
   /// stream for exactly as long as that one purchase is in flight.
   Future<void> _checkout(PricingPlan plan) async {
-    if (isDesktopPlatform && _useIap && !_isPoints) {
-      BotToastUtils.showError('Store purchases are unavailable on desktop.');
-      return;
-    }
-
     if (_isPoints) {
       setState(() => _loadingPlanId = plan.plan);
       try {
@@ -118,6 +139,17 @@ class _PricingScreenState extends State<PricingScreen> {
       return;
     }
 
+    if (isDesktopPlatform) {
+      final sessionReady = await _accountSessionFuture;
+      if (!mounted) {
+        return;
+      }
+      if (!sessionReady || currentSigner?.getPublicKey() != _sessionPubkey) {
+        BotToastUtils.showError(context.t.pricing_error_checkout);
+        return;
+      }
+    }
+
     await YNavigator.push(
       context,
       CheckoutScreen.route(
@@ -127,9 +159,14 @@ class _PricingScreenState extends State<PricingScreen> {
             : _isLn
                 ? CheckoutMethod.lightning
                 : CheckoutMethod.stripe,
-        accountSession: _accountSessionFuture,
+        accountSession: _accountSessionFuture.then((_) {}),
       ),
     );
+    if (mounted &&
+        isDesktopPlatform &&
+        currentSigner?.getPublicKey() == _sessionPubkey) {
+      await subscriptionCubit.refreshStatus();
+    }
     if (mounted) {
       // The plan cards read subscription status, which the purchase may have
       // just changed.
@@ -240,6 +277,8 @@ class _PricingScreenState extends State<PricingScreen> {
         subscriptionCubit.state.subscriptionStatus?.lastPaymentMethod ?? '';
     final isActivePaidSub =
         subscriptionCubit.state.subscriptionStatus?.isActivePaidSub ?? false;
+    final desktopRecurringActive = isDesktopPlatform &&
+        blocksDesktopCardCheckout(subscriptionCubit.state.subscriptionStatus);
     final isWebManaged = _useIap &&
         isActivePaidSub &&
         lastPaymentMethod != 'iap' &&
@@ -285,7 +324,7 @@ class _PricingScreenState extends State<PricingScreen> {
                 },
               ),
             ),
-            if (isWebManaged)
+            if (isWebManaged || desktopRecurringActive)
               SliverToBoxAdapter(
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(
@@ -305,7 +344,9 @@ class _PricingScreenState extends State<PricingScreen> {
                     borderRadius: BorderRadius.circular(kDefaultPadding / 2),
                   ),
                   child: Text(
-                    context.t.pricing_web_managed,
+                    desktopRecurringActive
+                        ? context.t.pricing_error_other_active
+                        : context.t.pricing_web_managed,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: theme.primaryColor),
                     textAlign: TextAlign.center,
@@ -321,15 +362,21 @@ class _PricingScreenState extends State<PricingScreen> {
                           color: theme.primaryColorDark, size: 32)),
                 ),
               )
-            else if (ResponsiveBreakpoints.of(context).largerThan(MOBILE))
+            else if (isDesktopPlatform ||
+                ResponsiveBreakpoints.of(context).largerThan(MOBILE))
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
                     kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
                 sliver: SliverToBoxAdapter(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      final itemWidth =
-                          (constraints.maxWidth - kDefaultPadding / 2) / 2;
+                      final columns = isDesktopPlatform
+                          ? desktopPaneFeedColumns(
+                              context, constraints.maxWidth)
+                          : 2;
+                      final itemWidth = (constraints.maxWidth -
+                              (columns - 1) * kDefaultPadding / 2) /
+                          columns;
                       return Wrap(
                         spacing: kDefaultPadding / 2,
                         runSpacing: kDefaultPadding / 2,
@@ -337,8 +384,12 @@ class _PricingScreenState extends State<PricingScreen> {
                           for (final plan in plans)
                             SizedBox(
                               width: itemWidth,
-                              child: _planCard(plan, isActivePaidSub, userPlan,
-                                  isWebManaged),
+                              child: _planCard(
+                                  plan,
+                                  isActivePaidSub,
+                                  userPlan,
+                                  isWebManaged ||
+                                      (desktopRecurringActive && !_isPoints)),
                             ),
                         ],
                       );
@@ -368,7 +419,8 @@ class _PricingScreenState extends State<PricingScreen> {
                           plan,
                           isActivePaidSub,
                           userPlan,
-                          isWebManaged,
+                          isWebManaged ||
+                              (desktopRecurringActive && !_isPoints),
                           scrollable: true,
                         ),
                       );

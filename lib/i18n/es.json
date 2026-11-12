@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "No se pudo abrir el almacenamiento de cuentas. Tus cuentas no se han modificado.",
+  "accountStorageLinuxHelp": "Desbloquea o inicia el depósito de claves del sistema y vuelve a intentarlo.",
+  "accountStorageSaveFailed": "No se pudieron guardar los cambios. Reinicia la aplicación antes de volver a intentarlo.",
+  "accountStorageRecoveryTitle": "Tus cuentas necesitan atención",
+  "accountStorageRecoveryCorrupt": "No se pudieron leer los datos de cuenta guardados. No se eliminó nada.",
+  "accountStorageRecoveryLegacy": "Otra versión u otro proceso modificó los datos de cuenta. Elige qué copia conservar.",
+  "accountStorageRestoreBackup": "Restaurar cuentas guardadas anteriores",
+  "accountStorageKeepSaved": "Conservar las cuentas guardadas",
+  "accountStorageKeepLegacy": "Usar los otros datos de cuenta",
+  "accountStorageBackupMissing": "No hay ninguna copia anterior válida disponible.",
+  "accountStorageRecoveryFailed": "No se pudo completar la recuperación. Tus datos de cuenta no se modificaron.",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} citó tu imagen",
   "userQuotedPictureYouIn": "{{name}} citó una imagen en la que te mencionaron",
   "cameraPermission": "La aplicación no tiene permiso para acceder a la cámara o no hay cámaras disponibles en este dispositivo.",
+  "videoQuality": "Calidad del vídeo",
+  "originalMedia": "original:",
   "fetchingPicture": "Obteniendo imagen...",
   "addDescription": "Añadir descripción...",
   "uploadingVideo": "Subiendo vídeo...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "Densidad de escritorio",
   "desktopDensityComfortable": "Cómoda",
   "desktopDensityCompact": "Compacta",
-  "desktopKnowPeople": "Conocer personas"
+  "desktopKnowPeople": "Conocer personas",
+  "desktopNetworkInterface": "Interfaz de red",
+  "desktopInterfaceAvailable": "Disponible",
+  "desktopRelayConnections": "Conexiones a relays",
+  "desktopSmartWidgetUnavailable": "La firma interactiva no está disponible en este dispositivo. Puedes abrir la página en el navegador.",
+  "desktopPlaybackUnavailable": "La reproducción no está disponible en la aplicación en este dispositivo.",
+  "desktopGoogleSignInUnavailable": "El inicio de sesión con Google no está disponible en Linux. Elige otro método.",
+  "desktopCameraUnavailable": "La captura con cámara no está disponible en este dispositivo. Elige un archivo en su lugar."
 }

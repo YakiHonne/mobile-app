@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -26,6 +27,7 @@ import 'app_icon.dart';
 import 'buttons_containers_widgets.dart';
 import 'common_thumbnail.dart';
 import 'data_providers.dart';
+import 'desktop_media_fallback.dart';
 import 'media_components/horizontal_video_view.dart';
 import 'media_components/picture_view.dart';
 import 'media_components/vertical_video_view.dart';
@@ -585,6 +587,12 @@ class YoutubeVideoPlayer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: DesktopMediaFallback(url: url),
+      );
+    }
     final controller = useMemoized(() {
       final id = getYoutubeVideoId(url);
       return YoutubePlayerController(

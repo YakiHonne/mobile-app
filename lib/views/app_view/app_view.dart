@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_down_button/pull_down_button.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../common/animations/heartbeat_fade.dart';
@@ -17,6 +19,9 @@ import '../widgets/fluid_pull_down_button.dart';
 import '../widgets/modal_sheet_container.dart';
 import '../widgets/note_container.dart';
 import 'widgets/signer_view.dart';
+
+bool supportsSmartWidgetWebView(TargetPlatform platform) =>
+    platform != TargetPlatform.windows && platform != TargetPlatform.linux;
 
 class SmartWidgetAppView extends StatelessWidget {
   const SmartWidgetAppView({
@@ -37,6 +42,9 @@ class SmartWidgetAppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uri = Uri.parse(url.trim());
+    if (!supportsSmartWidgetWebView(defaultTargetPlatform)) {
+      return SmartWidgetBrowserFallback(url: url);
+    }
 
     return BlocProvider(
       create: (context) => SmartWidgetAppCubit(
@@ -263,6 +271,45 @@ class SmartWidgetAppView extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+}
+
+/// The webview plugin has no Windows/Linux implementation for this bridge.
+class SmartWidgetBrowserFallback extends StatelessWidget {
+  const SmartWidgetBrowserFallback({super.key, required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final uri = Uri.tryParse(url);
+    final canOpen =
+        uri != null && (uri.scheme == 'https' || uri.scheme == 'http');
+    return ModalSheetContainer(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(context.t.desktopSmartWidgetUnavailable,
+                textAlign: TextAlign.center),
+            const SizedBox(height: kDefaultPadding),
+            if (canOpen)
+              OutlinedButton(
+                onPressed: () => launchUrlString(
+                  url,
+                  mode: LaunchMode.externalApplication,
+                ),
+                child: Text(context.t.enableExternalBrowser),
+              ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(context.t.close),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

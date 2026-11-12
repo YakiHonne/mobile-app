@@ -213,7 +213,7 @@ class CashuWallatBalanceContainer extends StatelessWidget {
             children: [
               _buildWalletBalance(context, state),
               SizedBox(
-                width: 30.w,
+                width: isDesktopPlatform ? 160 : 30.w,
                 child: Divider(
                   height: 0,
                   color: Theme.of(context).primaryColorDark,
@@ -345,7 +345,7 @@ class CashuWallatBalanceContainer extends StatelessWidget {
           ),
           color: Theme.of(context).cardColor,
         ),
-        width: 50.w,
+        width: isDesktopPlatform ? 320 : 50.w,
         padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
           vertical: kDefaultPadding / 3,

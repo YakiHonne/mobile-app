@@ -56,23 +56,28 @@ class MediaSkeleton extends StatelessWidget {
           duration: const Duration(seconds: 1),
           highlightColor: Theme.of(context).scaffoldBackgroundColor,
         ),
-        child: Column(
-          spacing: kDefaultPadding / 8,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _skeletonRow(context: context, flip: true),
-            _skeletonRow(context: context),
-            _skeletonRow(context: context, flip: true),
-            _skeletonRow(context: context),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = isDesktopPlatform
+                ? constraints.maxWidth
+                : MediaQuery.of(context).size.width;
+            return Column(
+              spacing: kDefaultPadding / 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _skeletonRow(width: width, flip: true),
+                _skeletonRow(width: width),
+                _skeletonRow(width: width, flip: true),
+                _skeletonRow(width: width),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _skeletonRow({required BuildContext context, bool flip = false}) {
-    final width = MediaQuery.of(context).size.width;
-
+  Widget _skeletonRow({required double width, bool flip = false}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: kDefaultPadding / 8,

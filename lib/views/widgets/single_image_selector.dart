@@ -93,18 +93,20 @@ class SingleImageSelector extends HookWidget {
                 indent: kDefaultPadding / 2,
                 endIndent: kDefaultPadding / 2,
               ),
-              Expanded(
-                child: SingleImageChoice(
-                  icon: FeatureIcons.camera,
-                  title: context.t.camera.capitalizeFirst(),
-                  mediaType: MediaType.cameraImage,
-                  onUrlProvided: onUrlProvided,
+              if (supportsMediaCamera(Theme.of(context).platform)) ...[
+                Expanded(
+                  child: SingleImageChoice(
+                    icon: FeatureIcons.camera,
+                    title: context.t.camera.capitalizeFirst(),
+                    mediaType: MediaType.cameraImage,
+                    onUrlProvided: onUrlProvided,
+                  ),
                 ),
-              ),
-              const VerticalDivider(
-                indent: kDefaultPadding / 2,
-                endIndent: kDefaultPadding / 2,
-              ),
+                const VerticalDivider(
+                  indent: kDefaultPadding / 2,
+                  endIndent: kDefaultPadding / 2,
+                ),
+              ],
               Expanded(
                 child: SingleImageChoice(
                   icon: FeatureIcons.image,

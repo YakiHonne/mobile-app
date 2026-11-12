@@ -97,7 +97,7 @@ class RepublishView extends HookWidget {
         children: [
           AppIcon(
             FeatureIcons.protected,
-            size: 20.w,
+            size: isDesktopPlatform ? 80 : 20.w,
             color: Theme.of(context).primaryColorDark,
           ),
           Text(

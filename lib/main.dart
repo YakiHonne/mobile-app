@@ -1,5 +1,6 @@
-import 'dart:io' show HandshakeException, SocketException;
+import 'dart:io' show HandshakeException, Platform, SocketException;
 
+import 'package:app_links/app_links.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino_ui;
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'initializers.dart';
 import 'logic/localization_cubit/localization_cubit.dart';
+import 'logic/main_cubit/deep_link_listener.dart';
+import 'logic/main_cubit/desktop_link_channel.dart';
 import 'logic/relays_progress_cubit/relays_progress_cubit.dart';
 import 'logic/theme_cubit/theme_cubit.dart';
 import 'routes/app_router.dart';
@@ -54,12 +57,34 @@ class AppConstants {
   ];
 }
 
-void main() async {
+void main(List<String> arguments) async {
+  SentryWidgetsFlutterBinding.ensureInitialized();
+  final initialLink = Platform.isLinux && arguments.length == 1
+      ? Uri.tryParse(arguments.single)
+      : null;
+  final DesktopLinkChannel? linkChannel =
+      (Platform.isWindows || Platform.isLinux) ? DesktopLinkChannel() : null;
+  // Linux remote links are buffered by the runner until `ready` is sent, so a
+  // link that arrives before the Dart listener still reaches the inbox.
+  final Stream<Uri> linkStream = Platform.isLinux && linkChannel != null
+      ? linkChannel.links
+      : AppLinks().uriLinkStream;
+  deepLinkInbox = DeepLinkInbox(
+    linkStream,
+    initialLink:
+        initialLink?.scheme.toLowerCase() == 'nostr' ? initialLink : null,
+    onError: (_) {},
+  );
+  // Signal readiness only after the inbox has subscribed, so the native side
+  // never forwards a link that has nowhere to go.
+  await linkChannel?.ready();
   await AppInitializer.initApp();
 
   await LiquidGlassWidgets.initialize();
 
-  FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
+  FocusManager.instance.highlightStrategy = isDesktopPlatform
+      ? FocusHighlightStrategy.automatic
+      : FocusHighlightStrategy.alwaysTouch;
 
   if (nostrRepository.isCrashlyticsEnabled) {
     await SentryFlutter.init(

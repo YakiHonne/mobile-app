@@ -201,25 +201,32 @@ class ShowRawEventView extends StatelessWidget {
 
   Widget _buildJsonDisplay(
       BuildContext context, ScrollController controller, String jsonString) {
-    final jsonWidth = MediaQuery.of(context).size.width * _jsonWidthMultiplier;
     final horizontalController = ScrollController();
 
-    return Container(
-      decoration: _buildJsonContainerDecoration(context),
-      child: Column(
-        children: [
-          _buildJsonHeader(context, jsonString),
-          Expanded(
-            child: _buildScrollableJsonContent(
-              context,
-              controller,
-              horizontalController,
-              jsonString,
-              jsonWidth,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final jsonWidth = (isDesktopPlatform
+                ? constraints.maxWidth
+                : MediaQuery.of(context).size.width) *
+            _jsonWidthMultiplier;
+        return Container(
+          decoration: _buildJsonContainerDecoration(context),
+          child: Column(
+            children: [
+              _buildJsonHeader(context, jsonString),
+              Expanded(
+                child: _buildScrollableJsonContent(
+                  context,
+                  controller,
+                  horizontalController,
+                  jsonString,
+                  jsonWidth,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

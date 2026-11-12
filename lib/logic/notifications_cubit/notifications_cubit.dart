@@ -38,7 +38,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   int? since;
   String? notificationsSubscriptionId;
   bool isNotificationView = false;
-  bool canShowNotification = true;
+  bool canShowNotification = isMobilePlatform;
   bool initialized = false;
   bool _notificationsLoaded = false;
   String? _handledAccountPubkey;
@@ -308,6 +308,10 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   Future<void> checkNotificationAllowed() async {
+    if (!isMobilePlatform) {
+      canShowNotification = false;
+      return;
+    }
     canShowNotification = await AwesomeNotifications().isNotificationAllowed();
   }
 

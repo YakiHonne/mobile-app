@@ -36,7 +36,13 @@ class ArticleSelectedRelays extends StatelessWidget {
     return FadeInRight(
       duration: const Duration(milliseconds: 300),
       child: ListView(
-        padding: EdgeInsets.all(isTablet ? 10.w : kDefaultPadding / 2),
+        padding: EdgeInsets.all(
+          isDesktopPlatform
+              ? kDefaultPadding
+              : isTablet
+                  ? 10.w
+                  : kDefaultPadding / 2,
+        ),
         children: [
           const SizedBox(
             height: kDefaultPadding / 2,
@@ -51,7 +57,7 @@ class ArticleSelectedRelays extends StatelessWidget {
           const SizedBox(
             height: kDefaultPadding,
           ),
-          if (ResponsiveBreakpoints.of(context).largerThan(MOBILE))
+          if (!isDesktopPlatform && isTablet)
             _gridRelays(isDark)
           else
             _columnRelays(isDark),

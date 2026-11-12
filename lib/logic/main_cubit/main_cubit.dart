@@ -4,12 +4,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:app_links/app_links.dart';
 import 'package:convert/convert.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 import 'package:nostr_core_enhanced/models/metadata.dart';
 import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
@@ -51,6 +49,7 @@ import '../../views/widgets/media_components/picture_view.dart';
 import '../../views/widgets/media_components/vertical_video_view.dart';
 import '../../views/widgets/received_share_intent.dart';
 import '../../views/workshop_view/workshop_registration_view.dart';
+import 'deep_link_listener.dart';
 
 part 'main_state.dart';
 
@@ -93,13 +92,17 @@ class MainCubit extends Cubit<MainState> {
           ),
         ) {
     initView();
-    initUniLinks();
+    _walletInitialization = walletManagerCubit.init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!isClosed && context.mounted) {
+        deepLinkInbox.attach(_linkHandler);
+      }
+    });
     initShareIntent();
     checkCurrentVersionNews();
     _loadUserPreferences();
     _setupSubscriptions();
     _activateMainView(state.mainView, restoreCachedContent: true);
-    walletManagerCubit.init();
   }
   // Dependencies
   final BuildContext context;
@@ -109,7 +112,8 @@ class MainCubit extends Cubit<MainState> {
   late StreamSubscription currentSignerStream;
   late StreamSubscription homeViewSubcription;
   late StreamSubscription connectivityStream;
-  StreamSubscription? _deepLinksSub;
+  late final Future<bool> Function(Uri) _linkHandler = _handleUriLink;
+  late final Future<void> _walletInitialization;
   StreamSubscription? _shareIntentSub;
 
   // Initialization methods
@@ -285,70 +289,38 @@ class MainCubit extends Cubit<MainState> {
   }
 
   // Deep linking
-  Future<void> initUniLinks() async {
-    final appLinks = AppLinks();
-    final initial = await appLinks.getLatestLinkString();
-
-    if (_deepLinksSub == null && initial != null) {
-      if (_handleExternalHighlightLink(Uri.parse(initial))) {
-        // The Safari extension link opens a draft, not a Nostr entity.
-      } else if (!initial.startsWith('nostr+walletconnect') &&
-          !initial.contains('yakihonne.com/lightning-wallet/alby')) {
-        final entity = _extractNostrEntity(initial);
-
-        if (entity.isNotEmpty) {
-          handleNostrEntity(
-            nostrUri: entity,
-            uriString: '',
-          );
-        } else {
-          forwardView(
-            uriString: initial,
-            isNostrScheme: initial.startsWith('nostr:'),
-            skipDelay: false,
-          );
-        }
-      }
-    }
-
-    _deepLinksSub = appLinks.uriLinkStream.listen(
-      (Uri uri) => _handleUriLink(uri),
-      onError: (err) => Logger().i(err),
-    );
-  }
-
-  void _handleUriLink(Uri uri) {
+  Future<bool> _handleUriLink(Uri uri) async {
     if (_handleExternalHighlightLink(uri)) {
-      return;
+      return true;
     }
     final uriString = uri.toString();
-
-    if (uriString.isNotEmpty) {
-      if (uriString.startsWith('nostr+walletconnect')) {
-        if (context.mounted) {
-          walletManagerCubit.addNwc(uriString);
-        }
-      } else if (uriString.contains('yakihonne.com/lightning-wallet/alby')) {
-        if (context.mounted) {
-          walletManagerCubit.addAlby(uriString);
-        }
-      } else {
-        final entity = _extractNostrEntity(uriString);
-
-        if (entity.isNotEmpty) {
-          handleNostrEntity(
-            nostrUri: entity,
-            uriString: '',
-          );
+    final kind = classifyDeepLink(uri);
+    if (kind == DeepLinkKind.walletConnect || kind == DeepLinkKind.alby) {
+      final signer = currentSigner;
+      if (signer == null) {
+        return true;
+      }
+      await _walletInitialization;
+      if (context.mounted && !isClosed && identical(currentSigner, signer)) {
+        if (kind == DeepLinkKind.walletConnect) {
+          await walletManagerCubit.addNwc(uriString);
         } else {
-          forwardView(
-            uriString: uriString,
-            isNostrScheme: uriString.startsWith('nostr:'),
-            skipDelay: false,
-          );
+          await walletManagerCubit.addAlby(uriString);
         }
       }
+    } else if (uriString.isNotEmpty) {
+      final entity = _extractNostrEntity(uriString);
+      if (entity.isNotEmpty) {
+        await handleNostrEntity(nostrUri: entity, uriString: '');
+      } else {
+        await forwardView(
+          uriString: uriString,
+          isNostrScheme: uriString.startsWith('nostr:'),
+          skipDelay: false,
+        );
+      }
     }
+    return true;
   }
 
   bool _handleExternalHighlightLink(Uri uri) {
@@ -1191,7 +1163,7 @@ class MainCubit extends Cubit<MainState> {
     await currentSignerStream.cancel();
     await homeViewSubcription.cancel();
     await connectivityStream.cancel();
-    await _deepLinksSub?.cancel();
+    deepLinkInbox.detach(_linkHandler);
     await _shareIntentSub?.cancel();
     return super.close();
   }

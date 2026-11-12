@@ -42,7 +42,8 @@ class BookmarksLists extends HookWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBookmarksCubit, DashboardBookmarksState>(
       builder: (context, state) {
-        if (ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
+        if (isDesktopPlatform ||
+            ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
           return const TabletBookmarksList();
         } else {
           return const MobileBookmarksList();
@@ -84,50 +85,56 @@ class TabletBookmarksList extends StatelessWidget {
 
   Expanded _bookmarksGrid(DashboardBookmarksState state, BuildContext context) {
     return Expanded(
-      child: Scrollbar(
-        child: MasonryGridView.count(
-          crossAxisCount: 2,
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding,
-            vertical: kDefaultPadding,
-          ),
-          crossAxisSpacing: kDefaultPadding / 2,
-          mainAxisSpacing: kDefaultPadding / 2,
-          itemBuilder: (_, index) {
-            final bookmarkList = state.bookmarksLists[index];
+      child: LayoutBuilder(
+        builder: (context, constraints) => Scrollbar(
+          child: MasonryGridView.count(
+            crossAxisCount: isDesktopPlatform
+                ? desktopPaneFeedColumns(context, constraints.maxWidth)
+                : 2,
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding,
+              vertical: kDefaultPadding,
+            ),
+            crossAxisSpacing: kDefaultPadding / 2,
+            mainAxisSpacing: kDefaultPadding / 2,
+            itemBuilder: (_, index) {
+              final bookmarkList = state.bookmarksLists[index];
 
-            return BookmarkContainer(
-              bookmarkListModel: bookmarkList,
-              onClicked: () {
-                YNavigator.pushPage(
-                  context,
-                  (_) => BookmarksListDetails(
-                    bookmarkListModel: bookmarkList,
-                    bookmarksCubit: context.read<DashboardBookmarksCubit>(),
-                  ),
-                );
-              },
-              onDelete: () {
-                showCupertinoDeletionDialogue(
-                  context: context,
-                  title: context.t.deleteBookmarkList.capitalizeFirst(),
-                  description:
-                      context.t.confirmDeleteBookmarkList.capitalizeFirst(),
-                  buttonText: context.t.delete.capitalizeFirst(),
-                  onDelete: () {
-                    context.read<DashboardBookmarksCubit>().deleteBookmarksList(
-                          bookmarkListEventId: bookmarkList.id,
-                          bookmarkListIdentifier: bookmarkList.identifier,
-                          onSuccess: () {
-                            Navigator.pop(context);
-                          },
-                        );
-                  },
-                );
-              },
-            );
-          },
-          itemCount: state.bookmarksLists.length,
+              return BookmarkContainer(
+                bookmarkListModel: bookmarkList,
+                onClicked: () {
+                  YNavigator.pushPage(
+                    context,
+                    (_) => BookmarksListDetails(
+                      bookmarkListModel: bookmarkList,
+                      bookmarksCubit: context.read<DashboardBookmarksCubit>(),
+                    ),
+                  );
+                },
+                onDelete: () {
+                  showCupertinoDeletionDialogue(
+                    context: context,
+                    title: context.t.deleteBookmarkList.capitalizeFirst(),
+                    description:
+                        context.t.confirmDeleteBookmarkList.capitalizeFirst(),
+                    buttonText: context.t.delete.capitalizeFirst(),
+                    onDelete: () {
+                      context
+                          .read<DashboardBookmarksCubit>()
+                          .deleteBookmarksList(
+                            bookmarkListEventId: bookmarkList.id,
+                            bookmarkListIdentifier: bookmarkList.identifier,
+                            onSuccess: () {
+                              Navigator.pop(context);
+                            },
+                          );
+                    },
+                  );
+                },
+              );
+            },
+            itemCount: state.bookmarksLists.length,
+          ),
         ),
       ),
     );

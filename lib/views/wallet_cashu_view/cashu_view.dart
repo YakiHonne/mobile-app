@@ -120,8 +120,8 @@ class _LoadingView extends StatelessWidget {
       children: [
         ExtendedImage.asset(
           Images.cashu,
-          width: 30.w,
-          height: 30.w,
+          width: isDesktopPlatform ? 160 : 30.w,
+          height: isDesktopPlatform ? 160 : 30.w,
           fit: BoxFit.contain,
         ),
         const SizedBox(

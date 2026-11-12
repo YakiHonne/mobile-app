@@ -634,6 +634,7 @@ class SearchView extends HookWidget {
         child: GlassTextField.search(
           controller: searchTextEdittingController,
           focusNode: focusNode,
+          showFocusRing: !isDesktopPlatform,
           placeholder: context.t.search.capitalizeFirst(),
           height: 40,
           useOwnLayer: true,
@@ -1013,6 +1014,12 @@ class ContentList extends StatelessWidget {
             loadVideos: true,
           );
         }
+        if (isDesktopPlatform) {
+          return DesktopPaneSliverGridBuilder(
+            builder: (context, columns) =>
+                _itemsGrid(content, columns: columns),
+          );
+        }
         if (ResponsiveBreakpoints.of(context).largerThan(MOBILE)) {
           return _itemsGrid(content);
         } else {
@@ -1042,13 +1049,13 @@ class ContentList extends StatelessWidget {
     );
   }
 
-  SliverPadding _itemsGrid(List<dynamic> content) {
+  SliverPadding _itemsGrid(List<dynamic> content, {int columns = 2}) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
         horizontal: kDefaultPadding / 2,
       ),
       sliver: SliverMasonryGrid.count(
-        crossAxisCount: 2,
+        crossAxisCount: columns,
         childCount: content.length,
         crossAxisSpacing: kDefaultPadding / 2,
         mainAxisSpacing: kDefaultPadding / 2,

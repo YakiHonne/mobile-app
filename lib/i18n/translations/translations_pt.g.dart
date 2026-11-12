@@ -39,6 +39,17 @@ class TranslationsPt extends Translations {
 	TranslationsPt $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsPt(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'Não foi possível abrir o armazenamento de contas. As suas contas não foram alteradas.';
+	@override String get accountStorageLinuxHelp => 'Desbloqueie ou inicie o chaveiro do sistema e tente novamente.';
+	@override String get accountStorageSaveFailed => 'Não foi possível guardar as alterações. Reinicie a aplicação antes de tentar novamente.';
+	@override String get accountStorageRecoveryTitle => 'As suas contas precisam de atenção';
+	@override String get accountStorageRecoveryCorrupt => 'Não foi possível ler os dados de conta guardados. Nada foi eliminado.';
+	@override String get accountStorageRecoveryLegacy => 'Os dados de conta foram alterados por outra versão ou processo. Escolha que cópia manter.';
+	@override String get accountStorageRestoreBackup => 'Restaurar contas guardadas anteriores';
+	@override String get accountStorageKeepSaved => 'Manter contas guardadas';
+	@override String get accountStorageKeepLegacy => 'Utilizar os outros dados de conta';
+	@override String get accountStorageBackupMissing => 'Não existe nenhuma cópia de segurança anterior válida.';
+	@override String get accountStorageRecoveryFailed => 'Não foi possível concluir a recuperação. Os dados da sua conta não foram alterados.';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsPt extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} citou sua imagem';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} citou uma imagem em que você foi mencionado';
 	@override String get cameraPermission => 'O aplicativo não tem permissão para acessar a câmera ou não há câmeras disponíveis neste dispositivo.';
+	@override String get videoQuality => 'Qualidade do vídeo';
+	@override String get originalMedia => 'original:';
 	@override String get fetchingPicture => 'Buscando imagem...';
 	@override String get addDescription => 'Adicionar descrição...';
 	@override String get uploadingVideo => 'Enviando vídeo...';
@@ -2256,6 +2269,13 @@ class TranslationsPt extends Translations {
 	@override String get desktopDensityComfortable => 'Confortável';
 	@override String get desktopDensityCompact => 'Compacta';
 	@override String get desktopKnowPeople => 'Conhecer pessoas';
+	@override String get desktopNetworkInterface => 'Interface de rede';
+	@override String get desktopInterfaceAvailable => 'Disponível';
+	@override String get desktopRelayConnections => 'Conexões de relay';
+	@override String get desktopSmartWidgetUnavailable => 'A assinatura interativa não está disponível neste dispositivo. Você pode abrir a página no navegador.';
+	@override String get desktopPlaybackUnavailable => 'A reprodução não está disponível no aplicativo neste dispositivo.';
+	@override String get desktopGoogleSignInUnavailable => 'O login com Google não está disponível no Linux. Escolha outro método.';
+	@override String get desktopCameraUnavailable => 'A captura pela câmera não está disponível neste dispositivo. Escolha um arquivo.';
 }
 
 /// The flat map containing all translations for locale <pt>.
@@ -2274,6 +2294,17 @@ extension on TranslationsPt {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'Não foi possível abrir o armazenamento de contas. As suas contas não foram alteradas.',
+			'accountStorageLinuxHelp' => 'Desbloqueie ou inicie o chaveiro do sistema e tente novamente.',
+			'accountStorageSaveFailed' => 'Não foi possível guardar as alterações. Reinicie a aplicação antes de tentar novamente.',
+			'accountStorageRecoveryTitle' => 'As suas contas precisam de atenção',
+			'accountStorageRecoveryCorrupt' => 'Não foi possível ler os dados de conta guardados. Nada foi eliminado.',
+			'accountStorageRecoveryLegacy' => 'Os dados de conta foram alterados por outra versão ou processo. Escolha que cópia manter.',
+			'accountStorageRestoreBackup' => 'Restaurar contas guardadas anteriores',
+			'accountStorageKeepSaved' => 'Manter contas guardadas',
+			'accountStorageKeepLegacy' => 'Utilizar os outros dados de conta',
+			'accountStorageBackupMissing' => 'Não existe nenhuma cópia de segurança anterior válida.',
+			'accountStorageRecoveryFailed' => 'Não foi possível concluir a recuperação. Os dados da sua conta não foram alterados.',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsPt {
 			'smartWidgetChecker' => 'Verificador de widget inteligente',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'Componenti non possono essere visualizzati',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'metadati',
 			'createdAt' => 'Criado em',
 			'identifier' => 'Identificador',
@@ -2786,12 +2823,6 @@ extension on TranslationsPt {
 			'votesByUsers' => 'Votos por usuários',
 			'alreadyVoted' => 'Você já votou nesta enquete',
 			'userCannotBeFound' => 'Usuário não encontrado',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => 'Votos: ${number}',
 			'voteRequired' => 'Voto requerido para mostrar estatísticas.',
 			'showStats' => 'Mostrar estatísticas',
@@ -3293,6 +3324,12 @@ extension on TranslationsPt {
 			'tallying' => 'Contando',
 			'ended' => 'Encerrado',
 			'closed' => 'Fechado',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => 'Resultados de votos por',
 			'votes' => 'votos',
 			'voiceCredit' => 'Crédito de voz',
@@ -3304,12 +3341,6 @@ extension on TranslationsPt {
 			'circuit' => 'Circuito',
 			'votingSystem' => 'Sistema de votação',
 			'proofSystem' => 'Sistema de provas',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'Posto de gasolina',
 			'totalFund' => '(fundo total)',
 			'roundStart' => 'Início da rodada',
@@ -3782,6 +3813,8 @@ extension on TranslationsPt {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} citou sua imagem',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} citou uma imagem em que você foi mencionado',
 			'cameraPermission' => 'O aplicativo não tem permissão para acessar a câmera ou não há câmeras disponíveis neste dispositivo.',
+			'videoQuality' => 'Qualidade do vídeo',
+			'originalMedia' => 'original:',
 			'fetchingPicture' => 'Buscando imagem...',
 			'addDescription' => 'Adicionar descrição...',
 			'uploadingVideo' => 'Enviando vídeo...',
@@ -3809,6 +3842,12 @@ extension on TranslationsPt {
 			'swapFrom' => 'Trocar de',
 			'swapTo' => 'Trocar para',
 			'selectMint' => 'Selecionar mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => 'Quantidade',
 			'cashuHistory' => 'Histórico Cashu',
 			'history' => 'Histórico',
@@ -3822,12 +3861,6 @@ extension on TranslationsPt {
 			'redeemEcashDesc' => 'Resgatar tokens ecash para sua carteira',
 			'depositDesc' => 'Cunhar novos tokens ecash depositando sats',
 			'pasteToken' => 'Colar token',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'Escanear',
 			'tokenDetails' => 'Detalhes do Token',
 			'issuingMint' => 'Mint Emissor',
@@ -4327,6 +4360,12 @@ extension on TranslationsPt {
 			'creator_subscription_plans' => 'Planos de assinatura',
 			'creator_subscribe_now' => 'Assinar agora',
 			'creator_subscribe_error' => 'Não foi possível iniciar a assinatura',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'Nenhum plano de assinatura disponível',
 			'creator_lightning_unavailable' => 'Endereço Lightning indisponível',
 			'creator_view_subscriptions' => 'Ver minhas assinaturas',
@@ -4340,12 +4379,6 @@ extension on TranslationsPt {
 			'pomAuthenticating' => 'Autenticando com o Google…',
 			'pomCheckingAccount' => 'Verificando a conta…',
 			'pomCreatingAccount' => 'Criando a conta…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'Salve sua chave privada',
 			'pomSaveKeyDesc' => 'Sua chave privada foi gerada. Salve-a com segurança antes de criar sua conta.',
 			'pomCreateAccount' => 'Criar conta',
@@ -4515,6 +4548,13 @@ extension on TranslationsPt {
 			'desktopDensityComfortable' => 'Confortável',
 			'desktopDensityCompact' => 'Compacta',
 			'desktopKnowPeople' => 'Conhecer pessoas',
+			'desktopNetworkInterface' => 'Interface de rede',
+			'desktopInterfaceAvailable' => 'Disponível',
+			'desktopRelayConnections' => 'Conexões de relay',
+			'desktopSmartWidgetUnavailable' => 'A assinatura interativa não está disponível neste dispositivo. Você pode abrir a página no navegador.',
+			'desktopPlaybackUnavailable' => 'A reprodução não está disponível no aplicativo neste dispositivo.',
+			'desktopGoogleSignInUnavailable' => 'O login com Google não está disponível no Linux. Escolha outro método.',
+			'desktopCameraUnavailable' => 'A captura pela câmera não está disponível neste dispositivo. Escolha um arquivo.',
 			_ => null,
 		};
 	}

@@ -155,7 +155,7 @@ class LogifyCubit extends Cubit<LogifyState> {
         return;
       }
 
-      await settingsCubit.addAndChangeKey(
+      final accountIndex = await settingsCubit.addAndChangeKey(
         hex,
         isPrivKey,
         isExternalSigner,
@@ -164,6 +164,10 @@ class LogifyCubit extends Cubit<LogifyState> {
         remoteSigner: remoteSigner,
         pomegranateSetup: pomegranateSetup,
       );
+      if ((Platform.isWindows || Platform.isLinux) && accountIndex < 0) {
+        BotToastUtils.showError(t.somethingWentWrong);
+        return;
+      }
 
       await initRelayManager(!isPrivKey ? key : getPublicKey(hex), newKey);
 
@@ -449,7 +453,14 @@ class LogifyCubit extends Cubit<LogifyState> {
       }
     }
 
-    await settingsCubit.addAndChangeKey(state.private, true, false);
+    try {
+      await settingsCubit.addAndChangeKey(state.private, true, false);
+    } catch (_) {
+      if (!isClosed) {
+        emit(state.copyWith(isSettingAccount: false));
+      }
+      return;
+    }
     nostrRepository.setCurrentAppCustomizationFromCache(broadcast: true);
     nostrRepository.setCurrentUserDraft();
 
@@ -666,7 +677,14 @@ class LogifyCubit extends Cubit<LogifyState> {
       }
     }
 
-    await settingsCubit.addAndChangeKey(state.private, true, false);
+    try {
+      await settingsCubit.addAndChangeKey(state.private, true, false);
+    } catch (_) {
+      if (!isClosed) {
+        emit(state.copyWith(isSettingAccount: false));
+      }
+      return;
+    }
     nostrRepository.setCurrentAppCustomizationFromCache(broadcast: true);
     nostrRepository.setCurrentUserDraft();
 
@@ -844,6 +862,22 @@ class LogifyCubit extends Cubit<LogifyState> {
         );
 
         onSuccess.call();
+        return;
+      }
+
+      if (Platform.isWindows || Platform.isLinux) {
+        await login(
+          key: pubkey,
+          newKey: true,
+          context: context,
+          onSuccess: () {
+            BotToastUtils.showSuccess(t.loggedIn.capitalizeFirst());
+            onSuccess.call();
+          },
+          isExternalSigner: true,
+          externalKeyType: externalKeyType,
+          pomegranateSetup: pomegranateSetup,
+        );
         return;
       }
 

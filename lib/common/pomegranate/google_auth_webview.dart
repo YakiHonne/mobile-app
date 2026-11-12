@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -90,6 +91,21 @@ class GoogleAuthWebView extends StatefulWidget {
     GoogleAuthWebViewType type, {
     bool forceAccountPicker = false,
   }) async {
+    if (defaultTargetPlatform == TargetPlatform.linux) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(context.t.desktopGoogleSignInUnavailable),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(context.t.close),
+            ),
+          ],
+        ),
+      );
+      return null;
+    }
     if (_isOpen) {
       return null;
     }

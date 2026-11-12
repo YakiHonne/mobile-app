@@ -51,72 +51,76 @@ class CashuOperationSuccessView extends StatelessWidget {
       ),
     );
 
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ModalBottomSheetAppbar(
+          title: title,
+          isBack: false,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          child: Column(
+            children: [
+              FadeIn(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing:
+                      token != null ? kDefaultPadding / 2 : kDefaultPadding,
+                  children: [
+                    _buildSuccessAnimation(),
+                    _buildAmountDetails(context),
+                    if (mintUrl != null)
+                      Column(
+                        spacing: kDefaultPadding / 4,
+                        children: [
+                          Text(
+                            context.t.to.capitalizeFirst(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: Theme.of(context).highlightColor,
+                                ),
+                          ),
+                          Text(
+                            mintUrl!,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    if (token != null) _buildTokenDetails(context),
+                  ],
+                ),
+              ),
+              const SizedBox(height: kDefaultPadding),
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: closeButton,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
     return ModalSheetContainer(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ModalBottomSheetAppbar(
-            title: title,
-            isBack: false,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: Column(
-              children: [
-                FadeIn(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing:
-                        token != null ? kDefaultPadding / 2 : kDefaultPadding,
-                    children: [
-                      _buildSuccessAnimation(),
-                      _buildAmountDetails(context),
-                      if (mintUrl != null)
-                        Column(
-                          spacing: kDefaultPadding / 4,
-                          children: [
-                            Text(
-                              context.t.to.capitalizeFirst(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    color: Theme.of(context).highlightColor,
-                                  ),
-                            ),
-                            Text(
-                              mintUrl!,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      if (token != null) _buildTokenDetails(context),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: kDefaultPadding),
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: closeButton,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child:
+          isDesktopPlatform ? SingleChildScrollView(child: content) : content,
     );
   }
 
   Widget _buildSuccessAnimation() {
     return Lottie.asset(
       LottieAnimations.success,
-      height: token != null ? 8.h : 13.h,
+      height: isDesktopPlatform
+          ? (token != null ? 80 : 120)
+          : (token != null ? 8.h : 13.h),
       fit: BoxFit.contain,
       frameRate: const FrameRate(60),
       repeat: false,
@@ -181,18 +185,16 @@ class CashuOperationSuccessView extends StatelessWidget {
       padding: const EdgeInsets.only(top: kDefaultPadding),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            decoration: BoxDecoration(
-              color: kWhite,
-              borderRadius: BorderRadius.circular(kDefaultPadding),
-            ),
-            child: QrImageView(
-              data: token!,
-              size: 45.w,
-              padding: EdgeInsets.zero,
-            ),
-          ),
+          if (isDesktopPlatform)
+            LayoutBuilder(
+              builder: (context, constraints) => Center(
+                child: _tokenQr(
+                  (constraints.maxWidth - kDefaultPadding).clamp(0.0, 320.0),
+                ),
+              ),
+            )
+          else
+            _tokenQr(45.w),
           const SizedBox(height: kDefaultPadding / 2),
           DottedContainer(
             title: context.t.copyToken,
@@ -211,4 +213,17 @@ class CashuOperationSuccessView extends StatelessWidget {
       ),
     );
   }
+
+  Widget _tokenQr(double size) => Container(
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        decoration: BoxDecoration(
+          color: kWhite,
+          borderRadius: BorderRadius.circular(kDefaultPadding),
+        ),
+        child: QrImageView(
+          data: token!,
+          size: size,
+          padding: EdgeInsets.zero,
+        ),
+      );
 }

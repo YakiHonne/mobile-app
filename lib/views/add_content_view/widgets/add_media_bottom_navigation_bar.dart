@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -169,7 +169,9 @@ class MediaOptionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (isVideo.value) ...[
+        if (isVideo.value &&
+            defaultTargetPlatform != TargetPlatform.windows &&
+            defaultTargetPlatform != TargetPlatform.linux) ...[
           GestureDetector(
             onTap: () async {
               final edited = await Navigator.push<File?>(

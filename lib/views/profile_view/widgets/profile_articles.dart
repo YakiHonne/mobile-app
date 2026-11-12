@@ -45,6 +45,11 @@ class ProfileArticles extends StatelessWidget {
                 icon: FeatureIcons.selfArticles,
               ));
             } else {
+              if (isDesktopPlatform && !useSingleColumn) {
+                return DesktopPaneSliverGridBuilder(
+                    builder: (context, columns) =>
+                        _itemsGrid(state, columns: columns));
+              }
               if (isTablet && !useSingleColumn) {
                 return _itemsGrid(state);
               } else {
@@ -91,9 +96,9 @@ class ProfileArticles extends StatelessWidget {
     );
   }
 
-  SliverMasonryGrid _itemsGrid(ProfileState state) {
+  SliverMasonryGrid _itemsGrid(ProfileState state, {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemBuilder: (context, index) {

@@ -83,58 +83,57 @@ class _DesktopPaneSplitState extends State<DesktopPaneSplit> {
               SizedBox(width: side, child: widget.sideBuilder(side)),
             ]),
             Positioned(
-                  left: main - 10,
-                  top: 0,
-                  bottom: 0,
-                  width: 21,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.resizeColumn,
-                    child: FocusableActionDetector(
-                      focusNode: _focusNode,
-                      shortcuts: const {
-                        SingleActivator(LogicalKeyboardKey.arrowLeft):
-                            _ResizeIntent(-20),
-                        SingleActivator(LogicalKeyboardKey.arrowRight):
-                            _ResizeIntent(20),
-                        SingleActivator(LogicalKeyboardKey.home):
-                            _ResetIntent(),
-                      },
-                      actions: {
-                        _ResizeIntent:
-                            CallbackAction<_ResizeIntent>(onInvoke: (intent) {
-                          adjust(intent.delta);
-                          return null;
-                        }),
-                        _ResetIntent:
-                            CallbackAction<_ResetIntent>(onInvoke: (_) {
-                          reset();
-                          return null;
-                        }),
-                      },
-                      child: Semantics(
-                        label: widget.label,
-                        value:
-                            '${(side / (available == 0 ? 1 : available) * 100).round()}%',
-                        increasedValue:
-                            '${((side + 20).clamp(minimum, available - minimum) / (available == 0 ? 1 : available) * 100).round()}%',
-                        decreasedValue:
-                            '${((side - 20).clamp(minimum, available - minimum) / (available == 0 ? 1 : available) * 100).round()}%',
-                        onIncrease: () => adjust(-20),
-                        onDecrease: () => adjust(20),
-                        child: Listener(
-                          onPointerDown: (_) => _focusNode.requestFocus(),
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onHorizontalDragUpdate: (details) =>
-                                adjust(details.delta.dx),
-                            onDoubleTap: reset,
-                            child: const SizedBox.expand(),
-                          ),
-                        ),
+              left: main - 10,
+              top: 0,
+              bottom: 0,
+              width: 21,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeColumn,
+                child: FocusableActionDetector(
+                  focusNode: _focusNode,
+                  shortcuts: const {
+                    SingleActivator(LogicalKeyboardKey.arrowLeft):
+                        _ResizeIntent(-20),
+                    SingleActivator(LogicalKeyboardKey.arrowRight):
+                        _ResizeIntent(20),
+                    SingleActivator(LogicalKeyboardKey.home): _ResetIntent(),
+                  },
+                  actions: {
+                    _ResizeIntent:
+                        CallbackAction<_ResizeIntent>(onInvoke: (intent) {
+                      adjust(intent.delta);
+                      return null;
+                    }),
+                    _ResetIntent: CallbackAction<_ResetIntent>(onInvoke: (_) {
+                      reset();
+                      return null;
+                    }),
+                  },
+                  child: Semantics(
+                    label: widget.label,
+                    value:
+                        '${(side / (available == 0 ? 1 : available) * 100).round()}%',
+                    increasedValue:
+                        '${((side + 20).clamp(minimum, available - minimum) / (available == 0 ? 1 : available) * 100).round()}%',
+                    decreasedValue:
+                        '${((side - 20).clamp(minimum, available - minimum) / (available == 0 ? 1 : available) * 100).round()}%',
+                    onIncrease:
+                        side < available - minimum ? () => adjust(-20) : null,
+                    onDecrease: side > minimum ? () => adjust(20) : null,
+                    child: Listener(
+                      onPointerDown: (_) => _focusNode.requestFocus(),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragUpdate: (details) =>
+                            adjust(details.delta.dx),
+                        onDoubleTap: reset,
+                        child: const SizedBox.expand(),
                       ),
                     ),
                   ),
                 ),
+              ),
+            ),
           ]);
         },
       );

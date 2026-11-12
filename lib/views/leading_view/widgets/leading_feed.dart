@@ -27,6 +27,13 @@ class LeadingFeed extends StatelessWidget {
 
     return BlocBuilder<LeadingCubit, LeadingState>(
       builder: (context, state) {
+        if (isDesktopPlatform && !useSingleColumn) {
+          return DesktopPaneSliverGridBuilder(
+            maxColumns: 3,
+            builder: (context, columns) =>
+                _gridItems(context, state, columns: columns),
+          );
+        }
         if (isTablet && !useSingleColumn) {
           return _gridItems(context, state);
         } else {
@@ -133,7 +140,8 @@ class LeadingFeed extends StatelessWidget {
     );
   }
 
-  SliverPadding _gridItems(BuildContext context, LeadingState state) {
+  SliverPadding _gridItems(BuildContext context, LeadingState state,
+      {int? columns}) {
     final adGap = subscriptionCubit.isBasic ? 15 : 7;
     final showAds =
         !subscriptionCubit.isPremium && state.paidNoteAds.isNotEmpty;
@@ -154,7 +162,7 @@ class LeadingFeed extends StatelessWidget {
     return SliverPadding(
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       sliver: SliverMasonryGrid.count(
-        crossAxisCount: feedGridColumns(context),
+        crossAxisCount: columns ?? feedGridColumns(context),
         itemBuilder: (context, index) {
           if (!subscriptionCubit.isPremium && index >= adGap - 4) {
             _schedulePaidNoteAds(context);

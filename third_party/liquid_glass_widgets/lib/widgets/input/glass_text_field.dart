@@ -70,6 +70,7 @@ class GlassTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.focusNode,
+    this.showFocusRing = true,
     this.placeholder,
     this.prefixIcon,
     this.suffixIcon,
@@ -119,6 +120,7 @@ class GlassTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.focusNode,
+    this.showFocusRing = true,
     this.placeholder,
     this.prefixIcon,
     this.suffixIcon,
@@ -168,6 +170,9 @@ class GlassTextField extends StatefulWidget {
   ///
   /// If null, a focus node will be created internally.
   final FocusNode? focusNode;
+
+  /// Whether to draw the keyboard focus ring around the field.
+  final bool showFocusRing;
 
   /// Placeholder text shown when the field is empty.
   final String? placeholder;
@@ -768,11 +773,15 @@ class _GlassTextFieldState extends State<GlassTextField> {
       readOnly: widget.readOnly,
       child: Opacity(
         opacity: widget.enabled ? 1.0 : 0.5,
-        child: GlassFocusRegion.observe(
-          focusNode: _focusNode,
-          shape: ringShape,
-          child: _wrapWithConstraints(glassWidget),
-        ),
+        child: widget.showFocusRing
+            ? GlassFocusRegion.observe(
+                focusNode: _focusNode,
+                shape: ringShape,
+                child: _wrapWithConstraints(glassWidget),
+              )
+            : _wrapWithConstraints(
+                glassWidget,
+              ),
       ),
     );
   }

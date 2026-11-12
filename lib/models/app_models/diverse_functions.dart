@@ -13,6 +13,7 @@ import 'package:nostr_core_enhanced/nostr/nostr.dart';
 import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/common_regex.dart';
+import '../../common/media_handler/desktop_file_save.dart';
 import '../../repositories/nostr_functions_repository.dart';
 import '../../routes/navigator.dart';
 import '../../utils/bot_toast_util.dart';
@@ -822,11 +823,18 @@ bool? isLightningAddress(String val) {
 
 Future<void> saveByteDataImage(ByteData image) async {
   if (isDesktopPlatform) {
-    if (!Platform.isMacOS) {
-      BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
-      return;
-    }
     try {
+      if (!Platform.isMacOS) {
+        final saved = await saveDesktopFileBytes(
+          suggestedName: 'image.png',
+          bytes: image.buffer
+              .asUint8List(image.offsetInBytes, image.lengthInBytes),
+        );
+        if (saved) {
+          BotToastUtils.showSuccess(t.downloadSuccessful);
+        }
+        return;
+      }
       await FlutterFileSaver().writeFileAsBytes(
         fileName: 'image.png',
         bytes:

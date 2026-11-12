@@ -28,41 +28,43 @@ class CashuTokenDetailsView extends HookWidget {
     final status = useState<String?>(token.status);
     final isRedeeming = useState(false);
 
-    return ModalSheetContainer(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.eCash,
-            isBack: false,
-          ),
-          Column(
-            children: [
-              const SizedBox(height: kDefaultPadding),
-              const SizedBox(height: kDefaultPadding),
-              _buildTokenHeader(context),
-              const SizedBox(height: kDefaultPadding),
-              _buildQrCode(),
-              const SizedBox(height: kDefaultPadding),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                child: DottedContainer(
-                  title: context.t.copyToken,
-                  value: token.encodedToken,
-                  onClicked: () {
-                    Clipboard.setData(ClipboardData(text: token.encodedToken));
-                    BotToastUtils.showSuccess(context.t.copy);
-                  },
-                ),
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.eCash,
+          isBack: false,
+        ),
+        Column(
+          children: [
+            const SizedBox(height: kDefaultPadding),
+            const SizedBox(height: kDefaultPadding),
+            _buildTokenHeader(context),
+            const SizedBox(height: kDefaultPadding),
+            _buildQrCode(),
+            const SizedBox(height: kDefaultPadding),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: DottedContainer(
+                title: context.t.copyToken,
+                value: token.encodedToken,
+                onClicked: () {
+                  Clipboard.setData(ClipboardData(text: token.encodedToken));
+                  BotToastUtils.showSuccess(context.t.copy);
+                },
               ),
-              const SizedBox(height: kDefaultPadding / 2),
-              _buildActionButtons(context, status, isRedeeming),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        ],
-      ),
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            _buildActionButtons(context, status, isRedeeming),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        ),
+      ],
+    );
+    return ModalSheetContainer(
+      child:
+          isDesktopPlatform ? SingleChildScrollView(child: content) : content,
     );
   }
 
@@ -95,6 +97,19 @@ class CashuTokenDetailsView extends HookWidget {
   }
 
   Widget _buildQrCode() {
+    if (isDesktopPlatform) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final qrSide =
+              (constraints.maxWidth - kDefaultPadding * 4).clamp(0.0, 320.0);
+          return Center(child: _qrContainer(qrSide));
+        },
+      );
+    }
+    return _qrContainer(50.w);
+  }
+
+  Widget _qrContainer(double size) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       padding: const EdgeInsets.all(kDefaultPadding),
@@ -104,7 +119,7 @@ class CashuTokenDetailsView extends HookWidget {
       ),
       child: QrImageView(
         data: token.encodedToken,
-        size: 50.w,
+        size: size,
         padding: EdgeInsets.zero,
       ),
     );

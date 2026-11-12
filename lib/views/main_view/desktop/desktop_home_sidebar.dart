@@ -10,6 +10,7 @@ import '../../leading_view/widgets/media_box.dart';
 import '../../widgets/content_placeholder.dart';
 import '../../widgets/suggestions_box/multi_suggestion_box.dart';
 import '../../widgets/suggestions_box/related_content.dart';
+import 'desktop_density.dart';
 import 'workspace_discovery.dart';
 import 'workspace_trending_source.dart';
 
@@ -19,6 +20,7 @@ class DesktopHomeSidebar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final density = DesktopDensityScope.of(context);
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
@@ -51,14 +53,14 @@ class DesktopHomeSidebar extends HookWidget {
                             .titleMedium
                             ?.copyWith(fontWeight: FontWeight.w800)),
                   ),
-                  const SizedBox(height: kDefaultPadding / 2),
+                  SizedBox(height: density.sectionHeadingGap),
                   SizedBox(
                     height: 250,
                     child: state.onMediaLoading
                         ? const LeadingMediaPlaceholder()
                         : const MediaBox(desktopPane: true),
                   ),
-                  const SizedBox(height: kDefaultPadding * 1.5),
+                  SizedBox(height: density.sectionGap),
                 ],
               );
             },
@@ -102,6 +104,7 @@ class _DesktopTopNotesState extends State<_DesktopTopNotes>
 
   Widget _buildNotes(
       BuildContext context, AsyncSnapshot<List<DetailedNoteModel>> snapshot) {
+    final density = DesktopDensityScope.of(context);
     final notes = (snapshot.data ?? const <DetailedNoteModel>[])
         .where(desktopCanShowTrendingNote)
         .take(5)
@@ -121,7 +124,7 @@ class _DesktopTopNotesState extends State<_DesktopTopNotes>
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.w800)),
         ),
-        const SizedBox(height: kDefaultPadding / 2),
+        SizedBox(height: density.sectionHeadingGap),
         if (loading || notes.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -130,7 +133,7 @@ class _DesktopTopNotesState extends State<_DesktopTopNotes>
           )
         else
           SuggestedNotes(notes: notes, desktopPane: true),
-        const SizedBox(height: kDefaultPadding * 1.5),
+        SizedBox(height: density.sectionGap),
       ],
     );
   }

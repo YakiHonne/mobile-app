@@ -20,7 +20,7 @@ class RedeemCodeView extends HookWidget {
     final code = useState('');
 
     return ModalSheetContainer(
-      height: 90.h,
+      height: isDesktopPlatform ? double.infinity : 90.h,
       padding: MediaQuery.of(context).viewInsets.copyWith(
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,

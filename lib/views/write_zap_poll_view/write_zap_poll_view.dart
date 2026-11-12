@@ -679,7 +679,7 @@ class PublishingMediaContainer extends HookWidget {
           children: [
             if ((mention.value?.length ?? 0) > 1) ...[
               SizedBox(
-                height: 20.h,
+                height: isDesktopPlatform ? 180 : 20.h,
                 child: ScrollShadow(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: mention.value![0] == '@'

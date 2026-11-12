@@ -333,65 +333,70 @@ class ProfileMediaGrid extends HookWidget {
       },
     );
 
-    return SliverGrid(
-      gridDelegate: SliverQuiltedGridDelegate(
-        crossAxisCount: 3,
-        mainAxisSpacing: 2,
-        crossAxisSpacing: 2,
-        repeatPattern: QuiltedGridRepeatPattern.inverted,
-        pattern: [
-          const QuiltedGridTile(2, 1), // Item 0: Large vertical
-          const QuiltedGridTile(1, 1), // Item 1: Small
-          const QuiltedGridTile(1, 1), // Item 2: Small
-          const QuiltedGridTile(1, 1), // Item 3: Small
-          const QuiltedGridTile(1, 1), // Item 4: Small
-        ],
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final event = sortedContent.elementAt(index);
-          final positionInPattern = index % 10;
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final columns =
+            isDesktopPlatform && constraints.crossAxisExtent < 450 ? 2 : 3;
+        return SliverGrid(
+          gridDelegate: SliverQuiltedGridDelegate(
+            crossAxisCount: columns,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 2,
+            repeatPattern: QuiltedGridRepeatPattern.inverted,
+            pattern: [
+              const QuiltedGridTile(2, 1),
+              for (var i = 0; i < 2 * columns - 2; i++)
+                const QuiltedGridTile(1, 1),
+            ],
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final event = sortedContent.elementAt(index);
+              final positionInPattern = index % mediaGridCycle(columns);
 
-          final isLargeTile = positionInPattern == 0 || positionInPattern == 7;
+              final isLargeTile = positionInPattern == 0 ||
+                  positionInPattern == mediaGridLargeTileOffset(columns);
 
-          // Handle pictures
-          if (event.kind == EventKind.PICTURE) {
-            final picture = PictureModel.fromEvent(event);
+              // Handle pictures
+              if (event.kind == EventKind.PICTURE) {
+                final picture = PictureModel.fromEvent(event);
 
-            return GestureDetector(
-              onTap: () {
-                YNavigator.pushPage(
-                  context,
-                  (context) => PictureView(picture: picture),
+                return GestureDetector(
+                  onTap: () {
+                    YNavigator.pushPage(
+                      context,
+                      (context) => PictureView(picture: picture),
+                    );
+                  },
+                  onLongPress: () {
+                    openGallery(
+                      source: MapEntry(picture.getUrl(), UrlType.image),
+                      index: 0,
+                      context: context,
+                    );
+                  },
+                  child: CommonThumbnail(
+                    image: picture.getUrl(),
+                    radius: 0,
+                    isRound: false,
+                  ),
                 );
-              },
-              onLongPress: () {
-                openGallery(
-                  source: MapEntry(picture.getUrl(), UrlType.image),
-                  index: 0,
-                  context: context,
-                );
-              },
-              child: CommonThumbnail(
-                image: picture.getUrl(),
-                radius: 0,
-                isRound: false,
-              ),
-            );
-          }
+              }
 
-          final video = VideoModel.fromEvent(event);
+              final video = VideoModel.fromEvent(event);
 
-          return isLargeTile
-              ? FeedVideoPlayer(
-                  link: video.url,
-                  fallbackUrls: video.fallbackUrls,
-                  video: video,
-                )
-              : VideoCard(video: video);
-        },
-        childCount: sortedContent.length,
-      ),
+              return isLargeTile
+                  ? FeedVideoPlayer(
+                      link: video.url,
+                      fallbackUrls: video.fallbackUrls,
+                      video: video,
+                    )
+                  : VideoCard(video: video);
+            },
+            childCount: sortedContent.length,
+          ),
+        );
+      },
     );
   }
 

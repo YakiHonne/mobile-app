@@ -10,11 +10,13 @@ import '../../../routes/navigator.dart';
 import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
 import '../../widgets/profile_picture.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
+import 'desktop_cashu_form.dart';
 
 class CashuNutZapAmountView extends HookWidget {
   const CashuNutZapAmountView({
@@ -87,56 +89,58 @@ class CashuNutZapAmountView extends HookWidget {
       }
     }
 
+    final content = Column(
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.nutZap,
+          isBack: false,
+        ),
+        Expanded(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _amountInput(
+                          context, amountController, activeMintBalance),
+                      const SizedBox(height: kDefaultPadding),
+                      _memoInput(context, memoController),
+                    ],
+                  ),
+                ),
+                _buildMintSelection(
+                  context,
+                  cashuState,
+                  walletMints,
+                  selectedMintUrl,
+                ),
+                const SizedBox(height: kDefaultPadding / 2),
+                _recipientTile(context),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom +
+                MediaQuery.of(context).viewInsets.bottom +
+                kDefaultPadding / 2,
+            left: kDefaultPadding / 2,
+            right: kDefaultPadding / 2,
+            top: kDefaultPadding / 2,
+          ),
+          child: _buildActionButtons(context, onSendNutZap),
+        ),
+      ],
+    );
     return ModalSheetContainer(
-      height: 85.h,
-      child: Column(
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.nutZap,
-            isBack: false,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _amountInput(
-                            context, amountController, activeMintBalance),
-                        const SizedBox(height: kDefaultPadding),
-                        _memoInput(context, memoController),
-                      ],
-                    ),
-                  ),
-                  _buildMintSelection(
-                    context,
-                    cashuState,
-                    walletMints,
-                    selectedMintUrl,
-                  ),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  _recipientTile(context),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom +
-                  MediaQuery.of(context).viewInsets.bottom +
-                  kDefaultPadding / 2,
-              left: kDefaultPadding / 2,
-              right: kDefaultPadding / 2,
-              top: kDefaultPadding / 2,
-            ),
-            child: _buildActionButtons(context, onSendNutZap),
-          ),
-        ],
-      ),
+      height: isDesktopPlatform ? double.infinity : 85.h,
+      child:
+          isDesktopPlatform ? DesktopScrollableForm(child: content) : content,
     );
   }
 
@@ -287,7 +291,7 @@ class CashuNutZapAmountView extends HookWidget {
             contentPadding: EdgeInsets.zero,
           ),
         ),
-        Row(
+        CashuAmountLine(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: kDefaultPadding / 4,
           children: [

@@ -88,7 +88,7 @@ class _SubscriptionSuccessViewState extends State<SubscriptionSuccessView> {
                   children: [
                     Lottie.asset(
                       LottieAnimations.success,
-                      height: 13.h,
+                      height: isDesktopPlatform ? 120 : 13.h,
                       fit: BoxFit.contain,
                       frameRate: const FrameRate(60),
                       repeat: false,

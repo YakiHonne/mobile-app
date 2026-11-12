@@ -1360,7 +1360,7 @@ class DmChatContainer extends HookWidget {
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       constraints: BoxConstraints(
-        maxWidth: isTablet ? 50.w : double.infinity,
+        maxWidth: isDesktopPlatform ? 600 : (isTablet ? 50.w : double.infinity),
       ),
       decoration: BoxDecoration(
         color: isCurrentUser ? Theme.of(context).cardColor : null,

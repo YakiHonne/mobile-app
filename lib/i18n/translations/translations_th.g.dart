@@ -39,6 +39,17 @@ class TranslationsTh extends Translations {
 	TranslationsTh $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsTh(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'ไม่สามารถเปิดที่เก็บบัญชีได้ บัญชีของคุณยังไม่ถูกเปลี่ยนแปลง';
+	@override String get accountStorageLinuxHelp => 'ปลดล็อกหรือเริ่มพวงกุญแจของระบบ แล้วลองอีกครั้ง';
+	@override String get accountStorageSaveFailed => 'ไม่สามารถบันทึกการเปลี่ยนแปลงบัญชีได้ โปรดรีสตาร์ตแอปก่อนลองอีกครั้ง';
+	@override String get accountStorageRecoveryTitle => 'บัญชีของคุณต้องได้รับการตรวจสอบ';
+	@override String get accountStorageRecoveryCorrupt => 'ไม่สามารถอ่านข้อมูลบัญชีที่บันทึกไว้ได้ ไม่มีข้อมูลใดถูกลบ';
+	@override String get accountStorageRecoveryLegacy => 'ข้อมูลบัญชีถูกเปลี่ยนโดยเวอร์ชันหรือโปรเซสอื่น โปรดเลือกสำเนาที่ต้องการเก็บ';
+	@override String get accountStorageRestoreBackup => 'กู้คืนบัญชีที่บันทึกไว้ก่อนหน้า';
+	@override String get accountStorageKeepSaved => 'เก็บบัญชีที่บันทึกไว้';
+	@override String get accountStorageKeepLegacy => 'ใช้ข้อมูลบัญชีอีกชุด';
+	@override String get accountStorageBackupMissing => 'ไม่มีข้อมูลสำรองก่อนหน้าที่ถูกต้อง';
+	@override String get accountStorageRecoveryFailed => 'กู้คืนไม่สำเร็จ ข้อมูลบัญชีของคุณไม่ถูกเปลี่ยนแปลง';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsTh extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} อ้างอิงรูปภาพของคุณ';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} อ้างอิงรูปภาพที่คุณถูกกล่าวถึง';
 	@override String get cameraPermission => 'แอปไม่มีสิทธิ์เข้าถึงกล้อง หรือไม่มีกล้องที่ใช้งานได้บนอุปกรณ์นี้';
+	@override String get videoQuality => 'คุณภาพวิดีโอ';
+	@override String get originalMedia => 'ต้นฉบับ:';
 	@override String get fetchingPicture => 'กำลังดึงรูปภาพ...';
 	@override String get addDescription => 'เพิ่มคำอธิบาย...';
 	@override String get uploadingVideo => 'กำลังอัปโหลดวิดีโอ...';
@@ -2256,6 +2269,13 @@ class TranslationsTh extends Translations {
 	@override String get desktopDensityComfortable => 'สบายตา';
 	@override String get desktopDensityCompact => 'กะทัดรัด';
 	@override String get desktopKnowPeople => 'รู้จักผู้คน';
+	@override String get desktopNetworkInterface => 'อินเทอร์เฟซเครือข่าย';
+	@override String get desktopInterfaceAvailable => 'พร้อมใช้งาน';
+	@override String get desktopRelayConnections => 'การเชื่อมต่อรีเลย์';
+	@override String get desktopSmartWidgetUnavailable => 'อุปกรณ์นี้ไม่รองรับการลงนามแบบโต้ตอบ คุณสามารถเปิดหน้าในเบราว์เซอร์ได้';
+	@override String get desktopPlaybackUnavailable => 'อุปกรณ์นี้ไม่รองรับการเล่นในแอป';
+	@override String get desktopGoogleSignInUnavailable => 'ไม่รองรับการเข้าสู่ระบบด้วย Google บน Linux โปรดเลือกวิธีอื่น';
+	@override String get desktopCameraUnavailable => 'อุปกรณ์นี้ไม่รองรับการถ่ายด้วยกล้อง โปรดเลือกไฟล์แทน';
 }
 
 /// The flat map containing all translations for locale <th>.
@@ -2274,6 +2294,17 @@ extension on TranslationsTh {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'ไม่สามารถเปิดที่เก็บบัญชีได้ บัญชีของคุณยังไม่ถูกเปลี่ยนแปลง',
+			'accountStorageLinuxHelp' => 'ปลดล็อกหรือเริ่มพวงกุญแจของระบบ แล้วลองอีกครั้ง',
+			'accountStorageSaveFailed' => 'ไม่สามารถบันทึกการเปลี่ยนแปลงบัญชีได้ โปรดรีสตาร์ตแอปก่อนลองอีกครั้ง',
+			'accountStorageRecoveryTitle' => 'บัญชีของคุณต้องได้รับการตรวจสอบ',
+			'accountStorageRecoveryCorrupt' => 'ไม่สามารถอ่านข้อมูลบัญชีที่บันทึกไว้ได้ ไม่มีข้อมูลใดถูกลบ',
+			'accountStorageRecoveryLegacy' => 'ข้อมูลบัญชีถูกเปลี่ยนโดยเวอร์ชันหรือโปรเซสอื่น โปรดเลือกสำเนาที่ต้องการเก็บ',
+			'accountStorageRestoreBackup' => 'กู้คืนบัญชีที่บันทึกไว้ก่อนหน้า',
+			'accountStorageKeepSaved' => 'เก็บบัญชีที่บันทึกไว้',
+			'accountStorageKeepLegacy' => 'ใช้ข้อมูลบัญชีอีกชุด',
+			'accountStorageBackupMissing' => 'ไม่มีข้อมูลสำรองก่อนหน้าที่ถูกต้อง',
+			'accountStorageRecoveryFailed' => 'กู้คืนไม่สำเร็จ ข้อมูลบัญชีของคุณไม่ถูกเปลี่ยนแปลง',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsTh {
 			'smartWidgetChecker' => 'ตัวตรวจวิดเจ็ตอัจฉริยะ',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'ไม่สามารถแสดงองค์ประกอบ',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'เมตาดาต้า',
 			'createdAt' => 'สร้างเมื่อ',
 			'identifier' => 'ตัวระบุ',
@@ -2786,12 +2823,6 @@ extension on TranslationsTh {
 			'votesByUsers' => 'โหวตโดยผู้ใช้',
 			'alreadyVoted' => 'คุณโหวตในโพลนี้แล้ว',
 			'userCannotBeFound' => 'ไม่พบผู้ใช้',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => 'โหวต: ${number}',
 			'voteRequired' => 'ต้องโหวตเพื่อแสดงสถิติ',
 			'showStats' => 'แสดงสถิติ',
@@ -3293,6 +3324,12 @@ extension on TranslationsTh {
 			'tallying' => 'กำลังนับ',
 			'ended' => 'สิ้นสุด',
 			'closed' => 'ปิด',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => 'ผลโหวตโดย',
 			'votes' => 'โหวต',
 			'voiceCredit' => 'เครดิตเสียง',
@@ -3304,12 +3341,6 @@ extension on TranslationsTh {
 			'circuit' => 'วงจร',
 			'votingSystem' => 'ระบบโหวต',
 			'proofSystem' => 'ระบบหลักฐาน',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'สถานีน้ำมัน',
 			'totalFund' => '(กองทุนรวม)',
 			'roundStart' => 'เริ่มรอบ',
@@ -3782,6 +3813,8 @@ extension on TranslationsTh {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} อ้างอิงรูปภาพของคุณ',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} อ้างอิงรูปภาพที่คุณถูกกล่าวถึง',
 			'cameraPermission' => 'แอปไม่มีสิทธิ์เข้าถึงกล้อง หรือไม่มีกล้องที่ใช้งานได้บนอุปกรณ์นี้',
+			'videoQuality' => 'คุณภาพวิดีโอ',
+			'originalMedia' => 'ต้นฉบับ:',
 			'fetchingPicture' => 'กำลังดึงรูปภาพ...',
 			'addDescription' => 'เพิ่มคำอธิบาย...',
 			'uploadingVideo' => 'กำลังอัปโหลดวิดีโอ...',
@@ -3809,6 +3842,12 @@ extension on TranslationsTh {
 			'swapFrom' => 'แลกเปลี่ยนจาก',
 			'swapTo' => 'แลกเปลี่ยนไปยัง',
 			'selectMint' => 'เลือก Mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => 'จำนวน',
 			'cashuHistory' => 'ประวัติ Cashu',
 			'history' => 'ประวัติ',
@@ -3822,12 +3861,6 @@ extension on TranslationsTh {
 			'redeemEcashDesc' => 'แลกโทเค็น ecash เข้ากระเป๋าเงินของคุณ',
 			'depositDesc' => 'สร้างโทเค็น ecash ใหม่โดยการฝาก sats',
 			'pasteToken' => 'วางโทเค็น',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'สแกน',
 			'tokenDetails' => 'รายละเอียดโทเค็น',
 			'issuingMint' => 'Mint ที่ออก',
@@ -4327,6 +4360,12 @@ extension on TranslationsTh {
 			'creator_subscription_plans' => 'แพ็กเกจสมาชิก',
 			'creator_subscribe_now' => 'สมัครเลย',
 			'creator_subscribe_error' => 'ไม่สามารถเริ่มการสมัครสมาชิกได้',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'ไม่มีแพ็กเกจสมาชิกที่ใช้ได้',
 			'creator_lightning_unavailable' => 'ไม่มีที่อยู่ Lightning',
 			'creator_view_subscriptions' => 'ดูการสมัครสมาชิกของฉัน',
@@ -4340,12 +4379,6 @@ extension on TranslationsTh {
 			'pomAuthenticating' => 'กำลังยืนยันตัวตนกับ Google…',
 			'pomCheckingAccount' => 'กำลังตรวจสอบบัญชี…',
 			'pomCreatingAccount' => 'กำลังสร้างบัญชี…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'บันทึกคีย์ส่วนตัวของคุณ',
 			'pomSaveKeyDesc' => 'สร้างคีย์ส่วนตัวของคุณแล้ว กรุณาบันทึกไว้อย่างปลอดภัยก่อนสร้างบัญชี',
 			'pomCreateAccount' => 'สร้างบัญชี',
@@ -4515,6 +4548,13 @@ extension on TranslationsTh {
 			'desktopDensityComfortable' => 'สบายตา',
 			'desktopDensityCompact' => 'กะทัดรัด',
 			'desktopKnowPeople' => 'รู้จักผู้คน',
+			'desktopNetworkInterface' => 'อินเทอร์เฟซเครือข่าย',
+			'desktopInterfaceAvailable' => 'พร้อมใช้งาน',
+			'desktopRelayConnections' => 'การเชื่อมต่อรีเลย์',
+			'desktopSmartWidgetUnavailable' => 'อุปกรณ์นี้ไม่รองรับการลงนามแบบโต้ตอบ คุณสามารถเปิดหน้าในเบราว์เซอร์ได้',
+			'desktopPlaybackUnavailable' => 'อุปกรณ์นี้ไม่รองรับการเล่นในแอป',
+			'desktopGoogleSignInUnavailable' => 'ไม่รองรับการเข้าสู่ระบบด้วย Google บน Linux โปรดเลือกวิธีอื่น',
+			'desktopCameraUnavailable' => 'อุปกรณ์นี้ไม่รองรับการถ่ายด้วยกล้อง โปรดเลือกไฟล์แทน',
 			_ => null,
 		};
 	}

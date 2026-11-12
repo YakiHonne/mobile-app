@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../models/app_models/diverse_functions.dart';
 import '../../utils/bot_toast_util.dart';
 import '../../utils/utils.dart';
+import 'desktop_file_save.dart';
 
 class MediaHandler {
   MediaHandler._();
@@ -218,7 +219,16 @@ class MediaHandler {
 
       if (isDesktopPlatform) {
         if (!Platform.isMacOS) {
-          BotToastUtils.showError(t.errorSavingImage.capitalizeFirst());
+          final uri = Uri.tryParse(url);
+          final name = uri?.pathSegments.lastOrNull ?? '';
+          final saved = await saveDesktopFileBytes(
+            suggestedName: name.isEmpty ? 'image.png' : name,
+            bytes: Uint8List.fromList(response.data),
+          );
+          if (!saved) {
+            return;
+          }
+          BotToastUtils.showSuccess(t.downloadSuccessful);
           return;
         }
         final uri = Uri.tryParse(url);
@@ -289,10 +299,6 @@ class MediaHandler {
     File? downloadedFile;
 
     try {
-      if (isDesktopPlatform && !Platform.isMacOS) {
-        BotToastUtils.showError(t.errorSavingVideo.capitalizeFirst());
-        return false;
-      }
       final uri = Uri.parse(url);
       final pathSegments = uri.pathSegments;
       final fileName = pathSegments.isNotEmpty ? pathSegments.last : 'video';

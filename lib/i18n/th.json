@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "ไม่สามารถเปิดที่เก็บบัญชีได้ บัญชีของคุณยังไม่ถูกเปลี่ยนแปลง",
+  "accountStorageLinuxHelp": "ปลดล็อกหรือเริ่มพวงกุญแจของระบบ แล้วลองอีกครั้ง",
+  "accountStorageSaveFailed": "ไม่สามารถบันทึกการเปลี่ยนแปลงบัญชีได้ โปรดรีสตาร์ตแอปก่อนลองอีกครั้ง",
+  "accountStorageRecoveryTitle": "บัญชีของคุณต้องได้รับการตรวจสอบ",
+  "accountStorageRecoveryCorrupt": "ไม่สามารถอ่านข้อมูลบัญชีที่บันทึกไว้ได้ ไม่มีข้อมูลใดถูกลบ",
+  "accountStorageRecoveryLegacy": "ข้อมูลบัญชีถูกเปลี่ยนโดยเวอร์ชันหรือโปรเซสอื่น โปรดเลือกสำเนาที่ต้องการเก็บ",
+  "accountStorageRestoreBackup": "กู้คืนบัญชีที่บันทึกไว้ก่อนหน้า",
+  "accountStorageKeepSaved": "เก็บบัญชีที่บันทึกไว้",
+  "accountStorageKeepLegacy": "ใช้ข้อมูลบัญชีอีกชุด",
+  "accountStorageBackupMissing": "ไม่มีข้อมูลสำรองก่อนหน้าที่ถูกต้อง",
+  "accountStorageRecoveryFailed": "กู้คืนไม่สำเร็จ ข้อมูลบัญชีของคุณไม่ถูกเปลี่ยนแปลง",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} อ้างอิงรูปภาพของคุณ",
   "userQuotedPictureYouIn": "{{name}} อ้างอิงรูปภาพที่คุณถูกกล่าวถึง",
   "cameraPermission": "แอปไม่มีสิทธิ์เข้าถึงกล้อง หรือไม่มีกล้องที่ใช้งานได้บนอุปกรณ์นี้",
+  "videoQuality": "คุณภาพวิดีโอ",
+  "originalMedia": "ต้นฉบับ:",
   "fetchingPicture": "กำลังดึงรูปภาพ...",
   "addDescription": "เพิ่มคำอธิบาย...",
   "uploadingVideo": "กำลังอัปโหลดวิดีโอ...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "ความหนาแน่นเดสก์ท็อป",
   "desktopDensityComfortable": "สบายตา",
   "desktopDensityCompact": "กะทัดรัด",
-  "desktopKnowPeople": "รู้จักผู้คน"
+  "desktopKnowPeople": "รู้จักผู้คน",
+  "desktopNetworkInterface": "อินเทอร์เฟซเครือข่าย",
+  "desktopInterfaceAvailable": "พร้อมใช้งาน",
+  "desktopRelayConnections": "การเชื่อมต่อรีเลย์",
+  "desktopSmartWidgetUnavailable": "อุปกรณ์นี้ไม่รองรับการลงนามแบบโต้ตอบ คุณสามารถเปิดหน้าในเบราว์เซอร์ได้",
+  "desktopPlaybackUnavailable": "อุปกรณ์นี้ไม่รองรับการเล่นในแอป",
+  "desktopGoogleSignInUnavailable": "ไม่รองรับการเข้าสู่ระบบด้วย Google บน Linux โปรดเลือกวิธีอื่น",
+  "desktopCameraUnavailable": "อุปกรณ์นี้ไม่รองรับการถ่ายด้วยกล้อง โปรดเลือกไฟล์แทน"
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../logic/dms_cubit/dms_cubit.dart';
 import '../../../logic/main_cubit/main_cubit.dart';
 import '../../../logic/notifications_cubit/notifications_cubit.dart';
-import '../../../logic/points_management_cubit/points_management_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../routes/navigator.dart';
 import '../../../routes/pages_router.dart';
+import '../../../utils/theme/glass_settings.dart';
 import '../../../utils/utils.dart';
 import '../../add_content_view/add_content_view.dart';
 import '../../add_content_view/add_media_view.dart';
@@ -32,19 +33,22 @@ import '../../widgets/fluid_blur_container.dart';
 import '../../widgets/modal_with_blur.dart';
 import '../../widgets/nip05_component.dart';
 import '../../widgets/profile_picture.dart';
+import '../desktop/desktop_connection_status.dart';
+import '../desktop/desktop_more_dialog.dart';
+import '../desktop/desktop_rail_action.dart';
 import '../desktop/desktop_smart_widgets_page.dart';
 import 'accounts_manager.dart';
 import 'feature_tour.dart';
 
 /// Floating glass navigation rail for desktop. Replaces the bottom nav and the
-/// hamburger drawer at once — desktop has permanent horizontal space, so both
-/// sets of destinations live here, always visible.
+/// hamburger drawer with persistent primary actions and a searchable More menu.
 const double kDesktopSidebarWidth = 268;
 
 /// Below this window width the labelled rail starves the content column, so it
 /// collapses to icons with tooltips.
 const double kDesktopSidebarCompactWidth = 72;
 const double kSidebarCollapseWidth = 1450;
+const double kDesktopCompactFooterSize = 43;
 
 class DesktopSidebar extends StatelessWidget {
   const DesktopSidebar({
@@ -69,36 +73,63 @@ class DesktopSidebar extends StatelessWidget {
             horizontal: compact ? kDefaultPadding / 4 : kDefaultPadding / 1.5,
             vertical: kDefaultPadding / 1.5,
           ),
-          child: BlocBuilder<MainCubit, MainState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _Brand(compact: compact),
-                  const SizedBox(height: kDefaultPadding),
-                  _SearchField(compact: compact),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  Expanded(
-                    child: ScrollShadow(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: _destinations(context, state),
+          child: LayoutBuilder(
+            builder: (context, constraints) =>
+                BlocBuilder<MainCubit, MainState>(
+              builder: (context, state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (constraints.maxHeight >= 550) ...[
+                      _Brand(compact: compact),
+                      const SizedBox(height: kDefaultPadding / 2),
+                    ],
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: _navigation(context, state),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  _ComposeButton(compact: compact),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  _AccountFooter(compact: compact),
-                ],
-              );
-            },
+                    DesktopConnectionStatus(compact: compact),
+                    DesktopComposeButton(compact: compact),
+                    const SizedBox(height: kDefaultPadding / 4),
+                    DesktopSettingsButton(
+                      compact: compact,
+                      label: context.t.settings.capitalizeFirst(),
+                      onPressed: () => YNavigator.pushPage(
+                        context,
+                        (_) => SettingsView(),
+                      ),
+                    ),
+                    const SizedBox(height: kDefaultPadding / 4),
+                    _AccountFooter(compact: compact),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _navigation(BuildContext context, MainState state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _SearchField(key: TourKeys.search, compact: compact),
+          _primaryDestinations(context, state),
+          _item(
+            icon: Icons.more_horiz,
+            selectedIcon: Icons.more_horiz,
+            title: context.t.more.capitalizeFirst(),
+            isSelected: state.mainView == MainViews.articles ||
+                state.mainView == MainViews.smartWidgets,
+            onClicked: () => _openMore(context, state),
+          ),
+        ],
+      );
+
   /// Injects [compact] so each destination below stays a one-liner.
-  Widget _item({
+  _RailItem _item({
     Key? key,
     required IconData icon,
     required IconData selectedIcon,
@@ -120,7 +151,7 @@ class DesktopSidebar extends StatelessWidget {
         compact: compact,
       );
 
-  Widget _destinations(BuildContext context, MainState state) {
+  Widget _primaryDestinations(BuildContext context, MainState state) {
     void go(MainViews view, {VoidCallback? before}) {
       before?.call();
       if (state.mainView == view) {
@@ -129,208 +160,232 @@ class DesktopSidebar extends StatelessWidget {
       context.read<MainCubit>().updateIndex(view);
     }
 
-    return MediaQuery.removePadding(
+    return Column(children: [
+      _item(
+        key: TourKeys.home,
+        icon: FeatureIcons.home,
+        selectedIcon: FeatureIcons.homeFilled,
+        title: context.t.home.capitalizeFirst(),
+        isSelected: state.mainView == MainViews.leading,
+        onClicked: () => go(MainViews.leading),
+      ),
+      _item(
+        key: TourKeys.media,
+        icon: FeatureIcons.media,
+        selectedIcon: FeatureIcons.mediaBold,
+        title: context.t.media.capitalizeFirst(),
+        isSelected: state.mainView == MainViews.media,
+        onClicked: () => go(MainViews.media),
+      ),
+      BlocBuilder<DmsCubit, DmsState>(
+        builder: (context, dmState) => _item(
+          key: TourKeys.dms,
+          icon: FeatureIcons.message,
+          selectedIcon: FeatureIcons.messageFilled,
+          title: context.t.privateMessages.capitalizeFirst(),
+          isSelected: state.mainView == MainViews.dms,
+          onLongPress: dmsCubit.markAllAsRead,
+          showDot: canSign(),
+          onClicked: () => go(MainViews.dms),
+        ),
+      ),
+      BlocBuilder<NotificationsCubit, NotificationsState>(
+        builder: (context, notiState) => _item(
+          key: TourKeys.notifications,
+          icon: FeatureIcons.notification,
+          selectedIcon: FeatureIcons.notificationsFilled,
+          title: context.t.notifications.capitalizeFirst(),
+          isSelected: state.mainView == MainViews.notifications,
+          showDot: !notiState.isRead && canSign(),
+          onClicked: () => go(
+            MainViews.notifications,
+            before: notificationsCubit.markRead,
+          ),
+        ),
+      ),
+      _item(
+        key: TourKeys.wallet,
+        icon: FeatureIcons.wallet,
+        selectedIcon: FeatureIcons.walletFilled,
+        title: context.t.wallet.capitalizeFirst(),
+        isSelected: state.mainView == MainViews.wallet,
+        onClicked: () => go(
+          MainViews.wallet,
+          before: walletManagerCubit.requestBalance,
+        ),
+      ),
+    ]);
+  }
+
+  Future<void> _openMore(BuildContext context, MainState state) async {
+    await showDialog<void>(
       context: context,
-      removeTop: true,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          _item(
-            icon: FeatureIcons.home,
-            selectedIcon: FeatureIcons.homeFilled,
-            title: context.t.home.capitalizeFirst(),
-            isSelected: state.mainView == MainViews.leading,
-            onClicked: () => go(MainViews.leading),
-          ),
-          _item(
-            icon: FeatureIcons.media,
-            selectedIcon: FeatureIcons.mediaBold,
-            title: context.t.media.capitalizeFirst(),
-            isSelected: state.mainView == MainViews.media,
-            onClicked: () => go(MainViews.media),
-          ),
-          _item(
-            icon: FeatureIcons.article,
-            selectedIcon: FeatureIcons.articleFilled,
-            title: context.t.articles.capitalizeFirst(),
-            isSelected: state.mainView == MainViews.articles,
-            onClicked: () => go(MainViews.articles),
-          ),
-          BlocBuilder<DmsCubit, DmsState>(
-            builder: (context, dmState) => _item(
-              key: TourKeys.dms,
-              icon: FeatureIcons.message,
-              selectedIcon: FeatureIcons.messageFilled,
-              title: context.t.privateMessages.capitalizeFirst(),
-              isSelected: state.mainView == MainViews.dms,
-              onLongPress: dmsCubit.markAllAsRead,
-              showDot: canSign(),
-              onClicked: () => go(MainViews.dms),
-            ),
-          ),
-          BlocBuilder<NotificationsCubit, NotificationsState>(
-            builder: (context, notiState) => _item(
-              key: TourKeys.notifications,
-              icon: FeatureIcons.notification,
-              selectedIcon: FeatureIcons.notificationsFilled,
-              title: context.t.notifications.capitalizeFirst(),
-              isSelected: state.mainView == MainViews.notifications,
-              showDot: !notiState.isRead && canSign(),
-              onClicked: () => go(
-                MainViews.notifications,
-                before: notificationsCubit.markRead,
-              ),
-            ),
-          ),
-          _item(
-            key: TourKeys.wallet,
-            icon: FeatureIcons.wallet,
-            selectedIcon: FeatureIcons.walletFilled,
-            title: context.t.wallet.capitalizeFirst(),
-            isSelected: state.mainView == MainViews.wallet,
-            onClicked: () => go(
-              MainViews.wallet,
-              before: walletManagerCubit.requestBalance,
-            ),
-          ),
-          if (canSign())
-            _item(
-              icon: FeatureIcons.smartWidget,
-              selectedIcon: FeatureIcons.smartWidget,
-              title: context.t.smartWidget.capitalizeFirst(),
-              isSelected: state.mainView == MainViews.smartWidgets,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (_) => const DesktopSmartWidgetsPage(),
-              ),
-            ),
-          const Divider(height: kDefaultPadding, indent: kDefaultPadding / 2),
-          _item(
-            icon: FeatureIcons.discover,
-            selectedIcon: FeatureIcons.discoverFilled,
-            title: context.t.explore.capitalizeFirst(),
-            isSelected: false,
-            onClicked: () => YNavigator.pushPage(
-              context,
-              (context) => const ExplorePacksView(),
-            ),
-          ),
-          _item(
-            icon: FeatureIcons.relaysOrbit,
-            selectedIcon: FeatureIcons.relaysOrbit,
-            title: context.t.relayOrbits.capitalizeFirst(),
-            isSelected: false,
-            onClicked: () => YNavigator.pushPage(
-              context,
-              (context) => const ExploreRelaysView(),
-            ),
-          ),
-          if (canSign()) ...[
-            _item(
-              icon: FeatureIcons.user,
-              selectedIcon: FeatureIcons.user,
-              title: context.t.profile.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => ProfileView(pubkey: state.pubKey),
-              ),
-            ),
-            _item(
-              icon: FeatureIcons.dashboard2,
-              selectedIcon: FeatureIcons.dashboard2,
-              title: context.t.dashboard.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => DashboardView(),
-              ),
-            ),
-            _item(
-              icon: FeatureIcons.walletAvailable,
-              selectedIcon: FeatureIcons.walletAvailable,
-              title: context.t.subscription.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => const SubscriptionView(),
-              ),
-            ),
-            _item(
-              icon: LucideIcons.crown,
-              selectedIcon: LucideIcons.crown,
-              title: context.t.creatorsSubscriptions.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => const CreatorsSubscriptionsView(),
-              ),
-            ),
-            _item(
-              icon: FeatureIcons.sats,
-              selectedIcon: FeatureIcons.sats,
-              title: context.t.pricing.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => const PricingScreen(),
-              ),
-            ),
-            _item(
-              icon: FeatureIcons.storageCloud,
-              selectedIcon: FeatureIcons.storageCloud,
-              title: context.t.blossomStorage.capitalizeFirst(),
-              isSelected: false,
-              onClicked: () => YNavigator.pushPage(
-                context,
-                (context) => const BlossomManagementView(),
-              ),
-            ),
-            BlocBuilder<PointsManagementCubit, PointsManagementState>(
-              builder: (context, pointsState) => _item(
-                icon: FeatureIcons.favorite,
-                selectedIcon: FeatureIcons.favorite,
-                title: context.t.yakiPoints,
-                isSelected: false,
-                onClicked: () {
-                  if (pointsState.isSystemLoggedIn) {
-                    YNavigator.pushNamed(
-                      context,
-                      PointsStatisticsView.routeName,
-                    );
-                  } else {
-                    showBlurredModal(
-                      context: context,
-                      view: const PointsLoginPopup(),
-                    );
-                  }
-                },
-              ),
-            ),
-            _item(
-              icon: LucideIcons.badgeCheck,
-              selectedIcon: LucideIcons.badgeCheck,
-              title: context.t.yakiPro,
-              isSelected: false,
-              onClicked: () => openWebPage(
-                url: 'https://pro.yakihonne.com/yakipro-mobile-app-links',
-                openInternal: false,
-              ),
-            ),
-          ],
-          _item(
-            icon: FeatureIcons.settings,
-            selectedIcon: FeatureIcons.propertiesFilled,
-            title: context.t.settings.capitalizeFirst(),
-            isSelected: false,
-            onClicked: () => YNavigator.pushPage(
-              context,
-              (context) => SettingsView(),
-            ),
-          ),
-        ],
+      builder: (dialogContext) => DesktopMoreDialog(
+        title: context.t.more.capitalizeFirst(),
+        searchLabel: context.t.search.capitalizeFirst(),
+        emptyLabel: context.t.noResults,
+        entries: _moreDestinations(context, state),
       ),
     );
+  }
+
+  List<DesktopMoreEntry> _moreDestinations(
+      BuildContext context, MainState state) {
+    void go(MainViews view, {VoidCallback? before}) {
+      before?.call();
+      if (state.mainView == view) {
+        onScrollTop();
+      }
+      context.read<MainCubit>().updateIndex(view);
+    }
+
+    final items = <_RailItem>[
+      _item(
+        icon: FeatureIcons.article,
+        selectedIcon: FeatureIcons.articleFilled,
+        title: context.t.articles.capitalizeFirst(),
+        isSelected: state.mainView == MainViews.articles,
+        onClicked: () => go(MainViews.articles),
+      ),
+      if (canSign())
+        _item(
+          icon: FeatureIcons.smartWidget,
+          selectedIcon: FeatureIcons.smartWidget,
+          title: context.t.smartWidget.capitalizeFirst(),
+          isSelected: state.mainView == MainViews.smartWidgets,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (_) => const DesktopSmartWidgetsPage(),
+          ),
+        ),
+      _item(
+        icon: FeatureIcons.discover,
+        selectedIcon: FeatureIcons.discoverFilled,
+        title: context.t.explore.capitalizeFirst(),
+        isSelected: false,
+        onClicked: () => YNavigator.pushPage(
+          context,
+          (context) => const ExplorePacksView(),
+        ),
+      ),
+      _item(
+        icon: FeatureIcons.relaysOrbit,
+        selectedIcon: FeatureIcons.relaysOrbit,
+        title: context.t.relayOrbits.capitalizeFirst(),
+        isSelected: false,
+        onClicked: () => YNavigator.pushPage(
+          context,
+          (context) => const ExploreRelaysView(),
+        ),
+      ),
+      if (canSign()) ...[
+        _item(
+          icon: FeatureIcons.user,
+          selectedIcon: FeatureIcons.user,
+          title: context.t.profile.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => ProfileView(pubkey: state.pubKey),
+          ),
+        ),
+        _item(
+          icon: FeatureIcons.dashboard2,
+          selectedIcon: FeatureIcons.dashboard2,
+          title: context.t.dashboard.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => DashboardView(),
+          ),
+        ),
+        _item(
+          icon: FeatureIcons.walletAvailable,
+          selectedIcon: FeatureIcons.walletAvailable,
+          title: context.t.subscription.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => const SubscriptionView(),
+          ),
+        ),
+        _item(
+          icon: LucideIcons.crown,
+          selectedIcon: LucideIcons.crown,
+          title: context.t.creatorsSubscriptions.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => const CreatorsSubscriptionsView(),
+          ),
+        ),
+        _item(
+          icon: FeatureIcons.sats,
+          selectedIcon: FeatureIcons.sats,
+          title: context.t.pricing.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => const PricingScreen(),
+          ),
+        ),
+        _item(
+          icon: FeatureIcons.storageCloud,
+          selectedIcon: FeatureIcons.storageCloud,
+          title: context.t.blossomStorage.capitalizeFirst(),
+          isSelected: false,
+          onClicked: () => YNavigator.pushPage(
+            context,
+            (context) => const BlossomManagementView(),
+          ),
+        ),
+        _item(
+          icon: FeatureIcons.favorite,
+          selectedIcon: FeatureIcons.favorite,
+          title: context.t.yakiPoints,
+          isSelected: false,
+          onClicked: () {
+            if (pointsManagementCubit.state.isSystemLoggedIn) {
+              YNavigator.pushNamed(context, PointsStatisticsView.routeName);
+            } else {
+              showBlurredModal(
+                  context: context, view: const PointsLoginPopup());
+            }
+          },
+        ),
+        _item(
+          icon: LucideIcons.badgeCheck,
+          selectedIcon: LucideIcons.badgeCheck,
+          title: context.t.yakiPro,
+          isSelected: false,
+          onClicked: () => openWebPage(
+            url: 'https://pro.yakihonne.com/yakipro-mobile-app-links',
+            openInternal: false,
+          ),
+        ),
+      ],
+    ];
+    return items
+        .map((item) => DesktopMoreEntry(
+              label: item.title,
+              icon: item.isSelected ? item.selectedIcon : item.icon,
+              selected: item.isSelected,
+              group: item.icon == FeatureIcons.article ||
+                      item.icon == FeatureIcons.smartWidget
+                  ? context.t.content
+                  : item.icon == FeatureIcons.discover ||
+                          item.icon == FeatureIcons.relaysOrbit
+                      ? context.t.explore.capitalizeFirst()
+                      : item.icon == FeatureIcons.user ||
+                              item.icon == FeatureIcons.dashboard2 ||
+                              item.icon == FeatureIcons.walletAvailable ||
+                              item.icon == LucideIcons.crown ||
+                              item.icon == FeatureIcons.sats
+                          ? context.t.profile.capitalizeFirst()
+                          : context.t.tools,
+              onPressed: item.onClicked,
+            ))
+        .toList();
   }
 }
 
@@ -362,7 +417,7 @@ class _Brand extends StatelessWidget {
 }
 
 class _SearchField extends StatelessWidget {
-  const _SearchField({required this.compact});
+  const _SearchField({super.key, required this.compact});
 
   final bool compact;
 
@@ -371,8 +426,10 @@ class _SearchField extends StatelessWidget {
     return _Hoverable(
       builder: (context, _) => Tooltip(
         message: compact ? context.t.search.capitalizeFirst() : '',
-        child: GestureDetector(
-          onTap: () => YNavigator.pushPage(context, (context) => SearchView()),
+        child: DesktopRailAction(
+          label: context.t.search.capitalizeFirst(),
+          onPressed: () =>
+              YNavigator.pushPage(context, (context) => SearchView()),
           child: _CenterIfCompact(
             compact: compact,
             child: Container(
@@ -403,11 +460,15 @@ class _SearchField extends StatelessWidget {
                     color: Theme.of(context).highlightColor,
                   ),
                   if (!compact)
-                    Text(
-                      context.t.search.capitalizeFirst(),
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).highlightColor,
-                          ),
+                    Expanded(
+                      child: Text(
+                        context.t.search.capitalizeFirst(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Theme.of(context).highlightColor,
+                            ),
+                      ),
                     ),
                 ],
               ),
@@ -422,137 +483,210 @@ class _SearchField extends StatelessWidget {
 /// Compose. The phone build opens a bubble anchored above the bottom bar; from
 /// the rail that geometry does not apply, so desktop uses an anchored menu —
 /// the native affordance here anyway.
-class _ComposeButton extends StatelessWidget {
-  const _ComposeButton({required this.compact});
+class DesktopComposeButton extends StatefulWidget {
+  const DesktopComposeButton({super.key, required this.compact});
 
   final bool compact;
 
   @override
-  Widget build(BuildContext context) {
-    void open() => doIfCanSign(
-          func: () => _openMenu(context),
-          context: context,
-        );
+  State<DesktopComposeButton> createState() => _DesktopComposeButtonState();
+}
 
-    if (compact) {
-      return Tooltip(
-        message: context.t.compose.capitalizeFirst(),
-        child: Center(
-          child: SizedBox(
-            height: 44,
-            width: 44,
-            child: TextButton(
-              key: TourKeys.create,
-              onPressed: open,
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                shape: const CircleBorder(),
-              ),
-              child:
-                  const AppIcon(FeatureIcons.addRaw, size: 20, color: kWhite),
-            ),
-          ),
-        ),
-      );
-    }
+class _DesktopComposeButtonState extends State<DesktopComposeButton> {
+  final _menu = GlassMenuController();
+  final _triggerFocus = FocusNode();
+  var _navigating = false;
 
-    return SizedBox(
-      height: 42,
-      child: TextButton.icon(
-        key: TourKeys.create,
-        onPressed: open,
-        icon: const AppIcon(FeatureIcons.addRaw, size: 18, color: kWhite),
-        label: Text(context.t.compose.capitalizeFirst()),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    HardwareKeyboard.instance.addHandler(_handleKey);
   }
 
-  Future<void> _openMenu(BuildContext context) async {
-    final box = context.findRenderObject()! as RenderBox;
-    final overlay =
-        Overlay.of(context).context.findRenderObject()! as RenderBox;
-    final origin = box.localToGlobal(Offset.zero, ancestor: overlay);
+  bool _handleKey(KeyEvent event) {
+    if (_menu.isOpen &&
+        event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      _menu.close();
+      return true;
+    }
+    return false;
+  }
 
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_handleKey);
+    _triggerFocus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final entries = <(IconData, String, String, Widget Function())>[
       (
         FeatureIcons.note,
         context.t.note.capitalizeFirst(),
         context.t.quickPost,
-        () => AddContentView(contentType: AppContentType.note),
+        () => AddContentView(contentType: AppContentType.note)
       ),
       (
         FeatureIcons.article,
         context.t.article.capitalizeFirst(),
         context.t.longForm,
-        () => AddContentView(contentType: AppContentType.article),
+        () => AddContentView(contentType: AppContentType.article)
       ),
       (
         FeatureIcons.media,
         context.t.media.capitalizeFirst(),
         context.t.photoOrClip,
-        () => AddMediaView(),
+        () => AddMediaView()
       ),
       (
         FeatureIcons.smartWidget,
         context.t.widgets.capitalizeFirst(),
         context.t.smartEmbed,
-        () => AddContentView(contentType: AppContentType.smartWidget),
+        () => AddContentView(contentType: AppContentType.smartWidget)
       ),
     ];
 
-    final selected = await showMenu<Widget Function()>(
-      context: context,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kDefaultPadding),
-      ),
-      position: RelativeRect.fromLTRB(
-        origin.dx,
-        origin.dy + box.size.height + kDefaultPadding / 4,
-        overlay.size.width - origin.dx - box.size.width,
-        0,
-      ),
-      items: entries
-          .map(
-            (e) => PopupMenuItem<Widget Function()>(
-              value: e.$4,
-              child: Row(
-                spacing: kDefaultPadding / 1.5,
-                children: [
-                  AppIcon(
-                    e.$1,
-                    size: 22,
-                    color: Theme.of(context).primaryColorDark,
+    return GlassMenu(
+      controller: _menu,
+      settings: GlassSettings.menu(context),
+      autoAdjustToScreen: true,
+      menuPadding: const EdgeInsets.all(kDefaultPadding / 2),
+      menuWidth: 260,
+      // A bounded, scrollable menu keeps all choices available in short windows
+      // and enables the package's keyboard activation path.
+      menuHeight: 200,
+      onClose: () {
+        if (!_navigating && mounted) {
+          _triggerFocus.requestFocus();
+        }
+      },
+      triggerBuilder: (context, toggleMenu) {
+        void open() => doIfCanSign(func: toggleMenu, context: context);
+        if (widget.compact) {
+          return Tooltip(
+            message: context.t.compose.capitalizeFirst(),
+            child: Center(
+              child: SizedBox(
+                height: kDesktopCompactFooterSize,
+                width: kDesktopCompactFooterSize,
+                child: TextButton(
+                  key: TourKeys.create,
+                  focusNode: _triggerFocus,
+                  onPressed: open,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    shape: const CircleBorder(),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        e.$2,
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                      Text(
-                        e.$3,
-                        style:
-                            Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  color: Theme.of(context).highlightColor,
-                                ),
-                      ),
-                    ],
+                  child: Semantics(
+                    label: context.t.compose.capitalizeFirst(),
+                    child: const AppIcon(FeatureIcons.addRaw,
+                        size: 20, color: kWhite),
                   ),
-                ],
+                ),
               ),
             ),
-          )
+          );
+        }
+        return SizedBox(
+          width: double.infinity,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: TextButton.icon(
+              key: TourKeys.create,
+              focusNode: _triggerFocus,
+              onPressed: open,
+              icon: const AppIcon(FeatureIcons.addRaw, size: 18, color: kWhite),
+              label: Text(
+                context.t.compose.capitalizeFirst(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        );
+      },
+      items: entries
+          .map((entry) => GlassMenuItem(
+                title: entry.$2,
+                subtitle: entry.$3,
+                height: 60,
+                icon: AppIcon(entry.$1,
+                    size: 22, color: Theme.of(context).primaryColorDark),
+                titleStyle: Theme.of(context).textTheme.labelLarge,
+                subtitleStyle:
+                    Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: Theme.of(context).hintColor,
+                        ),
+                onTap: () {
+                  _navigating = true;
+                  _menu.close();
+                  YNavigator.pushPage(context, (_) => entry.$4());
+                  _navigating = false;
+                },
+              ))
           .toList(),
     );
+  }
+}
 
-    if (selected != null && context.mounted) {
-      YNavigator.pushPage(context, (_) => selected());
-    }
+/// Fixed footer action with a centered icon in compact mode.
+class DesktopSettingsButton extends StatelessWidget {
+  const DesktopSettingsButton({
+    super.key,
+    required this.compact,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final bool compact;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final icon =
+        AppIcon(FeatureIcons.settings, size: 22, color: theme.primaryColorDark);
+    return _CenterIfCompact(
+      compact: compact,
+      child: Tooltip(
+        message: compact ? label : '',
+        child: DesktopRailAction(
+          label: label,
+          onPressed: onPressed,
+          child: Container(
+            key: const ValueKey('desktop-settings-surface'),
+            width: compact ? kDesktopCompactFooterSize : double.infinity,
+            height: kDesktopCompactFooterSize,
+            padding: compact
+                ? EdgeInsets.zero
+                : const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            decoration: BoxDecoration(
+              color: theme.cardColor.withValues(alpha: 0.55),
+              border: Border.all(color: theme.dividerColor, width: 0.5),
+              shape: compact ? BoxShape.circle : BoxShape.rectangle,
+              borderRadius:
+                  compact ? null : BorderRadius.circular(kDefaultPadding),
+            ),
+            child: compact
+                ? Center(child: icon)
+                : Row(
+                    children: [
+                      icon,
+                      const SizedBox(width: kDefaultPadding / 1.5),
+                      Expanded(
+                          child: Text(label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelLarge)),
+                    ],
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -577,8 +711,8 @@ class _AccountFooter extends StatelessWidget {
         child: compact
             ? Center(
                 child: SizedBox(
-                  height: 44,
-                  width: 44,
+                  height: kDesktopCompactFooterSize,
+                  width: kDesktopCompactFooterSize,
                   child: TextButton(
                     onPressed: login,
                     style: TextButton.styleFrom(
@@ -617,14 +751,16 @@ class _AccountFooter extends StatelessWidget {
             );
 
         return _Hoverable(
+          key: TourKeys.drawer,
           builder: (context, _) => _CenterIfCompact(
             compact: compact,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: openAccounts,
+            child: DesktopAccountButton(
+              compact: compact,
+              label: context.t.switchAccounts.capitalizeFirst(),
+              onPressed: openAccounts,
               child: Container(
                 padding: EdgeInsets.all(
-                  compact ? kDefaultPadding / 4 : kDefaultPadding / 2,
+                  compact ? 0 : kDefaultPadding / 2,
                 ),
                 decoration: BoxDecoration(
                   color: kTransparent,
@@ -642,6 +778,7 @@ class _AccountFooter extends StatelessWidget {
                       spacing: kDefaultPadding / 2,
                       children: [
                         DesktopAccountAvatar(
+                          size: compact ? kDesktopCompactFooterSize : 36,
                           image: metadata.picture,
                           pubkey: metadata.pubkey,
                           onPressed: openAccounts,
@@ -687,6 +824,34 @@ class _AccountFooter extends StatelessWidget {
   }
 }
 
+/// A single keyboard and semantic action for the signed-in account footer.
+class DesktopAccountButton extends StatelessWidget {
+  const DesktopAccountButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    required this.child,
+    this.compact = false,
+  });
+
+  final bool compact;
+  final String label;
+  final VoidCallback onPressed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => DesktopRailAction(
+        label: label,
+        onPressed: onPressed,
+        child: compact
+            ? SizedBox.square(
+                dimension: kDesktopCompactFooterSize,
+                child: Center(child: child),
+              )
+            : child,
+      );
+}
+
 /// The avatar shares the footer action rather than intercepting its tap.
 class DesktopAccountAvatar extends StatelessWidget {
   const DesktopAccountAvatar({
@@ -694,15 +859,17 @@ class DesktopAccountAvatar extends StatelessWidget {
     required this.image,
     required this.pubkey,
     required this.onPressed,
+    this.size = 36,
   });
 
+  final double size;
   final String image;
   final String pubkey;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) => ProfilePicture2(
-        size: 36,
+        size: size,
         image: image,
         pubkey: pubkey,
         padding: 0,
@@ -755,10 +922,11 @@ class _RailItem extends StatelessWidget {
     return _Hoverable(
       builder: (context, _) => Tooltip(
         message: compact ? title : '',
-        child: GestureDetector(
-          onTap: onClicked,
+        child: DesktopRailAction(
+          label: title,
+          selected: isSelected,
+          onPressed: onClicked,
           onLongPress: onLongPress,
-          behavior: HitTestBehavior.translucent,
           child: _CenterIfCompact(
             compact: compact,
             child: AnimatedContainer(
@@ -835,7 +1003,7 @@ class _CenterIfCompact extends StatelessWidget {
 
 /// Supplies a pointer cursor without changing the control's appearance.
 class _Hoverable extends StatelessWidget {
-  const _Hoverable({required this.builder});
+  const _Hoverable({super.key, required this.builder});
 
   final Widget Function(BuildContext context, bool hovered) builder;
 

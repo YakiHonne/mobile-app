@@ -100,6 +100,12 @@ class ProfileNotes extends HookWidget {
                     ),
                   );
                 } else {
+                  if (isDesktopPlatform && !useSingleColumn) {
+                    return DesktopPaneSliverGridBuilder(
+                      builder: (context, columns) =>
+                          _itemsGrid(state, content, columns: columns),
+                    );
+                  }
                   if (isTablet && !useSingleColumn) {
                     return _itemsGrid(state, content);
                   } else {
@@ -152,9 +158,10 @@ class ProfileNotes extends HookWidget {
     );
   }
 
-  SliverMasonryGrid _itemsGrid(ProfileState state, List<Event> content) {
+  SliverMasonryGrid _itemsGrid(ProfileState state, List<Event> content,
+      {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       childCount: content.length,

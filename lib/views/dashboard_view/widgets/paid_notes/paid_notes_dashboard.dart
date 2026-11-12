@@ -59,9 +59,12 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
       );
     }
 
-    return isTablet
-        ? _itemsGrid(context, _notes)
-        : _itemsList(context, _notes);
+    if (isDesktopPlatform) {
+      return DesktopPaneGridBuilder(
+          builder: (context, columns) =>
+              _itemsGrid(context, _notes, columns: columns));
+    }
+    return isTablet ? _itemsGrid(context, _notes) : _itemsList(context, _notes);
   }
 
   Widget _buildDashboardItem(BuildContext context, UnpaidNote unpaidNote) {
@@ -134,9 +137,10 @@ class _PaidNotesDashboardState extends State<PaidNotesDashboard> {
     );
   }
 
-  MasonryGridView _itemsGrid(BuildContext context, List<UnpaidNote> notes) {
+  MasonryGridView _itemsGrid(BuildContext context, List<UnpaidNote> notes,
+      {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemCount: notes.length,

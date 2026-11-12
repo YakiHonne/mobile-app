@@ -9,6 +9,10 @@ final bool isMobilePlatform = Platform.isAndroid || Platform.isIOS;
 final bool isDesktopPlatform =
     Platform.isMacOS || Platform.isWindows || Platform.isLinux;
 
+/// The bundled image picker has no configured camera delegate on these targets.
+bool supportsMediaCamera(TargetPlatform platform) =>
+    platform != TargetPlatform.windows && platform != TargetPlatform.linux;
+
 /// Height of the macOS titlebar strip the Flutter view now spans — see
 /// `macos/Runner/MainFlutterWindow.swift`. `main.dart` adds it to the root
 /// `MediaQuery` top padding, so every `SafeArea` and `AppBar` clears the traffic
@@ -19,6 +23,49 @@ final bool isDesktopPlatform =
 /// and this leaves a 28pt gap; fixing that needs an NSWindow delegate plus a
 /// channel, so add it only if fullscreen becomes a normal way to use the app.
 final double kMacTitlebarInset = Platform.isMacOS ? 28 : 0;
+
+/// Number of readable text-heavy columns in a locally constrained pane.
+int desktopPaneFeedColumns(BuildContext context, double width,
+    {int maxColumns = 2}) {
+  final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+  return ((width + 10) / (360 * scale + 10)).floor().clamp(1, maxColumns);
+}
+
+/// Builds a box scrollable using the pane's actual width.
+class DesktopPaneGridBuilder extends StatelessWidget {
+  const DesktopPaneGridBuilder({super.key, required this.builder});
+
+  final Widget Function(BuildContext context, int columns) builder;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => builder(
+          context,
+          desktopPaneFeedColumns(context, constraints.maxWidth),
+        ),
+      );
+}
+
+/// Builds a sliver grid using the width of its surrounding scroll view.
+class DesktopPaneSliverGridBuilder extends StatelessWidget {
+  const DesktopPaneSliverGridBuilder({
+    super.key,
+    required this.builder,
+    this.maxColumns = 2,
+  });
+
+  final Widget Function(BuildContext context, int columns) builder;
+  final int maxColumns;
+
+  @override
+  Widget build(BuildContext context) => SliverLayoutBuilder(
+        builder: (context, constraints) => builder(
+          context,
+          desktopPaneFeedColumns(context, constraints.crossAxisExtent,
+              maxColumns: maxColumns),
+        ),
+      );
+}
 
 /// Columns for a feed masonry grid. Reads the *panel* width, not the window —
 /// `MainView`'s desktop branch re-scopes `MediaQuery` to the content panel, so
@@ -48,7 +95,20 @@ int feedGridColumns(BuildContext context) {
 int mediaGridColumns(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
 
-  if (isDesktopPlatform && width < 450) {
+  if (isDesktopPlatform) {
+    return desktopMediaGridColumns(width);
+  }
+
+  if (width >= 1250) {
+    return 5;
+  }
+
+  return width >= 900 ? 4 : 3;
+}
+
+/// Media columns for the width actually available to a desktop sliver.
+int desktopMediaGridColumns(double width) {
+  if (width < 450) {
     return 2;
   }
 

@@ -7,3 +7,6 @@ hover-only visual effects on desktop in `glass_focus_region.dart` and
 published hover behavior. Pointer clicks, cursors, pressed states and keyboard
 focus remain enabled. Reapply or upstream these small patches when updating
 either dependency.
+
+`GlassTextField` also exposes `showFocusRing` (defaulting to true), allowing the
+desktop search field to suppress its blue ring without changing text focus.

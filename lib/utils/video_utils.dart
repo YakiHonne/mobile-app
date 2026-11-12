@@ -8,6 +8,14 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'utils.dart';
 
+/// The Windows thumbnail plugin accepts paths, not network or file URIs.
+bool isWindowsThumbnailPath(String source) {
+  if (RegExp(r'^[a-zA-Z]:[\\/]').hasMatch(source)) {
+    return true;
+  }
+  return !(Uri.tryParse(source)?.hasScheme ?? false);
+}
+
 class VideoUtils {
   static final _thumbnailFileCache = <String, String>{};
 
@@ -93,8 +101,7 @@ class VideoUtils {
 
         if (Platform.isMacOS || Platform.isWindows) {
           // Windows accepts local paths only; avoid passing remote URLs there.
-          if (Platform.isWindows &&
-              (Uri.tryParse(videoURL)?.hasScheme ?? false)) {
+          if (Platform.isWindows && !isWindowsThumbnailPath(videoURL)) {
             return null;
           }
           final destination = '$path/${const Uuid().v1()}.jpeg';

@@ -168,9 +168,11 @@ class _HistoryList extends HookWidget {
               icon: FeatureIcons.transactions,
             ),
           )
-        : isTablet
-            ? _itemsGrid(history)
-            : _itemsList(history);
+        : isDesktopPlatform
+            ? _itemsList(history)
+            : isTablet
+                ? _itemsGrid(history)
+                : _itemsList(history);
   }
 
   Widget _itemsGrid(List<CashuSpendingData> history) {

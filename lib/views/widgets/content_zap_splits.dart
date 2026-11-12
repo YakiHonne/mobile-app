@@ -38,7 +38,9 @@ class ContentZapSplits extends StatelessWidget {
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return Padding(
-      padding: EdgeInsets.all(isTablet ? 10.w : 0),
+      padding: EdgeInsets.all(
+        isDesktopPlatform ? kDefaultPadding : (isTablet ? 10.w : 0),
+      ),
       child: CustomScrollView(
         shrinkWrap: true,
         primary: false,

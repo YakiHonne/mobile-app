@@ -41,6 +41,39 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	// Translations
 
+	/// en: 'Account storage could not be opened. Your accounts have not been changed.'
+	String get accountStorageUnavailable => 'Account storage could not be opened. Your accounts have not been changed.';
+
+	/// en: 'Unlock or start your system keyring, then try again.'
+	String get accountStorageLinuxHelp => 'Unlock or start your system keyring, then try again.';
+
+	/// en: 'Account changes could not be saved. Restart the app before trying again.'
+	String get accountStorageSaveFailed => 'Account changes could not be saved. Restart the app before trying again.';
+
+	/// en: 'Your accounts need attention'
+	String get accountStorageRecoveryTitle => 'Your accounts need attention';
+
+	/// en: 'The saved account data could not be read. Nothing was deleted.'
+	String get accountStorageRecoveryCorrupt => 'The saved account data could not be read. Nothing was deleted.';
+
+	/// en: 'Account data was changed by another version or process. Choose which copy to keep.'
+	String get accountStorageRecoveryLegacy => 'Account data was changed by another version or process. Choose which copy to keep.';
+
+	/// en: 'Restore previous saved accounts'
+	String get accountStorageRestoreBackup => 'Restore previous saved accounts';
+
+	/// en: 'Keep saved accounts'
+	String get accountStorageKeepSaved => 'Keep saved accounts';
+
+	/// en: 'Use the other account data'
+	String get accountStorageKeepLegacy => 'Use the other account data';
+
+	/// en: 'No valid previous backup is available.'
+	String get accountStorageBackupMissing => 'No valid previous backup is available.';
+
+	/// en: 'Recovery could not be completed. Your account data was not changed.'
+	String get accountStorageRecoveryFailed => 'Recovery could not be completed. Your account data was not changed.';
+
 	/// en: 'No bookmarks list can be found, try to add one!'
 	String get addNewBookmark => 'No bookmarks list can be found, try to add one!';
 
@@ -6697,6 +6730,27 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	/// en: 'Know people'
 	String get desktopKnowPeople => 'Know people';
+
+	/// en: 'Network interface'
+	String get desktopNetworkInterface => 'Network interface';
+
+	/// en: 'Available'
+	String get desktopInterfaceAvailable => 'Available';
+
+	/// en: 'Relay connections'
+	String get desktopRelayConnections => 'Relay connections';
+
+	/// en: 'Interactive signing is unavailable on this device. You can open the page in your browser.'
+	String get desktopSmartWidgetUnavailable => 'Interactive signing is unavailable on this device. You can open the page in your browser.';
+
+	/// en: 'Playback is unavailable in the app on this device.'
+	String get desktopPlaybackUnavailable => 'Playback is unavailable in the app on this device.';
+
+	/// en: 'Google sign-in is unavailable on Linux. Choose another sign-in method.'
+	String get desktopGoogleSignInUnavailable => 'Google sign-in is unavailable on Linux. Choose another sign-in method.';
+
+	/// en: 'Camera capture is unavailable on this device. Choose a file instead.'
+	String get desktopCameraUnavailable => 'Camera capture is unavailable on this device. Choose a file instead.';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -6715,6 +6769,17 @@ extension on Translations {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'Account storage could not be opened. Your accounts have not been changed.',
+			'accountStorageLinuxHelp' => 'Unlock or start your system keyring, then try again.',
+			'accountStorageSaveFailed' => 'Account changes could not be saved. Restart the app before trying again.',
+			'accountStorageRecoveryTitle' => 'Your accounts need attention',
+			'accountStorageRecoveryCorrupt' => 'The saved account data could not be read. Nothing was deleted.',
+			'accountStorageRecoveryLegacy' => 'Account data was changed by another version or process. Choose which copy to keep.',
+			'accountStorageRestoreBackup' => 'Restore previous saved accounts',
+			'accountStorageKeepSaved' => 'Keep saved accounts',
+			'accountStorageKeepLegacy' => 'Use the other account data',
+			'accountStorageBackupMissing' => 'No valid previous backup is available.',
+			'accountStorageRecoveryFailed' => 'Recovery could not be completed. Your account data was not changed.',
 			'addNewBookmark' => 'No bookmarks list can be found, try to add one!',
 			'setBookmarkTitleDescription' => 'Set a title & a description for your bookmark list.',
 			'title' => 'title',
@@ -7216,6 +7281,12 @@ extension on Translations {
 			'createdAt' => 'Created at',
 			'identifier' => 'Identifier',
 			'enterSMaddr' => 'Enter a smart widget naddr to check for its validity.',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'notFindSMwithAddr' => 'Could not find smart widget with such address',
 			'unableToOpenUrl' => 'Unable to open url',
 			'voteToSeeStats' => 'You should vote to be able to see stats',
@@ -7227,12 +7298,6 @@ extension on Translations {
 			'voteRequired' => 'Vote is required to display stats.',
 			'showStats' => 'Show stats',
 			'pollClosesAt' => ({required Object date}) => 'Closes at: ${date}',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'pollClosedAt' => ({required Object date}) => 'Closed at: ${date}',
 			'checkSmartWidget' => 'Check a smart widget',
 			'emptyVerifiedNote' => 'Empty verified note content!',
@@ -7734,6 +7799,12 @@ extension on Translations {
 			'votes' => 'votes',
 			'voiceCredit' => 'Voice credit',
 			'viewDetails' => 'View details',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'signup' => 'Signup',
 			'notDownloadProof' => 'Could not download proofs',
 			'name' => 'Name',
@@ -7745,12 +7816,6 @@ extension on Translations {
 			'totalFund' => '(total fund)',
 			'roundStart' => 'Round start',
 			'roundEnd' => 'Round end',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'operator' => 'Operator',
 			'contractCreator' => 'Contract creator',
 			'contractAddress' => 'Contract address',
@@ -8252,6 +8317,12 @@ extension on Translations {
 			'cashuHistory' => 'Cashu History',
 			'history' => 'History',
 			'nutzaps' => 'Nutzaps',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'recommended' => 'Recommended',
 			'mints' => 'Mints',
 			'swapModesMint' => 'Mint',
@@ -8263,12 +8334,6 @@ extension on Translations {
 			'pasteToken' => 'Paste token',
 			'scanToken' => 'Scan',
 			'tokenDetails' => 'Token Details',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'issuingMint' => 'Issuing Mint',
 			'proofs' => 'Proofs',
 			'redeemToken' => 'Redeem Token',
@@ -8770,6 +8835,12 @@ extension on Translations {
 			'creator_subscription_plans' => 'Subscription Plans',
 			'creator_subscribe_now' => 'Subscribe Now',
 			'creator_subscribe_error' => 'Could not initiate subscription',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'No subscription plans available',
 			'creator_lightning_unavailable' => 'Lightning address not available',
 			'creator_view_subscriptions' => 'View My Subscriptions',
@@ -8781,12 +8852,6 @@ extension on Translations {
 			'pomSignInWithGoogle' => 'Sign in with Google',
 			'pomLoginDesc' => 'Sign in using your Google account via the Pomegranate protocol',
 			'pomAuthenticating' => 'Authenticating with Google…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomCheckingAccount' => 'Checking account…',
 			'pomCreatingAccount' => 'Creating account…',
 			'pomNewAccountTitle' => 'Save your private key',
@@ -8958,6 +9023,13 @@ extension on Translations {
 			'desktopDensityComfortable' => 'Comfortable',
 			'desktopDensityCompact' => 'Compact',
 			'desktopKnowPeople' => 'Know people',
+			'desktopNetworkInterface' => 'Network interface',
+			'desktopInterfaceAvailable' => 'Available',
+			'desktopRelayConnections' => 'Relay connections',
+			'desktopSmartWidgetUnavailable' => 'Interactive signing is unavailable on this device. You can open the page in your browser.',
+			'desktopPlaybackUnavailable' => 'Playback is unavailable in the app on this device.',
+			'desktopGoogleSignInUnavailable' => 'Google sign-in is unavailable on Linux. Choose another sign-in method.',
+			'desktopCameraUnavailable' => 'Camera capture is unavailable on this device. Choose a file instead.',
 			_ => null,
 		};
 	}

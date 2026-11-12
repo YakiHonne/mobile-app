@@ -62,9 +62,15 @@ class ContentThreadsView extends HookWidget {
           Positioned.fill(
             child: contentReplies.value.isEmpty
                 ? EmptyListWithLogo(description: context.t.noReplies)
-                : isTablet
-                    ? _itemsGrid(context, contentReplies)
-                    : _itemsList(context, contentReplies),
+                : isDesktopPlatform
+                    ? DesktopPaneGridBuilder(
+                        builder: (context, columns) => _itemsGrid(
+                            context, contentReplies,
+                            columns: columns),
+                      )
+                    : isTablet
+                        ? _itemsGrid(context, contentReplies)
+                        : _itemsList(context, contentReplies),
           ),
           ResetScrollButton(scrollController: controller),
         ],
@@ -100,10 +106,11 @@ class ContentThreadsView extends HookWidget {
 
   MasonryGridView _itemsGrid(
     BuildContext context,
-    ValueNotifier<List<DetailedNoteModel>> contentReplies,
-  ) {
+    ValueNotifier<List<DetailedNoteModel>> contentReplies, {
+    int columns = 2,
+  }) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding,
       mainAxisSpacing: kDefaultPadding,
       padding: EdgeInsets.only(top: fluidScaffoldTopInset(context)),

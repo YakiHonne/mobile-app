@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "Не удалось открыть хранилище аккаунтов. Ваши аккаунты не изменены.",
+  "accountStorageLinuxHelp": "Разблокируйте или запустите системную связку ключей и повторите попытку.",
+  "accountStorageSaveFailed": "Не удалось сохранить изменения. Перезапустите приложение перед повторной попыткой.",
+  "accountStorageRecoveryTitle": "Вашим аккаунтам требуется внимание",
+  "accountStorageRecoveryCorrupt": "Не удалось прочитать сохранённые данные аккаунта. Ничего не удалено.",
+  "accountStorageRecoveryLegacy": "Данные аккаунта изменены другой версией или процессом. Выберите, какую копию сохранить.",
+  "accountStorageRestoreBackup": "Восстановить предыдущие сохранённые аккаунты",
+  "accountStorageKeepSaved": "Сохранить сохранённые аккаунты",
+  "accountStorageKeepLegacy": "Использовать другие данные аккаунта",
+  "accountStorageBackupMissing": "Нет допустимой предыдущей резервной копии.",
+  "accountStorageRecoveryFailed": "Не удалось завершить восстановление. Данные аккаунта не изменены.",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} процитировал ваше изображение",
   "userQuotedPictureYouIn": "{{name}} процитировал изображение, где вас упомянули",
   "cameraPermission": "Приложение не имеет разрешения на доступ к камере или на этом устройстве нет доступных камер.",
+  "videoQuality": "Качество видео",
+  "originalMedia": "оригинал:",
   "fetchingPicture": "Получение изображения...",
   "addDescription": "Добавить описание...",
   "uploadingVideo": "Загрузка видео...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "Плотность интерфейса",
   "desktopDensityComfortable": "Комфортная",
   "desktopDensityCompact": "Компактная",
-  "desktopKnowPeople": "Найти людей"
+  "desktopKnowPeople": "Найти людей",
+  "desktopNetworkInterface": "Сетевой интерфейс",
+  "desktopInterfaceAvailable": "Доступен",
+  "desktopRelayConnections": "Соединения с реле",
+  "desktopSmartWidgetUnavailable": "Интерактивная подпись недоступна на этом устройстве. Вы можете открыть страницу в браузере.",
+  "desktopPlaybackUnavailable": "Воспроизведение в приложении на этом устройстве недоступно.",
+  "desktopGoogleSignInUnavailable": "Вход через Google недоступен в Linux. Выберите другой способ.",
+  "desktopCameraUnavailable": "Съёмка на камеру недоступна на этом устройстве. Выберите файл."
 }

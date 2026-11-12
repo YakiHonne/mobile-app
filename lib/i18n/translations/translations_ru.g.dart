@@ -39,6 +39,17 @@ class TranslationsRu extends Translations {
 	TranslationsRu $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsRu(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'Не удалось открыть хранилище аккаунтов. Ваши аккаунты не изменены.';
+	@override String get accountStorageLinuxHelp => 'Разблокируйте или запустите системную связку ключей и повторите попытку.';
+	@override String get accountStorageSaveFailed => 'Не удалось сохранить изменения. Перезапустите приложение перед повторной попыткой.';
+	@override String get accountStorageRecoveryTitle => 'Вашим аккаунтам требуется внимание';
+	@override String get accountStorageRecoveryCorrupt => 'Не удалось прочитать сохранённые данные аккаунта. Ничего не удалено.';
+	@override String get accountStorageRecoveryLegacy => 'Данные аккаунта изменены другой версией или процессом. Выберите, какую копию сохранить.';
+	@override String get accountStorageRestoreBackup => 'Восстановить предыдущие сохранённые аккаунты';
+	@override String get accountStorageKeepSaved => 'Сохранить сохранённые аккаунты';
+	@override String get accountStorageKeepLegacy => 'Использовать другие данные аккаунта';
+	@override String get accountStorageBackupMissing => 'Нет допустимой предыдущей резервной копии.';
+	@override String get accountStorageRecoveryFailed => 'Не удалось завершить восстановление. Данные аккаунта не изменены.';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsRu extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} процитировал ваше изображение';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} процитировал изображение, где вас упомянули';
 	@override String get cameraPermission => 'Приложение не имеет разрешения на доступ к камере или на этом устройстве нет доступных камер.';
+	@override String get videoQuality => 'Качество видео';
+	@override String get originalMedia => 'оригинал:';
 	@override String get fetchingPicture => 'Получение изображения...';
 	@override String get addDescription => 'Добавить описание...';
 	@override String get uploadingVideo => 'Загрузка видео...';
@@ -2256,6 +2269,13 @@ class TranslationsRu extends Translations {
 	@override String get desktopDensityComfortable => 'Комфортная';
 	@override String get desktopDensityCompact => 'Компактная';
 	@override String get desktopKnowPeople => 'Найти людей';
+	@override String get desktopNetworkInterface => 'Сетевой интерфейс';
+	@override String get desktopInterfaceAvailable => 'Доступен';
+	@override String get desktopRelayConnections => 'Соединения с реле';
+	@override String get desktopSmartWidgetUnavailable => 'Интерактивная подпись недоступна на этом устройстве. Вы можете открыть страницу в браузере.';
+	@override String get desktopPlaybackUnavailable => 'Воспроизведение в приложении на этом устройстве недоступно.';
+	@override String get desktopGoogleSignInUnavailable => 'Вход через Google недоступен в Linux. Выберите другой способ.';
+	@override String get desktopCameraUnavailable => 'Съёмка на камеру недоступна на этом устройстве. Выберите файл.';
 }
 
 /// The flat map containing all translations for locale <ru>.
@@ -2274,6 +2294,17 @@ extension on TranslationsRu {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'Не удалось открыть хранилище аккаунтов. Ваши аккаунты не изменены.',
+			'accountStorageLinuxHelp' => 'Разблокируйте или запустите системную связку ключей и повторите попытку.',
+			'accountStorageSaveFailed' => 'Не удалось сохранить изменения. Перезапустите приложение перед повторной попыткой.',
+			'accountStorageRecoveryTitle' => 'Вашим аккаунтам требуется внимание',
+			'accountStorageRecoveryCorrupt' => 'Не удалось прочитать сохранённые данные аккаунта. Ничего не удалено.',
+			'accountStorageRecoveryLegacy' => 'Данные аккаунта изменены другой версией или процессом. Выберите, какую копию сохранить.',
+			'accountStorageRestoreBackup' => 'Восстановить предыдущие сохранённые аккаунты',
+			'accountStorageKeepSaved' => 'Сохранить сохранённые аккаунты',
+			'accountStorageKeepLegacy' => 'Использовать другие данные аккаунта',
+			'accountStorageBackupMissing' => 'Нет допустимой предыдущей резервной копии.',
+			'accountStorageRecoveryFailed' => 'Не удалось завершить восстановление. Данные аккаунта не изменены.',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsRu {
 			'smartWidgetChecker' => 'Проверка смарт-виджета',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'Компоненты не могут быть отображены',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'метаданные',
 			'createdAt' => 'Создано',
 			'identifier' => 'Идентификатор',
@@ -2786,12 +2823,6 @@ extension on TranslationsRu {
 			'votesByUsers' => 'Голоса пользователей',
 			'alreadyVoted' => 'Вы уже проголосовали в этом опросе',
 			'userCannotBeFound' => 'Пользователь не найден',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => 'Голосов: ${number}',
 			'voteRequired' => 'Требуется голос для отображения статистики.',
 			'showStats' => 'Показать статистику',
@@ -3293,6 +3324,12 @@ extension on TranslationsRu {
 			'tallying' => 'Подсчёт',
 			'ended' => 'Завершён',
 			'closed' => 'Закрыт',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => 'Результаты голосования по',
 			'votes' => 'голоса',
 			'voiceCredit' => 'Голосовой кредит',
@@ -3304,12 +3341,6 @@ extension on TranslationsRu {
 			'circuit' => 'Цепь',
 			'votingSystem' => 'Система голосования',
 			'proofSystem' => 'Система доказательств',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'Газовая станция',
 			'totalFund' => '(общий фонд)',
 			'roundStart' => 'Начало раунда',
@@ -3782,6 +3813,8 @@ extension on TranslationsRu {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} процитировал ваше изображение',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} процитировал изображение, где вас упомянули',
 			'cameraPermission' => 'Приложение не имеет разрешения на доступ к камере или на этом устройстве нет доступных камер.',
+			'videoQuality' => 'Качество видео',
+			'originalMedia' => 'оригинал:',
 			'fetchingPicture' => 'Получение изображения...',
 			'addDescription' => 'Добавить описание...',
 			'uploadingVideo' => 'Загрузка видео...',
@@ -3809,6 +3842,12 @@ extension on TranslationsRu {
 			'swapFrom' => 'Обмен с',
 			'swapTo' => 'Обмен на',
 			'selectMint' => 'Выбрать mint',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => 'Сумма',
 			'cashuHistory' => 'История Cashu',
 			'history' => 'История',
@@ -3822,12 +3861,6 @@ extension on TranslationsRu {
 			'redeemEcashDesc' => 'Погасить токены ecash на ваш кошелек',
 			'depositDesc' => 'Создать новые токены ecash, внеся sats',
 			'pasteToken' => 'Вставить токен',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'Сканировать',
 			'tokenDetails' => 'Детали токена',
 			'issuingMint' => 'Выпускающий Mint',
@@ -4327,6 +4360,12 @@ extension on TranslationsRu {
 			'creator_subscription_plans' => 'Тарифы подписки',
 			'creator_subscribe_now' => 'Подписаться сейчас',
 			'creator_subscribe_error' => 'Не удалось оформить подписку',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'Нет доступных тарифов подписки',
 			'creator_lightning_unavailable' => 'Lightning-адрес недоступен',
 			'creator_view_subscriptions' => 'Мои подписки',
@@ -4340,12 +4379,6 @@ extension on TranslationsRu {
 			'pomAuthenticating' => 'Аутентификация через Google…',
 			'pomCheckingAccount' => 'Проверка аккаунта…',
 			'pomCreatingAccount' => 'Создание аккаунта…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'Сохраните свой приватный ключ',
 			'pomSaveKeyDesc' => 'Ваш приватный ключ создан. Сохраните его в надёжном месте, прежде чем создавать аккаунт.',
 			'pomCreateAccount' => 'Создать аккаунт',
@@ -4515,6 +4548,13 @@ extension on TranslationsRu {
 			'desktopDensityComfortable' => 'Комфортная',
 			'desktopDensityCompact' => 'Компактная',
 			'desktopKnowPeople' => 'Найти людей',
+			'desktopNetworkInterface' => 'Сетевой интерфейс',
+			'desktopInterfaceAvailable' => 'Доступен',
+			'desktopRelayConnections' => 'Соединения с реле',
+			'desktopSmartWidgetUnavailable' => 'Интерактивная подпись недоступна на этом устройстве. Вы можете открыть страницу в браузере.',
+			'desktopPlaybackUnavailable' => 'Воспроизведение в приложении на этом устройстве недоступно.',
+			'desktopGoogleSignInUnavailable' => 'Вход через Google недоступен в Linux. Выберите другой способ.',
+			'desktopCameraUnavailable' => 'Съёмка на камеру недоступна на этом устройстве. Выберите файл.',
 			_ => null,
 		};
 	}

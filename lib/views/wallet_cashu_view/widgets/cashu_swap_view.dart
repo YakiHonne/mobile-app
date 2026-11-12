@@ -11,10 +11,12 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../wallet_view/send_view/send_main_view.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
 import 'cashu_operation_success_view.dart';
 import 'cashu_selection_dropdown.dart';
+import 'desktop_cashu_form.dart';
 
 class CashuSwapView extends HookWidget {
   const CashuSwapView({super.key});
@@ -56,46 +58,48 @@ class CashuSwapView extends HookWidget {
       return val > 0 && val <= (fromMint?.balance ?? 0);
     }, [amountText, fromMint?.balance]);
 
-    return ModalSheetContainer(
-      height: 90.h,
-      child: Column(
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.swapTokens,
-            isBack: false,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-              child: Column(
-                spacing: kDefaultPadding / 2,
-                children: [
-                  _buildAmountInput(context, amountController, amountText),
-                  _buildSwapSelectors(
-                    context,
-                    fromMintUrl,
-                    walletMints,
-                    state,
-                    toIdState,
-                    isWalletMode,
-                    internalWallets,
-                  ),
-                  const SizedBox(),
-                ],
-              ),
+    final content = Column(
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.swapTokens,
+          isBack: false,
+        ),
+        Expanded(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Column(
+              spacing: kDefaultPadding / 2,
+              children: [
+                _buildAmountInput(context, amountController, amountText),
+                _buildSwapSelectors(
+                  context,
+                  fromMintUrl,
+                  walletMints,
+                  state,
+                  toIdState,
+                  isWalletMode,
+                  internalWallets,
+                ),
+                const SizedBox(),
+              ],
             ),
           ),
-          _buildActionButtons(
-            context,
-            isValidAmount,
-            toWallet,
-            fromMintUrl,
-            amountText,
-            toIdState,
-          ),
-        ],
-      ),
+        ),
+        _buildActionButtons(
+          context,
+          isValidAmount,
+          toWallet,
+          fromMintUrl,
+          amountText,
+          toIdState,
+        ),
+      ],
+    );
+    return ModalSheetContainer(
+      height: isDesktopPlatform ? double.infinity : 90.h,
+      child:
+          isDesktopPlatform ? DesktopScrollableForm(child: content) : content,
     );
   }
 
@@ -131,7 +135,7 @@ class CashuSwapView extends HookWidget {
               contentPadding: EdgeInsets.zero,
             ),
           ),
-          Row(
+          CashuAmountLine(
             mainAxisSize: MainAxisSize.min,
             spacing: kDefaultPadding / 4,
             children: [

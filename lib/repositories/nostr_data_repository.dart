@@ -588,8 +588,9 @@ class NostrDataRepository {
     }
   }
 
-  Future<void> loadRemoteSigners() async {
-    final signers = await localDatabaseRepository.getRemoteSigners();
+  Future<void> loadRemoteSigners({String? storedSigners}) async {
+    final signers =
+        storedSigners ?? await localDatabaseRepository.getRemoteSigners();
     if (signers != null) {
       final decoded = List<String>.from(jsonDecode(signers));
 

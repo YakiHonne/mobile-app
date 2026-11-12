@@ -1,6 +1,7 @@
 #include "flutter_window.h"
 
 #include <optional>
+#include <flutter/standard_method_codec.h>
 
 #include "flutter/generated_plugin_registrant.h"
 
@@ -25,6 +26,18 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  link_channel_ = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+      flutter_controller_->engine()->messenger(), "yakihonne/link_readiness",
+      &flutter::StandardMethodCodec::GetInstance());
+  link_channel_->SetMethodCallHandler(
+      [this](const auto& call, auto result) {
+        if (call.method_name() == "ready") {
+          ::SetPropW(GetHandle(), L"YakiHonneLinkReady", reinterpret_cast<HANDLE>(1));
+          result->Success();
+        } else {
+          result->NotImplemented();
+        }
+      });
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
@@ -35,6 +48,10 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  if (GetHandle()) {
+    ::RemovePropW(GetHandle(), L"YakiHonneLinkReady");
+  }
+  link_channel_.reset();
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
@@ -53,6 +70,11 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
                                                       lparam);
     if (result) {
       return *result;
+    }
+    if (message == WM_COPYDATA && lparam != 0 &&
+        reinterpret_cast<COPYDATASTRUCT*>(lparam)->dwData == WM_USER + 2 &&
+        ::GetPropW(hwnd, L"YakiHonneLinkReady")) {
+      return TRUE;
     }
   }
 

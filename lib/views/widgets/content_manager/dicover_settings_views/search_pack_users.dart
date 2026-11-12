@@ -183,7 +183,9 @@ class SearchPackUsers extends HookWidget {
 
     if (isModal) {
       return ModalSheetContainer(
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: isDesktopPlatform
+            ? double.infinity
+            : MediaQuery.of(context).size.height * 0.9,
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),

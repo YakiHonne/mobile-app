@@ -183,23 +183,31 @@ class _DesktopDensitySetting extends StatelessWidget {
         Text(context.t.desktopDensity,
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: kDefaultPadding / 2),
-        GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: kDefaultPadding / 8,
-          mainAxisSpacing: kDefaultPadding / 8,
-          mainAxisExtent: 45,
-          shrinkWrap: true,
-          primary: false,
-          children: [
-            for (final density in DesktopDensity.values)
-              _AppearanceChoiceCard(
-                label: density == DesktopDensity.comfortable
-                    ? context.t.desktopDensityComfortable
-                    : context.t.desktopDensityCompact,
-                selected: controller.value == density,
-                onTap: () => controller.select(density),
-              ),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final scale =
+                MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+            final columns =
+                (constraints.maxWidth / (140 * scale)).floor().clamp(1, 2);
+            return GridView.count(
+              crossAxisCount: columns,
+              crossAxisSpacing: kDefaultPadding / 8,
+              mainAxisSpacing: kDefaultPadding / 8,
+              mainAxisExtent: 45 * scale,
+              shrinkWrap: true,
+              primary: false,
+              children: [
+                for (final density in DesktopDensity.values)
+                  _AppearanceChoiceCard(
+                    label: density == DesktopDensity.comfortable
+                        ? context.t.desktopDensityComfortable
+                        : context.t.desktopDensityCompact,
+                    selected: controller.value == density,
+                    onTap: () => controller.select(density),
+                  ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -235,25 +243,36 @@ class GlassQualityBox extends StatelessWidget {
               context: context,
               removeBottom: true,
               removeTop: true,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: kDefaultPadding / 8,
-                  mainAxisSpacing: kDefaultPadding / 8,
-                  mainAxisExtent: 45,
-                ),
-                shrinkWrap: true,
-                primary: false,
-                itemBuilder: (context, index) {
-                  final quality = _qualities[index];
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final scale =
+                      MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+                  final columns = isDesktopPlatform
+                      ? (constraints.maxWidth / (140 * scale))
+                          .floor()
+                          .clamp(1, 3)
+                      : 3;
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columns,
+                      crossAxisSpacing: kDefaultPadding / 8,
+                      mainAxisSpacing: kDefaultPadding / 8,
+                      mainAxisExtent: isDesktopPlatform ? 45 * scale : 45,
+                    ),
+                    shrinkWrap: true,
+                    primary: false,
+                    itemBuilder: (context, index) {
+                      final quality = _qualities[index];
 
-                  return _AppearanceChoiceCard(
-                    label: _label(context, quality),
-                    selected: state.glassQuality == quality,
-                    onTap: () => themeCubit.setGlassQuality(quality),
+                      return _AppearanceChoiceCard(
+                        label: _label(context, quality),
+                        selected: state.glassQuality == quality,
+                        onTap: () => themeCubit.setGlassQuality(quality),
+                      );
+                    },
+                    itemCount: _qualities.length,
                   );
                 },
-                itemCount: _qualities.length,
               ),
             )
           ],
@@ -340,24 +359,35 @@ class AppThemeModeBox extends StatelessWidget {
               context: context,
               removeBottom: true,
               removeTop: true,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: kDefaultPadding / 8,
-                  mainAxisSpacing: kDefaultPadding / 8,
-                  mainAxisExtent: 55,
-                ),
-                shrinkWrap: true,
-                primary: false,
-                itemBuilder: (context, index) {
-                  final mode = modes[index];
-                  final isSelected = state.mode == mode;
-                  final isDark = themeCubit.checkThemeDarkness(mode);
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final scale =
+                      MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+                  final columns = isDesktopPlatform
+                      ? (constraints.maxWidth / (140 * scale))
+                          .floor()
+                          .clamp(1, 2)
+                      : 2;
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columns,
+                      crossAxisSpacing: kDefaultPadding / 8,
+                      mainAxisSpacing: kDefaultPadding / 8,
+                      mainAxisExtent: isDesktopPlatform ? 55 * scale : 55,
+                    ),
+                    shrinkWrap: true,
+                    primary: false,
+                    itemBuilder: (context, index) {
+                      final mode = modes[index];
+                      final isSelected = state.mode == mode;
+                      final isDark = themeCubit.checkThemeDarkness(mode);
 
-                  return _modeItem(
-                      mode, state.primaryColor, isSelected, context, isDark);
+                      return _modeItem(mode, state.primaryColor, isSelected,
+                          context, isDark);
+                    },
+                    itemCount: modes.length,
+                  );
                 },
-                itemCount: modes.length,
               ),
             )
           ],

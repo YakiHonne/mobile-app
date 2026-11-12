@@ -101,17 +101,34 @@ class SmartWidgetChecker extends HookWidget {
             height: kDefaultPadding / 2,
           ),
           Expanded(
-            child: isTablet
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _widgetCheckerComponent(
-                          isLayoutToggled, naddNotifier, isTablet, swmNotifier),
-                      _widgetCheckerLayout(swmNotifier),
-                    ],
+            child: isDesktopPlatform
+                ? LayoutBuilder(
+                    builder: (context, constraints) {
+                      final sideBySide = constraints.maxWidth >= 700;
+                      return sideBySide
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _widgetCheckerComponent(isLayoutToggled,
+                                    naddNotifier, true, swmNotifier),
+                                _widgetCheckerLayout(swmNotifier),
+                              ],
+                            )
+                          : widgetLayoutBuilder(startX, isLayoutToggled,
+                              naddNotifier, false, swmNotifier);
+                    },
                   )
-                : widgetLayoutBuilder(startX, isLayoutToggled, naddNotifier,
-                    isTablet, swmNotifier),
+                : isTablet
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _widgetCheckerComponent(isLayoutToggled, naddNotifier,
+                              isTablet, swmNotifier),
+                          _widgetCheckerLayout(swmNotifier),
+                        ],
+                      )
+                    : widgetLayoutBuilder(startX, isLayoutToggled, naddNotifier,
+                        isTablet, swmNotifier),
           ),
         ],
       ),
@@ -159,41 +176,45 @@ class SmartWidgetChecker extends HookWidget {
       BoxConstraints constraints,
       ValueNotifier<SmartWidget?> swmNotifier,
       BuildContext context) {
+    final emptyLayout = Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(
+            kDefaultPadding / 2,
+          ),
+          alignment: Alignment.topCenter,
+          margin: const EdgeInsets.only(
+            right: kDefaultPadding,
+            top: kDefaultPadding * 2,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              kDefaultPadding / 2,
+            ),
+            color: Theme.of(context).primaryColorLight,
+          ),
+          child: EmptyList(
+            description: context.t.noComponentsDisplayed.capitalizeFirst(),
+            icon: FeatureIcons.swChecker,
+          ),
+        ),
+      ],
+    );
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
-      left: isLayoutToggled.value ? 10.w : 100.w,
+      left: isDesktopPlatform
+          ? constraints.maxWidth * (isLayoutToggled.value ? 0.1 : 1)
+          : (isLayoutToggled.value ? 10.w : 100.w),
       height: constraints.maxHeight,
       curve: Curves.easeInOut,
-      width: 88.w,
+      width: isDesktopPlatform ? constraints.maxWidth * 0.88 : 88.w,
       child: swmNotifier.value != null
           ? WidgetCheckerLayout(
               smartWidgetModel: swmNotifier.value!,
             )
-          : Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(
-                    kDefaultPadding / 2,
-                  ),
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(
-                    right: kDefaultPadding,
-                    top: kDefaultPadding * 2,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      kDefaultPadding / 2,
-                    ),
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  child: EmptyList(
-                    description:
-                        context.t.noComponentsDisplayed.capitalizeFirst(),
-                    icon: FeatureIcons.swChecker,
-                  ),
-                ),
-              ],
-            ),
+          : isDesktopPlatform
+              ? SingleChildScrollView(child: emptyLayout)
+              : emptyLayout,
     );
   }
 
@@ -208,7 +229,9 @@ class SmartWidgetChecker extends HookWidget {
         milliseconds: 300,
       ),
       curve: Curves.easeInOut,
-      right: isLayoutToggled.value ? 90.w : 0.0,
+      right: isLayoutToggled.value
+          ? (isDesktopPlatform ? constraints.maxWidth * 0.9 : 90.w)
+          : 0.0,
       height: constraints.maxHeight,
       width: constraints.maxWidth,
       child: GestureDetector(
@@ -269,10 +292,11 @@ class SmartWidgetChecker extends HookWidget {
       ValueNotifier<SmartWidget?> swmNotifier) {
     return Expanded(
       child: GestureDetector(
-        onTap:
-            isLayoutToggled.value ? () => isLayoutToggled.value = false : null,
+        onTap: isLayoutToggled.value && !(isDesktopPlatform && isTablet)
+            ? () => isLayoutToggled.value = false
+            : null,
         child: AbsorbPointer(
-          absorbing: isLayoutToggled.value,
+          absorbing: isLayoutToggled.value && !(isDesktopPlatform && isTablet),
           child: WidgetCheckerComponent(
             naddNotifier: naddNotifier.value,
             isTablet: isTablet,
@@ -701,7 +725,7 @@ class WidgetCheckerComponent extends HookWidget {
   Column _actionButton() {
     return Column(
       children: [
-        if (!isTablet && !viewMode) ...[
+        if (!isTablet && (!viewMode || isDesktopPlatform)) ...[
           Align(
             alignment: Alignment.centerRight,
             child: SmallRectangularButton(
@@ -730,7 +754,7 @@ class WidgetCheckerComponent extends HookWidget {
         ),
         Image.asset(
           Images.smartWidget,
-          width: 50.w,
+          width: isDesktopPlatform ? 200 : 50.w,
         ),
         Text(
           context.t.smartWidgetChecker.capitalizeFirst(),

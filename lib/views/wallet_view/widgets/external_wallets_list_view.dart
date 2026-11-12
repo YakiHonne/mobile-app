@@ -18,7 +18,9 @@ class ExternalWalletsListView extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: _WalletListContent(state: state),
+          child: isDesktopPlatform
+              ? SingleChildScrollView(child: _WalletListContent(state: state))
+              : _WalletListContent(state: state),
         );
       },
     );
@@ -39,6 +41,8 @@ class _WalletListContent extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: Column(
+            mainAxisSize:
+                isDesktopPlatform ? MainAxisSize.min : MainAxisSize.max,
             children: [
               const _WalletListHeader(),
               const SizedBox(height: kDefaultPadding),
@@ -94,61 +98,75 @@ class _WalletListContent extends StatelessWidget {
     return MediaQuery.removePadding(
       context: context,
       removeBottom: true,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: kDefaultPadding / 4,
-          mainAxisSpacing: kDefaultPadding / 4,
-        ),
-        shrinkWrap: true,
-        primary: false,
-        itemBuilder: (context, index) {
-          final wallet = wallets.entries.elementAt(index);
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final scale =
+              MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+          final columns = isDesktopPlatform
+              ? (constraints.maxWidth / (110 * scale)).floor().clamp(1, 4)
+              : 4;
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              crossAxisSpacing: kDefaultPadding / 4,
+              mainAxisSpacing: kDefaultPadding / 4,
+              mainAxisExtent: isDesktopPlatform ? 100 * scale : null,
+            ),
+            shrinkWrap: true,
+            primary: false,
+            itemBuilder: (context, index) {
+              final wallet = wallets.entries.elementAt(index);
 
-          return GestureDetector(
-            onTap: () {
-              context.read<WalletsManagerCubit>().setDefaultWallet(wallet.key);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-                color: Theme.of(context).cardColor,
-                border: Border.all(
-                  color: wallet.key == state.defaultExternalWallet
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).dividerColor,
-                  width: wallet.key == state.defaultExternalWallet ? 1 : 0.5,
-                ),
-              ),
-              padding: const EdgeInsets.all(kDefaultPadding / 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: kDefaultPadding / 4,
-                children: [
-                  Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kDefaultPadding / 4),
-                      image: DecorationImage(
-                        image: AssetImage(wallet.value['icon']!),
-                      ),
+              return GestureDetector(
+                onTap: () {
+                  context
+                      .read<WalletsManagerCubit>()
+                      .setDefaultWallet(wallet.key);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                    color: Theme.of(context).cardColor,
+                    border: Border.all(
+                      color: wallet.key == state.defaultExternalWallet
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).dividerColor,
+                      width:
+                          wallet.key == state.defaultExternalWallet ? 1 : 0.5,
                     ),
                   ),
-                  const SizedBox(width: kDefaultPadding / 2),
-                  Text(
-                    wallet.value['name']!,
-                    style: Theme.of(context).textTheme.labelMedium,
-                    textAlign: TextAlign.center,
+                  padding: const EdgeInsets.all(kDefaultPadding / 4),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: kDefaultPadding / 4,
+                    children: [
+                      Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(kDefaultPadding / 4),
+                          image: DecorationImage(
+                            image: AssetImage(wallet.value['icon']!),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: kDefaultPadding / 2),
+                      Text(
+                        wallet.value['name']!,
+                        style: Theme.of(context).textTheme.labelMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
+            itemCount: wallets.length,
           );
         },
-        itemCount: wallets.length,
       ),
     );
   }

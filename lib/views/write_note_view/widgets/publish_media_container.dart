@@ -326,7 +326,7 @@ class MentionBox extends HookWidget {
 
     return (mention.value?.length ?? 0) > 1
         ? SizedBox(
-            height: 25.h,
+            height: isDesktopPlatform ? 200 : 25.h,
             child: ScrollShadow(
               color: Theme.of(context).scaffoldBackgroundColor,
               child: mention.value![0] == '@'

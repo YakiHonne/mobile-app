@@ -118,6 +118,13 @@ class ProfileOthers extends StatelessWidget {
                     ),
                   );
                 } else {
+                  if (isDesktopPlatform && !useSingleColumn) {
+                    return DesktopPaneSliverGridBuilder(
+                      builder: (context, columns) => isCuration
+                          ? _curationsItemsGrid(state, columns: columns)
+                          : _smItemsGrid(state, columns: columns),
+                    );
+                  }
                   if (isTablet && !useSingleColumn) {
                     if (isCuration) {
                       return _curationsItemsGrid(state);
@@ -173,9 +180,9 @@ class ProfileOthers extends StatelessWidget {
     );
   }
 
-  SliverMasonryGrid _curationsItemsGrid(ProfileState state) {
+  SliverMasonryGrid _curationsItemsGrid(ProfileState state, {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemBuilder: (context, index) {
@@ -221,9 +228,9 @@ class ProfileOthers extends StatelessWidget {
     );
   }
 
-  SliverMasonryGrid _smItemsGrid(ProfileState state) {
+  SliverMasonryGrid _smItemsGrid(ProfileState state, {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemBuilder: (context, index) {

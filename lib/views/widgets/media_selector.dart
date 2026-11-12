@@ -15,9 +15,11 @@ class MediaSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+      padding: EdgeInsets.only(
+        bottom: isDesktopPlatform ? 0 : kBottomNavigationBarHeight,
+      ),
       child: Container(
-        width: 100.w,
+        width: isDesktopPlatform ? double.infinity : 100.w,
         margin: const EdgeInsets.all(kDefaultPadding),
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         decoration: BoxDecoration(
@@ -80,31 +82,33 @@ class MediaSelector extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         children: [
-          Expanded(
-            child: MediaChoice(
-              onSuccess: onSuccess,
-              icon: FeatureIcons.camera,
-              title: context.t.image.capitalizeFirst(),
-              mediaType: MediaType.cameraImage,
-              onClicked: () {},
+          if (supportsMediaCamera(Theme.of(context).platform)) ...[
+            Expanded(
+              child: MediaChoice(
+                onSuccess: onSuccess,
+                icon: FeatureIcons.camera,
+                title: context.t.image.capitalizeFirst(),
+                mediaType: MediaType.cameraImage,
+                onClicked: () {},
+              ),
             ),
-          ),
-          const VerticalDivider(
-            indent: kDefaultPadding / 2,
-            endIndent: kDefaultPadding / 2,
-          ),
-          Expanded(
-            child: MediaChoice(
-              onSuccess: onSuccess,
-              icon: FeatureIcons.video,
-              title: context.t.video.capitalizeFirst(),
-              mediaType: MediaType.cameraVideo,
+            const VerticalDivider(
+              indent: kDefaultPadding / 2,
+              endIndent: kDefaultPadding / 2,
             ),
-          ),
-          const VerticalDivider(
-            indent: kDefaultPadding / 2,
-            endIndent: kDefaultPadding / 2,
-          ),
+            Expanded(
+              child: MediaChoice(
+                onSuccess: onSuccess,
+                icon: FeatureIcons.video,
+                title: context.t.video.capitalizeFirst(),
+                mediaType: MediaType.cameraVideo,
+              ),
+            ),
+            const VerticalDivider(
+              indent: kDefaultPadding / 2,
+              endIndent: kDefaultPadding / 2,
+            ),
+          ],
           Expanded(
             child: MediaChoice(
               onSuccess: onSuccess,

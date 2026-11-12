@@ -16,56 +16,55 @@ class CashuReceiveView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        ModalSheetContainer(
+        ModalBottomSheetAppbar(
+          title: context.t.receive,
+          isBack: false,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              ModalBottomSheetAppbar(
-                title: context.t.receive,
-                isBack: false,
+              _buildOptionCard(
+                context,
+                title: context.t.redeemEcash,
+                description: context.t.redeemEcashDesc,
+                icon: FeatureIcons.redeemEcash,
+                onTap: () {
+                  Navigator.pop(context);
+                  YNavigator.presentPage(
+                    context,
+                    (context) => const CashuRedeemView(),
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(kDefaultPadding / 2),
-                child: Column(
-                  children: [
-                    _buildOptionCard(
-                      context,
-                      title: context.t.redeemEcash,
-                      description: context.t.redeemEcashDesc,
-                      icon: FeatureIcons.redeemEcash,
-                      onTap: () {
-                        Navigator.pop(context);
-                        YNavigator.presentPage(
-                          context,
-                          (context) => const CashuRedeemView(),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: kDefaultPadding / 2),
-                    _buildOptionCard(
-                      context,
-                      title: context.t.deposit,
-                      description: context.t.depositDesc,
-                      icon: FeatureIcons.depositSats,
-                      onTap: () {
-                        Navigator.pop(context);
-                        YNavigator.presentPage(
-                          context,
-                          (context) => const CashuDepositView(),
-                        );
-                      },
-                    ),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom),
-                  ],
-                ),
+              const SizedBox(height: kDefaultPadding / 2),
+              _buildOptionCard(
+                context,
+                title: context.t.deposit,
+                description: context.t.depositDesc,
+                icon: FeatureIcons.depositSats,
+                onTap: () {
+                  Navigator.pop(context);
+                  YNavigator.presentPage(
+                    context,
+                    (context) => const CashuDepositView(),
+                  );
+                },
               ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
       ],
     );
+    final sheet = ModalSheetContainer(
+      child:
+          isDesktopPlatform ? SingleChildScrollView(child: content) : content,
+    );
+    return isDesktopPlatform ? sheet : Wrap(children: [sheet]);
   }
 
   Widget _buildOptionCard(

@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "खाता संग्रहण नहीं खुल सका। आपके खातों में कोई बदलाव नहीं हुआ है।",
+  "accountStorageLinuxHelp": "सिस्टम कीरिंग खोलें या शुरू करें, फिर पुनः प्रयास करें।",
+  "accountStorageSaveFailed": "खाते में बदलाव सहेजे नहीं जा सके। पुनः प्रयास करने से पहले ऐप फिर शुरू करें।",
+  "accountStorageRecoveryTitle": "आपके खातों पर ध्यान देने की आवश्यकता है",
+  "accountStorageRecoveryCorrupt": "सहेजा गया खाता डेटा पढ़ा नहीं जा सका। कुछ भी नहीं हटाया गया।",
+  "accountStorageRecoveryLegacy": "खाता डेटा किसी अन्य संस्करण या प्रक्रिया द्वारा बदला गया था। चुनें कि कौन सी प्रति रखनी है।",
+  "accountStorageRestoreBackup": "पिछले सहेजे गए खाते पुनर्स्थापित करें",
+  "accountStorageKeepSaved": "सहेजे गए खाते रखें",
+  "accountStorageKeepLegacy": "दूसरा खाता डेटा उपयोग करें",
+  "accountStorageBackupMissing": "कोई मान्य पिछला बैकअप उपलब्ध नहीं है।",
+  "accountStorageRecoveryFailed": "पुनर्प्राप्ति पूरी नहीं हो सकी। आपका खाता डेटा नहीं बदला गया।",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} ने आपकी तस्वीर को उद्धृत किया",
   "userQuotedPictureYouIn": "{{name}} ने उस तस्वीर को उद्धृत किया जिसमें आपको मेंशन किया गया था",
   "cameraPermission": "या तो ऐप को कैमरा एक्सेस करने की अनुमति नहीं है या इस डिवाइस पर कोई कैमरा उपलब्ध नहीं है।",
+  "videoQuality": "वीडियो गुणवत्ता",
+  "originalMedia": "मूल:",
   "fetchingPicture": "तस्वीर प्राप्त की जा रही है...",
   "addDescription": "विवरण जोड़ें...",
   "uploadingVideo": "वीडियो अपलोड हो रहा है...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "डेस्कटॉप घनत्व",
   "desktopDensityComfortable": "आरामदायक",
   "desktopDensityCompact": "सघन",
-  "desktopKnowPeople": "लोगों को जानें"
+  "desktopKnowPeople": "लोगों को जानें",
+  "desktopNetworkInterface": "नेटवर्क इंटरफ़ेस",
+  "desktopInterfaceAvailable": "उपलब्ध",
+  "desktopRelayConnections": "रिले कनेक्शन",
+  "desktopSmartWidgetUnavailable": "इस डिवाइस पर इंटरैक्टिव हस्ताक्षर उपलब्ध नहीं हैं। आप पेज ब्राउज़र में खोल सकते हैं।",
+  "desktopPlaybackUnavailable": "इस डिवाइस पर ऐप में प्लेबैक उपलब्ध नहीं है।",
+  "desktopGoogleSignInUnavailable": "Linux पर Google साइन इन उपलब्ध नहीं है। दूसरा तरीका चुनें।",
+  "desktopCameraUnavailable": "इस डिवाइस पर कैमरा कैप्चर उपलब्ध नहीं है। इसके बजाय फ़ाइल चुनें।"
 }

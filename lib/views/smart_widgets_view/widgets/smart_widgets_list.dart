@@ -51,9 +51,15 @@ class SmartWidgetsList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
             vertical: kDefaultPadding / 2,
           ),
-          sliver: isTablet
-              ? _buildItemsGrid(context, widgets, state)
-              : _buildItemsList(widgets, state),
+          sliver: isDesktopPlatform
+              ? DesktopPaneSliverGridBuilder(
+                  builder: (context, columns) => _buildItemsGrid(
+                      context, widgets, state,
+                      columns: columns),
+                )
+              : (isTablet
+                  ? _buildItemsGrid(context, widgets, state)
+                  : _buildItemsList(widgets, state)),
         );
       },
     );
@@ -89,10 +95,11 @@ class SmartWidgetsList extends StatelessWidget {
   SliverMasonryGrid _buildItemsGrid(
     BuildContext context,
     List<SmartWidget> widgets,
-    SmartWidgetSearchState state,
-  ) {
+    SmartWidgetSearchState state, {
+    int? columns,
+  }) {
     return SliverMasonryGrid.count(
-      crossAxisCount: feedGridColumns(context),
+      crossAxisCount: columns ?? feedGridColumns(context),
       mainAxisSpacing: kDefaultPadding / 4,
       crossAxisSpacing: kDefaultPadding / 4,
       childCount: widgets.length,

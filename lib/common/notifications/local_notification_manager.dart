@@ -25,6 +25,10 @@ class LocalNotificationManager with WidgetsBindingObserver {
 
   /// Initialize Awesome Notifications and permissions
   Future<void> initNotifications() async {
+    // The registered desktop plugin does not implement notification methods.
+    if (!isMobilePlatform) {
+      return;
+    }
     if (!_observingLifecycle) {
       WidgetsBinding.instance.addObserver(this);
       _observingLifecycle = true;
@@ -169,6 +173,9 @@ class LocalNotificationManager with WidgetsBindingObserver {
     String body, {
     Map<String, String>? payload,
   }) async {
+    if (!isMobilePlatform) {
+      return;
+    }
     if (notificationChannel == null) {
       await initNotifications();
     }

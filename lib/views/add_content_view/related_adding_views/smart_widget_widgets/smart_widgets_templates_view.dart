@@ -95,46 +95,50 @@ class SmartWidgetTemplatesView extends StatelessWidget {
             icon: FeatureIcons.templates,
           );
         } else {
-          return GridView.builder(
-            primary: false,
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: kDefaultPadding / 4,
-              childAspectRatio: 16 / 12,
-              mainAxisSpacing: kDefaultPadding / 4,
+          return LayoutBuilder(
+            builder: (context, constraints) => GridView.builder(
+              primary: false,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isDesktopPlatform
+                    ? desktopPaneFeedColumns(context, constraints.maxWidth)
+                    : 2,
+                crossAxisSpacing: kDefaultPadding / 4,
+                childAspectRatio: 16 / 12,
+                mainAxisSpacing: kDefaultPadding / 4,
+              ),
+              itemBuilder: (context, index) {
+                final swt = state.smartWidgets[index];
+
+                return SWTemplateContainer(
+                  template: swt,
+                  onClicked: () async {
+                    final sw = await swt.getCurrentSmartWidget();
+
+                    if (sw != null && context.mounted) {
+                      YNavigator.pushPage(
+                        context,
+                        (context) => SmartWidgetChecker(
+                          swm: sw,
+                          naddr: sw.getScheme(),
+                        ),
+                      );
+                    }
+                  },
+                  onSmartWidgetSelected: () async {
+                    final sw = await swt.getCurrentSmartWidget();
+
+                    if (sw != null && context.mounted) {
+                      onSmartWidgetSelected.call(
+                        sw.smartWidgetBox,
+                      );
+                      YNavigator.pop(context);
+                    }
+                  },
+                );
+              },
+              itemCount: state.smartWidgets.length,
             ),
-            itemBuilder: (context, index) {
-              final swt = state.smartWidgets[index];
-
-              return SWTemplateContainer(
-                template: swt,
-                onClicked: () async {
-                  final sw = await swt.getCurrentSmartWidget();
-
-                  if (sw != null && context.mounted) {
-                    YNavigator.pushPage(
-                      context,
-                      (context) => SmartWidgetChecker(
-                        swm: sw,
-                        naddr: sw.getScheme(),
-                      ),
-                    );
-                  }
-                },
-                onSmartWidgetSelected: () async {
-                  final sw = await swt.getCurrentSmartWidget();
-
-                  if (sw != null && context.mounted) {
-                    onSmartWidgetSelected.call(
-                      sw.smartWidgetBox,
-                    );
-                    YNavigator.pop(context);
-                  }
-                },
-              );
-            },
-            itemCount: state.smartWidgets.length,
           );
         }
       },

@@ -201,6 +201,15 @@ class CurationContentView extends StatelessWidget {
                 icon: FeatureIcons.curations,
               );
             } else {
+              if (isDesktopPlatform) {
+                return DesktopPaneGridBuilder(
+                  builder: (context, columns) {
+                    return curation.isArticleCuration()
+                        ? _articlesItemsGrid(state, columns: columns)
+                        : _videosItemsGrid(state, columns: columns);
+                  },
+                );
+              }
               if (curation.isArticleCuration()) {
                 if (isTablet) {
                   return _articlesItemsGrid(state);
@@ -254,9 +263,9 @@ class CurationContentView extends StatelessWidget {
     );
   }
 
-  MasonryGridView _videosItemsGrid(CurationState state) {
+  MasonryGridView _videosItemsGrid(CurationState state, {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       itemCount: state.videos.length,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
@@ -318,9 +327,9 @@ class CurationContentView extends StatelessWidget {
     );
   }
 
-  MasonryGridView _articlesItemsGrid(CurationState state) {
+  MasonryGridView _articlesItemsGrid(CurationState state, {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       itemCount: state.articles.length,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,

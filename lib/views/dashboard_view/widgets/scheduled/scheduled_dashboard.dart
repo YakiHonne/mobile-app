@@ -102,8 +102,8 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
         snap: true,
         snapSizes: const [0.7],
         expand: false,
-        builder: (context, scrollController) => _content(context,
-            scrollController: scrollController),
+        builder: (context, scrollController) =>
+            _content(context, scrollController: scrollController),
       );
     }
 
@@ -136,6 +136,11 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
           );
         }
 
+        if (isDesktopPlatform) {
+          return DesktopPaneGridBuilder(
+              builder: (context, columns) =>
+                  _itemsGrid(state.notes, scrollController, columns: columns));
+        }
         return isTablet
             ? _itemsGrid(state.notes, scrollController)
             : _itemsList(state.notes, scrollController);
@@ -229,10 +234,11 @@ class _ScheduledDashboardState extends State<ScheduledDashboard> {
   }
 
   MasonryGridView _itemsGrid(
-      List<DvmPendingItem> notes, ScrollController? scrollController) {
+      List<DvmPendingItem> notes, ScrollController? scrollController,
+      {int columns = 2}) {
     return MasonryGridView.count(
       controller: scrollController,
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       crossAxisSpacing: kDefaultPadding / 2,
       mainAxisSpacing: kDefaultPadding / 2,
       itemCount: notes.length,

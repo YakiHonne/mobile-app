@@ -28,13 +28,14 @@ class PickDateTimeWidget extends HookWidget {
     final timeOfDay = useState<TimeOfDay>(
       const TimeOfDay(hour: 0, minute: 0),
     );
+    final calendarScrollController = useScrollController();
 
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(kDefaultPadding),
       ),
-      height: isMobile ? 60.h : 40.h,
+      height: isDesktopPlatform ? 480 : (isMobile ? 60.h : 40.h),
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       child: ListView(
         children: [
@@ -73,6 +74,7 @@ class PickDateTimeWidget extends HookWidget {
               onDateSelected.call(p0.first ?? DateTime.now());
             },
             context: context,
+            scrollController: calendarScrollController,
           ),
           _showCalendarRow(timeOfDay, context),
         ],
@@ -80,30 +82,36 @@ class PickDateTimeWidget extends HookWidget {
     );
   }
 
-  Row _showCalendarRow(
+  Widget _showCalendarRow(
       ValueNotifier<TimeOfDay> timeOfDay, BuildContext context) {
+    final timeButton = Builder(
+      builder: (context) {
+        final date = DateTime(
+          focusedDate.year,
+          focusedDate.month,
+          focusedDate.day,
+          timeOfDay.value.hour,
+          timeOfDay.value.minute,
+        );
+        return _dateButton(context, timeOfDay, date);
+      },
+    );
+    final clearButton = TextButton(
+      onPressed: onClearDate,
+      child: Text(context.t.clearDate.capitalizeFirst()),
+    );
+    if (isDesktopPlatform) {
+      return Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [timeButton, clearButton],
+      );
+    }
     return Row(
       children: [
-        Builder(
-          builder: (context) {
-            final date = DateTime(
-              focusedDate.year,
-              focusedDate.month,
-              focusedDate.day,
-              timeOfDay.value.hour,
-              timeOfDay.value.minute,
-            );
-
-            return _dateButton(context, timeOfDay, date);
-          },
-        ),
+        timeButton,
         const Spacer(),
-        TextButton(
-          onPressed: onClearDate,
-          child: Text(
-            context.t.clearDate.capitalizeFirst(),
-          ),
-        ),
+        clearButton,
       ],
     );
   }
@@ -151,6 +159,7 @@ class PickDateTimeWidget extends HookWidget {
     required List<DateTime> singleDatePickerValueWithDefaultValue,
     required Function(List<DateTime?>) onValueChanged,
     required BuildContext context,
+    required ScrollController scrollController,
   }) {
     final config = CalendarDatePicker2Config(
       selectedDayHighlightColor: Theme.of(context).primaryColor,
@@ -174,11 +183,40 @@ class PickDateTimeWidget extends HookWidget {
       },
     );
 
-    return CalendarDatePicker2(
+    final calendar = CalendarDatePicker2(
       config: config,
       value: singleDatePickerValueWithDefaultValue,
       onValueChanged: (dates) {
         onValueChanged.call(dates);
+      },
+    );
+    if (!isDesktopPlatform) {
+      return calendar;
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final minimumWidth = 360 * MediaQuery.textScalerOf(context).scale(1);
+        return ScrollbarTheme(
+          data: ScrollbarTheme.of(context).copyWith(
+            thumbColor: WidgetStatePropertyAll(Theme.of(context).hintColor),
+            thickness: const WidgetStatePropertyAll(6),
+          ),
+          child: Scrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            interactive: true,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: constraints.maxWidth < minimumWidth
+                    ? minimumWidth
+                    : constraints.maxWidth,
+                child: calendar,
+              ),
+            ),
+          ),
+        );
       },
     );
   }

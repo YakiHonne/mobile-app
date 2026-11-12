@@ -18,6 +18,12 @@ class VerticalSkeletonSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isDesktopPlatform) {
+      return DesktopPaneGridBuilder(
+        builder: (context, columns) =>
+            columns > 1 ? _tabletPlaceholder() : _phonePlaceholder(context),
+      );
+    }
     final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return isTablet ? _tabletPlaceholder() : _phonePlaceholder(context);

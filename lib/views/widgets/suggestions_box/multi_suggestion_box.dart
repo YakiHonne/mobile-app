@@ -6,6 +6,7 @@ import 'package:pull_down_button/pull_down_button.dart';
 import '../../../logic/suggestion_box_cubit/suggestions_box_cubit.dart';
 import '../../../models/app_models/diverse_functions.dart';
 import '../../../utils/utils.dart';
+import '../../main_view/desktop/desktop_density.dart';
 import '../app_icon.dart';
 import '../fluid_pull_down_button.dart';
 import 'donations.dart';
@@ -66,8 +67,10 @@ class MultiSuggestionBox extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(
-              height: kDefaultPadding / 2,
+            SizedBox(
+              height: desktopPane
+                  ? DesktopDensityScope.of(context).sectionHeadingGap
+                  : kDefaultPadding / 2,
             ),
             if (desktopPane && index != 1)
               Padding(
@@ -78,8 +81,9 @@ class MultiSuggestionBox extends StatelessWidget {
             else
               getAttachedWidget(),
             SizedBox(
-                height:
-                    desktopPane ? kDefaultPadding * 1.5 : kDefaultPadding / 2),
+                height: desktopPane
+                    ? DesktopDensityScope.of(context).sectionGap
+                    : kDefaultPadding / 2),
             if (!desktopPane) divider,
           ],
         );

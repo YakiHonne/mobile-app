@@ -162,7 +162,11 @@ class PaidNoteProcess extends HookWidget {
                       Expanded(
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: isTablet ? 10.w : kDefaultPadding,
+                            horizontal: isDesktopPlatform
+                                ? kDefaultPadding
+                                : isTablet
+                                    ? 10.w
+                                    : kDefaultPadding,
                           ),
                           child: Center(
                             child: SingleChildScrollView(
@@ -292,7 +296,7 @@ class PaidNoteProcess extends HookWidget {
       children: [
         AppIcon(
           LucideIcons.circleAlert,
-          size: 18.w,
+          size: isDesktopPlatform ? kDefaultPadding : 18.w,
           color: kRed,
         ),
         const SizedBox(width: kDefaultPadding / 2),
@@ -316,38 +320,47 @@ class PaidNoteProcess extends HookWidget {
     WriteNoteState state,
   ) {
     final hasInvoice = wallets.isLnurlAvailable && wallets.lnurl.isNotEmpty;
-    final qrSide = 80.w;
+    final qrSide = isDesktopPlatform ? null : 80.w;
+    final qr = Container(
+      width: qrSide,
+      height: qrSide,
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(kDefaultPadding),
+        color: Colors.white,
+      ),
+      child: hasInvoice
+          ? QrImageView(
+              data: wallets.lnurl,
+              dataModuleStyle: const QrDataModuleStyle(
+                color: kBlack,
+                dataModuleShape: QrDataModuleShape.circle,
+              ),
+              eyeStyle: const QrEyeStyle(
+                eyeShape: QrEyeShape.circle,
+                color: kBlack,
+              ),
+            )
+          : Center(
+              child: SpinKitCircle(
+                color: Theme.of(context).primaryColorDark,
+                size: 42,
+              ),
+            ),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: qrSide,
-          height: qrSide,
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(kDefaultPadding),
-            color: Colors.white,
-          ),
-          child: hasInvoice
-              ? QrImageView(
-                  data: wallets.lnurl,
-                  dataModuleStyle: const QrDataModuleStyle(
-                    color: kBlack,
-                    dataModuleShape: QrDataModuleShape.circle,
-                  ),
-                  eyeStyle: const QrEyeStyle(
-                    eyeShape: QrEyeShape.circle,
-                    color: kBlack,
-                  ),
-                )
-              : Center(
-                  child: SpinKitCircle(
-                    color: Theme.of(context).primaryColorDark,
-                    size: 42,
-                  ),
-                ),
-        ),
+        if (isDesktopPlatform)
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 320),
+              child: AspectRatio(aspectRatio: 1, child: qr),
+            ),
+          )
+        else
+          qr,
         const SizedBox(height: kDefaultPadding),
         _statusRow(context, state),
       ],
@@ -558,7 +571,11 @@ class PaidNoteProcess extends HookWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: kDefaultPadding / 2,
-          horizontal: isTablet ? 10.w : 0,
+          horizontal: isDesktopPlatform
+              ? kDefaultPadding / 2
+              : isTablet
+                  ? 10.w
+                  : 0,
         ),
         child: actions ?? const SizedBox.shrink(),
       ),

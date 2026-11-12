@@ -57,23 +57,33 @@ class RedeemCodeResults extends HookWidget {
         _buildActionButtons(isSuccessful),
         Expanded(
           child: FadeIn(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: kDefaultPadding,
-              children: [
-                _buildAnimationIcon(isSuccessful, animationController),
-                _buildContent(
-                  context: context,
-                  result: isSuccessful,
-                  resultCode: resultCode,
-                  amount: amount,
-                ),
-                const SizedBox(
-                  height: kToolbarHeight,
-                ),
-              ],
-            ),
+            child: isDesktopPlatform
+                ? SingleChildScrollView(
+                    child: _resultContent(context, isSuccessful, resultCode,
+                        amount, animationController))
+                : _resultContent(context, isSuccessful, resultCode, amount,
+                    animationController),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _resultContent(BuildContext context, bool isSuccessful,
+      String resultCode, num? amount, AnimationController animationController) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: kDefaultPadding,
+      children: [
+        _buildAnimationIcon(isSuccessful, animationController),
+        _buildContent(
+          context: context,
+          result: isSuccessful,
+          resultCode: resultCode,
+          amount: amount,
+        ),
+        const SizedBox(
+          height: kToolbarHeight,
         ),
       ],
     );
@@ -93,7 +103,7 @@ class RedeemCodeResults extends HookWidget {
   ) {
     return Lottie.asset(
       result ? LottieAnimations.redeemCode : LottieAnimations.failure,
-      height: result ? 20.h : 10.h,
+      height: isDesktopPlatform ? (result ? 160 : 80) : (result ? 20.h : 10.h),
       fit: BoxFit.contain,
       frameRate: const FrameRate(60),
       repeat: false,

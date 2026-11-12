@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "Não foi possível abrir o armazenamento de contas. As suas contas não foram alteradas.",
+  "accountStorageLinuxHelp": "Desbloqueie ou inicie o chaveiro do sistema e tente novamente.",
+  "accountStorageSaveFailed": "Não foi possível guardar as alterações. Reinicie a aplicação antes de tentar novamente.",
+  "accountStorageRecoveryTitle": "As suas contas precisam de atenção",
+  "accountStorageRecoveryCorrupt": "Não foi possível ler os dados de conta guardados. Nada foi eliminado.",
+  "accountStorageRecoveryLegacy": "Os dados de conta foram alterados por outra versão ou processo. Escolha que cópia manter.",
+  "accountStorageRestoreBackup": "Restaurar contas guardadas anteriores",
+  "accountStorageKeepSaved": "Manter contas guardadas",
+  "accountStorageKeepLegacy": "Utilizar os outros dados de conta",
+  "accountStorageBackupMissing": "Não existe nenhuma cópia de segurança anterior válida.",
+  "accountStorageRecoveryFailed": "Não foi possível concluir a recuperação. Os dados da sua conta não foram alterados.",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} citou sua imagem",
   "userQuotedPictureYouIn": "{{name}} citou uma imagem em que você foi mencionado",
   "cameraPermission": "O aplicativo não tem permissão para acessar a câmera ou não há câmeras disponíveis neste dispositivo.",
+  "videoQuality": "Qualidade do vídeo",
+  "originalMedia": "original:",
   "fetchingPicture": "Buscando imagem...",
   "addDescription": "Adicionar descrição...",
   "uploadingVideo": "Enviando vídeo...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "Densidade da área de trabalho",
   "desktopDensityComfortable": "Confortável",
   "desktopDensityCompact": "Compacta",
-  "desktopKnowPeople": "Conhecer pessoas"
+  "desktopKnowPeople": "Conhecer pessoas",
+  "desktopNetworkInterface": "Interface de rede",
+  "desktopInterfaceAvailable": "Disponível",
+  "desktopRelayConnections": "Conexões de relay",
+  "desktopSmartWidgetUnavailable": "A assinatura interativa não está disponível neste dispositivo. Você pode abrir a página no navegador.",
+  "desktopPlaybackUnavailable": "A reprodução não está disponível no aplicativo neste dispositivo.",
+  "desktopGoogleSignInUnavailable": "O login com Google não está disponível no Linux. Escolha outro método.",
+  "desktopCameraUnavailable": "A captura pela câmera não está disponível neste dispositivo. Escolha um arquivo."
 }

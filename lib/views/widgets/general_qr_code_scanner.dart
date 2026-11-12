@@ -90,35 +90,44 @@ class _GeneralQrCodeViewState extends State<GeneralQrCodeView>
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          width: 80.w,
-          height: 80.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              kDefaultPadding + 5,
+        if (isDesktopPlatform)
+          const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: Text(
+              'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+              textAlign: TextAlign.center,
             ),
-            child: isMobilePlatform
-                ? QRView(
-                    key: qrKey,
-                    onQRViewCreated: (controller) => _onQRViewCreated(
-                      controller,
-                      context,
+          )
+        else
+          SizedBox(
+            width: 80.w,
+            height: 80.w,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                kDefaultPadding + 5,
+              ),
+              child: isMobilePlatform
+                  ? QRView(
+                      key: qrKey,
+                      onQRViewCreated: (controller) => _onQRViewCreated(
+                        controller,
+                        context,
+                      ),
+                      overlay: QrScannerOverlayShape(
+                        borderRadius: kDefaultPadding,
+                        borderColor: kWhite,
+                        borderWidth: 5,
+                        cutOutSize: 80.w,
+                      ),
+                    )
+                  : const Center(
+                      child: Text(
+                        'QR scanning is unavailable on desktop. Enter or paste the code instead.',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    overlay: QrScannerOverlayShape(
-                      borderRadius: kDefaultPadding,
-                      borderColor: kWhite,
-                      borderWidth: 5,
-                      cutOutSize: 80.w,
-                    ),
-                  )
-                : const Center(
-                    child: Text(
-                      'QR scanning is unavailable on desktop. Enter or paste the code instead.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+            ),
           ),
-        ),
         const SizedBox(
           height: kDefaultPadding,
         ),

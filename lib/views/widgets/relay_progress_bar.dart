@@ -189,7 +189,7 @@ class _RelaysProgressBarState extends State<RelaysProgressBar> {
                 borderRadius: BorderRadius.circular(kDefaultPadding),
                 color: Theme.of(context).cardColor,
                 child: Container(
-                  height: 40.h,
+                  height: isDesktopPlatform ? 320 : 40.h,
                   padding: const EdgeInsets.all(kDefaultPadding / 2),
                   child: MediaQuery.removePadding(
                     context: context,

@@ -39,6 +39,17 @@ class TranslationsHi extends Translations {
 	TranslationsHi $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsHi(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'खाता संग्रहण नहीं खुल सका। आपके खातों में कोई बदलाव नहीं हुआ है।';
+	@override String get accountStorageLinuxHelp => 'सिस्टम कीरिंग खोलें या शुरू करें, फिर पुनः प्रयास करें।';
+	@override String get accountStorageSaveFailed => 'खाते में बदलाव सहेजे नहीं जा सके। पुनः प्रयास करने से पहले ऐप फिर शुरू करें।';
+	@override String get accountStorageRecoveryTitle => 'आपके खातों पर ध्यान देने की आवश्यकता है';
+	@override String get accountStorageRecoveryCorrupt => 'सहेजा गया खाता डेटा पढ़ा नहीं जा सका। कुछ भी नहीं हटाया गया।';
+	@override String get accountStorageRecoveryLegacy => 'खाता डेटा किसी अन्य संस्करण या प्रक्रिया द्वारा बदला गया था। चुनें कि कौन सी प्रति रखनी है।';
+	@override String get accountStorageRestoreBackup => 'पिछले सहेजे गए खाते पुनर्स्थापित करें';
+	@override String get accountStorageKeepSaved => 'सहेजे गए खाते रखें';
+	@override String get accountStorageKeepLegacy => 'दूसरा खाता डेटा उपयोग करें';
+	@override String get accountStorageBackupMissing => 'कोई मान्य पिछला बैकअप उपलब्ध नहीं है।';
+	@override String get accountStorageRecoveryFailed => 'पुनर्प्राप्ति पूरी नहीं हो सकी। आपका खाता डेटा नहीं बदला गया।';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsHi extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} ने आपकी तस्वीर को उद्धृत किया';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} ने उस तस्वीर को उद्धृत किया जिसमें आपको मेंशन किया गया था';
 	@override String get cameraPermission => 'या तो ऐप को कैमरा एक्सेस करने की अनुमति नहीं है या इस डिवाइस पर कोई कैमरा उपलब्ध नहीं है।';
+	@override String get videoQuality => 'वीडियो गुणवत्ता';
+	@override String get originalMedia => 'मूल:';
 	@override String get fetchingPicture => 'तस्वीर प्राप्त की जा रही है...';
 	@override String get addDescription => 'विवरण जोड़ें...';
 	@override String get uploadingVideo => 'वीडियो अपलोड हो रहा है...';
@@ -2256,6 +2269,13 @@ class TranslationsHi extends Translations {
 	@override String get desktopDensityComfortable => 'आरामदायक';
 	@override String get desktopDensityCompact => 'सघन';
 	@override String get desktopKnowPeople => 'लोगों को जानें';
+	@override String get desktopNetworkInterface => 'नेटवर्क इंटरफ़ेस';
+	@override String get desktopInterfaceAvailable => 'उपलब्ध';
+	@override String get desktopRelayConnections => 'रिले कनेक्शन';
+	@override String get desktopSmartWidgetUnavailable => 'इस डिवाइस पर इंटरैक्टिव हस्ताक्षर उपलब्ध नहीं हैं। आप पेज ब्राउज़र में खोल सकते हैं।';
+	@override String get desktopPlaybackUnavailable => 'इस डिवाइस पर ऐप में प्लेबैक उपलब्ध नहीं है।';
+	@override String get desktopGoogleSignInUnavailable => 'Linux पर Google साइन इन उपलब्ध नहीं है। दूसरा तरीका चुनें।';
+	@override String get desktopCameraUnavailable => 'इस डिवाइस पर कैमरा कैप्चर उपलब्ध नहीं है। इसके बजाय फ़ाइल चुनें।';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -2274,6 +2294,17 @@ extension on TranslationsHi {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'खाता संग्रहण नहीं खुल सका। आपके खातों में कोई बदलाव नहीं हुआ है।',
+			'accountStorageLinuxHelp' => 'सिस्टम कीरिंग खोलें या शुरू करें, फिर पुनः प्रयास करें।',
+			'accountStorageSaveFailed' => 'खाते में बदलाव सहेजे नहीं जा सके। पुनः प्रयास करने से पहले ऐप फिर शुरू करें।',
+			'accountStorageRecoveryTitle' => 'आपके खातों पर ध्यान देने की आवश्यकता है',
+			'accountStorageRecoveryCorrupt' => 'सहेजा गया खाता डेटा पढ़ा नहीं जा सका। कुछ भी नहीं हटाया गया।',
+			'accountStorageRecoveryLegacy' => 'खाता डेटा किसी अन्य संस्करण या प्रक्रिया द्वारा बदला गया था। चुनें कि कौन सी प्रति रखनी है।',
+			'accountStorageRestoreBackup' => 'पिछले सहेजे गए खाते पुनर्स्थापित करें',
+			'accountStorageKeepSaved' => 'सहेजे गए खाते रखें',
+			'accountStorageKeepLegacy' => 'दूसरा खाता डेटा उपयोग करें',
+			'accountStorageBackupMissing' => 'कोई मान्य पिछला बैकअप उपलब्ध नहीं है।',
+			'accountStorageRecoveryFailed' => 'पुनर्प्राप्ति पूरी नहीं हो सकी। आपका खाता डेटा नहीं बदला गया।',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsHi {
 			'smartWidgetChecker' => 'स्मार्ट विजेट चेकर',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'कंपोनेंट्स प्रदर्शित नहीं किए जा सकते',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'मेटाडेटा',
 			'createdAt' => 'बनाया गया',
 			'identifier' => 'पहचानकर्ता',
@@ -2786,12 +2823,6 @@ extension on TranslationsHi {
 			'votesByUsers' => 'उपयोगकर्ताओं द्वारा वोट्स',
 			'alreadyVoted' => 'आप इस पोल में पहले ही वोट कर चुके हैं',
 			'userCannotBeFound' => 'उपयोगकर्ता नहीं मिला',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => 'वोट्स: ${number}',
 			'voteRequired' => 'स्टेट्स दिखाने के लिए वोट आवश्यक है.',
 			'showStats' => 'स्टेट्स दिखाएँ',
@@ -3293,6 +3324,12 @@ extension on TranslationsHi {
 			'tallying' => 'गिनती',
 			'ended' => 'समाप्त',
 			'closed' => 'बंद',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => 'द्वारा वोट परिणाम',
 			'votes' => 'वोट्स',
 			'voiceCredit' => 'वॉइस क्रेडिट',
@@ -3304,12 +3341,6 @@ extension on TranslationsHi {
 			'circuit' => 'सर्किट',
 			'votingSystem' => 'वोटिंग सिस्टम',
 			'proofSystem' => 'प्रूफ सिस्टम',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'गैस स्टेशन',
 			'totalFund' => '(कुल फंड)',
 			'roundStart' => 'राउंड शुरू',
@@ -3782,6 +3813,8 @@ extension on TranslationsHi {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} ने आपकी तस्वीर को उद्धृत किया',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} ने उस तस्वीर को उद्धृत किया जिसमें आपको मेंशन किया गया था',
 			'cameraPermission' => 'या तो ऐप को कैमरा एक्सेस करने की अनुमति नहीं है या इस डिवाइस पर कोई कैमरा उपलब्ध नहीं है।',
+			'videoQuality' => 'वीडियो गुणवत्ता',
+			'originalMedia' => 'मूल:',
 			'fetchingPicture' => 'तस्वीर प्राप्त की जा रही है...',
 			'addDescription' => 'विवरण जोड़ें...',
 			'uploadingVideo' => 'वीडियो अपलोड हो रहा है...',
@@ -3809,6 +3842,12 @@ extension on TranslationsHi {
 			'swapFrom' => 'यहाँ से स्वैप करें',
 			'swapTo' => 'यहाँ पर स्वैप करें',
 			'selectMint' => 'मिंट चुनें',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => 'राशि',
 			'cashuHistory' => 'कैशू इतिहास',
 			'history' => 'इतिहास',
@@ -3822,12 +3861,6 @@ extension on TranslationsHi {
 			'redeemEcashDesc' => 'ई-कैश टोकन को अपने वॉलेट में रिडीम करें',
 			'depositDesc' => 'सैट्स जमा करके नए ई-कैश टोकन मिंट करें',
 			'pasteToken' => 'टोकन पेस्ट करें',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'स्कैन करें',
 			'tokenDetails' => 'टोकन विवरण',
 			'issuingMint' => 'जारी करने वाला मिंट',
@@ -4327,6 +4360,12 @@ extension on TranslationsHi {
 			'creator_subscription_plans' => 'सदस्यता योजनाएँ',
 			'creator_subscribe_now' => 'अभी सदस्यता लें',
 			'creator_subscribe_error' => 'सदस्यता शुरू नहीं की जा सकी',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => 'कोई सदस्यता योजना उपलब्ध नहीं है',
 			'creator_lightning_unavailable' => 'Lightning पता उपलब्ध नहीं है',
 			'creator_view_subscriptions' => 'मेरी सदस्यताएँ देखें',
@@ -4340,12 +4379,6 @@ extension on TranslationsHi {
 			'pomAuthenticating' => 'Google से प्रमाणीकरण हो रहा है…',
 			'pomCheckingAccount' => 'खाते की जाँच हो रही है…',
 			'pomCreatingAccount' => 'खाता बनाया जा रहा है…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => 'अपनी निजी कुंजी सहेजें',
 			'pomSaveKeyDesc' => 'आपकी निजी कुंजी बन गई है। खाता बनाने से पहले इसे सुरक्षित रूप से सहेज लें।',
 			'pomCreateAccount' => 'खाता बनाएँ',
@@ -4515,6 +4548,13 @@ extension on TranslationsHi {
 			'desktopDensityComfortable' => 'आरामदायक',
 			'desktopDensityCompact' => 'सघन',
 			'desktopKnowPeople' => 'लोगों को जानें',
+			'desktopNetworkInterface' => 'नेटवर्क इंटरफ़ेस',
+			'desktopInterfaceAvailable' => 'उपलब्ध',
+			'desktopRelayConnections' => 'रिले कनेक्शन',
+			'desktopSmartWidgetUnavailable' => 'इस डिवाइस पर इंटरैक्टिव हस्ताक्षर उपलब्ध नहीं हैं। आप पेज ब्राउज़र में खोल सकते हैं।',
+			'desktopPlaybackUnavailable' => 'इस डिवाइस पर ऐप में प्लेबैक उपलब्ध नहीं है।',
+			'desktopGoogleSignInUnavailable' => 'Linux पर Google साइन इन उपलब्ध नहीं है। दूसरा तरीका चुनें।',
+			'desktopCameraUnavailable' => 'इस डिवाइस पर कैमरा कैप्चर उपलब्ध नहीं है। इसके बजाय फ़ाइल चुनें।',
 			_ => null,
 		};
 	}

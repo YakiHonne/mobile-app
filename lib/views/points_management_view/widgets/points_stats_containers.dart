@@ -23,7 +23,9 @@ class PointsStatContainers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+    final isTablet = isDesktopPlatform
+        ? desktopPaneFeedColumns(context, MediaQuery.sizeOf(context).width) > 1
+        : ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
     return BlocBuilder<PointsManagementCubit, PointsManagementState>(
       builder: (context, state) {

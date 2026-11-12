@@ -18,74 +18,76 @@ class CashuSendView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.send,
+          isBack: false,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          child: Column(
+            children: [
+              _buildOptionCard(
+                context,
+                title: context.t.ecash,
+                description: context.t.sendEcashDesc,
+                icon: FeatureIcons.sendEcash,
+                onTap: () {
+                  Navigator.pop(context);
+                  YNavigator.presentPage(
+                    context,
+                    (context) => const CashuSendECashView(),
+                  );
+                },
+              ),
+              const SizedBox(height: kDefaultPadding / 2),
+              _buildOptionCard(
+                context,
+                title: context.t.nutZap,
+                description: context.t.nutZapDesc,
+                icon: FeatureIcons.nutZap,
+                onTap: () {
+                  Navigator.pop(context);
+                  YNavigator.presentPage(
+                    context,
+                    (gc) => SendByUserSearch(
+                      isModal: true,
+                      onMetadataSelected: (metadata) {
+                        YNavigator.pop(gc);
+                        YNavigator.presentPage(
+                          gc,
+                          (_) => CashuNutZapAmountView(metadata: metadata),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: kDefaultPadding / 2),
+              _buildOptionCard(
+                context,
+                title: context.t.lightningNetwork,
+                description: context.t.lightningNetworkDesc,
+                icon: FeatureIcons.zap,
+                onTap: () {
+                  Navigator.pop(context);
+                  YNavigator.presentPage(
+                    context,
+                    (context) => const CashuPayView(),
+                  );
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ],
+    );
     return ModalSheetContainer(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.send,
-            isBack: false,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: Column(
-              children: [
-                _buildOptionCard(
-                  context,
-                  title: context.t.ecash,
-                  description: context.t.sendEcashDesc,
-                  icon: FeatureIcons.sendEcash,
-                  onTap: () {
-                    Navigator.pop(context);
-                    YNavigator.presentPage(
-                      context,
-                      (context) => const CashuSendECashView(),
-                    );
-                  },
-                ),
-                const SizedBox(height: kDefaultPadding / 2),
-                _buildOptionCard(
-                  context,
-                  title: context.t.nutZap,
-                  description: context.t.nutZapDesc,
-                  icon: FeatureIcons.nutZap,
-                  onTap: () {
-                    Navigator.pop(context);
-                    YNavigator.presentPage(
-                      context,
-                      (gc) => SendByUserSearch(
-                        isModal: true,
-                        onMetadataSelected: (metadata) {
-                          YNavigator.pop(gc);
-                          YNavigator.presentPage(
-                            gc,
-                            (_) => CashuNutZapAmountView(metadata: metadata),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: kDefaultPadding / 2),
-                _buildOptionCard(
-                  context,
-                  title: context.t.lightningNetwork,
-                  description: context.t.lightningNetworkDesc,
-                  icon: FeatureIcons.zap,
-                  onTap: () {
-                    Navigator.pop(context);
-                    YNavigator.presentPage(
-                      context,
-                      (context) => const CashuPayView(),
-                    );
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child:
+          isDesktopPlatform ? SingleChildScrollView(child: content) : content,
     );
   }
 

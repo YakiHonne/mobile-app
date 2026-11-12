@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../logic/add_content_cubit/add_content_cubit.dart';
@@ -36,7 +37,11 @@ class CurationContent extends HookWidget {
       builder: (context, state) {
         return ListView(
           padding: EdgeInsets.all(
-            isTablet ? 15.w : kDefaultPadding / 2,
+            isDesktopPlatform
+                ? kDefaultPadding
+                : isTablet
+                    ? 15.w
+                    : kDefaultPadding / 2,
           ),
           children: [
             const SizedBox(
@@ -88,6 +93,9 @@ class CurationContent extends HookWidget {
             ),
           );
         } else {
+          if (isDesktopPlatform) {
+            return CurationAddedArticleList();
+          }
           return ResponsiveBreakpoints.of(context).largerThan(MOBILE)
               ? CurationAddedArticleGrid()
               : CurationAddedArticleList();
@@ -207,6 +215,7 @@ class CurationAddedArticleList extends StatelessWidget {
             key: _listViewKey,
             shrinkWrap: true,
             primary: false,
+            buildDefaultDragHandles: !isDesktopPlatform,
             onReorderItem: (oldIndex, newIndex) {
               context
                   .read<WriteCurationCubit>()
@@ -216,28 +225,31 @@ class CurationAddedArticleList extends StatelessWidget {
             itemBuilder: (context, index) {
               final article = state.activeArticles[index];
 
-              return AddingCurationArticleContainer(
-                key: Key(article.id),
-                padding: const EdgeInsets.symmetric(
-                  vertical: kDefaultPadding / 4,
-                ),
-                isMuted: state.mutes.contains(article.pubkey),
-                pubkey: article.pubkey,
-                image: article.image,
-                muteKind: 'article',
-                placeholder: article.placeholder,
-                title: article.title,
-                isAdding: false,
-                isActive: true,
-                onDelete: () {
-                  context
-                      .read<AddContentCubit>()
-                      .setBottomNavigationBarState(false);
-                  context
-                      .read<WriteCurationCubit>()
-                      .deleteActiveArticle(article.id);
-                },
-              );
+              return _desktopReorderHandle(
+                  index,
+                  article.id,
+                  AddingCurationArticleContainer(
+                    key: Key(article.id),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPadding / 4,
+                    ),
+                    isMuted: state.mutes.contains(article.pubkey),
+                    pubkey: article.pubkey,
+                    image: article.image,
+                    muteKind: 'article',
+                    placeholder: article.placeholder,
+                    title: article.title,
+                    isAdding: false,
+                    isActive: true,
+                    onDelete: () {
+                      context
+                          .read<AddContentCubit>()
+                          .setBottomNavigationBarState(false);
+                      context
+                          .read<WriteCurationCubit>()
+                          .deleteActiveArticle(article.id);
+                    },
+                  ));
             },
             itemCount: state.activeArticles.length,
           );
@@ -246,6 +258,7 @@ class CurationAddedArticleList extends StatelessWidget {
             key: _listViewKey,
             shrinkWrap: true,
             primary: false,
+            buildDefaultDragHandles: !isDesktopPlatform,
             onReorderItem: (oldIndex, newIndex) {
               context
                   .read<WriteCurationCubit>()
@@ -255,33 +268,77 @@ class CurationAddedArticleList extends StatelessWidget {
             itemBuilder: (context, index) {
               final video = state.activeVideos[index];
 
-              return AddingCurationArticleContainer(
-                key: Key(video.id),
-                padding: const EdgeInsets.symmetric(
-                  vertical: kDefaultPadding / 4,
-                ),
-                isMuted: state.mutes.contains(video.pubkey),
-                pubkey: video.pubkey,
-                image: video.thumbnail,
-                muteKind: 'video',
-                placeholder: video.placeHolder,
-                title: video.title,
-                isAdding: false,
-                isActive: true,
-                onDelete: () {
-                  context
-                      .read<AddContentCubit>()
-                      .setBottomNavigationBarState(false);
-                  context
-                      .read<WriteCurationCubit>()
-                      .deleteActiveArticle(video.id);
-                },
-              );
+              return _desktopReorderHandle(
+                  index,
+                  video.id,
+                  AddingCurationArticleContainer(
+                    key: Key(video.id),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: kDefaultPadding / 4,
+                    ),
+                    isMuted: state.mutes.contains(video.pubkey),
+                    pubkey: video.pubkey,
+                    image: video.thumbnail,
+                    muteKind: 'video',
+                    placeholder: video.placeHolder,
+                    title: video.title,
+                    isAdding: false,
+                    isActive: true,
+                    onDelete: () {
+                      context
+                          .read<AddContentCubit>()
+                          .setBottomNavigationBarState(false);
+                      context
+                          .read<WriteCurationCubit>()
+                          .deleteActiveArticle(video.id);
+                    },
+                  ));
             },
             itemCount: state.activeVideos.length,
           );
         }
       },
+    );
+  }
+
+  Widget _desktopReorderHandle(int index, String id, Widget child) {
+    if (!isDesktopPlatform) {
+      return child;
+    }
+    return DesktopCurationReorderItem(
+      key: ValueKey(id),
+      index: index,
+      child: child,
+    );
+  }
+}
+
+class DesktopCurationReorderItem extends StatelessWidget {
+  const DesktopCurationReorderItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  final int index;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: child),
+        MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: ReorderableDragStartListener(
+            index: index,
+            child: const Padding(
+              padding: EdgeInsets.all(kDefaultPadding / 2),
+              child: AppIcon(LucideIcons.gripVertical, size: 20),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

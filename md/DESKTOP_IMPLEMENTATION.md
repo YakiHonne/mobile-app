@@ -1,3 +1,459 @@
+## 2026-11-11 — user shell and account checks
+
+The user reports successful navigation and return, DM switching, draft and
+same-account refresh, side-pane recovery, and compose/settings checks. During
+account switching an open note draft stayed in the editor; closing and reopening
+the editor cleared it, which the user considers correct. The user confirmed the
+open draft remains visible while the second account is active; an open draft is
+therefore not isolated across accounts. The active signing identity and other
+account-scoped data were not explicitly verified. Exact routes and offline
+scenarios were not enumerated.
+
+## 2026-11-11 — user desktop verification and divider highlight
+
+The user reported that pane dragging and reset, window behavior, VoiceOver,
+appearance and language checks, and media checks worked. The exact build,
+display configuration and individual theme/language cases were not specified;
+this is user-reported verification rather than a complete recorded test matrix.
+At their request, the divider's visible focus highlight was removed. Keyboard
+resizing and semantics remain available, but keyboard focus on the divider no
+longer has a visible indicator. The user subsequently confirmed that the
+highlight is gone in the native app.
+
+## 2026-11-11 — isolated current-code pane and media checks
+
+A separate macOS debug fixture was built from a copy of the current source,
+with a distinct bundle identifier and preferences and the production
+`MainFlutterWindow` implementation. It used synthetic notes and an asset image,
+the actual divider, interest cards and hidden-video placeholder. At a
+1440-point-wide window, keyboard resizing reached both 400-point pane limits;
+the interest cards remained laid out with 1.5× text and RTL direction. A
+fullscreen round trip returned to the window. Home reset the side pane to 520
+points. The fixture used generic light/dark themes and English labels, not the
+actual feed, full sidebar, app theme variants, video player or live data.
+Automated pointer dragging again produced no visible resize. VoiceOver, the
+native minimum-window resize and restoration of an old frame, physical display
+changes, actual translated native screens and real playback remain unverified.
+
+A 320×180 widget fixture found that the desktop hidden-video placeholder
+overflowed at 1.5× text. It now scrolls when necessary. English, French and
+Arabic fixtures exercise the label at that size across all eight app themes,
+including scrolling to the final label and checking icon-to-card contrast.
+This is a focused widget check, not a complete theme or contrast audit. The
+`desktop*_test.dart` selection passed 148 tests after the fix; full Flutter
+analysis passed, and the isolated debug build succeeded with plugin warnings.
+No signed-in account, live relay content or financial operation was used.
+
+## 2026-11-11 — pane validation continuation
+
+On macOS 26.6.2, the previously built isolated `yaki_pane_fixture` (separate
+bundle and preferences, synthetic content) opened at a constrained width with
+350-point panes. Entering fullscreen produced 626/713-point panes; focusing
+the divider and pressing Left changed them to 606/733. Two automated pointer
+drag attempts produced no observable change, so native dragging remains
+unverified; this observation alone does not establish a divider defect. The
+fixture was closed without using the signed-in app. VoiceOver, real feed and
+sidebar content, production window restoration and physical display changes
+were not checked. The 400-point minimum remains provisional.
+
+The current checkout's splitter and real DM/interest-card widget tests passed
+(8 tests) with Puro `pipress`, Flutter 3.44.9 and Dart 3.12.2. The sandboxed
+Dart VM crashed on startup; the test ran outside the sandbox. These widget
+tests are not a substitute for native real-content or accessibility checks.
+
+## 2026-11-08 — pane-local sizing audit
+
+Completed the source audit of pane-route window sizing and fixed confirmed
+desktop issues across feed and media grids, editor previews, forms, dialogs,
+wallet surfaces and onboarding-related controls. Desktop grids now adapt to
+local width and text scale; short dialogs scroll where needed. Mobile layout
+branches remain in place. Fixtures exercise resizing, draft and scroll-state
+retention, large text, media patterns and representative wallet and dialog
+layouts using disposable data. The desktop regression suite passed 162 tests.
+
+This completes the source and widget-test audit, not native visual validation
+of every real-data flow. Native window and accessibility checks, localization,
+real content and phone/tablet visual checks remain on the Phase 2 list. No
+signed-in session or financial operation was used for this verification.
+
+## 2026-11-05 — Cashu payment and amount forms
+
+Desktop Cashu deposit input, Lightning payment, eCash send, swap and nutzap
+forms use the available dialog height and can scroll through their controls
+and actions in short windows. SATS and fiat labels wrap on desktop when needed;
+phone and tablet retain the prior row and sizing paths. Disposable 320×350
+fixtures cover all five forms at 1.5× and 2× text in LTR and RTL, including
+amount entry, draft retention while scrolling and the Lightning-address amount
+step. They use empty wallet state and a placeholder recipient, and do not make
+payments, create tokens or swap funds. Thirty-eight grouped wallet, dialog and
+no-hover tests passed. Native appearance, real wallets and mint selectors,
+translated labels, actual payment operations and phone/tablet visuals remain
+unverified. The signed-in session was not touched.
+
+## 2026-11-05 — checker and Cashu dialog sizing
+
+The desktop Smart Widget checker selects its two-column layout from pane width;
+its narrow sliding preview uses pane-relative positions, and the empty preview
+scrolls. A narrow preview remains accessible in view mode and resizing to the
+wide layout does not leave the component list blocked. A disposable 1.5× text
+fixture checks 320–800–400-point resizing and the slide state, without loading
+a real Smart Widget.
+
+The desktop Cashu deposit dialog fills its available height, bounds its invoice
+QR to local width and scrolls invoice content. Desktop send and receive choice
+sheets also scroll in short dialogs. A mocked, non-payable deposit quote and
+320-point fixtures at 1.5× text cover the invoice and both choice sheets; no
+payment or wallet operation is performed. Eighteen grouped layout, wallet and
+no-hover tests and full analysis passed. The running session was not touched.
+Real invoices, payment and deposit actions, Smart Widget data, RTL, translated
+labels, native visuals and phone/tablet visual regression remain unverified.
+The wider pane-sizing audit remains open.
+
+## 2026-11-05 — Cashu operation result sizing
+
+Desktop Cashu operation results now scroll in short windows, use bounded
+success-animation sizes, and keep the token QR square within local width with a
+320-point cap. Phone and tablet retain their existing layout. A disposable,
+non-redeemable placeholder fixture renders the actual sheet at 320×350 points
+with 1.5× text and scrolls to Close. Ten wallet, modal and no-hover tests and
+full analysis passed. No token was created or redeemed; native visuals, real
+QR scanning and phone/tablet visuals remain unverified. The running signed-in
+session was not touched.
+
+## 2026-11-05 — zap invoice dialog and amount dividers
+
+Desktop zap invoice dialogs use a locally bounded square QR and scroll in short
+windows. The desktop send, receive and zap amount screens also cap their divider
+widths; phone and tablet paths retain their prior dimensions. A non-payable
+placeholder fixture checks the QR dialog at 380×300 points and 1.5× text.
+Ten wallet, modal and no-hover tests and full analysis passed. The fixture does
+not create or pay an invoice; real scanning and native visuals remain open. The
+signed-in session was not touched.
+
+## 2026-11-05 — desktop feed media
+
+Desktop inline videos now have a 720-point width cap and an explicit gallery
+action; single images and multi-item galleries also expose a gallery action.
+Hidden desktop videos show a neutral placeholder before activation, and hidden
+video gallery tiles do not generate thumbnails. The existing image bounds,
+video aspect-ratio handling and autoplay setting are retained. Mobile and tablet
+paths remain unchanged. Twenty-two disposable feed-media, gallery, playback
+coordination and no-hover tests and full analysis passed. The tests do not play
+real media or exercise native video decoding; current-build native rendering,
+playback and sensitive-media visuals remain open. No user media was used, and
+the signed-in session was not touched.
+
+## 2026-11-05 — Home sidebar density
+
+The existing desktop density setting now also controls the section and heading
+gaps in the current Home side pane. Comfortable retains the previous spacing;
+compact reduces gaps without changing card or control dimensions. The
+non-desktop suggestion layout retains its existing spacing. A disposable
+interest-section fixture checks both settings and restoration at 1.5× text;
+seven density, pane and no-hover tests and full analysis passed. Native theme,
+contrast, live content and hit-target checks remain open. The signed-in session
+was not touched.
+
+## 2026-11-05 — invoice QR pane sizing
+
+Desktop receive-invoice and zap-invoice QR codes now use a shared square bound
+that follows local width and caps at 320 points. Phone and tablet retain the
+existing 70.w sizing. A disposable placeholder fixture checks the shared bound
+inside an intrinsic scroll layout at widths of 240, 320 and 600 points. Six
+wallet QR and modal tests and full analysis passed. The fixture does not render
+the complete invoice screens or initiate a payment; real invoices, scanning,
+native rendering and mobile/tablet visual checks remain open. The signed-in
+session was not touched.
+
+## 2026-11-05 — desktop focus strategy
+
+Application startup now uses Flutter's input-aware focus strategy on desktop;
+phone and tablet retain touch mode. Previously touch mode suppressed the
+divider and rail keyboard-focus indicators in the actual application. Twenty pane, focus, account and
+no-hover widget checks pass, as does full analysis. Native screen-reader and current-build focus
+traversal remain unverified.
+
+## 2026-11-05 — pane minimum and native fixture follow-up
+
+A disposable widget fixture puts the real desktop DM workspace and real
+suggested-interest cards on opposite sides of the outer divider at an
+approximately minimum-window content width. At 1.5× text, both 400-point
+extremes render and a disposable DM draft survives narrowing and widening.
+This is not the full Home feed or the live sidebar.
+
+A separate macOS Flutter fixture with a distinct bundle identifier and its own
+preferences used a copy of the current divider and synthetic content. Native
+keyboard adjustment changed the panes from 532/520 to 492/560 points; a
+fullscreen round trip restored 492/560, and after quitting and relaunching the
+fixture fullscreen restored the same 795/904-point split seen before restart.
+The fixture did not test real app content, physical display changes, VoiceOver,
+mouse dragging or the production window-frame restoration. The original signed-in
+app was not touched. Eighteen pane, account, focus and no-hover tests and full
+analysis passed. The pane minimum is still provisional until current-build real
+feed/sidebar and native display/accessibility checks are completed.
+
+## 2026-11-05 — divider focus and DM draft preservation
+
+The desktop divider now shows keyboard focus without a hover highlight and
+only exposes semantic resize actions that can move it at the current limit.
+A disposable DM draft survives a wide–narrow–wide transition; a control run
+without an added key confirmed that Flutter already preserves the subtree.
+Account change fixtures still return the detail navigator to its base. Seventeen divider,
+DM, account, focus and no-hover tests passed, as did full analysis.
+
+The current 400-point pane minimum and 520-point default remain provisional:
+these tests do not establish usability of real feeds and sidebar content or
+native fullscreen, display changes, VoiceOver and live account behavior. The
+signed-in session was not touched and its build may differ from source.
+
+## 2026-11-05 — grouped wallet and points sizing
+
+Desktop Lightning-address QR rendering now uses its local width and remains
+square, capped at 320 points. Cashu loading artwork, balance divider and mint
+URL control use bounded desktop dimensions instead of window percentages. The
+points explanation has a 560-point desktop width cap and scrolls in a short
+window. Phone and tablet sizing paths remain unchanged.
+
+A disposable Lightning-address fixture checks the QR at 240, 320 and 600
+points. Solid and fluid points fixtures use a 320×400-point box at 1.5× text
+and scroll to the action. Sixteen wallet, points, modal and no-hover tests and
+full `flutter analyze --no-pub` passed. Cashu loading and balance dimensions
+were analyzed but not rendered in these fixtures. Native layout, real wallet
+state, QR scanning, translated labels, and phone/tablet visuals remain open.
+No payment, sharing, export or account action was performed; the signed-in
+session was not touched.
+
+## 2026-11-05 — empty Cashu wallet sizing
+
+The desktop empty Cashu wallet illustration is bounded to its local width and
+160 points, and the empty state scrolls in short panes. Both desktop wallet-type
+switch labels can wrap instead of overflowing at larger text sizes. Phone and
+tablet layout paths remain unchanged. Disposable 320×220-point fixtures at
+1.5× text cover solid and fluid states in LTR and RTL and scroll to the add
+button; both switch variants also fit a 200-point fixture. Eight wallet and
+empty-state tests and focused analysis passed. No wallet was created or
+switched. Native layout, translated labels, live wallet state, and phone/tablet
+visuals remain unverified; the signed-in session was not touched.
+
+## 2026-11-05 — eCash token dialog sizing
+
+The desktop eCash token QR now stays square within the dialog's available
+width, capped at 320 points, and the dialog content scrolls in short windows.
+Phone and tablet retain their existing layout. A non-redeemable placeholder
+fixture checks the QR at 240, 320 and 600 points and opens the actual desktop
+dialog in a 600×500-point window at 1.5× text, scrolling to its action. Four
+wallet, modal and shared-sizing tests passed. No token action was invoked.
+Native appearance, QR scanning, translated labels, real tokens and mobile/tablet
+visuals remain unverified; the running signed-in session was not touched.
+
+## 2026-11-05 — split restoration and nested focus fixture
+
+A disposable shell fixture reproduces the earlier first-Tab observation: the
+nested Navigator initially owns focus and Tab enters its side control. Continued
+Tab traversal reaches and activates the rail, main and side controls; this does
+not establish the traversal order or behavior of the actual shell. No focus
+policy was changed. Divider fixtures also check saved 1% and 99% fractions at
+wide and narrow widths, preserving the saved value and restoring the clamped
+layout after remount. Ten focus, divider and menu tests passed. Real content at
+pane minimums, native keyboard and screen-reader traversal, fullscreen/display
+changes and live account behavior remain open. The signed-in app was not touched.
+
+## 2026-11-05 — compose and account keyboard access
+
+The compact Compose button now has an explicit semantic label. The signed-in
+account footer uses the same focusable, labeled rail action as destinations,
+with its existing switcher callback and avatar tap preserved. Disposable tests
+open the actual compact and expanded Compose menus by keyboard, dismiss them
+with Escape and reopen them; a separate account-control fixture does the same
+with a disposable dialog. No account was switched and no content was published.
+An initial synthetic nested-pane fixture did not reach its rail action with Tab;
+that fixture was not retained and does not establish the cause or actual-shell
+behavior. End-to-end pane traversal, real account dialog and VoiceOver still
+require verification. The running session was not touched.
+
+## 2026-11-05 — rail keyboard access
+
+Desktop rail destinations and search now expose labeled button semantics,
+keyboard focus and Enter/Space activation. Selected destinations report their
+state, and the existing long-press action remains available to semantics.
+Keyboard focus has an outline; pointer hover does not add a highlight. A
+disposable control fixture covers activation, focus, semantics and hover;
+focused analysis and 15 navigation/control/hover tests passed before the
+additional hover fixture, which also passed. Native focus traversal, VoiceOver,
+actual destination actions, compose/account access and focus restoration remain
+open. No mobile or tablet navigation code was changed; the signed-in session
+was not touched.
+
+## 2026-11-05 — poll chooser
+
+The desktop poll chooser no longer reserves a phone navigation-bar inset and
+can scroll in a short dialog. Phone and tablet retain their existing layout.
+A disposable 320×220-point fixture at 2× text rendered the two choices and
+exercised scrolling without creating a poll; focused analysis and three chooser/modal
+tests passed. Real navigation, native appearance, translated labels and
+mobile/tablet visuals remain unverified. The signed-in session was not touched.
+
+## 2026-11-05 — image selector actions
+
+The desktop article image selector's action footer can grow for enlarged text
+instead of being limited to the phone navigation-bar height. The phone and
+tablet height remains unchanged. A disposable 320×350-point fixture at 2× text
+checks the action's size without uploading; focused analysis and six dialog
+tests passed. Native rendering, translated labels, image selection and upload,
+and mobile/tablet visuals remain unverified. The signed-in session was not
+touched.
+
+## 2026-11-05 — calendar overflow affordance
+
+The desktop calendar now shows an interactive horizontal scrollbar when its
+content overflows. Its thumb keeps the same color and thickness on hover.
+Disposable 320-point, 1.5× text fixtures dragged the scrollbar with a mouse
+in LTR and RTL; focused analysis and 11 date-picker, divider and no-hover
+tests passed. Native appearance, trackpad and keyboard access, date selection,
+translated labels and mobile/tablet visuals remain unverified. The running
+signed-in session was not touched.
+
+## 2026-11-05 — pane state and account fixtures
+
+Disposable widget tests exercise the actual signer-notification path: a
+same-key refresh preserves an open text draft, while switching keys or signing
+out returns the detail navigator to its base. A separate divider fixture checks
+that both independent scroll positions and a draft survive a drag. Full
+`flutter analyze --no-pub` and 76 desktop/navigation/hover tests passed using
+Puro `pipress`. These do not verify real account
+switching, draft persistence, nested dialogs, live data or native behavior.
+The signed-in session was not touched.
+
+## 2026-11-05 — shared date picker
+
+The desktop date picker uses a bounded height, allows its calendar to scroll
+horizontally when enlarged text needs more width, and wraps the time and clear
+controls. Phone and tablet sizing remains unchanged. A disposable 320×350
+point fixture with 1.5× text exercised scrolling and clearing; focused analysis
+and the widget test passed. Native horizontal-scroll discoverability, date and
+time selection, translations, RTL and phone/tablet visuals remain unverified.
+The running signed-in session was not touched.
+
+## 2026-11-05 — media chooser and Smart Widgets
+
+The desktop media chooser no longer reserves the phone navigation-bar inset.
+The desktop tools list uses a single column and bounded saved-tool cards. The
+desktop Smart Widget preview has a bounded width and scrolls content within its
+available height. Phone and tablet branches remain unchanged. A disposable
+320-point, 1.5× text fixture rendered the media choices without selecting or
+uploading files; a valid six-button Smart Widget fixture verified scrolling in
+a 320×180-point box. Focused analysis and seven desktop tests passed. Real
+tools, native rendering, selection/upload, RTL and mobile/tablet visuals
+remain unverified.
+
+## 2026-11-05 — bookmark dialog and article table
+
+The desktop bookmark picker and create-list form use fixed padding rather than
+window-relative tablet padding. Desktop article table editor inputs use
+bounded column widths. Phone and tablet branches are unchanged. A disposable
+320-point widget fixture with 1.5× text verified bookmark title entry; it did
+not publish or save a list. The bookmark picker with real lists and the table
+editor's native interaction and large-text layout remain unverified.
+
+## 2026-11-05 — profile QR and shared empty states
+
+Desktop profile QR codes now remain square within their local pane, capped at
+320 points, instead of using window width for both dimensions. Desktop
+signed-out, muted, disabled-message, offline and error illustrations use
+bounded sizes; offline instructions can wrap in a narrow pane. The existing
+phone and tablet paths remain unchanged. Disposable widget checks cover QR
+resizing at 240, 320 and 500 points, an offline retry action at 320 points
+with 1.5× text, and a long offline instruction. The QR test exercises the
+shared bounds with a disposable payload, not a real profile view. Native
+appearance, QR scanning, real profile actions, RTL and mobile/tablet visuals
+remain open.
+
+## 2026-11-05 — shared headers and image selector
+
+Wallet, inbox and notification selectors now cap their desktop width instead
+of using half the full window; the protected-event dialog icon is bounded as
+well. The desktop image selector uses a bounded preview and a two-column
+history rather than window-height sizing and a tablet grid. Phone and tablet
+branches remain unchanged. Disposable widget fixtures exercise the
+notification menu and image selector at 320 points with 1.5× text, including
+empty and placeholder history; no images were uploaded. Real history, native
+rendering, long translated labels and phone/tablet visual regression remain
+unverified.
+
+## 2026-11-05 — shared desktop sizing and divider checks
+
+Desktop revenue-split padding and share-dialog padding now stay bounded rather
+than scaling with the window. Share QR rendering stays square within local
+width (up to 320 points), and desktop share recipients and palette controls use
+bounded sizes. The desktop QR scanner fallback no longer reserves a
+window-sized square. Two shared signed-out banner illustrations and the Smart
+Widget profile selector also use bounded desktop sizes. Phone and tablet
+branches retain their prior sizing.
+
+A disposable 320-point widget fixture with 1.5× text exercises the scanner
+fallback, revenue-split toggle and share QR, including RTL direction. Divider
+tests also exercise invalid saved values and semantic increase/decrease; the
+existing drag, persistence, clamping and keyboard-reset tests pass. Ten focused
+widget tests, full `flutter analyze --no-pub`, and 62 desktop/navigation tests
+passed using Puro `pipress`. These checks do not establish real
+sharing, QR scanning, editor data, native VoiceOver, or mobile/tablet visual
+behavior. The running signed-in app was not changed or restarted; its build is
+unknown. Divider minimums remain provisional and the wider sizing audit remains
+open.
+
+## 2026-11-05 — article relay selection
+
+The desktop article relay step now uses fixed padding and a single column, so
+its choices fit a narrow pane even when the full window is wide. Phone and
+tablet branches retain their previous padding and grid behavior. A disposable
+widget fixture passed at 320 points with 1.5× text and exercised a relay tap;
+focused analysis passed. Native appearance, real relay selection, RTL and
+mobile/tablet visual regression remain unverified. The running signed-in app
+was not restarted or used as a fixture.
+
+## 2026-11-05 — desktop curation items
+
+Desktop curation editing now uses the existing single-column reorderable list
+instead of the nested two-column grid. Its separate drag handle leaves the
+delete action accessible, and reorder updates the displayed active collection.
+Phone and tablet continue to use their previous responsive branches. Focused
+analysis and three existing desktop layout tests passed. A disposable narrow
+widget fixture also verifies dragging through the desktop handle and an adjacent
+delete action; it does not cover the real curation data flow. The macOS debug
+build succeeded with the existing Swift Package Manager plugin warnings. Native
+dragging, deletion, scrolling and visual layout still require verification with
+safe fixtures.
+
+## 2026-11-05 — publishing editor padding
+
+Curation, video and Smart Widget content and specification screens now use
+fixed desktop padding instead of padding based on the whole window. Their
+phone and tablet branches are unchanged. Focused analysis and four existing
+desktop layout tests passed; those tests do not render these editors. A macOS
+debug build succeeded with the existing Swift Package Manager plugin warnings.
+Native layout, large text and the curation grid at narrow widths remain unverified.
+
+## 2026-11-05 — article publishing layout
+
+Article publishing details and the article image selector's action row use
+fixed desktop padding instead of window-relative tablet padding. Phone and
+tablet branches are unchanged. Focused analysis and four existing desktop
+layout tests passed; these tests do not exercise the article screens. A macOS
+debug build succeeded with the existing Swift Package Manager plugin warnings.
+Native visuals, long labels, large text and image selection remain unverified.
+
+## 2026-11-05 — paid-note sheet sizing
+
+The desktop paid-note sheet now uses local padding, a bounded alert icon and a
+square invoice QR capped at 320 points and constrained by the available width.
+Phone and tablet sizing paths remain unchanged. Focused analysis and five
+existing desktop modal/control tests passed; those tests do not cover the invoice.
+The macOS debug build succeeded with Flutter 3.44.9 / Dart 3.12.2 (Puro
+`pipress`); Flutter reported existing Swift Package Manager plugin warnings.
+No YakiHonne process was running when checked, and the build was not launched.
+The native invoice, large text and QR scanning remain unverified. No test payment
+or publish was attempted. The root glass guide remains absent.
+
 ## 2026-11-04 — people grid
 
 Know people now uses the shared pane-width masonry grid for profile cards and
@@ -1231,3 +1687,514 @@ Focused analysis and the pane/navigation tests passed. Native appearance,
 live suggestion loading and account switching still require verification.
 The desktop sidebar now always shows its sections regardless of feed visibility
 settings, with smaller headings, additional spacing and trending notes.
+
+## 2026-11-11 — sidebar and More inventory
+
+Desktop persistent actions: Search opens SearchView; Home selects leading;
+Messages selects DMs and retains its mark-all-read long press and existing
+signed-in dot behavior; Notifications marks read before selecting its view and
+shows the existing unread dot; Compose retains its sign-in gate and menu;
+the account footer retains login/account switching. Re-selecting a selected
+main view scrolls to the top.
+
+More contains Media, Articles and Wallet (main-view selections; Wallet requests
+balance first); Explore packs, Relay Orbits and Settings (pushed routes); and,
+when signing is available, Smart Widgets, Profile, Dashboard, Subscription,
+Creators Subscriptions, Pricing, Blossom Storage, Yaki Points and Yaki Pro.
+Points retains its system-login check and login popup; Yaki Pro opens its
+existing external URL. More highlights for the selected secondary main view.
+The searchable dialog uses the existing translated labels and the existing
+callbacks; it does not add unread counts or change mobile navigation.
+
+Widget fixtures cover search, keyboard activation, Escape and focus restoration,
+and a short RTL dialog at 1.5× text. This is not verification of the real
+signed-in/out sidebar, onboarding tour, every destination, native rendering,
+VoiceOver or extreme-height shell. The running signed-in app was not touched.
+
+Verification: seven focused More/rail widget tests passed and full
+`flutter analyze --no-pub` reported no issues using the checkout's `pipress`
+Puro environment. A native fixture was not run for this change.
+
+### Sidebar priority follow-up
+
+Media and Wallet returned to the rail, and Settings moved from More to the
+fixed footer. The compact avatar uses the same 44-point size as Compose. The
+navigation area can scroll at short heights while the footer stays in place.
+More groups its remaining entries under existing translated headings and uses
+theme colors; the Compose popup has a translucent blurred surface. This
+supersedes the preceding inventory's placement of Media, Wallet and Settings.
+The signed-in app was not restarted for this change; native visuals remain open.
+
+Compose now uses the actual `GlassMenu` morphing control, replacing the prior
+translucent Material popup. Settings has its own rounded theme-colored footer
+container. The compact and expanded Compose Escape/reopen widget fixtures pass;
+native rendering and full keyboard traversal remain unverified.
+
+## 2026-11-11 — desktop subscription checkout
+
+Desktop pricing now selects the existing external card checkout even when the
+mobile IAP build flag is enabled. Existing Lightning and points choices remain
+available, while mobile retains the flag's existing behavior. Stripe-managed
+subscriptions expose the existing billing and plan controls on desktop; store
+restore and store-management actions remain mobile-only. Before desktop card
+checkout the client checks the current account and fetches subscription status,
+refusing a second checkout for active IAP or Stripe subscriptions. The API also
+rejects active IAP checkout, but its existing link endpoint does not provide an
+atomic duplicate-Stripe guard. Browser launch failure is reported as failure,
+and status is refreshed on app resume and after leaving checkout.
+
+The Stripe and creator-subscription endpoints are existing backend paths; no
+backend changes or deployment were made in this work. Fake-account and
+fake-browser tests alone do not establish a live Stripe purchase, webhook
+delivery, production account session, native browser return, or behavior during
+concurrent checkout requests. The user confirmed on 2026-11-11 that Stripe
+checkout is done; the confirmation did not specify the test conditions or
+webhook details. The duplicate-Stripe concurrency guard remains a separate
+backend concern.
+
+Compact profile follow-up: the account action retains a 44-point hit area, but
+its visible avatar is centered at 36 points so it no longer appears larger than
+the adjacent controls. The earlier 44-point avatar note is superseded. Widget
+layout checks cover the action and image bounds; native appearance is unverified.
+
+Compact profile correction: the visible avatar and adjacent compact buttons are
+44 points; the avatar remains centered in its 44-point action. This supersedes
+the previous 36-point adjustment. Native appearance remains to be checked.
+
+### Desktop search focus ring
+
+The desktop glass search field suppresses the blue focus ring while retaining
+text focus and keyboard input. A disposable widget fixture verifies typing and
+that the ring painter is absent. Mobile retains the package default. The running
+app was not restarted; native appearance remains unverified. Focused analysis of
+the vendored field reports ten existing informational lint findings.
+
+### Sidebar and tour fixture follow-up
+
+The desktop rail now exposes tour targets for Search, Home, Media and the
+signed-in account action. Before focusing a desktop tour target, the tour
+reveals it in its scrollable viewport and recalculates the card's vertical
+placement. The signed-out login is not presented as a profile target.
+
+Disposable assembled-sidebar fixtures verify signed-out Home reselection,
+Media, Notifications, Wallet and Articles selection and their mocked side
+effects, as well as signed-in More inventory and account target presence. A
+separate short-scroll fixture verifies target reveal. Together with the existing
+More, rail and shell keyboard fixtures, 16 focused tests pass. These fixtures
+use fake cubits and signers: real destination pages, full tour progression,
+native rendering, VoiceOver and live account behavior remain open. The active
+signed-in app was not touched.
+
+### Completion confirmation
+
+On 2026-11-11 the user confirmed the desktop shell baseline and Stripe checkout
+are complete. The earlier native shell observations above remain the recorded
+evidence; individual edge-case coverage and Stripe test conditions were not
+specified. Do not repeat the completed baseline as outstanding work.
+
+### Scope decisions — 2026-11-11
+
+The user confirmed sidebar and navigation verification is complete. Planned
+pin/reorder, command search, shortcuts, context-menu expansion and the optional
+multi-column deck are removed from scope. Historical open-status notes above
+are superseded for these items. Native reliability remains the active work.
+
+### Native reliability check — 2026-11-11
+
+The locked `awesome_notifications` 0.10.1 macOS implementation still returns
+`FlutterMethodNotImplemented` for notification methods. Desktop now skips the
+local notification manager's initialization and delivery, and DM and
+notification cubits default to no system alerts and skip permission, badge and
+DM delivery calls on desktop. Mobile paths retain their prior behavior. A
+focused disposable manager fixture passes and focused Dart analysis reports no
+issues. This is a fail-safe, not a macOS notification implementation; native
+alerts and their settings remain unresolved.
+
+Code inspection confirms the three QR scanner views gate camera widgets to
+mobile and show a desktop fallback. Desktop subscription controls retain their
+platform gates. These are code-level findings, not native device tests.
+
+The desktop shell omits the mobile app bars that display connectivity status;
+its `isConnected` value reflects device connectivity rather than individual
+relay health. Offline/partial-relay feedback therefore remains open. The
+running-link handler recognizes Nostr Wallet Connect and Alby links, but the
+initial-link path explicitly skips them and no other initial-link handler was
+found. Cold wallet-link behavior remains unresolved; no link was opened and no
+wallet operation was performed. NIP-46, real uploads, exports, media and native
+notification permission/delivery still need safe native fixtures and actual
+verification. The running signed-in app was not disturbed.
+
+### Reliability scope update — 2026-11-11
+
+Per user direction, macOS system notifications are not needed and are removed
+from the remaining scope. The existing guard against unsupported plugin calls
+remains. Connectivity and links are the active work; after they are fixed, the
+next stage is cross-platform release readiness. Earlier broader Phase 4
+open-work lists are superseded by this scope.
+
+### Link lifecycle continuation — 2026-11-11
+
+The app_links stream supplies both the initial and later links. MainCubit now
+subscribes once instead of separately reading the latest link, so cold wallet
+URIs enter the same handler as running URIs without that duplicate path. Wallet
+handling waits for wallet initialization and checks the signer is unchanged;
+signed-out wallet links are ignored and remain an open case. Alby callback
+classification checks the actual host and path. Two disposable stream and
+classification tests pass, and focused Dart analysis passes. These tests do
+not establish native cold/running delivery, navigation, wallet callback behavior,
+or reconnection. No links were sent to the running app and no wallet operation
+was performed. Device/relay status and offline/reconnect behavior remain open.
+
+
+### Device connectivity continuation — 2026-11-11
+
+The connectivity repository now initializes and periodically refreshes device
+interface availability, accepts VPN and other interfaces, emits only changes,
+and discards an initial check superseded by a newer platform event. DNS lookup
+is separate and cannot overwrite interface state. Two disposable fake-platform
+tests pass. This signal does not establish Internet access or relay health; its
+initial boolean still cannot represent unknown, and desktop status, relay
+feedback and native offline/reconnect behavior remain open. The running app was
+not used.
+
+
+### Narrowed desktop reliability continuation — 2026-11-11
+
+The user removed wallet-link work and requested that relay reconnection remain
+simple. No relay dependency change was applied. The desktop rail reports device
+interface availability separately from the count of configured relay sockets
+that are open. A platform error makes the interface status unknown; DNS failure
+does not change it. This is interface and socket status, not a guarantee of
+Internet access, relay authorization, event delivery, or fresh feed content.
+A widget fixture covers unknown, offline and available interface states alongside
+a synthetic relay count. Unsent events now remain queued when a retry fails,
+and an empty relay list uses the normal fallback; a mock-storage/fake-sender test passed without sending
+an event. Existing reconnect behavior remains in place.
+
+A loopback-only experiment in a disposable dependency copy exposed duplicate
+connection behavior during close/reopen. Its proposed dependency changes were
+not applied following the user's instruction; live relay recovery and active
+subscription continuity are not verified.
+
+The app now starts its link inbox before app initialization and attaches it
+after the main view is built. In an isolated macOS debug app with a distinct
+bundle ID, no URL registrations or shared keychain group, two synthetic Nostr
+URLs were delivered by explicitly targeting the fixture: one cold launch and
+one while running. A fake-stream test covers buffering before view attachment.
+This does not verify OS default-handler selection, actual content navigation,
+or live relay lookup. Wallet links are out of scope.
+
+A separate fresh macOS debug fixture with the same isolation used the real
+NotesEventsCubit, synthetic reply stats and a small view that retains/releases
+the open ID. Eviction preserved the reply while retained; after release and
+marking the other entries recent, a later prune evicted it. The first attempt
+assumed deterministic order for equal access times and failed; the corrected
+fixture controlled recency and passed. This is not an end-to-end NoteView or
+real-content test. The running signed-in app was not used. Focused tests and
+analysis passed, and the updated app source built in the isolated copy.
+
+
+### Cross-platform implementation start — 2026-11-11
+
+The user accepted the preceding device/relay, Nostr-link and cache work as
+complete for the plan; its actual verification limits remain above. Windows
+and Linux are now active scope. Wallet links, system notifications and the
+deck remain out of scope.
+
+Current generated plugin metadata was checked against the lockfile using
+Flutter 3.44.9 / Dart 3.12.2. Windows includes app_links, connectivity_plus,
+flutter_inappwebview_windows, secure storage, file selection and URL launcher.
+Linux includes app_links_linux, GTK, connectivity_plus, secure storage, file
+selection and URL launcher. Registration alone does not prove runtime support.
+The locked video_player, just_audio and webview_flutter do not provide the
+embedded Windows/Linux implementations used by these screens. The main audio,
+video, YouTube and Smart Widget paths now present an explicit browser fallback;
+Linux Google sign-in displays an unavailable message and Linux embedded X
+posts provide a browser action. Disposable simulated-platform widget tests
+cover these paths without opening external links. Other editor/media paths
+still need audit and native verification.
+
+The Linux runner now uses the installed GTK plugin's command-line and single
+instance setup; a startup argument is queued with a short duplicate guard, and
+a desktop-entry template is provided. The Windows runner forwards `nostr:`
+arguments to an existing window using the app_links 6.3.2 message contract; a
+per-user protocol registration script is provided for installer integration.
+No OS handler or registry entry was installed. Unit fixtures cover Linux
+startup delivery and deduplication; neither native runner was built or run on
+its target platform. Flutter on this host is macOS and no Linux container
+daemon or Windows compiler was available.
+
+An isolated macOS debug build of the updated shared code passed; it used a
+separate app identity and empty fixture configuration. Focused cross-platform
+and existing desktop media tests passed, and repository-wide Flutter analysis
+reported no issues. Windows/Linux builds, window sizing,
+DPI, file dialogs, clean-machine storage, protocol registration, package
+installation, signing, notarization and release smoke tests remain open. The
+tracked `.github/workflows/desktop.yml` currently uses unpinned stable Flutter,
+does not check out the sibling Nostr dependency or restore `.env`, omits Linux
+libsecret/GStreamer development dependencies, and does not perform the stated
+obfuscation/symbol upload. Its release artifacts must not be treated as release
+readiness evidence until that workflow and its credentials are addressed.
+
+### Cross-platform audit continuation — 2026-11-11
+
+The Windows and Linux local-video composer previously constructed
+`VideoPlayerController.file` despite the missing platform player. It now shows
+existing translated playback-unavailable text without starting the player; video
+trim and compression controls are hidden on those platforms, while selecting a
+thumbnail and uploading the original remain available. `pro_video_editor` does
+register Windows/Linux implementations, but its editor also requires the absent
+player; metadata extraction is already caught on failure. This is a simulated
+platform check, not an end-to-end upload or native editor verification. Other
+editor, thumbnail, camera, clipboard and media paths still require a complete
+call-site and native audit.
+
+Network image and video saves now use the registered file-selector save dialog
+on Windows/Linux; cancellation leaves no output and video temporary files are
+cleaned up. Generated-image and Blossom downloads still explicitly report
+unavailability on those platforms; key and wallet export paths need a separate
+security-conscious audit and were not exercised. Native dialog behavior,
+overwrite handling, write permissions, and paths with spaces are not verified.
+Linux secure storage registers a libsecret backend and requires a working
+Secret Service; Windows registers secure storage. Neither clean-machine startup
+nor locked/unavailable keyring recovery was tested.
+
+Link inspection: Linux `gtk` strips the executable from remote command-line
+arguments and `app_links_linux` forwards the first argument; the local initial
+argument is buffered separately. The time-based duplicate suppression can also
+suppress an intentional identical link received during its initial three-second
+window. Windows uses the plugin's `WM_USER + 2` UTF-8 `WM_COPYDATA` contract;
+window discovery and a successful message send do not prove the plugin listener
+was ready, especially during startup. The Linux desktop entry and Windows
+per-user registry script are inputs only; handler registration, installer
+integration, cold and running delivery, duplicate and lifecycle behavior remain
+unverified on the target systems. No system registration was performed.
+
+The Windows runner declares per-monitor V2 DPI awareness and responds to
+`WM_DPICHANGED`; Linux and Windows start at 1280×720 with no native minimum
+constraint found. Their scaling, minimum usable size, keyboard and accessibility
+behavior require native testing. Do not infer target validation from macOS or
+widget fixtures.
+
+The desktop GitHub Actions workflow is now manual and uses Flutter 3.44.9 and
+the same pinned Nostr sibling revision as the mobile release workflow. It
+requires `APP_ENV` in a `desktop-build` environment, installs Linux libsecret
+and GStreamer development dependencies, enables obfuscation and saves unsigned
+build candidates and symbols as short-lived artifacts. It has not been run;
+runner availability, lockfile enforcement, plugin compilation, symbol output
+and dependency coverage are unverified. `.env` is a bundled asset, so GitHub
+Secrets only protect its delivery to CI: values in the app are extractable by
+recipients. Use only distributable client configuration in `APP_ENV`, protect
+artifact access, and never put private credentials there. This workflow does not
+upload symbols to GlitchTip, create installers, sign, notarize, or publish.
+
+Release engineering remains open: define and test a Windows installer or MSIX
+with opt-in Nostr registration, WebView2 prerequisite, Authenticode signing and
+safe uninstall; define a Linux package with executable/desktop-entry/icon
+placement, shared library and GStreamer runtime dependencies, Secret Service,
+package signing and non-destructive handler selection. macOS release settings
+currently specify automatic Apple Development signing and a keychain access
+group; distribution identity, entitlements, hardened runtime, notarization,
+stapling, update delivery and GlitchTip symbol upload need a real release
+pipeline and verification. No package, certificate or release action was used.
+
+Verification for this continuation: repository-wide `flutter analyze --no-pub`
+reported no issues; 11 focused link, local/network media, webview and Smart
+Widget tests passed; `git diff --check` passed. The first local-video test run
+failed because the fixture reset the platform override too late; after fixing
+fixture cleanup, the selection passed. These tests do not exercise native
+file dialogs or the workflow. No native Windows/Linux host was available, and
+the running signed-in app was not touched.
+
+### File-save and storage audit continuation — 2026-11-11
+
+Generated-image and Blossom downloads now use the registered Windows/Linux file
+selector, sharing a byte-save helper with network-image downloads. A fake
+selector and disposable temporary directory verify cancellation, exact bytes, a
+path containing spaces and propagation of a write failure. The callers retain
+their localized success/error handling. The actual OS dialogs, overwrite
+confirmation, permissions and downloads remain untested on native targets.
+Windows video-thumbnail source filtering now recognizes drive-letter and UNC
+paths while rejecting URLs; a pure path-classification test passes. Actual
+Windows thumbnail creation and codecs remain unverified.
+
+Camera enumeration is gated to mobile in startup; Linux image picker delegates
+gallery selections to file_selector but requires a camera delegate for camera
+selection. The Windows/Linux picker, clipboard, editing and playback call-site
+audit and native checks are still incomplete.
+
+**Secure-storage release blocker:** `LocalDatabaseRepository` catches secure
+read errors as missing values and catches write errors without reporting them.
+`SettingsCubit.init` treats missing account maps as empty; account addition
+then updates in-memory maps and proceeds after writes whose failure was hidden.
+An unavailable or locked Secret Service or a Windows storage error could thus
+appear as missing accounts or an apparently successful but non-persistent
+sign-in. Recovery must distinguish unavailable storage from an empty store,
+prevent overwriting data based on a failed read, surface write failure before
+confirming account changes, and handle the multiple related maps consistently.
+This needs dedicated disposable fault-injection tests and a startup/authentication
+flow design; it was not changed or tested with the user's account.
+
+Verification: repository-wide `flutter analyze --no-pub` passed, eight focused
+save, thumbnail-source, deep-link and local-video tests passed, and
+`git diff --check` passed. These are host-side tests with fake or simulated
+platforms; no Windows/Linux native build or app session was run.
+
+### Account-storage foundation — 2026-11-11
+
+An isolated, currently unused `AccountSnapshotStore` prototypes reading the
+five legacy account maps without writing during migration and saving them as a
+single versioned secure value. Disposable in-memory fault injection covers a
+failed legacy read, a failed write, and malformed snapshot data. These tests
+assume the fake backend does not change a value when a write fails; they do not
+establish atomicity or failure semantics of any native secure-storage backend.
+
+**The secure-storage release blocker remains open.** Production initialization
+and account mutations still use the old methods. Integration must address the
+active account index stored separately in preferences, serialized account
+changes, startup and localized recovery, sign-in and logout error handling,
+legacy migration and downgrade behavior, and remote signer data. It must not
+assume that a failed native write left the old value intact. Native locked and
+unavailable keyring behavior remains unverified. No account data or running app
+was accessed for these tests.
+
+The user subsequently approved applying the eventual safe account-storage
+handling to Windows and Linux, with Linux-specific keyring guidance, while
+leaving mobile and macOS behavior unchanged. The unused prototype now refuses
+concurrent operations and requires a successful reload following any failed
+write, including a simulated write that changed the value before reporting an
+error. Four disposable fault-injection tests pass. This does not integrate the
+prototype or resolve the production release blocker.
+
+The prototype was extended to carry the active index and remote signer data in
+the same value and to fail if the legacy signer read fails. Six disposable
+tests and focused analysis pass. It remains unused by production; native write
+semantics, migration, recovery UI, and integration are still unverified.
+
+### Desktop account-storage integration — 2026-11-11
+
+The Windows/Linux settings path now reads a versioned account snapshot using
+the existing secure-storage backend. It loads legacy account maps without
+writing at startup, includes the active account and remote signers in the
+snapshot, and saves it before applying account addition, switching or removal.
+Failed reads show a localized retry screen (with Linux keyring guidance).
+Failed or uncertain writes report an error and require an app restart before
+another account change. Legacy entries are removed only after snapshot
+write/read verification; cleanup can resume after interruption. Mobile and
+macOS retain their existing storage path.
+
+The new format is not readable by older app versions after migration. Changed
+legacy account entries are detected and block initialization, but an older
+version may see no accounts after cleanup, and its active-account selection
+cannot always be distinguished from stale preferences. Do not downgrade a
+migrated desktop profile without a separately verified account backup and
+recovery process. Snapshot verification does not prove crash durability,
+cross-process exclusion, or OS backend behavior. Native Windows/Linux builds,
+locked keyring and real account migration remain untested; the desktop release
+blocker remains open pending those checks. No real account was accessed.
+Repository-wide Flutter analysis and 14 disposable account-storage tests pass;
+the tests include a successful removal and injected read, write and cleanup
+failures. The retry screen and native secure-storage providers were not tested
+end to end.
+
+### Account-storage review continuation — 2026-11-11
+
+Review found that legacy values could change after the initial read and be
+deleted by migration cleanup. Saving now checks the legacy hashes again, and
+cleanup checks them before starting and before deleting each value. A changed
+value blocks the operation and is retained. This is still not cross-process
+locking: another process could write between the final check and deletion.
+Avoid concurrent app versions and retain an independently verified backup.
+
+The settings cubit now rejects overlapping Windows/Linux account changes until
+the preceding change has finished applying its in-memory state. If a later step
+throws after a successful save, further changes require restart. Disposable
+tests cover overlapping removals, changed legacy values before and during
+cleanup, and a removal whose write took effect before reporting failure; the
+restart fixture loads that persisted outcome. Existing fixtures cover failed
+reads, failed additions/removals, switching after a failed save, interrupted
+cleanup and restart. These use in-memory storage and synthetic account strings;
+they do not establish native durability, atomicity or keyring behavior. The
+retry screen, successful live account switching, remote signer lifecycle and
+removal, and native locked/unavailable Linux Secret Service remain unverified.
+Removing a single account currently retains its remote signer record in the
+snapshot; review and test its lifecycle before release.
+
+The downgrade limitation remains: an older build cannot read the snapshot and
+may show no accounts after cleanup. Legacy hash checks detect some subsequent
+changes, but cannot protect against every older-version or concurrent-process
+scenario. The Windows/Linux secure-storage release blocker remains open.
+
+On this macOS host, 22 focused storage and deep-link tests and focused analysis
+passed using Puro `pipress`; `git diff --check` passed. Flutter aborted inside
+the sandbox, so these commands ran outside it. Docker had no usable daemon and
+no Windows/Linux target host was available. The running signed-in app and real
+account data were not used. Link runner inspection still leaves the Windows
+listener-readiness race and Linux initial-link deduplication ambiguity open;
+native window minimums, scaling, plugin fallbacks, packaging and installation
+remain unverified as described above. No protocol handler was installed.
+
+### Remote signer and recovery continuation — 2026-11-11
+
+On Windows/Linux, removing an account now saves a snapshot without its remote
+signer before removing and closing that signer in memory. Removing all accounts
+also closes the in-memory remote signers after saving. A disposable signer test
+checks that a failed write keeps the account and signer and that a successful
+removal persists without the signer. Remote login on those targets now waits for
+the login success callback before reporting success; a full account list also
+does not proceed as a successful login. Mobile and macOS retain the previous
+remote-login path. This is not a native or end-to-end remote-signer test.
+
+`DESKTOP_ACCOUNT_RECOVERY.md` describes a proposed backup and recovery
+validation procedure and the downgrade restrictions. It is not a verified
+recovery guarantee. A protected, independently restored backup and each actual
+account recovery method must be validated on the target systems before release.
+
+The host is macOS; Docker has no usable daemon, and no Windows compiler, Linux
+host, desktop-file validator, or PowerShell was available. The packaging inputs
+and workflow remain unexecuted; no package or protocol handler was installed.
+The previously documented Windows forwarding race, Linux duplicate ambiguity,
+native window sizing and scaling, keyring recovery, plugin behavior, installer
+and clean-machine checks remain open. Simulated storage, link, media, webview,
+Smart Widget and file-save fixtures passed; these do not substitute for target
+OS testing. No user account, wallet or running application was used.
+
+### Native implementation continuation — 2026-11-11
+
+Windows Nostr forwarding now waits for a readiness signal from the Dart link
+subscriber and expects an acknowledgment from the existing window. On timeout
+or failed forwarding it exits instead of opening a second app against the same
+profile. The five-second timeout can reject a link while startup is slow; there
+is currently no user-facing retry message. This path, message ordering, window
+discovery and multiple rapid links have not been built or tested on Windows.
+
+Linux now suppresses the primary local Nostr command at the GTK signal source,
+because that argument is already passed to Dart at startup. Remote command
+lines are left to the plugin, so a deliberately repeated link is not removed by
+a time window. The Dart fixture checks repeated stream events, not the GTK signal
+contract; native cold/running delivery and remote links arriving before the Dart
+plugin listener is ready remain unverified. Neither platform has an installed
+handler as a result of this work.
+
+Windows and Linux runners now specify provisional 1153 × 600 logical minimums,
+matching the existing macOS value. Per-monitor Windows DPI and GTK geometry
+hints are used. Actual client area, display scaling, window manager behavior,
+small displays, accessibility and usability remain unverified on target OSes.
+Windows/Linux media selection sheets hide camera choices that have no configured
+picker delegate and retain gallery/file selection. A simulated-platform widget
+fixture covers the shared selector; the other sheets and actual dialogs still
+need native verification.
+
+An Inno Setup definition and a Debian candidate builder have been added under
+the platform packaging directories. They are unsigned, unbuilt definitions and
+do not register handlers, install prerequisites, sign, or publish. The Debian
+dependency list and placeholder maintainer need review; WebView2, package
+upgrades, uninstall, platform prerequisites, signing and clean-machine behavior
+remain open. No package was created or installed. The snapshot still lacks
+cross-process exclusion and a product-supported downgrade migration; do not
+consider the recovery procedure a verified guarantee.
+
+Fourteen focused link, selector and fallback tests passed after correcting a
+missing import in the first test run. Focused analysis, shell syntax validation
+and `git diff --check` passed. No Windows/Linux native compilation or run was
+available, and no signed-in app, account, wallet or network publication was used.

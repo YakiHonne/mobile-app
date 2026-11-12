@@ -113,25 +113,32 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
   }
 
   Widget _items(BuildContext context, bool isTablet, SmartWidgetsState state) {
-    return AdaptiveSmartRefresher(
-      desktopHasResults: state.widgets.isNotEmpty,
-      controller: refreshController,
-      enablePullDown: false,
-      enablePullUp: true,
-      header: const MaterialClassicHeader(
-        color: kPurple,
-      ),
-      footer: const RefresherClassicFooter(),
-      onLoading: () => context
-          .read<SmartWidgetsCubit>()
-          .getSmartWidgets(isAdd: true, isSelf: false),
-      onRefresh: () => onRefresh(
-        onInit: () => context
-            .read<SmartWidgetsCubit>()
-            .getSmartWidgets(isAdd: false, isSelf: false),
-      ),
-      child: isTablet ? _itemsGrid(context, state) : _itemsList(state),
-    );
+    Widget refresher(Widget content) => AdaptiveSmartRefresher(
+          desktopHasResults: state.widgets.isNotEmpty,
+          controller: refreshController,
+          enablePullDown: false,
+          enablePullUp: true,
+          header: const MaterialClassicHeader(
+            color: kPurple,
+          ),
+          footer: const RefresherClassicFooter(),
+          onLoading: () => context
+              .read<SmartWidgetsCubit>()
+              .getSmartWidgets(isAdd: true, isSelf: false),
+          onRefresh: () => onRefresh(
+            onInit: () => context
+                .read<SmartWidgetsCubit>()
+                .getSmartWidgets(isAdd: false, isSelf: false),
+          ),
+          child: content,
+        );
+    if (isDesktopPlatform) {
+      return DesktopPaneGridBuilder(
+        builder: (context, columns) =>
+            refresher(_itemsGrid(context, state, columns: columns)),
+      );
+    }
+    return refresher(isTablet ? _itemsGrid(context, state) : _itemsList(state));
   }
 
   ListView _itemsList(SmartWidgetsState state) {
@@ -153,9 +160,10 @@ class _SmartWidgetsViewState extends State<SmartWidgetsView>
     );
   }
 
-  MasonryGridView _itemsGrid(BuildContext context, SmartWidgetsState state) {
+  MasonryGridView _itemsGrid(BuildContext context, SmartWidgetsState state,
+      {int? columns}) {
     return MasonryGridView.count(
-      crossAxisCount: feedGridColumns(context),
+      crossAxisCount: columns ?? feedGridColumns(context),
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: state.widgets.length,
       crossAxisSpacing: kDefaultPadding / 2,

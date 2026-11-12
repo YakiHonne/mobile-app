@@ -114,6 +114,11 @@ class _ExplorePacksViewState extends State<ExplorePacksView> {
                             icon: FeatureIcons.search,
                           ),
                         )
+                      else if (isDesktopPlatform)
+                        DesktopPaneSliverGridBuilder(
+                          builder: (context, columns) =>
+                              buildMasonryGrid(state.packs, columns: columns),
+                        )
                       else if (isTablet)
                         buildMasonryGrid(state.packs)
                       else
@@ -129,9 +134,10 @@ class _ExplorePacksViewState extends State<ExplorePacksView> {
     );
   }
 
-  SliverMasonryGrid buildMasonryGrid(List<PacksModel> packs) {
+  SliverMasonryGrid buildMasonryGrid(List<PacksModel> packs,
+      {int columns = 2}) {
     return SliverMasonryGrid.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       mainAxisSpacing: kDefaultPadding / 2,
       crossAxisSpacing: kDefaultPadding / 2,
       itemBuilder: (context, index) {

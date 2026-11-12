@@ -18,6 +18,7 @@ import '../../utils/utils.dart';
 import '../gallery_view/gallery_view.dart';
 import '../profile_view/widgets/profile_media.dart';
 import 'content_renderer/url_type_checker.dart';
+import 'desktop_media_fallback.dart';
 import 'fluid_blur_container.dart';
 import 'media_components/video_download.dart';
 import 'seek_bar.dart';
@@ -137,9 +138,22 @@ class LinkPreviewer extends HookWidget {
   }
 }
 
-class AudioDisplayer extends StatefulWidget {
-  const AudioDisplayer({
-    super.key,
+class AudioDisplayer extends StatelessWidget {
+  const AudioDisplayer({super.key, this.inverseNoteColor, required this.url});
+
+  final bool? inverseNoteColor;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) =>
+      supportsEmbeddedDesktopMedia(defaultTargetPlatform)
+          ? _EmbeddedAudioDisplayer(
+              url: url, inverseNoteColor: inverseNoteColor)
+          : DesktopMediaFallback(url: url);
+}
+
+class _EmbeddedAudioDisplayer extends StatefulWidget {
+  const _EmbeddedAudioDisplayer({
     this.inverseNoteColor,
     required this.url,
   });
@@ -148,10 +162,10 @@ class AudioDisplayer extends StatefulWidget {
   final String url;
 
   @override
-  State<AudioDisplayer> createState() => _AudioDisplayerState();
+  State<_EmbeddedAudioDisplayer> createState() => _AudioDisplayerState();
 }
 
-class _AudioDisplayerState extends State<AudioDisplayer>
+class _AudioDisplayerState extends State<_EmbeddedAudioDisplayer>
     with WidgetsBindingObserver {
   final _player = ja.AudioPlayer();
   final combinedController = StreamController<PositionData>();
@@ -436,22 +450,26 @@ class ImageDisplayer extends StatelessWidget {
         borderRadius: BorderRadius.circular(kDefaultPadding / 2),
         child: AspectRatio(
           aspectRatio: 16 / 9,
-          child: GalleryImageView(
-            media: {link: UrlType.image},
-            invertColor: false,
-            isHidden: false,
-            seperatorColor: Theme.of(context).primaryColorLight,
-            width: MediaQuery.of(context).size.width,
-            imageDecoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xff8E2DE2),
-                  Color(0xff4B1248),
-                ],
+          child: LayoutBuilder(
+            builder: (context, constraints) => GalleryImageView(
+              media: {link: UrlType.image},
+              invertColor: false,
+              isHidden: false,
+              seperatorColor: Theme.of(context).primaryColorLight,
+              width: isDesktopPlatform
+                  ? constraints.maxWidth
+                  : MediaQuery.of(context).size.width,
+              imageDecoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xff8E2DE2),
+                    Color(0xff4B1248),
+                  ],
+                ),
               ),
+              onDownload: MediaUtils.shareImage,
+              height: 180,
             ),
-            onDownload: MediaUtils.shareImage,
-            height: 180,
           ),
         ),
       ),
@@ -495,6 +513,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   @override
   void initState() {
     super.initState();
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      autoplay = false;
+      return;
+    }
     if ((isDesktopPlatform && widget.link.isEmpty) ||
         videoControllerManagerCubit.getVideoController(widget.link) != null) {
       autoplay = true;
@@ -512,6 +534,12 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: DesktopMediaFallback(url: widget.link),
+      );
+    }
     final ratio = widget.ratio;
     return Padding(
       padding: widget.removePadding != null
@@ -636,6 +664,9 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
     _ownerId = '${widget.link}_${DateTime.now().microsecondsSinceEpoch}';
 
     _usedUrl = widget.link;
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      return;
+    }
 
     final playGeneration = widget.desktopStartOnReady && isDesktopPlatform
         ? videoControllerManagerCubit.reserveDesktopPlay()
@@ -681,6 +712,10 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
 
   @override
   void dispose() {
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      super.dispose();
+      return;
+    }
     final generation = _desktopPlayGeneration;
     if (generation != null) {
       videoControllerManagerCubit.cancelDesktopPlay(generation);
@@ -691,6 +726,9 @@ class _RegularVideoPlayerState extends State<RegularVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    if (!supportsEmbeddedDesktopMedia(defaultTargetPlatform)) {
+      return DesktopMediaFallback(url: widget.link);
+    }
     return StreamBuilder<void>(
       stream: videoControllerManagerCubit.watchUrl(_usedUrl),
       builder: (context, _) {

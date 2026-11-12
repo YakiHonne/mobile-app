@@ -13,6 +13,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/custom_icon_buttons.dart';
+import '../../widgets/desktop_qr_bounds.dart';
 import '../../widgets/dotted_container.dart';
 import 'send_multi_wallet_selector.dart';
 
@@ -85,13 +86,15 @@ class SendZapsUsingInvoice extends HookWidget {
   // ========================
 
   Widget _buildQrCodeSection(BuildContext context) {
-    return Container(
-      width: 70.w,
-      height: 70.w,
+    final size = isDesktopPlatform ? null : 70.w;
+    final qr = Container(
+      width: size,
+      height: size,
       padding: const EdgeInsets.all(kDefaultPadding / 2),
       decoration: _buildQrCodeDecoration(context),
       child: _buildQrCodeImage(context),
     );
+    return isDesktopPlatform ? DesktopQrBounds(child: qr) : qr;
   }
 
   Widget _buildLnbcBox(BuildContext context) {

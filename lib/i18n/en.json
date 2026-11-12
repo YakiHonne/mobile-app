@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "Account storage could not be opened. Your accounts have not been changed.",
+  "accountStorageLinuxHelp": "Unlock or start your system keyring, then try again.",
+  "accountStorageSaveFailed": "Account changes could not be saved. Restart the app before trying again.",
+  "accountStorageRecoveryTitle": "Your accounts need attention",
+  "accountStorageRecoveryCorrupt": "The saved account data could not be read. Nothing was deleted.",
+  "accountStorageRecoveryLegacy": "Account data was changed by another version or process. Choose which copy to keep.",
+  "accountStorageRestoreBackup": "Restore previous saved accounts",
+  "accountStorageKeepSaved": "Keep saved accounts",
+  "accountStorageKeepLegacy": "Use the other account data",
+  "accountStorageBackupMissing": "No valid previous backup is available.",
+  "accountStorageRecoveryFailed": "Recovery could not be completed. Your account data was not changed.",
   "addNewBookmark": "No bookmarks list can be found, try to add one!",
   "setBookmarkTitleDescription": "Set a title & a description for your bookmark list.",
   "title": "title",
@@ -2217,5 +2228,12 @@
   "desktopDensity": "Desktop density",
   "desktopDensityComfortable": "Comfortable",
   "desktopDensityCompact": "Compact",
-  "desktopKnowPeople": "Know people"
+  "desktopKnowPeople": "Know people",
+  "desktopNetworkInterface": "Network interface",
+  "desktopInterfaceAvailable": "Available",
+  "desktopRelayConnections": "Relay connections",
+  "desktopSmartWidgetUnavailable": "Interactive signing is unavailable on this device. You can open the page in your browser.",
+  "desktopPlaybackUnavailable": "Playback is unavailable in the app on this device.",
+  "desktopGoogleSignInUnavailable": "Google sign-in is unavailable on Linux. Choose another sign-in method.",
+  "desktopCameraUnavailable": "Camera capture is unavailable on this device. Choose a file instead."
 }

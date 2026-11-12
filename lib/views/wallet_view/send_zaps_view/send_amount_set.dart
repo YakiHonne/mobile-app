@@ -18,6 +18,7 @@ import '../../../utils/bot_toast_util.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/data_providers.dart';
+import '../../widgets/desktop_qr_bounds.dart';
 import '../../widgets/profile_picture.dart';
 import '../send_view/send_main_view.dart';
 import 'send_multi_wallet_selector.dart';
@@ -246,7 +247,7 @@ class SendAmountSet extends HookWidget {
   /// Build divider widget
   Widget _buildDivider() {
     return SizedBox(
-      width: 70.w,
+      width: isDesktopPlatform ? 320 : 70.w,
       child: const Center(child: Divider(thickness: 0.5)),
     );
   }
@@ -696,6 +697,7 @@ class SendAmountSet extends HookWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        scrollable: isDesktopPlatform,
         content: _buildQrCodeDialogContent(context, invoice),
         contentPadding: const EdgeInsets.all(kDefaultPadding / 2),
         backgroundColor: Theme.of(context).cardColor,
@@ -705,6 +707,16 @@ class SendAmountSet extends HookWidget {
 
   /// Build QR code dialog content
   Widget _buildQrCodeDialogContent(BuildContext context, String invoice) {
+    if (isDesktopPlatform) {
+      return DesktopQrDialogContent(
+        qr: _buildQrCodeImage(context, invoice),
+        label: Text(
+          context.t.scanQrCode.capitalize(),
+          textAlign: TextAlign.center,
+          style: _getQrCodeDialogTextStyle(context),
+        ),
+      );
+    }
     return SizedBox(
       width: 70.w,
       height: 70.w + 25,

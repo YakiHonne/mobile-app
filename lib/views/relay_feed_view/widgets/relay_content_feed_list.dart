@@ -27,20 +27,24 @@ class RelayContentFeedList extends StatelessWidget {
 
     return BlocBuilder<RelayFeedCubit, RelayFeedState>(
       builder: (context, state) {
-        if (isTablet) {
+        if (isDesktopPlatform || isTablet) {
+          Widget grid(int columns) => SliverMasonryGrid.count(
+                crossAxisCount: columns,
+                itemBuilder: (context, index) {
+                  final item = state.content[index];
+
+                  return getItem(item);
+                },
+                childCount: state.content.length,
+                crossAxisSpacing: kDefaultPadding,
+                mainAxisSpacing: kDefaultPadding,
+              );
           return SliverPadding(
             padding: const EdgeInsets.all(kDefaultPadding / 2),
-            sliver: SliverMasonryGrid.count(
-              crossAxisCount: 2,
-              itemBuilder: (context, index) {
-                final item = state.content[index];
-
-                return getItem(item);
-              },
-              childCount: state.content.length,
-              crossAxisSpacing: kDefaultPadding,
-              mainAxisSpacing: kDefaultPadding,
-            ),
+            sliver: isDesktopPlatform
+                ? DesktopPaneSliverGridBuilder(
+                    builder: (context, columns) => grid(columns))
+                : grid(2),
           );
         } else {
           return SliverPadding(

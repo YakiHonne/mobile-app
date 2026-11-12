@@ -53,7 +53,11 @@ class ShareView extends HookWidget {
       ),
       child: ModalSheetContainer(
         padding: EdgeInsets.symmetric(
-          horizontal: isTablet ? 15.w : kDefaultPadding / 2,
+          horizontal: isDesktopPlatform
+              ? kDefaultPadding
+              : isTablet
+                  ? 15.w
+                  : kDefaultPadding / 2,
         ),
         child: _content(),
       ),
@@ -200,7 +204,7 @@ class SendToFollowings extends HookWidget {
 
   Widget emptyList({required BuildContext context, required bool canSign}) {
     return SizedBox(
-      width: 70.w,
+      width: isDesktopPlatform ? double.infinity : 70.w,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: kDefaultPadding,
@@ -323,7 +327,7 @@ class SendToFollowings extends HookWidget {
       List<MapEntry<String, ShareContentUserStatus>> processedPubkeys,
       ShareContentState state) {
     return SizedBox(
-      height: 15.w + 30,
+      height: isDesktopPlatform ? 90 : 15.w + 30,
       width: double.infinity,
       child: ScrollShadow(
         color: Theme.of(context).scaffoldBackgroundColor.withValues(
@@ -361,29 +365,39 @@ class SendToFollowings extends HookWidget {
         color: Theme.of(context).scaffoldBackgroundColor.withValues(
               alpha: 0.3,
             ),
-        child: GridView.builder(
-          shrinkWrap: true,
-          primary: false,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisExtent: 15.w + kDefaultPadding * 2,
-            crossAxisSpacing: kDefaultPadding / 4,
-            mainAxisSpacing: kDefaultPadding / 4,
-          ),
-          itemBuilder: (context, index) {
-            final p = pubkeys[index];
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final scale =
+                MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+            return GridView.builder(
+              shrinkWrap: true,
+              primary: false,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isDesktopPlatform
+                    ? (constraints.maxWidth / (80 * scale)).floor().clamp(1, 4)
+                    : 4,
+                mainAxisExtent: isDesktopPlatform
+                    ? 65 + 25 * scale
+                    : 15.w + kDefaultPadding * 2,
+                crossAxisSpacing: kDefaultPadding / 4,
+                mainAxisSpacing: kDefaultPadding / 4,
+              ),
+              itemBuilder: (context, index) {
+                final p = pubkeys[index];
 
-            return ShareContentUser(
-              pubkey: p,
-              onClicked: () {
-                if (!state.isSending) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  context.read<ShareContentCubit>().addPubkey(p);
-                }
+                return ShareContentUser(
+                  pubkey: p,
+                  onClicked: () {
+                    if (!state.isSending) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      context.read<ShareContentCubit>().addPubkey(p);
+                    }
+                  },
+                );
               },
+              itemCount: state.availablePubkeys.length,
             );
           },
-          itemCount: state.availablePubkeys.length,
         ),
       ),
     );
@@ -442,7 +456,7 @@ class ShareContentUser extends StatelessWidget {
           pubkey: pubkey,
           key: ValueKey(pubkey),
           child: (m, n05) => SizedBox(
-            width: 20.w,
+            width: isDesktopPlatform ? 80 : 20.w,
             child: Column(
               spacing: kDefaultPadding / 4,
               children: [
@@ -484,8 +498,8 @@ class ShareContentUser extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 15.w,
-          width: 15.w,
+          height: isDesktopPlatform ? 60 : 15.w,
+          width: isDesktopPlatform ? 60 : 15.w,
           padding: EdgeInsets.all(status != null ? 6 : 0),
           child: LayoutBuilder(
             builder: (context, constraints) => ProfilePicture3(
@@ -602,7 +616,7 @@ class ShareQrCode extends HookWidget {
   }) {
     return Center(
       child: SizedBox(
-        width: 70.w,
+        width: isDesktopPlatform ? double.infinity : 70.w,
         child: TextButton(
           onPressed: () => shareImage(controller),
           child: Text(
@@ -620,7 +634,7 @@ class ShareQrCode extends HookWidget {
   }) {
     return Center(
       child: Container(
-        width: 70.w,
+        width: isDesktopPlatform ? double.infinity : 70.w,
         decoration: _buildColorPaletteDecoration(context: context),
         padding: const EdgeInsets.all(kDefaultPadding / 2),
         child: Row(
@@ -631,8 +645,8 @@ class ShareQrCode extends HookWidget {
                 onTap: () => context.read<ShareContentCubit>().setQrColor(e),
                 behavior: HitTestBehavior.translucent,
                 child: Container(
-                  width: 5.w,
-                  height: 5.w,
+                  width: isDesktopPlatform ? 24 : 5.w,
+                  height: isDesktopPlatform ? 24 : 5.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: e,
@@ -669,6 +683,31 @@ class ShareQrCode extends HookWidget {
     required ScreenshotController controller,
     required Color color,
   }) {
+    if (isDesktopPlatform) {
+      return Screenshot(
+        controller: controller,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                ),
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                child: Container(
+                  decoration:
+                      _buildQrCodeDecoration(color: color, context: context),
+                  child: _buildQrCodeImage(color: color, context: context),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Screenshot(
       controller: controller,
       child: Center(

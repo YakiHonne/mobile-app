@@ -194,12 +194,34 @@ Future<void> showFeatureTour(BuildContext context) async {
     return;
   }
 
+  final targets = [
+    for (var i = 0; i < steps.length; i++)
+      _target(steps[i], i, steps.length, isLow: steps[i].isLow(context)),
+  ];
   TutorialCoachMark(
-    targets: [
-      for (var i = 0; i < steps.length; i++)
-        _target(steps[i], i, steps.length, isLow: steps[i].isLow(context)),
-    ],
+    targets: targets,
     opacityShadow: 0.88,
+    beforeFocus: (target) async {
+      final targetContext = target.keyTarget?.currentContext;
+      if (isDesktopPlatform && targetContext != null) {
+        await Scrollable.ensureVisible(
+          targetContext,
+          alignment: 0.5,
+          duration: const Duration(milliseconds: 200),
+        );
+        if (context.mounted) {
+          final index = targets.indexOf(target);
+          if (index >= 0) {
+            target.contents![0] = _target(
+              steps[index],
+              index,
+              steps.length,
+              isLow: steps[index].isLow(context),
+            ).contents!.first;
+          }
+        }
+      }
+    },
     paddingFocus: 6,
     // Skip lives in the card next to Next, not floating at the screen edge.
     hideSkip: true,

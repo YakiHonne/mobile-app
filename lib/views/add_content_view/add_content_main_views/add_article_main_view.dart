@@ -320,7 +320,9 @@ class ContentAccountsSwitcher extends HookWidget {
                       top: kDefaultPadding / 2,
                     ),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 35.h),
+                      constraints: BoxConstraints(
+                        maxHeight: isDesktopPlatform ? 300 : 35.h,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

@@ -153,11 +153,17 @@ class NoteView extends HookWidget {
     final isProcessingSpam = useState(false);
     final cachedReplies =
         useMemoized(() => <String, List<DetailedNoteModel>>{});
+    final replyRequest = useRef(0);
 
     useEffect(
       () {
+        final id = currentNote.value.id;
+        notesEventsCubit.retainStats(id);
         showPotentialSpamReplies.value = false;
-        return null;
+        return () {
+          replyRequest.value++;
+          notesEventsCubit.releaseStats(id);
+        };
       },
       [currentNote.value.id],
     );
@@ -168,12 +174,18 @@ class NoteView extends HookWidget {
           return;
         }
 
+        final id = currentNote.value.id;
+        final request = ++replyRequest.value;
+        bool isCurrent() =>
+            context.mounted &&
+            currentNote.value.id == id &&
+            replyRequest.value == request;
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
-          id: currentNote.value.id,
+          id: id,
           type: NoteRelatedEventsType.replies,
         );
 
-        if (!context.mounted) {
+        if (!isCurrent()) {
           return;
         }
         isProcessingSpam.value = true;
@@ -181,7 +193,7 @@ class NoteView extends HookWidget {
           final partition = await spamFilter.partitionReplies(
             evs.map(DetailedNoteModel.fromEvent).toList(),
           );
-          if (!context.mounted) {
+          if (!isCurrent()) {
             return;
           }
           replies.value = partition.visibleReplies;
@@ -190,7 +202,7 @@ class NoteView extends HookWidget {
             showPotentialSpamReplies.value = false;
           }
         } finally {
-          if (context.mounted) {
+          if (isCurrent()) {
             isProcessingSpam.value = false;
           }
         }
@@ -640,7 +652,9 @@ List<Widget> _buildReplySlivers(
   required Function(DetailedNoteModel note, {bool isRemoving}) setNote,
   required bool isTransitioning,
 }) {
-  final isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
+  final isTablet = isDesktopPlatform
+      ? desktopPaneFeedColumns(context, MediaQuery.sizeOf(context).width) > 1
+      : ResponsiveBreakpoints.of(context).largerThan(MOBILE);
   final useSingleColumn =
       nostrRepository.currentAppCustomization?.useSingleColumnFeed ?? false;
 

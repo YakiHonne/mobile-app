@@ -15,6 +15,7 @@ import '../../utils/utils.dart';
 import '../../utils/video_utils.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/common_thumbnail.dart';
+import '../widgets/content_renderer/desktop_feed_media.dart';
 import '../widgets/content_renderer/hidden_media_container.dart';
 import '../widgets/custom_icon_buttons.dart';
 import '../widgets/fluid_pull_down_button.dart';
@@ -270,6 +271,19 @@ class GalleryComponent extends HookWidget {
               useBorder: false,
               url: entry.key,
             ),
+          if (isDesktopPlatform && !isHidden && index == 0)
+            PositionedDirectional(
+              top: kDefaultPadding / 4,
+              end: kDefaultPadding / 4,
+              child: DesktopOpenMediaButton(
+                onPressed: () => openGallery(
+                  source: entry,
+                  context: context,
+                  index: index,
+                  sources: media,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -277,14 +291,16 @@ class GalleryComponent extends HookWidget {
 
   Positioned _thumbnail(MapEntry<String, UrlType> entry, BuildContext context) {
     return Positioned.fill(
-      child: entry.value == UrlType.image
-          ? CommonThumbnail(
-              image: entry.key,
-              radius: 0,
-              fit: BoxFit.cover,
-              isRound: false,
-            )
-          : _videoImage(entry, context),
+      child: isDesktopPlatform && isHidden && entry.value == UrlType.video
+          ? const DesktopHiddenVideo(compact: true)
+          : entry.value == UrlType.image
+              ? CommonThumbnail(
+                  image: entry.key,
+                  radius: 0,
+                  fit: BoxFit.cover,
+                  isRound: false,
+                )
+              : _videoImage(entry, context),
     );
   }
 

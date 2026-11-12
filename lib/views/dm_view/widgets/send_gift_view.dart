@@ -12,6 +12,7 @@ import '../../wallet_view/send_view/send_main_view.dart';
 import '../../wallet_view/send_zaps_view/send_multi_wallet_selector.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/common_thumbnail.dart';
+import '../../widgets/desktop_scrollable_form.dart';
 import '../../widgets/dotted_container.dart';
 import '../../widgets/modal_sheet_container.dart';
 
@@ -45,65 +46,67 @@ class SendGiftView extends HookWidget {
     final isSending = useState(false);
     final isUsingSats = useState(true);
 
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ModalBottomSheetAppbar(
+          title: context.t.sendGift,
+          isBack: false,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2,
+          ),
+          child: Text(
+            context.t.sendGiftDesc,
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).highlightColor,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: kDefaultPadding / 2),
+        Expanded(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: currentStep.value == GiftStep.selection
+                ? _CoverSelection(
+                    selectedCover: selectedCover,
+                    onNext: () => currentStep.value = GiftStep.payment,
+                  )
+                : _GiftPaymentDetails(
+                    selectedCover: selectedCover.value,
+                    amountController: amountController,
+                    messageController: messageController,
+                    refundAddressController: refundAddressController,
+                    zapPaymentMethod: zapPaymentMethod,
+                    isUsingSats: isUsingSats,
+                    isSending: isSending.value,
+                    onPrevious: () => currentStep.value = GiftStep.selection,
+                    onSend: () => _handleSendGift(
+                      context,
+                      selectedCover.value,
+                      amountController.text,
+                      messageController.text,
+                      refundAddressController.text,
+                      zapPaymentMethod.value,
+                      isSending,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(height: kDefaultPadding),
+      ],
+    );
     return ModalSheetContainer(
-      height: 85.h,
+      height: isDesktopPlatform ? double.infinity : 85.h,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ModalBottomSheetAppbar(
-            title: context.t.sendGift,
-            isBack: false,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2,
-            ),
-            child: Text(
-              context.t.sendGiftDesc,
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                    color: Theme.of(context).highlightColor,
-                  ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: kDefaultPadding / 2),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: currentStep.value == GiftStep.selection
-                  ? _CoverSelection(
-                      selectedCover: selectedCover,
-                      onNext: () => currentStep.value = GiftStep.payment,
-                    )
-                  : _GiftPaymentDetails(
-                      selectedCover: selectedCover.value,
-                      amountController: amountController,
-                      messageController: messageController,
-                      refundAddressController: refundAddressController,
-                      zapPaymentMethod: zapPaymentMethod,
-                      isUsingSats: isUsingSats,
-                      isSending: isSending.value,
-                      onPrevious: () => currentStep.value = GiftStep.selection,
-                      onSend: () => _handleSendGift(
-                        context,
-                        selectedCover.value,
-                        amountController.text,
-                        messageController.text,
-                        refundAddressController.text,
-                        zapPaymentMethod.value,
-                        isSending,
-                      ),
-                    ),
-            ),
-          ),
-          const SizedBox(height: kDefaultPadding),
-        ],
-      ),
+      child:
+          isDesktopPlatform ? DesktopScrollableForm(child: content) : content,
     );
   }
 
@@ -157,8 +160,11 @@ class _CoverSelection extends StatelessWidget {
                       children: [
                         if (selectedCover.value.isEmpty)
                           Container(
-                            width: 60.w,
-                            height: 50.h,
+                            width:
+                                isDesktopPlatform ? constraints.maxWidth : 60.w,
+                            height: isDesktopPlatform
+                                ? constraints.maxHeight
+                                : 50.h,
                             decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .primaryColor
@@ -170,10 +176,16 @@ class _CoverSelection extends StatelessWidget {
                           )
                         else
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10.h),
+                            padding: EdgeInsets.only(
+                              bottom: isDesktopPlatform
+                                  ? kDefaultPadding * 2
+                                  : 10.h,
+                            ),
                             child: CommonThumbnail(
                               image: selectedCover.value,
-                              width: 60.w,
+                              width: isDesktopPlatform
+                                  ? constraints.maxWidth
+                                  : 60.w,
                               height: double.infinity,
                               fit: BoxFit.cover,
                               radius: kDefaultPadding / 2,
@@ -204,7 +216,10 @@ class _CoverSelection extends StatelessWidget {
                         ),
                         Positioned(
                           top: constraints.maxHeight * 0.6,
-                          left: 22.5.w,
+                          left: isDesktopPlatform
+                              ? ((constraints.maxWidth - 70) / 2)
+                                  .clamp(0, double.infinity)
+                              : 22.5.w,
                           child: Container(
                             width: 70,
                             height: 70,
@@ -223,7 +238,7 @@ class _CoverSelection extends StatelessWidget {
                             child: Center(
                               child: AppIcon(
                                 FeatureIcons.dmGift,
-                                size: 7.w,
+                                size: isDesktopPlatform ? 28 : 7.w,
                                 color: kWhite,
                               ),
                             ),
@@ -353,7 +368,7 @@ class _GiftPaymentDetails extends StatelessWidget {
                       _amountPreview(context),
                       const SizedBox(height: kDefaultPadding / 2),
                       SizedBox(
-                        width: 70.w,
+                        width: isDesktopPlatform ? 320 : 70.w,
                         child: const Center(
                           child: Divider(
                             thickness: 0.5,
@@ -396,7 +411,7 @@ class _GiftPaymentDetails extends StatelessWidget {
                         },
                       ),
                       SizedBox(
-                        width: 70.w,
+                        width: isDesktopPlatform ? 320 : 70.w,
                         child: const Center(
                           child: Divider(
                             thickness: 0.5,

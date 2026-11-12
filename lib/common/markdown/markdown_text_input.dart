@@ -181,21 +181,16 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
                   : widget.toggleArticleContent.value ==
                           ArticleWritingState.edit
                       ? _editingScrollView(context)
-                      : Row(
-                          children: [
-                            Expanded(
-                              child: _editingScrollView(context),
-                            ),
-                            const VerticalDivider(
-                              indent: kDefaultPadding,
-                              endIndent: kDefaultPadding,
-                              thickness: 0.5,
-                            ),
-                            Expanded(
-                              child: widget.previewWidget,
-                            ),
-                          ],
-                        ),
+                      : isDesktopPlatform
+                          ? LayoutBuilder(
+                              builder: (context, constraints) => _editPreview(
+                                context,
+                                sideBySide: desktopPaneFeedColumns(
+                                        context, constraints.maxWidth) >
+                                    1,
+                              ),
+                            )
+                          : _editPreview(context, sideBySide: true),
             ),
             if (!isFluid())
               const SizedBox(
@@ -210,6 +205,28 @@ class MarkdownTextInputState extends State<MarkdownTextInput> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _editPreview(BuildContext context, {required bool sideBySide}) {
+    return Flex(
+      direction: sideBySide ? Axis.horizontal : Axis.vertical,
+      children: [
+        Expanded(child: _editingScrollView(context)),
+        if (sideBySide)
+          const VerticalDivider(
+            indent: kDefaultPadding,
+            endIndent: kDefaultPadding,
+            thickness: 0.5,
+          )
+        else
+          const Divider(
+            indent: kDefaultPadding,
+            endIndent: kDefaultPadding,
+            thickness: 0.5,
+          ),
+        Expanded(child: widget.previewWidget),
+      ],
     );
   }
 

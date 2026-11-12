@@ -39,6 +39,17 @@ class TranslationsJa extends Translations {
 	TranslationsJa $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsJa(meta: meta ?? this.$meta);
 
 	// Translations
+	@override String get accountStorageUnavailable => 'アカウントの保存領域を開けませんでした。アカウントは変更されていません。';
+	@override String get accountStorageLinuxHelp => 'システムのキーリングを解除または起動してから再試行してください。';
+	@override String get accountStorageSaveFailed => 'アカウントの変更を保存できませんでした。アプリを再起動してから再試行してください。';
+	@override String get accountStorageRecoveryTitle => 'アカウントの確認が必要です';
+	@override String get accountStorageRecoveryCorrupt => '保存されたアカウントデータを読み取れませんでした。何も削除されていません。';
+	@override String get accountStorageRecoveryLegacy => '別のバージョンまたはプロセスがアカウントデータを変更しました。保持するコピーを選択してください。';
+	@override String get accountStorageRestoreBackup => '以前に保存したアカウントを復元';
+	@override String get accountStorageKeepSaved => '保存済みのアカウントを保持';
+	@override String get accountStorageKeepLegacy => 'もう一方のアカウントデータを使用';
+	@override String get accountStorageBackupMissing => '有効な以前のバックアップがありません。';
+	@override String get accountStorageRecoveryFailed => '復元を完了できませんでした。アカウントデータは変更されていません。';
 	@override String get publishArticle => 'Publish article';
 	@override String get summary => 'Summary';
 	@override String get selectConversation => 'Select a conversation';
@@ -1535,6 +1546,8 @@ class TranslationsJa extends Translations {
 	@override String userQuotedYourPicture({required Object name}) => '${name} があなたの画像を引用しました';
 	@override String userQuotedPictureYouIn({required Object name}) => '${name} があなたがメンションされた画像を引用しました';
 	@override String get cameraPermission => 'アプリがカメラにアクセスする権限がないか、このデバイスに利用可能なカメラがありません。';
+	@override String get videoQuality => '動画の品質';
+	@override String get originalMedia => '元：';
 	@override String get fetchingPicture => '画像を取得中...';
 	@override String get addDescription => '説明を追加...';
 	@override String get uploadingVideo => '動画をアップロード中...';
@@ -2256,6 +2269,13 @@ class TranslationsJa extends Translations {
 	@override String get desktopDensityComfortable => '標準';
 	@override String get desktopDensityCompact => 'コンパクト';
 	@override String get desktopKnowPeople => 'ユーザーを見つける';
+	@override String get desktopNetworkInterface => 'ネットワークインターフェース';
+	@override String get desktopInterfaceAvailable => '利用可能';
+	@override String get desktopRelayConnections => 'リレー接続';
+	@override String get desktopSmartWidgetUnavailable => 'このデバイスでは対話型署名を利用できません。ページはブラウザーで開けます。';
+	@override String get desktopPlaybackUnavailable => 'このデバイスではアプリ内再生を利用できません。';
+	@override String get desktopGoogleSignInUnavailable => 'Linux では Google ログインを利用できません。別の方法を選んでください。';
+	@override String get desktopCameraUnavailable => 'このデバイスではカメラ撮影を利用できません。代わりにファイルを選択してください。';
 }
 
 /// The flat map containing all translations for locale <ja>.
@@ -2274,6 +2294,17 @@ extension on TranslationsJa {
 
 	dynamic _flatMapFunction$0(String path) {
 		return switch (path) {
+			'accountStorageUnavailable' => 'アカウントの保存領域を開けませんでした。アカウントは変更されていません。',
+			'accountStorageLinuxHelp' => 'システムのキーリングを解除または起動してから再試行してください。',
+			'accountStorageSaveFailed' => 'アカウントの変更を保存できませんでした。アプリを再起動してから再試行してください。',
+			'accountStorageRecoveryTitle' => 'アカウントの確認が必要です',
+			'accountStorageRecoveryCorrupt' => '保存されたアカウントデータを読み取れませんでした。何も削除されていません。',
+			'accountStorageRecoveryLegacy' => '別のバージョンまたはプロセスがアカウントデータを変更しました。保持するコピーを選択してください。',
+			'accountStorageRestoreBackup' => '以前に保存したアカウントを復元',
+			'accountStorageKeepSaved' => '保存済みのアカウントを保持',
+			'accountStorageKeepLegacy' => 'もう一方のアカウントデータを使用',
+			'accountStorageBackupMissing' => '有効な以前のバックアップがありません。',
+			'accountStorageRecoveryFailed' => '復元を完了できませんでした。アカウントデータは変更されていません。',
 			'publishArticle' => 'Publish article',
 			'summary' => 'Summary',
 			'selectConversation' => 'Select a conversation',
@@ -2775,6 +2806,12 @@ extension on TranslationsJa {
 			'smartWidgetChecker' => 'スマートウィジェットチェッカー',
 			'naddr' => 'naddr',
 			'noComponentsDisplayed' => 'コンポーネントを表示できません',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$1(String path) {
+		return switch (path) {
 			'metadata' => 'メタデータ',
 			'createdAt' => '作成日',
 			'identifier' => '識別子',
@@ -2786,12 +2823,6 @@ extension on TranslationsJa {
 			'votesByUsers' => 'ユーザーによる投票',
 			'alreadyVoted' => 'このポールで既に投票済みです',
 			'userCannotBeFound' => 'ユーザーが見つかりません',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$1(String path) {
-		return switch (path) {
 			'votesNumber' => ({required Object number}) => '投票: ${number}',
 			'voteRequired' => '統計を表示するには投票が必要です。',
 			'showStats' => '統計を表示',
@@ -3293,6 +3324,12 @@ extension on TranslationsJa {
 			'tallying' => '集計',
 			'ended' => '終了',
 			'closed' => '閉鎖',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$2(String path) {
+		return switch (path) {
 			'voteResultsBy' => '投票結果による',
 			'votes' => '投票',
 			'voiceCredit' => 'ボイスクレジット',
@@ -3304,12 +3341,6 @@ extension on TranslationsJa {
 			'circuit' => '回路',
 			'votingSystem' => '投票システム',
 			'proofSystem' => '証明システム',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$2(String path) {
-		return switch (path) {
 			'gasStation' => 'ガソリンスタンド',
 			'totalFund' => '(総資金)',
 			'roundStart' => 'ラウンド開始',
@@ -3782,6 +3813,8 @@ extension on TranslationsJa {
 			'userQuotedYourPicture' => ({required Object name}) => '${name} があなたの画像を引用しました',
 			'userQuotedPictureYouIn' => ({required Object name}) => '${name} があなたがメンションされた画像を引用しました',
 			'cameraPermission' => 'アプリがカメラにアクセスする権限がないか、このデバイスに利用可能なカメラがありません。',
+			'videoQuality' => '動画の品質',
+			'originalMedia' => '元：',
 			'fetchingPicture' => '画像を取得中...',
 			'addDescription' => '説明を追加...',
 			'uploadingVideo' => '動画をアップロード中...',
@@ -3809,6 +3842,12 @@ extension on TranslationsJa {
 			'swapFrom' => 'スワップ元',
 			'swapTo' => 'スワップ先',
 			'selectMint' => 'Mintを選択',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$3(String path) {
+		return switch (path) {
 			'amount' => '金額',
 			'cashuHistory' => 'Cashu履歴',
 			'history' => '履歴',
@@ -3822,12 +3861,6 @@ extension on TranslationsJa {
 			'redeemEcashDesc' => 'ecashトークンをウォレットに換金',
 			'depositDesc' => 'satsを入金して新しいecashトークンを発行',
 			'pasteToken' => 'トークンを貼り付け',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$3(String path) {
-		return switch (path) {
 			'scanToken' => 'スキャン',
 			'tokenDetails' => 'トークン詳細',
 			'issuingMint' => '発行Mint',
@@ -4327,6 +4360,12 @@ extension on TranslationsJa {
 			'creator_subscription_plans' => 'サブスクリプションプラン',
 			'creator_subscribe_now' => '今すぐ登録',
 			'creator_subscribe_error' => 'サブスクリプションを開始できませんでした',
+			_ => null,
+		};
+	}
+
+	dynamic _flatMapFunction$4(String path) {
+		return switch (path) {
 			'creator_no_plans' => '利用可能なサブスクリプションプランがありません',
 			'creator_lightning_unavailable' => 'Lightningアドレスを利用できません',
 			'creator_view_subscriptions' => '自分のサブスクリプションを見る',
@@ -4340,12 +4379,6 @@ extension on TranslationsJa {
 			'pomAuthenticating' => 'Googleで認証しています…',
 			'pomCheckingAccount' => 'アカウントを確認しています…',
 			'pomCreatingAccount' => 'アカウントを作成しています…',
-			_ => null,
-		};
-	}
-
-	dynamic _flatMapFunction$4(String path) {
-		return switch (path) {
 			'pomNewAccountTitle' => '秘密鍵を保存してください',
 			'pomSaveKeyDesc' => '秘密鍵が生成されました。アカウントを作成する前に安全に保存してください。',
 			'pomCreateAccount' => 'アカウントを作成',
@@ -4515,6 +4548,13 @@ extension on TranslationsJa {
 			'desktopDensityComfortable' => '標準',
 			'desktopDensityCompact' => 'コンパクト',
 			'desktopKnowPeople' => 'ユーザーを見つける',
+			'desktopNetworkInterface' => 'ネットワークインターフェース',
+			'desktopInterfaceAvailable' => '利用可能',
+			'desktopRelayConnections' => 'リレー接続',
+			'desktopSmartWidgetUnavailable' => 'このデバイスでは対話型署名を利用できません。ページはブラウザーで開けます。',
+			'desktopPlaybackUnavailable' => 'このデバイスではアプリ内再生を利用できません。',
+			'desktopGoogleSignInUnavailable' => 'Linux では Google ログインを利用できません。別の方法を選んでください。',
+			'desktopCameraUnavailable' => 'このデバイスではカメラ撮影を利用できません。代わりにファイルを選択してください。',
 			_ => null,
 		};
 	}

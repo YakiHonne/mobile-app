@@ -101,7 +101,7 @@ class SelectedWalletContainer extends StatelessWidget {
 
   SizedBox _nwcWalletSelector(WalletsManagerState state) {
     return SizedBox(
-      width: 50.w,
+      width: isDesktopPlatform ? 280 : 50.w,
       child: Builder(
         builder: (context) {
           final wallet = state.wallets[state.selectedWalletId];
@@ -160,7 +160,7 @@ class SelectedWalletContainer extends StatelessWidget {
     final image = activeMint?.info?.iconUrl ?? '';
 
     return SizedBox(
-      width: 50.w,
+      width: isDesktopPlatform ? 280 : 50.w,
       child: Builder(
         builder: (context) {
           return Row(
@@ -353,7 +353,7 @@ class InboxTypes extends HookWidget {
     return GestureDetector(
       onTap: showMenu,
       child: SizedBox(
-        width: 50.w,
+        width: isDesktopPlatform ? 280 : 50.w,
         child: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -472,7 +472,7 @@ class NotificationTypes extends HookWidget {
       onTap: showMenu,
       behavior: HitTestBehavior.translucent,
       child: SizedBox(
-        width: 50.w,
+        width: isDesktopPlatform ? 280 : 50.w,
         child: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,

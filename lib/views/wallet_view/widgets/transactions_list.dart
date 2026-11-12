@@ -136,6 +136,9 @@ class _TransactionsListState extends State<TransactionsList> {
               ),
             );
           } else {
+            if (isDesktopPlatform) {
+              return _itemsList(state, ids);
+            }
             if (isTablet) {
               return _itemsGrid(state);
             } else {

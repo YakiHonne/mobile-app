@@ -34,7 +34,7 @@ class WalletOptions extends HookWidget {
         Navigator.pop(context);
       },
       child: Container(
-        width: isTablet ? 50.w : double.infinity,
+        width: isDesktopPlatform ? 520 : (isTablet ? 50.w : double.infinity),
         margin: const EdgeInsets.all(kDefaultPadding),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,

@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "تعذر فتح مخزن الحسابات. لم يتم تغيير حساباتك.",
+  "accountStorageLinuxHelp": "افتح قفل سلسلة مفاتيح النظام أو شغّلها، ثم حاول مجددًا.",
+  "accountStorageSaveFailed": "تعذر حفظ تغييرات الحساب. أعد تشغيل التطبيق قبل المحاولة مجددًا.",
+  "accountStorageRecoveryTitle": "حساباتك تحتاج إلى مراجعة",
+  "accountStorageRecoveryCorrupt": "تعذرت قراءة بيانات الحساب المحفوظة. لم يتم حذف أي شيء.",
+  "accountStorageRecoveryLegacy": "تم تغيير بيانات الحساب بواسطة إصدار أو عملية أخرى. اختر النسخة التي تريد الاحتفاظ بها.",
+  "accountStorageRestoreBackup": "استعادة الحسابات المحفوظة السابقة",
+  "accountStorageKeepSaved": "الاحتفاظ بالحسابات المحفوظة",
+  "accountStorageKeepLegacy": "استخدام بيانات الحساب الأخرى",
+  "accountStorageBackupMissing": "لا توجد نسخة احتياطية صالحة سابقة.",
+  "accountStorageRecoveryFailed": "تعذر إكمال الاستعادة. لم يتم تغيير بيانات حسابك.",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} اقتبس صورةك",
   "userQuotedPictureYouIn": "{{name}} اقتبس صورة تم ذكرك فيها",
   "cameraPermission": "إما أن التطبيق لا يملك إذن الوصول إلى الكاميرا أو لا توجد كاميرات متاحة على هذا الجهاز.",
+  "videoQuality": "جودة الفيديو",
+  "originalMedia": "الأصل:",
   "fetchingPicture": "جاري جلب الصورة...",
   "addDescription": "إضافة وصف...",
   "uploadingVideo": "جاري رفع الفيديو...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "كثافة سطح المكتب",
   "desktopDensityComfortable": "مريح",
   "desktopDensityCompact": "مضغوط",
-  "desktopKnowPeople": "تعرّف على أشخاص"
+  "desktopKnowPeople": "تعرّف على أشخاص",
+  "desktopNetworkInterface": "واجهة الشبكة",
+  "desktopInterfaceAvailable": "متاحة",
+  "desktopRelayConnections": "اتصالات المرحلات",
+  "desktopSmartWidgetUnavailable": "التوقيع التفاعلي غير متاح على هذا الجهاز. يمكنك فتح الصفحة في المتصفح.",
+  "desktopPlaybackUnavailable": "التشغيل غير متاح في التطبيق على هذا الجهاز.",
+  "desktopGoogleSignInUnavailable": "تسجيل الدخول باستخدام Google غير متاح على Linux. اختر طريقة أخرى.",
+  "desktopCameraUnavailable": "التقاط الصور بالكاميرا غير متاح على هذا الجهاز. اختر ملفًا بدلاً من ذلك."
 }

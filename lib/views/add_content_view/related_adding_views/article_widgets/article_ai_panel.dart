@@ -88,8 +88,8 @@ Widget _aiShell({
   final bottomInset = media.viewInsets.bottom;
   // Clamped: a tall keyboard on a short screen would otherwise send maxHeight
   // negative, which BoxConstraints rejects.
-  final maxHeight = (media.size.height * 0.92 - bottomInset)
-      .clamp(0.0, media.size.height);
+  final maxHeight =
+      (media.size.height * 0.92 - bottomInset).clamp(0.0, media.size.height);
 
   return Padding(
     padding: EdgeInsets.only(bottom: bottomInset),
@@ -309,9 +309,8 @@ class _AiChatSheetState extends State<_AiChatSheet> {
                     widget.controller.clear();
                   },
             icon: FeatureIcons.trash,
-            iconColor: state.messages.isEmpty
-                ? theme.dividerColor
-                : theme.hintColor,
+            iconColor:
+                state.messages.isEmpty ? theme.dividerColor : theme.hintColor,
             size: 18,
             backgroundColor: theme.cardColor,
             borderRadius: kDefaultPadding / 2,
@@ -450,86 +449,86 @@ class _AiDiffSheet extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return BlocBuilder<AskAiCubit, AskAiState>(
-        builder: (ctx, state) {
-          final cubit = ctx.read<AskAiCubit>();
-          final changedHunks = state.hunks.where((h) => h.isChanged).toList();
+      builder: (ctx, state) {
+        final cubit = ctx.read<AskAiCubit>();
+        final changedHunks = state.hunks.where((h) => h.isChanged).toList();
 
-          return _aiShell(
-            context: context,
-            children: [
-              // Header
-              Padding(
+        return _aiShell(
+          context: context,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                kDefaultPadding,
+                kDefaultPadding,
+                kDefaultPadding,
+                kDefaultPadding / 2,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    '✦ ',
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${changedHunks.length} ${context.t.diff_viewer_title.toUpperCase()}',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.primaryColor,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ),
+                  _DiffActionBtn(
+                    label: context.t.diff_viewer_accept_all,
+                    filled: true,
+                    icon: LucideIcons.check,
+                    onTap: cubit.applyChanges,
+                    theme: theme,
+                  ),
+                  const SizedBox(width: kDefaultPadding / 2),
+                  _DiffActionBtn(
+                    label: context.t.diff_viewer_reject_all,
+                    filled: false,
+                    icon: LucideIcons.x,
+                    onTap: cubit.rejectAll,
+                    theme: theme,
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
+            Flexible(
+              child: ListView.separated(
                 padding: const EdgeInsets.fromLTRB(
                   kDefaultPadding,
+                  kDefaultPadding * 0.75,
                   kDefaultPadding,
                   kDefaultPadding,
-                  kDefaultPadding / 2,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      '✦ ',
-                      style: TextStyle(
-                        color: theme.primaryColor,
-                        fontSize: 13,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '${changedHunks.length} ${context.t.diff_viewer_title.toUpperCase()}',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: theme.primaryColor,
-                          letterSpacing: 0.4,
-                        ),
-                      ),
-                    ),
-                    _DiffActionBtn(
-                      label: context.t.diff_viewer_accept_all,
-                      filled: true,
-                      icon: LucideIcons.check,
-                      onTap: cubit.applyChanges,
-                      theme: theme,
-                    ),
-                    const SizedBox(width: kDefaultPadding / 2),
-                    _DiffActionBtn(
-                      label: context.t.diff_viewer_reject_all,
-                      filled: false,
-                      icon: LucideIcons.x,
-                      onTap: cubit.rejectAll,
-                      theme: theme,
-                    ),
-                  ],
-                ),
+                itemCount: changedHunks.length,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: kDefaultPadding / 2),
+                itemBuilder: (_, i) {
+                  final hunk = changedHunks[i];
+                  final globalIdx = state.hunks.indexOf(hunk);
+                  return _DiffHunkCard(
+                    hunk: hunk,
+                    isDark: isDark,
+                    theme: theme,
+                    onToggle: (v) => cubit.toggleHunk(globalIdx, v),
+                  );
+                },
               ),
-              Divider(height: 1, thickness: 0.5, color: theme.dividerColor),
-              Flexible(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                    kDefaultPadding,
-                    kDefaultPadding * 0.75,
-                    kDefaultPadding,
-                    kDefaultPadding,
-                  ),
-                  itemCount: changedHunks.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: kDefaultPadding / 2),
-                  itemBuilder: (_, i) {
-                    final hunk = changedHunks[i];
-                    final globalIdx = state.hunks.indexOf(hunk);
-                    return _DiffHunkCard(
-                      hunk: hunk,
-                      isDark: isDark,
-                      theme: theme,
-                      onToggle: (v) => cubit.toggleHunk(globalIdx, v),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: bottomPadding),
-            ],
-          );
-        },
+            ),
+            SizedBox(height: bottomPadding),
+          ],
+        );
+      },
     );
   }
 }
@@ -585,27 +584,32 @@ class _AiUserBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = theme.brightness == Brightness.dark;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.75,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPadding * 0.75,
-          vertical: kDefaultPadding / 2,
-        ),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE9E9EB),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(kDefaultPadding),
-            topRight: Radius.circular(kDefaultPadding),
-            bottomLeft: Radius.circular(kDefaultPadding),
-            bottomRight: Radius.circular(kDefaultPadding / 4),
+    return LayoutBuilder(
+      builder: (context, constraints) => Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: (isDesktopPlatform
+                    ? constraints.maxWidth
+                    : MediaQuery.of(context).size.width) *
+                0.75,
           ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding * 0.75,
+            vertical: kDefaultPadding / 2,
+          ),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE9E9EB),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(kDefaultPadding),
+              topRight: Radius.circular(kDefaultPadding),
+              bottomLeft: Radius.circular(kDefaultPadding),
+              bottomRight: Radius.circular(kDefaultPadding / 4),
+            ),
+          ),
+          child: Text(text,
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.5)),
         ),
-        child: Text(text,
-            style: theme.textTheme.bodyMedium?.copyWith(height: 1.5)),
       ),
     );
   }

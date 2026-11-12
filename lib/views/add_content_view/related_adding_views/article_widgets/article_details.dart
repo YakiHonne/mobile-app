@@ -83,7 +83,13 @@ class ArticleDetails extends HookWidget {
     );
 
     return ListView(
-      padding: EdgeInsets.all(isTablet ? 10.w : kDefaultPadding / 2),
+      padding: EdgeInsets.all(
+        isDesktopPlatform
+            ? kDefaultPadding
+            : isTablet
+                ? 10.w
+                : kDefaultPadding / 2,
+      ),
       controller: scrollController,
       children: components,
     );

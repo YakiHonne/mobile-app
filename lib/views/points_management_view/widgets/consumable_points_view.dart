@@ -130,7 +130,10 @@ class ConsumablePointsView extends StatelessWidget {
       ],
     );
 
-    final width = isTablet ? 50.w : double.infinity;
+    final width =
+        isDesktopPlatform ? 560.0 : (isTablet ? 50.w : double.infinity);
+    final body =
+        isDesktopPlatform ? SingleChildScrollView(child: content) : content;
 
     if (isFluid()) {
       return Container(
@@ -140,7 +143,7 @@ class ConsumablePointsView extends StatelessWidget {
           sigma: 20,
           borderRadius: kDefaultPadding,
           padding: const EdgeInsets.all(kDefaultPadding),
-          child: content,
+          child: body,
         ),
       );
     }
@@ -153,7 +156,7 @@ class ConsumablePointsView extends StatelessWidget {
         borderRadius: BorderRadius.circular(kDefaultPadding),
       ),
       padding: const EdgeInsets.all(kDefaultPadding),
-      child: content,
+      child: body,
     );
   }
 }

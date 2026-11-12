@@ -12,6 +12,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../logic/checkout_cubit/checkout_cubit.dart';
+import '../../../logic/checkout_cubit/subscription_billing_policy.dart';
 import '../../../logic/subscription_cubit/subscription_cubit.dart';
 import '../../../models/subscription_models.dart';
 import '../../../repositories/http_functions_repository.dart';
@@ -468,9 +469,13 @@ class _SubscriptionSectionState extends State<SubscriptionSection> {
         final s = state.subscriptionStatus!;
         final isStripeActive = s.lastPaymentMethod == 'stripe' && s.active;
         final isIapActive = s.lastPaymentMethod == 'iap' && s.active;
-        final showStripeControls = isStripeActive && !kIapEnabled;
+        final useStore = usesNativeSubscriptionStore(
+          desktop: isDesktopPlatform,
+          iapEnabled: kIapEnabled,
+        );
+        final showStripeControls = isStripeActive && !useStore;
         final isPointsActive = s.lastPaymentMethod == 'points' && s.active;
-        final showWebManagedBanner = kIapEnabled &&
+        final showWebManagedBanner = useStore &&
             s.active &&
             !isIapActive &&
             !isPointsActive &&

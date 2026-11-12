@@ -370,8 +370,12 @@ class SelectedNotifications extends HookWidget {
                 // 20.w is a % of the *window*; inside the desktop notifications
                 // panel that crushed the list into a narrow centre strip. Cap it
                 // so wide layouts still get a readable gutter, not a broken one.
-                left: isMobile ? kDefaultPadding / 2 : min(20.w, 100),
-                right: isMobile ? kDefaultPadding / 2 : min(20.w, 100),
+                left: isDesktopPlatform
+                    ? kDefaultPadding
+                    : (isMobile ? kDefaultPadding / 2 : min(20.w, 100)),
+                right: isDesktopPlatform
+                    ? kDefaultPadding
+                    : (isMobile ? kDefaultPadding / 2 : min(20.w, 100)),
               ),
               itemBuilder: (context, index) {
                 final ev = usedEvents[index];

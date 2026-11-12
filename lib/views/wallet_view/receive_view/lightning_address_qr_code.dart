@@ -87,35 +87,45 @@ class ShareLightningAddress extends StatelessWidget {
           _share(context, textStyle),
         ];
       },
-      buttonBuilder: (context, showMenu) => GestureDetector(
-        onLongPress: showMenu,
-        behavior: HitTestBehavior.translucent,
-        child: Container(
-          width: 65.w,
-          height: 65.w,
-          padding: const EdgeInsets.all(
-            kDefaultPadding / 2,
+      buttonBuilder: (context, showMenu) {
+        Widget qr(double side) => GestureDetector(
+              onLongPress: showMenu,
+              behavior: HitTestBehavior.translucent,
+              child: Container(
+                width: side,
+                height: side,
+                padding: const EdgeInsets.all(
+                  kDefaultPadding / 2,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColorDark,
+                    width: 5,
+                  ),
+                ),
+                child: QrImageView(
+                  data: lightningAddress,
+                  dataModuleStyle: QrDataModuleStyle(
+                    color: Theme.of(context).primaryColorDark,
+                    dataModuleShape: QrDataModuleShape.circle,
+                  ),
+                  eyeStyle: QrEyeStyle(
+                    eyeShape: QrEyeShape.circle,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
+                ),
+              ),
+            );
+        if (!isDesktopPlatform) {
+          return qr(65.w);
+        }
+        return LayoutBuilder(
+          builder: (context, constraints) => Center(
+            child: qr(constraints.maxWidth.clamp(0.0, 320.0)),
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(kDefaultPadding),
-            border: Border.all(
-              color: Theme.of(context).primaryColorDark,
-              width: 5,
-            ),
-          ),
-          child: QrImageView(
-            data: lightningAddress,
-            dataModuleStyle: QrDataModuleStyle(
-              color: Theme.of(context).primaryColorDark,
-              dataModuleShape: QrDataModuleShape.circle,
-            ),
-            eyeStyle: QrEyeStyle(
-              eyeShape: QrEyeShape.circle,
-              color: Theme.of(context).primaryColorDark,
-            ),
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 

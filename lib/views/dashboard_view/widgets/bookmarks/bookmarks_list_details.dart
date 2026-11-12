@@ -129,6 +129,11 @@ class BookmarksListDetails extends HookWidget {
             icon: FeatureIcons.bookmark,
           );
         } else {
+          if (isDesktopPlatform) {
+            return DesktopPaneGridBuilder(
+                builder: (context, columns) =>
+                    _itemsGrid(state, columns: columns));
+          }
           if (!ResponsiveBreakpoints.of(context).isMobile) {
             return _itemsGrid(state);
           } else {
@@ -237,9 +242,9 @@ class BookmarksListDetails extends HookWidget {
     );
   }
 
-  Widget _itemsGrid(BookmarkDetailsState state) {
+  Widget _itemsGrid(BookmarkDetailsState state, {int columns = 2}) {
     return MasonryGridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: columns,
       mainAxisSpacing: kDefaultPadding / 2,
       crossAxisSpacing: kDefaultPadding / 2,
       itemCount: state.content.length,

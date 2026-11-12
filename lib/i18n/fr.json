@@ -1,4 +1,15 @@
 {
+  "accountStorageUnavailable": "Impossible d’ouvrir le stockage des comptes. Vos comptes n’ont pas été modifiés.",
+  "accountStorageLinuxHelp": "Déverrouillez ou démarrez le trousseau système, puis réessayez.",
+  "accountStorageSaveFailed": "Impossible d’enregistrer les modifications. Redémarrez l’application avant de réessayer.",
+  "accountStorageRecoveryTitle": "Vos comptes nécessitent une vérification",
+  "accountStorageRecoveryCorrupt": "Les données de compte enregistrées n’ont pas pu être lues. Rien n’a été supprimé.",
+  "accountStorageRecoveryLegacy": "Les données de compte ont été modifiées par une autre version ou un autre processus. Choisissez la copie à conserver.",
+  "accountStorageRestoreBackup": "Restaurer les comptes enregistrés précédents",
+  "accountStorageKeepSaved": "Conserver les comptes enregistrés",
+  "accountStorageKeepLegacy": "Utiliser les autres données de compte",
+  "accountStorageBackupMissing": "Aucune sauvegarde précédente valide n’est disponible.",
+  "accountStorageRecoveryFailed": "La récupération n’a pas pu aboutir. Vos données de compte n’ont pas été modifiées.",
   "publishArticle": "Publish article",
   "summary": "Summary",
   "selectConversation": "Select a conversation",
@@ -1495,6 +1506,8 @@
   "userQuotedYourPicture": "{{name}} a cité votre image",
   "userQuotedPictureYouIn": "{{name}} a cité une image où vous êtes mentionné",
   "cameraPermission": "L'application n'a pas la permission d'accéder à la caméra ou il n'y a pas de caméras disponibles sur cet appareil.",
+  "videoQuality": "Qualité de la vidéo",
+  "originalMedia": "original :",
   "fetchingPicture": "Récupération de l'image...",
   "addDescription": "Ajouter une description...",
   "uploadingVideo": "Téléchargement de la vidéo...",
@@ -2215,5 +2228,12 @@
   "desktopDensity": "Densité du bureau",
   "desktopDensityComfortable": "Confortable",
   "desktopDensityCompact": "Compacte",
-  "desktopKnowPeople": "Découvrir des personnes"
+  "desktopKnowPeople": "Découvrir des personnes",
+  "desktopNetworkInterface": "Interface réseau",
+  "desktopInterfaceAvailable": "Disponible",
+  "desktopRelayConnections": "Connexions aux relais",
+  "desktopSmartWidgetUnavailable": "La signature interactive est indisponible sur cet appareil. Vous pouvez ouvrir la page dans votre navigateur.",
+  "desktopPlaybackUnavailable": "La lecture est indisponible dans l’application sur cet appareil.",
+  "desktopGoogleSignInUnavailable": "La connexion Google est indisponible sous Linux. Choisissez une autre méthode.",
+  "desktopCameraUnavailable": "La capture par caméra est indisponible sur cet appareil. Choisissez plutôt un fichier."
 }

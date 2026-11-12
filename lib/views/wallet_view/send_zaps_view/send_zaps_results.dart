@@ -30,19 +30,26 @@ class SendZapsResult extends StatelessWidget {
         _buildActionButtons(),
         Expanded(
           child: FadeIn(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: kDefaultPadding,
-              children: [
-                _buildAnimationIcon(isSuccess),
-                if (isSuccess)
-                  _buildSuccessContent(context)
-                else
-                  _buildFailureContent(context),
-              ],
-            ),
+            child: isDesktopPlatform
+                ? SingleChildScrollView(
+                    child: _resultContent(context, isSuccess))
+                : _resultContent(context, isSuccess),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _resultContent(BuildContext context, bool isSuccess) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: kDefaultPadding,
+      children: [
+        _buildAnimationIcon(isSuccess),
+        if (isSuccess)
+          _buildSuccessContent(context)
+        else
+          _buildFailureContent(context),
       ],
     );
   }
@@ -58,7 +65,9 @@ class SendZapsResult extends StatelessWidget {
   Widget _buildAnimationIcon(bool isSuccess) {
     return Lottie.asset(
       isSuccess ? LottieAnimations.success : LottieAnimations.failure,
-      height: isSuccess ? 13.h : 10.h,
+      height: isDesktopPlatform
+          ? (isSuccess ? 120 : 80)
+          : (isSuccess ? 13.h : 10.h),
       fit: BoxFit.contain,
       frameRate: const FrameRate(60),
       repeat: false,

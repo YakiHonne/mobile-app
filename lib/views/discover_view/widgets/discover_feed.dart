@@ -33,25 +33,15 @@ class ExploreFeed extends StatelessWidget {
 
     return BlocBuilder<DiscoverCubit, DiscoverState>(
       builder: (context, state) {
-        if (isTablet && !useSingleColumn) {
-          return SliverPadding(
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            sliver: SliverMasonryGrid.count(
-              crossAxisCount: feedGridColumns(context),
-              itemBuilder: (context, index) {
-                final item = state.content[index];
-
-                return getItem(item, false);
-              },
-              childCount: state.content.length,
-              crossAxisSpacing: isDesktopPlatform
-                  ? DesktopDensityScope.of(context).gap
-                  : kDefaultPadding,
-              mainAxisSpacing: isDesktopPlatform
-                  ? DesktopDensityScope.of(context).gap
-                  : kDefaultPadding,
-            ),
+        if (isDesktopPlatform && !useSingleColumn) {
+          return DesktopPaneSliverGridBuilder(
+            maxColumns: 3,
+            builder: (context, columns) =>
+                _gridItems(context, state, columns: columns),
           );
+        }
+        if (isTablet && !useSingleColumn) {
+          return _gridItems(context, state);
         } else {
           return SliverPadding(
             padding: const EdgeInsets.all(kDefaultPadding / 2),
@@ -89,6 +79,28 @@ class ExploreFeed extends StatelessWidget {
           );
         }
       },
+    );
+  }
+
+  SliverPadding _gridItems(BuildContext context, DiscoverState state,
+      {int? columns}) {
+    return SliverPadding(
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
+      sliver: SliverMasonryGrid.count(
+        crossAxisCount: columns ?? feedGridColumns(context),
+        itemBuilder: (context, index) {
+          final item = state.content[index];
+
+          return getItem(item, false);
+        },
+        childCount: state.content.length,
+        crossAxisSpacing: isDesktopPlatform
+            ? DesktopDensityScope.of(context).gap
+            : kDefaultPadding,
+        mainAxisSpacing: isDesktopPlatform
+            ? DesktopDensityScope.of(context).gap
+            : kDefaultPadding,
+      ),
     );
   }
 

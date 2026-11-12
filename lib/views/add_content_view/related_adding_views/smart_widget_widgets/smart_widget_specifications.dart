@@ -49,7 +49,8 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -77,7 +78,8 @@ class FrameSpecifications extends HookWidget {
               },
             ),
           );
-        },        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        },
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       );
     }
 
@@ -87,13 +89,17 @@ class FrameSpecifications extends HookWidget {
           return Padding(
             padding: EdgeInsets.symmetric(
               vertical: kDefaultPadding / 2,
-              horizontal: isTablet ? 10.w : kDefaultPadding / 2,
+              horizontal: isDesktopPlatform
+                  ? kDefaultPadding
+                  : isTablet
+                      ? 10.w
+                      : kDefaultPadding / 2,
             ),
             child: ListView(
               children: [
                 Lottie.asset(
                   LottieAnimations.widgets,
-                  height: 25.h,
+                  height: isDesktopPlatform ? 180 : 25.h,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(
@@ -262,48 +268,55 @@ class SWappSmartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
-    return BlocBuilder<WriteSmartWidgetCubit, WriteSmartWidgetState>(
-      builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            if (!toggleView) {
-              showAdaptiveModal(
-                context,
-                dialogHeight: 620,
-                builder: (_) {
-                  return BlocProvider.value(
-                    value: context.read<WriteSmartWidgetCubit>(),
-                    child: const SmartWidgetAppSpecification(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = isDesktopPlatform
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width;
+        return BlocBuilder<WriteSmartWidgetCubit, WriteSmartWidgetState>(
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: () {
+                if (!toggleView) {
+                  showAdaptiveModal(
+                    context,
+                    dialogHeight: 620,
+                    builder: (_) {
+                      return BlocProvider.value(
+                        value: context.read<WriteSmartWidgetCubit>(),
+                        child: const SmartWidgetAppSpecification(),
+                      );
+                    },
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   );
-                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              );
-            } else if (state.appSmartWidget.isValid()) {}
+                } else if (state.appSmartWidget.isValid()) {}
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                ),
+                child: Column(
+                  children: [
+                    _appSmartWidget(state, width, context),
+                    if (state.appSmartWidget.isValid()) ...[
+                      Padding(
+                        padding: const EdgeInsets.all(kDefaultPadding / 1.5),
+                        child: Text(
+                          state.appSmartWidget.buttonTitle,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
           },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kDefaultPadding / 2),
-              color: Theme.of(context).cardColor,
-              border: Border.all(color: Theme.of(context).dividerColor),
-            ),
-            child: Column(
-              children: [
-                _appSmartWidget(state, width, context),
-                if (state.appSmartWidget.isValid()) ...[
-                  Padding(
-                    padding: const EdgeInsets.all(kDefaultPadding / 1.5),
-                    child: Text(
-                      state.appSmartWidget.buttonTitle,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
         );
       },
     );
@@ -424,10 +437,13 @@ class ImageEditableContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
         final url = smartWidgetBox.image.url;
-        final width = MediaQuery.of(context).size.width;
+        final width = isDesktopPlatform
+            ? (constraints.maxWidth - (toggleView ? 0 : kDefaultPadding))
+                .clamp(0.0, double.infinity)
+            : MediaQuery.of(context).size.width;
 
         final child = GestureDetector(
           onTap: () {
@@ -442,7 +458,8 @@ class ImageEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.image,
                     ),
                   );
-                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             }
           },
@@ -603,7 +620,8 @@ class InputFieldEditableContainer extends StatelessWidget {
                       boxComponent: smartWidgetBox.inputField!,
                     ),
                   );
-                },                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                },
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               );
             },
             isSmall: true,
@@ -664,7 +682,8 @@ class InputFieldEditableContainer extends StatelessWidget {
                     boxComponent: smartWidgetBox.inputField!,
                   ),
                 );
-              },              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              },
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             );
           },
           child: AbsorbPointer(

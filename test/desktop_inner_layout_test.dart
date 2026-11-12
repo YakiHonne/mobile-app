@@ -102,4 +102,41 @@ void main() {
     expect(find.text('Conversation: alice'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('DM draft survives crossing the inner split breakpoint',
+      (tester) async {
+    final selected = ValueNotifier<String?>('disposable-peer');
+    addTearDown(selected.dispose);
+    tester.view.physicalSize = const Size(1000, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    var width = 700.0;
+    Widget build() => TranslationProvider(
+          child: MaterialApp(
+            home: Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                width: width,
+                height: 600,
+                child: DesktopDmWorkspace(
+                  selected: selected,
+                  list: const Text('Conversation list'),
+                  conversationBuilder: (_, __, ___) =>
+                      const Material(child: TextField()),
+                ),
+              ),
+            ),
+          ),
+        );
+    await tester.pumpWidget(build());
+    await tester.enterText(find.byType(TextField), 'disposable draft');
+    width = 400;
+    await tester.pumpWidget(build());
+    expect(find.byType(TextField), findsNothing);
+    expect(find.byType(TextField, skipOffstage: false), findsOneWidget);
+    width = 700;
+    await tester.pumpWidget(build());
+    expect(find.text('disposable draft'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
