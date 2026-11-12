@@ -563,6 +563,11 @@ const wallets = {
     'icon': WalletsLogos.blitz,
     'deeplink': 'blitz:lightning:',
   },
+  'buhogo': {
+    'name': 'BuhoGO',
+    'icon': WalletsLogos.buhogo,
+    'deeplink': 'buhogo:lightning:',
+  },
 };
 
 const defaultZaps = {
