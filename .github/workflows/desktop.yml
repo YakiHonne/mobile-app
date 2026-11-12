@@ -47,7 +47,7 @@ jobs:
       - name: Install Windows build dependencies
         if: matrix.platform == 'windows'
         run: |
-          echo "CL=_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS=1" >> "$GITHUB_ENV"
+          echo "CL=/D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS" >> "$GITHUB_ENV"
       - name: Use ad-hoc macOS signing
         if: matrix.platform == 'macos'
         run: |
