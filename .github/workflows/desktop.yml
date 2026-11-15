@@ -12,13 +12,10 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            bundle: mobile-app/build/windows/x64/runner/Release/
           - os: ubuntu-24.04
             platform: linux
-            bundle: mobile-app/build/linux/x64/release/bundle/
           - os: macos-latest
             platform: macos
-            bundle: mobile-app/build/macos/Build/Products/Release/
     runs-on: ${{ matrix.os }}
     environment: desktop-build
     defaults:
@@ -197,13 +194,6 @@ jobs:
             --icon-file "$icon_stage" \
             --plugin gtk \
             --output appimage
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.platform }}-unsigned-candidate
-          path: ${{ matrix.bundle }}
-          if-no-files-found: error
-          retention-days: 7
 
       - uses: actions/upload-artifact@v4
         with:
