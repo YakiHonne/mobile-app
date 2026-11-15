@@ -213,9 +213,9 @@ jobs:
           retention-days: 7
 
       - name: Upload installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.platform }}-installer
           path: mobile-app/build/installers/*
+          archive: false
           if-no-files-found: error
           retention-days: 7
