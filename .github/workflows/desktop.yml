@@ -64,15 +64,153 @@ jobs:
       - run: flutter pub get --enforce-lockfile
       - name: Build unsigned candidate
         run: flutter build ${{ matrix.platform }} --release --obfuscate --split-debug-info=build/symbols
+      - name: Package Windows installer
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          $version = (Select-String -Path pubspec.yaml -Pattern '^version:\s*([^+]+)').Matches.Groups[1].Value.Trim()
+          if (-not $version) { throw 'Could not read the application version from pubspec.yaml' }
+          $bundle = (Resolve-Path 'build/windows/x64/runner/Release').Path
+          $output = Join-Path (Get-Location) 'build/installers'
+          New-Item -ItemType Directory -Path $output -Force | Out-Null
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DBundleDir=$bundle" "/DAppVersion=$version" "/O$output" 'windows/packaging/yakihonne.iss'
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup failed' }
+      - name: Package macOS DMG
+        if: matrix.platform == 'macos'
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml | head -n 1 | cut -d '+' -f 1)"
+          if [ -z "$version" ]; then
+            echo 'Could not read the application version from pubspec.yaml' >&2
+            exit 1
+          fi
+          release_dir='build/macos/Build/Products/Release'
+          app_path="$(find "$release_dir" -maxdepth 1 -type d -name '*.app' -print -quit)"
+          if [ -z "$app_path" ]; then
+            echo "No .app bundle was found in $release_dir" >&2
+            exit 1
+          fi
+
+          installer_dir="$PWD/build/installers"
+          staging_dir="$(mktemp -d "$PWD/build/dmg-staging.XXXXXX")"
+          mkdir -p "$installer_dir"
+          cp -R "$app_path" "$staging_dir/"
+          ln -s /Applications "$staging_dir/Applications"
+          hdiutil create -volname "YakiHonne" -srcfolder "$staging_dir" \
+            -ov -format UDZO "$installer_dir/YakiHonne-${version}.dmg"
+
+      - name: Package Linux AppImage
+        if: matrix.platform == 'linux'
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml | head -n 1 | cut -d '+' -f 1)"
+          if [ -z "$version" ]; then
+            echo 'Could not read the application version from pubspec.yaml' >&2
+            exit 1
+          fi
+
+          bundle='build/linux/x64/release/bundle'
+          app_binary="$(find "$bundle" -maxdepth 1 -type f -executable -print -quit)"
+          if [ -z "$app_binary" ]; then
+            echo "No executable was found in $bundle" >&2
+            exit 1
+          fi
+          app_binary_name="$(basename "$app_binary")"
+          appdir="$PWD/build/YakiHonne.AppDir"
+          installer_dir="$PWD/build/installers"
+          desktop_file="$appdir/usr/share/applications/yakihonne.desktop"
+          mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$installer_dir"
+          cp -a "$bundle/." "$appdir/usr/bin/"
+
+          cat > "$desktop_file" <<EOF
+          [Desktop Entry]
+          Type=Application
+          Name=YakiHonne
+          Exec=$app_binary_name
+          Icon=yakihonne
+          Categories=Network;InstantMessaging;
+          Terminal=false
+          EOF
+          cp "$desktop_file" "$appdir/yakihonne.desktop"
+
+          icon_source=''
+          for candidate in \
+            linux/runner/resources/app_icon.png \
+            assets/app_icon.png \
+            assets/images/app_icon.png \
+            assets/yakihonne.png; do
+            if [ -f "$candidate" ]; then
+              icon_source="$candidate"
+              break
+            fi
+          done
+
+          if [ -z "$icon_source" ]; then
+            icon_source="$(find linux/runner/resources assets -type f \
+              \( -iname 'app_icon.png' -o -iname 'yakihonne.png' -o -iname 'yakihonne.svg' \) \
+              -print -quit 2>/dev/null || true)"
+          fi
+
+          icon_stage="$PWD/build/yakihonne.svg"
+          if [ -n "$icon_source" ]; then
+            icon_ext="${icon_source##*.}"
+            icon_ext="$(printf '%s' "$icon_ext" | tr '[:upper:]' '[:lower:]')"
+            icon_stage="$PWD/build/yakihonne.$icon_ext"
+            cp "$icon_source" "$icon_stage"
+          else
+            cat > "$icon_stage" <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+            <rect width="256" height="256" rx="56" fill="#171729"/>
+            <path d="M64 60l64 136 64-136" fill="none" stroke="#a78bfa" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/>
+          </svg>
+          SVG
+          fi
+
+          icon_ext="${icon_stage##*.}"
+          case "$icon_ext" in
+            png) icon_theme_dir="$appdir/usr/share/icons/hicolor/256x256/apps" ;;
+            svg) icon_theme_dir="$appdir/usr/share/icons/hicolor/scalable/apps" ;;
+            *) echo "Unsupported application icon format: .$icon_ext" >&2; exit 1 ;;
+          esac
+          mkdir -p "$icon_theme_dir"
+          cp "$icon_stage" "$appdir/yakihonne.$icon_ext"
+          cp "$icon_stage" "$icon_theme_dir/yakihonne.$icon_ext"
+          ln -sf "yakihonne.$icon_ext" "$appdir/.DirIcon"
+
+          curl -fsSL -o linuxdeploy-x86_64.AppImage \
+            https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -fsSL -o linuxdeploy-plugin-gtk.sh \
+            https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
+
+          export LDAI_OUTPUT="$installer_dir/YakiHonne-${version}-x86_64.AppImage"
+          export LINUXDEPLOY_OUTPUT_VERSION="$version"
+          ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
+            --appdir "$appdir" \
+            --executable "$appdir/usr/bin/$app_binary_name" \
+            --desktop-file "$desktop_file" \
+            --icon-file "$icon_stage" \
+            --plugin gtk \
+            --output appimage
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-unsigned-candidate
           path: ${{ matrix.bundle }}
           if-no-files-found: error
           retention-days: 7
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-debug-symbols
           path: mobile-app/build/symbols/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-installer
+          path: mobile-app/build/installers/*
           if-no-files-found: error
           retention-days: 7
