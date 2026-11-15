@@ -94,7 +94,7 @@ jobs:
           cp -R "$app_path" "$staging_dir/"
           ln -s /Applications "$staging_dir/Applications"
           hdiutil create -volname "YakiHonne" -srcfolder "$staging_dir" \
-            -ov -format UDZO "$installer_dir/YakiHonne-${version}.dmg"
+            -ov -format UDZO "$installer_dir/YakiHonne-${version}-macos.dmg"
 
       - name: Package Linux AppImage
         if: matrix.platform == 'linux'
@@ -185,7 +185,7 @@ jobs:
           pixbuf_binary_dir="$(pkg-config --variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0)"
           compgen -G "$pixbuf_binary_dir/loaders/libpixbufloader[-_]svg.so" > /dev/null
 
-          export LDAI_OUTPUT="$installer_dir/YakiHonne-${version}-x86_64.AppImage"
+          export LDAI_OUTPUT="$installer_dir/YakiHonne-${version}-linux.AppImage"
           export LINUXDEPLOY_OUTPUT_VERSION="$version"
           ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
             --appdir "$appdir" \
