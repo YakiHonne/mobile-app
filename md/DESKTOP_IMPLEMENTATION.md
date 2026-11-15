@@ -2198,3 +2198,37 @@ Fourteen focused link, selector and fallback tests passed after correcting a
 missing import in the first test run. Focused analysis, shell syntax validation
 and `git diff --check` passed. No Windows/Linux native compilation or run was
 available, and no signed-in app, account, wallet or network publication was used.
+
+### CI packaging and storage-lock continuation — 2026-11-15
+
+Workflow run 43683376081 compiled and packaged Windows and macOS candidates,
+with artifacts uploaded. Linux compiled on Ubuntu 26.04 but its AppImage step
+failed: linuxdeploy's GTK plugin tried to copy the absent GDK Pixbuf 2.10.0
+loader directory. Ubuntu 26.04's core GDK Pixbuf package does not contain that
+loader tree; `librsvg2-common` supplies an SVG loader there. The workflow now
+installs that package, checks for the loader, and pins the Linux runner to Ubuntu
+24.04 for a stable older build baseline. This is a proposed fix, not a successful
+packaging run or proof of compatibility on older distributions. The downloaded
+linuxdeploy and GTK plugin remain unpinned and need supply-chain review.
+
+The account lock factory now fails closed when its support directory cannot be
+resolved, allowing the existing startup retry screen to handle the failure.
+Lock instances in the same Dart isolate reserve their path before asynchronous
+file operations, preventing another instance from opening and closing the same
+POSIX lock file while it is held. This does not coordinate other isolates, older
+builds that ignore the lock, different support-directory paths, or processes
+that remove the lock file. Snapshot conflict detection and independent backups
+remain necessary. The native Windows/Linux lock, keyring, crash durability and
+downgrade/recovery matrix remains a release blocker.
+
+The current runner already contains Linux early-link buffering and Windows
+forwarding retry code; their native protocol lifecycle and UX remain unverified.
+CI compilation is not installed-app validation. Clean-machine package runtime
+dependencies, keyring, DPI, protocol delivery and installer behavior still need
+target-system checks with disposable profiles. No protocol handler, package,
+account or wallet was used in this continuation.
+
+Verification on the macOS host: 28 disposable storage tests passed, including
+same-isolate contention and a separate-process lock test; focused Dart analysis,
+workflow YAML/Bash syntax, and `git diff --check` passed. The Dart runtime
+required execution outside the sandbox. No new CI run was triggered.

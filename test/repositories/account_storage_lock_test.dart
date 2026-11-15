@@ -104,6 +104,20 @@ void main() {
     await lease.release();
   });
 
+  test('reservation is made before asynchronous file creation', () async {
+    final directory = await Directory.systemTemp.createTemp('yaki-lock-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}${Platform.pathSeparator}nested'
+        '${Platform.pathSeparator}account_storage.lock';
+    final first = FileAccountStorageLock(path: path);
+    final second = FileAccountStorageLock(path: path);
+
+    final pending = first.acquire();
+    await expectLater(second.acquire(), throwsStateError);
+    final lease = await pending;
+    await lease.release();
+  });
+
   test('the unlocked lock performs no exclusion', () async {
     const lock = UnlockedAccountStorageLock();
     final first = await lock.acquire();
@@ -165,8 +179,7 @@ void main() {
   });
 
   test(
-    'file locks are per process, so a second handle in this process is not '
-    'excluded (documented POSIX behavior)',
+    'separate lock instances cannot overlap in the same isolate',
     () async {
       final directory = await Directory.systemTemp.createTemp('yaki-lock-');
       addTearDown(() => directory.delete(recursive: true));
@@ -184,11 +197,9 @@ void main() {
       );
 
       final firstLease = await first.acquire();
-      // Dart documents that POSIX advisory locks are process-level, so this
-      // succeeds here. Cross-process exclusion needs a separate process and is
-      // verified manually on target OSes (see DESKTOP_IMPLEMENTATION.md).
-      final secondLease = await second.acquire();
+      await expectLater(second.acquire(), throwsStateError);
       await firstLease.release();
+      final secondLease = await second.acquire();
       await secondLease.release();
     },
   );

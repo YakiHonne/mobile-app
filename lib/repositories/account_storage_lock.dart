@@ -45,8 +45,9 @@ class _NoopLease implements AccountStorageLease {
 ///
 /// The lock file contains no account data. On Linux (`flock`) and Windows
 /// (`LockFileEx`) a second handle in another process cannot take the same lock
-/// while it is held. POSIX advisory locks are per process, so this only
-/// protects against separate processes, not isolates in the same process.
+/// while it is held. A process-local reservation also prevents two instances
+/// in this isolate from opening the same file concurrently. Other isolates
+/// must not access this lock file.
 class FileAccountStorageLock implements AccountStorageLock {
   FileAccountStorageLock({
     required this.path,
@@ -58,24 +59,25 @@ class FileAccountStorageLock implements AccountStorageLock {
   final Duration timeout;
   final Duration retryDelay;
 
-  bool _acquired = false;
+  static final Set<String> _reservedPaths = {};
 
   @override
   Future<AccountStorageLease> acquire() async {
-    if (_acquired) {
+    final file = File(path).absolute;
+    final lockPath = file.path;
+    if (!_reservedPaths.add(lockPath)) {
       throw StateError('Account storage lock is already held in this process');
     }
-    final file = File(path);
-    await file.parent.create(recursive: true);
-    // Exclusive locks require a writable handle; append does not truncate.
-    final handle = await file.open(mode: FileMode.append);
-    _acquired = true;
+    RandomAccessFile? handle;
     try {
+      await file.parent.create(recursive: true);
+      // Exclusive locks require a writable handle; append does not truncate.
+      handle = await file.open(mode: FileMode.append);
       final deadline = DateTime.now().add(timeout);
       while (true) {
         try {
           await handle.lock();
-          return _FileLease(handle, this);
+          return _FileLease(handle, lockPath);
         } on FileSystemException {
           if (DateTime.now().isAfter(deadline)) {
             throw const AccountStorageLockTimeout();
@@ -84,22 +86,23 @@ class FileAccountStorageLock implements AccountStorageLock {
         }
       }
     } catch (_) {
-      _acquired = false;
-      await handle.close();
+      try {
+        if (handle != null) {
+          await handle.close();
+        }
+      } finally {
+        _reservedPaths.remove(lockPath);
+      }
       rethrow;
     }
-  }
-
-  void _released() {
-    _acquired = false;
   }
 }
 
 class _FileLease implements AccountStorageLease {
-  _FileLease(this._handle, this._owner);
+  _FileLease(this._handle, this._lockPath);
 
   final RandomAccessFile _handle;
-  final FileAccountStorageLock _owner;
+  final String _lockPath;
   bool _released = false;
 
   @override
@@ -113,17 +116,19 @@ class _FileLease implements AccountStorageLease {
     } on FileSystemException {
       // Unlock is best effort: closing the handle also releases the lock.
     }
-    await _handle.close();
-    _owner._released();
+    try {
+      await _handle.close();
+    } finally {
+      FileAccountStorageLock._reservedPaths.remove(_lockPath);
+    }
   }
 }
 
 /// Describes where the desktop account lock file lives.
 ///
 /// Resolved lazily because the support directory is only available once the
-/// Flutter binding has initialized platform plugins. Returns null when the
-/// directory cannot be resolved so callers can fall back to unlocked storage
-/// rather than failing to start.
+/// Flutter binding has initialized platform plugins. Failure to resolve the
+/// directory must stop desktop account storage instead of disabling locking.
 class DesktopAccountStorageLockFactory {
   DesktopAccountStorageLockFactory({
     this.timeout = const Duration(seconds: 5),
@@ -133,17 +138,13 @@ class DesktopAccountStorageLockFactory {
   final Duration timeout;
   final Duration retryDelay;
 
-  Future<AccountStorageLock?> create() async {
-    try {
-      final directory = await getApplicationSupportDirectory();
-      await directory.create(recursive: true);
-      return FileAccountStorageLock(
-        path: '${directory.path}${Platform.pathSeparator}account_storage.lock',
-        timeout: timeout,
-        retryDelay: retryDelay,
-      );
-    } catch (_) {
-      return null;
-    }
+  Future<AccountStorageLock> create() async {
+    final directory = await getApplicationSupportDirectory();
+    await directory.create(recursive: true);
+    return FileAccountStorageLock(
+      path: '${directory.path}${Platform.pathSeparator}account_storage.lock',
+      timeout: timeout,
+      retryDelay: retryDelay,
+    );
   }
 }
