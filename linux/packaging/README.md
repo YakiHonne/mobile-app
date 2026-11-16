@@ -1,8 +1,8 @@
 # Linux packaging and Nostr protocol integration
 
-Nothing here has been built, installed, signed, or tested on a Linux target.
-These are reviewed inputs, not release artifacts. Packaging, installing a
-handler, and publishing require explicit authorization and a native Linux host.
+The desktop workflow builds an unsigned candidate `.deb`. Installation,
+SQLite loading, application startup, and feed behavior still need verification
+on a clean Linux desktop before release.
 
 ## Pieces
 
@@ -11,7 +11,7 @@ handler, and publishing require explicit authorization and a native Linux host.
   does not make itself the default.
 - `build-deb.sh` — assembles an unsigned candidate `.deb` from an existing
   Flutter bundle. It installs under `/opt/yakihonne`, adds a `/usr/bin`
-  symlink, the desktop entry, an icon, and dependency metadata. It does not
+  launcher, the desktop entry, an icon, and dependency metadata. It does not
   install, register a default handler, sign, or publish. Release packages
   require authorization.
 - `copyright` — required package metadata placeholder; the shipping license
@@ -20,10 +20,16 @@ handler, and publishing require explicit authorization and a native Linux host.
 ## Dependencies
 
 `build-deb.sh` declares the runtime shared libraries the GTK runner and its
-plugins link against: `libgtk-3-0`, `libsecret-1-0`, GLib, GStreamer core/base,
+plugins link against: `libgtk-3-0`, `libsecret-1-0`, `libsqlite3-0`, GLib, GStreamer core/base,
 and the C++ runtime. GStreamer *plugin* bundles and a keyring daemon are
 `Recommends`, not hard dependencies, so the app can start without them and use
 its documented media fallbacks.
+
+The launcher includes the app's `lib` directory in the library search path.
+There, `libsqlite3.so` points to the multiarch system runtime `libsqlite3.so.0`,
+so the sqlite3 FFI fallback does not require `libsqlite3-dev`. The workflow
+checks that the packaged link resolves and that the library can be loaded, but
+that check does not replace testing the installed Flutter app on a clean system.
 
 The dependency list is unverified against a real bundle. Confirm it with:
 

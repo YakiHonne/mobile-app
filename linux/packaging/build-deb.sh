@@ -28,6 +28,9 @@ test -x "$bundle/yakihonne" || { echo "Missing executable: $bundle/yakihonne" >&
 test -d "$bundle/data" || { echo "Missing data directory: $bundle/data" >&2; exit 2; }
 command -v dpkg-deb >/dev/null || { echo "dpkg-deb is required" >&2; exit 2; }
 command -v dpkg >/dev/null || { echo "dpkg is required" >&2; exit 2; }
+command -v dpkg-architecture >/dev/null || { echo "dpkg-architecture is required" >&2; exit 2; }
+multiarch=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+test -n "$multiarch" || { echo "Could not determine Debian multiarch directory" >&2; exit 2; }
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 repo_root=$(CDPATH= cd -- "$script_dir/../.." && pwd)
@@ -41,7 +44,16 @@ mkdir -p "$stage/DEBIAN" "$stage/opt/yakihonne" "$stage/usr/bin" \
   "$stage/usr/share/applications" "$stage/usr/share/icons/hicolor/512x512/apps" \
   "$stage/usr/share/doc/yakihonne"
 cp -R "$bundle/." "$stage/opt/yakihonne/"
-ln -s /opt/yakihonne/yakihonne "$stage/usr/bin/yakihonne"
+mkdir -p "$stage/opt/yakihonne/lib"
+# sqlite3's fallback requests the development-library name. Resolve it to the
+# system runtime library without requiring libsqlite3-dev on users' machines.
+ln -sf "/usr/lib/$multiarch/libsqlite3.so.0" "$stage/opt/yakihonne/lib/libsqlite3.so"
+cat > "$stage/usr/bin/yakihonne" <<'EOF'
+#!/bin/sh
+export LD_LIBRARY_PATH="/opt/yakihonne/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+exec /opt/yakihonne/yakihonne "$@"
+EOF
+chmod 755 "$stage/usr/bin/yakihonne"
 cp "$script_dir/com.yakihonne.yakihonne.desktop" "$stage/usr/share/applications/"
 cp "$repo_root/assets/icon.png" \
   "$stage/usr/share/icons/hicolor/512x512/apps/com.yakihonne.yakihonne.png"
@@ -67,7 +79,7 @@ Architecture: $(dpkg --print-architecture)
 Maintainer: YakiHonne <support@yakihonne.com>
 Homepage: https://yakihonne.com
 Installed-Size: $(du -sk "$stage/opt" | cut -f1)
-Depends: libc6, libgcc-s1, libstdc++6, libglib2.0-0, libgtk-3-0, libsecret-1-0, libgstreamer1.0-0, libgstreamer-plugins-base1.0-0
+Depends: libc6, libgcc-s1, libstdc++6, libglib2.0-0, libgtk-3-0, libsecret-1-0, libsqlite3-0, libgstreamer1.0-0, libgstreamer-plugins-base1.0-0
 Recommends: gstreamer1.0-plugins-good, gstreamer1.0-plugins-bad, gstreamer1.0-libav, gnome-keyring | kwalletmanager
 Description: YakiHonne Nostr client
  YakiHonne is a Nostr social client with a desktop multi-pane interface.
