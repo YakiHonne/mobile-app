@@ -9,6 +9,7 @@ import 'package:nostr_core_enhanced/utils/utils.dart';
 
 import '../../common/mixins/later_function.dart';
 import '../../models/app_models/diverse_functions.dart';
+import '../../services/namecoin/namecoin_name_resolver.dart';
 import '../../utils/utils.dart';
 
 part 'metadata_state.dart';
@@ -247,6 +248,11 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
   }
 
   Future<String?> getNip05Pubkey(String nip05) async {
+    // Route .bit / d/ / id/ identifiers to Namecoin resolution
+    if (NamecoinNameResolver.isNamecoinIdentifier(nip05)) {
+      return namecoinService.resolvePubkey(nip05);
+    }
+
     final m = await nc.db.getMetadataByNip05(nip05);
 
     if (m != null) {
@@ -382,7 +388,14 @@ class MetadataCubit extends Cubit<MetadataState> with LaterFunction {
         }
 
         Nip05? nip05 = await nc.db.loadNip05(pubkey);
-        final valid = await Nip05.check(metadata.nip05, pubkey);
+
+        // Route .bit domains to Namecoin blockchain verification
+        final bool valid;
+        if (NamecoinNameResolver.isNamecoinIdentifier(metadata.nip05)) {
+          valid = await namecoinService.verifyNip05(metadata.nip05, pubkey);
+        } else {
+          valid = await Nip05.check(metadata.nip05, pubkey);
+        }
 
         nip05 ??= Nip05(
           pubkey: pubkey,
