@@ -7,10 +7,15 @@ on:
         description: 'Sign and notarize the macOS DMG'
         type: boolean
         default: false
+      notary_submission_id:
+        description: 'Retrieve an existing Apple notarization log instead of building'
+        type: string
+        required: false
 
 # Windows and Linux artifacts are unsigned. macOS signing is opt-in.
 jobs:
   build:
+    if: inputs.notary_submission_id == ''
     strategy:
       fail-fast: false
       matrix:
@@ -230,3 +235,18 @@ jobs:
           archive: false
           if-no-files-found: error
           retention-days: 7
+
+  notarization-log:
+    if: inputs.notary_submission_id != ''
+    runs-on: macos-latest
+    environment: desktop-build
+    steps:
+      - name: Retrieve Apple notarization log
+        env:
+          SUBMISSION_ID: ${{ inputs.notary_submission_id }}
+          NOTARY_APPLE_ID: ${{ secrets.MACOS_NOTARY_APPLE_ID }}
+          NOTARY_PASSWORD: ${{ secrets.MACOS_NOTARY_PASSWORD }}
+          NOTARY_TEAM_ID: ${{ secrets.MACOS_NOTARY_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          xcrun notarytool log "$SUBMISSION_ID" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID"
