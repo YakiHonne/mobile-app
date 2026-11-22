@@ -180,7 +180,14 @@ jobs:
           codesign -dvv "$app_path" 2>&1 | grep -Fq 'TeamIdentifier=JU5BUTKJC2'
           codesign -dvv "$app_path" 2>&1 | grep -q 'runtime'
           codesign --force --timestamp --sign 'Developer ID Application' "$dmg"
-          xcrun notarytool submit "$dmg" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID" --wait
+          xcrun notarytool submit "$dmg" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID" --wait --output-format json > "$RUNNER_TEMP/notary-result.json"
+          submission_id=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$RUNNER_TEMP/notary-result.json")
+          status=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "$RUNNER_TEMP/notary-result.json")
+          if [ "$status" != 'Accepted' ]; then
+            xcrun notarytool log "$submission_id" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID" || true
+            echo "Notarization did not succeed: $status" >&2
+            exit 1
+          fi
           xcrun stapler staple "$dmg"
           xcrun stapler validate "$dmg"
           spctl -a -t open --context context:primary-signature -v "$dmg"

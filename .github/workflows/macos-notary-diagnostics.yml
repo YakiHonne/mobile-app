@@ -1,0 +1,24 @@
+name: macOS notarization diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      submission_id:
+        description: Apple notarization submission ID
+        required: true
+        type: string
+
+jobs:
+  notarization-log:
+    runs-on: macos-latest
+    environment: desktop-build
+    steps:
+      - name: Retrieve Apple notarization log
+        env:
+          SUBMISSION_ID: ${{ inputs.submission_id }}
+          NOTARY_APPLE_ID: ${{ secrets.MACOS_NOTARY_APPLE_ID }}
+          NOTARY_PASSWORD: ${{ secrets.MACOS_NOTARY_PASSWORD }}
+          NOTARY_TEAM_ID: ${{ secrets.MACOS_NOTARY_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          xcrun notarytool log "$SUBMISSION_ID" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID"
