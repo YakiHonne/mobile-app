@@ -2272,6 +2272,10 @@ class TranslationsAr extends Translations {
 	@override String get desktopNetworkInterface => 'واجهة الشبكة';
 	@override String get desktopInterfaceAvailable => 'متاحة';
 	@override String get desktopRelayConnections => 'اتصالات المرحلات';
+	@override String get desktopConnectionDetails => 'تفاصيل الاتصال';
+	@override String get desktopConnectionExplanation => 'توفر واجهة الشبكة لا يضمن الوصول إلى الإنترنت. توضح الحالة ما إذا كان اتصال كل مرحّل مفتوحًا.';
+	@override String get desktopSocketOpen => 'الاتصال مفتوح';
+	@override String get desktopSocketClosed => 'الاتصال غير مفتوح';
 	@override String get desktopSmartWidgetUnavailable => 'التوقيع التفاعلي غير متاح على هذا الجهاز. يمكنك فتح الصفحة في المتصفح.';
 	@override String get desktopPlaybackUnavailable => 'التشغيل غير متاح في التطبيق على هذا الجهاز.';
 	@override String get desktopGoogleSignInUnavailable => 'تسجيل الدخول باستخدام Google غير متاح على Linux. اختر طريقة أخرى.';
@@ -4551,6 +4555,10 @@ extension on TranslationsAr {
 			'desktopNetworkInterface' => 'واجهة الشبكة',
 			'desktopInterfaceAvailable' => 'متاحة',
 			'desktopRelayConnections' => 'اتصالات المرحلات',
+			'desktopConnectionDetails' => 'تفاصيل الاتصال',
+			'desktopConnectionExplanation' => 'توفر واجهة الشبكة لا يضمن الوصول إلى الإنترنت. توضح الحالة ما إذا كان اتصال كل مرحّل مفتوحًا.',
+			'desktopSocketOpen' => 'الاتصال مفتوح',
+			'desktopSocketClosed' => 'الاتصال غير مفتوح',
 			'desktopSmartWidgetUnavailable' => 'التوقيع التفاعلي غير متاح على هذا الجهاز. يمكنك فتح الصفحة في المتصفح.',
 			'desktopPlaybackUnavailable' => 'التشغيل غير متاح في التطبيق على هذا الجهاز.',
 			'desktopGoogleSignInUnavailable' => 'تسجيل الدخول باستخدام Google غير متاح على Linux. اختر طريقة أخرى.',

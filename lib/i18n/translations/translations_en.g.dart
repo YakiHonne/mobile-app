@@ -6740,6 +6740,18 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// en: 'Relay connections'
 	String get desktopRelayConnections => 'Relay connections';
 
+	/// en: 'Connection details'
+	String get desktopConnectionDetails => 'Connection details';
+
+	/// en: 'Interface availability does not guarantee internet access. Relay status shows whether each socket is open.'
+	String get desktopConnectionExplanation => 'Interface availability does not guarantee internet access. Relay status shows whether each socket is open.';
+
+	/// en: 'Socket open'
+	String get desktopSocketOpen => 'Socket open';
+
+	/// en: 'Socket not open'
+	String get desktopSocketClosed => 'Socket not open';
+
 	/// en: 'Interactive signing is unavailable on this device. You can open the page in your browser.'
 	String get desktopSmartWidgetUnavailable => 'Interactive signing is unavailable on this device. You can open the page in your browser.';
 
@@ -9026,6 +9038,10 @@ extension on Translations {
 			'desktopNetworkInterface' => 'Network interface',
 			'desktopInterfaceAvailable' => 'Available',
 			'desktopRelayConnections' => 'Relay connections',
+			'desktopConnectionDetails' => 'Connection details',
+			'desktopConnectionExplanation' => 'Interface availability does not guarantee internet access. Relay status shows whether each socket is open.',
+			'desktopSocketOpen' => 'Socket open',
+			'desktopSocketClosed' => 'Socket not open',
 			'desktopSmartWidgetUnavailable' => 'Interactive signing is unavailable on this device. You can open the page in your browser.',
 			'desktopPlaybackUnavailable' => 'Playback is unavailable in the app on this device.',
 			'desktopGoogleSignInUnavailable' => 'Google sign-in is unavailable on Linux. Choose another sign-in method.',

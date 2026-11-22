@@ -462,7 +462,8 @@ class OpenGalleryWidget extends HookWidget {
       left: 0,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        child: media[currentIndex.value].value == UrlType.video
+        child: media[currentIndex.value].value == UrlType.video &&
+                !(isDesktopPlatform && isGallery)
             ? const SizedBox(
                 key: ValueKey('empty'),
               )
@@ -485,16 +486,18 @@ class OpenGalleryWidget extends HookWidget {
                         backgroundColor: Theme.of(context).cardColor,
                       ),
                       const Spacer(),
-                      CustomIconButton(
-                        onClicked: () => MediaHandler.saveNetworkImage(
-                          currentSource.value.key,
+                      if (currentSource.value.value == UrlType.image) ...[
+                        CustomIconButton(
+                          onClicked: () => MediaHandler.saveNetworkImage(
+                            currentSource.value.key,
+                          ),
+                          vd: -1,
+                          icon: FeatureIcons.download,
+                          size: 22,
+                          backgroundColor: Theme.of(context).cardColor,
                         ),
-                        vd: -1,
-                        icon: FeatureIcons.download,
-                        size: 22,
-                        backgroundColor: Theme.of(context).cardColor,
-                      ),
-                      _pulldownButton(context, currentSource),
+                        _pulldownButton(context, currentSource),
+                      ],
                     ],
                   ),
                 ),
@@ -730,7 +733,8 @@ Widget itemBuilder({
   required bool isRound,
 }) {
   if (entry.value == UrlType.video) {
-    return SafeArea(child: CustomVideoPlayer(link: entry.key));
+    final player = CustomVideoPlayer(link: entry.key);
+    return SafeArea(child: isDesktopPlatform ? Center(child: player) : player);
   } else {
     return Builder(
       builder: (context) {

@@ -2272,6 +2272,10 @@ class TranslationsIt extends Translations {
 	@override String get desktopNetworkInterface => 'Interfaccia di rete';
 	@override String get desktopInterfaceAvailable => 'Disponibile';
 	@override String get desktopRelayConnections => 'Connessioni ai relay';
+	@override String get desktopConnectionDetails => 'Dettagli connessione';
+	@override String get desktopConnectionExplanation => 'Un’interfaccia disponibile non garantisce l’accesso a Internet. Lo stato indica se la connessione a ogni relay è aperta.';
+	@override String get desktopSocketOpen => 'Connessione aperta';
+	@override String get desktopSocketClosed => 'Connessione non aperta';
 	@override String get desktopSmartWidgetUnavailable => 'La firma interattiva non è disponibile su questo dispositivo. Puoi aprire la pagina nel browser.';
 	@override String get desktopPlaybackUnavailable => 'La riproduzione non è disponibile nell’app su questo dispositivo.';
 	@override String get desktopGoogleSignInUnavailable => 'L’accesso con Google non è disponibile su Linux. Scegli un altro metodo.';
@@ -4551,6 +4555,10 @@ extension on TranslationsIt {
 			'desktopNetworkInterface' => 'Interfaccia di rete',
 			'desktopInterfaceAvailable' => 'Disponibile',
 			'desktopRelayConnections' => 'Connessioni ai relay',
+			'desktopConnectionDetails' => 'Dettagli connessione',
+			'desktopConnectionExplanation' => 'Un’interfaccia disponibile non garantisce l’accesso a Internet. Lo stato indica se la connessione a ogni relay è aperta.',
+			'desktopSocketOpen' => 'Connessione aperta',
+			'desktopSocketClosed' => 'Connessione non aperta',
 			'desktopSmartWidgetUnavailable' => 'La firma interattiva non è disponibile su questo dispositivo. Puoi aprire la pagina nel browser.',
 			'desktopPlaybackUnavailable' => 'La riproduzione non è disponibile nell’app su questo dispositivo.',
 			'desktopGoogleSignInUnavailable' => 'L’accesso con Google non è disponibile su Linux. Scegli un altro metodo.',

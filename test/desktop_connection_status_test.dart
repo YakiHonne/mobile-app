@@ -22,12 +22,25 @@ class _Platform implements Connectivity {
 class _Core implements NostrCore {
   @override
   final Map<String, int> connectStatus = {};
+  final openRelays = <String>{};
+  final listeners = <ConnectStatusCallBack>[];
   @override
-  void addConnectStatusListener(ConnectStatusCallBack callback) {}
+  void addConnectStatusListener(ConnectStatusCallBack callback) =>
+      listeners.add(callback);
   @override
-  void removeConnectStatusListener(ConnectStatusCallBack callback) {}
+  void removeConnectStatusListener(ConnectStatusCallBack callback) =>
+      listeners.remove(callback);
   @override
-  bool isWebSocketOpen(String url) => false;
+  bool isWebSocketOpen(String url) => openRelays.contains(url);
+
+  void open(String url) {
+    connectStatus[url] = 1;
+    openRelays.add(url);
+    for (final listener in List<ConnectStatusCallBack>.of(listeners)) {
+      listener(url, 1);
+    }
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -39,7 +52,8 @@ void main() {
     connectivityService = ConnectivityService(
       repository: ConnectivityRepository(connectivity: platform),
     );
-    nc = _Core();
+    final core = _Core();
+    nc = core;
     currentUserRelayList = UserRelayList(
       pubkey: '',
       relays: {'wss://fixture.example': ReadWriteMarker.readWrite},
@@ -56,8 +70,14 @@ void main() {
         ),
       ),
     ));
-    expect(find.textContaining('Unknown'), findsOneWidget);
-    expect(find.textContaining('0/1'), findsOneWidget);
+    expect(find.text('Network'), findsOneWidget);
+    expect(find.text('Network interface'), findsNothing);
+    expect(find.text('0/1'), findsNothing);
+    await tester.tap(find.byType(DesktopConnectionStatus));
+    await tester.pumpAndSettle();
+    expect(find.text('Connection details'), findsOneWidget);
+    expect(find.text('Unknown'), findsOneWidget);
+    expect(find.text('0/1'), findsOneWidget);
     platform.initial.complete([ConnectivityResult.none]);
     await tester.pump();
     await tester.pump();
@@ -67,6 +87,12 @@ void main() {
     await tester.pump();
     expect(find.textContaining('Available'), findsOneWidget);
     expect(find.textContaining('0/1'), findsOneWidget);
+    expect(find.text('wss://fixture.example'), findsOneWidget);
+    expect(find.text('Socket not open'), findsOneWidget);
+    core.open('wss://fixture.example');
+    await tester.pump();
+    expect(find.text('Socket open'), findsOneWidget);
+    expect(find.text('1/1'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.runAsync(() async {

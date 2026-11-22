@@ -54,6 +54,7 @@ app.*.map.json
 !/md/FEATURES_IMPROVEMENTS_FIXES_2.1.1.md
 !/md/DESKTOP_PRODUCT_ASSESSMENT.md
 !/md/DESKTOP_TASK_PLAN.md
+!/md/YAKI_PRO_DESKTOP_HANDOFF.md
 
 # Files
 /android/key.properties

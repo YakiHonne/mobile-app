@@ -16,9 +16,11 @@ import 'package:yakihonne/logic/theme_cubit/theme_cubit.dart';
 import 'package:yakihonne/logic/wallets_manager_cubit/wallets_manager_cubit.dart';
 import 'package:yakihonne/repositories/connectivity_repository.dart';
 import 'package:yakihonne/utils/enums.dart';
+import 'package:yakihonne/views/main_view/desktop/desktop_connection_status.dart';
 import 'package:yakihonne/views/main_view/desktop/desktop_more_dialog.dart';
 import 'package:yakihonne/views/main_view/widgets/desktop_sidebar.dart';
 import 'package:yakihonne/views/main_view/widgets/feature_tour.dart';
+import 'package:yakihonne/views/version_news/new_features_intro.dart';
 
 class _StubConnectivity implements Connectivity {
   @override
@@ -181,6 +183,16 @@ void main() {
     ]) {
       expect(find.byKey(key), findsOneWidget);
     }
+    expect(
+      tester.getTopLeft(find.byKey(TourKeys.home)).dy -
+          tester.getBottomLeft(find.byKey(TourKeys.search)).dy,
+      greaterThanOrEqualTo(10),
+    );
+    expect(
+      tester.getTopLeft(find.byType(DesktopConnectionStatus)).dy -
+          tester.getBottomLeft(find.byType(DesktopComposeButton)).dy,
+      greaterThanOrEqualTo(5),
+    );
     expect(find.byKey(TourKeys.drawer), findsNothing);
     await tester.tap(find.byKey(TourKeys.home));
     expect(scrolls, 1);
@@ -202,6 +214,21 @@ void main() {
     await tester.tap(find.text('Articles'));
     await tester.pumpAndSettle();
     expect(main.state.mainView, MainViews.articles);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('intro actions have vertical spacing', (tester) async {
+    themeCubit = _Theme();
+    await tester.pumpWidget(TranslationProvider(
+      child: const MaterialApp(home: Scaffold(body: NewFeaturesIntro())),
+    ));
+    final start = find.widgetWithText(TextButton, 'Take the tour');
+    final later = find.widgetWithText(TextButton, 'Maybe later');
+    expect(start, findsOneWidget);
+    expect(later, findsOneWidget);
+    expect(
+      tester.getTopLeft(later).dy - tester.getBottomLeft(start).dy,
+      greaterThanOrEqualTo(10),
+    );
     expect(tester.takeException(), isNull);
   });
   testWidgets('signed-in More exposes account destinations', (tester) async {

@@ -216,19 +216,21 @@ class LeadingNotesSkeleton extends StatelessWidget {
             style: Theme.of(context).textTheme.labelSmall,
             maxLines: 2,
           ),
-          const SizedBox(
-            height: kDefaultPadding / 1.5,
-          ),
-          Skeleton.shade(
-            child: Container(
-              height: 8,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: kDimGrey,
-                borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+          if (!isDesktopPlatform) ...[
+            const SizedBox(
+              height: kDefaultPadding / 1.5,
+            ),
+            Skeleton.shade(
+              child: Container(
+                height: 8,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: kDimGrey,
+                  borderRadius: BorderRadius.circular(kDefaultPadding / 2),
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

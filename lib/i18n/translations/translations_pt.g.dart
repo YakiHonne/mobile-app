@@ -2272,6 +2272,10 @@ class TranslationsPt extends Translations {
 	@override String get desktopNetworkInterface => 'Interface de rede';
 	@override String get desktopInterfaceAvailable => 'Disponível';
 	@override String get desktopRelayConnections => 'Conexões de relay';
+	@override String get desktopConnectionDetails => 'Detalhes da conexão';
+	@override String get desktopConnectionExplanation => 'Uma interface disponível não garante acesso à internet. O estado mostra se a conexão de cada relay está aberta.';
+	@override String get desktopSocketOpen => 'Conexão aberta';
+	@override String get desktopSocketClosed => 'Conexão não aberta';
 	@override String get desktopSmartWidgetUnavailable => 'A assinatura interativa não está disponível neste dispositivo. Você pode abrir a página no navegador.';
 	@override String get desktopPlaybackUnavailable => 'A reprodução não está disponível no aplicativo neste dispositivo.';
 	@override String get desktopGoogleSignInUnavailable => 'O login com Google não está disponível no Linux. Escolha outro método.';
@@ -4551,6 +4555,10 @@ extension on TranslationsPt {
 			'desktopNetworkInterface' => 'Interface de rede',
 			'desktopInterfaceAvailable' => 'Disponível',
 			'desktopRelayConnections' => 'Conexões de relay',
+			'desktopConnectionDetails' => 'Detalhes da conexão',
+			'desktopConnectionExplanation' => 'Uma interface disponível não garante acesso à internet. O estado mostra se a conexão de cada relay está aberta.',
+			'desktopSocketOpen' => 'Conexão aberta',
+			'desktopSocketClosed' => 'Conexão não aberta',
 			'desktopSmartWidgetUnavailable' => 'A assinatura interativa não está disponível neste dispositivo. Você pode abrir a página no navegador.',
 			'desktopPlaybackUnavailable' => 'A reprodução não está disponível no aplicativo neste dispositivo.',
 			'desktopGoogleSignInUnavailable' => 'O login com Google não está disponível no Linux. Escolha outro método.',

@@ -2272,6 +2272,10 @@ class TranslationsFr extends Translations {
 	@override String get desktopNetworkInterface => 'Interface réseau';
 	@override String get desktopInterfaceAvailable => 'Disponible';
 	@override String get desktopRelayConnections => 'Connexions aux relais';
+	@override String get desktopConnectionDetails => 'Détails de connexion';
+	@override String get desktopConnectionExplanation => 'Une interface disponible ne garantit pas l’accès à Internet. L’état indique si la connexion à chaque relais est ouverte.';
+	@override String get desktopSocketOpen => 'Connexion ouverte';
+	@override String get desktopSocketClosed => 'Connexion non ouverte';
 	@override String get desktopSmartWidgetUnavailable => 'La signature interactive est indisponible sur cet appareil. Vous pouvez ouvrir la page dans votre navigateur.';
 	@override String get desktopPlaybackUnavailable => 'La lecture est indisponible dans l’application sur cet appareil.';
 	@override String get desktopGoogleSignInUnavailable => 'La connexion Google est indisponible sous Linux. Choisissez une autre méthode.';
@@ -4551,6 +4555,10 @@ extension on TranslationsFr {
 			'desktopNetworkInterface' => 'Interface réseau',
 			'desktopInterfaceAvailable' => 'Disponible',
 			'desktopRelayConnections' => 'Connexions aux relais',
+			'desktopConnectionDetails' => 'Détails de connexion',
+			'desktopConnectionExplanation' => 'Une interface disponible ne garantit pas l’accès à Internet. L’état indique si la connexion à chaque relais est ouverte.',
+			'desktopSocketOpen' => 'Connexion ouverte',
+			'desktopSocketClosed' => 'Connexion non ouverte',
 			'desktopSmartWidgetUnavailable' => 'La signature interactive est indisponible sur cet appareil. Vous pouvez ouvrir la page dans votre navigateur.',
 			'desktopPlaybackUnavailable' => 'La lecture est indisponible dans l’application sur cet appareil.',
 			'desktopGoogleSignInUnavailable' => 'La connexion Google est indisponible sous Linux. Choisissez une autre méthode.',

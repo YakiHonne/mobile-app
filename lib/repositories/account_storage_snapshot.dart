@@ -184,7 +184,8 @@ class AccountSnapshotStore {
       }
       final signersJson = await read('remote_signers_map');
       hashes['remote_signers_map'] = _hash(signersJson);
-      final dynamic signers = signersJson == null ? [] : jsonDecode(signersJson);
+      final dynamic signers =
+          signersJson == null ? [] : jsonDecode(signersJson);
       if (signers is! List || signers.any((value) => value is! String)) {
         throw const FormatException('Invalid remote signers');
       }
@@ -321,7 +322,8 @@ class AccountSnapshotStore {
       }
       final signersJson = await read('remote_signers_map');
       hashes['remote_signers_map'] = _hash(signersJson);
-      final dynamic signers = signersJson == null ? [] : jsonDecode(signersJson);
+      final dynamic signers =
+          signersJson == null ? [] : jsonDecode(signersJson);
       if (signers is! List || signers.any((value) => value is! String)) {
         throw const FormatException('Invalid remote signers');
       }

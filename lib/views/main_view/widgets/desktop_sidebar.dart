@@ -89,8 +89,9 @@ class DesktopSidebar extends StatelessWidget {
                         child: _navigation(context, state),
                       ),
                     ),
-                    DesktopConnectionStatus(compact: compact),
                     DesktopComposeButton(compact: compact),
+                    const SizedBox(height: kDefaultPadding / 4),
+                    DesktopConnectionStatus(compact: compact),
                     const SizedBox(height: kDefaultPadding / 4),
                     DesktopSettingsButton(
                       compact: compact,
@@ -116,6 +117,7 @@ class DesktopSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _SearchField(key: TourKeys.search, compact: compact),
+          const SizedBox(height: kDefaultPadding / 2),
           _primaryDestinations(context, state),
           _item(
             icon: Icons.more_horiz,
@@ -583,7 +585,7 @@ class _DesktopComposeButtonState extends State<DesktopComposeButton> {
                   child: Semantics(
                     label: context.t.compose.capitalizeFirst(),
                     child: const AppIcon(FeatureIcons.addRaw,
-                        size: 20, color: kWhite),
+                        size: 22, color: kWhite),
                   ),
                 ),
               ),
@@ -598,7 +600,7 @@ class _DesktopComposeButtonState extends State<DesktopComposeButton> {
               key: TourKeys.create,
               focusNode: _triggerFocus,
               onPressed: open,
-              icon: const AppIcon(FeatureIcons.addRaw, size: 18, color: kWhite),
+              icon: const AppIcon(FeatureIcons.addRaw, size: 22, color: kWhite),
               label: Text(
                 context.t.compose.capitalizeFirst(),
                 textAlign: TextAlign.center,
@@ -673,10 +675,11 @@ class DesktopSettingsButton extends StatelessWidget {
             child: compact
                 ? Center(child: icon)
                 : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       icon,
                       const SizedBox(width: kDefaultPadding / 1.5),
-                      Expanded(
+                      Flexible(
                           child: Text(label,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

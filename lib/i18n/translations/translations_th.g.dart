@@ -2272,6 +2272,10 @@ class TranslationsTh extends Translations {
 	@override String get desktopNetworkInterface => 'อินเทอร์เฟซเครือข่าย';
 	@override String get desktopInterfaceAvailable => 'พร้อมใช้งาน';
 	@override String get desktopRelayConnections => 'การเชื่อมต่อรีเลย์';
+	@override String get desktopConnectionDetails => 'รายละเอียดการเชื่อมต่อ';
+	@override String get desktopConnectionExplanation => 'การมีอินเทอร์เฟซเครือข่ายไม่ได้รับประกันการเข้าถึงอินเทอร์เน็ต สถานะแสดงว่าซ็อกเก็ตของแต่ละรีเลย์เปิดอยู่หรือไม่';
+	@override String get desktopSocketOpen => 'ซ็อกเก็ตเปิดอยู่';
+	@override String get desktopSocketClosed => 'ซ็อกเก็ตไม่ได้เปิด';
 	@override String get desktopSmartWidgetUnavailable => 'อุปกรณ์นี้ไม่รองรับการลงนามแบบโต้ตอบ คุณสามารถเปิดหน้าในเบราว์เซอร์ได้';
 	@override String get desktopPlaybackUnavailable => 'อุปกรณ์นี้ไม่รองรับการเล่นในแอป';
 	@override String get desktopGoogleSignInUnavailable => 'ไม่รองรับการเข้าสู่ระบบด้วย Google บน Linux โปรดเลือกวิธีอื่น';
@@ -4551,6 +4555,10 @@ extension on TranslationsTh {
 			'desktopNetworkInterface' => 'อินเทอร์เฟซเครือข่าย',
 			'desktopInterfaceAvailable' => 'พร้อมใช้งาน',
 			'desktopRelayConnections' => 'การเชื่อมต่อรีเลย์',
+			'desktopConnectionDetails' => 'รายละเอียดการเชื่อมต่อ',
+			'desktopConnectionExplanation' => 'การมีอินเทอร์เฟซเครือข่ายไม่ได้รับประกันการเข้าถึงอินเทอร์เน็ต สถานะแสดงว่าซ็อกเก็ตของแต่ละรีเลย์เปิดอยู่หรือไม่',
+			'desktopSocketOpen' => 'ซ็อกเก็ตเปิดอยู่',
+			'desktopSocketClosed' => 'ซ็อกเก็ตไม่ได้เปิด',
 			'desktopSmartWidgetUnavailable' => 'อุปกรณ์นี้ไม่รองรับการลงนามแบบโต้ตอบ คุณสามารถเปิดหน้าในเบราว์เซอร์ได้',
 			'desktopPlaybackUnavailable' => 'อุปกรณ์นี้ไม่รองรับการเล่นในแอป',
 			'desktopGoogleSignInUnavailable' => 'ไม่รองรับการเข้าสู่ระบบด้วย Google บน Linux โปรดเลือกวิธีอื่น',

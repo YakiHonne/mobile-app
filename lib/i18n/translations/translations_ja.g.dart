@@ -2272,6 +2272,10 @@ class TranslationsJa extends Translations {
 	@override String get desktopNetworkInterface => 'ネットワークインターフェース';
 	@override String get desktopInterfaceAvailable => '利用可能';
 	@override String get desktopRelayConnections => 'リレー接続';
+	@override String get desktopConnectionDetails => '接続の詳細';
+	@override String get desktopConnectionExplanation => 'ネットワークインターフェースが利用可能でも、インターネットに接続できるとは限りません。各リレーのソケットの状態を表示します。';
+	@override String get desktopSocketOpen => 'ソケットは接続中';
+	@override String get desktopSocketClosed => 'ソケットは未接続';
 	@override String get desktopSmartWidgetUnavailable => 'このデバイスでは対話型署名を利用できません。ページはブラウザーで開けます。';
 	@override String get desktopPlaybackUnavailable => 'このデバイスではアプリ内再生を利用できません。';
 	@override String get desktopGoogleSignInUnavailable => 'Linux では Google ログインを利用できません。別の方法を選んでください。';
@@ -4551,6 +4555,10 @@ extension on TranslationsJa {
 			'desktopNetworkInterface' => 'ネットワークインターフェース',
 			'desktopInterfaceAvailable' => '利用可能',
 			'desktopRelayConnections' => 'リレー接続',
+			'desktopConnectionDetails' => '接続の詳細',
+			'desktopConnectionExplanation' => 'ネットワークインターフェースが利用可能でも、インターネットに接続できるとは限りません。各リレーのソケットの状態を表示します。',
+			'desktopSocketOpen' => 'ソケットは接続中',
+			'desktopSocketClosed' => 'ソケットは未接続',
 			'desktopSmartWidgetUnavailable' => 'このデバイスでは対話型署名を利用できません。ページはブラウザーで開けます。',
 			'desktopPlaybackUnavailable' => 'このデバイスではアプリ内再生を利用できません。',
 			'desktopGoogleSignInUnavailable' => 'Linux では Google ログインを利用できません。別の方法を選んでください。',

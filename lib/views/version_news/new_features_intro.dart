@@ -61,6 +61,7 @@ class NewFeaturesIntro extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(true),
                   child: Text(context.t.takeTheTour),
                 ),
+                const SizedBox(height: kDefaultPadding / 2),
                 TextButton(
                   onPressed: () {
                     markFeatureTourSeen();

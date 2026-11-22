@@ -2272,6 +2272,10 @@ class TranslationsEs extends Translations {
 	@override String get desktopNetworkInterface => 'Interfaz de red';
 	@override String get desktopInterfaceAvailable => 'Disponible';
 	@override String get desktopRelayConnections => 'Conexiones a relays';
+	@override String get desktopConnectionDetails => 'Detalles de conexión';
+	@override String get desktopConnectionExplanation => 'Una interfaz disponible no garantiza acceso a Internet. El estado indica si la conexión de cada relé está abierta.';
+	@override String get desktopSocketOpen => 'Conexión abierta';
+	@override String get desktopSocketClosed => 'Conexión no abierta';
 	@override String get desktopSmartWidgetUnavailable => 'La firma interactiva no está disponible en este dispositivo. Puedes abrir la página en el navegador.';
 	@override String get desktopPlaybackUnavailable => 'La reproducción no está disponible en la aplicación en este dispositivo.';
 	@override String get desktopGoogleSignInUnavailable => 'El inicio de sesión con Google no está disponible en Linux. Elige otro método.';
@@ -4551,6 +4555,10 @@ extension on TranslationsEs {
 			'desktopNetworkInterface' => 'Interfaz de red',
 			'desktopInterfaceAvailable' => 'Disponible',
 			'desktopRelayConnections' => 'Conexiones a relays',
+			'desktopConnectionDetails' => 'Detalles de conexión',
+			'desktopConnectionExplanation' => 'Una interfaz disponible no garantiza acceso a Internet. El estado indica si la conexión de cada relé está abierta.',
+			'desktopSocketOpen' => 'Conexión abierta',
+			'desktopSocketClosed' => 'Conexión no abierta',
 			'desktopSmartWidgetUnavailable' => 'La firma interactiva no está disponible en este dispositivo. Puedes abrir la página en el navegador.',
 			'desktopPlaybackUnavailable' => 'La reproducción no está disponible en la aplicación en este dispositivo.',
 			'desktopGoogleSignInUnavailable' => 'El inicio de sesión con Google no está disponible en Linux. Elige otro método.',

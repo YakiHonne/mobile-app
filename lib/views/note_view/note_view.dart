@@ -153,17 +153,11 @@ class NoteView extends HookWidget {
     final isProcessingSpam = useState(false);
     final cachedReplies =
         useMemoized(() => <String, List<DetailedNoteModel>>{});
-    final replyRequest = useRef(0);
 
     useEffect(
       () {
-        final id = currentNote.value.id;
-        notesEventsCubit.retainStats(id);
         showPotentialSpamReplies.value = false;
-        return () {
-          replyRequest.value++;
-          notesEventsCubit.releaseStats(id);
-        };
+        return null;
       },
       [currentNote.value.id],
     );
@@ -174,18 +168,12 @@ class NoteView extends HookWidget {
           return;
         }
 
-        final id = currentNote.value.id;
-        final request = ++replyRequest.value;
-        bool isCurrent() =>
-            context.mounted &&
-            currentNote.value.id == id &&
-            replyRequest.value == request;
         final evs = await notesEventsCubit.loadNoteRelatedEvents(
-          id: id,
+          id: currentNote.value.id,
           type: NoteRelatedEventsType.replies,
         );
 
-        if (!isCurrent()) {
+        if (!context.mounted) {
           return;
         }
         isProcessingSpam.value = true;
@@ -193,7 +181,7 @@ class NoteView extends HookWidget {
           final partition = await spamFilter.partitionReplies(
             evs.map(DetailedNoteModel.fromEvent).toList(),
           );
-          if (!isCurrent()) {
+          if (!context.mounted) {
             return;
           }
           replies.value = partition.visibleReplies;
@@ -202,7 +190,7 @@ class NoteView extends HookWidget {
             showPotentialSpamReplies.value = false;
           }
         } finally {
-          if (isCurrent()) {
+          if (context.mounted) {
             isProcessingSpam.value = false;
           }
         }

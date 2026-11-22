@@ -2272,6 +2272,10 @@ class TranslationsRu extends Translations {
 	@override String get desktopNetworkInterface => 'Сетевой интерфейс';
 	@override String get desktopInterfaceAvailable => 'Доступен';
 	@override String get desktopRelayConnections => 'Соединения с реле';
+	@override String get desktopConnectionDetails => 'Сведения о подключении';
+	@override String get desktopConnectionExplanation => 'Доступность сетевого интерфейса не гарантирует доступ в интернет. Статус показывает, открыт ли сокет каждого реле.';
+	@override String get desktopSocketOpen => 'Сокет открыт';
+	@override String get desktopSocketClosed => 'Сокет не открыт';
 	@override String get desktopSmartWidgetUnavailable => 'Интерактивная подпись недоступна на этом устройстве. Вы можете открыть страницу в браузере.';
 	@override String get desktopPlaybackUnavailable => 'Воспроизведение в приложении на этом устройстве недоступно.';
 	@override String get desktopGoogleSignInUnavailable => 'Вход через Google недоступен в Linux. Выберите другой способ.';
@@ -4551,6 +4555,10 @@ extension on TranslationsRu {
 			'desktopNetworkInterface' => 'Сетевой интерфейс',
 			'desktopInterfaceAvailable' => 'Доступен',
 			'desktopRelayConnections' => 'Соединения с реле',
+			'desktopConnectionDetails' => 'Сведения о подключении',
+			'desktopConnectionExplanation' => 'Доступность сетевого интерфейса не гарантирует доступ в интернет. Статус показывает, открыт ли сокет каждого реле.',
+			'desktopSocketOpen' => 'Сокет открыт',
+			'desktopSocketClosed' => 'Сокет не открыт',
 			'desktopSmartWidgetUnavailable' => 'Интерактивная подпись недоступна на этом устройстве. Вы можете открыть страницу в браузере.',
 			'desktopPlaybackUnavailable' => 'Воспроизведение в приложении на этом устройстве недоступно.',
 			'desktopGoogleSignInUnavailable' => 'Вход через Google недоступен в Linux. Выберите другой способ.',
