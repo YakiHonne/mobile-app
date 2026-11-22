@@ -2,8 +2,13 @@ name: Desktop release
 
 on:
   workflow_dispatch:
+    inputs:
+      sign_macos:
+        description: 'Sign and notarize the macOS DMG'
+        type: boolean
+        default: false
 
-# These are unsigned ad-hoc signed release builds, not notarized installers.
+# Windows and Linux artifacts are unsigned. macOS signing is opt-in.
 jobs:
   build:
     strategy:
@@ -42,13 +47,57 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libcurl4-openssl-dev
       - name: Use ad-hoc macOS signing
-        if: matrix.platform == 'macos'
+        if: matrix.platform == 'macos' && !inputs.sign_macos
         run: |
           # No provisioning profiles on CI: ad-hoc sign so the app still runs
           # locally; proper Developer ID signing happens at distribution time.
           sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=macosx\*\]" = "Apple Development";/"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";/' macos/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' macos/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/DEVELOPMENT_TEAM = JU5BUTKJC2;//' macos/Runner.xcodeproj/project.pbxproj
+      - name: Configure macOS distribution signing
+        if: matrix.platform == 'macos' && inputs.sign_macos
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          PROFILE_BASE64: ${{ secrets.MACOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          set -euo pipefail
+          for name in CERTIFICATE_BASE64 CERTIFICATE_PASSWORD PROFILE_BASE64; do
+            if [ -z "${!name}" ]; then echo "Missing $name for macOS signing." >&2; exit 1; fi
+          done
+          keychain="$RUNNER_TEMP/yakihonne-signing.keychain-db"
+          keychain_password="$(openssl rand -hex 32)"
+          printf '%s' "$CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing.p12"
+          printf '%s' "$PROFILE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing.provisionprofile"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$RUNNER_TEMP/signing.p12" -k "$keychain" -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
+          security list-keychains -d user -s "$keychain"
+          security cms -D -i "$RUNNER_TEMP/signing.provisionprofile" > "$RUNNER_TEMP/profile.plist"
+          profile_id=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
+          app_id=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' "$RUNNER_TEMP/profile.plist")
+          test "$app_id" = 'JU5BUTKJC2.com.yakihonne.appyakihonne'
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp "$RUNNER_TEMP/signing.provisionprofile" "$HOME/Library/MobileDevice/Provisioning Profiles/$profile_id.provisionprofile"
+          PROFILE_ID="$profile_id" python3 -c '
+          import os, pathlib
+          p = pathlib.Path("macos/Runner.xcodeproj/project.pbxproj")
+          s = p.read_text()
+          start = s.index("33CC10FD2044A3C60003C045 /* Release */ = {")
+          end = s.index("\n\t\t};", start)
+          section = s[start:end]
+          changes = {
+              "\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"Apple Development\";": "\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"Developer ID Application\";",
+              "CODE_SIGN_STYLE = Automatic;": "CODE_SIGN_STYLE = Manual;\n\t\t\t\tENABLE_HARDENED_RUNTIME = YES;",
+              "PROVISIONING_PROFILE_SPECIFIER = \"\";": "PROVISIONING_PROFILE_SPECIFIER = " + os.environ["PROFILE_ID"] + ";",
+          }
+          for old, new in changes.items():
+              if section.count(old) != 1: raise SystemExit("Unexpected Runner Release signing settings")
+              section = section.replace(old, new)
+          p.write_text(s[:start] + section + s[end:])
+          '
       - name: Restore build configuration
         env:
           APP_ENV: ${{ secrets.APP_ENV }}
@@ -58,8 +107,24 @@ jobs:
             exit 1
           fi
           printf '%s' "$APP_ENV" > .env
+      - name: Restore macOS Firebase configuration
+        if: matrix.platform == 'macos'
+        env:
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+        run: |
+          if [ -z "$GOOGLE_SERVICE_INFO_PLIST" ]; then
+            echo 'Missing GOOGLE_SERVICE_INFO_PLIST in the desktop-build environment.' >&2
+            exit 1
+          fi
+          printf '%s' "$GOOGLE_SERVICE_INFO_PLIST" > macos/Runner/GoogleService-Info.plist
+          plutil -lint macos/Runner/GoogleService-Info.plist >/dev/null
+          bundle_id=$(/usr/libexec/PlistBuddy -c 'Print :BUNDLE_ID' macos/Runner/GoogleService-Info.plist)
+          if [ "$bundle_id" != 'com.yakihonne.appyakihonne' ]; then
+            echo 'The macOS Firebase configuration has the wrong bundle ID.' >&2
+            exit 1
+          fi
       - run: flutter pub get --enforce-lockfile
-      - name: Build unsigned candidate
+      - name: Build desktop app
         run: flutter build ${{ matrix.platform }} --release --obfuscate --split-debug-info=build/symbols
       - name: Package Windows installer
         if: matrix.platform == 'windows'
@@ -91,10 +156,40 @@ jobs:
           installer_dir="$PWD/build/installers"
           staging_dir="$(mktemp -d "$PWD/build/dmg-staging.XXXXXX")"
           mkdir -p "$installer_dir"
-          cp -R "$app_path" "$staging_dir/"
+          ditto "$app_path" "$staging_dir/$(basename "$app_path")"
           ln -s /Applications "$staging_dir/Applications"
           hdiutil create -volname "YakiHonne" -srcfolder "$staging_dir" \
             -ov -format UDZO "$installer_dir/YakiHonne-${version}-macos.dmg"
+
+      - name: Sign and notarize macOS DMG
+        if: matrix.platform == 'macos' && inputs.sign_macos
+        env:
+          NOTARY_APPLE_ID: ${{ secrets.MACOS_NOTARY_APPLE_ID }}
+          NOTARY_PASSWORD: ${{ secrets.MACOS_NOTARY_PASSWORD }}
+          NOTARY_TEAM_ID: ${{ secrets.MACOS_NOTARY_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          for name in NOTARY_APPLE_ID NOTARY_PASSWORD NOTARY_TEAM_ID; do
+            if [ -z "${!name}" ]; then echo "Missing $name for notarization." >&2; exit 1; fi
+          done
+          app_path="$(find build/macos/Build/Products/Release -maxdepth 1 -type d -name '*.app' -print -quit)"
+          dmg="$(find build/installers -maxdepth 1 -name '*.dmg' -print -quit)"
+          test -n "$app_path" && test -n "$dmg"
+          codesign --verify --deep --strict --verbose=2 "$app_path"
+          codesign -dvv "$app_path" 2>&1 | grep -Fq 'Authority=Developer ID Application:'
+          codesign -dvv "$app_path" 2>&1 | grep -Fq 'TeamIdentifier=JU5BUTKJC2'
+          codesign -dvv "$app_path" 2>&1 | grep -q 'runtime'
+          codesign --force --timestamp --sign 'Developer ID Application' "$dmg"
+          xcrun notarytool submit "$dmg" --apple-id "$NOTARY_APPLE_ID" --password "$NOTARY_PASSWORD" --team-id "$NOTARY_TEAM_ID" --wait
+          xcrun stapler staple "$dmg"
+          xcrun stapler validate "$dmg"
+          spctl -a -t open --context context:primary-signature -v "$dmg"
+
+      - name: Remove macOS signing materials
+        if: always() && matrix.platform == 'macos' && inputs.sign_macos
+        run: |
+          security delete-keychain "$RUNNER_TEMP/yakihonne-signing.keychain-db" 2>/dev/null || true
+          rm -f "$RUNNER_TEMP/signing.p12" "$RUNNER_TEMP/signing.provisionprofile" "$RUNNER_TEMP/profile.plist"
 
       - name: Package Linux Debian installer
         if: matrix.platform == 'linux'
