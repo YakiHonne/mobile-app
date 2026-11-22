@@ -95,7 +95,7 @@ jobs:
           section = s[start:end]
           changes = {
               "\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"Apple Development\";": "\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"Developer ID Application\";",
-              "CODE_SIGN_STYLE = Automatic;": "CODE_SIGN_STYLE = Manual;\n\t\t\t\tENABLE_HARDENED_RUNTIME = YES;",
+              "CODE_SIGN_STYLE = Automatic;": "CODE_SIGN_STYLE = Manual;\n\t\t\t\tENABLE_HARDENED_RUNTIME = YES;\n\t\t\t\tCODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;\n\t\t\t\tOTHER_CODE_SIGN_FLAGS = \"--timestamp\";",
               "PROVISIONING_PROFILE_SPECIFIER = \"\";": "PROVISIONING_PROFILE_SPECIFIER = " + os.environ["PROFILE_ID"] + ";",
           }
           for old, new in changes.items():
@@ -131,6 +131,24 @@ jobs:
       - run: flutter pub get --enforce-lockfile
       - name: Build desktop app
         run: flutter build ${{ matrix.platform }} --release --obfuscate --split-debug-info=build/symbols
+      - name: Timestamp embedded macOS framework and app
+        if: matrix.platform == 'macos' && inputs.sign_macos
+        run: |
+          set -euo pipefail
+          app_path="$(find build/macos/Build/Products/Release -maxdepth 1 -type d -name '*.app' -print -quit)"
+          test -n "$app_path"
+          sentry="$app_path/Contents/Frameworks/Sentry.framework"
+          test -d "$sentry"
+          codesign -d --entitlements :- "$app_path" > "$RUNNER_TEMP/app-entitlements.plist" 2>/dev/null
+          plutil -lint "$RUNNER_TEMP/app-entitlements.plist" >/dev/null
+          if [ "$(/usr/libexec/PlistBuddy -c 'Print :com.apple.security.get-task-allow' "$RUNNER_TEMP/app-entitlements.plist" 2>/dev/null || true)" = 'true' ]; then
+            echo 'Release app has the debugging entitlement.' >&2
+            exit 1
+          fi
+          codesign --force --sign 'Developer ID Application' --timestamp --preserve-metadata=identifier,entitlements,flags "$sentry"
+          codesign --force --sign 'Developer ID Application' --timestamp --options runtime --entitlements "$RUNNER_TEMP/app-entitlements.plist" "$app_path"
+          codesign -dvv "$sentry" 2>&1 | grep -Fq 'Timestamp='
+          codesign -dvv "$app_path" 2>&1 | grep -Fq 'Timestamp='
       - name: Package Windows installer
         if: matrix.platform == 'windows'
         shell: pwsh
@@ -201,7 +219,7 @@ jobs:
         if: always() && matrix.platform == 'macos' && inputs.sign_macos
         run: |
           security delete-keychain "$RUNNER_TEMP/yakihonne-signing.keychain-db" 2>/dev/null || true
-          rm -f "$RUNNER_TEMP/signing.p12" "$RUNNER_TEMP/signing.provisionprofile" "$RUNNER_TEMP/profile.plist"
+          rm -f "$RUNNER_TEMP/signing.p12" "$RUNNER_TEMP/signing.provisionprofile" "$RUNNER_TEMP/profile.plist" "$RUNNER_TEMP/app-entitlements.plist"
 
       - name: Package Linux Debian installer
         if: matrix.platform == 'linux'
